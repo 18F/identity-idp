@@ -1,6 +1,4 @@
 class Profile < ApplicationRecord
-  self.ignored_columns = %w[phone_confirmed]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -27,6 +25,14 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  def fraud_review_pending?
+    !!(fraud_review_pending || fraud_review_pending_at)
+  end
+
+  def fraud_rejection?
+    !!(fraud_rejection || fraud_rejection_at)
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     return if fraud_review_pending? || fraud_rejection?
@@ -48,7 +54,10 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/SkipsModelValidations
 
   def activate_after_passing_review
-    update!(fraud_review_pending: false, fraud_rejection: false)
+    update!(
+      fraud_review_pending: false, fraud_rejection: false, fraud_review_pending_at: nil,
+      fraud_rejection_at: nil
+    )
     track_fraud_review_adjudication(decision: 'pass')
     activate
   end
@@ -58,11 +67,17 @@ class Profile < ApplicationRecord
   end
 
   def deactivate_for_fraud_review
-    update!(active: false, fraud_review_pending: true, fraud_rejection: false)
+    update!(
+      active: false, fraud_review_pending: true, fraud_rejection: false,
+      fraud_review_pending_at: Time.zone.now, fraud_rejection_at: nil
+    )
   end
 
   def reject_for_fraud(notify_user:)
-    update!(active: false, fraud_review_pending: false, fraud_rejection: true)
+    update!(
+      active: false, fraud_review_pending: false, fraud_rejection: true,
+      fraud_review_pending_at: nil, fraud_rejection_at: Time.zone.now
+    )
     track_fraud_review_adjudication(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
     )

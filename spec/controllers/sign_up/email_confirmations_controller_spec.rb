@@ -167,6 +167,40 @@ describe SignUp::EmailConfirmationsController do
       expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
       expect(response).to redirect_to sign_up_email_resend_path
     end
+
+    describe 'sp metadata' do
+      let(:confirmation_token) { 'token' }
+      let(:sp_request_uuid) { 'request-id' }
+      let(:request_id_param) {}
+      subject(:request_id) { controller.session.dig(:sp, :request_id) }
+
+      before do
+        ServiceProviderRequestProxy.create(
+          issuer: 'http://localhost:3000',
+          url: '',
+          uuid: sp_request_uuid,
+          ial: '1',
+        )
+        create(:email_address, :unconfirmed, confirmation_token:, user: build(:user, email: nil))
+        get :create, params: { confirmation_token:, _request_id: request_id_param }
+      end
+
+      context 'with invalid request id' do
+        let(:request_id_param) { 'wrong-request-id' }
+
+        it 'stores sp metadata in session' do
+          expect(request_id).to be_nil
+        end
+      end
+
+      context 'with valid request id' do
+        let(:request_id_param) { sp_request_uuid }
+
+        it 'stores sp metadata in session' do
+          expect(request_id).to eq(sp_request_uuid)
+        end
+      end
+    end
   end
 
   describe 'Valid email confirmation tokens' do

@@ -22,8 +22,8 @@ module Idv
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,
-        fraud_review_pending: idv_session.profile&.fraud_review_pending,
-        fraud_rejection: idv_session.profile&.fraud_rejection,
+        fraud_review_pending: idv_session.profile&.fraud_review_pending?,
+        fraud_rejection: idv_session.profile&.fraud_rejection?,
       )
       redirect_to next_step
     end

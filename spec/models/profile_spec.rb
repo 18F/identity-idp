@@ -264,14 +264,14 @@ describe Profile do
     end
 
     it 'does not activate a profile if under fraud review' do
-      profile.update(fraud_review_pending: true)
+      profile.update(fraud_review_pending_at: Time.zone.today - 1.day)
       profile.activate
 
       expect(profile).to_not be_active
     end
 
     it 'does not activate a profile if rejected for fraud' do
-      profile.update(fraud_rejection: true)
+      profile.update(fraud_rejection_at: Time.zone.now - 1.day)
       profile.activate
 
       expect(profile).to_not be_active
@@ -294,7 +294,10 @@ describe Profile do
 
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
-      profile = create(:profile, user: user, active: false, fraud_review_pending: true)
+      profile = create(
+        :profile, user: user, active: false,
+                  fraud_review_pending_at: Time.zone.today - 1.day
+      )
       profile.activate_after_passing_review
 
       expect(profile).to be_active
@@ -307,7 +310,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending: true,
+          fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
         )
       end
@@ -353,7 +356,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending: true,
+          fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
         )
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
@@ -371,7 +374,9 @@ describe Profile do
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending).to eq(true)
+      expect(profile.fraud_review_pending_at).to_not be_nil
       expect(profile.fraud_rejection).to eq(false)
+      expect(profile.fraud_rejection_at).to be_nil
     end
   end
 
@@ -389,7 +394,7 @@ describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = create(:profile, user: user, fraud_review_pending: true)
+        profile = create(:profile, user: user, fraud_review_pending_at: Time.zone.today - 1.day)
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -401,11 +406,15 @@ describe Profile do
       it 'sends an email' do
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
+
+      it 'sets the fraud_rejection_at timestamp' do
+        expect(profile.fraud_rejection_at).to_not be_nil
+      end
     end
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = create(:profile, user: user, fraud_review_pending: true)
+        profile = create(:profile, user: user, fraud_review_pending_at: Time.zone.today - 1.day)
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -424,7 +433,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending: true,
+          fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
         )
       end
@@ -471,7 +480,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending: true,
+          fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
         )
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)

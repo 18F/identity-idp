@@ -15,4 +15,8 @@ FactoryBot.define do
   trait :soft_deleted_5m_ago do
     deleted_at { Time.zone.now - 5.minutes }
   end
+
+  trait :verified do
+    verified_at { Time.zone.now }
+  end
 end

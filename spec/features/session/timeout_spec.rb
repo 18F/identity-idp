@@ -15,7 +15,7 @@ feature 'Session Timeout' do
       visit root_url(request_id: sp_request.uuid)
 
       expect(page).to have_link sp.friendly_name
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
     end
   end
 
@@ -28,7 +28,7 @@ feature 'Session Timeout' do
       visit root_path
 
       expect(page).to have_link sp.friendly_name
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
     end
   end
 

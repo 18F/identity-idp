@@ -18,7 +18,6 @@ module SignUp
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      store_sp_metadata_in_session unless sp_request_id.empty?
 
       if result.success?
         process_successful_password_creation
@@ -35,16 +34,15 @@ module SignUp
     end
 
     def render_page
-      request_id = params.fetch(:_request_id, '')
       render(
         :new,
-        locals: { request_id: request_id, confirmation_token: @confirmation_token },
+        locals: { confirmation_token: @confirmation_token },
         formats: :html,
       )
     end
 
     def permitted_params
-      params.require(:password_form).permit(:confirmation_token, :password, :request_id)
+      params.require(:password_form).permit(:confirmation_token, :password)
     end
 
     def process_successful_password_creation
@@ -59,16 +57,8 @@ module SignUp
       sign_in_and_redirect_user
     end
 
-    def store_sp_metadata_in_session
-      StoreSpMetadataInSession.new(session: session, request_id: sp_request_id).call
-    end
-
     def password_form
       @password_form ||= PasswordForm.new(@user)
-    end
-
-    def sp_request_id
-      permitted_params.fetch(:request_id, '')
     end
 
     def process_unsuccessful_password_creation
@@ -76,7 +66,7 @@ module SignUp
       @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
         ForbiddenPasswords.new(email_address.email).call
       end
-      render :new, locals: { request_id: sp_request_id }
+      render :new
     end
 
     def sign_in_and_redirect_user

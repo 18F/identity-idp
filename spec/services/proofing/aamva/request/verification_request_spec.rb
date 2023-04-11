@@ -103,6 +103,15 @@ describe Proofing::Aamva::Request::VerificationRequest do
 
         expect(result.success?).to eq(true)
       end
+
+      it 'sends state id jurisdiction to AAMVA' do
+        applicant.state_id_data.state_id_jurisdiction = 'NY'
+        expect(
+          Nokogiri::XML(subject.body) do |config|
+            config.strict
+          end.text,
+        ).to match(/NY/)
+      end
     end
 
     # rubocop:disable Layout/LineLength

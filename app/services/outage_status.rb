@@ -1,12 +1,6 @@
 class OutageStatus
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(from: nil, from_idv: nil, sp: nil)
-    @from = from
-    @from_idv = from_idv
-    @sp = sp
-  end
-
   IDV_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
   PHONE_VENDORS = %i[sms voice].freeze
   ALL_VENDORS = (IDV_VENDORS + PHONE_VENDORS).freeze
@@ -55,31 +49,15 @@ class OutageStatus
     all_vendor_outage?([:lexisnexis_phone_finder])
   end
 
-  def from_idv?
-    from_idv
-  end
-
   # Returns an appropriate error message based upon the type of outage or what the user was doing
   # when they encountered the outage.
   #
   # @return [String, nil] the localized message.
   def outage_message
     if any_idv_vendor_outage?
-      if from_idv?
-        if sp
-          t('vendor_outage.blocked.idv.with_sp', service_provider: sp.friendly_name)
-        else
-          t('vendor_outage.blocked.idv.without_sp')
-        end
-      else
-        t('vendor_outage.blocked.idv.generic')
-      end
+      t('vendor_outage.blocked.idv.generic')
     elsif any_phone_vendor_outage?
-      if from_idv?
-        t('vendor_outage.blocked.phone.idv')
-      else
-        t('vendor_outage.blocked.phone.default')
-      end
+      t('vendor_outage.blocked.phone.default')
     end
   end
 
@@ -94,11 +72,6 @@ class OutageStatus
         sms: IdentityConfig.store.vendor_status_sms,
         voice: IdentityConfig.store.vendor_status_voice,
       },
-      redirect_from: from,
     )
   end
-
-  private
-
-  attr_reader :from, :from_idv, :sp
 end

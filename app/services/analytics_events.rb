@@ -753,10 +753,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth document_capture submitted', **extra)
   end
 
-  def idv_doc_auth_email_sent_visited(**extra)
-    track_event('IdV: doc auth email_sent visited', **extra)
-  end
-
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
@@ -2705,12 +2701,14 @@ module AnalyticsEvents
 
   # @param [String] flash
   # @param [String] stored_location
+  # @param [String] sign_in_a_b_test_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
+      sign_in_a_b_test_bucket:,
       **extra,
     )
   end
@@ -2909,12 +2907,12 @@ module AnalyticsEvents
     track_event('User Registration: 2FA Setup visited')
   end
 
-  # @param [String] redirect_from
   # @param [Hash] vendor_status
+  # @param [String,nil] redirect_from
   # Tracks when vendor has outage
   def vendor_outage(
-    redirect_from:,
     vendor_status:,
+    redirect_from: nil,
     **extra
   )
     track_event(
@@ -2956,8 +2954,15 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits enter email page
-  def user_registration_enter_email_visit
-    track_event('User Registration: enter email visited')
+  # @param [String] sign_in_a_b_test_bucket
+  # @param [Boolean] from_sign_in
+  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, **extra)
+    track_event(
+      'User Registration: enter email visited',
+      sign_in_a_b_test_bucket:,
+      from_sign_in:,
+      **extra,
+    )
   end
 
   # @param [Integer] enabled_mfa_methods_count
@@ -2986,6 +2991,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
+  # @param [String] sign_in_a_b_test_bucket
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_complete(
@@ -2993,6 +2999,7 @@ module AnalyticsEvents
     service_provider_name:,
     page_occurence:,
     needs_completion_screen_reason:,
+    sign_in_a_b_test_bucket:,
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
@@ -3005,6 +3012,7 @@ module AnalyticsEvents
       service_provider_name: service_provider_name,
       page_occurence: page_occurence,
       needs_completion_screen_reason: needs_completion_screen_reason,
+      sign_in_a_b_test_bucket:,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,

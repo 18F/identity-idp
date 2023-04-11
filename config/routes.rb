@@ -305,11 +305,18 @@ Rails.application.routes.draw do
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
+    get '/errors/idv_unavailable' => 'idv/unavailable#show', as: :idv_unavailable
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      if !FeatureManagement.idv_available?
+        # IdV has been disabled.
+        match '/*path' => 'unavailable#show', via: %i[get post]
+      end
+
       get '/mail_only_warning' => 'gpo_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'

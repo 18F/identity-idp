@@ -219,6 +219,24 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'minutes_since_last_status_check_completed' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, status_check_completed_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since last status check was completed' do
+      expect(enrollment.minutes_since_last_status_check_completed).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not completed a status check' do
+      enrollment.status_check_completed_at = nil
+
+      expect(enrollment.minutes_since_last_status_check_completed).to eq(nil)
+    end
+  end
+
   describe 'minutes_since_status_updated' do
     let(:enrollment) do
       enrollment = create(:in_person_enrollment, :passed)

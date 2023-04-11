@@ -117,4 +117,11 @@ describe 'idv/phone_errors/warning.html.erb' do
       expect(rendered).to have_link(t('idv.failure.phone.warning.gpo.button'), href: idv_gpo_path)
     end
   end
+
+  context 'no phone' do
+    let(:phone) { nil }
+    it 'does not render "You entered:"' do
+      expect(rendered).not_to have_text(t('idv.failure.phone.warning.you_entered'))
+    end
+  end
 end
