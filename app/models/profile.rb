@@ -57,8 +57,10 @@ class Profile < ApplicationRecord
 
   def activate_after_passing_review
     update!(
-      fraud_review_pending: false, fraud_rejection: false, fraud_review_pending_at: nil,
-      fraud_rejection_at: nil
+      fraud_review_pending: false,
+      fraud_rejection: false,
+      fraud_review_pending_at: nil,
+      fraud_rejection_at: nil,
     )
     track_fraud_review_adjudication(decision: 'pass')
     activate
