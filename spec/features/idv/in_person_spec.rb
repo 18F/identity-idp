@@ -23,6 +23,7 @@ RSpec.describe 'In Person Proofing', js: true do
     it 'allows the user to continue down the happy path', allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      complete_prepare_step(user)
       search_for_post_office
 
       # location page
@@ -343,7 +344,7 @@ RSpec.describe 'In Person Proofing', js: true do
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_button t('in_person_proofing.body.cta.button')
+        click_link t('in_person_proofing.body.cta.button')
         click_idv_continue
 
         search_for_post_office
@@ -443,8 +444,8 @@ RSpec.describe 'In Person Proofing', js: true do
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
-        complete_location_step
         complete_prepare_step
+        complete_location_step
         expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
         fill_out_state_id_form_ok(double_address_verification: double_address_verification)
@@ -511,8 +512,8 @@ RSpec.describe 'In Person Proofing', js: true do
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
-        complete_location_step
         complete_prepare_step
+        complete_location_step
         expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
         fill_out_state_id_form_ok
@@ -590,18 +591,15 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      # prepare page
+      complete_prepare_step(user)
       complete_location_step(user)
-
-      expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'), wait: 5
-      )
     end
 
     it 'does not capture separate state id address from residential address' do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
-      # prepare page
-      complete_prepare_step(user)
+
       complete_state_id_step(user)
       complete_address_step(user)
       complete_ssn_step(user)
@@ -617,16 +615,11 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      complete_prepare_step(user)
       complete_location_step(user)
-
-      expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'), wait: 5
-      )
     end
     # prepare page
     it 'successfully proceeds through the flow' do
-      complete_prepare_step(user)
-
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
 
       complete_address_step(user, double_address_verification: true)
@@ -663,8 +656,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
     end
 
     it 'skips the address page' do

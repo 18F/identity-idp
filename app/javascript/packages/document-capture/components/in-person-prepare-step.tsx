@@ -30,7 +30,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       removeUnloadProtection();
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       await trackEvent('IdV: prepare submitted');
-      window.location.href = inPersonURL!;
+      window.location.href = '#location'!;
     }
   };
 
