@@ -295,7 +295,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           address1: pii[:state_id_address1],
           address2: pii[:state_id_address2],
           city: pii[:state_id_city],
-          state: pii[:state_id_jurisdiction],
+          state: pii[:state_id_state],
           state_id_jurisdiction: pii[:state_id_jurisdiction],
           zipcode: pii[:state_id_zipcode],
         }

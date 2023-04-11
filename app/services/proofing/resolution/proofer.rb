@@ -108,20 +108,14 @@ module Proofing
 
       # Make a copy of pii with the user's state ID address overwriting the address keys
       def with_state_id_address(pii)
-        pii_with_state_id_address = pii.transform_keys(SECONDARY_ID_ADDRESS_MAP)
-        # todo (LG-9237): Remove the below lines once the user's state ID address state
-        # is saved as :state_id_state
-        pii_with_state_id_address[:state_id_jurisdiction] = pii[:state_id_jurisdiction]
-        pii_with_state_id_address
+        pii.transform_keys(SECONDARY_ID_ADDRESS_MAP)
       end
 
       SECONDARY_ID_ADDRESS_MAP = {
         state_id_address1: :address1,
         state_id_address2: :address2,
         state_id_city: :city,
-        # todo (LG-9237): Change below to `state_id_state: :state` once we are collecting
-        # user's state ID address state as :state_id_state
-        state_id_jurisdiction: :state,
+        state_id_state: :state,
         state_id_zipcode: :zipcode,
       }.freeze
     end
