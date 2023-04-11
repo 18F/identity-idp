@@ -1,9 +1,9 @@
 module Proofing
   module Resolution
     class Proofer
-      def initialize(should_proof_state_id:, capture_secondary_id_enabled:)
+      def initialize(should_proof_state_id:, double_address_verification:)
         @should_proof_state_id = should_proof_state_id
-        @capture_secondary_id_enabled = capture_secondary_id_enabled
+        @double_address_verification = double_address_verification
       end
 
       def proof(applicant_pii:, timer:)
@@ -26,7 +26,7 @@ module Proofing
 
       private
 
-      attr_reader :should_proof_state_id, :capture_secondary_id_enabled
+      attr_reader :should_proof_state_id, :double_address_verification
 
       def proof_resolution(applicant_pii:, timer:)
         resolution_result = nil
@@ -68,7 +68,7 @@ module Proofing
       end
 
       def pii_with_state_id_address(applicant_pii)
-        return with_state_id_address(applicant_pii) if capture_secondary_id_enabled
+        return with_state_id_address(applicant_pii) if double_address_verification
 
         applicant_pii
       end

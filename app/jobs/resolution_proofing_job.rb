@@ -17,7 +17,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
-    capture_secondary_id_enabled: false,
+    double_address_verification: false,
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil
@@ -35,7 +35,7 @@ class ResolutionProofingJob < ApplicationJob
 
     @resolution_proofer = Proofing::Resolution::Proofer.new(
       should_proof_state_id: should_proof_state_id,
-      capture_secondary_id_enabled: capture_secondary_id_enabled,
+      double_address_verification: double_address_verification,
     )
 
     user = User.find_by(id: user_id)
