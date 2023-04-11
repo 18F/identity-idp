@@ -1,5 +1,4 @@
 <% title t('titles.passwords.forgot') %>
-<% request_id = params[:request_id] || sp_session[:request_id] %>
 
 <%= render 'shared/sp_alert', section: 'forgot_password' %>
 
@@ -22,7 +21,6 @@
         input_html: { autocorrect: 'off',
                       aria: { describedby: 'email-description' } },
       ) %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 

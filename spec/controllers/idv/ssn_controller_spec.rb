@@ -13,8 +13,8 @@ describe Idv::SsnController do
   let(:user) { create(:user) }
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/doc_auth'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -78,6 +78,7 @@ describe Idv::SsnController do
 
     context 'without a flow session' do
       let(:flow_session) { nil }
+
       it 'redirects to doc_auth' do
         get :show
 

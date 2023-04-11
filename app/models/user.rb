@@ -102,6 +102,11 @@ class User < ApplicationRecord
     profiles.gpo_verification_pending.order(created_at: :desc).first
   end
 
+  def fraud_review_eligible?
+    return false if !fraud_review_pending?
+    fraud_review_pending_profile.verified_at&.after?(30.days.ago)
+  end
+
   def fraud_review_pending?
     fraud_review_pending_profile.present?
   end
@@ -153,6 +158,34 @@ class User < ApplicationRecord
       # Enrollment record is present and survey was not previously sent
       InPersonEnrollment.update(enrollment_id, follow_up_survey_sent: true)
     end
+    nil
+  end
+
+  def increment_second_factor_attempts_count!
+    User.transaction do
+      sql = <<~SQL
+        UPDATE users
+        SET
+          second_factor_attempts_count = COALESCE(second_factor_attempts_count, 0) + 1,
+          updated_at = NOW(),
+          second_factor_locked_at = CASE
+            WHEN COALESCE(second_factor_attempts_count, 0) + 1 >= ?
+            THEN NOW()
+            ELSE NULL
+            END
+        WHERE id = ?
+        RETURNING second_factor_attempts_count, second_factor_locked_at;
+      SQL
+      query = User.sanitize_sql_array(
+        [sql,
+         IdentityConfig.store.login_otp_confirmation_max_attempts, self.id],
+      )
+      result = User.connection.execute(query).first
+      self.second_factor_attempts_count = result.fetch('second_factor_attempts_count')
+      self.second_factor_locked_at = result.fetch('second_factor_locked_at')
+      self.clear_attribute_changes([:second_factor_attempts_count, :second_factor_locked_at])
+    end
+
     nil
   end
 

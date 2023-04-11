@@ -6,7 +6,6 @@ module Idv
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
         link_sent: Idv::Steps::LinkSentStep,
-        email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
       }.freeze
 
@@ -30,7 +29,6 @@ module Idv
 
       ACTIONS = {
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
-        redo_address: Idv::Actions::RedoAddressAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'sign_up/registrations/new.html.erb' do
+  let(:sign_in_a_b_test_bucket) { :default }
+
   let(:sp) do
     build_stubbed(
       :service_provider,
@@ -8,12 +10,14 @@ describe 'sign_up/registrations/new.html.erb' do
       return_to_sp_url: 'www.awesomeness.com',
     )
   end
+
   before do
     allow(view).to receive(:current_user).and_return(nil)
     @register_user_email_form = RegisterUserEmailForm.new(
       analytics: FakeAnalytics.new,
       attempts_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
     )
+    @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url).
       and_return('https://www.example.com/')
@@ -37,7 +41,7 @@ describe 'sign_up/registrations/new.html.erb' do
     render
   end
 
-  it 'has a localized header' do
+  it 'has a localized page heading' do
     render
 
     expect(rendered).to have_selector('h1', text: t('titles.registrations.new'))
@@ -74,5 +78,24 @@ describe 'sign_up/registrations/new.html.erb' do
         "a[href='#{MarketingSite.security_and_privacy_practices_url}']\
 [target='_blank'][rel='noopener noreferrer']",
       )
+  end
+
+  context 'with tabbed layout A/B test' do
+    let(:sign_in_a_b_test_bucket) { :tabbed }
+
+    it 'has a localized page heading' do
+      render
+
+      expect(rendered).to have_selector('h1', text: t('headings.create_account_new_users'))
+    end
+
+    it 'includes a link to sign in' do
+      render
+
+      expect(rendered).to have_link(
+        t('links.next'),
+        href: new_user_session_url(request_id: nil),
+      )
+    end
   end
 end

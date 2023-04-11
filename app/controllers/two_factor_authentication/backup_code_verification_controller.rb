@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    before_action :check_sp_required_mfa_bypass
+    before_action :check_sp_required_mfa
 
     def show
       analytics.multi_factor_auth_enter_backup_code_visit(context: context)
@@ -61,7 +61,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        handle_valid_otp_for_authentication_context
+        handle_valid_otp_for_authentication_context(auth_method: 'backup_code')
         return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
@@ -76,6 +76,10 @@ module TwoFactorAuthentication
     def handle_valid_backup_code
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: 'backup_code')
     end
   end
 end

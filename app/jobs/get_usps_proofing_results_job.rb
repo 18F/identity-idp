@@ -125,6 +125,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment_code: enrollment.enrollment_code,
       enrollment_id: enrollment.id,
       minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        enrollment.minutes_since_last_status_check_completed,
       minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
       minutes_since_established: enrollment.minutes_since_established,
       minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
@@ -165,6 +167,7 @@ class GetUspsProofingResultsJob < ApplicationJob
           **enrollment_analytics_attributes(enrollment, complete: false),
           response_message: response_message,
         )
+      enrollment.update(status_check_completed_at: Time.zone.now)
     elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
       handle_expired_status_update(enrollment, err.response, response_message)
     elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
@@ -256,7 +259,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
     )
-    enrollment.update(status: :failed, proofed_at: proofed_at)
+    enrollment.update(
+      status: :failed,
+      proofed_at: proofed_at,
+      status_check_completed_at: Time.zone.now,
+    )
 
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -273,7 +280,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: false,
       reason: 'Enrollment has expired',
     )
-    enrollment.update(status: :expired)
+    enrollment.update(
+      status: :expired,
+      status_check_completed_at: Time.zone.now,
+    )
 
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
@@ -329,7 +339,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Failed status',
     )
 
-    enrollment.update(status: :failed, proofed_at: proofed_at)
+    enrollment.update(
+      status: :failed,
+      proofed_at: proofed_at,
+      status_check_completed_at: Time.zone.now,
+    )
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -355,7 +369,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Successful status update',
     )
     enrollment.profile.activate
-    enrollment.update(status: :passed, proofed_at: proofed_at)
+    enrollment.update(
+      status: :passed,
+      proofed_at: proofed_at,
+      status_check_completed_at: Time.zone.now,
+    )
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
       email_type: 'Success',

@@ -6,6 +6,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       pending_enrollment.update(
         enrollment_established_at: Time.zone.now - 3.days,
         status_check_attempted_at: Time.zone.now - 15.minutes,
+        status_check_completed_at: Time.zone.now - 17.minutes,
         status_updated_at: Time.zone.now - 2.days,
       )
 
@@ -21,6 +22,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
         fraud_suspected: response['fraudSuspected'],
         issuer: pending_enrollment.issuer,
         minutes_since_last_status_check: 15.0,
+        minutes_since_last_status_check_completed: 17.0,
         minutes_since_last_status_update: 2.days.in_minutes,
         minutes_to_completion: 3.days.in_minutes,
         minutes_since_established: 3.days.in_minutes,
@@ -72,6 +74,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       pending_enrollment.reload
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
+      expect(pending_enrollment.status_check_completed_at).to eq(Time.zone.now)
       expect(pending_enrollment.status).to eq(status)
       expect(pending_enrollment.profile.active).to eq(passed)
     end
@@ -116,6 +119,20 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
   end
+
+  it 'does not update the status_check_completed_at timestamp' do
+    freeze_time do
+      pending_enrollment.update(
+        status_check_attempted_at: Time.zone.now - 1.day,
+        status_updated_at: Time.zone.now - 2.days,
+      )
+      job.perform(Time.zone.now)
+
+      pending_enrollment.reload
+      expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 2.days)
+      expect(pending_enrollment.status_check_completed_at).to be_nil
+    end
+  end
 end
 
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
@@ -131,6 +148,14 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
         exception_class: error_type.to_s,
       ),
     )
+  end
+
+  it 'does not update the status_check_completed_at timestamp' do
+    freeze_time do
+      job.perform(Time.zone.now)
+      pending_enrollment.reload
+      expect(pending_enrollment.status_check_completed_at).to be_nil
+    end
   end
 end
 
@@ -227,7 +252,12 @@ RSpec.describe GetUspsProofingResultsJob do
 
         expect(pending_enrollments.pluck(:status_check_attempted_at)).to(
           all(eq nil),
-          'failed test precondition: pending enrollments must not have status check time set',
+          'failed test precondition: pending enrollments must not set status check attempted time',
+        )
+
+        expect(pending_enrollments.pluck(:status_check_completed_at)).to(
+          all(eq nil),
+          'failed test precondition: pending enrollments must not set status check completed time',
         )
 
         freeze_time do
@@ -239,7 +269,16 @@ RSpec.describe GetUspsProofingResultsJob do
               pluck(:status_check_attempted_at),
           ).to(
             all(eq Time.zone.now),
-            'job must update status check time for all pending enrollments',
+            'job must update status check attempted time for all pending enrollments',
+          )
+
+          expect(
+            pending_enrollments.
+              map(&:reload).
+              pluck(:status_check_completed_at),
+          ).to(
+            all(eq Time.zone.now),
+            'job must update status check completed time for all pending enrollments',
           )
         end
       end
@@ -913,6 +952,7 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(pending_enrollment.enrollment_established_at).to eq(Time.zone.now - 3.days)
             expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 1.day)
             expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
+            expect(pending_enrollment.status_check_completed_at).to eq(Time.zone.now)
           end
 
           expect(pending_enrollment.profile.active).to eq(false)

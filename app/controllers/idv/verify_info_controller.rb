@@ -10,8 +10,6 @@ module Idv
     before_action :confirm_verify_info_step_needed
 
     def show
-      @in_person_proofing = false
-      @verify_info_submit_path = idv_verify_info_path
       @step_indicator_steps = step_indicator_steps
 
       increment_step_counts
@@ -100,7 +98,7 @@ module Idv
 
     # copied from verify_step
     def pii
-      @pii = flow_session[:pii_from_doc] if flow_session
+      @pii = flow_session[:pii_from_doc]
     end
 
     def delete_pii
@@ -122,30 +120,6 @@ module Idv
 
     def increment_step_counts
       current_flow_step_counts['verify'] += 1
-    end
-
-    # copied from verify_base_step. May want reconciliation with phone_step
-    def process_async_state(current_async_state)
-      if current_async_state.none?
-        idv_session.invalidate_verify_info_step!
-        render :show
-      elsif current_async_state.in_progress?
-        render 'shared/wait'
-      elsif current_async_state.missing?
-        analytics.idv_proofing_resolution_result_missing
-        flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :show
-
-        delete_async
-        idv_session.invalidate_verify_info_step!
-
-        log_idv_verification_submitted_event(
-          success: false,
-          failure_reason: { idv_verification: [:timeout] },
-        )
-      elsif current_async_state.done?
-        async_state_done(current_async_state)
-      end
     end
   end
 end

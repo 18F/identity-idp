@@ -11,6 +11,7 @@ RSpec.describe IdTokenBuilder do
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,
       ial: 2,
+      rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',

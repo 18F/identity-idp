@@ -1,5 +1,6 @@
 module Idv
   class PhoneErrorsController < ApplicationController
+    include StepIndicatorConcern
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
@@ -9,6 +10,12 @@ module Idv
 
     def warning
       @remaining_attempts = throttle.remaining_count
+
+      if idv_session.previous_phone_step_params
+        @phone = idv_session.previous_phone_step_params[:phone]
+        @country_code = idv_session.previous_phone_step_params[:international_code]
+      end
+
       track_event(type: :warning)
     end
 

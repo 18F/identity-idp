@@ -50,7 +50,7 @@ module TwoFactorAuthentication
         presented: true,
       )
 
-      handle_valid_otp_for_authentication_context
+      handle_valid_otp_for_authentication_context(auth_method: 'piv_cac')
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
     end
@@ -71,7 +71,7 @@ module TwoFactorAuthentication
 
     def piv_cac_view_data
       {
-        two_factor_authentication_method: two_factor_authentication_method,
+        two_factor_authentication_method: 'piv_cac',
         hide_fallback_question: service_provider_mfa_policy.piv_cac_required?,
       }.merge(generic_data)
     end

@@ -167,6 +167,7 @@ describe 'layouts/application.html.erb' do
     it 'it render the new relic javascript' do
       allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('foo')
       allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('foo')
+      allow(BrowserSupport).to receive(:supported?).and_return(true)
 
       render
 
