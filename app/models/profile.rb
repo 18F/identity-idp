@@ -29,6 +29,11 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  aasm :fraud, column: :fraud_state, timestamps: true do
+    state :none, initial: true
+    state :reviewing, :rejected, :passed
+  end
+
   def fraud_review_pending?
     !!(fraud_review_pending || fraud_review_pending_at)
   end
