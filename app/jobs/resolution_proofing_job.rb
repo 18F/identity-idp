@@ -33,7 +33,7 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    @resolution_proofer = Proofing::Resolution::Proofer.new(
+    @resolution_proofer = Proofing::Resolution::ProgressiveProofer.new(
       should_proof_state_id: should_proof_state_id,
       double_address_verification: double_address_verification,
     )

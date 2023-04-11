@@ -1,6 +1,11 @@
 module Proofing
   module Resolution
-    class Proofer
+    # Uses a combination of LexisNexis InstantVerify and AAMVA checks to verify that
+    # a user's identity can be resolved against authoritative sources. This includes logic for when:
+    #   1. The user is or is not within an AAMVA-participating jurisdiction
+    #   2. The user has only provided one address for their residential and identity document
+    #      address or separate residential and identity document addresses
+    class ProgressiveProofer
       def initialize(should_proof_state_id:, double_address_verification:)
         @should_proof_state_id = should_proof_state_id
         @double_address_verification = double_address_verification
