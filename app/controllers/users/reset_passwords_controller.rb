@@ -71,7 +71,7 @@ module Users
     end
 
     def email_params
-      params.require(:password_reset_email_form).permit(:email, :resend, :request_id)
+      params.require(:password_reset_email_form).permit(:email, :resend)
     end
 
     def email
@@ -79,7 +79,7 @@ module Users
     end
 
     def request_id
-      email_params[:request_id]
+      sp_session[:request_id]
     end
 
     def handle_valid_email
@@ -88,7 +88,7 @@ module Users
       session[:email] = email
       resend_confirmation = email_params[:resend]
 
-      redirect_to forgot_password_url(resend: resend_confirmation, request_id: request_id)
+      redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
     def create_account_if_email_not_found
