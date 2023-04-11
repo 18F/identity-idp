@@ -69,7 +69,7 @@ module SignUp
     end
 
     def request_id
-      ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).uuid
+      sp_session[:request_id]
     end
 
     def redirect_if_ial2_and_idv_unavailable
