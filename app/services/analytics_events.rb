@@ -2701,12 +2701,14 @@ module AnalyticsEvents
 
   # @param [String] flash
   # @param [String] stored_location
+  # @param [String] sign_in_a_b_test_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
+      sign_in_a_b_test_bucket:,
       **extra,
     )
   end
@@ -2952,8 +2954,15 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits enter email page
-  def user_registration_enter_email_visit
-    track_event('User Registration: enter email visited')
+  # @param [String] sign_in_a_b_test_bucket
+  # @param [Boolean] from_sign_in
+  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, **extra)
+    track_event(
+      'User Registration: enter email visited',
+      sign_in_a_b_test_bucket:,
+      from_sign_in:,
+      **extra,
+    )
   end
 
   # @param [Integer] enabled_mfa_methods_count
@@ -2982,6 +2991,7 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
+  # @param [String] sign_in_a_b_test_bucket
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_complete(
@@ -2989,6 +2999,7 @@ module AnalyticsEvents
     service_provider_name:,
     page_occurence:,
     needs_completion_screen_reason:,
+    sign_in_a_b_test_bucket:,
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
@@ -3001,6 +3012,7 @@ module AnalyticsEvents
       service_provider_name: service_provider_name,
       page_occurence: page_occurence,
       needs_completion_screen_reason: needs_completion_screen_reason,
+      sign_in_a_b_test_bucket:,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,
