@@ -12,8 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-# This feature is currently _very_ flaky in CI.
-feature.skip 'IdV Outage Spec' do
+feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
