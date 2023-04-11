@@ -82,6 +82,16 @@ feature 'IdV Outage Spec' do
       allow(IdentityConfig.store).to receive(key).and_call_original
     end
 
+    # Partially apply Rails.application.reload_routes!
+    Rails.application.routes_reloader.route_sets.each do |routes|
+      routes.disable_clear_and_finalize = true
+      routes.clear!
+    end
+
+    # Hang out in the partially-applied state for a few seconds, and hope that
+    # frontend will make a call to /api/logger
+    sleep(5)
+
     Rails.application.reload_routes!
   end
 
