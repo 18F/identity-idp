@@ -412,7 +412,6 @@ describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
-        binding.pry
         expect(profile.fraud_rejection_at).to_not be_nil
       end
     end
