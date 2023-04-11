@@ -83,7 +83,7 @@ class Profile < ApplicationRecord
       fraud_review_pending: true,
       fraud_rejection: false,
       fraud_review_pending_at: Time.zone.now,
-      fraud_rejection_at: nil
+      fraud_rejection_at: nil,
     )
   end
 
@@ -93,7 +93,7 @@ class Profile < ApplicationRecord
       fraud_review_pending: false,
       fraud_rejection: true,
       fraud_review_pending_at: nil,
-      fraud_rejection_at: Time.zone.now
+      fraud_rejection_at: Time.zone.now,
     )
     track_fraud_review_adjudication(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
