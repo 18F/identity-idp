@@ -199,6 +199,10 @@ module Idv
 
         document_capture_session.requested_at = Time.zone.now
 
+        double_address_verification =
+          current_user.establishing_in_person_enrollment&.capture_secondary_id_enabled &&
+          flow_session['pii_from_user']['same_address_as_id'] == 'false'
+
         idv_agent.proof_resolution(
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii),
@@ -206,6 +210,7 @@ module Idv
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
+          double_address_verification: double_address_verification,
         )
       end
 

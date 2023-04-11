@@ -70,9 +70,7 @@ module Idv
         idv_session.vendor_phone_confirmation = false
         idv_session.user_phone_confirmation = false
 
-        double_address_verification =
-          current_user.establishing_in_person_enrollment&.capture_secondary_id_enabled &&
-          current_user.same_address_as_id == 'false'
+        # todo: calculate whether or not we need to do double address verification
         Idv::Agent.new(pii).proof_resolution(
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii),
@@ -80,7 +78,6 @@ module Idv
           user_id: current_user.id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
-          double_address_verification: double_address_verification,
         )
 
         redirect_to idv_in_person_verify_info_url
