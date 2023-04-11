@@ -85,10 +85,13 @@ class SamlIdpController < ApplicationController
 
   def confirm_user_is_authenticated_with_fresh_mfa
     bump_auth_count unless user_fully_authenticated?
-    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                               service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
-    redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+    if !user_fully_authenticated?
+      redirect_to new_user_session_url
+    elsif remember_device_expired_for_sp?
+      redirect_to user_two_factor_authentication_url
+    else
+      confirm_two_factor_authenticated
+    end
   end
 
   def saml_metadata

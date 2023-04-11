@@ -305,9 +305,7 @@ class ApplicationController < ActionController::Base
     reauthn.present? && reauthn == 'true'
   end
 
-  def confirm_two_factor_authenticated(id = nil)
-    return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
-
+  def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
     if !two_factor_enabled?
@@ -350,10 +348,6 @@ class ApplicationController < ActionController::Base
     (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
-  def prompt_to_sign_in_with_request_id(request_id)
-    redirect_to new_user_session_url(request_id: request_id)
-  end
-
   def prompt_to_setup_mfa
     redirect_to authentication_methods_setup_url
   end
@@ -376,10 +370,6 @@ class ApplicationController < ActionController::Base
     else
       login_two_factor_piv_cac_url
     end
-  end
-
-  def user_needs_new_session_with_request_id?(id)
-    !user_signed_in? && id.present?
   end
 
   def two_factor_enabled?

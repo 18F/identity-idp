@@ -53,17 +53,13 @@ module OpenidConnect
 
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
-
-      unless user_fully_authenticated? && service_provider_mfa_policy.
-          auth_method_confirms_to_sp_request?
-        return confirm_two_factor_authenticated(request_id)
+      if !user_fully_authenticated?
+        redirect_to new_user_session_url
+      elsif remember_device_expired_for_sp?
+        redirect_to user_two_factor_authentication_url
+      else
+        confirm_two_factor_authenticated
       end
-
-      redirect_to user_two_factor_authentication_url if device_not_remembered?
-    end
-
-    def device_not_remembered?
-      remember_device_expired_for_sp?
     end
 
     def link_identity_to_service_provider
