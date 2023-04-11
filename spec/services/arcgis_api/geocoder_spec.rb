@@ -113,6 +113,22 @@ RSpec.describe ArcgisApi::Geocoder do
       expect(subject.token).to be_present
     end
 
+    it 'attempts to generate a token with invalid credentials' do
+      stub_invalid_token_credentials_response
+
+      expect { subject.suggest('100 Main') }.to raise_error do |error|
+        expect(error.message).to eq('Unable to generate token.')
+      end
+    end
+
+    it 'calls the token service with no response' do
+      stub_token_service_unreachable_response
+
+      expect { subject.suggest('100 Main') }.to raise_error do |error|
+        expect(error.message).to eq('Failed to open TCP connection')
+      end
+    end
+
     it 'calls the endpoint with the expected params' do
       stub_generate_token_response
       username = 'test username'

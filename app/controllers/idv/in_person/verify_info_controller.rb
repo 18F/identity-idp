@@ -106,7 +106,7 @@ module Idv
       end
 
       def pii
-        @pii = flow_session[:pii_from_user] if flow_session
+        @pii = flow_session[:pii_from_user]
       end
 
       def delete_pii
@@ -126,7 +126,7 @@ module Idv
 
       # override StepUtilitiesConcern
       def flow_session
-        user_session['idv/in_person']
+        user_session.fetch('idv/in_person', {})
       end
 
       def analytics_arguments

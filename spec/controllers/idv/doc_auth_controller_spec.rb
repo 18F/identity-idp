@@ -455,7 +455,6 @@ describe Idv::DocAuthController do
         'document_capture_session_uuid' => document_capture_session_uuid,
         'Idv::Steps::WelcomeStep' => true,
         'Idv::Steps::LinkSentStep' => true,
-        'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
       )
   end

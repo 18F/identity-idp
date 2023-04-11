@@ -6,7 +6,6 @@ module Idv
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
         link_sent: Idv::Steps::LinkSentStep,
-        email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
       }.freeze
 

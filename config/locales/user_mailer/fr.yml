@@ -65,10 +65,6 @@ fr:
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
     contact_link_text: communiquez avec nous
-    doc_auth_link:
-      message: Vous avez demandé à vérifier votre identité sur un ordinateur de
-        bureau. Veuillez vous connecter à %{sp_link}
-      subject: Vérifiez votre identité sur un ordinateur de bureau
     email_added:
       header: Une nouvelle adresse e-mail a été ajoutée à votre profil %{app_name}.
       help: Si vous n’avez pas apporté cette modification, connectez-vous à votre

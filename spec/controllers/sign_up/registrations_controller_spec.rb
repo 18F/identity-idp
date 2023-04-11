@@ -26,6 +26,34 @@ describe SignUp::RegistrationsController, devise: true do
         to raise_error(Mime::Type::InvalidMimeType)
     end
 
+    it 'tracks visit event' do
+      stub_analytics
+      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
+
+      expect(@analytics).to receive(:track_event).with(
+        'User Registration: enter email visited',
+        sign_in_a_b_test_bucket: :default,
+        from_sign_in: false,
+      )
+
+      get :new
+    end
+
+    context 'with source parameter' do
+      it 'tracks visit event' do
+        stub_analytics
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
+
+        expect(@analytics).to receive(:track_event).with(
+          'User Registration: enter email visited',
+          sign_in_a_b_test_bucket: :default,
+          from_sign_in: true,
+        )
+
+        get :new, params: { source: :sign_in }
+      end
+    end
+
     context 'IdV unavailable' do
       before do
         allow(IdentityConfig.store).to receive(:idv_available).and_return(false)

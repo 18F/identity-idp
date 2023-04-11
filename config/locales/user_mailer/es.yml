@@ -64,10 +64,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     contact_link_text: Contáctenos
-    doc_auth_link:
-      message: Ha solicitado verificar su identidad en una computadora de escritorio.
-        Inicie sesión en %{sp_link}
-      subject: Verifique su identidad en una computadora de escritorio
     email_added:
       header: Se agregó una nueva dirección de correo electrónico a su perfil de
         %{app_name}.

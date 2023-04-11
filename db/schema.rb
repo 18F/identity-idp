@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_03_232935) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_04_131517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -284,6 +284,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_232935) do
     t.datetime "last_ial2_authenticated_at", precision: nil
     t.datetime "deleted_at", precision: nil
     t.integer "aal"
+    t.text "requested_aal_value"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -439,7 +440,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_03_232935) do
     t.string "ssn_signature", limit: 64
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
-    t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"

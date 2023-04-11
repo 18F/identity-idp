@@ -54,7 +54,7 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'allows the user to enter in a new address and displays updated info' do
-    click_button t('idv.buttons.change_address_label')
+    click_link t('idv.buttons.change_address_label')
     fill_in 'idv_form_zipcode', with: '12345'
     fill_in 'idv_form_address2', with: 'Apt 3E'
 

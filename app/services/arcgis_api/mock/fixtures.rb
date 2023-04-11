@@ -61,6 +61,13 @@ module ArcgisApi
         }
       end
 
+      def self.request_token_service_error
+        load_response_fixture('request_token_service_error.json')
+      end
+
+      def self.invalid_gis_token_credentials_response
+        load_response_fixture('invalid_gis_token_credentials_response.json')
+      end
       private_class_method :generate_suggestions, :generate_address_candidates
     end
   end
