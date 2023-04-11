@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
-    "This password is too short (minimum is #{Devise.password_length.first} characters)"
+    "Password must be at least #{Devise.password_length.first} characters long"
   end
   let(:success_properties) { { success: true, failure_reason: nil } }
   let(:token_expired_error) { 'token_expired' }
