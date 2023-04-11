@@ -306,7 +306,7 @@ describe 'authorization count' do
 
   def reset_monthly_auth_count_and_login(user)
     SpReturnLog.delete_all
-    visit api_saml_logout2022_path
+    visit api_saml_logout2023_path
     sign_in_live_with_2fa(user)
   end
 end

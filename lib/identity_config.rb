@@ -199,6 +199,7 @@ class IdentityConfig
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:idv_attempt_window_in_hours, type: :integer)
+    config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
@@ -413,6 +414,7 @@ class IdentityConfig
       :sign_up_mfa_selection_order_testing, type: :json,
                                             options: { symbolize_names: true }
     )
+    config.add(:sign_in_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)

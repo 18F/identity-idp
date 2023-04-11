@@ -7,6 +7,7 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
+    include SignInABTestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -19,15 +20,16 @@ module Users
     after_action :add_csrf_token_header_to_response, only: [:keepalive]
 
     def new
+      override_csp_for_google_analytics
+
+      @ial = sp_session_ial
+      @browser_is_ie11 = browser_is_ie11?
+      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
+        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
       )
-      override_csp_for_google_analytics
-
-      @request_id = request_id_if_valid
-      @ial = sp_session_ial
-      @browser_is_ie11 = browser_is_ie11?
       super
     end
 
@@ -101,7 +103,7 @@ module Users
       )
 
       flash[:error] = t('errors.sign_in.bad_password_limit')
-      redirect_to root_url(request_id: request_id)
+      redirect_to root_url
     end
 
     def redirect_to_signin
@@ -121,7 +123,7 @@ module Users
     end
 
     def auth_params
-      params.require(:user).permit(:email, :password, :request_id)
+      params.require(:user).permit(:email, :password)
     end
 
     def process_locked_out_user
@@ -217,14 +219,6 @@ module Users
       AccountReset::FindPendingRequestForUser.new(
         current_user,
       ).call
-    end
-
-    LETTERS_AND_DASHES = /\A[a-z0-9-]+\Z/i
-
-    def request_id_if_valid
-      request_id = (params[:request_id] || sp_session[:request_id]).to_s
-
-      request_id if LETTERS_AND_DASHES.match?(request_id)
     end
 
     def override_csp_for_google_analytics

@@ -22,6 +22,7 @@ es:
       prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:
       new: Enviar otro email de confirmación
+    create_account_new_users: Crear una cuenta para usuarios nuevos
     create_account_with_sp:
       cta: '¿Es la primera vez que utiliza %{app_name}?'
       sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
@@ -60,6 +61,7 @@ es:
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
     residential_address: Dirección residencial actual
     session_timeout_warning: '¿Necesita más tiempo?'
+    sign_in_existing_users: Iniciar sesión para usuarios existentes
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}

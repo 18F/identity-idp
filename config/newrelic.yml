@@ -25,6 +25,7 @@ production:
       ActionController::BadRequest
       ActionController::ParameterMissing
       ActionController::RoutingError
+      ActionController::UnknownHttpMethod
       ActionDispatch::Http::MimeNegotiation::InvalidType
       ActionDispatch::Http::Parameters::ParseError
       GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError

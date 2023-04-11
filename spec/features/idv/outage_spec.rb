@@ -20,11 +20,73 @@ feature 'IdV Outage Spec' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  context 'vendor_status_lexisnexis_phone_finder set to full_outage', js: true do
-    before do
-      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_phone_finder).
-        and_return(:full_outage)
+  let(:vendor_status_acuant) { :operational }
+  let(:vendor_status_lexisnexis_instant_verify) { :operational }
+  let(:vendor_status_lexisnexis_phone_finder) { :operational }
+  let(:vendor_status_lexisnexis_trueid) { :operational }
+  let(:vendor_status_sms) { :operational }
+  let(:vendor_status_voice) { :operational }
+
+  let(:enable_usps_verification) { true }
+  let(:feature_idv_force_gpo_verification_enabled) { false }
+  let(:feature_idv_hybrid_flow_enabled) { true }
+
+  let(:vendors) do
+    %w[
+      acuant
+      lexisnexis_instant_verify
+      lexisnexis_phone_finder
+      lexisnexis_trueid
+      sms
+      voice
+    ]
+  end
+
+  let(:config_flags) do
+    %w[
+      enable_usps_verification
+      feature_idv_force_gpo_verification_enabled
+      feature_idv_hybrid_flow_enabled
+    ]
+  end
+
+  before do
+    # Wire up various let()s to configuration keys
+    vendors.each do |service|
+      vendor_status_key = "vendor_status_#{service}".to_sym
+      allow(IdentityConfig.store).to receive(vendor_status_key).
+        and_return(send(vendor_status_key))
     end
+
+    config_flags.each do |key|
+      allow(IdentityConfig.store).to receive(key).
+        and_return(send(key))
+    end
+
+    # Configuration / vendor status changes can effect Rails routing tables.
+    # Force routes to be reloaded when we've modified configuration.
+    Rails.application.reload_routes!
+  end
+
+  after do
+    # Don't leave stale routes sitting around!
+    # - Reset all the feature flags that could cause route changes
+    # - Reload routes to reset the environment for any specs that run next
+
+    vendors.each do |service|
+      vendor_status_key = "vendor_status_#{service}".to_sym
+      allow(IdentityConfig.store).to receive(vendor_status_key).and_call_original
+    end
+
+    config_flags.each do |key|
+      allow(IdentityConfig.store).to receive(key).and_call_original
+    end
+
+    Rails.application.reload_routes!
+  end
+
+  context 'vendor_status_lexisnexis_phone_finder set to full_outage', js: true do
+    let(:vendor_status_lexisnexis_phone_finder) { :full_outage }
 
     it 'takes the user through the mail only flow, allowing hybrid' do
       sign_in_with_idv_required(user: user)
@@ -51,10 +113,7 @@ feature 'IdV Outage Spec' do
   end
 
   context 'GPO only enabled, but user starts over', js: true do
-    before do
-      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
-        and_return(true)
-    end
+    let(:feature_idv_force_gpo_verification_enabled) { true }
 
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
@@ -70,14 +129,7 @@ feature 'IdV Outage Spec' do
   end
 
   context 'force GPO only without phone outages', js: true do
-    before do
-      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:vendor_status_sms).
-        and_return(:operational)
-      allow(IdentityConfig.store).to receive(:vendor_status_voice).
-        and_return(:operational)
-    end
+    let(:feature_idv_force_gpo_verification_enabled) { true }
 
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
@@ -91,12 +143,8 @@ feature 'IdV Outage Spec' do
   end
 
   context 'force GPO only, but GPO not enabled', js: true do
-    before do
-      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:enable_usps_verification).
-        and_return(false)
-    end
+    let(:feature_idv_force_gpo_verification_enabled) { true }
+    let(:enable_usps_verification) { false }
 
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
@@ -110,10 +158,7 @@ feature 'IdV Outage Spec' do
 
     %i[vendor_status_sms vendor_status_voice].each do |flag|
       context "#{flag} set to full_outage" do
-        before do
-          allow(IdentityConfig.store).to receive(flag).
-            and_return(:full_outage)
-        end
+        let(flag) { :full_outage }
 
         it 'shows mail only warning page before idv welcome page' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
@@ -146,12 +191,8 @@ feature 'IdV Outage Spec' do
   end
 
   context 'feature_idv_force_gpo_verification_enabled set to true', js: true do
+    let(:feature_idv_force_gpo_verification_enabled) { true }
     let(:user) { user_with_2fa }
-
-    before do
-      allow(IdentityConfig.store).to receive(:feature_idv_force_gpo_verification_enabled).
-        and_return(true)
-    end
 
     it 'shows mail only warning page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
@@ -175,11 +216,7 @@ feature 'IdV Outage Spec' do
 
   context 'feature_idv_hybrid_flow_enabled set to false', js: true do
     let(:user) { user_with_2fa }
-
-    before do
-      allow(IdentityConfig.store).to receive(:feature_idv_hybrid_flow_enabled).
-        and_return(false)
-    end
+    let(:feature_idv_hybrid_flow_enabled) { false }
 
     it 'does not show the mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
@@ -200,16 +237,12 @@ feature 'IdV Outage Spec' do
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
     context "vendor_status_#{service} set to full_outage" do
       let(:user) { user_with_2fa }
-      before do
-        allow(IdentityConfig.store).to receive("vendor_status_#{service}".to_sym).
-          and_return(:full_outage)
-      end
+      let("vendor_status_#{service}".to_sym) { :full_outage }
 
       it 'prevents an existing ial1 user from verifying their identity' do
         sign_in_with_idv_required(user: user, sms_or_totp: :sms)
-        expect(current_path).to eq vendor_outage_path
         expect(page).to have_content(
-          t('vendor_outage.blocked.idv.with_sp', service_provider: 'Test SP'),
+          strip_tags(t('idv.unavailable.idv_explanation.with_sp_html', sp: 'Test SP')),
         )
       end
 
@@ -228,15 +261,20 @@ feature 'IdV Outage Spec' do
         click_on t('links.account.reactivate.without_key')
         click_on t('forms.buttons.continue')
 
-        expect(current_path).to eq vendor_outage_path
-        expect(page).to have_content(t('vendor_outage.blocked.idv.without_sp'))
+        expect(page).to have_content(t('idv.unavailable.idv_explanation.without_sp'))
       end
 
       it 'prevents a user from creating an account' do
         visit_idp_from_sp_with_ial2(:oidc)
         click_link t('links.create_account')
-        expect(current_path).to eq vendor_outage_path
-        expect(page).to have_content(t('vendor_outage.blocked.idv.generic'))
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'idv.unavailable.idv_explanation.with_sp_html',
+              sp: 'Test SP',
+            ),
+          ),
+        )
       end
     end
   end

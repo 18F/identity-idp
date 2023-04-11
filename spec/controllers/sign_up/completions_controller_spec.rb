@@ -135,6 +135,7 @@ describe SignUp::CompletionsController do
     before do
       stub_analytics
       allow(@analytics).to receive(:track_event)
+      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
       @linker = instance_double(IdentityLinker)
       allow(@linker).to receive(:link_identity).and_return(true)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
@@ -158,6 +159,7 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sign_in_a_b_test_bucket: :default,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
         )
@@ -217,6 +219,7 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sign_in_a_b_test_bucket: :default,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
         )

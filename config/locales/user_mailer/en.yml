@@ -60,10 +60,6 @@ en:
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     contact_link_text: contact us
-    doc_auth_link:
-      message: You’ve requested to verify your identity on a desktop computer.  Please
-        sign in to %{sp_link}
-      subject: Verify your identity on a desktop computer
     email_added:
       header: A new email address was added to your %{app_name} profile.
       help: If you did not make this change, sign in to your profile and manage your

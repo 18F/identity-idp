@@ -461,4 +461,40 @@ describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '#idv_available?' do
+    let(:idv_available) { true }
+    let(:vendor_status_acuant) { :operational }
+    let(:vendor_status_lexisnexis_instant_verify) { :operational }
+    let(:vendor_status_lexisnexis_trueid) { :operational }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
+      allow(IdentityConfig.store).to receive(:vendor_status_acuant).and_return(vendor_status_acuant)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify).
+        and_return(vendor_status_lexisnexis_instant_verify)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
+        and_return(vendor_status_lexisnexis_trueid)
+    end
+
+    it 'returns true by default' do
+      expect(FeatureManagement.idv_available?).to eql(true)
+    end
+
+    context 'idv has been disabled using config flag' do
+      let(:idv_available) { false }
+      it 'returns false' do
+        expect(FeatureManagement.idv_available?).to eql(false)
+      end
+    end
+
+    %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
+      context "#{service} is in :full_outage" do
+        let("vendor_status_#{service}".to_sym) { :full_outage }
+        it 'returns false' do
+          expect(FeatureManagement.idv_available?).to eql(false)
+        end
+      end
+    end
+  end
 end

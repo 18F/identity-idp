@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Password Recovery' do
   include IdvHelper
   include PersonalKeyHelper
+  include SamlAuthHelper
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
@@ -142,15 +143,15 @@ feature 'Password Recovery' do
     before do
       @user = create(:user, :signed_up)
 
-      visit new_user_password_path
-      fill_in t('account.index.email'), with: @user.email
-      click_button t('forms.buttons.continue')
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_ial1(:oidc)
+        click_link t('links.passwords.forgot')
+        fill_in t('account.index.email'), with: @user.email
+        click_button t('forms.buttons.continue')
+      end
 
-      raw_reset_token, db_confirmation_token =
-        Devise.token_generator.generate(User, :reset_password_token)
-      UpdateUser.new(user: @user, attributes: { reset_password_token: db_confirmation_token }).call
-
-      visit edit_user_password_path(reset_password_token: raw_reset_token)
+      set_current_email(last_email)
+      click_email_link_matching(Regexp.new(edit_user_password_path))
     end
 
     it 'lands on the reset password page' do
@@ -172,6 +173,23 @@ feature 'Password Recovery' do
 
         visit account_path
         expect(current_path).to eq new_user_session_path
+      end
+
+      it 'allows the user to continue to the service provider' do
+        fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
+        click_button t('forms.passwords.edit.buttons.submit')
+
+        expect(page).to have_content(t('devise.passwords.updated_not_active'))
+        expect_branded_experience
+
+        fill_in t('account.index.email'), with: @user.email
+        fill_in t('components.password_toggle.label'), with: 'NewVal!dPassw0rd'
+        click_button t('links.next')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        click_agree_and_continue
+
+        expect(current_url).to start_with('http://localhost:7654/auth/result')
       end
     end
 

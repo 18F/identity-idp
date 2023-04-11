@@ -83,11 +83,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
-  def doc_auth_desktop_link_to_sp
-    UserMailer.with(user: user, email_address: email_address_record).
-      doc_auth_desktop_link_to_sp('Example App', '/')
-  end
-
   def letter_reminder
     UserMailer.with(user: user, email_address: email_address_record).letter_reminder
   end

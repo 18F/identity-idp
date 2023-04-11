@@ -81,16 +81,39 @@ es:
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       phone:
-        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
-          seguridad, limitamos el número de veces que puede intentar verificar
-          su número de teléfono en línea.'
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
+        rate_limited:
+          body: Por motivos de seguridad, se limita el número de veces que puede intentar
+            verificar su número de teléfono por Internet. Tendrás que esperar
+            %{time_left} y volver a empezar antes de volver a intentar la
+            verificación por teléfono.
+          gpo:
+            button: Verificar por correo
+            prompt: Continúa ahora con la verificación por correo, que suele tardar entre 3
+              y 7 días laborables.
+          heading: 'No hemos podido verificar su identidad por teléfono'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
-        warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
+        warning:
+          attempts:
+            one: Por razones de seguridad, dispone de un solo intento.
+            other: Por razones de seguridad, le quedan %{count} intentos.
+          gpo:
+            button: Verificar por correo
+            explanation: Si no dispones de otro número de teléfono para intentarlo,
+              verifícalo por correo.
+            heading: Verificar por correo
+            how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
+          heading: No pudimos asociarlo a este número
+          learn_more_link: 'Más información sobre qué número de teléfono usar'
+          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
+            utilice a menudo y desde hace tiempo. Puede ser un número del
+            trabajo o particular.'
+          try_again_button: 'Intente con otro número'
+          you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
@@ -130,6 +153,7 @@ es:
       dob: Fecha de nacimiento
       first_name: Nombre de pila
       id_number: Número de cédula
+      issuing_state: Estado emisor
       last_name: Apellido
       password: Contraseña
       ssn: Número de seguridad social
@@ -217,6 +241,7 @@ es:
       session:
         phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
+      unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
         missing_required_items: '¿Le falta alguno de estos puntos?'
@@ -235,6 +260,18 @@ es:
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
+    unavailable:
+      exit_button: 'Salir de %{app_name}'
+      idv_explanation:
+        with_sp_html: '<strong>%{sp}</strong> necesita asegurarse de que es usted
+          realmente y no alguien que se hace pasar por usted.'
+        without_sp: 'La agencia a la que está intentando acceder debe asegurarse de que
+          usted sea quien dice ser, y no alguien que se hace pasar por usted.'
+      next_steps_html: '%{status_page_link} o salga de %{app_name} y vuelva a
+        intentarlo más tarde.'
+      status_page_link: 'Consulte las actualizaciones en nuestra página de estado'
+      technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
+        parte, tal vez no podamos verificar su identidad en estos momentos.
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
