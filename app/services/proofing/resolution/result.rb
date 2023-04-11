@@ -55,8 +55,10 @@ module Proofing
           timed_out: timed_out?,
           transaction_id: transaction_id,
           reference: reference,
-          can_pass_with_additional_verification: failed_result_can_pass_with_additional_verification,
-          attributes_requiring_additional_verification: attributes_requiring_additional_verification,
+          can_pass_with_additional_verification:
+            failed_result_can_pass_with_additional_verification,
+          attributes_requiring_additional_verification:
+            attributes_requiring_additional_verification,
           vendor_name: vendor_name,
           vendor_workflow: vendor_workflow,
           drivers_license_info_matches: drivers_license_info_matches,
