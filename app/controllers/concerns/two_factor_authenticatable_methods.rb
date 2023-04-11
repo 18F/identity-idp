@@ -91,7 +91,7 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_valid_otp(next_url = nil, auth_method: nil)
+  def handle_valid_otp(next_url:, auth_method: nil)
     handle_valid_otp_for_context(auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url

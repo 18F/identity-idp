@@ -21,7 +21,7 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
-        handle_valid_otp(nil, auth_method: params[:otp_delivery_preference])
+        handle_valid_otp(next_url: nil, auth_method: params[:otp_delivery_preference])
       else
         handle_invalid_otp(context: context, type: 'otp')
       end
