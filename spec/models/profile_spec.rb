@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Profile do
   let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :signed_up) }
-  let(:profile) { create(:profile, user: user) }
+  let(:profile) { user.profiles.create }
 
   let(:dob) { '1920-01-01' }
   let(:ssn) { '666-66-1234' }
@@ -195,7 +195,7 @@ describe Profile do
     it 'prevents create! via ActiveRecord uniqueness validation' do
       profile.active = true
       profile.save!
-      expect { Profile.create!(user_id: user.id, active: true) }.
+      expect { user.profiles.create!(active: true) }.
         to raise_error(ActiveRecord::RecordInvalid)
     end
 
@@ -203,7 +203,7 @@ describe Profile do
       profile.active = true
       profile.save!
       expect do
-        another_profile = Profile.new(user_id: user.id, active: true)
+        another_profile = user.profiles.new(active: true)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end
@@ -216,7 +216,7 @@ describe Profile do
     end
 
     it 'is true when the user is re-activated' do
-      existing_profile = Profile.create(user: user)
+      existing_profile = user.profiles.create
       existing_profile.activate
       profile.activate
 
@@ -235,7 +235,7 @@ describe Profile do
 
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
-      active_profile = Profile.create(user: user, active: true)
+      active_profile = user.profiles.create(active: true)
       profile.activate
       active_profile.reload
       expect(active_profile).to_not be_active
@@ -243,7 +243,7 @@ describe Profile do
     end
 
     it 'sends a reproof completed push event' do
-      Profile.create(user: user, active: true)
+      user.profiles.create(active: true)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::ReproofCompletedEvent.new(user: user))
 
