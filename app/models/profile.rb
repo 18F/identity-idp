@@ -1,6 +1,8 @@
 class Profile < ApplicationRecord
   include AASM
 
+  self.ignored_columns += %w[fraud_review_pending fraud_rejection]
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
