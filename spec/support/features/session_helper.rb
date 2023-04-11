@@ -390,11 +390,12 @@ module Features
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id, source: :sign_in)
+      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id, source: :sign_in)
+      expect(current_url).to eq sign_up_email_url(source: :sign_in)
       expect_branded_experience
 
       submit_form_with_invalid_email
@@ -404,23 +405,23 @@ module Features
 
       submit_form_with_valid_but_wrong_email
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_verify_email_url
       expect_branded_experience
 
       click_link_to_use_a_different_email
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_email_url
       expect_branded_experience
 
       submit_form_with_valid_email(email)
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_verify_email_url
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
       expect_branded_experience
 
       click_link_to_resend_the_email
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
+      expect(current_url).to eq sign_up_verify_email_url(resend: true)
       expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
