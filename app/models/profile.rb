@@ -177,6 +177,12 @@ class Profile < ApplicationRecord
 
   private
 
+  def fraud_review_pending
+  end
+
+  def fraud_rejection
+  end
+
   def track_fraud_review_adjudication(decision:)
     if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review
       fraud_review_request = user.fraud_review_requests.last
