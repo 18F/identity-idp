@@ -32,6 +32,18 @@ class Profile < ApplicationRecord
   aasm :fraud, column: :fraud_state, timestamps: true do
     state :none, initial: true
     state :reviewing, :rejected, :passed
+
+    event :review do
+      transitions from: :none, to: :reviewing
+    end
+
+    event :reject do
+      transitions from: :reviewing, to: :rejected
+    end
+
+    event :pass do
+      transitions from: [:reviewing, :rejected], to: :passed
+    end
   end
 
   def fraud_review_pending
