@@ -157,7 +157,6 @@ feature 'IdV Outage Spec' do
     let(:enable_usps_verification) { false }
 
     it 'shows mail only warning page before idv welcome page' do
-      raise 'OH NOES'
       sign_in_with_idv_required(user: user)
 
       expect(current_path).to eq vendor_outage_path
