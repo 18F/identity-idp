@@ -85,6 +85,16 @@ feature 'IdV Outage Spec' do
     Rails.application.reload_routes!
   end
 
+  after(:each) do |example|
+    if example.exception
+      require 'action_dispatch/routing/inspector'
+      inspector = ActionDispatch::Routing::RoutesInspector.new(Rails.application.routes.routes)
+      # rubocop:disable Rails/Output
+      puts inspector.format(ActionDispatch::Routing::ConsoleFormatter::Expanded.new)
+      # rubocop:enable Rails/Output
+    end
+  end
+
   context 'vendor_status_lexisnexis_phone_finder set to full_outage', js: true do
     let(:vendor_status_lexisnexis_phone_finder) { :full_outage }
 
@@ -147,6 +157,7 @@ feature 'IdV Outage Spec' do
     let(:enable_usps_verification) { false }
 
     it 'shows mail only warning page before idv welcome page' do
+      raise 'OH NOES'
       sign_in_with_idv_required(user: user)
 
       expect(current_path).to eq vendor_outage_path
