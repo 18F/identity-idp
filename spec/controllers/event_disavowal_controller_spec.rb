@@ -90,7 +90,7 @@ describe EventDisavowalController do
           'Event disavowal password reset',
           build_analytics_hash(
             success: false,
-            errors: { password: ['This password is too short (minimum is 12 characters)'] },
+            errors: { password: ['Password must be at least 12 characters long'] },
           ),
         )
 
@@ -107,7 +107,7 @@ describe EventDisavowalController do
           'Event disavowal password reset',
           build_analytics_hash(
             success: false,
-            errors: { password: ['This password is too short (minimum is 12 characters)'] },
+            errors: { password: ['Password must be at least 12 characters long'] },
           ),
         )
 
