@@ -1,6 +1,4 @@
 class Profile < ApplicationRecord
-  self.ignored_columns = %w[phone_confirmed]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
