@@ -2,7 +2,6 @@ module Proofing
   module LexisNexis
     module InstantVerify
       class Proofer
-
         attr_reader :config
 
         def initialize(config)
