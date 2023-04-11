@@ -85,7 +85,7 @@ class SamlIdpController < ApplicationController
 
   def confirm_user_is_authenticated_with_fresh_mfa
     bump_auth_count unless user_fully_authenticated?
-    if !user_fully_authenticated?
+    if !user_signed_in?
       redirect_to new_user_session_url
     elsif remember_device_expired_for_sp?
       redirect_to user_two_factor_authentication_url
