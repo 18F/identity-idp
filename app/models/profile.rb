@@ -1,4 +1,6 @@
 class Profile < ApplicationRecord
+  include AASM
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,

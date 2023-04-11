@@ -60,6 +60,8 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (5.5.0)
+      concurrent-ruby (~> 1.0)
     actioncable (7.0.4.3)
       actionpack (= 7.0.4.3)
       activesupport (= 7.0.4.3)
@@ -720,6 +722,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
