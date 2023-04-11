@@ -32,8 +32,11 @@ describe PasswordForm, type: :model do
         form = PasswordForm.new(user)
         password = 'invalid'
         errors = {
-          password:
-            ["Password must be at least #{Devise.password_length.first} characters long"],
+          password: [
+            t(
+              'errors.attributes.password.too_short.other', count: Devise.password_length.first
+            ),
+          ],
         }
         extra = {
           user_id: '123',

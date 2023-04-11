@@ -90,7 +90,13 @@ describe EventDisavowalController do
           'Event disavowal password reset',
           build_analytics_hash(
             success: false,
-            errors: { password: ['Password must be at least 12 characters long'] },
+            errors: {
+              password: [
+                t(
+                  'errors.attributes.password.too_short.other', count: Devise.password_length.first
+                ),
+              ],
+            },
           ),
         )
 

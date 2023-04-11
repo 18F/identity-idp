@@ -84,8 +84,9 @@ describe ResetPasswordForm, type: :model do
         password = 'short'
 
         errors = {
-          password:
-            ["Password must be at least #{Devise.password_length.first} characters long"],
+          password: [
+            t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
+          ],
           reset_password_token: ['token_expired'],
         }
 
