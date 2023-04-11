@@ -13,7 +13,7 @@ es:
     attributes:
       password:
         too_short:
-          one: Esta contraseña es demasiado corta (debe tener 1 carácter como mínimo)
+          one: La contraseña debe tener al menos un carácter
           other: La contraseña debe tener al menos %{count} caracteres de longitud.
     capture_doc:
       invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para
