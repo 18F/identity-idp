@@ -47,7 +47,7 @@ module Idv
     end
 
     def decorated_user
-      current_user.decorate
+      current_user
     end
   end
 end

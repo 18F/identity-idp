@@ -13,7 +13,7 @@ describe AccountShowPresenter do
           dob: birthday
         )
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
+          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -47,7 +47,7 @@ describe AccountShowPresenter do
         ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          decrypted_pii: {}, personal_key: '', decorated_user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -123,7 +123,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        decorated_user: user.decorate,
+        decorated_user: user,
         locked_for_session: false,
       )
     end
@@ -159,7 +159,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user.decorate,
+          decorated_user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -183,7 +183,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user.decorate,
+          decorated_user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -202,7 +202,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user.decorate,
+          decorated_user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,

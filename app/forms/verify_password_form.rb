@@ -40,6 +40,6 @@ class VerifyPasswordForm
   end
 
   def profile
-    @profile ||= user.decorate.password_reset_profile
+    @profile ||= user.password_reset_profile
   end
 end

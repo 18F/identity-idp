@@ -296,7 +296,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def decorated_user
-    current_user.decorate
+    current_user
   end
 
   def confirmation_for_add_phone?

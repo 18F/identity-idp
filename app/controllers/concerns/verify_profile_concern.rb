@@ -24,7 +24,7 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.decorate.pending_profile_requires_verification? ||
+    current_user.pending_profile_requires_verification? ||
       user_needs_to_reactivate_account?
   end
 end

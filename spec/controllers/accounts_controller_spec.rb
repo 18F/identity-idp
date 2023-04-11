@@ -46,7 +46,7 @@ describe AccountsController do
           personal_key: nil,
           sp_session_request_url: nil,
           sp_name: nil,
-          decorated_user: user.decorate,
+          decorated_user: user,
           locked_for_session: false,
         )
         allow(subject).to receive(:presenter).and_return(presenter)
@@ -90,7 +90,7 @@ describe AccountsController do
             personal_key: nil,
             sp_session_request_url: nil,
             sp_name: nil,
-            decorated_user: user.decorate,
+            decorated_user: user,
             locked_for_session: false,
           )
           allow(subject).to receive(:presenter).and_return(presenter)
