@@ -91,7 +91,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_otp(next_url:, auth_method: nil)
-    handle_valid_otp_for_context(auth_method)
+    handle_valid_otp_for_context(auth_method: auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -103,7 +103,7 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference
   end
 
-  def handle_valid_otp_for_context(auth_method)
+  def handle_valid_otp_for_context(auth_method:)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
