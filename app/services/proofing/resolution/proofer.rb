@@ -7,26 +7,18 @@ module Proofing
       end
 
       def proof(applicant_pii:, timer:)
-        residential_address_result = proof_residential_address(
+        resolution_result = proof_resolution(
           applicant_pii: applicant_pii,
           timer: timer,
-        )
-        state_id_address_result = proof_state_id_address(
-          applicant_pii: applicant_pii,
-          timer: timer,
-          residential_address_result: residential_address_result,
         )
         state_id_result = proof_state_id(
           applicant_pii: applicant_pii,
           timer: timer,
-          residential_address_result: residential_address_result,
-          state_id_address_result: state_id_address_result,
+          resolution_result: resolution_result,
         )
 
         ResultAdjudicator.new(
-          capture_secondary_id_enabled: capture_secondary_id_enabled,
-          residential_address_result: residential_address_result,
-          resolution_result: state_id_address_result,
+          resolution_result: resolution_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
         )
@@ -36,43 +28,23 @@ module Proofing
 
       attr_reader :should_proof_state_id, :capture_secondary_id_enabled
 
-      def proof_residential_address(applicant_pii:, timer:)
-        residential_address_result = Proofing::AddressResult.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
-        )
-
-        if capture_secondary_id_enabled
-          timer.time('residential address') do
-            residential_address_result = resolution_proofer.proofer(applicant_pii)
-          end
+      def proof_resolution(applicant_pii:, timer:)
+        resolution_result = nil
+        timer.time('resolution') do
+          resolution_result = resolution_proofer.proof(pii_with_state_id_address(applicant_pii))
         end
 
-        residential_address_result
+        resolution_result
       end
 
-      def proof_state_id_address(applicant_pii:, timer:, residential_address_result:)
-        state_id_address_result = Proofing::AddressResult.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressFailed',
-        )
-
-        if residential_address_can_pass_after_state_id_check?(residential_address_result)
-          state_id_address_result = timer.time('resolution') do
-            resolution_proofer.proof(pii_with_state_id_address(applicant_pii))
-          end
-        end
-
-        state_id_address_result
-      end
-
-      def proof_state_id(applicant_pii:, timer:, residential_address_result:,
-                         state_id_address_result:)
+      def proof_state_id(applicant_pii:, timer:,
+                         resolution_result:)
         state_id_result = Proofing::StateIdResult.new(
           success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
         )
 
         if should_proof_state_id &&
-           residential_address_can_pass_after_state_id_check?(residential_address_result) &&
-           state_id_address_can_pass_after_state_id_check?(state_id_address_result)
+           user_can_pass_after_state_id_check?(resolution_result)
           timer.time('state_id') do
             state_id_result = state_id_proofer.proof(pii_with_state_id_address(applicant_pii))
           end
@@ -81,8 +53,22 @@ module Proofing
         state_id_result
       end
 
+      def user_can_pass_after_state_id_check?(resolution_result)
+        return true if resolution_result.success?
+        # For failed IV results, this method validates that the user is eligible to pass if the
+        # failed attributes are covered by the same attributes in a successful AAMVA response
+        # aka the Get-to-Yes w/ AAMVA feature.
+        return false unless resolution_result.failed_result_can_pass_with_additional_verification?
+
+        attributes_aamva_can_pass = [:address, :dob, :state_id_number]
+        results_that_cannot_pass_aamva =
+          resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
+
+        results_that_cannot_pass_aamva.blank?
+      end
+
       def pii_with_state_id_address(applicant_pii)
-        with_state_id_address(applicant_pii) if capture_secondary_id_enabled
+        return with_state_id_address(applicant_pii) if capture_secondary_id_enabled
 
         applicant_pii
       end

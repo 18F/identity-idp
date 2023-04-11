@@ -288,8 +288,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context "when the user's state ID address does not match their residential address" do
-      enrollment = nil
-
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS }
 
       let(:state_id_address) do
@@ -303,14 +301,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
         }
       end
 
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-          and_return(true)
-        enrollment = create(:in_person_enrollment, :establishing, user: user)
-      end
-
-      after do
-        enrollment.destroy!
+      subject(:perform) do
+        instance.perform(
+          result_id: document_capture_session.result_id,
+          should_proof_state_id: should_proof_state_id,
+          encrypted_arguments: encrypted_arguments,
+          trace_id: trace_id,
+          user_id: user.id,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+          capture_secondary_id_enabled: true,
+        )
       end
 
       it 'verifies the state ID address with AAMVA and LexisNexis' do

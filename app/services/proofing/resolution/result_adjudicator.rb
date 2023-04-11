@@ -1,5 +1,5 @@
 module Proofing
-  module Resoolution
+  module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result
 

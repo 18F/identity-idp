@@ -17,6 +17,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
+    capture_secondary_id_enabled: false,
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil
@@ -50,9 +51,6 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data = proof_lexisnexis_then_aamva(
       timer: timer,
       applicant_pii: applicant_pii,
-      should_proof_state_id: should_proof_state_id,
-      capture_secondary_id_enabled:
-        user.establishing_in_person_enrollment&.capture_secondary_id_enabled,
     )
 
     if optional_threatmetrix_result.present?
@@ -135,29 +133,14 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:)
-    result = resolution_proofer.proof(applicant_pii: @applicant_pii, timer: timer)
+  def proof_lexisnexis_then_aamva(applicant_pii:, timer:)
+    result = resolution_proofer.proof(applicant_pii: applicant_pii, timer: timer)
 
     CallbackLogData.new(
-      residential_address_success: residential_address_result.success?,
-      resolution_success: resolution_result.success?,
+      resolution_success: result.resolution_result.success?,
       result: result.adjudicated_result.to_h,
-      state_id_success: state_id_result.success?,
+      state_id_success: result.state_id_result.success?,
     )
-  end
-
-  def user_can_pass_after_state_id_check?(resolution_result)
-    return true if resolution_result.success?
-    # For failed IV results, this method validates that the user is eligible to pass if the
-    # failed attributes are covered by the same attributes in a successful AAMVA response
-    # aka the Get-to-Yes w/ AAMVA feature.
-    return false unless resolution_result.failed_result_can_pass_with_additional_verification?
-
-    attributes_aamva_can_pass = [:address, :dob, :state_id_number]
-    results_that_cannot_pass_aamva =
-      resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
-
-    results_that_cannot_pass_aamva.blank?
   end
 
   def lexisnexis_ddp_proofer
