@@ -63,7 +63,7 @@ feature 'doc auth welcome step' do
       flow: 'idv',
       redirect_url: MarketingSite.help_center_article_url(
         category: 'verify-your-identity',
-        article: 'phone-number-and-phone-plan-in-your-name',
+        article: 'phone-number',
       ),
     )
   end
@@ -80,7 +80,7 @@ feature 'doc auth welcome step' do
       flow: 'idv',
       redirect_url: MarketingSite.help_center_article_url(
         category: 'verify-your-identity',
-        article: 'phone-number-and-phone-plan-in-your-name',
+        article: 'phone-number',
       ),
     )
   end

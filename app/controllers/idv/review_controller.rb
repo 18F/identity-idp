@@ -53,16 +53,16 @@ module Idv
 
       analytics.idv_review_complete(
         success: true,
-        fraud_review_pending: idv_session.profile.fraud_review_pending,
-        fraud_rejection: idv_session.profile.fraud_rejection,
+        fraud_review_pending: idv_session.profile.fraud_review_pending?,
+        fraud_rejection: idv_session.profile.fraud_rejection?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verified, :view, true)
       analytics.idv_final(
         success: true,
-        fraud_review_pending: idv_session.profile.fraud_review_pending,
-        fraud_rejection: idv_session.profile.fraud_rejection,
+        fraud_review_pending: idv_session.profile.fraud_review_pending?,
+        fraud_rejection: idv_session.profile.fraud_rejection?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 
@@ -93,12 +93,11 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event, disavowal_token = create_user_event_with_disavowal(:account_verified)
+        event, _disavowal_token = create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
           sp_name: decorated_session.sp_name,
-          disavowal_token: disavowal_token,
         )
       end
     end

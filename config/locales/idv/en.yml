@@ -76,14 +76,36 @@ en:
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
       phone:
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify your phone
-          number online.'
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
+        rate_limited:
+          body: For security reasons, we limit the number of times you can attempt to
+            verify your phone number online. You will need to wait %{time_left}
+            and start over before trying to verify by phone again.
+          gpo:
+            button: Verify by mail
+            prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
+              days.
+          heading: 'We couldn’t verify your identity by phone'
         timeout: Our request to verify your information timed out. Please try again.
-        warning: Please check the information you entered and try again.
+        warning:
+          attempts:
+            one: For security reasons, you have one attempt remaining.
+            other: For security reasons, you have %{count} attempts remaining.
+          gpo:
+            button: Verify by mail
+            explanation: If you don’t have another phone number to try, verify by mail
+              instead.
+            heading: Verify by mail
+            how_long_it_takes: This typically takes 3 - 7 business days.
+          heading: We couldn’t match you to this number
+          learn_more_link: 'Learn more about what phone number to use'
+          next_steps_html: 'Please try again with <strong>another</strong> number that you
+            use often and have used for a long time. This can be a work or home
+            number.'
+          try_again_button: 'Try another number'
+          you_entered: 'You entered:'
       sessions:
         exception: There was an internal error processing your request.
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
@@ -121,6 +143,7 @@ en:
       dob: Date of birth
       first_name: First name
       id_number: ID number
+      issuing_state: Issuing state
       last_name: Last name
       password: Password
       ssn: Social Security number
@@ -203,6 +226,7 @@ en:
       session:
         phone: Enter your phone number
         review: Re-enter your %{app_name} password to protect your data
+      unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:
         missing_required_items: Are you missing one of these items?
@@ -215,10 +239,21 @@ en:
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
-        learn_more_verify_by_phone: Learn more about verifying your phone number
+        learn_more_verify_by_phone: Learn more about what phone number to use
         learn_more_verify_in_person: Learn more about verifying in person
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
+    unavailable:
+      exit_button: 'Exit %{app_name}'
+      idv_explanation:
+        with_sp_html: '<strong>%{sp}</strong> needs to make sure you are you — not
+          someone pretending to be you.'
+        without_sp: 'The agency that you are trying to access needs to make sure you are
+          you — not someone pretending to be you.'
+      next_steps_html: '%{status_page_link} or exit %{app_name} and try again later.'
+      status_page_link: 'Get updates on our status page'
+      technical_difficulties: Unfortunately, we are having technical difficulties and
+        cannot verify your identity at this time.
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

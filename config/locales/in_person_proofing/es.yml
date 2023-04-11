@@ -89,6 +89,9 @@ es:
         info_html: Ingrese la información <strong>exactamente como aparece en su cédula
           de identidad emitida por el estado.</strong> Utilizaremos esta
           información para confirmar que coincide con su cédula en persona.
+        learn_more_link: Obtenga más información sobre los documentos de identificación
+          aceptados.
+        questions: '¿Alguna pregunta?'
     form:
       address:
         errors:
@@ -101,8 +104,8 @@ es:
         same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state_prompt: '- Seleccione -'
       state_id:
-        address1: Dirección
-        address2: Línea de dirección 2 (opcional)
+        address1: Línea de dirección 1
+        address2: Línea de dirección 2
         city: Ciudad
         date_hint:
           day: 'Ejemplo: 28'
@@ -122,23 +125,25 @@ es:
               missing_month_day_year: Introduce una fecha de nacimiento
               range_min_age: Debe tener más de 13 años para usar %{app_name}
               range_overflow: Ingrese una fecha que esté en el pasado
-        same_address_as_id: ¿Tu domicilio actual aparece en tu identificación emitida
-          por el estado?
-        same_address_as_id_no: No, mi domicilio actual no aparece en mi identificación
-          emitida por el estado.
-        same_address_as_id_yes: Sí, mi domicilio actual aparece en mi identificación
-          emitida por el estado
-        state_id_jurisdiction: Estado
-        state_id_jurisdiction_hint: Seleccione el estado que aparece en su cédula
+        same_address_as_id: ¿Vive actualmente en la dirección que figura en su documento
+          estatal de identidad?
+        same_address_as_id_no: No, vivo en otra dirección
+        same_address_as_id_yes: Sí, vivo en la misma dirección
+        state_id_jurisdiction: Estado emisor
+        state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint: Puede incluir letras y números
+        state_id_state: Estado emisor
+        state_id_state_hint: Este es el estado que emitió su identificación
+        state_id_state_prompt: '- Seleccione -'
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual
       barcode: Está listo para verificar su identidad en persona con %{app_name}
       cta: ¿Tiene problemas para verificar su documento de identidad en línea?
       cta_variant: Intente verificar su ID en persona
+      id_address: Domicilio que consta en su identificación
       po_search:
         location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona

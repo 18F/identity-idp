@@ -50,15 +50,6 @@ describe Users::SessionsController, devise: true do
 
         expect(json['timeout'].to_datetime.to_i).to eq(timeout.to_i)
       end
-
-      it 'includes the remaining key', freeze_time: true do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(10)
-      end
     end
 
     context 'when user is not present' do
@@ -76,14 +67,6 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['timeout'].to_datetime.to_i).to eq(Time.zone.now.to_i - 1)
-      end
-
-      it 'includes the remaining time', freeze_time: true do
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(-1)
       end
 
       it 'updates the pinged_at session key' do
@@ -607,10 +590,15 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
         subject.session['user_return_to'] = mock_valid_site
-        properties = { flash: 'hello', stored_location: mock_valid_site }
 
-        expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
+        expect(@analytics).to receive(:track_event).with(
+          'Sign in page visited',
+          flash: 'hello',
+          stored_location: mock_valid_site,
+          sign_in_a_b_test_bucket: :default,
+        )
 
         get :new
       end
@@ -721,17 +709,6 @@ describe Users::SessionsController, devise: true do
         )
       end
 
-      it 'resets the remaining key' do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to be_within(1).of(
-          IdentityConfig.store.session_timeout_in_minutes * 60,
-        )
-      end
-
       it 'tracks session refresh visit' do
         controller.session[:session_expires_at] = Time.zone.now + 10
         stub_analytics
@@ -757,14 +734,6 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
-      end
-
-      it 'includes the remaining time' do
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(-1)
       end
     end
 

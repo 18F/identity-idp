@@ -222,12 +222,10 @@ es:
     instructions:
       bullet1: Documento de identidad emitido por el estado.
       bullet2: Número de seguro social
-      bullet3: Número de teléfono
+      bullet3: Número de teléfono O domicilio
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
-      email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
-        escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       privacy: Nuestras normas de privacidad y seguridad
       switch_back: Regrese a su computadora para continuar con la verificación de su
@@ -237,9 +235,11 @@ es:
         se consideran válidos. No ingrese PII real en este campo.
       text1: Su documento de identidad no puede estar caducado.
       text2: No necesitará la tarjeta con usted.
-      text3: Le llamaremos o enviaremos un mensaje de texto a este número para
-        verificar su identidad. Si no podemos verificar su número de teléfono,
-        puede hacerlo por correo.
+      text3_html:
+        - '<strong>Verificar por teléfono</strong>: Le llamaremos o enviaremos
+          un mensaje de texto a su número de teléfono. Esto lleva unos minutos'
+        - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
+          domicilio. Esto tarda entre 3 y 7 días laborables.'
       welcome: 'Necesitará su:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.

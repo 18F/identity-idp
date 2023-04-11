@@ -13,6 +13,14 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
   post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
+  namespace :api do
+    namespace :internal do
+      get '/sessions' => 'sessions#show'
+      put '/sessions' => 'sessions#update'
+      delete '/sessions' => 'sessions#destroy'
+    end
+  end
+
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
@@ -297,11 +305,18 @@ Rails.application.routes.draw do
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
+    get '/errors/idv_unavailable' => 'idv/unavailable#show', as: :idv_unavailable
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      if !FeatureManagement.idv_available?
+        # IdV has been disabled.
+        match '/*path' => 'unavailable#show', via: %i[get post]
+      end
+
       get '/mail_only_warning' => 'gpo_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
@@ -330,8 +345,9 @@ Rails.application.routes.draw do
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/setup_errors' => 'setup_errors#show'
+      get '/setup_errors', to: redirect('/please_call')
       get '/not_verified' => 'not_verified#show'
+      get '/please_call' => 'please_call#show'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'

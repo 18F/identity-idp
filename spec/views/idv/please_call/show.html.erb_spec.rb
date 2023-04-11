@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/setup_errors/show.html.erb' do
+describe 'idv/please_call/show.html.erb' do
   before do
     @call_by_date = Date.new(2023, 10, 13)
     render

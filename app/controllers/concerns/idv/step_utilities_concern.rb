@@ -2,15 +2,6 @@ module Idv
   module StepUtilitiesConcern
     extend ActiveSupport::Concern
 
-    def flow_session
-      user_session['idv/doc_auth']
-    end
-
-    # copied from doc_auth_controller
-    def flow_path
-      flow_session[:flow_path]
-    end
-
     # Copied from capture_doc_flow.rb
     # and from doc_auth_flow.rb
     def acuant_sdk_ab_test_analytics_args

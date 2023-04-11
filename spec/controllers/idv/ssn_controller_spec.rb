@@ -13,8 +13,8 @@ describe Idv::SsnController do
   let(:user) { create(:user) }
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.user_session['idv/doc_auth'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -78,6 +78,7 @@ describe Idv::SsnController do
 
     context 'without a flow session' do
       let(:flow_session) { nil }
+
       it 'redirects to doc_auth' do
         get :show
 
@@ -194,7 +195,32 @@ describe Idv::SsnController do
         put :update
         expect(flow_session['Idv::Steps::DocumentCaptureStep']).to eq nil
         expect(response.status).to eq 302
+        expect(response).to redirect_to idv_doc_auth_url
       end
+    end
+  end
+
+  describe 'doc_auth_document_capture_controller_enabled flag is true' do
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
+        and_return(true)
+    end
+
+    it 'redirects to document_capture_controller when pii_from_doc is not present' do
+      flow_session.delete('pii_from_doc')
+      flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      put :update
+      expect(response.status).to eq 302
+      expect(response).to redirect_to idv_document_capture_url
+    end
+
+    it 'in hybrid flow it does not redirect to document_capture_controller' do
+      flow_session.delete('pii_from_doc')
+      flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      flow_session[:flow_path] = 'hybrid'
+      put :update
+      expect(response.status).to eq 302
+      expect(response).to redirect_to idv_doc_auth_url
     end
   end
 end

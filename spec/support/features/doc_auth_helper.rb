@@ -73,10 +73,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :link_sent)
   end
 
-  def idv_doc_auth_email_sent_step
-    idv_doc_auth_step_path(step: :email_sent)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     click_idv_continue if current_path == idv_mail_only_warning_path
@@ -137,12 +133,6 @@ module DocAuthHelper
     expect(page).to have_current_path(idv_ssn_url, wait: 10)
   end
 
-  def complete_doc_auth_steps_before_email_sent_step
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-    complete_doc_auth_steps_before_upload_step
-    complete_upload_step
-  end
-
   def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     click_idv_continue
@@ -181,7 +171,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_button t('idv.buttons.change_address_label')
+    click_link t('idv.buttons.change_address_label')
   end
 
   def complete_doc_auth_steps_before_link_sent_step

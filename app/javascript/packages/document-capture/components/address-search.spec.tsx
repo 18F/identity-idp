@@ -3,7 +3,7 @@ import { useSandbox } from '@18f/identity-test-helpers';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import type { SetupServerApi } from 'msw/node';
+import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import AddressSearch, { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
 
@@ -24,7 +24,7 @@ const DEFAULT_RESPONSE = [
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
   context('when an address is found', () => {
-    let server: SetupServerApi;
+    let server: SetupServer;
     before(() => {
       server = setupServer(
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),

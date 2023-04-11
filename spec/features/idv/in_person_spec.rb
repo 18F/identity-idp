@@ -343,7 +343,7 @@ RSpec.describe 'In Person Proofing', js: true do
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_link t('in_person_proofing.body.cta.button')
+        click_button t('in_person_proofing.body.cta.button')
         click_idv_continue
 
         search_for_post_office
@@ -425,70 +425,158 @@ RSpec.describe 'In Person Proofing', js: true do
       allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).
         and_return(true)
     end
-    it 'shows validation errors', allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing
-      complete_location_step
-      complete_prepare_step
-      expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
-      fill_out_state_id_form_ok
-      fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
-      fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
-      click_idv_continue
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: '", 0',
-        ),
-      )
+    context 'with double address validation' do
+      let(:capture_secondary_id_enabled) { true }
+      let(:double_address_verification) { true }
+      let(:user) { user_with_2fa }
+      let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
 
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.state_id.errors.unsupported_chars',
-          char_list: 'Д, б, е, ж, й, к, о',
-        ),
-      )
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(true)
+        allow(user).to receive(:establishing_in_person_enrollment).
+          and_return(enrollment)
+      end
 
-      fill_in t('in_person_proofing.form.state_id.first_name'),
-              with: InPersonHelper::GOOD_FIRST_NAME
-      fill_in t('in_person_proofing.form.state_id.last_name'), with: InPersonHelper::GOOD_LAST_NAME
-      click_idv_continue
+      it 'shows validation errors when double address validation is true',
+         allow_browser_log: true do
+        sign_in_and_2fa_user
+        begin_in_person_proofing
+        complete_location_step
+        complete_prepare_step
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
-      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
-      fill_out_address_form_ok
+        fill_out_state_id_form_ok(double_address_verification: double_address_verification)
+        fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
+        fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
+        fill_in t('in_person_proofing.form.state_id.address1'), with: '#1 $treet'
+        fill_in t('in_person_proofing.form.state_id.address2'), with: 'Gr@nd Lañe^'
+        fill_in t('in_person_proofing.form.state_id.city'), with: 'B3st C!ty'
+        click_idv_continue
 
-      fill_in t('idv.form.address1'), with: 'Джордж'
-      fill_in t('idv.form.address2_optional'), with: '(Nope) = %'
-      fill_in t('idv.form.city'), with: 'Елена'
-      click_idv_continue
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: '", 0',
+          ),
+        )
 
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.address.errors.unsupported_chars',
-          char_list: 'Д, д, ж, о, р',
-        ),
-      )
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: 'Д, б, е, ж, й, к, о',
+          ),
+        )
 
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.address.errors.unsupported_chars',
-          char_list: '%, (, ), =',
-        ),
-      )
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: '$',
+          ),
+        )
 
-      expect(page).to have_content(
-        I18n.t(
-          'in_person_proofing.form.address.errors.unsupported_chars',
-          char_list: 'Е, а, е, л, н',
-        ),
-      )
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: '@, ^',
+          ),
+        )
 
-      fill_in t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1
-      fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
-      fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
-      click_idv_continue
-      expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: '!, 3',
+          ),
+        )
+
+        # re-fill state id form with good inputs
+        fill_in t('in_person_proofing.form.state_id.first_name'),
+                with: InPersonHelper::GOOD_FIRST_NAME
+        fill_in t('in_person_proofing.form.state_id.last_name'),
+                with: InPersonHelper::GOOD_LAST_NAME
+        fill_in t('in_person_proofing.form.state_id.address1'),
+                with: InPersonHelper::GOOD_STATE_ID_ADDRESS1
+        fill_in t('in_person_proofing.form.state_id.address2'),
+                with: InPersonHelper::GOOD_STATE_ID_ADDRESS2
+        fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_STATE_ID_CITY
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      end
+    end
+
+    context 'without double address validation' do
+      it 'shows validation errors when double address validation is false',
+         allow_browser_log: true do
+        sign_in_and_2fa_user
+        begin_in_person_proofing
+        complete_location_step
+        complete_prepare_step
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        fill_out_state_id_form_ok
+        fill_in t('in_person_proofing.form.state_id.first_name'), with: 'T0mmy "Lee"'
+        fill_in t('in_person_proofing.form.state_id.last_name'), with: 'Джейкоб'
+        click_idv_continue
+
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: '", 0',
+          ),
+        )
+
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: 'Д, б, е, ж, й, к, о',
+          ),
+        )
+
+        # re-fill form with good inputs
+        fill_in t('in_person_proofing.form.state_id.first_name'),
+                with: InPersonHelper::GOOD_FIRST_NAME
+        fill_in t('in_person_proofing.form.state_id.last_name'),
+                with: InPersonHelper::GOOD_LAST_NAME
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+        fill_out_address_form_ok
+
+        fill_in t('idv.form.address1'), with: 'Джордж'
+        fill_in t('idv.form.address2_optional'), with: '(Nope) = %'
+        fill_in t('idv.form.city'), with: 'Елена'
+        click_idv_continue
+
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.address.errors.unsupported_chars',
+            char_list: 'Д, д, ж, о, р',
+          ),
+        )
+
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.address.errors.unsupported_chars',
+            char_list: '%, (, ), =',
+          ),
+        )
+
+        expect(page).to have_content(
+          I18n.t(
+            'in_person_proofing.form.address.errors.unsupported_chars',
+            char_list: 'Е, а, е, л, н',
+          ),
+        )
+
+        # re-fill form with good inputs
+        fill_in t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1
+        fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
+        fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
+        click_idv_continue
+        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+      end
     end
   end
 
@@ -505,7 +593,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step(user)
 
       expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'),
+        t('in_person_proofing.headings.prepare'), wait: 5
       )
     end
 
@@ -520,7 +608,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
+  shared_examples 'captures address with state id' do
     let(:user) { user_with_2fa }
 
     before(:each) do
@@ -532,12 +620,11 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step(user)
 
       expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'),
+        t('in_person_proofing.headings.prepare'), wait: 5
       )
     end
-
-    def it_captures_address_with_state_id
-      # prepare page
+    # prepare page
+    it 'successfully proceeds through the flow' do
       complete_prepare_step(user)
 
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
@@ -549,11 +636,11 @@ RSpec.describe 'In Person Proofing', js: true do
         t('idv.form.ssn_label_html'),
       )
     end
+  end
 
+  context 'in_person_capture_secondary_id_enabled feature flag enabled', allow_browser_log: true do
     context 'flag remains enabled' do
-      it 'captures the address, address line 2, city, state and zip code' do
-        it_captures_address_with_state_id
-      end
+      it_behaves_like 'captures address with state id'
     end
 
     context 'flag is then disabled' do
@@ -562,9 +649,44 @@ RSpec.describe 'In Person Proofing', js: true do
           and_return(false)
       end
 
-      it 'captures the address, address line 2, city, state and zip code' do
-        it_captures_address_with_state_id
-      end
+      it_behaves_like 'captures address with state id'
+    end
+  end
+
+  context 'in_person_capture_secondary_id_enabled feature flag enabled and same address as id',
+          allow_browser_log: true do
+    let(:user) { user_with_2fa }
+
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+
+      sign_in_and_2fa_user(user)
+      begin_in_person_proofing(user)
+      complete_location_step(user)
+      complete_prepare_step(user)
+    end
+
+    it 'skips the address page' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      # skip address step
+      complete_ssn_step(user)
+      # Ensure the page submitted successfully
+      expect(page).to have_content(
+        t('idv.form.ssn_label_html'),
+      )
+    end
+
+    it 'can redo the address page form' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      # skip address step
+      complete_ssn_step(user)
+      # click update address button on the verify page
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
+      click_button t('forms.buttons.submit.update')
+      expect(page).to have_content(t('headings.verify'))
     end
   end
 end

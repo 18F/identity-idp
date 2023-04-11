@@ -24,6 +24,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     complete_ssn_step(user)
 
     # verify page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)

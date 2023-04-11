@@ -1,5 +1,6 @@
 import { forceRedirect } from '@18f/identity-url';
-import { request } from '@18f/identity-request';
+import { requestSessionStatus, extendSession } from '@18f/identity-session';
+import type { SessionStatus } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
 import type { ModalElement } from '@18f/identity-modal';
 
@@ -15,18 +16,6 @@ interface NewRelicGlobals {
    * New Relic agent
    */
   newrelic?: NewRelicAgent;
-}
-
-interface PingResponse {
-  /**
-   * Whether the session is still active.
-   */
-  live: boolean;
-
-  /**
-   * ISO8601-formatted date string for session timeout.
-   */
-  timeout: string;
 }
 
 type LoginGovGlobal = typeof window & NewRelicGlobals;
@@ -58,17 +47,16 @@ function handleTimeout(redirectURL: string) {
   forceRedirect(redirectURL);
 }
 
-function success(data: PingResponse) {
-  let timeRemaining = new Date(data.timeout).valueOf() - Date.now();
-  const showWarning = timeRemaining < warning;
-
-  if (!data.live) {
+function success(data: SessionStatus) {
+  if (!data.isLive) {
     if (timeoutUrl) {
       handleTimeout(timeoutUrl);
     }
     return;
   }
 
+  const timeRemaining = new Date(data.timeout).valueOf() - Date.now();
+  const showWarning = timeRemaining < warning;
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
@@ -77,8 +65,7 @@ function success(data: PingResponse) {
     });
   }
 
-  if (timeRemaining < frequency) {
-    timeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
+  if (timeRemaining > 0 && timeRemaining < frequency) {
     // Disable reason: circular dependency between ping and success
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     setTimeout(ping, timeRemaining);
@@ -86,7 +73,7 @@ function success(data: PingResponse) {
 }
 
 function ping() {
-  request('/active')
+  requestSessionStatus()
     .then(success)
     .catch((error) => notifyNewRelic(error, 'ping'));
 
@@ -96,9 +83,7 @@ function ping() {
 function keepalive() {
   modal.hide();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
-  request('/sessions/keepalive', { method: 'POST' }).catch((error) => {
-    notifyNewRelic(error, 'keepalive');
-  });
+  extendSession().catch((error) => notifyNewRelic(error, 'keepalive'));
 }
 
 keepaliveEl?.addEventListener('click', keepalive, false);

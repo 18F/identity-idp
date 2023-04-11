@@ -3,6 +3,7 @@ require 'rake'
 
 describe 'review_profile' do
   let(:user) { create(:user, :deactivated_threatmetrix_profile) }
+  let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
   subject(:invoke_task) do
@@ -10,14 +11,17 @@ describe 'review_profile' do
     Rake::Task[task_name].invoke
   end
 
+  let(:stdout) { StringIO.new }
+
   before do
     Rake.application.rake_require('lib/tasks/review_profile', [Rails.root.to_s])
     Rake::Task.define_task(:environment)
     allow(STDIN).to receive(:gets).and_return(
       "John Doe\n",
       "Rspec Test\n",
-      user.uuid,
+      uuid,
     )
+    stub_const('STDOUT', stdout)
   end
 
   describe 'users:review:pass' do
@@ -33,10 +37,36 @@ describe 'review_profile' do
         expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call).with(
           user: user,
           date_time: Time.zone.now,
-          disavowal_token: kind_of(String),
           sp_name: nil,
         )
         invoke_task
+      end
+    end
+
+    context 'when the user does not exist' do
+      let(:user) { nil }
+      let(:uuid) { 'not-a-real-uuid' }
+
+      it 'prints an error' do
+        invoke_task
+
+        expect(stdout.string).to include('Error: Could not find user with that UUID')
+      end
+    end
+
+    context 'when the user profile has a nil verified_at' do
+      let(:user) do
+        create(
+          :user,
+          :with_pending_in_person_enrollment,
+          proofing_component: build(:proofing_component),
+        )
+      end
+
+      it 'prints an error' do
+        invoke_task
+
+        expect(stdout.string).to include('Error: User does not have a pending fraud review')
       end
     end
   end
@@ -48,10 +78,38 @@ describe 'review_profile' do
       invoke_task
       expect(user.reload.profiles.first.active).to eq(false)
       expect(user.reload.profiles.first.fraud_rejection).to eq(true)
+      expect(user.reload.profiles.first.fraud_rejection_at).to_not be_nil
     end
 
     it 'sends the user an email about their account deactivation' do
       expect { invoke_task }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
+
+    context 'when the user does not exist' do
+      let(:user) { nil }
+      let(:uuid) { 'not-a-real-uuid' }
+
+      it 'prints an error' do
+        invoke_task
+
+        expect(stdout.string).to include('Error: Could not find user with that UUID')
+      end
+    end
+
+    context 'when the user profile has a nil verified_at' do
+      let(:user) do
+        create(
+          :user,
+          :with_pending_in_person_enrollment,
+          proofing_component: build(:proofing_component),
+        )
+      end
+
+      it 'prints an error' do
+        invoke_task
+
+        expect(stdout.string).to include('Error: User does not have a pending fraud review')
+      end
     end
   end
 end

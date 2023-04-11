@@ -30,7 +30,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       removeUnloadProtection();
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       await trackEvent('IdV: prepare submitted');
-      window.location.href = (event.target as HTMLAnchorElement).href;
+      window.location.href = inPersonURL!;
     }
   };
 
@@ -79,7 +79,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
         )}
       </p>
       <InPersonTroubleshootingOptions />
-      <BackButton includeBorder onClick={toPreviousStep} />
+      <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>
   );
 }

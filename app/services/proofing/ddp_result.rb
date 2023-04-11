@@ -2,25 +2,30 @@ module Proofing
   class DdpResult
     attr_reader :exception
     attr_accessor :context,
+                  :success,
                   :transaction_id,
-                  :reference,
                   :review_status,
-                  :response_body
+                  :response_body,
+                  :client
 
     def initialize(
+        success: true,
         errors: {},
         context: {},
         exception: nil,
         transaction_id: nil,
-        reference: nil,
-        response_body: nil
+        review_status: nil,
+        response_body: nil,
+        client: nil
       )
+      @success = success
       @errors = errors
       @context = context
       @exception = exception
       @transaction_id = transaction_id
-      @reference = reference
       @response_body = response_body
+      @review_status = review_status
+      @client = client
     end
 
     # rubocop:disable Style/OptionalArguments
@@ -47,7 +52,7 @@ module Proofing
     end
 
     def success?
-      !exception? && !errors?
+      @success
     end
 
     def timed_out?
@@ -56,9 +61,14 @@ module Proofing
 
     def to_h
       {
+        client: client,
+        success: success?,
         errors: errors,
         exception: exception,
-        success: success?,
+        timed_out: timed_out?,
+        transaction_id: transaction_id,
+        review_status: review_status,
+        response_body: Proofing::LexisNexis::Ddp::ResponseRedacter.redact(response_body),
       }
     end
   end

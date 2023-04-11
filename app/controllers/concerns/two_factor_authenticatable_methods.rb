@@ -91,8 +91,8 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_valid_otp(next_url = nil)
-    handle_valid_otp_for_context
+  def handle_valid_otp(next_url:, auth_method: nil)
+    handle_valid_otp_for_context(auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -104,9 +104,9 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference
   end
 
-  def handle_valid_otp_for_context
+  def handle_valid_otp_for_context(auth_method)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_otp_for_authentication_context
+      handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_otp_for_confirmation_context
     end
@@ -171,14 +171,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def update_invalid_user
-    current_user.second_factor_attempts_count += 1
-    attributes = {}
-    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
-
-    UpdateUser.new(
-      user: current_user,
-      attributes: attributes,
-    ).call
+    current_user.increment_second_factor_attempts_count!
   end
 
   def handle_valid_otp_for_confirmation_context
@@ -197,8 +190,8 @@ module TwoFactorAuthenticatableMethods
     Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
   end
 
-  def handle_valid_otp_for_authentication_context
-    user_session[:auth_method] = two_factor_authentication_method.to_s
+  def handle_valid_otp_for_authentication_context(auth_method:)
+    user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)

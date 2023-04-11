@@ -257,6 +257,14 @@ describe Idv::InPerson::UspsLocationsController do
       expect(enrollment.service_provider).to be_nil
     end
 
+    it 'updates proofing component vendor' do
+      expect(user.proofing_component&.document_check).to be_nil
+
+      response
+
+      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+    end
+
     context 'when unauthenticated' do
       let(:user) { nil }
 

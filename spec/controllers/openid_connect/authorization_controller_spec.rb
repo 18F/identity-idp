@@ -149,7 +149,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
               it 'redirects to fraud review page if fraud review is pending' do
                 action
-                expect(controller).to redirect_to(idv_setup_errors_url)
+                expect(controller).to redirect_to(idv_please_call_url)
               end
             end
 

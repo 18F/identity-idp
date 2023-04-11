@@ -5,10 +5,9 @@ describe Idv::DocumentCaptureController do
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard',
-      'Idv::Steps::AgreementStep' => true }
+      'Idv::Steps::UploadStep' => true }
   end
 
   let(:user) { create(:user) }
@@ -29,13 +28,6 @@ describe Idv::DocumentCaptureController do
   end
 
   describe 'before_actions' do
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :render_404_if_document_capture_controller_disabled,
-      )
-    end
-
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
@@ -43,10 +35,10 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    it 'checks that agreement step is complete' do
+    it 'checks that upload step is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_agreement_step_complete,
+        :confirm_upload_step_complete,
       )
     end
   end
@@ -67,7 +59,7 @@ describe Idv::DocumentCaptureController do
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           irs_reproofing: false,
-          step: 'document capture',
+          step: 'document_capture',
           step_count: 1,
         }
       end
@@ -100,13 +92,22 @@ describe Idv::DocumentCaptureController do
         )
       end
 
-      context 'agreement step is not complete' do
+      context 'upload step is not complete' do
         it 'redirects to idv_doc_auth_url' do
-          flow_session['Idv::Steps::AgreementStep'] = nil
+          flow_session['Idv::Steps::UploadStep'] = nil
 
           get :show
 
           expect(response).to redirect_to(idv_doc_auth_url)
+        end
+      end
+
+      context 'with pii in session' do
+        it 'redirects to ssn step' do
+          flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
+          get :show
+
+          expect(response).to redirect_to(idv_ssn_url)
         end
       end
     end
@@ -118,7 +119,7 @@ describe Idv::DocumentCaptureController do
           analytics_id: 'Doc Auth',
           flow_path: 'standard',
           irs_reproofing: false,
-          step: 'document capture',
+          step: 'document_capture',
           step_count: 1,
         }
       end
@@ -144,19 +145,6 @@ describe Idv::DocumentCaptureController do
           change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
         )
       end
-    end
-  end
-
-  context 'when doc_auth_document_capture_controller_enabled is false' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
-        and_return(false)
-    end
-
-    it 'returns 404' do
-      get :show
-
-      expect(response.status).to eq(404)
     end
   end
 end

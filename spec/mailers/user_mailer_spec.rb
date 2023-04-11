@@ -470,33 +470,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#doc_auth_desktop_link_to_sp' do
-    let(:app) { 'login.gov' }
-    let(:link) { root_url }
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        doc_auth_desktop_link_to_sp(app, link)
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.doc_auth_link.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_link(app, href: link)
-
-      expect(mail.html_part.body).to \
-        have_content(strip_tags(I18n.t('user_mailer.doc_auth_link.message', sp_link: nil)))
-    end
-  end
-
   describe '#letter_reminder' do
     let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
 
@@ -553,6 +526,10 @@ describe UserMailer, type: :mailer do
           disavowal_token: disavowal_token,
         )
       expect(mail.to).to eq(nil)
+    end
+
+    it 'links to the forgot password page' do
+      expect(mail.html_part.body).to have_selector("a[href='#{new_user_password_url}']")
     end
   end
 

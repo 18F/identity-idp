@@ -8,12 +8,29 @@ module IdvStepConcern
     before_action :confirm_idv_needed
   end
 
-  def confirm_document_capture_complete
-    @pii = flow_session&.[]('pii_from_doc') # hash with indifferent access
-    return if @pii.present?
+  def flow_session
+    user_session['idv/doc_auth'] || {}
+  end
 
-    flow_session&.delete('Idv::Steps::DocumentCaptureStep')
-    redirect_to idv_doc_auth_url
+  def pii_from_doc
+    flow_session['pii_from_doc']
+  end
+
+  # copied from doc_auth_controller
+  def flow_path
+    flow_session[:flow_path]
+  end
+
+  def confirm_document_capture_complete
+    return if pii_from_doc.present?
+
+    if IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
+       flow_path == 'standard'
+      redirect_to idv_document_capture_url
+    else
+      flow_session.delete('Idv::Steps::DocumentCaptureStep')
+      redirect_to idv_doc_auth_url
+    end
   end
 
   def confirm_verify_info_step_complete
