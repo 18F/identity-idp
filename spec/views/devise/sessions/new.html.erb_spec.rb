@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'devise/sessions/new.html.erb' do
+  let(:sign_in_a_b_test_bucket) { :default }
+
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
     allow(view).to receive(:resource_name).and_return(:user)
@@ -9,6 +11,7 @@ describe 'devise/sessions/new.html.erb' do
     allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
     allow_any_instance_of(ActionController::TestRequest).to receive(:path).
       and_return('/')
+    @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
     assign(:ial, 1)
   end
 
@@ -30,10 +33,10 @@ describe 'devise/sessions/new.html.erb' do
     render
   end
 
-  it 'includes a link to log in' do
+  it 'has a localized page heading' do
     render
 
-    expect(rendered).to have_content(t('headings.sign_in_without_sp'))
+    expect(rendered).to have_selector('h1', text: t('headings.sign_in_without_sp'))
   end
 
   it 'includes a link to create a new account' do
@@ -41,7 +44,7 @@ describe 'devise/sessions/new.html.erb' do
 
     expect(rendered).
       to have_link(
-        t('links.create_account'), href: sign_up_email_url(request_id: nil)
+        t('links.create_account'), href: sign_up_email_url(request_id: nil, source: :sign_in)
       )
   end
 
@@ -168,6 +171,25 @@ describe 'devise/sessions/new.html.erb' do
 
       expect(rendered).to have_content('We are currently under maintenance')
       expect(rendered).to have_selector('input.email')
+    end
+  end
+
+  context 'with tabbed layout A/B test' do
+    let(:sign_in_a_b_test_bucket) { :tabbed }
+
+    it 'has a localized page heading' do
+      render
+
+      expect(rendered).to have_selector('h1', text: t('headings.sign_in_existing_users'))
+    end
+
+    it 'includes a link to create a new account' do
+      render
+
+      expect(rendered).to have_link(
+        t('links.create_account'),
+        href: sign_up_email_url(request_id: nil, source: :sign_in),
+      )
     end
   end
 end

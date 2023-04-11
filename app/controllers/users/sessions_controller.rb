@@ -7,6 +7,7 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
+    include SignInABTestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -19,15 +20,17 @@ module Users
     after_action :add_csrf_token_header_to_response, only: [:keepalive]
 
     def new
-      analytics.sign_in_page_visit(
-        flash: flash[:alert],
-        stored_location: session['user_return_to'],
-      )
       override_csp_for_google_analytics
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
+      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
+      analytics.sign_in_page_visit(
+        flash: flash[:alert],
+        stored_location: session['user_return_to'],
+        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
+      )
       super
     end
 
