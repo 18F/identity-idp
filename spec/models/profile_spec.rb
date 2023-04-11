@@ -394,11 +394,7 @@ describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = create(
-          :profile,
-          user: user,
-          fraud_review_pending_at: Time.zone.today - 1.day,
-        )
+        profile = user.profiles.create(fraud_review_pending_at: Time.zone.today - 1.day)
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -418,7 +414,7 @@ describe Profile do
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = create(:profile, user: user, fraud_review_pending_at: Time.zone.today - 1.day)
+        profile = user.profiles.create(fraud_review_pending_at: Time.zone.today - 1.day)
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -433,9 +429,7 @@ describe Profile do
     context 'when the SP is the IRS' do
       let(:sp) { create(:service_provider, :irs) }
       let(:profile) do
-        create(
-          :profile,
-          user: user,
+        user.profiles.create(
           active: false,
           fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
@@ -480,9 +474,7 @@ describe Profile do
     context 'when the SP is not the IRS' do
       it 'does not log an event' do
         sp = create(:service_provider)
-        profile = create(
-          :profile,
-          user: user,
+        profile = user.profiles.create(
           active: false,
           fraud_review_pending_at: Time.zone.today - 1.day,
           initiating_service_provider: sp,
