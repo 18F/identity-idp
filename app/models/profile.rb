@@ -33,15 +33,15 @@ class Profile < ApplicationRecord
     state :none, initial: true
     state :fraud_reviewing, :fraud_rejected, :fraud_passed
 
-    event :review do
+    event :fraud_review do
       transitions from: :none, to: :fraud_reviewing
     end
 
-    event :reject do
+    event :fraud_reject do
       transitions from: :fraud_reviewing, to: :fraud_rejected
     end
 
-    event :pass do
+    event :fraud_pass do
       transitions from: [:fraud_reviewing, :fraud_rejected], to: :fraud_passed
     end
   end
