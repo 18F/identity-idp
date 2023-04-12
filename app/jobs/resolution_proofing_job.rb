@@ -76,18 +76,36 @@ class ResolutionProofingJob < ApplicationJob
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
-      logger: logger,
       request_ip: request_ip,
       threatmetrix_session_id: threatmetrix_session_id,
       timer: timer,
-      user: user,
+      user_email: user&.confirmed_email_addresses&.first&.email,
     )
+
+    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
+    log_threatmetrix_info(result.device_profiling_result, user)
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,
       resolution_success: result.resolution_result.success?,
       result: result.adjudicated_result.to_h,
       state_id_success: result.state_id_result.success?,
+    )
+  end
+
+  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+    ProofingComponent.
+      create_or_find_by(user_id: user_id).
+      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
+             threatmetrix_review_status: threatmetrix_result.review_status)
+  end
+
+  def log_threatmetrix_info(threatmetrix_result, user)
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      user_id: user&.uuid,
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
     )
   end
 

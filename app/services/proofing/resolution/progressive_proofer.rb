@@ -13,22 +13,18 @@ module Proofing
 
       def proof(
         applicant_pii:,
-        logger:,
         request_ip:,
         threatmetrix_session_id:,
         timer:,
-        user:
+        user_email:
       )
         device_profiling_result = proof_with_threatmetrix_if_needed(
           applicant_pii: applicant_pii,
-          logger: logger,
           request_ip: request_ip,
           threatmetrix_session_id: threatmetrix_session_id,
           timer: timer,
-          user: user,
+          user_email: user_email,
         )
-
-        add_threatmetrix_proofing_component(user.id, device_profiling_result) if user.present?
 
         resolution_result = proof_resolution(
           applicant_pii: applicant_pii,
@@ -54,8 +50,7 @@ module Proofing
 
       def proof_with_threatmetrix_if_needed(
         applicant_pii:,
-        logger:,
-        user:,
+        user_email:,
         threatmetrix_session_id:,
         request_ip:,
         timer:
@@ -72,16 +67,12 @@ module Proofing
 
         ddp_pii = applicant_pii.dup
         ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-        ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+        ddp_pii[:email] = user_email
         ddp_pii[:request_ip] = request_ip
 
-        result = timer.time('threatmetrix') do
+        timer.time('threatmetrix') do
           lexisnexis_ddp_proofer.proof(ddp_pii)
         end
-
-        log_threatmetrix_info(logger, result, user)
-
-        result
       end
 
       def threatmetrix_disabled_result
@@ -90,27 +81,6 @@ module Proofing
           client: 'tmx_disabled',
           review_status: 'pass',
         )
-      end
-
-      def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
-        ProofingComponent.
-          create_or_find_by(user_id: user_id).
-          update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
-                 threatmetrix_review_status: threatmetrix_result.review_status)
-      end
-
-      def log_threatmetrix_info(logger, threatmetrix_result, user)
-        logger_info_hash(
-          logger,
-          name: 'ThreatMetrix',
-          user_id: user&.uuid,
-          threatmetrix_request_id: threatmetrix_result.transaction_id,
-          threatmetrix_success: threatmetrix_result.success?,
-        )
-      end
-
-      def logger_info_hash(logger, hash)
-        logger.info(hash.to_json)
       end
 
       def proof_resolution(applicant_pii:, timer:)
