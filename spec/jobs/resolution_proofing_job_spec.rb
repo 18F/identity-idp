@@ -72,6 +72,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:errors].keys).to eq([:'Execute Instant Verify'])
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context]
         expect(result_context[:should_proof_state_id])
@@ -297,6 +298,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix[:success]).to eq(true)
@@ -322,6 +324,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix[:success]).to eq(true)
@@ -347,6 +350,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be false
         expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to be_nil
 
         expect(result_context_stages_threatmetrix[:exception]).to include(
           LexisNexisFixtures.ddp_unexpected_review_status,

@@ -140,6 +140,7 @@ class ResolutionProofingJob < ApplicationJob
     Proofing::DdpResult.new(
       success: true,
       client: 'tmx_disabled',
+      review_status: 'pass',
     )
   end
 
