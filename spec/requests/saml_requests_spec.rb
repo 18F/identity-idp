@@ -7,9 +7,12 @@ RSpec.describe 'SAML requests', type: :request do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
     it 'renders a form for the SAML year that was requested' do
-      path_year = saml_settings.idp_sso_target_url[-4..-1]
+      overridden_saml_settings = saml_settings(overrides: {
+        idp_sso_target_url: "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
+      })
+      path_year = overridden_saml_settings.idp_sso_target_url[-4..-1]
 
-      post saml_settings.idp_sso_target_url
+      post overridden_saml_settings.idp_sso_target_url
       page = Capybara.string(response.body)
       form_action = page.find_css("form[action$=\"#{path_year}\"]").first[:action]
       expect(form_action).to be_present
