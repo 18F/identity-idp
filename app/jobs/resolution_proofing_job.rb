@@ -76,6 +76,8 @@ class ResolutionProofingJob < ApplicationJob
       timer: timer,
     )
 
+    add_threatmetrix_proofing_component(user.id, device_profiling_result) if user.present?
+
     resolution_result = timer.time('resolution') do
       resolution_proofer.proof(applicant_pii)
     end
@@ -131,7 +133,6 @@ class ResolutionProofingJob < ApplicationJob
     end
 
     log_threatmetrix_info(result, user)
-    add_threatmetrix_proofing_component(user.id, result)
 
     result
   end
@@ -220,7 +221,7 @@ class ResolutionProofingJob < ApplicationJob
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
     ProofingComponent.
       create_or_find_by(user_id: user_id).
-      update(threatmetrix: true,
+      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
              threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end
