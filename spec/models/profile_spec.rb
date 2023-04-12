@@ -264,14 +264,16 @@ describe Profile do
     end
 
     it 'does not activate a profile if under fraud review' do
-      profile.update(fraud_review_pending_at: Time.zone.today - 1.day)
+      # profile.update(fraud_review_pending_at: Time.zone.today - 1.day)
+      profile.fraud_review
       profile.activate
 
       expect(profile).to_not be_active
     end
 
     it 'does not activate a profile if rejected for fraud' do
-      profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+      # profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+      profile.fraud_reject
       profile.activate
 
       expect(profile).to_not be_active
