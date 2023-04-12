@@ -4,34 +4,6 @@ module Proofing
       class Proofer
         VALID_REVIEW_STATUSES = %w[pass review reject]
 
-        class << self
-          def required_attributes
-            [:threatmetrix_session_id,
-             :state_id_number,
-             :first_name,
-             :last_name,
-             :dob,
-             :ssn,
-             :address1,
-             :city,
-             :state,
-             :zipcode,
-             :request_ip]
-          end
-
-          def vendor_name
-            'lexisnexis'
-          end
-
-          def optional_attributes
-            [:address2, :phone, :email, :uuid_prefix]
-          end
-
-          def stage
-            :resolution
-          end
-        end
-
         attr_reader :config
 
         def initialize(attrs)

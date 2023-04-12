@@ -9,6 +9,7 @@ class ResolutionProofingJob < ApplicationJob
     :result,
     :resolution_success,
     :state_id_success,
+    :device_profiling_success,
     keyword_init: true,
   )
 
@@ -34,26 +35,14 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
-    optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-      applicant_pii: applicant_pii,
+    callback_log_data = make_vendor_proofing_requests(
+      timer: timer,
       user: user,
+      applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      timer: timer,
-    )
-
-    callback_log_data = proof_lexisnexis_then_aamva(
-      timer: timer,
-      applicant_pii: applicant_pii,
       should_proof_state_id: should_proof_state_id,
     )
-
-    if optional_threatmetrix_result.present?
-      add_threatmetrix_result_to_callback_result(
-        callback_log_data: callback_log_data,
-        threatmetrix_result: optional_threatmetrix_result,
-      )
-    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -63,70 +52,32 @@ class ResolutionProofingJob < ApplicationJob
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
       state_id_success: callback_log_data&.state_id_success,
+      device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
     )
   end
 
   private
 
-  def log_threatmetrix_info(threatmetrix_result, user)
-    logger_info_hash(
-      name: 'ThreatMetrix',
-      user_id: user&.uuid,
-      threatmetrix_request_id: threatmetrix_result.transaction_id,
-      threatmetrix_success: threatmetrix_result.success?,
-    )
-  end
-
-  def logger_info_hash(hash)
-    logger.info(hash.to_json)
-  end
-
-  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
-    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
-
-    callback_log_data.result[:context][:stages][:threatmetrix] = threatmetrix_result.to_h
-
-    if exception.present?
-      callback_log_data.result.merge!(
-        success: false,
-        exception: exception,
-      )
-    end
-  end
-
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-    applicant_pii:,
+  # @return [CallbackLogData]
+  def make_vendor_proofing_requests(
+    timer:,
     user:,
+    applicant_pii:,
     threatmetrix_session_id:,
     request_ip:,
-    timer:
+    should_proof_state_id:
   )
-    return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+    device_profiling_result = proof_with_threatmetrix_if_needed(
+      applicant_pii: applicant_pii,
+      user: user,
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      timer: timer,
+    )
 
-    # The API call will fail without a session ID, so do not attempt to make
-    # it to avoid leaking data when not required.
-    return if threatmetrix_session_id.blank?
+    add_threatmetrix_proofing_component(user.id, device_profiling_result) if user.present?
 
-    return unless applicant_pii
-
-    ddp_pii = applicant_pii.dup
-    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:request_ip] = request_ip
-
-    result = timer.time('threatmetrix') do
-      lexisnexis_ddp_proofer.proof(ddp_pii)
-    end
-
-    log_threatmetrix_info(result, user)
-    add_threatmetrix_proofing_component(user.id, result)
-
-    result
-  end
-
-  # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
     resolution_result = timer.time('resolution') do
       resolution_proofer.proof(applicant_pii)
     end
@@ -144,13 +95,67 @@ class ResolutionProofingJob < ApplicationJob
       resolution_result: resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
+      device_profiling_result: device_profiling_result,
     ).adjudicated_result.to_h
 
     CallbackLogData.new(
       result: result,
       resolution_success: resolution_result.success?,
       state_id_success: state_id_result.success?,
+      device_profiling_success: device_profiling_result.success?,
     )
+  end
+
+  def proof_with_threatmetrix_if_needed(
+    applicant_pii:,
+    user:,
+    threatmetrix_session_id:,
+    request_ip:,
+    timer:
+  )
+    if !FeatureManagement.proofing_device_profiling_collecting_enabled?
+      return threatmetrix_disabled_result
+    end
+
+    # The API call will fail without a session ID, so do not attempt to make
+    # it to avoid leaking data when not required.
+    return threatmetrix_disabled_result if threatmetrix_session_id.blank?
+
+    return threatmetrix_disabled_result unless applicant_pii
+
+    ddp_pii = applicant_pii.dup
+    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
+    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+    ddp_pii[:request_ip] = request_ip
+
+    result = timer.time('threatmetrix') do
+      lexisnexis_ddp_proofer.proof(ddp_pii)
+    end
+
+    log_threatmetrix_info(result, user)
+
+    result
+  end
+
+  def threatmetrix_disabled_result
+    Proofing::DdpResult.new(
+      success: true,
+      client: 'tmx_disabled',
+      review_status: 'pass',
+    )
+  end
+
+  def log_threatmetrix_info(threatmetrix_result, user)
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      user_id: user&.uuid,
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
+    )
+  end
+
+  def logger_info_hash(hash)
+    logger.info(hash.to_json)
   end
 
   def user_can_pass_after_state_id_check?(resolution_result)
@@ -216,7 +221,7 @@ class ResolutionProofingJob < ApplicationJob
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
     ProofingComponent.
       create_or_find_by(user_id: user_id).
-      update(threatmetrix: true,
+      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
              threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end

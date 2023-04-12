@@ -72,6 +72,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:errors].keys).to eq([:'Execute Instant Verify'])
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context]
         expect(result_context[:should_proof_state_id])
@@ -297,11 +298,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
+
+        proofing_component = user.proofing_component
+        expect(proofing_component.threatmetrix).to equal(false)
+        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
     end
 
@@ -321,9 +328,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
@@ -345,6 +354,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be false
         expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to be_nil
 
         expect(result_context_stages_threatmetrix[:exception]).to include(
           LexisNexisFixtures.ddp_unexpected_review_status,
