@@ -31,9 +31,11 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
+  let(:device_profiling_review_status) { 'pass' }
   let(:device_profiling_result) do
     Proofing::DdpResult.new(
       success: device_profiling_success,
+      review_status: device_profiling_review_status,
       client: 'test-device-profiling-vendor',
       exception: device_profiling_exception,
     )
@@ -107,14 +109,16 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
 
     context 'Device profiling fails and everything else passes' do
       let(:device_profiling_success) { false }
+      let(:device_profiling_review_status) { 'fail' }
 
-      it 'returns a successful response' do
+      it 'returns a successful response including the review status' do
         result = subject.adjudicated_result
 
         expect(result.success?).to eq(true)
 
         threatmetrix_context = result.extra[:context][:stages][:threatmetrix]
         expect(threatmetrix_context[:success]).to eq(false)
+        expect(threatmetrix_context[:review_status]).to eq('fail')
       end
     end
 
