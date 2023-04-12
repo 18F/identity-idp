@@ -35,9 +35,7 @@ module Idv
     end
 
     def next_step
-      if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
-        idv_come_back_later_url
-      elsif in_person_enrollment?
+      if in_person_enrollment?
         idv_in_person_ready_to_verify_url
       elsif blocked_by_device_profiling?
         idv_please_call_url
