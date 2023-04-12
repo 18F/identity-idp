@@ -71,7 +71,7 @@ shared_examples 'sp requesting attributes' do |sp|
         if javascript_enabled?
           expect(current_path).to eq(test_saml_decode_assertion_path)
         else
-          expect(current_url).to include(api_saml_auth2023_url)
+          expect(current_url).to include(api_saml_auth_url(path_year: PATH_YEAR))
         end
       end
     end

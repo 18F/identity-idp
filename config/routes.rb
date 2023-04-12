@@ -24,7 +24,8 @@ Rails.application.routes.draw do
   # SAML secret rotation paths
   constraints(path_year: SamlEndpoint.suffixes) do
     get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
-    match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete]
+    match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete],
+          as: :api_saml_logout
     match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post]
     # JS-driven POST redirect route to preserve existing session
     post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
