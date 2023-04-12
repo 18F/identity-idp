@@ -44,7 +44,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to include(InstantVerify: include(a_kind_of(Hash)))
+        expect(result.errors).to include('Execute Instant Verify': include(a_kind_of(Hash)))
         expect(result.vendor_workflow).to(
           eq(LexisNexisFixtures.example_config.instant_verify_workflow),
         )
@@ -65,7 +65,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          InstantVerify: include(a_kind_of(Hash)),
+          'Execute Instant Verify': include(a_kind_of(Hash)),
         )
         expect(result.transaction_id).to eq('123456')
         expect(result.reference).to eq('0987:1234-abcd')
