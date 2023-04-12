@@ -57,6 +57,10 @@ module OpenidConnect
       redirect_to new_user_session_url
     end
 
+    def redirect_to_reauthenticate
+      redirect_to user_two_factor_authentication_url
+    end
+
     def link_identity_to_service_provider
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
     end

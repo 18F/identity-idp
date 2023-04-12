@@ -89,6 +89,10 @@ class SamlIdpController < ApplicationController
     redirect_to new_user_session_url
   end
 
+  def redirect_to_reauthenticate
+    redirect_to user_two_factor_authentication_url
+  end
+
   def saml_metadata
     SamlEndpoint.new(request).saml_metadata
   end
