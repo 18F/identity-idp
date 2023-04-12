@@ -64,7 +64,7 @@ module SignUp
     end
 
     def password_form
-      @password_form ||= PasswordForm.new(@user)
+      @password_form ||= PasswordConfirmationForm.new(@user)
     end
 
     def sp_request_id
