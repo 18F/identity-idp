@@ -873,7 +873,7 @@ describe SamlIdpController do
       end
     end
 
-    context 'saml_internal_post feature configuration is set to true with ForceAuthn' do
+    context 'with ForceAuthn' do
       let(:user) { create(:user, :signed_up) }
 
       it 'signs user out if a session is active and sp_session[:final_auth_request] is falsey' do
@@ -899,23 +899,6 @@ describe SamlIdpController do
         controller.session[:sp] = { final_auth_request: true }
         saml_final_post_auth(saml_request(saml_settings(overrides: { force_authn: true })))
         expect(session[:sp][:final_auth_request]).to be_falsey
-      end
-    end
-
-    context 'saml_internal_post feature configuration is set to false' do
-      let(:user) { create(:user, :signed_up) }
-
-      before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return(false) }
-
-      context 'ForceAuthn set to true' do
-        it 'signs the user out if a session is active' do
-          sign_in(user)
-          generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
-          # would be 200 if the user's session persists
-          expect(response.status).to eq(302)
-          # implicit test of request storage since request_id would be missing otherwise
-          expect(response.location).to match(%r{#{root_url}\?request_id=.+})
-        end
       end
     end
 
