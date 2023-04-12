@@ -60,11 +60,11 @@ class Profile < ApplicationRecord
   end
 
   def fraud_review_pending?
-    !!(fraud_review_pending || fraud_review_pending_at)
+    fraud_reviewing?
   end
 
   def fraud_rejection?
-    !!(fraud_rejection || fraud_rejection_at)
+    fraud_rejected?
   end
 
   # rubocop:disable Rails/SkipsModelValidations
@@ -74,7 +74,6 @@ class Profile < ApplicationRecord
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      fraud_pass
       update!(
         active: true,
         activated_at: now,
