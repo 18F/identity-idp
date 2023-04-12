@@ -7,7 +7,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup visited')
+        with('User Registration: 2FA Setup visited', sign_up_mfa_priority_bucket: :default)
 
       get :index
     end
@@ -66,6 +66,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       }
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
+      analytics_hash = response.to_h.merge(sign_up_mfa_priority_bucket: :default)
 
       form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
@@ -77,7 +78,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
       patch :create, params: voice_params
 
-      expect(@analytics).to have_logged_event('User Registration: 2FA Setup', response.to_h)
+      expect(@analytics).to have_logged_event('User Registration: 2FA Setup', analytics_hash)
     end
 
     it 'tracks analytics event' do
@@ -89,6 +90,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         selection: ['voice', 'auth_app'],
         success: true,
         selected_mfa_count: 2,
+        sign_up_mfa_priority_bucket: :default,
         errors: {},
       }
 
