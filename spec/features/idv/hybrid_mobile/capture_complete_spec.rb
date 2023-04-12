@@ -7,7 +7,6 @@ feature 'capture complete step', :js do
 
   let(:user) { user_with_2fa }
 
-
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
       and_return(true)
