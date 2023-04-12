@@ -40,19 +40,31 @@ describe('pw-strength', () => {
     it('returns an empty result for empty password', () => {
       const z = zxcvbn('');
 
-      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
     });
 
     it('returns an empty result for a strong password', () => {
       const z = zxcvbn('!Juq2Uk2**RBEsA8');
 
-      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
     });
 
     it('returns feedback for a weak password', () => {
       const z = zxcvbn('password');
 
-      expect(getFeedback(z)).to.equal('zxcvbn.feedback.this_is_a_top_10_common_password');
+      expect(getFeedback(z, { minimumLength: 12 })).to.equal(
+        'zxcvbn.feedback.this_is_a_top_10_common_password',
+      );
+    });
+
+    it('shows feedback when a password is too short', () => {
+      const minPasswordLength = 12;
+      const z = zxcvbn('_3G%JMyR"');
+
+      expect(getFeedback(z, { minimumLength: minPasswordLength })).to.equal(
+        'errors.attributes.password.too_short.other',
+        { count: minPasswordLength },
+      );
     });
   });
 });

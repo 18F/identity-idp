@@ -38,16 +38,20 @@ feature 'Visitor sets password during signup' do
     end
 
     it 'updates strength feedback as password changes' do
-      expect(page).to have_content '...'
+      expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
       fill_in t('forms.password'), with: 'password'
-      expect(page).to have_content 'Very weak'
+      expect(page).to have_content(t('instructions.password.strength.intro'))
+      expect(page).to have_content t('instructions.password.strength.i')
 
       fill_in t('forms.password'), with: '123456789'
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
 
       fill_in t('forms.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great!'
+      expect(page).to have_content t('instructions.password.strength.v')
+
+      fill_in t('forms.password'), with: ':b/}6tT#,'
+      expect(page).to have_content t('errors.attributes.password.too_short.other', count: 12)
     end
   end
 

@@ -8,7 +8,7 @@ import { t } from '@18f/identity-i18n';
 const scale = {
   0: ['pw-very-weak', t('instructions.password.strength.i')],
   1: ['pw-weak', t('instructions.password.strength.ii')],
-  2: ['pw-so-so', t('instructions.password.strength.iii')],
+  2: ['pw-average', t('instructions.password.strength.iii')],
   3: ['pw-good', t('instructions.password.strength.iv')],
   4: ['pw-great', t('instructions.password.strength.v')],
 };
@@ -26,12 +26,20 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-export function getFeedback(z) {
-  if (!z || !z.password || z.score > 2) {
+export function getFeedback(z, minPasswordLength) {
+  if (!z || !z.password) {
     return '&nbsp;';
   }
 
   const { warning, suggestions } = z.feedback;
+
+  if (!warning && !suggestions.length) {
+    if (z.password.length < minPasswordLength) {
+      return t('errors.attributes.password.too_short.other', { count: minPasswordLength });
+    }
+
+    return '&nbsp;';
+  }
 
   function lookup(str) {
     // i18n-tasks-use t('zxcvbn.feedback.a_word_by_itself_is_easy_to_guess')
@@ -66,9 +74,6 @@ export function getFeedback(z) {
     return t(`zxcvbn.feedback.${snakeCase(str)}`);
   }
 
-  if (!warning && !suggestions.length) {
-    return '&nbsp;';
-  }
   if (warning) {
     return lookup(warning);
   }
@@ -107,10 +112,10 @@ function validatePasswordField(score, input) {
   }
 }
 
-function checkPasswordStrength(password, forbiddenPasswords, input) {
+function checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input) {
   const z = zxcvbn(password, forbiddenPasswords);
   const [cls, strength] = getStrength(z);
-  const feedback = getFeedback(z);
+  const feedback = getFeedback(z, minPasswordLength);
 
   validatePasswordField(z.score, input);
   updatePasswordFeedback(cls, strength, feedback);
@@ -122,16 +127,13 @@ function analyzePw() {
     document.querySelector('.password-confirmation__input');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
-
-  // the pw strength module is hidden by default ("display-none" CSS class)
-  // (so that javascript disabled browsers won't see it)
-  // thus, first step is unhiding it
-  const pwCntnr = document.getElementById('pw-strength-cntnr');
-  pwCntnr.className = '';
+  const minPasswordLength = document
+    .getElementById('pw-strength-cntnr')
+    .getAttribute('data-pw-min-length');
 
   input.addEventListener('input', (e) => {
     const password = e.target.value;
-    checkPasswordStrength(password, forbiddenPasswords, input);
+    checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input);
   });
 }
 

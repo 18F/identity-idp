@@ -3,7 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('forms.confirmation.show_hdr')) %>
 
 <p class="margin-top-2 margin-bottom-0" id="password-description">
-  <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
+  <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
 <%= simple_form_for(
       @password_form,
