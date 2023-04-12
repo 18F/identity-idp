@@ -410,7 +410,7 @@ describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
-        expect(profile.fraud_rejected_at).to_not be_nil
+        expect(profile.fraud_rejection_at).to_not be_nil
       end
     end
 
