@@ -17,13 +17,16 @@ module Proofing
           NewRelic::Agent.notice_error(exception)
           Resolution::Result.new(
             success: false, errors: {}, exception: exception,
-            vendor_name: 'lexisnexis:instant_verify'
+            vendor_name: 'lexisnexis:instant_verify',
+            vendor_workflow: config.instant_verify_workflow
           )
         end
 
         private
 
         def build_result_from_response(verification_response)
+          instant_verify_product = find_instant_verify_product(verification_response)
+
           Proofing::Resolution::Result.new(
             success: verification_response.verification_status == 'passed',
             errors: parse_verification_errors(verification_response),
@@ -32,11 +35,14 @@ module Proofing
             transaction_id: verification_response.conversation_id,
             reference: verification_response.reference,
             failed_result_can_pass_with_additional_verification:
-              failed_result_can_pass_with_additional_verification?(verification_response),
+              failed_result_can_pass_with_additional_verification?(
+                verification_response,
+                instant_verify_product,
+              ),
             attributes_requiring_additional_verification:
-              attributes_requiring_additional_verification(verification_response),
-            vendor_workflow: config.phone_finder_workflow,
-            drivers_license_info_matches: drivers_license_info_matches?(verification_response),
+              attributes_requiring_additional_verification(instant_verify_product),
+            vendor_workflow: config.instant_verify_workflow,
+            drivers_license_info_matches: drivers_license_info_matches?(instant_verify_product),
           )
         end
 
@@ -49,35 +55,41 @@ module Proofing
         end
 
         # rubocop:disable Layout/LineLength
-        def failed_result_can_pass_with_additional_verification?(verification_response)
+        def failed_result_can_pass_with_additional_verification?(verification_response, instant_verify_product)
           return false unless verification_response.verification_status == 'failed'
-          return false unless verification_response.verification_errors.keys.to_set == Set[:InstantVerify, :base]
-          return false unless verification_response.verification_errors[:base].match?(/(total|priority)\.scoring\.model\.verification\.fail/)
-          return false unless attributes_requiring_additional_verification(verification_response).any?
+          return false unless verification_response.transaction_reason_code.match?(/(total|priority)\.scoring\.model\.verification\.fail/)
+          return false unless instant_verify_product.present?
+          return false unless instant_verify_product['ProductStatus'] == 'fail'
+          return false unless attributes_requiring_additional_verification(instant_verify_product).any?
           true
         end
         # rubocop:enable Layout/LineLength
 
-        def attributes_requiring_additional_verification(verification_response)
-          CheckToAttributeMapper.new(
-            verification_response.verification_errors[:InstantVerify],
-          ).map_failed_checks_to_attributes
+        def attributes_requiring_additional_verification(instant_verify_product)
+          CheckToAttributeMapper.new(instant_verify_product).map_failed_checks_to_attributes
         end
 
-        def drivers_license_info_matches?(verification_response)
-          instant_verify_product = verification_response.response_body['Products']&.first
-          return false unless instant_verify_product.present?
-          return false unless instant_verify_product['ProductType'] == 'InstantVerify'
-
-          dln_products = instant_verify_product.fetch('Items', []).select do |item|
+        def drivers_license_info_matches?(instant_verify_product)
+          dln_products = instant_verify_product&.fetch('Items', [])&.select do |item|
             DRIVERS_LICENSE_CHECK_NAMES.include?(item['ItemName'])
           end
 
+          return false if dln_products.nil?
           return false unless dln_products.length == DRIVERS_LICENSE_CHECK_NAMES.length
 
           dln_products.none? do |item|
             item['ItemStatus'] != 'pass'
           end
+        end
+
+        def find_instant_verify_product(verification_response)
+          return if verification_response.product_list.length > 1
+          return if verification_response.product_list.blank?
+
+          product = verification_response.product_list.first
+          return unless product['ProductType'] == 'InstantVerify'
+
+          product
         end
       end
     end

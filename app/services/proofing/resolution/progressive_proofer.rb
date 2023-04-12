@@ -12,6 +12,16 @@ module Proofing
       end
 
       def proof(applicant_pii:, timer:)
+        device_profiling_result = proof_with_threatmetrix_if_needed(
+          applicant_pii: applicant_pii,
+          user: user,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+          timer: timer,
+        )
+
+        add_threatmetrix_proofing_component(user.id, device_profiling_result) if user.present?
+
         resolution_result = proof_resolution(
           applicant_pii: applicant_pii,
           timer: timer,
@@ -23,6 +33,7 @@ module Proofing
         )
 
         ResultAdjudicator.new(
+          device_profiling_result: device_profiling_result,
           resolution_result: resolution_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
