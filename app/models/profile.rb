@@ -30,11 +30,11 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   aasm :fraud, column: :fraud_state, timestamps: true do
-    state :none, initial: true
+    state :fraud_none, initial: true
     state :fraud_reviewing, :fraud_rejected, :fraud_passed
 
     event :fraud_review do
-      transitions from: :none, to: :fraud_reviewing
+      transitions from: :fraud_none, to: :fraud_reviewing
     end
 
     event :fraud_reject do
@@ -42,7 +42,14 @@ class Profile < ApplicationRecord
     end
 
     event :fraud_pass do
-      transitions from: [:fraud_reviewing, :fraud_rejected], to: :fraud_passed
+      transitions(
+        from: [
+          :fraud_none,
+          :fraud_reviewing,
+          :fraud_rejected,
+        ],
+        to: :fraud_passed,
+      )
     end
   end
 
