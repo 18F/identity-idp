@@ -23,6 +23,8 @@ module Proofing
           user_email: user_email,
         )
 
+        # todo(LG-8693): Begin verifing both the user's residential address and identity document
+        # address
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
 
         resolution_result = proof_resolution(

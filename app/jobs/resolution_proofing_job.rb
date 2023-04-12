@@ -63,22 +63,22 @@ class ResolutionProofingJob < ApplicationJob
 
   # @return [CallbackLogData]
   def make_vendor_proofing_requests(
+    timer:,
+    user:,
     applicant_pii:,
-    double_address_verification:,
+    threatmetrix_session_id:,
     request_ip:,
     should_proof_state_id:,
-    threatmetrix_session_id:,
-    timer:,
-    user:
+    double_address_verification:
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
-      double_address_verification: double_address_verification,
+      user_email: user&.confirmed_email_addresses&.first&.email,
+      threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
-      threatmetrix_session_id: threatmetrix_session_id,
+      double_address_verification: double_address_verification,
       timer: timer,
-      user_email: user&.confirmed_email_addresses&.first&.email,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user)
@@ -90,13 +90,6 @@ class ResolutionProofingJob < ApplicationJob
       result: result.adjudicated_result.to_h,
       state_id_success: result.state_id_result.success?,
     )
-  end
-
-  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
-    ProofingComponent.
-      create_or_find_by(user_id: user_id).
-      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
-             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 
   def log_threatmetrix_info(threatmetrix_result, user)
@@ -115,5 +108,12 @@ class ResolutionProofingJob < ApplicationJob
   def resolution_proofer
     @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
     @resolution_proofer
+  end
+
+  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+    ProofingComponent.
+      create_or_find_by(user_id: user_id).
+      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
+             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end
