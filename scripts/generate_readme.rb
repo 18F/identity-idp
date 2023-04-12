@@ -31,7 +31,7 @@ class GenerateReadme
 
   def table_of_contents
     docs_and_titles.map do |(title, path)|
-    "- [#{title}](#{path})"
+      "- [#{title}](#{path})"
     end.join("\n")
   end
 
