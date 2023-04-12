@@ -5,7 +5,7 @@ describe SamlIdpController do
 
   render_views
 
-  let(:path_year) { '2023' }
+  let(:path_year) { SamlAuthHelper::PATH_YEAR }
 
   describe '/api/saml/logout' do
     it 'tracks the event when idp initiated' do

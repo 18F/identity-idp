@@ -10,7 +10,7 @@ describe SamlPostController do
     let(:relay_state) { 'def456' }
     let(:sig_alg) { 'aes256' }
     let(:signature) { 'xyz789' }
-    let(:path_year) { '2023' }
+    let(:path_year) { SamlAuthHelper::PATH_YEAR }
 
     it 'renders the appropriate form' do
       post :auth, params: {
