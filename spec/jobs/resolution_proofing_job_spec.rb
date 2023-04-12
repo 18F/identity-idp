@@ -320,7 +320,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           user_id: user.id,
           threatmetrix_session_id: threatmetrix_session_id,
           request_ip: request_ip,
-          capture_secondary_id_enabled: true,
+          double_address_verification: true,
         )
       end
 
@@ -349,7 +349,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:exception]).to be_nil
-        expect(result[:errors].keys).to eq([:InstantVerify])
+        expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
 
@@ -359,7 +359,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:vendor_name]).
           to eq('lexisnexis:instant_verify')
-        expect(result_context_stages_resolution[:errors]).to include(:InstantVerify)
+        expect(result_context_stages_resolution[:errors]).to include(:"Execute Instant Verify")
         expect(result_context_stages_resolution[:exception]).to eq(nil)
         expect(result_context_stages_resolution[:success]).to eq(true)
         expect(result_context_stages_resolution[:timed_out]).to eq(false)

@@ -47,7 +47,6 @@ class ResolutionProofingJob < ApplicationJob
       applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      should_proof_state_id: should_proof_state_id,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -73,11 +72,11 @@ class ResolutionProofingJob < ApplicationJob
     user:,
     applicant_pii:,
     threatmetrix_session_id:,
-    request_ip:,
-    should_proof_state_id:
+    request_ip:
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
+      logger: logger,
       request_ip: request_ip,
       threatmetrix_session_id: threatmetrix_session_id,
       timer: timer,
@@ -92,75 +91,7 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
-  def proof_with_threatmetrix_if_needed(
-    applicant_pii:,
-    user:,
-    threatmetrix_session_id:,
-    request_ip:,
-    timer:
-  )
-    if !FeatureManagement.proofing_device_profiling_collecting_enabled?
-      return threatmetrix_disabled_result
-    end
-
-    # The API call will fail without a session ID, so do not attempt to make
-    # it to avoid leaking data when not required.
-    return threatmetrix_disabled_result if threatmetrix_session_id.blank?
-
-    return threatmetrix_disabled_result unless applicant_pii
-
-    ddp_pii = applicant_pii.dup
-    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:request_ip] = request_ip
-
-    result = timer.time('threatmetrix') do
-      lexisnexis_ddp_proofer.proof(ddp_pii)
-    end
-
-    log_threatmetrix_info(result, user)
-
-    result
-  end
-
-  def threatmetrix_disabled_result
-    Proofing::DdpResult.new(
-      success: true,
-      client: 'tmx_disabled',
-      review_status: 'pass',
-    )
-  end
-
-  def log_threatmetrix_info(threatmetrix_result, user)
-    logger_info_hash(
-      name: 'ThreatMetrix',
-      user_id: user&.uuid,
-      threatmetrix_request_id: threatmetrix_result.transaction_id,
-      threatmetrix_success: threatmetrix_result.success?,
-    )
-  end
-
   def logger_info_hash(hash)
     logger.info(hash.to_json)
-  end
-
-  def lexisnexis_ddp_proofer
-    @lexisnexis_ddp_proofer ||=
-      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-        Proofing::Mock::DdpMockClient.new
-      else
-        Proofing::LexisNexis::Ddp::Proofer.new(
-          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-        )
-      end
-  end
-
-  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
-    ProofingComponent.
-      create_or_find_by(user_id: user_id).
-      update(threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
-             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end
