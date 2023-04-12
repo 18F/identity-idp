@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     # JS-driven POST redirect route to preserve existing session
     post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
     # actual SAML handling POST route
-    post '/api/saml/authpost(:path_year)' => 'saml_idp#auth'
+    post '/api/saml/authpost(:path_year)' => 'saml_idp#auth', as: :api_saml_authpost
     # The internal auth post which will not be logged as an external request
     post '/api/saml/finalauthpost(:path_year)' => 'saml_idp#auth', as: :api_saml_finalauthpost
     get '/api/saml/auth(:path_year)' => 'saml_idp#auth'

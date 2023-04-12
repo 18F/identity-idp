@@ -10,6 +10,7 @@ describe SamlPostController do
     let(:relay_state) { 'def456' }
     let(:sig_alg) { 'aes256' }
     let(:signature) { 'xyz789' }
+    let(:path_year) { '2023' }
 
     it 'renders the appropriate form' do
       post :auth, params: {
@@ -17,6 +18,7 @@ describe SamlPostController do
         'RelayState' => relay_state,
         'SigAlg' => sig_alg,
         'Signature' => signature,
+        path_year: path_year,
       }
 
       expect(response.body).to match(form_action_regex)
@@ -27,7 +29,7 @@ describe SamlPostController do
     end
 
     it 'does not render extra parameters' do
-      post :auth, params: { 'Foo' => 'bar' }
+      post :auth, params: { 'Foo' => 'bar', path_year: path_year }
 
       expect(response.body).not_to match(hidden_field_tag('Foo', 'bar'))
     end

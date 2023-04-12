@@ -3,9 +3,7 @@ class SamlPostController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def auth
-    path_year = request.path[-4..-1]
-    path_method = "api_saml_authpost#{path_year}_url"
-    action_url = Rails.application.routes.url_helpers.send(path_method)
+    action_url = api_saml_authpost_url(path_year: params[:path_year])
 
     form_params = params.permit(:SAMLRequest, :RelayState, :SigAlg, :Signature)
 
