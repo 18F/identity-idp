@@ -111,7 +111,9 @@ feature 'disavowing an action' do
     fill_in 'New password', with: 'invalid'
     click_button t('forms.passwords.edit.buttons.submit')
 
-    expect(page).to have_content('is too short (minimum is 12 characters)')
+    expect(page).to have_content t(
+      'errors.attributes.password.too_short.other', count: Devise.password_length.first
+    )
 
     fill_in 'New password', with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')

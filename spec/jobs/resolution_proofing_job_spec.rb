@@ -69,9 +69,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:exception]).to be_nil
-        expect(result[:errors].keys).to eq([:InstantVerify])
+        expect(result[:errors].keys).to eq([:'Execute Instant Verify'])
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context]
         expect(result_context[:should_proof_state_id])
@@ -79,7 +80,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:vendor_name]).
           to eq('lexisnexis:instant_verify')
-        expect(result_context_stages_resolution[:errors]).to include(:InstantVerify)
+        expect(result_context_stages_resolution[:errors]).to include(:'Execute Instant Verify')
         expect(result_context_stages_resolution[:exception]).to eq(nil)
         expect(result_context_stages_resolution[:success]).to eq(true)
         expect(result_context_stages_resolution[:timed_out]).to eq(false)
@@ -134,13 +135,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_resolution = result_context_stages[:resolution]
 
         expect(result[:success]).to be false
-        expect(result[:errors].keys).to eq([:base, :InstantVerify])
+        expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:success]).to eq(false)
-        expect(result_context_stages_resolution[:errors]).to include(:base, :InstantVerify)
+        expect(result_context_stages_resolution[:errors]).to include(
+          :base,
+          :'Execute Instant Verify',
+        )
         expect(result_context_stages_resolution[:exception]).to eq(nil)
         expect(result_context_stages_resolution[:timed_out]).to eq(false)
       end
@@ -162,7 +166,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_state_id = result_context_stages[:state_id]
 
         expect(result[:success]).to be true
-        expect(result[:errors].keys).to eq([:base, :InstantVerify])
+        expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
@@ -200,7 +204,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_state_id = result_context_stages[:state_id]
 
         expect(result[:success]).to be false
-        expect(result[:errors].keys).to eq([:base, :InstantVerify])
+        expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
@@ -294,9 +298,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
@@ -318,9 +324,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
@@ -342,6 +350,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be false
         expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
         expect(result[:timed_out]).to be false
+        expect(result[:threatmetrix_review_status]).to be_nil
 
         expect(result_context_stages_threatmetrix[:exception]).to include(
           LexisNexisFixtures.ddp_unexpected_review_status,
