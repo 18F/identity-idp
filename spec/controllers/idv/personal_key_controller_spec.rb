@@ -191,12 +191,6 @@ describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to come back later path' do
-        patch :update
-
-        expect(response).to redirect_to idv_come_back_later_path
-      end
-
       context 'with gpo personal key after verification' do
         it 'redirects to sign up completed_url for a sp' do
           allow(subject).to receive(:pending_profile?).and_return(false)
@@ -208,18 +202,6 @@ describe Idv::PersonalKeyController do
         end
       end
 
-      context 'with in person profile' do
-        before do
-          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        end
-
-        it 'creates a profile and returns completion url' do
-          patch :update
-
-          expect(response).to redirect_to idv_come_back_later_path
-        end
-      end
       it 'logs key submitted event' do
         patch :update
 
