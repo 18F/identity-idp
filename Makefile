@@ -91,6 +91,8 @@ endif
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
 	yarn lint:css
+	@echo "--- README.md ---"
+	make lint_readme
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
@@ -251,3 +253,8 @@ update: ## Update dependencies, useful after a git pull
 	yarn install
 	bundle exec rails db:migrate
 
+README.md: docs/ scripts/generate_readme.rb
+	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
+
+lint_readme: README.md
+	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
