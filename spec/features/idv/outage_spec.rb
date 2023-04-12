@@ -125,6 +125,8 @@ feature 'IdV Outage Spec' do
   context 'GPO only enabled, but user starts over', js: true do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
+    before { disable_frontend_analytics_to_avoid_flakiness }
+
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
 
@@ -141,6 +143,8 @@ feature 'IdV Outage Spec' do
   context 'force GPO only without phone outages', js: true do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
+    before { disable_frontend_analytics_to_avoid_flakiness }
+
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
 
@@ -156,6 +160,8 @@ feature 'IdV Outage Spec' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
     let(:enable_usps_verification) { false }
 
+    before { disable_frontend_analytics_to_avoid_flakiness }
+
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)
 
@@ -169,6 +175,8 @@ feature 'IdV Outage Spec' do
     %i[vendor_status_sms vendor_status_voice].each do |flag|
       context "#{flag} set to full_outage" do
         let(flag) { :full_outage }
+
+        before { disable_frontend_analytics_to_avoid_flakiness }
 
         it 'shows mail only warning page before idv welcome page' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
@@ -204,6 +212,8 @@ feature 'IdV Outage Spec' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
     let(:user) { user_with_2fa }
 
+    before { disable_frontend_analytics_to_avoid_flakiness }
+
     it 'shows mail only warning page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
@@ -227,6 +237,8 @@ feature 'IdV Outage Spec' do
   context 'feature_idv_hybrid_flow_enabled set to false', js: true do
     let(:user) { user_with_2fa }
     let(:feature_idv_hybrid_flow_enabled) { false }
+
+    before { disable_frontend_analytics_to_avoid_flakiness }
 
     it 'does not show the mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
@@ -287,5 +299,12 @@ feature 'IdV Outage Spec' do
         )
       end
     end
+  end
+
+  def disable_frontend_analytics_to_avoid_flakiness
+    # A race condition exists where a frontend analytics API call could be received
+    # while `Rails.application.reload_routes!` is processing, resulting in a test failure.
+    # To avoid this, we disable frontend analytics for these outage tests.
+    allow(IdentityConfig.store).to receive(:frontend_analytics_enabled).and_return(false)
   end
 end
