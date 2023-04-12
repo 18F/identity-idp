@@ -7,9 +7,11 @@ RSpec.describe 'SAML requests', type: :request do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
     it 'renders a form for the SAML year that was requested' do
-      overridden_saml_settings = saml_settings(overrides: {
-        idp_sso_target_url: "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
-      })
+      overridden_saml_settings = saml_settings(
+        overrides: {
+          idp_sso_target_url: "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022",
+        },
+      )
       path_year = overridden_saml_settings.idp_sso_target_url[-4..-1]
 
       post overridden_saml_settings.idp_sso_target_url
