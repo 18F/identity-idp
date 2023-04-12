@@ -35,6 +35,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	run \
 	update \
 	urn \
+	README.md \
 	setup \
 	test \
 	update_pinpoint_supported_countries
@@ -253,7 +254,7 @@ update: ## Update dependencies, useful after a git pull
 	yarn install
 	bundle exec rails db:migrate
 
-README.md: docs/ scripts/generate_readme.rb
+README.md: docs/
 	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
 
 lint_readme: README.md
