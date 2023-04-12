@@ -83,6 +83,43 @@ describe Proofing::LexisNexis::Response do
     end
   end
 
+  describe '#product_list' do
+    context 'for a response with a product list' do
+      it 'returns the product list' do
+        product_list = subject.product_list
+
+        expect(product_list.length).to eq(1)
+        expect(product_list.first['ProductType']).to eq('InstantVerify')
+      end
+    end
+
+    context 'for a response without a product list' do
+      let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
+
+      it 'returns an empty array' do
+        product_list = subject.product_list
+
+        expect(product_list).to eq([])
+      end
+    end
+  end
+
+  describe '#transaction_reason_code' do
+    context 'for a response with a transaction reason code' do
+      let(:response_body) { LexisNexisFixtures.instant_verify_identity_not_found_response_json }
+
+      it 'returns the reason code' do
+        expect(subject.transaction_reason_code).to eq('total.scoring.model.verification.fail')
+      end
+    end
+
+    context 'for a response without a transaciton reason code' do
+      it 'returns nil' do
+        expect(subject.transaction_reason_code).to eq(nil)
+      end
+    end
+  end
+
   describe '#response_body' do
     context 'the result includes invalid JSON' do
       let(:response_body) { '$":^&' }
