@@ -12,7 +12,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:instance) { described_class.new }
 
   describe '#proof' do
-    subject do
+    subject(:proof) do
       instance.proof(
         applicant_pii: applicant_pii,
         double_address_verification: double_address_verification,
@@ -24,8 +24,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
-    it 'does not blow up' do
-      subject
+    it 'returns a ResultAdjudicator' do
+      expect(proof).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+    end
+
+    it 'makes a request to Instant Verify'
+
+    context 'user is not in an AAMVA jurisdiction' do
+      it 'does not make a request to AAMVA'
+    end
+
+    context 'Instant Verify passes' do
+      context 'user is in an AAMVA jurisdiction' do
+        it 'makes a request to AAMVA'
+      end
     end
   end
 end
