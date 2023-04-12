@@ -19,8 +19,10 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
-  before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
-  before_action :bump_auth_count, only: [:auth]
+  before_action :bump_auth_count, only: :auth
+  before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
+  before_action :confirm_two_factor_authenticated, only: :auth
+  before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
 
   def auth
     capture_analytics
@@ -83,15 +85,8 @@ class SamlIdpController < ApplicationController
 
   private
 
-  def confirm_user_is_authenticated_with_fresh_mfa
-    bump_auth_count unless user_fully_authenticated?
-    if !user_signed_in?
-      redirect_to new_user_session_url
-    elsif user_fully_authenticated? && remember_device_expired_for_sp?
-      redirect_to user_two_factor_authentication_url
-    else
-      confirm_two_factor_authenticated
-    end
+  def redirect_to_sign_in
+    redirect_to new_user_session_url
   end
 
   def saml_metadata
