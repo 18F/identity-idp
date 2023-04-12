@@ -2,6 +2,8 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
+  PATH_YEAR = '2023'
+
   def saml_settings(overrides: {})
     settings = OneLogin::RubySaml::Settings.new
 
@@ -103,16 +105,16 @@ module SamlAuthHelper
 
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
-    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)), path_year: '2022' }
+    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)), path_year: PATH_YEAR }
   end
 
   def saml_post_auth(saml_request)
     # POST redirect binding Authn Request
-    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: '2023' }
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: PATH_YEAR }
   end
 
   def saml_final_post_auth(saml_request)
-    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: '2023' }
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request), path_year: PATH_YEAR }
   end
 
   private
