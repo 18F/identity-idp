@@ -490,10 +490,10 @@ RSpec.describe 'In Person Proofing', js: true do
         fill_in t('in_person_proofing.form.state_id.last_name'),
                 with: InPersonHelper::GOOD_LAST_NAME
         fill_in t('in_person_proofing.form.state_id.address1'),
-                with: InPersonHelper::GOOD_STATE_ID_ADDRESS1
+                with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1
         fill_in t('in_person_proofing.form.state_id.address2'),
-                with: InPersonHelper::GOOD_STATE_ID_ADDRESS2
-        fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_STATE_ID_CITY
+                with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2
+        fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
         click_idv_continue
 
         expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)

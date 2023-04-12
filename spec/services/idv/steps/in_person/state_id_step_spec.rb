@@ -29,14 +29,14 @@ describe Idv::Steps::InPerson::StateIdStep do
       let(:first_name) { 'Natalya' }
       let(:last_name) { 'Rostova' }
       let(:dob) { '1980-01-01' }
-      let(:state_id_state) { 'Nevada' }
+      let(:identity_doc_state) { 'Nevada' }
       let(:state_id_number) { 'ABC123234' }
       let(:submitted_values) do
         {
           first_name: first_name,
           last_name: last_name,
           dob: dob,
-          state_id_state: state_id_state,
+          identity_doc_state: identity_doc_state,
           state_id_number: state_id_number,
         }
       end
@@ -59,7 +59,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq dob
-        expect(pii_from_user[:state_id_state]).to eq state_id_state
+        expect(pii_from_user[:identity_doc_state]).to eq identity_doc_state
         expect(pii_from_user[:state_id_number]).to eq state_id_number
       end
 
@@ -166,20 +166,20 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:dob) { '1980-01-01' }
-    let(:state_id_state) { 'Nevada' }
-    let(:state_id_city) { 'Twin Peaks' }
-    let(:state_id_address1) { '123 Sesame Street' }
-    let(:state_id_address2) { 'Apt. #C' }
-    let(:state_id_zipcode) { '90001' }
+    let(:identity_doc_state) { 'Nevada' }
+    let(:identity_doc_city) { 'Twin Peaks' }
+    let(:identity_doc_address1) { '123 Sesame Street' }
+    let(:identity_doc_address2) { 'Apt. #C' }
+    let(:identity_doc_zipcode) { '90001' }
     let(:same_address_as_id) { 'true' }
     let(:submitted_values) do
       {
         dob: dob,
-        state_id_state: state_id_state,
-        state_id_city: state_id_city,
-        state_id_address1: state_id_address1,
-        state_id_address2: state_id_address2,
-        state_id_zipcode: state_id_zipcode,
+        identity_doc_state: identity_doc_state,
+        identity_doc_city: identity_doc_city,
+        identity_doc_address1: identity_doc_address1,
+        identity_doc_address2: identity_doc_address2,
+        identity_doc_zipcode: identity_doc_zipcode,
         same_address_as_id: same_address_as_id,
       }
     end
@@ -203,11 +203,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         step.call
 
         pii_from_user = flow.flow_session[:pii_from_user]
-        expect(pii_from_user[:address1]).to eq state_id_address1
-        expect(pii_from_user[:address2]).to eq state_id_address2
-        expect(pii_from_user[:city]).to eq state_id_city
-        expect(pii_from_user[:state]).to eq state_id_state
-        expect(pii_from_user[:zipcode]).to eq state_id_zipcode
+        expect(pii_from_user[:address1]).to eq identity_doc_address1
+        expect(pii_from_user[:address2]).to eq identity_doc_address2
+        expect(pii_from_user[:city]).to eq identity_doc_city
+        expect(pii_from_user[:state]).to eq identity_doc_state
+        expect(pii_from_user[:zipcode]).to eq identity_doc_zipcode
       end
     end
 
@@ -217,11 +217,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         step.call
 
         pii_from_user = flow.flow_session[:pii_from_user]
-        expect(pii_from_user[:address1]).to_not eq state_id_address1
-        expect(pii_from_user[:address2]).to_not eq state_id_address2
-        expect(pii_from_user[:city]).to_not eq state_id_city
-        expect(pii_from_user[:state]).to_not eq state_id_state
-        expect(pii_from_user[:zipcode]).to_not eq state_id_zipcode
+        expect(pii_from_user[:address1]).to_not eq identity_doc_address1
+        expect(pii_from_user[:address2]).to_not eq identity_doc_address2
+        expect(pii_from_user[:city]).to_not eq identity_doc_city
+        expect(pii_from_user[:state]).to_not eq identity_doc_state
+        expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
       end
     end
   end
