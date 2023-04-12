@@ -70,6 +70,7 @@ describe Idv::Steps::InPerson::VerifyStep do
           threatmetrix_session_id: nil,
           user_id: anything,
           request_ip: request.remote_ip,
+          double_address_verification: nil,
         )
 
       step.call
