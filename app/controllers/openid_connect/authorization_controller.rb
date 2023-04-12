@@ -55,7 +55,7 @@ module OpenidConnect
       bump_auth_count unless user_fully_authenticated?
       if !user_signed_in?
         redirect_to new_user_session_url
-      elsif remember_device_expired_for_sp?
+      elsif user_fully_authenticated? && remember_device_expired_for_sp?
         redirect_to user_two_factor_authentication_url
       else
         confirm_two_factor_authenticated
