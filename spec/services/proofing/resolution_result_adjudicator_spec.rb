@@ -111,7 +111,7 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
       let(:device_profiling_success) { false }
       let(:device_profiling_review_status) { 'fail' }
 
-      it 'returns a successful response includomg the review status' do
+      it 'returns a successful response including the review status' do
         result = subject.adjudicated_result
 
         expect(result.success?).to eq(true)
