@@ -881,8 +881,8 @@ describe SamlIdpController do
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
         # would be 200 if the user's session persists
         expect(response.status).to eq(302)
-        # implicit test of request storage since request_id would be missing otherwise
-        expect(response.location).to match(%r{#{root_url}\?request_id=.+})
+        expect(response.location).to eq(root_url)
+        expect(controller.session[:sp][:request_id]).to be_present
       end
 
       it 'skips signing out the user when sp_session[:final_auth_request] is true' do
@@ -1511,10 +1511,11 @@ describe SamlIdpController do
     end
 
     context 'when user is not logged in' do
-      it 'redirects the user to the SP landing page with the request_id in the params' do
+      it 'redirects the user to the SP landing page with the request_id in the session' do
         saml_get_auth(saml_settings)
         sp_request_id = ServiceProviderRequestProxy.last.uuid
-        expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_path
+        expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
       it 'logs SAML Auth Request but does not log SAML Auth' do
@@ -1933,18 +1934,10 @@ describe SamlIdpController do
       end
     end
 
-    def stub_auth
-      allow(controller).to receive(:validate_saml_request_and_authn_context).and_return(true)
-      allow(controller).to receive(:user_fully_authenticated?).and_return(true)
-      allow(controller).to receive(:link_identity_from_session_data).and_return(true)
-      allow(controller).to receive(:current_user).and_return(build(:user))
-      allow(controller).to receive(:user_session).and_return({})
-    end
-
     context 'user requires ID verification' do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
-        stub_auth
+        stub_sign_in
         allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
