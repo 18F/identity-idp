@@ -38,7 +38,7 @@ class Profile < ApplicationRecord
     end
 
     event :fraud_reject do
-      transitions from: :fraud_reviewing, to: :fraud_rejected
+      transitions from: [:fraud_none, :fraud_reviewing], to: :fraud_rejected
     end
 
     event :fraud_pass do
