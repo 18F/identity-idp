@@ -122,6 +122,11 @@ describe Idv::InPerson::VerifyInfoController do
         put :update
       end
 
+      it 'redirects to idv_in_person_verify_info_url' do
+        put :update
+        expect(response).to redirect_to(idv_in_person_verify_info_url)
+      end
+
       context 'when pii_from_user is blank' do
         it 'redirects' do
           flow_session[:pii_from_user] = {}
