@@ -6,14 +6,11 @@ module Proofing
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
-      def initialize(should_proof_state_id:, double_address_verification:)
-        @should_proof_state_id = should_proof_state_id
-        @double_address_verification = double_address_verification
-      end
-
       def proof(
         applicant_pii:,
+        double_address_verification:,
         request_ip:,
+        should_proof_state_id:,
         threatmetrix_session_id:,
         timer:,
         user_email:
@@ -26,18 +23,22 @@ module Proofing
           user_email: user_email,
         )
 
+        applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
+
         resolution_result = proof_resolution(
           applicant_pii: applicant_pii,
           timer: timer,
         )
-        state_id_result = proof_state_id(
+        state_id_result = proof_state_id_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
           resolution_result: resolution_result,
+          should_proof_state_id: should_proof_state_id,
         )
 
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
+          double_address_verification: double_address_verification,
           resolution_result: resolution_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
@@ -45,8 +46,6 @@ module Proofing
       end
 
       private
-
-      attr_reader :should_proof_state_id, :double_address_verification
 
       def proof_with_threatmetrix_if_needed(
         applicant_pii:,
@@ -75,37 +74,24 @@ module Proofing
         end
       end
 
-      def threatmetrix_disabled_result
-        Proofing::DdpResult.new(
-          success: true,
-          client: 'tmx_disabled',
-          review_status: 'pass',
-        )
-      end
-
       def proof_resolution(applicant_pii:, timer:)
-        resolution_result = nil
         timer.time('resolution') do
-          resolution_result = resolution_proofer.proof(pii_with_state_id_address(applicant_pii))
+          resolution_proofer.proof(applicant_pii)
         end
-
-        resolution_result
       end
 
-      def proof_state_id(applicant_pii:, timer:,
-                         resolution_result:)
-        state_id_result = Proofing::StateIdResult.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
-        )
-
-        if should_proof_state_id &&
-           user_can_pass_after_state_id_check?(resolution_result)
-          timer.time('state_id') do
-            state_id_result = state_id_proofer.proof(pii_with_state_id_address(applicant_pii))
-          end
+      def proof_state_id_if_needed(
+        applicant_pii:, timer:,
+        resolution_result:,
+        should_proof_state_id:
+      )
+        unless should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
+          return out_of_aamva_jurisdiction_result
         end
 
-        state_id_result
+        timer.time('state_id') do
+          state_id_proofer.proof(applicant_pii)
+        end
       end
 
       def user_can_pass_after_state_id_check?(resolution_result)
@@ -122,10 +108,21 @@ module Proofing
         results_that_cannot_pass_aamva.blank?
       end
 
-      def pii_with_state_id_address(applicant_pii)
-        return with_state_id_address(applicant_pii) if double_address_verification
+      def threatmetrix_disabled_result
+        Proofing::DdpResult.new(
+          success: true,
+          client: 'tmx_disabled',
+          review_status: 'pass',
+        )
+      end
 
-        applicant_pii
+      def out_of_aamva_jurisdiction_result
+        Proofing::StateIdResult.new(
+          errors: {},
+          exception: nil,
+          success: true,
+          vendor_name: 'UnsupportedJurisdiction',
+        )
       end
 
       def lexisnexis_ddp_proofer

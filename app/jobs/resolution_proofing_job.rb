@@ -34,11 +34,6 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    @resolution_proofer = Proofing::Resolution::ProgressiveProofer.new(
-      should_proof_state_id: should_proof_state_id,
-      double_address_verification: double_address_verification,
-    )
-
     user = User.find_by(id: user_id)
 
     callback_log_data = make_vendor_proofing_requests(
@@ -47,6 +42,8 @@ class ResolutionProofingJob < ApplicationJob
       applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
+      should_proof_state_id: should_proof_state_id,
+      double_address_verification: double_address_verification,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -64,26 +61,28 @@ class ResolutionProofingJob < ApplicationJob
 
   private
 
-  attr_reader :resolution_proofer
-
   # @return [CallbackLogData]
   def make_vendor_proofing_requests(
-    timer:,
-    user:,
     applicant_pii:,
+    double_address_verification:,
+    request_ip:,
+    should_proof_state_id:,
     threatmetrix_session_id:,
-    request_ip:
+    timer:,
+    user:
   )
     result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
+      double_address_verification: double_address_verification,
       request_ip: request_ip,
+      should_proof_state_id: should_proof_state_id,
       threatmetrix_session_id: threatmetrix_session_id,
       timer: timer,
       user_email: user&.confirmed_email_addresses&.first&.email,
     )
 
-    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
     log_threatmetrix_info(result.device_profiling_result, user)
+    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,
@@ -111,5 +110,10 @@ class ResolutionProofingJob < ApplicationJob
 
   def logger_info_hash(hash)
     logger.info(hash.to_json)
+  end
+
+  def resolution_proofer
+    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
+    @resolution_proofer
   end
 end
