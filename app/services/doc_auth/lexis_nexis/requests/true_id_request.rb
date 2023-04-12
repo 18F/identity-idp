@@ -2,7 +2,7 @@ module DocAuth
   module LexisNexis
     module Requests
       class TrueIdRequest < DocAuth::LexisNexis::Request
-        attr_reader :front_image, :back_image, :selfie_image, :liveness_checking_enabled
+        attr_reader :front_image, :back_image
 
         def initialize(
           config:,
@@ -10,15 +10,11 @@ module DocAuth
           uuid_prefix:,
           front_image:,
           back_image:,
-          selfie_image: nil,
-          liveness_checking_enabled: nil,
           image_source: nil
         )
           super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
           @back_image = back_image
-          @selfie_image = selfie_image
-          @liveness_checking_enabled = liveness_checking_enabled
           @image_source = image_source
         end
 
@@ -33,15 +29,12 @@ module DocAuth
             },
           }
 
-          document[:Document][:Selfie] = encode(selfie_image) if liveness_checking_enabled
-
           settings.merge(document).to_json
         end
 
         def handle_http_response(http_response)
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
-            liveness_checking_enabled,
             config,
           )
         end
@@ -63,11 +56,7 @@ module DocAuth
         end
 
         def workflow
-          if liveness_checking_enabled && acuant_sdk_source?
-            config.trueid_liveness_nocropping_workflow
-          elsif liveness_checking_enabled && !acuant_sdk_source?
-            config.trueid_liveness_cropping_workflow
-          elsif !liveness_checking_enabled && acuant_sdk_source?
+          if acuant_sdk_source?
             config.trueid_noliveness_nocropping_workflow
           else
             config.trueid_noliveness_cropping_workflow

@@ -6,28 +6,21 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
 
-    before_action :confirm_idv_steps_complete
-    before_action :confirm_idv_phone_confirmed
+    before_action :confirm_verify_info_step_complete
+    before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
 
-    def confirm_idv_steps_complete
-      return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
-      return redirect_to(idv_phone_url) unless idv_address_complete?
-    end
-
-    def confirm_idv_phone_confirmed
-      return unless idv_session.address_verification_mechanism == 'phone'
-      return if idv_session.phone_confirmed?
-      redirect_to idv_otp_verification_path
-    end
-
     def confirm_current_password
       return if valid_password?
 
-      analytics.idv_review_complete(success: false)
+      analytics.idv_review_complete(
+        success: false,
+        fraud_review_pending: current_user.fraud_review_pending?,
+        fraud_rejection: current_user.fraud_rejection?,
+      )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
       flash[:error] = t('idv.errors.incorrect_password')
@@ -36,7 +29,9 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      analytics.idv_review_info_visited
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:encrypt, :view, true)
+      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -52,14 +47,24 @@ module Idv
 
       init_profile
 
-      log_reproof_event if idv_session.profile.has_proofed_before?
-
       user_session[:need_personal_key_confirmation] = true
 
       redirect_to next_step
 
-      analytics.idv_review_complete(success: true)
-      analytics.idv_final(success: true)
+      analytics.idv_review_complete(
+        success: true,
+        fraud_review_pending: idv_session.profile.fraud_review_pending?,
+        fraud_rejection: idv_session.profile.fraud_rejection?,
+        deactivation_reason: idv_session.profile.deactivation_reason,
+      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verified, :view, true)
+      analytics.idv_final(
+        success: true,
+        fraud_review_pending: idv_session.profile.fraud_review_pending?,
+        fraud_rejection: idv_session.profile.fraud_rejection?,
+        deactivation_reason: idv_session.profile.deactivation_reason,
+      )
 
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
@@ -67,8 +72,8 @@ module Idv
 
     private
 
-    def log_reproof_event
-      irs_attempts_api_tracker.idv_reproof
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
     end
 
     def flash_message_content
@@ -80,14 +85,6 @@ module Idv
       end
     end
 
-    def idv_profile_complete?
-      idv_session.profile_confirmation == true
-    end
-
-    def idv_address_complete?
-      idv_session.address_mechanism_chosen?
-    end
-
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
@@ -96,12 +93,11 @@ module Idv
       end
 
       if idv_session.profile.active?
-        event = create_user_event_with_disavowal(:account_verified)
+        event, _disavowal_token = create_user_event(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
           sp_name: decorated_session.sp_name,
-          disavowal_token: event.disavowal_token,
         )
       end
     end
@@ -125,7 +121,15 @@ module Idv
     end
 
     def next_step
-      idv_personal_key_url
+      if gpo_user_flow?
+        idv_come_back_later_url
+      else
+        idv_personal_key_url
+      end
+    end
+
+    def gpo_user_flow?
+      idv_session.address_verification_mechanism == 'gpo'
     end
 
     def handle_request_enroll_exception(err)

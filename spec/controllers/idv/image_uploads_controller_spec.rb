@@ -1,8 +1,13 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadsController do
+  let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
+  let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
+
   describe '#create' do
-    subject(:action) { post :create, params: params }
+    subject(:action) do
+      post :create, params: params
+    end
 
     let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
@@ -12,15 +17,22 @@ describe Idv::ImageUploadsController do
         front_image_metadata: '{"glare":99.99}',
         back: DocAuthImageFixtures.document_back_image_multipart,
         back_image_metadata: '{"glare":99.99}',
-        selfie: DocAuthImageFixtures.selfie_image_multipart,
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: 'standard',
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
+    let(:store_encrypted_images) { false }
+
+    before do
+      allow(controller).to receive(:store_encrypted_images?).and_return(store_encrypted_images)
+    end
+
     before do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
+      allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
+        and_return(false)
     end
 
     context 'when fields are missing' do
@@ -61,7 +73,7 @@ describe Idv::ImageUploadsController do
           any_args,
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
           any_args,
         )
@@ -117,9 +129,21 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
-          any_args,
+          { address: nil,
+            date_of_birth: nil,
+            document_back_image_filename: nil,
+            document_expiration: nil,
+            document_front_image_filename: nil,
+            document_image_encryption_key: nil,
+            document_issued: nil,
+            document_number: nil,
+            document_state: nil,
+            failure_reason: { front: ['The selection was not a valid file.'] },
+            first_name: nil,
+            last_name: nil,
+            success: false },
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -217,9 +241,27 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event).with(
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :idv_document_upload_rate_limited,
+        )
+
+        # This is the last upload which triggers the rate limit, apparently.
+        # I do find this moderately confusing.
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
           :idv_document_upload_submitted,
-          any_args,
+          { address: nil,
+            date_of_birth: nil,
+            document_back_image_filename: nil,
+            document_expiration: nil,
+            document_front_image_filename: nil,
+            document_image_encryption_key: nil,
+            document_issued: nil,
+            document_number: nil,
+            document_state: nil,
+            failure_reason: { limit: ['We could not verify your ID'] },
+            first_name: nil,
+            last_name: nil,
+            success: false },
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -295,6 +337,9 @@ describe Idv::ImageUploadsController do
           :idv_document_upload_submitted,
           success: true,
           failure_reason: nil,
+          document_back_image_filename: nil,
+          document_front_image_filename: nil,
+          document_image_encryption_key: nil,
           document_state: 'MT',
           document_number: '1111111111111',
           document_issued: '2019-12-31',
@@ -308,6 +353,27 @@ describe Idv::ImageUploadsController do
         action
 
         expect_funnel_update_counts(user, 1)
+      end
+
+      context 'encrypted document storage is enabled' do
+        let(:store_encrypted_images) { true }
+
+        it 'includes image fields in attempts api event' do
+          stub_attempts_tracker
+
+          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+            :idv_document_upload_submitted,
+            hash_including(
+              success: true,
+              failure_reason: nil,
+              document_back_image_filename: match(document_filename_regex),
+              document_front_image_filename: match(document_filename_regex),
+              document_image_encryption_key: match(base64_regex),
+            ),
+          )
+
+          action
+        end
       end
 
       context 'but doc_pii validation fails' do
@@ -333,6 +399,35 @@ describe Idv::ImageUploadsController do
               },
             ),
           )
+        end
+
+        context 'encrypted document storage is enabled' do
+          let(:store_encrypted_images) { true }
+          let(:first_name) { nil }
+
+          it 'includes image references in attempts api' do
+            stub_attempts_tracker
+
+            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+              :idv_document_upload_submitted,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
+              document_state: 'ND',
+              document_number: nil,
+              document_issued: nil,
+              document_expiration: nil,
+              first_name: nil,
+              last_name: 'MCFAKERSON',
+              date_of_birth: '10/06/1938',
+              address: nil,
+              document_back_image_filename: match(document_filename_regex),
+              document_front_image_filename: match(document_filename_regex),
+              document_image_encryption_key: match(base64_regex),
+            )
+
+            action
+          end
         end
 
         context 'due to invalid Name' do
@@ -394,8 +489,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the full name on your ID. Try taking new pictures.'] },
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -404,6 +500,9 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
             )
 
             action
@@ -469,8 +568,9 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['Try taking new pictures.'] },
               document_state: 'Maryland',
               document_number: nil,
               document_issued: nil,
@@ -479,6 +579,9 @@ describe Idv::ImageUploadsController do
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
               address: nil,
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
             )
 
             action
@@ -544,8 +647,12 @@ describe Idv::ImageUploadsController do
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
               :idv_document_upload_submitted,
-              success: true,
-              failure_reason: nil,
+              success: false,
+              failure_reason: { pii:
+                ['We couldn’t read the birth date on your ID. Try taking new pictures.'] },
+              document_back_image_filename: nil,
+              document_front_image_filename: nil,
+              document_image_encryption_key: nil,
               document_state: 'ND',
               document_number: nil,
               document_issued: nil,
@@ -582,14 +689,13 @@ describe Idv::ImageUploadsController do
         expect(json[:errors]).to eq [
           {
             field: 'front',
-            message: 'We couldn’t verify the front of your ID. Try taking a new picture.',
+            message: I18n.t('doc_auth.errors.general.multiple_front_id_failures'),
           },
         ]
       end
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -626,22 +732,6 @@ describe Idv::ImageUploadsController do
           flow_path: 'standard',
         )
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: false,
-          failure_reason: {
-            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
-          },
-          document_state: nil,
-          document_number: nil,
-          document_issued: nil,
-          document_expiration: nil,
-          first_name: nil,
-          last_name: nil,
-          date_of_birth: nil,
-          address: nil,
-        )
-
         action
 
         expect_funnel_update_counts(user, 1)
@@ -668,7 +758,6 @@ describe Idv::ImageUploadsController do
 
       it 'tracks events' do
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).with(
           'IdV: doc auth image upload form submitted',
@@ -705,23 +794,6 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
-        )
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :idv_document_upload_submitted,
-          success: false,
-          failure_reason: {
-            general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
-            back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
-          },
-          document_state: nil,
-          document_number: nil,
-          document_issued: nil,
-          document_expiration: nil,
-          first_name: nil,
-          last_name: nil,
-          date_of_birth: nil,
-          address: nil,
         )
 
         action

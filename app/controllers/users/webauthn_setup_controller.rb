@@ -3,11 +3,15 @@ module Users
     include MfaSetupConcern
     include RememberDeviceConcern
     include SecureHeadersConcern
+    include ReauthenticationRequiredConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
+    before_action :confirm_recently_authenticated_2fa, if: -> do
+      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+    end
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -65,7 +69,7 @@ module Users
     end
 
     def delete
-      if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
       else
         handle_failed_delete
@@ -183,17 +187,12 @@ module Users
         else
           flash.now[:error] = t('errors.webauthn_setup.unique_name')
         end
-
-        render :new
+      elsif form.platform_authenticator?
+        flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
-        if form.platform_authenticator?
-          flash[:error] = t('errors.webauthn_platform_setup.general_error')
-        else
-          flash[:error] = t('errors.webauthn_setup.general_error')
-        end
-
-        redirect_to account_two_factor_authentication_path
+        flash[:error] = t('errors.webauthn_setup.general_error')
       end
+      render :new
     end
 
     def mark_user_as_fully_authenticated

@@ -1,7 +1,6 @@
-require 'core_extensions/string/permit'
+# frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  String.include CoreExtensions::String::Permit
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern
@@ -29,15 +28,8 @@ class ApplicationController < ActionController::Base
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
-  prepend_before_action :set_x_request_url
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  # Workaround that helps our JS fetch polyfill. See:
-  # https://www.npmjs.com/package/whatwg-fetch#user-content-obtaining-the-response-url
-  def set_x_request_url
-    response.headers['X-Request-URL'] = request.url
-  end
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -73,6 +65,7 @@ class ApplicationController < ActionController::Base
         sp: current_sp&.issuer,
         session: session,
         ahoy: ahoy,
+        irs_session_id: irs_attempts_api_session_id,
       )
   end
 
@@ -88,13 +81,13 @@ class ApplicationController < ActionController::Base
       sp: current_sp,
       cookie_device_uuid: cookies[:device],
       sp_request_uri: decorated_session.request_url_params[:redirect_uri],
-      enabled_for_session: irs_attempt_api_enabled_for_session?,
+      enabled_for_session: irs_attempts_api_enabled_for_session?,
       analytics: analytics,
     )
   end
 
-  def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+  def irs_attempts_api_enabled_for_session?
+    current_sp&.irs_attempts_api_enabled?
   end
 
   def irs_attempts_api_session_id
@@ -260,7 +253,15 @@ class ApplicationController < ActionController::Base
 
   def user_needs_to_reactivate_account?
     return false if current_user.decorate.password_reset_profile.blank?
+    return false if pending_profile_newer_than_password_reset_profile?
     sp_session[:ial2] == true
+  end
+
+  def pending_profile_newer_than_password_reset_profile?
+    return false if current_user.decorate.pending_profile.blank?
+    return false if current_user.decorate.password_reset_profile.blank?
+    current_user.decorate.pending_profile.created_at >
+      current_user.decorate.password_reset_profile.updated_at
   end
 
   def reauthn_param
@@ -299,13 +300,6 @@ class ApplicationController < ActionController::Base
       )
   end
 
-  def two_factor_kantara_enabled?
-    return false if controller_path == 'additional_mfa_required'
-    return false if user_session[:skip_kantara_req]
-    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
-      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
-  end
-
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
@@ -322,8 +316,6 @@ class ApplicationController < ActionController::Base
       return prompt_to_verify_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       return prompt_to_setup_mfa
-    elsif two_factor_kantara_enabled?
-      return prompt_to_setup_non_restricted_mfa
     elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
       return prompt_to_verify_sp_required_mfa
     end
@@ -372,10 +364,6 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_verify_sp_required_mfa
     redirect_to sp_required_mfa_verification_url
-  end
-
-  def prompt_to_setup_non_restricted_mfa
-    redirect_to login_additional_mfa_required_url
   end
 
   def sp_required_mfa_verification_url
@@ -433,23 +421,22 @@ class ApplicationController < ActionController::Base
     session.fetch(:sp, {})
   end
 
+  # Retrieves the current service provider session hash's logged request URL, if present
+  # Conditionally sets the final_auth_request service provider session attribute
+  # when applicable (the original SP request is SAML)
   def sp_session_request_url_with_updated_params
-    # Temporarily place SAML route update behind a feature flag
-    if IdentityConfig.store.saml_internal_post
-      return unless sp_session[:request_url].present?
-      request_url = URI(sp_session[:request_url])
-      url = if request_url.path.match?('saml')
-              complete_saml_url
-            else
-              # Login.gov redirects to the orginal request_url after a user authenticates
-              # replace prompt=login with prompt=select_account to prevent sign_out
-              # which should only ever occur once when the user
-              # lands on Login.gov with prompt=login
-              sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
-            end
-    else
-      url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
-    end
+    return unless sp_session[:request_url].present?
+    request_url = URI(sp_session[:request_url])
+    url = if request_url.path.match?('saml')
+            sp_session[:final_auth_request] = true
+            complete_saml_url
+          else
+            # Login.gov redirects to the orginal request_url after a user authenticates
+            # replace prompt=login with prompt=select_account to prevent sign_out
+            # which should only ever occur once when the user
+            # lands on Login.gov with prompt=login
+            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+          end
 
     # If the user has changed the locale, we should preserve that as well
     if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param

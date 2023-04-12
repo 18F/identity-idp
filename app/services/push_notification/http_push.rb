@@ -64,7 +64,13 @@ module PushNotification
     def jwt(service_provider)
       payload = jwt_payload(service_provider)
 
-      JWT.encode(payload, AppArtifacts.store.oidc_private_key, 'RS256', typ: 'secevent+jwt')
+      JWT.encode(
+        payload,
+        AppArtifacts.store.oidc_private_key,
+        'RS256',
+        typ: 'secevent+jwt',
+        kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
+      )
     end
 
     def jwt_payload(service_provider)

@@ -366,4 +366,135 @@ describe 'FeatureManagement' do
       expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
+
+  describe '#proofing_device_profiling_collecting_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(false)
+    end
+    it 'returns true for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_collecting_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:emnabled)
+      expect { FeatureManagement.proofing_device_profiling_collecting_enabled? }.
+        to raise_error
+    end
+  end
+
+  describe '#proofing_device_profiling_decisioning_enabled?' do
+    it 'returns false for disabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:disabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns false for collect_only' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:collect_only)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(false)
+    end
+    it 'returns true for enabled' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      expect(FeatureManagement.proofing_device_profiling_decisioning_enabled?).to eq(true)
+    end
+    it 'raises for invalid value' do
+      expect(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:dissabled)
+      expect { FeatureManagement.proofing_device_profiling_decisioning_enabled? }.
+        to raise_error
+    end
+  end
+
+  describe '.phone_recaptcha_enabled?' do
+    let(:recaptcha_site_key_v2) { '' }
+    let(:recaptcha_site_key_v3) { '' }
+    let(:recaptcha_secret_key_v2) { '' }
+    let(:recaptcha_secret_key_v3) { '' }
+    let(:phone_recaptcha_score_threshold) { 0.0 }
+
+    subject(:phone_recaptcha_enabled) { FeatureManagement.phone_recaptcha_enabled? }
+
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v2).
+        and_return(recaptcha_site_key_v2)
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v3).
+        and_return(recaptcha_site_key_v3)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v2).
+        and_return(recaptcha_secret_key_v2)
+      allow(IdentityConfig.store).to receive(:recaptcha_secret_key_v3).
+        and_return(recaptcha_secret_key_v3)
+      allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).
+        and_return(phone_recaptcha_score_threshold)
+    end
+
+    it { expect(phone_recaptcha_enabled).to eq(false) }
+
+    context 'with configured recaptcha v2 site key' do
+      let(:recaptcha_site_key_v2) { 'key' }
+
+      it { expect(phone_recaptcha_enabled).to eq(false) }
+
+      context 'with configured recaptcha v2 secret key' do
+        let(:recaptcha_secret_key_v2) { 'key' }
+
+        it { expect(phone_recaptcha_enabled).to eq(false) }
+
+        context 'with configured recaptcha v3 site key' do
+          let(:recaptcha_site_key_v3) { 'key' }
+
+          it { expect(phone_recaptcha_enabled).to eq(false) }
+
+          context 'with configured recaptcha v2 secret key' do
+            let(:recaptcha_secret_key_v3) { 'key' }
+
+            it { expect(phone_recaptcha_enabled).to eq(false) }
+
+            context 'with configured default success rate threshold greater than 0' do
+              let(:phone_recaptcha_score_threshold) { 1.0 }
+
+              it { expect(phone_recaptcha_enabled).to eq(true) }
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#idv_available?' do
+    let(:idv_available) { true }
+    let(:vendor_status_acuant) { :operational }
+    let(:vendor_status_lexisnexis_instant_verify) { :operational }
+    let(:vendor_status_lexisnexis_trueid) { :operational }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_available).and_return(idv_available)
+      allow(IdentityConfig.store).to receive(:vendor_status_acuant).and_return(vendor_status_acuant)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_instant_verify).
+        and_return(vendor_status_lexisnexis_instant_verify)
+      allow(IdentityConfig.store).to receive(:vendor_status_lexisnexis_trueid).
+        and_return(vendor_status_lexisnexis_trueid)
+    end
+
+    it 'returns true by default' do
+      expect(FeatureManagement.idv_available?).to eql(true)
+    end
+
+    context 'idv has been disabled using config flag' do
+      let(:idv_available) { false }
+      it 'returns false' do
+        expect(FeatureManagement.idv_available?).to eql(false)
+      end
+    end
+
+    %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
+      context "#{service} is in :full_outage" do
+        let("vendor_status_#{service}".to_sym) { :full_outage }
+        it 'returns false' do
+          expect(FeatureManagement.idv_available?).to eql(false)
+        end
+      end
+    end
+  end
 end

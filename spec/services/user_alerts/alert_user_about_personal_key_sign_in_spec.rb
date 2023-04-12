@@ -27,18 +27,14 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
 
       expect_delivered_email_count(2)
       expect_delivered_email(
-        0, {
-          to: [confirmed_email_addresses[0].email],
-          subject: t('user_mailer.personal_key_sign_in.subject'),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[0].email],
+        subject: t('user_mailer.personal_key_sign_in.subject'),
+        body: [disavowal_token],
       )
       expect_delivered_email(
-        1, {
-          to: [confirmed_email_addresses[1].email],
-          subject: t('user_mailer.personal_key_sign_in.subject'),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[1].email],
+        subject: t('user_mailer.personal_key_sign_in.subject'),
+        body: [disavowal_token],
       )
     end
   end

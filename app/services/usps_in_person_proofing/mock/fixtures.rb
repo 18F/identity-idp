@@ -1,12 +1,28 @@
 module UspsInPersonProofing
   module Mock
     class Fixtures
+      def self.internal_server_error_response
+        load_response_fixture('internal_server_error_response.json')
+      end
+
+      def self.request_expired_token_response
+        load_response_fixture('request_expired_token_response.json')
+      end
+
       def self.request_token_response
         load_response_fixture('request_token_response.json')
       end
 
       def self.request_facilities_response
         load_response_fixture('request_facilities_response.json')
+      end
+
+      def self.request_facilities_response_with_unordered_distance
+        load_response_fixture('request_facilities_response_with_unordered_distance.json')
+      end
+
+      def self.request_facilities_response_with_duplicates
+        load_response_fixture('request_facilities_response_with_duplicates.json')
       end
 
       def self.request_show_usps_location_response
@@ -23,10 +39,6 @@ module UspsInPersonProofing
 
       def self.request_enroll_bad_request_response
         load_response_fixture('request_enroll_failed_response.json')
-      end
-
-      def self.request_enroll_internal_failure_response
-        load_response_fixture('request_enroll_internal_failure_response.json')
       end
 
       def self.request_enroll_invalid_response
@@ -47,6 +59,18 @@ module UspsInPersonProofing
 
       def self.request_expired_proofing_results_response
         load_response_fixture('request_expired_proofing_results_response.json')
+      end
+
+      def self.request_unexpected_expired_proofing_results_response
+        load_response_fixture('request_unexpected_expired_proofing_results_response.json')
+      end
+
+      def self.request_unexpected_invalid_applicant_response
+        load_response_fixture('request_unexpected_invalid_applicant_response.json')
+      end
+
+      def self.request_unexpected_invalid_enrollment_code_response
+        load_response_fixture('request_unexpected_invalid_enrollment_code_response.json')
       end
 
       def self.request_no_post_office_proofing_results_response

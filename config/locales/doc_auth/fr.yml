@@ -5,7 +5,6 @@ fr:
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
       document_capture_dialog: Capture du document
-      selfie_alt_text: Une photo téléversée
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
@@ -14,7 +13,6 @@ fr:
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
-      use_phone: Utilisez votre téléphone
     errors:
       alerts:
         barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre
@@ -50,9 +48,6 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n’avons pas pu associer votre photo à votre pièce
-          d’identité. Essayez de prendre une nouvelle photo de vous-même ou du
-          recto de votre carte d’identité.
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
         visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
@@ -89,16 +84,13 @@ fr:
           ou PNG.
       general:
         fallback_field_level: Veuillez ajouter une nouvelle image
-        liveness: Nous n’avons pas pu vérifier votre pièce d’identité et votre photo.
-          Essayez de prendre de nouvelles photos.
         multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce
           d’identité. Essayez de prendre une nouvelle photo.
         multiple_front_id_failures: Nous n’avons pas pu vérifier le recto de votre pièce
           d’identité. Essayez de prendre une nouvelle photo.
         network_error: Nous avons des difficultés techniques de notre côté. Veuillez
           essayer de soumettre à nouveau vos images plus tard.
-        no_liveness: Nous n’avons pas pu vérifier votre pièce d’identité. Essayez de
-          prendre de nouvelles photos.
+        no_liveness: Essayez de prendre de nouvelles photos.
       glare:
         failed_short: L’image a des reflets, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. Votre photo peut avoir
@@ -152,48 +144,63 @@ fr:
         veuillez %{link} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
+      combined_upload: Comment voulez-vous ajouter votre identifiant ?
+      combined_upload_from_computer: Continuer sur cet ordinateur
+      combined_upload_from_phone: Utilisez votre téléphone pour prendre des photos
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
-      photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
-      selfie: Prenez une photo de vous-même
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
-      take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
-      upload: Comment souhaitez-vous télécharger votre carte d’identité délivrée par
-        l’État?
-      upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
-        votre pièce d’identité
-      upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
-        votre pièce d’identité et prendre une photo de vous-même
-      upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
+    hybrid_flow_warning:
+      explanation_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre
+        identité et accéder à <strong>%{service_provider_name}</strong> et à ses
+        services.
+      explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre identité.
+      only_add_if_text: 'N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :'
+      only_add_own_account_html: Vous utilisez votre propre compte %{app_name}
+      only_add_phone_verify_html: Vous avez demandé à %{app_name} de vérifier votre
+        identité en utilisant votre téléphone
+      only_add_sp_services_html: Vous essayez d’accéder aux services de
+        <strong>%{service_provider_name}</strong>
     info:
-      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
+      address_guidance_puerto_rico_html: Pour les résidents de Porto
+        Rico:<br><br>Veuillez indiquer l’urbanisation ou la copropriété à la
+        ligne 2 de votre adresse.
       capture_status_big_document: Trop près
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
-      document_capture_intro_acknowledgment: Nous collecterons des informations sur
-        vous en lisant votre pièce d’identité officielle. Nous ne stockons pas
-        les images que vous téléchargez. Nous vérifions uniquement votre
-        identité.
+      combined_upload: Nous recueillons des informations sur vous en lisant votre
+        carte d’identité délivrée par l’État.
+      combined_upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les
+        photos de votre carte d’identité depuis cet ordinateur.
+      combined_upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez
+        sur cet ordinateur après avoir pris des photos. Votre téléphone portable
+        doit être équipé d’un appareil photo et d’un navigateur web.
+      document_capture_intro_acknowledgment: Nous recueillons des informations sur
+        vous en lisant votre pièce d’identité délivrée par l’État. Nous
+        utilisons ces informations pour vérifier votre identité.
       image_loaded: Image chargée
       image_loading: Chargement de l’image
       image_updated: Image mise à jour
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
         chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.
       interstitial_thanks: Merci de votre patience!
+      irs_reproofing_explanation: Comme mesure de sécurité supplémentaire, vous devez
+        vérifier à nouveau votre identité pour l’IRS.
       keep_window_open: Ne fermez pas cette fenêtre.
+      learn_more: En savoir plus sur la façon dont nous protégeons vos informations
+        confidentielles
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l’État.
@@ -203,81 +210,46 @@ fr:
         fois que vous aurez confirmé votre identifiant à l’aide de votre
         téléphone.
       no_sp_name: L’agence à laquelle vous essayez d’accéder
-      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
+      privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
-        n’utilisons vos données uniquement pour vérifier votre identité. %{link}
-        sur nos mesures de confidentialité et de sécurité.'
+        utilisons vos données pour vérifier votre identité.'
       secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
         chiffrage signifie que vos données sont protégées et que vous êtes le/la
         seul(e) à pouvoir accéder à vos informations ou les modifier.
-      ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
-        nom, date de naissance et adresse. Votre numéro de sécurité sociale est
-        crypté. Avec votre accord, nous partageons ce informations auprès de
-        l’agence gouvernementale à laquelle vous essayez d’accéder pour vérifier
-        votre identité.
+      ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
+        nom, date de naissance et adresse.
       tag: Recommandation
-      take_picture: Utilisez l’appareil photo sur votre téléphone portable et
-        téléchargez des images de votre identifiant. Nous utilisons uniquement
-        les images pour vérifier votre identité.
-      upload: Nous recueillons des informations vous concernant en lisant votre carte
+      upload: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
-      upload_computer_link: Téléchargez depuis votre ordinateur
-      upload_from_computer: Vous n’avez pas de téléphone?
-      upload_from_computer_not_allowed: Connectez-vous à votre compte %{app_name} sur
-        tout appareil doté d’une caméra, comme une tablette ou un ordinateur
-        avec une caméra Web.
-      upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
-        votre téléphone
-      upload_liveness_enabled: Nous recueillons des informations sur vous en lisant
-        votre carte d’identité délivrée par l’État. Ensuite, vous prendrez une
-        photo de vous-même pour confirmer que vous êtes bien le propriétaire de
-        la carte d’identité.
-      upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
+      you_entered: 'Tu as soumis:'
     instructions:
-      bullet1: Votre carte d’identité émise par l’État
-      bullet1a: Un appareil équipé d’une caméra
-      bullet2: Votre numéro de sécurité sociale
-      bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
+      bullet1: Carte d’identité délivrée par l’État
+      bullet2: Numéro de sécurité sociale
+      bullet3: Numéro de téléphone OU adresse du domicile
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
-        conserver et partager vos renseignements personnels. Nous ne les
-        utiliserons que pour vérifier votre identité.
-      document_capture_selfie_consent_action: '<lg-underline>Autorisez l’accès à la
-        caméra</lg-underline> et recherchez une notification dans votre
-        navigateur ou vérifiez les paramètres de votre système pour confirmer
-        l’accès à la caméra.'
-      document_capture_selfie_consent_banner: '%{app_name} a besoin d’une autorisation
-        pour utiliser la caméra de votre appareil'
-      document_capture_selfie_consent_blocked: '%{app_name} a besoin d’une
-        autorisation pour utiliser votre caméra afin que vous puissiez prouver
-        que votre identifiant vous appartient.'
-      document_capture_selfie_consent_blocked_action: Vérifiez les paramètres de votre
-        navigateur Web pour ce site ou les paramètres système de votre
-        ordinateur pour permettre à %{app_name} d’accéder à la caméra.
-      document_capture_selfie_instructions: Maintenant, prenez une photo de vous. Nous
-        le comparerons à l’image au recto de votre pièce d’identité.
-      email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et
-        suivez les instructions pour vérifier votre identité.
-      learn_more: En savoir plus
+        conserver et partager vos renseignements personnels. Nous les utilisons
+        pour vérifier votre identité.
+      learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       privacy: Nos normes de confidentialité et de sécurité
-      send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
-        ce lien vers votre navigateur pour prendre des photos du recto et du
-        verso de votre identifiant.
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
       switch_back_image: Flèche pointant du téléphone vers l’ordinateur
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1a: tel qu’un téléphone ou un ordinateur
-      text2: Vous n’aurez pas besoin de la carte avec vous.
-      text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte
-        de votre forfait téléphonique. Si votre numéro de téléphone ne
-        fonctionne pas, nous pouvons vous envoyer un code de vérification par
-        courrier.
-      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
+      text1: Votre carte d’identité ne doit pas être expirée.
+      text2: Vous n’aurez pas besoin de la carte sur vous.
+      text3_html:
+        - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
+          enverrons un SMS à votre numéro de téléphone. Cela prend quelques
+          minutes.'
+        - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
+          lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
+          ouvrables.'
+      welcome: 'Vous aurez besoin de votre:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
       capture_troubleshooting_clean: Assurez-vous que le code-barres ne soit pas
@@ -300,18 +272,9 @@ fr:
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d’au moins 2 Mo
-      document_capture_selfie_text1: Faites face à l’appareil photo et assurez-vous
-        que toute votre tête est visible sur la photo
-      document_capture_selfie_text2: Prenez une photo avec un arrière-plan uni
-      document_capture_selfie_text3: Ne pas porter de chapeau ou de lunettes
       review_issues_id_header_text: 'Examinez les images de votre carte d’identité délivrée par l’État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
-      review_issues_selfie_header_text: 'Examinez l’auto-portrait:'
-      review_issues_selfie_text1: Êtes-vous face à la caméra?
-      review_issues_selfie_text2: Est-ce que vous avez toute la tête et le visage sur la photo?
-      review_issues_selfie_text3: La photo est-elle sur un fond uni?
-      review_issues_selfie_text4: Votre visage est-il entièrement visible, sans être
         couvert par un chapeau ou des lunettes?

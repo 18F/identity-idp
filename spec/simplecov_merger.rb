@@ -4,12 +4,49 @@ require_relative '../spec/simplecov_helper'
 
 module SimpleCov
   module ResultMerger
+    RSPEC_FILENAME_REGEX = %r{^(?<filename>[-_\w\d/.]+(?<extension>\.rb)?)}
     def self.merging!
       SimplecovHelper.configure
       fix_gitlab_paths if ENV['GITLAB_CI']
       SimpleCov.collate Dir['coverage/**/.resultset.json'] do
         merge_timeout 365 * 24 * 3600
       end
+
+      merge_json_reports
+    end
+
+    def self.merge_json_reports
+      merged_hash = {
+        'examples' => [],
+        'summary' => {
+          'example_count' => 0,
+          'failure_count' => 0,
+          'pending_count' => 0,
+          'errors_outside_of_examples_count' => 0,
+        },
+        'seed' => nil,
+        'version' => nil,
+        'summary_line' => nil,
+      }
+      Dir['rspec_json/*.json'].each do |file|
+        file_json = JSON.parse(File.read(file))
+        merged_hash['summary']['example_count'] += file_json['summary']['example_count']
+        merged_hash['summary']['failure_count'] += file_json['summary']['failure_count']
+        merged_hash['summary']['pending_count'] += file_json['summary']['pending_count']
+        merged_hash['summary']['errors_outside_of_examples_count'] +=
+          file_json['summary']['errors_outside_of_examples_count']
+        merged_hash['examples'] += file_json['examples']
+      end
+
+      File.write('rspec_json/rspec.json', merged_hash.to_json)
+
+      knapsack = merged_hash['examples'].group_by do |x|
+        RSPEC_FILENAME_REGEX.match(x['id'][2..])[:filename]
+      end.map do |filename, examples|
+        [filename, examples.map { |x| x['run_time'] }.sum]
+      end.sort.to_h
+
+      File.write('knapsack_rspec_report.json', JSON.pretty_generate(knapsack))
     end
 
     # simple_cov has SimpleCov.collate to merge coverage results, but it uses absolute paths.

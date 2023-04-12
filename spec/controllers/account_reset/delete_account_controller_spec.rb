@@ -34,26 +34,6 @@ describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to account_reset_confirm_delete_account_url
     end
 
-    it 'logs a good token to the attempts api' do
-      user = create(:user, :signed_up, :with_backup_code)
-      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
-      create_list(:webauthn_configuration, 2, user: user)
-      create_account_reset_request_for(user)
-      grant_request(user)
-
-      session[:granted_token] = AccountResetRequest.first.granted_token
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
-        success: true,
-        failure_reason: nil,
-      )
-
-      delete :delete
-
-      expect(response).to redirect_to account_reset_confirm_delete_account_url
-    end
-
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
       stub_analytics
@@ -72,18 +52,6 @@ describe AccountReset::DeleteAccountController do
 
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(invalid_token_message)
-    end
-
-    it 'logs an error in irs attempts tracker' do
-      session[:granted_token] = 'foo'
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
-        success: false,
-        failure_reason: invalid_token_error,
-      )
-
-      delete :delete
     end
 
     it 'displays a flash and redirects to root if the token is missing' do

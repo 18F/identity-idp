@@ -5,11 +5,7 @@
       heading: t('doc_auth.errors.no_camera.heading'),
     ) do %>
   <p>
-    <% if liveness_checking_enabled? %>
-      <%= t('doc_auth.info.upload_liveness_enabled') %>
-    <% else %>
-      <%= t('doc_auth.info.upload') %>
-    <% end %>
+    <%= t('doc_auth.info.upload') %>
   </p>
 
   <p class="text-bold">

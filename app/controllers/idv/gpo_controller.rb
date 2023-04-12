@@ -7,13 +7,14 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
-    before_action :confirm_gpo_allowed_if_strict_ial2
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_address, :view, true)
       analytics.idv_gpo_address_visited(
-        letter_already_sent: @presenter.letter_already_sent?,
+        letter_already_sent: @presenter.resend_requested?,
       )
     end
 
@@ -46,21 +47,17 @@ module Idv
     end
 
     def update_tracking
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:usps_letter_sent, :update, true)
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
-      ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
+      ProofingComponent.find_or_create_by(user: current_user).update(address_check: 'gpo_letter')
     end
 
     def resend_requested?
       current_user.decorate.pending_profile_requires_verification?
-    end
-
-    def confirm_gpo_allowed_if_strict_ial2
-      return unless sp_session[:ial2_strict]
-      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
-      redirect_to idv_phone_url
     end
 
     def confirm_mail_not_spammed
@@ -72,7 +69,7 @@ module Idv
       # If the user has a pending profile, they may have completed idv in a
       # different session and need a letter resent now
       return if current_user.decorate.pending_profile_requires_verification?
-      return if idv_session.profile_confirmation == true
+      return if idv_session.verify_info_step_complete?
 
       redirect_to idv_doc_auth_url
     end

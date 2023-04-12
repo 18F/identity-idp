@@ -6,7 +6,7 @@ describe('trackEvent', () => {
   const sandbox = useSandbox();
 
   beforeEach(() => {
-    sandbox.stub(window, 'fetch');
+    sandbox.stub(global, 'fetch').resolves();
   });
 
   context('page configuration does not exist', () => {
@@ -14,7 +14,7 @@ describe('trackEvent', () => {
       const result = await trackEvent('name');
 
       expect(result).to.be.undefined();
-      expect(window.fetch).not.to.have.been.called();
+      expect(global.fetch).not.to.have.been.called();
     });
   });
 
@@ -30,10 +30,10 @@ describe('trackEvent', () => {
         const result = await trackEvent('name');
 
         expect(result).to.be.undefined();
-        expect(window.fetch).to.have.been.calledWith(
+        expect(global.fetch).to.have.been.calledWith(
           endpoint,
           sandbox.match({
-            body: '{"event":"name","payload":{}}',
+            body: '{"event":"name"}',
             headers: { 'Content-Type': 'application/json' },
             method: 'POST',
           }),
@@ -46,7 +46,7 @@ describe('trackEvent', () => {
         const result = await trackEvent('name', { foo: 'bar' });
 
         expect(result).to.be.undefined();
-        expect(window.fetch).to.have.been.calledWith(
+        expect(global.fetch).to.have.been.calledWith(
           endpoint,
           sandbox.match({
             body: '{"event":"name","payload":{"foo":"bar"}}',
@@ -59,7 +59,7 @@ describe('trackEvent', () => {
 
     context('a network error occurs in the request', () => {
       beforeEach(() => {
-        (window.fetch as SinonStub).rejects(new TypeError());
+        (global.fetch as SinonStub).rejects(new TypeError());
       });
 
       it('absorbs the error', async () => {

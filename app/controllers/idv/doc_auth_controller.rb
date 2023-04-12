@@ -1,16 +1,18 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
-    before_action :redirect_if_pending_profile
     before_action :redirect_if_pending_in_person_enrollment
+    before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
     include IdvSession
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
     include Idv::ThreatMetrixConcern
+    include FraudReviewConcern
 
     before_action :redirect_if_flow_completed
+    before_action :handle_fraud
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -21,9 +23,9 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_review_url,
+      final_url: :idv_ssn_url,
       flow: Idv::Flows::DocAuthFlow,
-      analytics_id: Analytics::DOC_AUTH,
+      analytics_id: 'Doc Auth',
     }.freeze
 
     def return_to_sp
@@ -31,8 +33,6 @@ module Idv
     end
 
     def redirect_if_pending_profile
-      return if sp_session[:ial2_strict] &&
-                !IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
     end
 
@@ -70,11 +70,22 @@ module Idv
     end
 
     def check_for_outage
-      if VendorStatus.new.any_ial2_vendor_outage?
-        session[:vendor_outage_redirect] = current_step
-        session[:vendor_outage_redirect_from_idv] = true
-        redirect_to vendor_outage_url
-      end
+      return if flow_session[:skip_vendor_outage]
+
+      return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
+    end
+
+    def redirect_for_gpo_only
+      return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
+
+      # During a phone outage, skip the hybrid handoff
+      # step and go straight to document upload
+      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
+
+      session[:vendor_outage_redirect] = current_step
+      session[:vendor_outage_redirect_from_idv] = true
+
+      redirect_to idv_mail_only_warning_url
     end
   end
 end

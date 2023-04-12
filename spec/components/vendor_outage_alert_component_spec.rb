@@ -7,15 +7,15 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
 
   subject(:rendered) do
     render_inline VendorOutageAlertComponent.new(
-      vendors: vendors,
-      context: context,
-      only_if_all: only_if_all,
+      vendors:,
+      context:,
+      only_if_all:,
     )
   end
 
   context 'with no outage' do
     before do
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
     end
 
     it 'renders nothing' do
@@ -25,8 +25,8 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
 
   context 'with outage' do
     before do
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:voice).and_return(false)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:voice).and_return(false)
     end
 
     it 'renders error alert with status page url' do
@@ -55,7 +55,7 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
       let(:all_outage) { false }
 
       before do
-        allow_any_instance_of(VendorStatus).to receive(:all_vendor_outage?).and_return(all_outage)
+        allow_any_instance_of(OutageStatus).to receive(:all_vendor_outage?).and_return(all_outage)
       end
 
       it 'renders nothing' do

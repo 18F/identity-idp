@@ -98,7 +98,7 @@ RSpec.describe DocAuth::Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
-          with(anything, hash_including(:retry)).once
+          with(anything, { custom_params: hash_including(:retry) }).once
 
         response = subject.fetch
 
@@ -119,7 +119,7 @@ RSpec.describe DocAuth::Acuant::Request do
           with(DocAuth::RequestError, {}).once
 
         expect(NewRelic::Agent).to receive(:notice_error).
-          with(anything, hash_including(:retry)).twice
+          with(anything, { custom_params: hash_including(:retry) }).twice
 
         response = subject.fetch
 

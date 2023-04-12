@@ -11,6 +11,7 @@ RSpec.describe IdTokenBuilder do
       nonce: SecureRandom.hex,
       uuid: SecureRandom.uuid,
       ial: 2,
+      rails_session_id: '123',
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
@@ -72,7 +73,7 @@ RSpec.describe IdTokenBuilder do
       let(:custom_expiration) { nil }
       let(:expiration) { 100 }
 
-      before { Pii::SessionStore.new(identity.rails_session_id).put(nil, expiration) }
+      before { OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii(nil, expiration) }
 
       it 'sets the expiration to the ttl of the session key in redis' do
         expect(decoded_payload[:exp]).to eq(now.to_i + expiration)

@@ -27,17 +27,17 @@ const TARGETS = browserslistToTargets(
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir, optimize, ...sassOptions } = options;
+  const { outDir, optimize, loadPaths = [], ...sassOptions } = options;
   const sassResult = sass.compile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
-    loadPaths: ['node_modules'],
+    loadPaths: ['node_modules', ...loadPaths],
     quietDeps: true,
   });
 
   let outFile = basename(file, '.scss');
 
-  const parcelResult = lightningTransform({
+  const lightningResult = lightningTransform({
     filename: outFile,
     code: Buffer.from(sassResult.css),
     minify: optimize,
@@ -48,7 +48,7 @@ export async function buildFile(file, options) {
     outFile = join(outDir, outFile);
   }
 
-  await writeFile(outFile, parcelResult.code);
+  await writeFile(outFile, lightningResult.code);
 
   return sassResult;
 }

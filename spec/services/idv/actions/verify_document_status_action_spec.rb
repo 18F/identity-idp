@@ -59,8 +59,12 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
         expect(analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
-          success: true,
+          attention_with_barcode: false,
           errors: {},
+          flow_path: 'standard',
+          remaining_attempts: 4,
+          success: true,
+          user_id: nil,
         )
       end
 
@@ -116,25 +120,6 @@ describe Idv::Actions::VerifyDocumentStatusAction do
           )
         end
       end
-
-      context 'ial2 strict' do
-        let(:sp_session) { { ial2_strict: true } }
-
-        before do
-          allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        end
-
-        it 'adds costs' do
-          subject.call
-
-          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
-            'acuant_front_image',
-            'acuant_back_image',
-            'acuant_selfie',
-            'acuant_result',
-          )
-        end
-      end
     end
 
     context 'with no document capture session' do
@@ -147,6 +132,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         expect(analytics).to have_logged_event(
           'Doc Auth Async',
           error: 'failed to load verify_document_capture_session',
+          result_id: nil,
           uuid: nil,
         )
       end

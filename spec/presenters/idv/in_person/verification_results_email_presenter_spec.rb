@@ -58,6 +58,25 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
     end
   end
 
+  describe '#service_provider_homepage_url' do
+    context 'without service provider' do
+      let(:sp) { nil }
+
+      it 'returns nil' do
+        expect(presenter.service_provider_homepage_url).to eq(nil)
+      end
+    end
+
+    context 'with service provider' do
+      let(:sp_url) { 'https://service.provider.gov' }
+      let(:sp) { create(:service_provider, return_to_sp_url: sp_url) }
+
+      it 'returns SP homepage url' do
+        expect(presenter.service_provider_homepage_url).to eq(sp_url)
+      end
+    end
+  end
+
   describe '#show_cta?' do
     context 'without service provider' do
       let(:sp) { nil }

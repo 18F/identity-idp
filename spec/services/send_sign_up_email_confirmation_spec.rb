@@ -25,11 +25,9 @@ describe SendSignUpEmailConfirmation do
       subject.call(request_id: request_id, instructions: instructions)
       expect_delivered_email_count(1)
       expect_delivered_email(
-        0, {
-          to: [user.email_addresses.first.email],
-          subject: t('user_mailer.email_confirmation_instructions.subject'),
-          body: [request_id, instructions],
-        }
+        to: [user.email_addresses.first.email],
+        subject: t('user_mailer.email_confirmation_instructions.subject'),
+        body: [request_id, instructions],
       )
     end
 
@@ -43,10 +41,8 @@ describe SendSignUpEmailConfirmation do
 
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [email_address.email],
-            subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
-          }
+          to: [email_address.email],
+          subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
         )
       end
     end
@@ -84,11 +80,9 @@ describe SendSignUpEmailConfirmation do
 
         expect_delivered_email_count(1)
         expect_delivered_email(
-          0, {
-            to: [user.email_addresses.first.email],
-            subject: t('user_mailer.email_confirmation_instructions.subject'),
-            body: [confirmation_token],
-          }
+          to: [user.email_addresses.first.email],
+          subject: t('user_mailer.email_confirmation_instructions.subject'),
+          body: [confirmation_token],
         )
       end
     end

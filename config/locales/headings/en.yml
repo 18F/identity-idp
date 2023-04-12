@@ -17,24 +17,25 @@ en:
     add_email: Add a new email address
     add_info:
       phone: Add a phone number
+    address: Address
     cancellations:
       prompt: Are you sure you want to cancel?
     confirmations:
       new: Send another confirmation email
+    create_account_new_users: Create an account for new users
     create_account_with_sp:
       cta: First time using %{app_name}?
       sp_text: is using %{app_name} to allow you to sign in to your account safely and
         securely.
-    create_account_without_sp: Create a %{app_name} account
     edit_info:
       password: Change your password
       phone: Manage your phone settings
+    otp_expired: Your one-time code has expired
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
       confirm_for_personal_key: Enter password and get a new personal key
       forgot: Forgot your password?
-    personal_key: Save your personal key
     piv_cac:
       certificate:
         bad: The PIV/CAC certificate you selected is invalid
@@ -58,10 +59,14 @@ en:
     piv_cac_setup:
       already_associated: The PIV/CAC you presented is associated with another user.
       new: Use your PIV/CAC card to secure your account
+    residential_address: Current residential address
     session_timeout_warning: Need more time?
+    sign_in_existing_users: Sign in for existing users
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
+    ssn: Social Security Number
+    state_id: State-issued ID
     totp_setup:
       new: Add an authentication app
     verify: Verify your information

@@ -4,59 +4,12 @@
 class Throttle
   attr_reader :throttle_type
 
-  THROTTLE_CONFIG = {
-    idv_doc_auth: {
-      max_attempts: IdentityConfig.store.doc_auth_max_attempts,
-      attempt_window: IdentityConfig.store.doc_auth_attempt_window_in_minutes,
-    },
-    reg_unconfirmed_email: {
-      max_attempts: IdentityConfig.store.reg_unconfirmed_email_max_attempts,
-      attempt_window: IdentityConfig.store.reg_unconfirmed_email_window_in_minutes,
-    },
-    reg_confirmed_email: {
-      max_attempts: IdentityConfig.store.reg_confirmed_email_max_attempts,
-      attempt_window: IdentityConfig.store.reg_confirmed_email_window_in_minutes,
-    },
-    reset_password_email: {
-      max_attempts: IdentityConfig.store.reset_password_email_max_attempts,
-      attempt_window: IdentityConfig.store.reset_password_email_window_in_minutes,
-    },
-    idv_resolution: {
-      max_attempts: IdentityConfig.store.idv_max_attempts,
-      attempt_window: IdentityConfig.store.idv_attempt_window_in_hours * 60,
-    },
-    idv_send_link: {
-      max_attempts: IdentityConfig.store.idv_send_link_max_attempts,
-      attempt_window: IdentityConfig.store.idv_send_link_attempt_window_in_minutes,
-    },
-    verify_personal_key: {
-      max_attempts: IdentityConfig.store.verify_personal_key_max_attempts,
-      attempt_window: IdentityConfig.store.verify_personal_key_attempt_window_in_minutes,
-    },
-    verify_gpo_key: {
-      max_attempts: IdentityConfig.store.verify_gpo_key_max_attempts,
-      attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
-    },
-    proof_ssn: {
-      max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
-      attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
-    },
-    proof_address: {
-      max_attempts: IdentityConfig.store.proof_address_max_attempts,
-      attempt_window: IdentityConfig.store.proof_address_max_attempt_window_in_minutes,
-    },
-    phone_confirmation: {
-      max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
-      attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
-    },
-  }.with_indifferent_access.freeze
-
   def initialize(throttle_type:, user: nil, target: nil)
     @throttle_type = throttle_type
     @user = user
     @target = target
 
-    unless THROTTLE_CONFIG.key?(throttle_type)
+    unless Throttle.throttle_config.key?(throttle_type)
       raise ArgumentError,
             'throttle_type is not valid'
     end
@@ -84,15 +37,6 @@ class Throttle
 
   def throttled?
     !expired? && maxed?
-  end
-
-  def throttled_else_increment?
-    if throttled?
-      true
-    else
-      increment!
-      false
-    end
   end
 
   def attempted_at
@@ -123,7 +67,9 @@ class Throttle
   end
 
   def increment!
+    return if throttled?
     value = nil
+
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
         multi.incr(key)
@@ -131,6 +77,18 @@ class Throttle
           key,
           Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
         )
+      end
+    end
+
+    if write_to_alternate?
+      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
+        _alternate_value, _success = client.multi do |multi|
+          multi.incr(key)
+          multi.expire(
+            key,
+            Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+          )
+        end
       end
     end
 
@@ -163,8 +121,8 @@ class Throttle
       @redis_attempted_at = nil
     else
       @redis_attempted_at =
-        Time.zone.now +
-        Throttle.attempt_window_in_minutes(throttle_type).minutes - ttl.seconds
+        Time.zone.now -
+        Throttle.attempt_window_in_minutes(throttle_type).minutes + ttl.seconds
     end
 
     self
@@ -175,19 +133,35 @@ class Throttle
       client.del(key)
     end
 
+    if write_to_alternate?
+      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
+        client.del(key)
+      end
+    end
+
     @redis_attempts = 0
     @redis_attempted_at = nil
   end
 
   def increment_to_throttled!
-    value = nil
+    value = Throttle.max_attempts(throttle_type)
+
     REDIS_THROTTLE_POOL.with do |client|
-      value = Throttle.max_attempts(throttle_type)
       client.setex(
         key,
         Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
         value,
       )
+    end
+
+    if write_to_alternate?
+      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
+        client.setex(
+          key,
+          Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+          value,
+        )
+      end
     end
 
     @redis_attempts = value.to_i
@@ -198,17 +172,85 @@ class Throttle
 
   def key
     if @user
-      "throttle:#{@user.id}:#{throttle_type}"
+      "throttle:throttle:#{@user.id}:#{throttle_type}"
     else
-      "throttle:#{@target}:#{throttle_type}"
+      "throttle:throttle:#{@target}:#{throttle_type}"
     end
   end
 
+  def write_to_alternate?
+    REDIS_THROTTLE_ALTERNATE_POOL &&
+      IdentityConfig.store.redis_throttle_alternate_pool_write_enabled
+  end
+
   def self.attempt_window_in_minutes(throttle_type)
-    THROTTLE_CONFIG.dig(throttle_type, :attempt_window)
+    throttle_config.dig(throttle_type, :attempt_window)
   end
 
   def self.max_attempts(throttle_type)
-    THROTTLE_CONFIG.dig(throttle_type, :max_attempts)
+    throttle_config.dig(throttle_type, :max_attempts)
   end
+
+  def self.throttle_config
+    if Rails.env.production?
+      CACHED_THROTTLE_CONFIG
+    else
+      load_throttle_config
+    end
+  end
+
+  def self.load_throttle_config
+    {
+      idv_doc_auth: {
+        max_attempts: IdentityConfig.store.doc_auth_max_attempts,
+        attempt_window: IdentityConfig.store.doc_auth_attempt_window_in_minutes,
+      },
+      reg_unconfirmed_email: {
+        max_attempts: IdentityConfig.store.reg_unconfirmed_email_max_attempts,
+        attempt_window: IdentityConfig.store.reg_unconfirmed_email_window_in_minutes,
+      },
+      reg_confirmed_email: {
+        max_attempts: IdentityConfig.store.reg_confirmed_email_max_attempts,
+        attempt_window: IdentityConfig.store.reg_confirmed_email_window_in_minutes,
+      },
+      reset_password_email: {
+        max_attempts: IdentityConfig.store.reset_password_email_max_attempts,
+        attempt_window: IdentityConfig.store.reset_password_email_window_in_minutes,
+      },
+      idv_resolution: {
+        max_attempts: IdentityConfig.store.idv_max_attempts,
+        attempt_window: IdentityConfig.store.idv_attempt_window_in_hours * 60,
+      },
+      idv_send_link: {
+        max_attempts: IdentityConfig.store.idv_send_link_max_attempts,
+        attempt_window: IdentityConfig.store.idv_send_link_attempt_window_in_minutes,
+      },
+      verify_personal_key: {
+        max_attempts: IdentityConfig.store.verify_personal_key_max_attempts,
+        attempt_window: IdentityConfig.store.verify_personal_key_attempt_window_in_minutes,
+      },
+      verify_gpo_key: {
+        max_attempts: IdentityConfig.store.verify_gpo_key_max_attempts,
+        attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
+      },
+      proof_ssn: {
+        max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
+        attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
+      },
+      proof_address: {
+        max_attempts: IdentityConfig.store.proof_address_max_attempts,
+        attempt_window: IdentityConfig.store.proof_address_max_attempt_window_in_minutes,
+      },
+      phone_confirmation: {
+        max_attempts: IdentityConfig.store.phone_confirmation_max_attempts,
+        attempt_window: IdentityConfig.store.phone_confirmation_max_attempt_window_in_minutes,
+      },
+      phone_otp: {
+        max_attempts: IdentityConfig.store.otp_delivery_blocklist_maxretry + 1,
+        attempt_window: IdentityConfig.store.otp_delivery_blocklist_findtime,
+      },
+    }.with_indifferent_access
+  end
+
+  CACHED_THROTTLE_CONFIG = self.load_throttle_config.with_indifferent_access.freeze
 end

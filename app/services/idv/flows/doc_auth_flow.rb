@@ -5,13 +5,8 @@ module Idv
         welcome: Idv::Steps::WelcomeStep,
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
-        send_link: Idv::Steps::SendLinkStep,
         link_sent: Idv::Steps::LinkSentStep,
-        email_sent: Idv::Steps::EmailSentStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
-        ssn: Idv::Steps::SsnStep,
-        verify: Idv::Steps::VerifyStep,
-        verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
@@ -26,20 +21,14 @@ module Idv
         { name: :getting_started },
         { name: :verify_id },
         { name: :verify_info },
-        { name: :secure_account },
         { name: :get_a_letter },
+        { name: :secure_account },
       ].freeze
 
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::VerifyWaitStepShow,
-      }.freeze
+      OPTIONAL_SHOW_STEPS = {}.freeze
 
       ACTIONS = {
-        cancel_send_link: Idv::Actions::CancelSendLinkAction,
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
-        cancel_update_ssn: Idv::Actions::CancelUpdateSsnAction,
-        redo_address: Idv::Actions::RedoAddressAction,
-        redo_ssn: Idv::Actions::RedoSsnAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
@@ -53,6 +42,13 @@ module Idv
 
       def self.session_idv(session)
         session[:idv] ||= {}
+      end
+
+      def extra_analytics_properties
+        {
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
+        }
       end
     end
   end

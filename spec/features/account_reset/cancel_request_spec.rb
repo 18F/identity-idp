@@ -7,8 +7,17 @@ describe 'Account Reset Request: Cancellation' do
       signin(user.email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
       click_link t('two_factor_authentication.account_reset.link')
-      click_button t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.recovery_options.try_method_again'),
+        )
+      click_link t('account_reset.request.yes_continue')
+      expect(page).
+        to have_content strip_tags(
+          t('account_reset.request.delete_account'),
+        )
       reset_email
+      click_button t('account_reset.request.yes_continue')
 
       travel_to(Time.zone.now + 2.days + 1) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)

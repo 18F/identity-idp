@@ -10,7 +10,7 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      analytics.idv_personal_key_visited
+      analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
       add_proofing_component
 
       finish_idv_session
@@ -18,19 +18,27 @@ module Idv
 
     def update
       user_session[:need_personal_key_confirmation] = false
-      analytics.idv_personal_key_submitted
+
+      analytics.idv_personal_key_submitted(
+        address_verification_method: address_verification_method,
+        deactivation_reason: idv_session.profile&.deactivation_reason,
+        fraud_review_pending: idv_session.profile&.fraud_review_pending?,
+        fraud_rejection: idv_session.profile&.fraud_rejection?,
+      )
       redirect_to next_step
     end
 
     private
 
+    def address_verification_method
+      user_session.dig('idv', 'address_verification_mechanism')
+    end
+
     def next_step
-      if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
-        idv_come_back_later_url
-      elsif in_person_enrollment?
+      if in_person_enrollment?
         idv_in_person_ready_to_verify_url
       elsif blocked_by_device_profiling?
-        idv_setup_errors_url
+        idv_please_call_url
       elsif session[:sp] && !pending_profile?
         sign_up_completed_url
       else
@@ -39,21 +47,23 @@ module Idv
     end
 
     def confirm_profile_has_been_created
-      redirect_to account_url if idv_session.profile.blank?
+      redirect_to account_url if profile.blank?
     end
 
     def add_proofing_component
-      ProofingComponent.create_or_find_by(user: current_user).update(verified_at: Time.zone.now)
+      ProofingComponent.find_or_create_by(user: current_user).update(verified_at: Time.zone.now)
     end
 
     def finish_idv_session
       @code = personal_key
+      @personal_key_generated_at = current_user.personal_key_generated_at
+
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
 
-      if idv_session.address_verification_mechanism == 'gpo'
-        flash.now[:success] = t('idv.messages.mail_sent')
-      else
+      irs_attempts_api_tracker.idv_personal_key_generated
+
+      if idv_session.address_verification_mechanism != 'gpo'
         flash.now[:success] = t('idv.messages.confirm')
       end
       flash[:allow_confirmations_continue] = true
@@ -63,10 +73,14 @@ module Idv
       idv_session.personal_key || generate_personal_key
     end
 
+    def profile
+      return idv_session.profile if idv_session.profile
+      current_user.active_profile
+    end
+
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
-      irs_attempts_api_tracker.idv_personal_key_generated
-      idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+      profile.encrypt_recovery_pii(cacher.fetch)
     end
 
     def in_person_enrollment?
@@ -79,11 +93,8 @@ module Idv
     end
 
     def blocked_by_device_profiling?
-      return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
-      proofing_component = ProofingComponent.find_by(user: current_user)
-      # pass users who are inbetween feature flag being enabled and have not had a check run.
-      return false if proofing_component.threatmetrix_review_status.nil?
-      proofing_component.threatmetrix_review_status != 'pass'
+      !profile.active &&
+        profile.fraud_review_pending? || profile.fraud_rejection
     end
   end
 end

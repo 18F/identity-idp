@@ -14,11 +14,13 @@
   <%= f.full_error :reset_password_token %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        label: t('forms.passwords.edit.labels.password'),
-        required: true,
+        field_options: {
+          label: t('forms.passwords.edit.labels.password'),
+          required: true,
+        },
       ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'margin-bottom-4' %>
+  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>

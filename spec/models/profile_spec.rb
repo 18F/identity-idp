@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Profile do
   let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :signed_up) }
-  let(:profile) { create(:profile, user: user) }
+  let(:profile) { user.profiles.create }
 
   let(:dob) { '1920-01-01' }
   let(:ssn) { '666-66-1234' }
@@ -46,26 +46,6 @@ describe Profile do
     end
   end
 
-  describe '#includes_liveness_check?' do
-    it 'returns true if a component for liveness is present' do
-      profile = create(:profile, proofing_components: { liveness_check: 'acuant' })
-
-      expect(profile.includes_liveness_check?).to eq(true)
-    end
-
-    it 'returns false if a component for liveness is not present' do
-      profile = create(:profile, proofing_components: { liveness_check: nil })
-
-      expect(profile.includes_liveness_check?).to eq(false)
-    end
-
-    it 'returns false if proofing_components is blank' do
-      profile = create(:profile, proofing_components: '')
-
-      expect(profile.includes_liveness_check?).to eq(false)
-    end
-  end
-
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
@@ -83,65 +63,6 @@ describe Profile do
       profile = create(:profile, proofing_components: '')
 
       expect(profile.includes_phone_check?).to eq(false)
-    end
-  end
-
-  describe '#strict_ial2_proofed?' do
-    it 'returns false if the profile is not active' do
-      profile = create(:profile, active: false)
-
-      expect(profile.strict_ial2_proofed?).to eq(false)
-    end
-
-    it 'returns false if the profile does not have liveness' do
-      proofing_components = { liveness_check: nil, address_check: :lexis_nexis_address }
-      profile = create(:profile, :active, proofing_components: proofing_components)
-
-      expect(profile.strict_ial2_proofed?).to eq(false)
-    end
-
-    context 'the letter flow is allowed for strict IAL2' do
-      before do
-        allow(IdentityConfig.store).to receive(
-          :gpo_allowed_for_strict_ial2,
-        ).and_return(true)
-      end
-
-      it 'returns true for a profile with a phone' do
-        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
-        profile = create(:profile, :active, proofing_components: proofing_components)
-
-        expect(profile.strict_ial2_proofed?).to eq(true)
-      end
-
-      it 'return true for a profile with a letter' do
-        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
-        profile = create(:profile, :active, proofing_components: proofing_components)
-
-        expect(profile.strict_ial2_proofed?).to eq(true)
-      end
-    end
-
-    context 'the letter flow is not allowed for strict IAL2' do
-      before do
-        allow(IdentityConfig.store).to receive(
-          :gpo_allowed_for_strict_ial2,
-        ).and_return(false)
-      end
-
-      it 'returns true for a profile with a phone' do
-        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
-        profile = create(:profile, :active, proofing_components: proofing_components)
-
-        expect(profile.strict_ial2_proofed?).to eq(true)
-      end
-
-      it 'return false for a profile with a letter' do
-        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
-        profile = create(:profile, :active, proofing_components: proofing_components)
-
-        expect(profile.strict_ial2_proofed?).to eq(false)
-      end
     end
   end
 
@@ -274,7 +195,7 @@ describe Profile do
     it 'prevents create! via ActiveRecord uniqueness validation' do
       profile.active = true
       profile.save!
-      expect { Profile.create!(user_id: user.id, active: true) }.
+      expect { user.profiles.create!(active: true) }.
         to raise_error(ActiveRecord::RecordInvalid)
     end
 
@@ -282,7 +203,7 @@ describe Profile do
       profile.active = true
       profile.save!
       expect do
-        another_profile = Profile.new(user_id: user.id, active: true)
+        another_profile = user.profiles.new(active: true)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end
@@ -295,7 +216,7 @@ describe Profile do
     end
 
     it 'is true when the user is re-activated' do
-      existing_profile = Profile.create(user: user)
+      existing_profile = user.profiles.create
       existing_profile.activate
       profile.activate
 
@@ -314,7 +235,7 @@ describe Profile do
 
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
-      active_profile = Profile.create(user: user, active: true)
+      active_profile = user.profiles.create(active: true)
       profile.activate
       active_profile.reload
       expect(active_profile).to_not be_active
@@ -322,7 +243,7 @@ describe Profile do
     end
 
     it 'sends a reproof completed push event' do
-      Profile.create(user: user, active: true)
+      user.profiles.create(active: true)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::ReproofCompletedEvent.new(user: user))
 
@@ -341,15 +262,231 @@ describe Profile do
 
       profile.activate
     end
+
+    it 'does not activate a profile if under fraud review' do
+      profile.update(fraud_review_pending_at: 1.day.ago)
+      profile.activate
+
+      expect(profile).to_not be_active
+    end
+
+    it 'does not activate a profile if rejected for fraud' do
+      profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+      profile.activate
+
+      expect(profile).to_not be_active
+    end
   end
 
   describe '#deactivate' do
-    it 'sets active flag to false' do
+    let(:deactivation_reason) { :password_reset }
+    let(:profile) do
       profile = create(:profile, :active, user: user)
-      profile.deactivate(:password_reset)
+      profile.deactivate(deactivation_reason)
+      profile
+    end
 
+    it 'sets active flag to false' do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
+    end
+  end
+
+  describe '#activate_after_passing_review' do
+    it 'activates a profile if it passes fraud review' do
+      profile = create(
+        :profile, user: user, active: false,
+                  fraud_review_pending_at: 1.day.ago
+      )
+      profile.activate_after_passing_review
+
+      expect(profile).to be_active
+    end
+
+    context 'when the initiating_sp is the IRS' do
+      let(:sp) { create(:service_provider, :irs) }
+      let(:profile) do
+        create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending_at: 1.day.ago,
+          initiating_service_provider: sp,
+        )
+      end
+
+      context 'when the feature flag is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
+            and_return(true)
+        end
+
+        it 'logs an attempt event' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+            with(
+              hash_including(decision: 'pass'),
+            )
+          profile.activate_after_passing_review
+        end
+      end
+
+      context 'when the feature flag is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
+            and_return(false)
+        end
+
+        it 'does not log an attempt event' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+          expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
+          profile.activate_after_passing_review
+        end
+      end
+    end
+
+    context 'when the initiating_sp is not the IRS' do
+      it 'does not log an attempt event' do
+        sp = create(:service_provider)
+        profile = create(
+          :profile,
+          user: user,
+          active: false,
+          fraud_review_pending_at: 1.day.ago,
+          initiating_service_provider: sp,
+        )
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
+
+        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
+        profile.activate_after_passing_review
+      end
+    end
+  end
+
+  describe '#deactivate_for_fraud_review' do
+    it 'sets fraud_review_pending to true' do
+      profile = create(:profile, user: user)
+      profile.deactivate_for_fraud_review
+
+      expect(profile).to_not be_active
+      expect(profile.fraud_review_pending).to eq(true)
+      expect(profile.fraud_review_pending_at).to_not be_nil
+      expect(profile.fraud_rejection).to eq(false)
+      expect(profile.fraud_rejection_at).to be_nil
+    end
+  end
+
+  describe '#reject_for_fraud' do
+    before do
+      # This is necessary because UserMailer reaches into the
+      # controller's params. As this is a model spec, we have to fake
+      # the params object.
+      fake_params = ActionController::Parameters.new(
+        user: OpenStruct.new(id: 'fake_user_id'),
+        email_address: OpenStruct.new(user_id: 'fake_user_id', email: 'fake_user@test.com'),
+      )
+      allow_any_instance_of(UserMailer).to receive(:params).and_return(fake_params)
+    end
+
+    context 'it notifies the user' do
+      let(:profile) do
+        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile.reject_for_fraud(notify_user: true)
+        profile
+      end
+
+      it 'sets fraud_rejection to true' do
+        expect(profile).to_not be_active
+      end
+
+      it 'sends an email' do
+        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+
+      it 'sets the fraud_rejection_at timestamp' do
+        expect(profile.fraud_rejection_at).to_not be_nil
+      end
+    end
+
+    context 'it does not notify the user' do
+      let(:profile) do
+        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile.reject_for_fraud(notify_user: false)
+        profile
+      end
+
+      it 'does not send an email' do
+        expect(profile).to_not be_active
+
+        expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+      end
+    end
+
+    context 'when the SP is the IRS' do
+      let(:sp) { create(:service_provider, :irs) }
+      let(:profile) do
+        user.profiles.create(
+          active: false,
+          fraud_review_pending_at: 1.day.ago,
+          initiating_service_provider: sp,
+        )
+      end
+
+      context 'and notify_user is true' do
+        it 'logs an event with manual_reject' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
+            and_return(true)
+
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+            with(
+              hash_including(decision: 'manual_reject'),
+            )
+
+          profile.reject_for_fraud(notify_user: true)
+        end
+      end
+
+      context 'and notify_user is false' do
+        it 'logs an event with automatic_reject' do
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
+            and_return(true)
+
+          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
+
+          expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
+            with(
+              hash_including(decision: 'automatic_reject'),
+            )
+
+          profile.reject_for_fraud(notify_user: false)
+        end
+      end
+    end
+
+    context 'when the SP is not the IRS' do
+      it 'does not log an event' do
+        sp = create(:service_provider)
+        profile = user.profiles.create(
+          active: false,
+          fraud_review_pending_at: 1.day.ago,
+          initiating_service_provider: sp,
+        )
+        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+
+        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
+
+        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
+
+        profile.reject_for_fraud(notify_user: true)
+      end
     end
   end
 

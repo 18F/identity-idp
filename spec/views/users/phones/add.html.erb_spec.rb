@@ -7,13 +7,13 @@ describe 'users/phones/add.html.erb' do
 
   before do
     user = build_stubbed(:user)
-    @new_phone_form = NewPhoneForm.new(user)
+    @new_phone_form = NewPhoneForm.new(user:)
   end
 
   context 'phone vendor outage' do
     before do
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
-      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
+      allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
     end
 
     it 'renders alert banner' do

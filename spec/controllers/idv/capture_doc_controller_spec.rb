@@ -97,7 +97,6 @@ describe Idv::CaptureDocController do
           locals: hash_including(
             :back_image_upload_url,
             :front_image_upload_url,
-            :selfie_image_upload_url,
             :flow_session,
             step_template: 'idv/capture_doc/document_capture',
             flow_namespace: 'idv',
@@ -134,16 +133,44 @@ describe Idv::CaptureDocController do
         expect(response).to_not be_not_found
       end
 
-      it 'tracks expected events' do
+      it 'tracks expected events for irs reproofing' do
+        allow_any_instance_of(UserDecorator).to receive(:reproof_for_irs?).and_return(true)
         mock_next_step(:capture_complete)
-        result = { step: 'capture_complete', flow_path: 'hybrid', step_count: 1 }
+        result = {
+          step: 'capture_complete',
+          flow_path: 'hybrid',
+          irs_reproofing: true,
+          step_count: 1,
+          analytics_id: 'Doc Auth',
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+        }
 
         get :show, params: { step: 'capture_complete' }
 
         expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase, result
+          'IdV: doc auth capture_complete visited', result
+        )
+      end
+
+      it 'tracks expected events' do
+        mock_next_step(:capture_complete)
+        result = {
+          step: 'capture_complete',
+          flow_path: 'hybrid',
+          irs_reproofing: false,
+          step_count: 1,
+          analytics_id: 'Doc Auth',
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+        }
+
+        get :show, params: { step: 'capture_complete' }
+
+        expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
+
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: doc auth capture_complete visited', result
         )
       end
 
@@ -156,11 +183,11 @@ describe Idv::CaptureDocController do
         expect(@irs_attempts_api_tracker).not_to have_received(:idv_phone_upload_link_used)
 
         expect(@analytics).to have_received(:track_event).ordered.with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase,
+          'IdV: doc auth capture_complete visited',
           hash_including(step: 'capture_complete', step_count: 1),
         )
         expect(@analytics).to have_received(:track_event).ordered.with(
-          'IdV: ' + "#{Analytics::DOC_AUTH} capture_complete visited".downcase,
+          'IdV: doc auth capture_complete visited',
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end

@@ -9,7 +9,7 @@ shared_examples 'failed idv phone job' do
   context 'the proofer raises an error' do
     before do
       fill_out_phone_form_error
-      click_idv_continue
+      click_idv_send_security_code
     end
 
     it 'renders a jobfail failure screen' do
@@ -22,7 +22,7 @@ shared_examples 'failed idv phone job' do
   context 'the proofer times out' do
     before do
       fill_out_phone_form_timeout
-      click_idv_continue
+      click_idv_send_security_code
     end
 
     it 'renders a timeout failure screen' do

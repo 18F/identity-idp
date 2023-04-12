@@ -15,6 +15,30 @@ shared_examples_for 'an idv phone errors controller action' do
 
       expect(response).to render_template(template)
     end
+
+    it 'logs an event' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
+    end
+
+    context 'fetch() request from form-steps-wait JS' do
+      before do
+        request.headers['X-Form-Steps-Wait'] = '1'
+      end
+      it 'returns an empty response' do
+        get action
+        expect(response).to have_http_status(204)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with('IdV: phone error visited', anything)
+        get action
+      end
+    end
   end
 
   context 'the user is authenticated and has confirmed their phone' do
@@ -26,13 +50,32 @@ shared_examples_for 'an idv phone errors controller action' do
 
       expect(response).to redirect_to(idv_review_url)
     end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
+    end
   end
 
   context 'the user is not authenticated and not recovering their account' do
+    let(:user) { nil }
     it 'redirects to sign in' do
       get action
 
       expect(response).to redirect_to(new_user_session_url)
+    end
+    it 'does not log an event' do
+      expect(@analytics).not_to receive(:track_event).with(
+        'IdV: phone error visited',
+        hash_including(
+          type: action,
+        ),
+      )
+      get action
     end
   end
 end
@@ -41,11 +84,21 @@ describe Idv::PhoneErrorsController do
   let(:idv_session) { double }
   let(:idv_session_user_phone_confirmation) { false }
   let(:user) { nil }
+  let(:phone) { '3602345678' }
+  let(:country_code) { 'US' }
+  let(:previous_phone_step_params) do
+    {
+      phone: phone,
+      international_code: country_code,
+    }
+  end
 
   before do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
     allow(idv_session).to receive(:current_user).and_return(user)
+    allow(idv_session).to receive(:previous_phone_step_params).
+      and_return(previous_phone_step_params)
     allow(subject).to receive(:remaining_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
@@ -57,12 +110,28 @@ describe Idv::PhoneErrorsController do
   describe '#warning' do
     let(:action) { :warning }
     let(:template) { 'idv/phone_errors/warning' }
+    let(:user) { create(:user) }
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
-      let(:user) { create(:user) }
+    it 'assigns phone' do
+      get action
+      expect(assigns(:phone)).to eql(phone)
+    end
 
+    it 'assigns country_code' do
+      get action
+      expect(assigns(:country_code)).to eql(country_code)
+    end
+
+    context 'not knowing about a phone just entered' do
+      let(:previous_phone_step_params) { nil }
+      it 'does not crash' do
+        get action
+      end
+    end
+
+    context 'with throttle attempts' do
       before do
         Throttle.new(throttle_type: :proof_address, user: user).increment!
       end
@@ -74,12 +143,13 @@ describe Idv::PhoneErrorsController do
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_attempts: 4 }
-
         get action
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: phone error visited', logged_attributes)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: phone error visited',
+          type: action,
+          remaining_attempts: 4,
+        )
       end
     end
   end
@@ -125,12 +195,13 @@ describe Idv::PhoneErrorsController do
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_attempts: 4 }
-
         get action
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: phone error visited', logged_attributes)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: phone error visited',
+          type: action,
+          remaining_attempts: 4,
+        )
       end
     end
   end
@@ -161,15 +232,14 @@ describe Idv::PhoneErrorsController do
       it 'logs an event' do
         freeze_time do
           throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
-          logged_attributes = {
-            type: action,
-            throttle_expires_at: attempted_at + throttle_window,
-          }
 
           get action
 
-          expect(@analytics).to have_received(:track_event).
-            with('IdV: phone error visited', logged_attributes)
+          expect(@analytics).to have_received(:track_event).with(
+            'IdV: phone error visited',
+            type: action,
+            throttle_expires_at: attempted_at + throttle_window,
+          )
         end
       end
     end

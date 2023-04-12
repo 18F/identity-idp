@@ -13,7 +13,7 @@ feature 'Changing authentication factor' do
     scenario 'editing password' do
       visit manage_password_path
 
-      expect(page).to have_content t('help_text.change_factor', factor: 'password')
+      expect(current_path).to eq login_two_factor_options_path
 
       complete_2fa_confirmation
 
@@ -27,20 +27,27 @@ feature 'Changing authentication factor' do
         user = sign_in_and_2fa_user
         phone_configuration = MfaContext.new(user).phone_configurations.first
         old_phone = phone_configuration.phone
+        parsed_phone = Phonelib.parse(old_phone)
 
         travel(IdentityConfig.store.reauthn_window + 1)
         visit manage_phone_path(id: phone_configuration)
         complete_2fa_confirmation_without_entering_otp
-        click_link t('links.two_factor_authentication.get_another_code')
+        click_link t('links.two_factor_authentication.send_another_code')
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: user.reload.direct_otp,
           to: old_phone,
           expiration: 10,
           channel: :sms,
+          otp_format: 'digit',
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
-        )
+          extra_metadata: {
+            area_code: parsed_phone.area_code,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+            resend: 'true',
+          },
+        ).once
 
         expect(current_path).
           to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -62,6 +69,29 @@ feature 'Changing authentication factor' do
     end
   end
 
+  context 'when logged in at AAL1' do
+    it 'requires 2FA authentication to manage 2FA configurations' do
+      user = user_with_2fa
+      sign_in_with_warden(user, auth_method: 'remember_device')
+
+      # Ensure reauthentication context does not prompt incorrectly
+      visit webauthn_setup_path
+      expect(current_path).to eq login_two_factor_options_path
+
+      visit add_phone_path
+      expect(current_path).to eq login_two_factor_options_path
+
+      find("label[for='two_factor_options_form_selection_sms']").click
+      click_on t('forms.buttons.continue')
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      expect(current_path).to eq add_phone_path
+
+      visit add_phone_path
+      expect(current_path).to eq add_phone_path
+    end
+  end
+
   def complete_2fa_confirmation
     complete_2fa_confirmation_without_entering_otp
     fill_in_code_with_last_phone_otp
@@ -69,10 +99,10 @@ feature 'Changing authentication factor' do
   end
 
   def complete_2fa_confirmation_without_entering_otp
-    expect(current_path).to eq user_password_confirm_path
+    expect(current_path).to eq login_two_factor_options_path
 
-    fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
-    click_button t('forms.buttons.continue')
+    find("label[for='two_factor_options_form_selection_sms']").click
+    click_on t('forms.buttons.continue')
 
     expect(current_path).to eq login_two_factor_path(
       otp_delivery_preference: user.otp_delivery_preference,
@@ -97,19 +127,5 @@ feature 'Changing authentication factor' do
   def submit_correct_otp
     fill_in_code_with_last_phone_otp
     click_submit_default
-  end
-
-  describe 'attempting to bypass current password entry' do
-    it 'does not allow bypassing this step' do
-      sign_in_and_2fa_user
-      travel(IdentityConfig.store.reauthn_window + 1) do
-        visit manage_password_path
-        expect(current_path).to eq user_password_confirm_path
-
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-
-        expect(current_path).to eq user_password_confirm_path
-      end
-    end
   end
 end

@@ -3,7 +3,7 @@ module DocCaptureHelper
     allow_any_instance_of(Browser).to receive(:mobile?).and_return(false)
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_link_sent_step
-    url = Telephony::Test::Message.messages.last.body.split(' ').first
+    url = Telephony::Test::Message.messages.last.body.split(' ')[1]
     allow_any_instance_of(Browser).to receive(:mobile?).and_call_original
     URI.parse(url).request_uri
   end

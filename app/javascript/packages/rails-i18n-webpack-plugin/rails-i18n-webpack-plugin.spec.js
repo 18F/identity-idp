@@ -123,6 +123,69 @@ describe('RailsI18nWebpackPlugin', () => {
       },
     );
   });
+
+  context('in production mode', () => {
+    it('adds hash suffix to javascript locale assets', (done) => {
+      webpack(
+        {
+          mode: 'production',
+          devtool: false,
+          entry: path.resolve(__dirname, 'spec/fixtures/production/in.js'),
+          plugins: [
+            new RailsI18nWebpackPlugin({
+              configPath: path.resolve(__dirname, 'spec/fixtures/locales'),
+            }),
+            new WebpackAssetsManifest({
+              entrypoints: true,
+              publicPath: true,
+              writeToDisk: true,
+              output: 'actualmanifest.json',
+            }),
+          ],
+          externals: {
+            '@18f/identity-i18n': '_i18n_',
+          },
+          output: {
+            path: path.resolve(__dirname, 'spec/fixtures/production'),
+            filename: 'actual[name].js',
+          },
+        },
+        async (webpackError) => {
+          try {
+            expect(webpackError).to.be.null();
+            const manifest = JSON.parse(
+              await fs.readFile(
+                path.resolve(__dirname, 'spec/fixtures/production/actualmanifest.json'),
+                'utf-8',
+              ),
+            );
+
+            expect(manifest).to.deep.equal({
+              'actualmain-3b0c232b.en.js': 'actualmain-3b0c232b.en.js',
+              'actualmain-a43216c8.es.js': 'actualmain-a43216c8.es.js',
+              'actualmain.js': 'actualmain.js',
+              entrypoints: {
+                main: {
+                  assets: {
+                    js: [
+                      'actualmain.js',
+                      'actualmain-3b0c232b.en.js',
+                      'actualmain-a43216c8.es.js',
+                      'actualmain-3b0c232b.fr.js',
+                    ],
+                  },
+                },
+              },
+              'main.js': 'actualmain-3b0c232b.fr.js',
+            });
+            done();
+          } catch (error) {
+            done(error);
+          }
+        },
+      );
+    });
+  });
 });
 
 describe('dig', () => {

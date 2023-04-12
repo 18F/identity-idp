@@ -51,6 +51,7 @@ describe FrontendLogController do
               'IdV: in person proofing location submitted',
               selected_location: selected_location,
               flow_path: flow_path,
+              in_person_cta_variant: nil,
             )
             expect(response).to have_http_status(:ok)
             expect(json[:success]).to eq(true)
@@ -64,7 +65,9 @@ describe FrontendLogController do
 
               expect(fake_analytics).to have_logged_event(
                 'IdV: in person proofing location submitted',
+                flow_path: nil,
                 selected_location: nil,
+                in_person_cta_variant: nil,
               )
             end
           end
@@ -77,6 +80,19 @@ describe FrontendLogController do
         it 'succeeds' do
           expect(fake_analytics).to receive(:track_event).
             with("Frontend: #{event}", payload)
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
+      context 'without payload' do
+        let(:params) { { 'event' => event } }
+
+        it 'succeeds' do
+          expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", {})
 
           action
 
@@ -112,16 +128,6 @@ describe FrontendLogController do
           expect(fake_analytics).not_to receive(:track_event)
 
           params.delete('event')
-          action
-
-          expect(response).to have_http_status(:bad_request)
-          expect(json[:success]).to eq(false)
-        end
-
-        it 'rejects a request without specifying payload' do
-          expect(fake_analytics).not_to receive(:track_event)
-
-          params.delete('payload')
           action
 
           expect(response).to have_http_status(:bad_request)

@@ -5,7 +5,7 @@
     margin-bottom: 0;
   }
 
-  &.troubleshooting-options--divider::before {
+  &::before {
     @include u-margin-bottom(4);
     background-color: color('secondary');
     content: '';

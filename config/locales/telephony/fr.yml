@@ -7,31 +7,31 @@ fr:
       votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
+      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+        minutes.
     confirmation_otp:
       sms: |-
-        %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
-        expirera dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+      voice: Bonjour! Votre code à usage unique de six %{format_type} pour %{app_name}
+        est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
+        votre code à usage unique est %{code}. Ce code expire dans %{expiration}
+    doc_auth_link: |-
+      %{app_name}: %{link} Vous vérifiez votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
     error:
       friendly_message:
-        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car vous
-          avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
-          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou
+        daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car
+          vous avez dépassé le nombre maximal d’appels vers ce numéro de
+          téléphone en 24 heures. Vous pouvez demander un code par SMS ou
           utiliser un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
-        generic: Échec de l’envoi de votre code de sécurité.
+        generic: Votre code à usage unique n'a pas été envoyé.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
           charge. Veuillez essayer par SMS si vous possédez un téléphone
           disposant de cette fonction.
@@ -49,6 +49,9 @@ fr:
           plus tard.
         voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
           bon indicatif international ou régional.
+    format_type:
+      character: caractère
+      digit: chiffres
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
       votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.

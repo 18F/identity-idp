@@ -13,7 +13,7 @@ RSpec.describe UserMailerPreview do
   it 'has a preview method for each mailer method' do
     mailer_methods = UserMailer.instance_methods(false)
     preview_methods = UserMailerPreview.instance_methods(false)
-    mailer_helper_methods = [:email_address, :user, :validate_user_and_email_address]
+    mailer_helper_methods = [:email_address, :user, :validate_user_and_email_address, :add_metadata]
     expect(mailer_methods - mailer_helper_methods - preview_methods).to be_empty
   end
 

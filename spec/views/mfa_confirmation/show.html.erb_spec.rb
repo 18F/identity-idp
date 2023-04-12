@@ -5,7 +5,6 @@ describe 'mfa_confirmation/show.html.erb' do
   let(:decorated_user) { user.decorate }
 
   before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:enforce_second_mfa?).and_return(true)
     @content = MfaConfirmationPresenter.new(user)

@@ -17,6 +17,12 @@ module UspsInPersonProofing
         enrollment.enrollment_established_at = Time.zone.now
         enrollment.save!
 
+        analytics(user: user).usps_ippaas_enrollment_created(
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+          service_provider: enrollment.service_provider&.issuer,
+        )
+
         send_ready_to_verify_email(user, enrollment)
       end
 
@@ -28,28 +34,36 @@ module UspsInPersonProofing
         end
       end
 
-      def establishing_in_person_enrollment_for_user(user)
-        enrollment = user.establishing_in_person_enrollment
-        return enrollment if enrollment.present?
-
-        InPersonEnrollment.create!(user: user, profile: nil)
-      end
-
+      # Create and start tracking an in-person enrollment with USPS
+      #
+      # @param [InPersonEnrollment] enrollment The new enrollment record for tracking the enrollment
+      # @param [Pii::Attributes] pii The PII associated with the in-person enrollment
+      # @return [String] The enrollment code
+      # @raise [Exception::RequestEnrollException] Raised with a problem creating the enrollment
       def create_usps_enrollment(enrollment, pii)
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
-        address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
+        pii = pii.to_h
+
+        # If we're using secondary ID capture (aka double address verification),
+        # then send the state ID address to USPS. Otherwise send the residential address.
+        if enrollment.capture_secondary_id_enabled? && !enrollment.current_address_matches_id?
+          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
+            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        end
+
+        address = [pii[:address1], pii[:address2]].select(&:present?).join(' ')
 
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: unique_id,
-            first_name: pii['first_name'],
-            last_name: pii['last_name'],
-            address: address,
-            city: pii['city'],
-            state: pii['state'],
-            zip_code: pii['zipcode'],
+            first_name: transliterate(pii[:first_name]),
+            last_name: transliterate(pii[:last_name]),
+            address: transliterate(address),
+            city: transliterate(pii[:city]),
+            state: pii[:state],
+            zip_code: pii[:zipcode],
             email: 'no-reply@login.gov',
           },
         )
@@ -70,8 +84,6 @@ module UspsInPersonProofing
           each(&:cancelled!)
       end
 
-      private
-
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
@@ -80,6 +92,16 @@ module UspsInPersonProofing
         end
       end
 
+      private
+
+      SECONDARY_ID_ADDRESS_MAP = {
+        state_id_address1: :address1,
+        state_id_address2: :address2,
+        state_id_city: :city,
+        state_id_state: :state,
+        state_id_zipcode: :zipcode,
+      }.freeze
+
       def handle_bad_request_error(err, enrollment)
         message = err.response.dig(:body, 'responseMessage') || err.message
         raise Exception::RequestEnrollException.new(message, err, enrollment.id)
@@ -87,6 +109,25 @@ module UspsInPersonProofing
 
       def handle_standard_error(err, enrollment)
         raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
+      end
+
+      def analytics(user: AnonymousUser.new)
+        Analytics.new(user: user, request: nil, session: {}, sp: nil)
+      end
+
+      def transliterate(value)
+        return value unless IdentityConfig.store.usps_ipp_transliteration_enabled
+
+        result = transliterator.transliterate(value)
+        if result.unsupported_chars.present?
+          result.original
+        else
+          result.transliterated
+        end
+      end
+
+      def transliterator
+        Transliterator.new
       end
     end
   end

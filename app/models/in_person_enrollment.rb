@@ -21,6 +21,29 @@ class InPersonEnrollment < ApplicationRecord
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_create(:set_unique_id, unless: :unique_id)
+  before_create(:set_capture_secondary_id)
+
+  def self.is_pending_and_established_between(early_benchmark, late_benchmark)
+    where(status: :pending).
+      and(
+        where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+      ).
+      order(enrollment_established_at: :asc)
+  end
+
+  def self.needs_early_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(early_reminder_sent: false)
+  end
+
+  def self.needs_late_email_reminder(early_benchmark, late_benchmark)
+    self.is_pending_and_established_between(
+      early_benchmark,
+      late_benchmark,
+    ).where(late_reminder_sent: false)
+  end
 
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
@@ -50,6 +73,11 @@ class InPersonEnrollment < ApplicationRecord
     (Time.zone.now - status_check_attempted_at).seconds.in_minutes.round(2)
   end
 
+  def minutes_since_last_status_check_completed
+    return unless status_check_completed_at.present?
+    (Time.zone.now - status_check_completed_at).seconds.in_minutes.round(2)
+  end
+
   def minutes_since_last_status_update
     return unless status_updated_at.present?
     (Time.zone.now - status_updated_at).seconds.in_minutes.round(2)
@@ -63,6 +91,16 @@ class InPersonEnrollment < ApplicationRecord
   # Generates a random 18-digit string, the hex returns a string of length n*2
   def self.generate_unique_id
     SecureRandom.hex(9)
+  end
+
+  def due_date
+    start_date = enrollment_established_at.presence || created_at
+    start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
+  end
+
+  def days_to_due_date
+    today = DateTime.now
+    (today...due_date).count
   end
 
   private
@@ -81,6 +119,12 @@ class InPersonEnrollment < ApplicationRecord
     unless profile.user == user
       errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
                  type: :in_person_enrollment_user_profile_mismatch
+    end
+  end
+
+  def set_capture_secondary_id
+    if IdentityConfig.store.in_person_capture_secondary_id_enabled
+      self.capture_secondary_id_enabled = true
     end
   end
 end

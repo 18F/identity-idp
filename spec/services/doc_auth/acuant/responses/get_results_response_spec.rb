@@ -38,6 +38,25 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
+        classification_info: {
+          'Back' => {
+            'ClassName' => 'Identification Card',
+            'Issue' => '2014',
+            'IssueType' => 'Back',
+            'Name' => 'North Dakota (ND) Back',
+            'IssuerCode' => 'ND',
+            'IssuerName' => 'North Dakota',
+          },
+          'Front' => {
+            'ClassName' => 'Identification Card',
+            'Issue' => '2014',
+            'IssueType' => 'Non-Driver Identification Card',
+            'Name' => 'North Dakota (ND) Non-Driver Identification Card',
+            'IssuerCode' => 'ND',
+            'IssuerName' => 'North Dakota',
+          },
+        },
+        address_line2_present: true,
       }
 
       processed_alerts = response_hash[:processed_alerts]
@@ -62,6 +81,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         middle_name: nil,
         last_name: 'DOE',
         address1: '1000 E AVENUE E',
+        address2: 'APT E',
         city: 'BISMARCK',
         state: 'ND',
         zipcode: '58501',
@@ -82,6 +102,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         body: {
           Result: 5,
           Alerts: alerts,
+          Fields: [],
         }.to_json,
       )
     end
@@ -232,7 +253,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'only returns one copy of the each error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+          general: [DocAuth::Errors::GENERAL_ERROR],
           front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           hints: true,
@@ -251,6 +272,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
               { Result: 1, Key: 'Birth Date Valid' },
               { Result: 2, Key: 'Document Classification' },
             ],
+            Fields: [],
           }.to_json,
         )
       end
@@ -297,7 +319,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     let(:http_response) do
       instance_double(
         Faraday::Response,
-        body: { Result: result, Alerts: alerts }.to_json,
+        body: { Result: result, Alerts: alerts, Fields: [] }.to_json,
       )
     end
 

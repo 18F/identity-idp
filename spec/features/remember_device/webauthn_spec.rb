@@ -45,6 +45,7 @@ describe 'Remembering a webauthn device' do
         fill_in_nickname_and_click_continue
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
+        skip_second_mfa_prompt
 
         first(:link, t('links.sign_out')).click
         user
@@ -108,6 +109,7 @@ describe 'Remembering a webauthn device' do
         fill_in_nickname_and_click_continue
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
+        skip_second_mfa_prompt
 
         first(:link, t('links.sign_out')).click
         user

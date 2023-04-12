@@ -5,7 +5,6 @@ es:
       issuers: Emisores
       name: Nombre
       subject: Informe de cuentas eliminadas
-    sps_over_quota_limit:
-      help: ''
-      info: Hay SP que han superado su límite de cuota.
-      subject: Algunos SP han alcanzado su límite de cuota.
+    system_demand_report:
+      name: Nombre
+      subject: Informe de demanda del sistema

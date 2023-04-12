@@ -3,7 +3,7 @@ module TwoFactorAuthentication
   class WebauthnVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :check_sp_required_mfa_bypass
+    before_action :check_sp_required_mfa
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
@@ -13,7 +13,7 @@ module TwoFactorAuthentication
     end
 
     def confirm
-      result = form.submit(request.protocol, params)
+      result = form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
       )
@@ -40,7 +40,7 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
-      handle_valid_otp_for_authentication_context
+      handle_valid_otp_for_authentication_context(auth_method: 'webauthn')
       handle_remember_device
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
@@ -121,7 +121,20 @@ module TwoFactorAuthentication
     end
 
     def form
-      @form ||= WebauthnVerificationForm.new(current_user, user_session)
+      @form ||= WebauthnVerificationForm.new(
+        user: current_user,
+        challenge: user_session[:webauthn_challenge],
+        protocol: request.protocol,
+        authenticator_data: params[:authenticator_data],
+        client_data_json: params[:client_data_json],
+        signature: params[:signature],
+        credential_id: params[:credential_id],
+        webauthn_error: params[:webauthn_error],
+      )
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: 'webauthn')
     end
   end
 end

@@ -7,7 +7,10 @@ class DocAuthLog < ApplicationRecord
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
 
-  def self.verified_users_count
-    Profile.where.not(verified_at: nil).count
-  end
+  self.ignored_columns = [
+    :email_sent_view_at,
+    :email_sent_view_count,
+    :send_link_view_at,
+    :send_link_view_count,
+  ]
 end

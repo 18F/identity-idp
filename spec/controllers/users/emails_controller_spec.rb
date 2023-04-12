@@ -35,11 +35,23 @@ RSpec.describe Users::EmailsController do
     let(:user) { create(:user) }
     before do
       stub_sign_in(user)
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
     end
 
     context 'valid email exists in session' do
       it 'sends email' do
         email = Faker::Internet.safe_email
+
+        expect(@analytics).to receive(:track_event).with(
+          'Add Email Requested',
+          { success: true, errors: {}, user_id: user.uuid, domain_name: email.split('@').last },
+        )
+
+        expect(@analytics).to receive(:track_event).with(
+          'Resend Add Email Requested',
+          { success: true },
+        )
 
         post :add, params: { user: { email: email } }
         expect(last_email_sent).to have_subject(
@@ -57,6 +69,11 @@ RSpec.describe Users::EmailsController do
 
     context 'no valid email exists in session' do
       it 'shows an error and redirects to add email page' do
+        expect(@analytics).to receive(:track_event).with(
+          'Resend Add Email Requested',
+          { success: false },
+        )
+
         post :resend
         expect(flash[:error]).to eq t('errors.general')
         expect(response).to redirect_to(add_email_url)

@@ -1,9 +1,12 @@
 module Users
-  class EmailsController < ReauthnRequiredController
+  class EmailsController < ApplicationController
+    include ReauthenticationRequiredConcern
+
     before_action :confirm_two_factor_authenticated
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
+    before_action :confirm_recently_authenticated
 
     def show
       @add_user_email_form = AddUserEmailForm.new
@@ -13,6 +16,7 @@ module Users
       @add_user_email_form = AddUserEmailForm.new
 
       result = @add_user_email_form.submit(current_user, permitted_params)
+      analytics.add_email_request(**result.to_h)
 
       if result.success?
         process_successful_creation
@@ -25,13 +29,15 @@ module Users
     end
 
     def resend
-      email_address = EmailAddress.find_with_email(session_email)
+      email_address = EmailAddress.where(user_id: current_user.id).find_with_email(session_email)
 
       if email_address && !email_address.confirmed?
+        analytics.resend_add_email_request(success: true)
         SendAddEmailConfirmation.new(current_user).call(email_address)
         flash[:success] = t('notices.resend_confirmation_email.success')
         redirect_to add_email_verify_email_url
       else
+        analytics.resend_add_email_request(success: false)
         flash[:error] = t('errors.general')
         redirect_to add_email_url
       end
@@ -83,10 +89,7 @@ module Users
       resend_confirmation = params[:user][:resend]
       session[:email] = @add_user_email_form.email
 
-      redirect_to add_email_verify_email_url(
-        resend: resend_confirmation,
-        request_id: permitted_params[:request_id],
-      )
+      redirect_to add_email_verify_email_url(resend: resend_confirmation)
     end
 
     def session_email
@@ -108,9 +111,13 @@ module Users
     end
 
     def send_delete_email_notification
+      # These emails must be delivered now because the EmailAddress record will not exist
+      # when run asynchronously
       @current_confirmed_emails.each do |confirmed_email|
+        # rubocop:disable IdentityIdp/MailLaterLinter
         UserMailer.with(user: current_user, email_address: confirmed_email).
-          email_deleted.deliver_now_or_later
+          email_deleted.deliver_now
+        # rubocop:enable IdentityIdp/MailLaterLinter
       end
     end
   end

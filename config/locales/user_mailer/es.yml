@@ -1,6 +1,11 @@
 ---
 es:
   user_mailer:
+    account_rejected:
+      intro_html: No hemos podido verificar su identidad con %{app_name}. Por favor,
+        póngase en contacto con la agencia a cuyo servicio está intentando
+        acceder.
+      subject: No hemos podido verificar su identidad
     account_reset_cancel:
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name}.
@@ -36,11 +41,11 @@ es:
         eliminará hasta que confirme.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
+      change_password_link: cambiar tu contraseña
       contact_link: contacto con nosotros
-      disavowal_link: cambiar tu contraseña
       intro_html: Verificaste correctamente tu identidad con %{sp_name} el %{date} a
         través de %{app_name}. Si no realizaste esta acción, ponte en
-        %{contact_link} e inicia sesión para %{disavowal_link}.
+        %{contact_link} e inicia sesión para %{change_password_link}.
       subject: Verificaste tu identidad con %{sp_name}
     add_email:
       footer: Este enlace expira en %{confirmation_period}.
@@ -59,10 +64,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     contact_link_text: Contáctenos
-    doc_auth_link:
-      message: Ha solicitado verificar su identidad en una computadora de escritorio.
-        Inicie sesión en %{sp_link}
-      subject: Verifique su identidad en una computadora de escritorio
     email_added:
       header: Se agregó una nueva dirección de correo electrónico a su perfil de
         %{app_name}.
@@ -109,6 +110,17 @@ es:
         thanks: Gracias por utilizar %{app_name}.
       header: Tómese un minuto para decirnos cómo lo hicimos
       subject: Cuéntenos su experiencia reciente con %{app_name}
+    in_person_deadline_passed:
+      body:
+        canceled: Se venció el plazo para verificar su identidad en persona. Cancelamos
+          automáticamente su solicitud con el fin de proteger su información
+          personal.
+        cta: Empezar de nuevo
+        greeting: Hola,
+        restart: Haga clic en el botón de abajo si desea iniciar una nueva solicitud
+          para verificar su identidad con %{partner_agency}.
+      header: Se venció el plazo para verificar su identidad en persona
+      subject: Expiró su solicitud para verificar su identidad en persona
     in_person_failed:
       body:
         with_cta: Haga clic en el botón o copie el enlace siguiente para volver a
@@ -144,6 +156,17 @@ es:
       intro: Estos son los detalles para verificar su identidad en persona en una
         oficina de correos de los Estados Unidos cercana a usted.
       subject: Está listo para verificar su identidad con %{app_name} en persona
+    in_person_ready_to_verify_reminder:
+      greeting: Hola,
+      heading:
+        one: Tiene %{count} día para verificar su identidad en persona
+        other: Tiene %{count} días para verificar su identidad en persona
+      intro: No pierda la oportunidad de verificar su identidad en su oficina de
+        correos local. Complete este paso para acceder %{sp_name}.
+      subject:
+        one: Verifique su identidad en una oficina de correos en el próximo día
+        other: Verifique su identidad en una oficina de correos en los próximos %{count}
+          días
     in_person_verified:
       greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos
@@ -157,15 +180,15 @@ es:
           continuación para iniciar sesión en %{app_name}.
       sign_in: Iniciar sesión
       subject: Verificó correctamente su identidad con %{app_name}
-      warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
-        por favor, póngase en <a href="%{contact_us_url}">contacto con
-        nosotros</a> e <a href="%{sign_in_url}">inicie sesión</a> para cambiar
-        su contraseña.
+      warning_contact_us_html: Si no ha intentado verificar su identidad en persona,
+        inicie sesión para <a href="%{reset_password_url}">restablecer su
+        contraseña</a>. Para informar de esto, póngase en <a
+        href="%{contact_us_url}">contacto con el soporte de %{app_name}</a>.
     letter_reminder:
-      info_html: La carta que está a punto de recibir contendrá un código de
-        confirmación que nos ayudará a verificar su dirección. Puede completar
-        el proceso de verificación de identidad iniciando sesión en %{link} e
-        ingresando el código de confirmación.
+      info_html: La carta que está a punto de recibir contendrá un código único que
+        nos ayudará a verificar su dirección. Puede completar el proceso de
+        verificación de identidad iniciando sesión en %{link} e ingresando el
+        código único.
       subject: Le enviamos una carta a la dirección que tiene archivada
     new_device_sign_in:
       disavowal_link: restablecer su contraseña
@@ -245,9 +268,9 @@ es:
       subject: Actividad inusual — restablezca su contraseña de %{app_name}
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
-      gpo_letter_description: Si restablece su contraseña, el código de confirmación
-        que figura en su carta dejará de funcionar y tendrá que volver a
-        verificar su identidad.
+      gpo_letter_description: Si restablece su contraseña, el código único que figura
+        en su carta dejará de funcionar y tendrá que volver a verificar su
+        identidad.
       gpo_letter_header: Su carta está en camino
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.

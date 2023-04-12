@@ -18,11 +18,15 @@ describe Idv::DocPiiForm do
     }
   end
   let(:name_errors_pii) do
-    { first_name: nil, last_name: nil, dob: valid_dob,
+    { first_name: nil,
+      last_name: nil,
+      dob: valid_dob,
       state: Faker::Address.state_abbr }
   end
   let(:name_and_dob_errors_pii) do
-    { first_name: nil, last_name: nil, dob: nil,
+    { first_name: nil,
+      last_name: nil,
+      dob: nil,
       state: Faker::Address.state_abbr }
   end
   let(:dob_min_age_error_pii) do
@@ -40,6 +44,16 @@ describe Idv::DocPiiForm do
       dob: valid_dob,
       state: Faker::Address.state_abbr,
       zipcode: 12345,
+      state_id_jurisdiction: 'AL',
+    }
+  end
+  let(:nil_zipcode_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      state: Faker::Address.state_abbr,
+      zipcode: nil,
       state_id_jurisdiction: 'AL',
     }
   end
@@ -126,6 +140,24 @@ describe Idv::DocPiiForm do
 
     context 'when there is a non-string zipcode' do
       let(:pii) { non_string_zipcode_pii }
+
+      it 'returns a single generic pii error' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:pii]).to eq [
+          t('doc_auth.errors.general.no_liveness'),
+        ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
+      end
+    end
+
+    context 'when there is a nil zipcode' do
+      let(:pii) { nil_zipcode_pii }
 
       it 'returns a single generic pii error' do
         result = subject.submit

@@ -27,52 +27,62 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
+  def click_idv_continue_for_step(step)
+    if step == :phone
+      click_idv_send_security_code
+    else
+      click_idv_continue
+    end
+  end
+
   def click_idv_continue
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
-  def click_idv_select
-    click_select_button_and_wait t('in_person_proofing.body.location.location_button')
+  def click_idv_exit
+    click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
   end
 
-  def choose_idv_otp_delivery_method_sms
+  def click_idv_send_security_code
+    click_spinner_button_and_wait t('forms.buttons.send_one_time_code')
+  end
+
+  def click_try_again
+    page.find(
+      'a',
+      text: t('idv.failure.button.warning'),
+    ).click
+  end
+
+  def click_idv_otp_delivery_method_sms
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.sms'),
       wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
   end
 
-  def choose_idv_otp_delivery_method_voice
+  def choose_idv_otp_delivery_method_sms
+    click_idv_otp_delivery_method_sms
+    click_idv_send_security_code
+  end
+
+  def click_idv_otp_delivery_method_voice
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.voice'),
+      wait: 5,
     ).click
-    click_on t('idv.buttons.send_confirmation_code')
+  end
+
+  def choose_idv_otp_delivery_method_voice
+    click_idv_otp_delivery_method_voice
+    click_idv_send_security_code
   end
 
   def visit_idp_from_sp_with_ial2(sp, **extra)
     if sp == :saml
-      saml_overrides = {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-        ],
-        security: {
-          embed_sign: false,
-        },
-      }
-      if javascript_enabled?
-        service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
-        acs_url = URI.parse(service_provider.acs_url)
-        acs_url.host = page.server.host
-        acs_url.port = page.server.port
-        service_provider.update(acs_url: acs_url.to_s)
-      end
-      visit_saml_authn_request_url(overrides: saml_overrides)
+      visit_idp_from_saml_sp_with_ial2
     elsif sp == :oidc
       @state = SecureRandom.hex
       @client_id = sp_oidc_issuer
@@ -95,6 +105,28 @@ module IdvHelper
     elsif sp == :oidc
       sp_oidc_issuer
     end
+  end
+
+  def visit_idp_from_saml_sp_with_ial2(issuer: sp1_issuer)
+    saml_overrides = {
+      issuer: issuer,
+      authn_context: [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ],
+      security: {
+        embed_sign: false,
+      },
+    }
+    if javascript_enabled?
+      service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
+      acs_url = URI.parse(service_provider.acs_url)
+      acs_url.host = page.server.host
+      acs_url.port = page.server.port
+      service_provider.update(acs_url: acs_url.to_s)
+    end
+    visit_saml_authn_request_url(overrides: saml_overrides)
   end
 
   def visit_idp_from_oidc_sp_with_ial2(
@@ -121,19 +153,6 @@ module IdvHelper
       client_id: sp_oidc_issuer,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name phone social_security_number',
-      redirect_uri: sp_oidc_redirect_uri,
-      state: SecureRandom.hex,
-      prompt: 'select_account',
-      nonce: SecureRandom.hex,
-    )
-  end
-
-  def visit_idp_from_oidc_sp_with_ial2_strict
-    visit openid_connect_authorize_path(
-      client_id: sp_oidc_issuer,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email profile:name phone social_security_number',
       redirect_uri: sp_oidc_redirect_uri,
       state: SecureRandom.hex,

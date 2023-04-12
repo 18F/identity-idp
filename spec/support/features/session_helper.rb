@@ -37,10 +37,11 @@ module Features
       user = sign_up_and_set_password
       select_2fa_option('phone')
       fill_in 'new_phone_form_phone', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
+      skip_second_mfa_prompt
       user
     end
 
@@ -193,24 +194,33 @@ module Features
       user
     end
 
-    def sign_in_with_warden(user)
+    def sign_in_with_warden(user, auth_method: nil)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = { authn_at: Time.zone.now }
+        session['warden.user.user.session']['auth_method'] = auth_method if auth_method
       end
       visit account_path
     end
 
     def sign_in_and_2fa_user(user = user_with_2fa)
-      sign_in_with_warden(user)
+      sign_in_with_warden(user, auth_method: 'phone')
       user
     end
 
     def user_with_2fa
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
+    end
+
+    def user_verified
+      create(:user, :proofed)
+    end
+
+    def user_verified_with_gpo
+      create(:user, :proofed_with_gpo)
     end
 
     def user_with_totp_2fa
@@ -241,8 +251,8 @@ module Features
       )
     end
 
-    def click_send_security_code
-      click_button t('forms.buttons.send_security_code')
+    def click_send_one_time_code
+      click_button t('forms.buttons.send_one_time_code')
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
@@ -266,12 +276,12 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_phone_otp
     end
 
     def fill_in_code_with_last_totp(user)
       accept_rules_of_use_and_continue_if_displayed
-      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+      fill_in I18n.t('components.one_time_code_input.label'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed
@@ -323,12 +333,11 @@ module Features
 
     def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
-
-      page.find(':focus').fill_in with: scrape_personal_key
-      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
+      checkbox_header = t('forms.validation.required_checkbox')
+      find('label', text: /#{checkbox_header}/).click
       click_continue
     end
 
@@ -381,38 +390,39 @@ module Features
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect_branded_experience
 
       submit_form_with_invalid_email
 
       expect(current_url).to eq sign_up_email_url
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_valid_but_wrong_email
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect(current_url).to eq sign_up_verify_email_url
+      expect_branded_experience
 
       click_link_to_use_a_different_email
 
-      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect(current_url).to eq sign_up_email_url
+      expect_branded_experience
 
       submit_form_with_valid_email(email)
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(current_url).to eq sign_up_verify_email_url
       expect(last_email.html_part.body.raw_source).to include "?_request_id=#{sp_request_id}"
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       click_link_to_resend_the_email
 
-      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect(current_url).to eq sign_up_verify_email_url(resend: true)
+      expect_branded_experience
 
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
@@ -426,16 +436,16 @@ module Features
     def confirm_email_in_a_different_browser(email)
       click_confirmation_link_in_email(email)
 
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_invalid_password
 
-      expect(page).to have_css('img[src*=sp-logos]')
+      expect_branded_experience
 
       submit_form_with_valid_password
 
       set_up_2fa_with_valid_phone
-      # expect(page).to have_css('img[src*=sp-logos]')
+      skip_second_mfa_prompt
     end
 
     def click_sign_in_from_landing_page_then_click_create_account
@@ -502,14 +512,14 @@ module Features
     def set_up_2fa_with_valid_phone
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
 
     def set_up_mfa_with_valid_phone
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
-      click_send_security_code
+      click_send_one_time_code
       fill_in_code_with_last_phone_otp
       click_submit_default
     end
@@ -522,6 +532,7 @@ module Features
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone
+      skip_second_mfa_prompt
       User.find_with_email(email)
     end
 
@@ -541,6 +552,7 @@ module Features
     def register_user_with_authenticator_app(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_authenticator_app
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_authenticator_app
@@ -563,6 +575,7 @@ module Features
       )
 
       set_up_2fa_with_piv_cac
+      skip_second_mfa_prompt
     end
 
     def set_up_2fa_with_piv_cac
@@ -578,6 +591,10 @@ module Features
         uuid: SecureRandom.uuid,
         subject: 'SomeIgnoredSubject',
       )
+    end
+
+    def skip_second_mfa_prompt
+      click_on t('mfa.skip')
     end
 
     def sign_in_via_branded_page(user)
@@ -641,6 +658,42 @@ module Features
     def set_new_browser_session
       # For when we want to login from a new browser to avoid the default 'remember device' behavior
       Capybara.reset_session!
+    end
+
+    def fill_forgot_password_form(user)
+      click_link t('links.passwords.forgot')
+      fill_in t('account.index.email'), with: user.email
+      click_button t('forms.buttons.continue')
+
+      expect(current_path).to eq forgot_password_path
+    end
+
+    def click_reset_password_link_from_email
+      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      expect(last_email.html_part.body).to include MarketingSite.help_url
+      expect(last_email.html_part.body).to have_content(
+        t(
+          'user_mailer.reset_password_instructions.footer',
+          expires: (Devise.reset_password_within / 3600),
+        ),
+      )
+      open_last_email
+      click_email_link_matching(/reset_password_token/)
+
+      expect(page.html).not_to include(t('notices.dap_participation'))
+      expect(current_path).to eq edit_user_password_path
+    end
+
+    def fill_reset_password_form
+      fill_in t('forms.passwords.edit.labels.password'), with: 'newVal!dPassw0rd'
+      click_button t('forms.passwords.edit.buttons.submit')
+
+      expect(current_path).to eq new_user_session_path
+    end
+
+    def expect_branded_experience
+      # Check for branded experience as being the header containing the Login.gov and partner logos
+      expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
     end
   end
 end

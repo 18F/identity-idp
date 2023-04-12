@@ -3,7 +3,15 @@ module Idv
     class LinkSentStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
-      HYBRID_FLOW_STEPS = %i[upload send_link link_sent email_sent document_capture]
+      HYBRID_FLOW_STEPS = %i[upload link_sent document_capture]
+
+      def self.analytics_visited_event
+        :idv_doc_auth_link_sent_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_link_sent_submitted
+      end
 
       def call
         return render_document_capture_cancelled if document_capture_session&.cancelled_at
@@ -14,12 +22,17 @@ module Idv
         handle_document_verification_success(document_capture_session_result)
       end
 
+      def extra_view_variables
+        { phone: idv_session[:phone_for_mobile_flow] }
+      end
+
       private
 
       def handle_document_verification_success(get_results_response)
         save_proofing_components
         extract_pii_from_doc(get_results_response, store_in_session: true)
         mark_steps_complete
+        flow_session[:flow_path] = @flow.flow_path
       end
 
       def render_document_capture_cancelled

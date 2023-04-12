@@ -13,18 +13,14 @@ describe UserAlerts::AlertUserAboutPasswordChange do
 
       expect_delivered_email_count(2)
       expect_delivered_email(
-        0, {
-          to: [confirmed_email_addresses[0].email],
-          subject: t('devise.mailer.password_updated.subject'),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[0].email],
+        subject: t('devise.mailer.password_updated.subject'),
+        body: [disavowal_token],
       )
       expect_delivered_email(
-        1, {
-          to: [confirmed_email_addresses[1].email],
-          subject: t('devise.mailer.password_updated.subject'),
-          body: [disavowal_token],
-        }
+        to: [confirmed_email_addresses[1].email],
+        subject: t('devise.mailer.password_updated.subject'),
+        body: [disavowal_token],
       )
     end
   end

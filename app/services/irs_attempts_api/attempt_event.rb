@@ -20,11 +20,13 @@ module IrsAttemptsApi
 
     def to_jwe
       JWE.encrypt(
-        payload.to_json,
+        payload_json,
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
+        alg: 'RSA-OAEP',
         enc: 'A256GCM',
+        kid: JWT::JWK.new(event_data_encryption_key).kid,
       )
     end
 
@@ -60,6 +62,10 @@ module IrsAttemptsApi
       }
     end
 
+    def payload_json
+      @payload_json ||= payload.to_json
+    end
+
     private
 
     def event_data
@@ -68,7 +74,7 @@ module IrsAttemptsApi
           'subject_type' => 'session',
           'session_id' => session_id,
         },
-        'occurred_at' => occurred_at.to_i,
+        'occurred_at' => occurred_at.to_f,
       }.merge(event_metadata || {})
     end
 
@@ -82,8 +88,10 @@ module IrsAttemptsApi
     end
 
     def event_data_encryption_key
-      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
-      OpenSSL::PKey::RSA.new(decoded_key_der)
+      @event_data_encryption_key ||= begin
+        decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+        OpenSSL::PKey::RSA.new(decoded_key_der)
+      end
     end
   end
 end

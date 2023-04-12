@@ -7,14 +7,9 @@ class UserDecorator
 
   MAX_RECENT_EVENTS = 5
   MAX_RECENT_DEVICES = 5
-  DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
     @user = user
-  end
-
-  def email
-    user.email_addresses.take&.email
   end
 
   def email_language_preference_description
@@ -57,8 +52,14 @@ class UserDecorator
     !identity_verified?
   end
 
-  def identity_verified?
-    user.active_profile.present?
+  def identity_verified?(service_provider: nil)
+    user.active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  end
+
+  def reproof_for_irs?(service_provider:)
+    return false unless service_provider&.irs_attempts_api_enabled
+    return false unless user.active_profile.present?
+    !user.active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 
   def active_profile_newer_than_pending_profile?
@@ -79,7 +80,9 @@ class UserDecorator
       digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
-    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
+    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
+      EmailContext.new(user).last_sign_in_email_address.email,
+    )
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 240).to_data_url
   end
@@ -122,21 +125,16 @@ class UserDecorator
 
   def delete_account_bullet_key
     if identity_verified?
-      I18n.t('users.delete.bullet_2_loa3', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_verified', app_name: APP_NAME)
     else
-      I18n.t('users.delete.bullet_2_loa1', app_name: APP_NAME)
+      I18n.t('users.delete.bullet_2_basic', app_name: APP_NAME)
     end
   end
 
   private
 
   def lockout_period
-    return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
-    lockout_period_config.minutes
-  end
-
-  def lockout_period_config
-    @lockout_period_config ||= IdentityConfig.store.lockout_period_in_minutes
+    IdentityConfig.store.lockout_period_in_minutes.minutes
   end
 
   def lockout_period_expired?

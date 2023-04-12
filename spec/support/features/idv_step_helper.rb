@@ -28,7 +28,6 @@ module IdvStepHelper
 
   def complete_phone_step(user)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-    click_idv_continue
     verify_phone_otp
   end
 
@@ -45,20 +44,38 @@ module IdvStepHelper
     click_on t('idv.buttons.mail.send')
   end
 
-  def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
+  def complete_idv_steps_before_phone_otp_verification_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok('2342255432')
-    click_idv_continue
-  end
-
-  def complete_idv_steps_before_phone_otp_verification_step(user = user_with_2fa)
-    complete_idv_steps_before_phone_otp_delivery_selection_step(user)
     choose_idv_otp_delivery_method_sms
   end
 
   def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     complete_phone_step(user)
+  end
+
+  def visit_help_center
+    click_what_to_bring_link
+  end
+
+  def click_what_to_bring_link
+    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+    click_link t('in_person_proofing.body.barcode.learn_more')
+  end
+
+  def visit_sp
+    click_sp_link
+  end
+
+  def click_sp_link
+    expect(page).to have_content(sp_text)
+    click_link('return to Test SP')
+  end
+
+  def sp_text
+    'You may now close this window or return to Test SP to complete any next steps' \
+      ' you can access until your identity has been verified.'
   end
 
   def complete_review_step(user = user_with_2fa)
@@ -99,7 +116,7 @@ module IdvStepHelper
   end
 
   def expect_step_indicator_current_step(text)
-    expect(page).to have_css('.step-indicator__step--current', text: text)
+    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
   end
 
   private

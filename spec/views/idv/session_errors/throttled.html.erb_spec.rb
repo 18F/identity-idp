@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'idv/session_errors/throttled.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
-  let(:liveness_checking_enabled) { false }
 
   before do
     decorated_session = instance_double(
@@ -12,7 +11,6 @@ describe 'idv/session_errors/throttled.html.erb' do
       sp_issuer: sp_issuer,
     )
     allow(view).to receive(:decorated_session).and_return(decorated_session)
-    allow(view).to receive(:liveness_checking_enabled?).and_return(liveness_checking_enabled)
 
     render
   end
@@ -44,16 +42,12 @@ describe 'idv/session_errors/throttled.html.erb' do
   end
 
   context 'with liveness feature disabled' do
-    let(:liveness_checking_enabled) { false }
-
     it 'renders expected heading' do
       expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
     end
   end
 
   context 'with liveness feature enabled' do
-    let(:liveness_checking_enabled) { true }
-
     it 'renders expected heading' do
       expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
     end

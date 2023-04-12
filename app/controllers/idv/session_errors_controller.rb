@@ -6,36 +6,50 @@ module Idv
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
+    before_action :ignore_form_step_wait_requests
 
-    def exception; end
+    def exception
+      log_event
+    end
 
     def warning
-      @remaining_attempts = Throttle.new(
+      throttle = Throttle.new(
         user: effective_user,
         throttle_type: :idv_resolution,
-      ).remaining_count
+      )
+
+      @remaining_attempts = throttle.remaining_count
+      log_event(based_on_throttle: throttle)
     end
 
     def failure
-      @expires_at = Throttle.new(
+      throttle = Throttle.new(
         user: effective_user,
         throttle_type: :idv_resolution,
-      ).expires_at
+      )
+      @expires_at = throttle.expires_at
+      log_event(based_on_throttle: throttle)
     end
 
     def ssn_failure
+      throttle = nil
+
       if ssn_from_doc
-        @expires_at = Throttle.new(
+        throttle = Throttle.new(
           target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
           throttle_type: :proof_ssn,
-        ).expires_at
+        )
+        @expires_at = throttle.expires_at
       end
 
+      log_event(based_on_throttle: throttle)
       render 'idv/session_errors/failure'
     end
 
     def throttled
-      @expires_at = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth).expires_at
+      throttle = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth)
+      log_event(based_on_throttle: throttle)
+      @expires_at = throttle.expires_at
     end
 
     private
@@ -52,19 +66,33 @@ module Idv
 
     def confirm_idv_session_step_needed
       return unless user_fully_authenticated?
-      redirect_to idv_phone_url if idv_session.profile_confirmation == true
+      redirect_to idv_phone_url if idv_session.verify_info_step_complete?
+    end
+
+    def ignore_form_step_wait_requests
+      head(:no_content) if request.headers['HTTP_X_FORM_STEPS_WAIT']
     end
 
     def set_try_again_path
       if in_person_flow?
         @try_again_path = idv_in_person_path
       else
-        @try_again_path = idv_doc_auth_path
+        @try_again_path = idv_verify_info_url
       end
     end
 
     def in_person_flow?
       params[:flow] == 'in_person'
+    end
+
+    def log_event(based_on_throttle: nil)
+      options = {
+        type: params[:action],
+      }
+
+      options[:attempts_remaining] = based_on_throttle.remaining_count if based_on_throttle
+
+      analytics.idv_session_error_visited(**options)
     end
   end
 end

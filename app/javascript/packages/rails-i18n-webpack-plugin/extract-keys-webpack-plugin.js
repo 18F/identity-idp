@@ -1,4 +1,5 @@
 const sources = require('webpack-sources');
+const createHash = require('webpack/lib/util/createHash');
 
 /** @typedef {import('webpack/lib/ChunkGroup')} ChunkGroup */
 /** @typedef {import('webpack/lib/Entrypoint')} Entrypoint */
@@ -23,13 +24,19 @@ const TRANSLATE_CALL = /(?:^|[^\w'-])t\)?\(\[?(['"][a-z\d\s_.,'"]+['"])]?[,\s)]/
  * Given an original file name and locale, returns a modified file name with the locale injected
  * prior to the original file extension.
  *
- * @param {string} filename
- * @param {string} locale
+ * @param {object} options
+ * @param {string} options.filename
+ * @param {string} options.locale
+ * @param {string} options.content
+ * @param {boolean} options.includeHash
  *
  * @return {string}
  */
-function getAdditionalAssetFilename(filename, locale) {
+function getAdditionalAssetFilename({ filename, locale, content, includeHash }) {
   const parts = filename.split('.');
+  if (includeHash) {
+    parts[parts.length - 2] += `-${createHash('md4').update(content).digest('hex').slice(0, 8)}`;
+  }
   parts.splice(parts.length - 1, 0, locale);
   return parts.join('.');
 }
@@ -91,6 +98,8 @@ class ExtractKeysWebpackPlugin {
   }
 
   apply(compiler) {
+    const includeHash = compiler.options.mode === 'production';
+
     compiler.hooks.compilation.tap('compile', (compilation) => {
       compilation.hooks.additionalAssets.tapPromise(PLUGIN, () =>
         Promise.all(
@@ -101,7 +110,12 @@ class ExtractKeysWebpackPlugin {
                 const keys = getTranslationKeys(source);
                 const additionalAssets = await this.getAdditionalAssets(keys);
                 for (const [locale, content] of Object.entries(additionalAssets)) {
-                  const assetFilename = getAdditionalAssetFilename(filename, locale);
+                  const assetFilename = getAdditionalAssetFilename({
+                    filename,
+                    locale,
+                    content,
+                    includeHash,
+                  });
                   compilation.emitAsset(assetFilename, new sources.RawSource(content));
                   chunk.groupsIterable.forEach((group) =>
                     addFileToEntrypoint(assetFilename, group),

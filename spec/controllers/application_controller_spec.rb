@@ -16,20 +16,6 @@ describe ApplicationController do
     end
   end
 
-  describe '#set_x_request_url' do
-    controller do
-      def index
-        render plain: 'Hello'
-      end
-    end
-
-    it 'sets the X-Request-URL header' do
-      get :index
-
-      expect(response.headers['X-Request-URL']).to eq('http://www.example.com/anonymous')
-    end
-  end
-
   describe '#cache_issuer_in_cookie' do
     controller do
       def index
@@ -251,7 +237,7 @@ describe ApplicationController do
 
         expect(Analytics).to receive(:new).
           with(user: user, request: request, sp: sp.issuer, session: match_array({}),
-               ahoy: controller.ahoy)
+               ahoy: controller.ahoy, irs_session_id: nil)
 
         controller.analytics
       end
@@ -266,7 +252,7 @@ describe ApplicationController do
 
         expect(Analytics).to receive(:new).
           with(user: user, request: request, sp: nil, session: match_array({}),
-               ahoy: controller.ahoy)
+               ahoy: controller.ahoy, irs_session_id: nil)
 
         controller.analytics
       end
@@ -416,9 +402,16 @@ describe ApplicationController do
     end
 
     context 'with a SAML request' do
-      let(:sp_session_request_url) { '/api/saml/auth2022' }
+      let(:sp_session_request_url) { '/api/saml/auth2023' }
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
+      end
+
+      context 'updates the sp_session to mark the final auth request' do
+        it 'updates the sp_session to mark the final auth request' do
+          url_with_updated_params
+          expect(controller.session[:sp][:final_auth_request]).to be true
+        end
       end
     end
 
@@ -441,38 +434,6 @@ describe ApplicationController do
       let(:sp_session_request_url) { '/authorize' }
       it 'adds the locale to the url' do
         expect(url_with_updated_params).to eq('/authorize?locale=es')
-      end
-    end
-
-    context 'with saml_internal_post feature flag set to false' do
-      before { allow(IdentityConfig.store).to receive(:saml_internal_post).and_return false }
-      context 'with a SAML request' do
-        let(:sp_session_request_url) { '/api/saml/auth2022?SAMLRequest=blah' }
-        it 'returns the original request url' do
-          expect(url_with_updated_params).to eq '/api/saml/auth2022?SAMLRequest=blah'
-        end
-      end
-
-      context 'with an OIDC request' do
-        let(:sp_session_request_url) { '/openid_connect/authorize' }
-        it 'returns the original request' do
-          expect(url_with_updated_params).to eq '/openid_connect/authorize'
-        end
-      end
-
-      context 'with a url that has prompt=login' do
-        let(:sp_session_request_url) { '/authorize?prompt=login' }
-        it 'changes it to prompt=select_account' do
-          expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
-        end
-      end
-
-      context 'when the locale has been changed' do
-        before { I18n.locale = :es }
-        let(:sp_session_request_url) { '/authorize' }
-        it 'adds the locale to the url' do
-          expect(url_with_updated_params).to eq('/authorize?locale=es')
-        end
       end
     end
   end

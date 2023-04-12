@@ -83,16 +83,12 @@ feature 'managing email address' do
 
       expect_delivered_email_count(2)
       expect_delivered_email(
-        0, {
-          to: [confirmed_email1.email],
-          subject: t('user_mailer.email_deleted.subject'),
-        }
+        to: [confirmed_email1.email],
+        subject: t('user_mailer.email_deleted.subject'),
       )
       expect_delivered_email(
-        1, {
-          to: [confirmed_email2.email],
-          subject: t('user_mailer.email_deleted.subject'),
-        }
+        to: [confirmed_email2.email],
+        subject: t('user_mailer.email_deleted.subject'),
       )
     end
 

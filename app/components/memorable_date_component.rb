@@ -56,6 +56,10 @@ class MemorableDateComponent < BaseComponent
     @range_errors = range_errors
   end
 
+  def self.scripts
+    super + ValidatedFieldComponent.scripts
+  end
+
   # Get error messages to be provided to the component.
   # Includes both a hash lookup for general error messages
   # and an array lookup for custom range error messages.
@@ -124,7 +128,7 @@ class MemorableDateComponent < BaseComponent
     base_error_messages = {
       missing_month_day_year: t(
         'components.memorable_date.errors.missing_month_day_year',
-        label: label,
+        label:,
       ),
       missing_month_day: t('components.memorable_date.errors.missing_month_day'),
       missing_month_year: t('components.memorable_date.errors.missing_month_year'),
@@ -140,7 +144,7 @@ class MemorableDateComponent < BaseComponent
     if label && min
       base_error_messages[:range_underflow] =
         t(
-          'components.memorable_date.errors.range_underflow', label: label,
+          'components.memorable_date.errors.range_underflow', label:,
                                                               date: i18n_long_format(min)
         )
     end
@@ -148,7 +152,7 @@ class MemorableDateComponent < BaseComponent
     if label && max
       base_error_messages[:range_overflow] =
         t(
-          'components.memorable_date.errors.range_overflow', label: label,
+          'components.memorable_date.errors.range_overflow', label:,
                                                              date: i18n_long_format(max)
         )
     end
@@ -157,7 +161,7 @@ class MemorableDateComponent < BaseComponent
       base_error_messages[:outside_date_range] =
         t(
           'components.memorable_date.errors.outside_date_range',
-          label: label,
+          label:,
           min: i18n_long_format(min),
           max: i18n_long_format(max),
         )

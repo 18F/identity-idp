@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
+  describe 'before_actions' do
+    it 'includes appropriate before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :authenticate_user!,
+        :confirm_user_authenticated_for_2fa_setup,
+        :apply_secure_headers_override,
+        [:confirm_recently_authenticated_2fa, except: ['reminder']],
+      )
+    end
+  end
+
   it 'creates backup codes and logs expected events' do
     user = create(:user, :signed_up)
     stub_sign_in(user)
@@ -32,6 +44,17 @@ describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
   end
 
+  it 'creating backup codes revokes remember device cookies' do
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    expect(user.remember_device_revoked_at).to eq nil
+
+    freeze_time do
+      post :create
+      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+    end
+  end
+
   it 'deletes backup codes' do
     user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
@@ -41,6 +64,17 @@ describe Users::BackupCodeSetupController do
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
     expect(user.backup_code_configurations.length).to eq 0
+  end
+
+  it 'deleting backup codes revokes remember device cookies' do
+    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
+    stub_sign_in(user)
+    expect(user.remember_device_revoked_at).to eq nil
+
+    freeze_time do
+      post :delete
+      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+    end
   end
 
   it 'does not deletes backup codes if they are the only mfa' do
@@ -53,13 +87,12 @@ describe Users::BackupCodeSetupController do
     expect(user.backup_code_configurations.length).to eq 10
   end
 
-  context 'with multiple MFA selection on' do
+  describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
       @user = build(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
     end
 
     context 'when user selects multiple mfas on account creation' do

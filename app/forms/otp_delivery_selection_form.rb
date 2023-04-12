@@ -15,7 +15,7 @@ class OtpDeliverySelectionForm
 
   def submit(params)
     self.otp_delivery_preference = params[:otp_delivery_preference]
-    self.resend = params[:resend]
+    self.resend = params[:resend] == 'true'
 
     @success = valid?
 

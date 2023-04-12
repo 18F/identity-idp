@@ -15,6 +15,11 @@ class FeatureManagement
       !IdentityConfig.store.piv_cac_verify_token_url
   end
 
+  def self.idv_available?
+    return false if !IdentityConfig.store.idv_available
+    !OutageStatus.new.any_idv_vendor_outage?
+  end
+
   def self.development_and_identity_pki_disabled?
     # This controls if we try to hop over to identity-pki or just throw up
     # a screen asking for a Subject or one of a list of error conditions.
@@ -52,7 +57,7 @@ class FeatureManagement
     IdentityConfig.store.use_dashboard_service_providers
   end
 
-  def self.enable_gpo_verification?
+  def self.gpo_verification_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.enable_usps_verification
   end
@@ -100,8 +105,8 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
-  def self.liveness_checking_enabled?
-    IdentityConfig.store.liveness_checking_enabled
+  def self.otp_expired_redirect_enabled?
+    IdentityConfig.store.allow_otp_countdown_expired_redirect
   end
 
   def self.logo_upload_enabled?
@@ -112,8 +117,12 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.idv_personal_key_confirmation_enabled?
-    IdentityConfig.store.idv_personal_key_confirmation_enabled
+  def self.phone_recaptcha_enabled?
+    IdentityConfig.store.recaptcha_site_key_v2.present? &&
+      IdentityConfig.store.recaptcha_site_key_v3.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v2.present? &&
+      IdentityConfig.store.recaptcha_secret_key_v3.present? &&
+      IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
@@ -123,5 +132,40 @@ class FeatureManagement
       allowed_phones = IdentityConfig.store.voip_allowed_phones
       allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
     end
+  end
+
+  # Whether we collect device profiling information as part of the proofing process.
+  def self.proofing_device_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether we prevent users from proceeding with identity verification based on the outcomes of
+  # device profiling.
+  def self.proofing_device_profiling_decisioning_enabled?
+    case IdentityConfig.store.proofing_device_profiling
+    when :enabled then true
+    when :collect_only, :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
+  # Whether or not idv hybrid mode is available
+  def self.idv_allow_hybrid_flow?
+    return false unless IdentityConfig.store.feature_idv_hybrid_flow_enabled
+    return false if OutageStatus.new.any_phone_vendor_outage?
+    true
+  end
+
+  def self.idv_gpo_only?
+    outage_status = OutageStatus.new
+    IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
+      outage_status.any_phone_vendor_outage? ||
+      outage_status.phone_finder_outage?
   end
 end

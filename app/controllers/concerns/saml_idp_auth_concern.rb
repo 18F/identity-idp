@@ -20,7 +20,8 @@ module SamlIdpAuthConcern
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     return unless user_signed_in? && saml_request.force_authn?
 
-    sign_out unless sp_session[:request_url] == request.original_url
+    sign_out unless sp_session[:final_auth_request]
+    sp_session[:final_auth_request] = false
   end
 
   def check_sp_active
@@ -115,7 +116,9 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    ial2_requested? && current_user.decorate.identity_not_verified?
+    ial2_requested? &&
+      (current_user.decorate.identity_not_verified? ||
+       current_user.decorate.reproof_for_irs?(service_provider: current_sp))
   end
 
   def_delegators :ial_context, :ial2_requested?

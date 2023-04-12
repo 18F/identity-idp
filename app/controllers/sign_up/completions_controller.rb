@@ -1,6 +1,7 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
+    include SignInABTestConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
@@ -17,6 +18,7 @@ module SignUp
 
     def update
       track_completion_event('agency-page')
+      irs_attempts_api_tracker.idv_reproof if current_user.profiles&.last&.has_proofed_before?
       update_verified_attributes
       send_in_person_completion_survey
       if decider.go_back_to_mobile_app?
@@ -83,7 +85,10 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.user_registration_complete(**analytics_attributes(last_page))
+      analytics.user_registration_complete(
+        **analytics_attributes(last_page),
+        sign_in_a_b_test_bucket:,
+      )
     end
 
     def pii

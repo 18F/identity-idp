@@ -10,11 +10,9 @@ es:
         go_to_the_post_office: Ir a la oficina de correos
         secure_account: Proteje tu cuenta
         verify_id: Verifica tu identificación
-        verify_info: Verifica tus datos personales
-        verify_phone: to implement
+        verify_info: Verifica tus datos
         verify_phone_or_address: Verifica el teléfono o dirección
     status:
       complete: Completo
       current: Siguiente paso
       not_complete: No se ha completado
-      pending: Pendiente

@@ -1,18 +1,27 @@
 module Idv
   class PhoneErrorsController < ApplicationController
+    include StepIndicatorConcern
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
     before_action :set_gpo_letter_available
+    before_action :ignore_form_step_wait_requests
 
     def warning
       @remaining_attempts = throttle.remaining_count
+
+      if idv_session.previous_phone_step_params
+        @phone = idv_session.previous_phone_step_params[:phone]
+        @country_code = idv_session.previous_phone_step_params[:international_code]
+      end
+
       track_event(type: :warning)
     end
 
     def timeout
       @remaining_step_attempts = throttle.remaining_count
+      track_event(type: :timeout)
     end
 
     def jobfail
@@ -36,6 +45,10 @@ module Idv
       redirect_to idv_review_url if idv_session.user_phone_confirmation == true
     end
 
+    def ignore_form_step_wait_requests
+      head(:no_content) if request.headers['HTTP_X_FORM_STEPS_WAIT']
+    end
+
     def track_event(type:)
       attributes = { type: type }
       if type == :failure
@@ -50,10 +63,8 @@ module Idv
     # rubocop:disable Naming/MemoizedInstanceVariableName
     def set_gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
-      @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed? &&
-                                !(sp_session[:ial2_strict] &&
-                                  !IdentityConfig.store.gpo_allowed_for_strict_ial2)
+      @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
     end
     # rubocop:enable Naming/MemoizedInstanceVariableName
   end

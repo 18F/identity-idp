@@ -510,6 +510,157 @@ RSpec.describe User do
     end
   end
 
+  describe '#fraud_review_eligible?' do
+    context 'when verified_at is nil' do
+      it 'returns false' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: nil)
+
+        expect(user.fraud_review_eligible?).to be_falsey
+      end
+    end
+
+    context 'when verified_at is within 30 days' do
+      it 'returns true' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: 15.days.ago)
+
+        expect(user.fraud_review_eligible?).to eq true
+      end
+    end
+
+    context 'when verified_at is older than 30 days' do
+      it 'returns false' do
+        user = User.new
+        create(:profile, user: user, fraud_review_pending: true, verified_at: 45.days.ago)
+
+        expect(user.fraud_review_eligible?).to eq false
+      end
+    end
+  end
+
+  describe '#fraud_review_pending?' do
+    it 'returns true if fraud review is pending' do
+      user = User.new
+      create(
+        :profile, user: user, active: false, fraud_review_pending: true
+      )
+
+      expect(user.fraud_review_pending?).to eq true
+    end
+  end
+
+  describe '#fraud_rejection?' do
+    it 'returns true if fraud rejection is pending' do
+      user = User.new
+      create(
+        :profile, user: user, active: false, fraud_rejection: true
+      )
+
+      expect(user.fraud_rejection?).to eq true
+    end
+  end
+
+  describe '#fraud_review_pending_profile' do
+    context 'with a fraud review pending profile' do
+      it 'returns the profile pending review' do
+        user = User.new
+        profile = create(
+          :profile, user: user, active: false, fraud_review_pending: true
+        )
+
+        expect(user.fraud_review_pending_profile).to eq(profile)
+      end
+    end
+
+    context 'without a fraud review pending profile' do
+      user = User.new
+      it { expect(user.fraud_review_pending_profile).to eq(nil) }
+    end
+  end
+
+  describe '#fraud_rejection_profile' do
+    context 'with a fraud rejection profile' do
+      it 'returns the profile with rejection' do
+        user = User.new
+        profile = create(
+          :profile, user: user, active: false, fraud_rejection: true
+        )
+
+        expect(user.fraud_rejection_profile).to eq(profile)
+      end
+    end
+
+    context 'without a fraud rejection profile' do
+      user = User.new
+      it { expect(user.fraud_rejection_profile).to eq(nil) }
+    end
+  end
+
+  describe '#personal_key_generated_at' do
+    let(:user) do
+      build(:user, encrypted_recovery_code_digest_generated_at: digest_generated_at)
+    end
+    let(:digest_generated_at) { nil }
+
+    context 'the user has a encrypted_recovery_code_digest_generated_at date' do
+      let(:digest_generated_at) { 1.day.ago }
+
+      it 'returns the date in the digest' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(digest_generated_at)
+      end
+    end
+
+    context 'the user does not have a encrypted_recovery_code_digest_generated_at but is proofed' do
+      let!(:profile) do
+        create(
+          :profile,
+          :active,
+          :verified,
+          user: user,
+        )
+      end
+
+      it 'returns the date the user was proofed' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(profile.verified_at)
+      end
+    end
+
+    context 'the user has no encrypted_recovery_code_digest_generated_at and is not proofed' do
+      it 'returns nil' do
+        expect(user.personal_key_generated_at).to be_nil
+      end
+    end
+
+    context 'the user has no active profile but has a previously verified profile' do
+      let!(:password_reset_profile) do
+        create(
+          :profile,
+          :password_reset,
+          user: user,
+        )
+      end
+
+      let!(:verification_cancelled_profile) do
+        create(
+          :profile,
+          :verification_cancelled,
+          user: user,
+        )
+      end
+
+      it 'returns the date of the previously verified profile' do
+        expect(
+          user.personal_key_generated_at,
+        ).to be_within(1.second).of(password_reset_profile.verified_at)
+      end
+    end
+  end
+
   describe '#should_receive_in_person_completion_survey?' do
     let!(:user) { create(:user) }
     let(:service_provider) { create(:service_provider) }

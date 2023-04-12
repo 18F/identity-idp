@@ -95,6 +95,10 @@ describe('FormStepsWait', () => {
     return form;
   }
 
+  beforeEach(() => {
+    sandbox.stub(window.fetch, 'polyfill').value(undefined);
+  });
+
   it('submits form via fetch', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
@@ -154,22 +158,6 @@ describe('FormStepsWait', () => {
           const alert = await findByRole(form, 'alert');
           expect(alert.textContent).to.equal(errorMessage);
         });
-      });
-    });
-
-    context('invalid input', () => {
-      let form;
-      let input;
-      beforeEach(() => {
-        form = createForm({ action, method });
-        input = form.querySelector('#text-name');
-        input.setAttribute('required', '');
-      });
-      it('stops spinner', (done) => {
-        new FormStepsWait(form).bind();
-        form.addEventListener('spinner.stop', () => done());
-
-        fireEvent.invalid(input);
       });
     });
 

@@ -1,6 +1,13 @@
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-    attr_reader :otp_delivery_preference, :otp_make_default_number, :unconfirmed_phone
+    include ActionView::Helpers::UrlHelper
+    include ActionView::Helpers::TagHelper
+    include ActionView::Helpers::TranslationHelper
+
+    attr_reader :otp_delivery_preference,
+                :otp_make_default_number,
+                :unconfirmed_phone,
+                :otp_expiration
 
     alias_method :unconfirmed_phone?, :unconfirmed_phone
 
@@ -16,12 +23,62 @@ module TwoFactorAuthCode
       )
     end
 
+    def landline_warning
+      t(
+        'two_factor_authentication.otp_delivery_preference.landline_warning_html',
+        phone_setup_path: link_to(
+          phone_call_text,
+          phone_setup_path(otp_delivery_preference: 'voice'),
+        ),
+      )
+    end
+
+    def phone_call_text
+      t('two_factor_authentication.otp_delivery_preference.phone_call')
+    end
+
     def fallback_question
       t('two_factor_authentication.phone_fallback.question')
     end
 
+    def otp_expired_path
+      return unless FeatureManagement.otp_expired_redirect_enabled?
+      login_two_factor_otp_expired_path
+    end
+
     def help_text
       ''
+    end
+
+    def troubleshooting_header
+      t('components.troubleshooting_options.default_heading')
+    end
+
+    def troubleshooting_options
+      [
+        troubleshoot_change_phone_or_method_option,
+        {
+          url: help_center_redirect_path(
+            category: 'get-started',
+            article: 'authentication-options',
+            article_anchor: 'didn-t-receive-your-one-time-code',
+            flow: :two_factor_authentication,
+            step: :otp_confirmation,
+          ),
+          text: t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
+          new_tab: true,
+        },
+        {
+          url: help_center_redirect_path(
+            category: 'get-started',
+            article: 'authentication-options',
+            flow: :two_factor_authentication,
+            step: :otp_confirmation,
+          ),
+          text: t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
+          new_tab: true,
+        },
+      ]
     end
 
     def cancel_link
@@ -35,11 +92,23 @@ module TwoFactorAuthCode
 
     private
 
+    def troubleshoot_change_phone_or_method_option
+      if unconfirmed_phone
+        {
+          url: phone_setup_path,
+          text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+        }
+      else
+        {
+          url: login_two_factor_options_path,
+          text: t('two_factor_authentication.login_options_link_text'),
+        }
+      end
+    end
+
     attr_reader(
       :phone_number,
-      :account_reset_token,
       :confirmation_for_add_phone,
-      :voice_otp_delivery_unsupported,
     )
   end
 end

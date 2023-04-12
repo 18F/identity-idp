@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe RiscDeliveryJob do
   around do |ex|
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
     ex.run
-    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
   end
 
   describe '#perform' do
@@ -177,7 +177,9 @@ RSpec.describe RiscDeliveryJob do
 
     context 'rate limiting' do
       before do
-        REDIS_POOL.with { |r| r.set(job.rate_limiter(push_notification_url).build_key(now), 9999) }
+        REDIS_THROTTLE_POOL.with do |redis|
+          redis.set(job.rate_limiter(push_notification_url).build_key(now), 9999)
+        end
       end
 
       context 'when performed inline' do

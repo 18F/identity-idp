@@ -23,15 +23,16 @@
 <%= simple_form_for(
       current_user,
       url: idv_review_path,
-      html: { autocomplete: 'off', method: :put, class: 'margin-top-6' },
+      html: { autocomplete: 'off', method: :put, class: 'margin-top-4' },
     ) do |f| %>
   <%= render PasswordToggleComponent.new(
         form: f,
-        label: t('idv.form.password'),
-        required: true,
-        wrapper_html: { class: 'margin-bottom-0' },
+        field_options: {
+          label: t('idv.form.password'),
+          required: true,
+        },
       ) %>
-  <div class="text-right margin-top-2 margin-bottom-4">
+  <div class="text-right margin-top-neg-4 margin-bottom-4">
     <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
   <%= render AccordionComponent.new do |c| %>

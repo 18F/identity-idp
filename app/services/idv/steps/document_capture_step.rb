@@ -2,11 +2,21 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       IMAGE_UPLOAD_PARAM_NAMES = %i[
-        front_image back_image selfie_image
+        front_image back_image
       ].freeze
+
+      def self.analytics_visited_event
+        :idv_doc_auth_document_capture_visited
+      end
+
+      def self.analytics_submitted_event
+        :idv_doc_auth_document_capture_submitted
+      end
 
       def call
         handle_stored_result if !FeatureManagement.document_capture_async_uploads_enabled?
+
+        exit_flow_state_machine
       end
 
       def extra_view_variables
@@ -21,22 +31,50 @@ module Idv
             image_type: 'back',
             transaction_id: flow_session[:document_capture_session_uuid],
           ),
-          selfie_image_upload_url: url_builder.presigned_image_upload_url(
-            image_type: 'selfie',
-            transaction_id: flow_session[:document_capture_session_uuid],
-          ),
-        }.merge(native_camera_ab_testing_variables)
+        }.merge(
+          native_camera_ab_testing_variables,
+          acuant_sdk_upgrade_a_b_testing_variables,
+          in_person_cta_variant_testing_variables,
+        )
       end
 
       private
 
-      def native_camera_ab_testing_variables
-        bucket = AbTests::NATIVE_CAMERA.bucket(flow_session[:document_capture_session_uuid])
+      def exit_flow_state_machine
+        flow_session[:flow_path] = @flow.flow_path
+      end
 
+      def native_camera_ab_testing_variables
         {
-          native_camera_a_b_testing_enabled:
-            IdentityConfig.store.idv_native_camera_a_b_testing_enabled,
-          native_camera_only: (bucket == :native_camera_only),
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
+        }
+      end
+
+      def acuant_sdk_upgrade_a_b_testing_variables
+        bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
+        testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
+        use_alternate_sdk = (bucket == :use_alternate_sdk)
+        if use_alternate_sdk
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
+        else
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
+        end
+        {
+          acuant_sdk_upgrade_a_b_testing_enabled:
+              testing_enabled,
+          use_alternate_sdk: use_alternate_sdk,
+          acuant_version: acuant_version,
+        }
+      end
+
+      def in_person_cta_variant_testing_variables
+        bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
+        session[:in_person_cta_variant] = bucket
+        {
+          in_person_cta_variant_testing_enabled:
+          IdentityConfig.store.in_person_cta_variant_testing_enabled,
+          in_person_cta_variant_active: bucket,
         }
       end
 

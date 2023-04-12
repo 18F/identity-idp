@@ -26,12 +26,6 @@ describe Users::SessionsController, devise: true do
         expect(response.status).to eq(200)
       end
 
-      it 'clears the Etag header' do
-        get :active
-
-        expect(response.headers['Etag']).to eq ''
-      end
-
       it 'renders json' do
         get :active
 
@@ -56,15 +50,6 @@ describe Users::SessionsController, devise: true do
 
         expect(json['timeout'].to_datetime.to_i).to eq(timeout.to_i)
       end
-
-      it 'includes the remaining key', freeze_time: true do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(10)
-      end
     end
 
     context 'when user is not present' do
@@ -82,14 +67,6 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['timeout'].to_datetime.to_i).to eq(Time.zone.now.to_i - 1)
-      end
-
-      it 'includes the remaining time', freeze_time: true do
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(-1)
       end
 
       it 'updates the pinged_at session key' do
@@ -199,6 +176,7 @@ describe Users::SessionsController, devise: true do
 
   describe 'POST /' do
     include AccountResetHelper
+
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
       subject.session['user_return_to'] = mock_valid_site
@@ -209,6 +187,7 @@ describe Users::SessionsController, devise: true do
         success: true,
         user_id: user.uuid,
         user_locked_out: false,
+        bad_password_count: 0,
         stored_location: mock_valid_site,
         sp_request_url_present: false,
         remember_device: false,
@@ -231,10 +210,12 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
@@ -248,10 +229,12 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
       }
+      expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
@@ -285,6 +268,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
+        bad_password_count: 0,
         stored_location: nil,
         sp_request_url_present: false,
         remember_device: false,
@@ -296,6 +280,30 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
 
+    it 'tracks count of multiple unsuccessful authentication attempts' do
+      user = create(
+        :user,
+        :signed_up,
+      )
+
+      stub_analytics
+
+      analytics_hash = {
+        success: false,
+        user_id: user.uuid,
+        user_locked_out: false,
+        bad_password_count: 2,
+        stored_location: nil,
+        sp_request_url_present: false,
+        remember_device: false,
+      }
+
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+      expect(@analytics).to receive(:track_event).
+        with('Email and Password Authentication', analytics_hash)
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid' } }
+    end
+
     it 'tracks the presence of SP request_url in session' do
       subject.session[:sp] = { request_url: mock_valid_site }
       stub_analytics
@@ -303,6 +311,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        bad_password_count: 1,
         stored_location: nil,
         sp_request_url_present: true,
         remember_device: false,
@@ -372,6 +381,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: false,
@@ -444,6 +454,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
@@ -469,6 +480,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          bad_password_count: 0,
           stored_location: nil,
           sp_request_url_present: false,
           remember_device: true,
@@ -578,10 +590,15 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
         subject.session['user_return_to'] = mock_valid_site
-        properties = { flash: 'hello', stored_location: mock_valid_site }
 
-        expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
+        expect(@analytics).to receive(:track_event).with(
+          'Sign in page visited',
+          flash: 'hello',
+          stored_location: mock_valid_site,
+          sign_in_a_b_test_bucket: :default,
+        )
 
         get :new
       end
@@ -633,6 +650,28 @@ describe Users::SessionsController, devise: true do
         expect(response.body).to_not include('my xss script')
       end
     end
+
+    it 'does not blow up with malformed params' do
+      expect do
+        get :new, params: { user: 'this_is_not_a_hash' }
+      end.to_not raise_error
+    end
+
+    context 'with prefilled email/password via url params' do
+      render_views
+
+      it 'does not prefill the form' do
+        email = Faker::Internet.safe_email
+        password = SecureRandom.uuid
+
+        get :new, params: { user: { email: email, password: password } }
+
+        doc = Nokogiri::HTML(response.body)
+
+        expect(doc.at_css('input[name="user[email]"]')[:value]).to be_nil
+        expect(doc.at_css('input[name="user[password]"]')[:value]).to be_nil
+      end
+    end
   end
 
   describe 'POST /sessions/keepalive' do
@@ -651,12 +690,6 @@ describe Users::SessionsController, devise: true do
         expect(response.status).to eq(200)
       end
 
-      it 'clears the Etag header' do
-        post :keepalive
-
-        expect(response.headers['Etag']).to eq ''
-      end
-
       it 'renders json' do
         post :keepalive
 
@@ -673,17 +706,6 @@ describe Users::SessionsController, devise: true do
         expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
         expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
           Time.zone.now.to_i + IdentityConfig.store.session_timeout_in_minutes * 60,
-        )
-      end
-
-      it 'resets the remaining key' do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to be_within(1).of(
-          IdentityConfig.store.session_timeout_in_minutes * 60,
         )
       end
 
@@ -712,14 +734,6 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
-      end
-
-      it 'includes the remaining time' do
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['remaining']).to eq(-1)
       end
     end
 

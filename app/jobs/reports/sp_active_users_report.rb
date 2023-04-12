@@ -4,13 +4,6 @@ module Reports
   class SpActiveUsersReport < BaseReport
     REPORT_NAME = 'sp-active-users-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     # This daily job captures the total number of active users per SP from the beginning of the the
     # current fiscal year until now.
     #
@@ -21,9 +14,11 @@ module Reports
     # The report will run for the entire fiscal year that ended the day before rather than for the
     # partial day of October 1st in the current fiscal year.
     def perform(date)
+      range = reporting_range(date)
+
       results = transaction_with_timeout do
-        range = reporting_range(date)
-        Db::Identity::SpActiveUserCounts.call(range.begin, range.end)
+        Db::Identity::SpActiveUserCounts.by_issuer(range.begin, range.end) +
+          Db::Identity::SpActiveUserCounts.overall(range.begin, range.end)
       end
       save_report(REPORT_NAME, results.to_json, extension: 'json')
     end

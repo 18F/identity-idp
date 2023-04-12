@@ -5,8 +5,6 @@ module DocAuth
       :base_url, # required
       :request_mode,
       :trueid_account_id,
-      :trueid_liveness_cropping_workflow,
-      :trueid_liveness_nocropping_workflow,
       :trueid_noliveness_cropping_workflow,
       :trueid_noliveness_nocropping_workflow,
       :trueid_password,
@@ -21,8 +19,6 @@ module DocAuth
         :account_id,
         :base_url,
         :request_mode,
-        :trueid_liveness_cropping_workflow,
-        :trueid_liveness_nocropping_workflow,
         :trueid_noliveness_cropping_workflow,
         :trueid_noliveness_nocropping_workflow,
         :locale,

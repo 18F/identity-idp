@@ -24,14 +24,14 @@ feature 'Visit requests confirmation instructions again during sign up' do
     email = user.email
 
     max_attempts = IdentityConfig.store.reg_unconfirmed_email_max_attempts
-    max_attempts.times do |i|
+    (max_attempts - 1).times do |i|
       submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(i + 1)
     end
 
-    expect(unread_emails_for(user.email).size).to eq(max_attempts)
+    expect(unread_emails_for(user.email).size).to eq(max_attempts - 1)
     submit_resend_email_confirmation(email)
-    expect(unread_emails_for(user.email).size).to eq(max_attempts)
+    expect(unread_emails_for(user.email).size).to eq(max_attempts - 1)
   end
 
   scenario 'user enters email with invalid format' do

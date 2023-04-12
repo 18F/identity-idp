@@ -21,12 +21,11 @@ Dir.chdir APP_ROOT do
     _  /___/ /_/ /  /_/ /_  / _  / / /___  /_/ // /_/ /_ |/ /
     /_____/\____/_\__, / /_/  /_/ /_/_(_)\__, / \____/_____/
                  /____/                 /____/
-          |___/
   ]
 
   puts '== Setting up config overrides =='
   default_application_yml = { 'development' => { 'config_key' => nil } }
-  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exists?('config/application.yml')
+  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exist?('config/application.yml')
 
   puts "== Linking service_providers.yml =="
   run "test -r config/service_providers.yml || ln -sv service_providers.localdev.yml config/service_providers.yml"
@@ -55,8 +54,6 @@ Dir.chdir APP_ROOT do
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
-  run "gem install thin -v 1.5.1 -- --with-cflags=\"-Wno-error=implicit-function-declaration\""
-  run "gem install mailcatcher -- --with-cppflags=-I$(brew --prefix openssl@1.1)/include"
 
   puts "\n== Preparing database =="
   run 'bin/rake db:create'
@@ -64,7 +61,6 @@ Dir.chdir APP_ROOT do
   run 'bin/rake db:reset'
   run 'bin/rake db:environment:set'
   run 'bin/rake dev:prime'
-  run 'bin/rake parallel:setup'
 
   puts "\n== Cleaning up old assets =="
   run "bin/rake assets:clobber"
@@ -73,6 +69,9 @@ Dir.chdir APP_ROOT do
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
   run "rm -rf tmp/cache"
+  run "rm -rf tmp/encrypted_doc_storage"
+  run "rm -rf tmp/letter_opener"
+  run "rm -rf tmp/mails"
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"

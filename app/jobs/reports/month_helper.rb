@@ -29,7 +29,7 @@ module Reports
         current = month_end + 1.day
       end
 
-      results << (date_range.end.beginning_of_month..date_range.end)
+      results << (date_range.end.beginning_of_month..date_range.end) if current < date_range.end
 
       results
     end

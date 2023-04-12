@@ -136,32 +136,30 @@ RSpec.describe OpenidConnect::AuthorizationController do
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
               expect(sp_return_log.ial).to eq(2)
             end
-
-            context 'with the IAL2-strict flag' do
-              before do
-                params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-                allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-                stub_sign_in user
-              end
-
-              it 'creates an IAL2 SpReturnLog record' do
-                IdentityLinker.new(user, service_provider).link_identity(ial: 22)
-                user.identities.last.update!(
-                  verified_attributes: %w[given_name family_name birthdate verified_at],
-                )
-                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
-                action
-
-                sp_return_log = SpReturnLog.find_by(issuer: client_id)
-                expect(sp_return_log.ial).to eq(2)
-              end
-            end
           end
 
           context 'account is not already verified' do
             it 'redirects to have the user verify their account' do
               action
               expect(controller).to redirect_to(idv_url)
+            end
+
+            context 'user is under fraud review' do
+              let(:user) { create(:profile, fraud_review_pending: true).user }
+
+              it 'redirects to fraud review page if fraud review is pending' do
+                action
+                expect(controller).to redirect_to(idv_please_call_url)
+              end
+            end
+
+            context 'user is rejected due to fraud' do
+              let(:user) { create(:profile, fraud_rejection: true).user }
+
+              it 'redirects to fraud rejection page if user is fraud rejected ' do
+                action
+                expect(controller).to redirect_to(idv_not_verified_url)
+              end
             end
           end
 
@@ -441,28 +439,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
-      context 'with an inherited_proofing_auth code' do
-        before do
-          params[inherited_proofing_auth_key] = inherited_proofing_auth_value
-          action
-        end
-
-        let(:inherited_proofing_auth_key) { 'inherited_proofing_auth' }
-        let(:inherited_proofing_auth_value) { SecureRandom.hex }
-        let(:decorated_session) { controller.view_context.decorated_session }
-
-        it 'persists the inherited_proofing_auth value' do
-          expect(decorated_session.request_url_params[inherited_proofing_auth_key]).to \
-            eq inherited_proofing_auth_value
-        end
-
-        it 'redirects to SP landing page with the request_id in the params' do
-          sp_request_id = ServiceProviderRequestProxy.last.uuid
-
-          expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
-        end
-      end
-
       it 'redirects to SP landing page with the request_id in the params' do
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
@@ -480,7 +456,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
           phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
-          ial2_strict: false,
           ialmax: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,

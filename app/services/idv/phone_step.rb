@@ -1,18 +1,27 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:)
+    def initialize(idv_session:, trace_id:, analytics:, attempts_tracker:)
       self.idv_session = idv_session
       @trace_id = trace_id
+      @analytics = analytics
+      @attempts_tracker = attempts_tracker
     end
 
     def submit(step_params)
+      return throttled_result if throttle.throttled?
+      throttle.increment!
+
       self.step_params = step_params
-      idv_session.previous_phone_step_params = step_params.slice(:phone)
+      idv_session.previous_phone_step_params = step_params.slice(
+        :phone, :international_code,
+        :otp_delivery_preference
+      )
       proof_address
     end
 
     def failure_reason
       return :fail if throttle.throttled?
+      return :no_idv_result if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
@@ -33,7 +42,6 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      throttle.increment! unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
@@ -94,8 +102,20 @@ module Idv
       end
     end
 
+    def otp_delivery_preference
+      preference = idv_session.previous_phone_step_params[:otp_delivery_preference]
+      return :sms if (preference.nil? || preference.empty?)
+      preference.to_sym
+    end
+
     def throttle
       @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    end
+
+    def throttled_result
+      @attempts_tracker.idv_phone_otp_sent_rate_limited
+      @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
+      FormResponse.new(success: false)
     end
 
     def failed_due_to_timeout_or_exception?
@@ -108,14 +128,14 @@ module Idv
       idv_session.vendor_phone_confirmation = true
       idv_session.user_phone_confirmation = false
 
-      ProofingComponent.create_or_find_by(user: idv_session.current_user).
+      ProofingComponent.find_or_create_by(user: idv_session.current_user).
         update(address_check: 'lexis_nexis_address')
     end
 
     def start_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.start(
         phone: PhoneFormatter.format(applicant[:phone]),
-        delivery_method: :sms,
+        delivery_method: otp_delivery_preference,
       )
     end
 

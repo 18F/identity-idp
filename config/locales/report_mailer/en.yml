@@ -5,7 +5,6 @@ en:
       issuers: Issuers
       name: Name
       subject: Deleted accounts report
-    sps_over_quota_limit:
-      help: ''
-      info: There are SPs that have gone over their quota limit.
-      subject: Some SPs have reached their quota limit
+    system_demand_report:
+      name: Name
+      subject: System demand report

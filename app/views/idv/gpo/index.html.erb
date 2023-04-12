@@ -9,6 +9,8 @@
       ) %>
 <% end %>
 
+<%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
+
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
@@ -40,4 +42,4 @@
       ],
     ) %>
 
-<%= render 'idv/shared/back', fallback_path: @presenter.fallback_back_path %>
+<%= render @presenter.back_or_cancel_partial, @presenter.back_or_cancel_parameters %>

@@ -12,8 +12,13 @@ require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
+require_relative '../lib/email_delivery_observer'
+require_relative '../lib/good_job_connection_pool_size'
+require_relative '../lib/identity_cors'
 
 Bundler.require(*Rails.groups)
+
+require_relative '../lib/mailer_sensitive_information_checker'
 
 APP_NAME = 'Login.gov'.freeze
 
@@ -49,8 +54,6 @@ module Identity
     end
 
     config.load_defaults '7.0'
-    # Delete after deploying once
-    config.active_support.cache_format_version = 6.1
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
@@ -66,6 +69,9 @@ module Identity
     config.good_job.enable_cron = true
     config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
     config.good_job.queues = IdentityConfig.store.good_job_queues
+    config.good_job.preserve_job_records = false
+    config.good_job.enable_listen_notify = false
+    config.good_job.queue_select_limit = IdentityConfig.store.good_job_queue_select_limit
     # see config/initializers/job_configurations.rb for cron schedule
 
     includes_star_queue = config.good_job.queues.split(';').any? do |name_threads|
@@ -85,6 +91,8 @@ module Identity
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
+    config.action_view.frozen_string_literal = true
+
     routes.default_url_options[:host] = IdentityConfig.store.domain_name
 
     config.action_mailer.default_options = {
@@ -93,6 +101,9 @@ module Identity
         mail.display_name = IdentityConfig.store.email_from_display_name
       end.to_s,
     }
+    config.action_mailer.observers = %w[EmailDeliveryObserver]
+
+    config.middleware.delete Rack::ETag
 
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter
@@ -101,25 +112,10 @@ module Identity
     require 'secure_cookies'
     config.middleware.insert_after ActionDispatch::Static, SecureCookies
 
-    # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          next if source == IdentityConfig.store.domain_name
-
-          redirect_uris = Rails.cache.fetch(
-            'all_service_provider_redirect_uris',
-            expires_in: IdentityConfig.store.all_redirect_uris_cache_duration_minutes.minutes,
-          ) do
-            ServiceProvider.pluck(:redirect_uris).flatten.compact
-          end
-
-          redirect_uris.find do |uri|
-            split_uri = uri.split('//')
-            protocol = split_uri[0]
-            domain = split_uri[1].split('/')[0] if split_uri.size > 1
-            source == "#{protocol}//#{domain}"
-          end.present?
+          IdentityCors.allowed_redirect_uri?(source)
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]
@@ -131,29 +127,28 @@ module Identity
       end
 
       allow do
-        allowed_origins = [
-          'https://www.login.gov',
-          'https://login.gov',
-          'https://handbook.login.gov',
-          %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
-        ]
-
-        if Rails.env.development? || Rails.env.test?
-          allowed_origins << %r{https?://localhost(:\d+)?$}
-          allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?$}
-        end
-
-        origins allowed_origins
+        origins IdentityCors.allowed_origins_static_sites
         resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
       end
     end
-    # rubocop:enable Metrics/BlockLength
 
     if !IdentityConfig.store.enable_rate_limiting
       # Rack::Attack auto-includes itself as a Railtie, so we need to
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
+    end
+
+    config.view_component.show_previews = IdentityConfig.store.component_previews_enabled
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+
+      config.view_component.preview_controller = 'ComponentPreviewController'
+      config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
+      config.view_component.default_preview_layout = 'component_preview'
+      config.lookbook.auto_refresh = false
+      config.lookbook.project_name = "#{APP_NAME} Component Previews"
+      config.lookbook.ui_theme = 'blue'
     end
   end
 end

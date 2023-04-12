@@ -7,7 +7,13 @@ RSpec.describe AccessTokenVerifier do
   subject(:verifier) { AccessTokenVerifier.new(http_authorization_header) }
   let(:http_authorization_header) { "Bearer #{access_token}" }
 
-  let(:identity) { build(:service_provider_identity, access_token: SecureRandom.urlsafe_base64) }
+  let(:identity) do
+    build(
+      :service_provider_identity,
+      rails_session_id: '123',
+      access_token: SecureRandom.urlsafe_base64,
+    )
+  end
 
   describe '#submit' do
     let(:result) { verifier.submit }
@@ -45,7 +51,7 @@ RSpec.describe AccessTokenVerifier do
       let(:access_token) { identity.access_token }
       before do
         identity.save!
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
       end
 
       it 'is successful' do
@@ -59,7 +65,7 @@ RSpec.describe AccessTokenVerifier do
     context 'with a valid access_token' do
       before do
         identity.save!
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 1)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 1)
       end
       let(:access_token) { identity.access_token }
 
@@ -77,7 +83,7 @@ RSpec.describe AccessTokenVerifier do
     end
 
     context 'with an expired access_token' do
-      before { Pii::SessionStore.new(identity.rails_session_id).destroy }
+      before { OutOfBandSessionAccessor.new(identity.rails_session_id).destroy }
 
       let(:access_token) { identity.access_token }
 

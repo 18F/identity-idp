@@ -1,6 +1,10 @@
 ---
 fr:
   user_mailer:
+    account_rejected:
+      intro_html: Nous n’avons pas pu vérifier votre identité avec %{app_name}.
+        Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      subject: Nous n’avons pas pu vérifier votre identité
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
         suppression de votre compte %{app_name}.
@@ -36,12 +40,12 @@ fr:
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
     account_verified:
+      change_password_link: changer votre mot de passe
       contact_link: nous contacter
-      disavowal_link: changer votre mot de passe
       intro_html: Vous avez vérifié avec succès votre identité auprès de %{sp_name} le
         %{date} en utilisant %{app_name}. Si vous n’avez pas effectué cette
         action, veuillez %{contact_link} et vous connecter pour
-        %{disavowal_link}.
+        %{change_password_link}.
       subject: Vous avez vérifié votre identité avec %{sp_name}
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
@@ -61,10 +65,6 @@ fr:
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
     contact_link_text: communiquez avec nous
-    doc_auth_link:
-      message: Vous avez demandé à vérifier votre identité sur un ordinateur de
-        bureau. Veuillez vous connecter à %{sp_link}
-      subject: Vérifiez votre identité sur un ordinateur de bureau
     email_added:
       header: Une nouvelle adresse e-mail a été ajoutée à votre profil %{app_name}.
       help: Si vous n’avez pas apporté cette modification, connectez-vous à votre
@@ -111,6 +111,17 @@ fr:
         thanks: Merci d’utiliser %{app_name}.
       header: Prenez une minute pour nous faire part de vos impressions
       subject: Parlez-nous de votre expérience récente avec %{app_name}
+    in_person_deadline_passed:
+      body:
+        canceled: Le délai imparti pour vérifier votre identité en personne a expiré.
+          Nous avons automatiquement annulé votre demande afin de protéger vos
+          données personnelles.
+        cta: Recommencer
+        greeting: Bonjour,
+        restart: Pour introduire une nouvelle demande de vérification de votre identité
+          auprès de %{partner_agency}, cliquez sur le bouton ci-dessous.
+      header: Le délai imparti pour vérifier votre identité en personne a expiré
+      subject: La demande de vérification de votre identité en personne a expiré
     in_person_failed:
       body:
         with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
@@ -147,6 +158,17 @@ fr:
       intro: Voici les détails pour vérifier votre identité en personne dans un bureau
         de poste des États-Unis près de chez vous.
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
+    in_person_ready_to_verify_reminder:
+      greeting: Bonjour,
+      heading:
+        one: Il vous reste %{count} jour pour vérifier votre identité en personne
+        other: Il vous reste %{count} jours pour vérifier votre identité en personne
+      intro: Ne manquez pas l’occasion de vérifier votre identité dans votre bureau de
+        poste de proximité. Complétez cette étape pour accéder à %{sp_name}.
+      subject:
+        one: Vérifiez votre identité auprès d’un bureau de poste dans le prochain jour
+        other: Vérifiez votre identité auprès d’un bureau de poste dans les %{count}
+          prochains jours
     in_person_verified:
       greeting: Bonjour,
       intro: Vous avez vérifié avec succès votre identité au bureau de poste de
@@ -162,14 +184,15 @@ fr:
       sign_in: Se connecter
       subject: Vous avez vérifié avec succès votre identité avec %{app_name}
       warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en
-        personne, veuillez <a href="%{contact_us_url}">nous contacter</a> et
-        vous <a href="%{sign_in_url}">connecter</a> pour changer votre mot de
-        passe.
+        personne, veuillez vous connecter pour <a
+        href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour
+        signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance
+        de %{app_name}</a>.
     letter_reminder:
-      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
-        de confirmation nous permettant de vérifier votre adresse. Vous pouvez
+      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code à
+        usage unique nous permettant de vérifier votre adresse. Vous pouvez
         terminer le processus de vérification d’identité en vous connectant à
-        %{link} et en entrant le code de confirmation.
+        %{link} et en entrant le code à usage unique.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe
@@ -256,8 +279,8 @@ fr:
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
-      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
-        confirmation contenu dans votre lettre ne correspondra plus et vous
+      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code à
+        usage unique contenu dans votre lettre ne correspondra plus et vous
         devrez de vérifier à nouveau votre identité.
       gpo_letter_header: Votre lettre est en route
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez

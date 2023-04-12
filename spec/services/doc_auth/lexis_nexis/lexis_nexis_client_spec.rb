@@ -1,9 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
-  let(:liveness_enabled) { true }
   let(:image_source) { nil }
-  let(:workflow) { 'LIVENESS.CROPPING.WORKFLOW' }
+  let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
   let(:image_upload_url) do
     URI.join(
       'https://lexis.nexis.example.com',
@@ -16,8 +15,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       base_url: 'https://lexis.nexis.example.com',
       locale: 'en',
       trueid_account_id: 'test_account',
-      trueid_liveness_cropping_workflow: 'LIVENESS.CROPPING.WORKFLOW',
-      trueid_liveness_nocropping_workflow: 'LIVENESS.NOCROPPING.WORKFLOW',
       trueid_noliveness_cropping_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
       trueid_noliveness_nocropping_workflow: 'NOLIVENESS.NOCROPPING.WORKFLOW',
     )
@@ -51,17 +48,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
     end
   end
 
-  describe '#post_selfie' do
-    it 'raises a NotImplemented error' do
-      expect do
-        client.post_selfie(
-          instance_id: 123,
-          image: DocAuthImageFixtures.selfie_image,
-        )
-      end.to raise_error(NotImplementedError)
-    end
-  end
-
   describe '#get_results' do
     it 'raises a NotImplemented error' do
       expect do
@@ -79,83 +65,35 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       )
     end
 
-    context 'with liveness checking enabled' do
-      let(:liveness_enabled) { true }
+    context 'with acuant image source' do
+      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+      let(:workflow) { 'NOLIVENESS.NOCROPPING.WORKFLOW' }
 
-      context 'with acuant image source' do
-        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-        let(:workflow) { 'LIVENESS.NOCROPPING.WORKFLOW' }
+      it 'sends an upload image request for the front and back DL images' do
+        result = client.post_images(
+          front_image: DocAuthImageFixtures.document_front_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          image_source: image_source,
+        )
 
-        it 'sends an upload image request for the front, back, and selfie images' do
-          result = client.post_images(
-            front_image: DocAuthImageFixtures.document_front_image,
-            back_image: DocAuthImageFixtures.document_back_image,
-            selfie_image: DocAuthImageFixtures.selfie_image,
-            liveness_checking_enabled: liveness_enabled,
-            image_source: image_source,
-          )
-
-          expect(result.success?).to eq(true)
-          expect(result.pii_from_doc).to_not be_empty
-        end
-      end
-
-      context 'with unknown image source' do
-        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-        let(:workflow) { 'LIVENESS.CROPPING.WORKFLOW' }
-
-        it 'sends an upload image request for the front, back, and selfie images' do
-          result = client.post_images(
-            front_image: DocAuthImageFixtures.document_front_image,
-            back_image: DocAuthImageFixtures.document_back_image,
-            selfie_image: DocAuthImageFixtures.selfie_image,
-            liveness_checking_enabled: liveness_enabled,
-            image_source: image_source,
-          )
-
-          expect(result.success?).to eq(true)
-          expect(result.pii_from_doc).to_not be_empty
-        end
+        expect(result.success?).to eq(true)
+        expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
       end
     end
 
-    context 'with liveness checking disabled' do
-      let(:liveness_enabled) { false }
+    context 'with unknown image source' do
+      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+      let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
 
-      context 'with acuant image source' do
-        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-        let(:workflow) { 'NOLIVENESS.NOCROPPING.WORKFLOW' }
+      it 'sends an upload image request for the front and back DL images' do
+        result = client.post_images(
+          front_image: DocAuthImageFixtures.document_front_image,
+          back_image: DocAuthImageFixtures.document_back_image,
+          image_source: image_source,
+        )
 
-        it 'sends an upload image request for the front and back DL images' do
-          result = client.post_images(
-            front_image: DocAuthImageFixtures.document_front_image,
-            back_image: DocAuthImageFixtures.document_back_image,
-            selfie_image: nil,
-            liveness_checking_enabled: liveness_enabled,
-            image_source: image_source,
-          )
-
-          expect(result.success?).to eq(true)
-          expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
-        end
-      end
-
-      context 'with unknown image source' do
-        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-        let(:workflow) { 'NOLIVENESS.CROPPING.WORKFLOW' }
-
-        it 'sends an upload image request for the front and back DL images' do
-          result = client.post_images(
-            front_image: DocAuthImageFixtures.document_front_image,
-            back_image: DocAuthImageFixtures.document_back_image,
-            selfie_image: nil,
-            liveness_checking_enabled: liveness_enabled,
-            image_source: image_source,
-          )
-
-          expect(result.success?).to eq(true)
-          expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
-        end
+        expect(result.success?).to eq(true)
+        expect(result.class).to eq(DocAuth::LexisNexis::Responses::TrueIdResponse)
       end
     end
 
@@ -168,8 +106,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
         result = client.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
           back_image: DocAuthImageFixtures.document_back_image,
-          selfie_image: DocAuthImageFixtures.selfie_image,
-          liveness_checking_enabled: liveness_enabled,
           image_source: image_source,
         )
 
@@ -185,8 +121,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       result = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
-        selfie_image: DocAuthImageFixtures.selfie_image,
-        liveness_checking_enabled: liveness_enabled,
         image_source: image_source,
       )
 
@@ -205,8 +139,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
       result = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
-        selfie_image: DocAuthImageFixtures.selfie_image,
-        liveness_checking_enabled: liveness_enabled,
         image_source: image_source,
       )
 

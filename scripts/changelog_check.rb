@@ -3,9 +3,10 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^(?:\* )?[cC]hangelog: ?(?<category>[\w -/]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}
+  %r{^(?:\* )?changelog: ?(?<category>[\w -/]{2,}), ?(?<subcategory>[\w -]{2,}), ?(?<change>.+)$}i
 CATEGORIES = [
-  'Improvements',
+  'User-Facing Improvements',
+  'Improvements', # Temporary for transitional period
   'Bug Fixes',
   'Internal',
   'Upcoming Features',
@@ -13,10 +14,16 @@ CATEGORIES = [
 MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
 DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
+REVERT_COMMIT_MESSAGE = /This reverts commit ([a-z\d]+)./
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
   change: 'Update dependencies to resolve security advisories',
+}.freeze
+REVERT_CHANGELOG = {
+  category: 'Bug Fixes',
+  subcategory: 'Code Revert',
+  change: 'Revert changes introduced in %s',
 }.freeze
 
 SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
@@ -25,18 +32,24 @@ CategoryDistance = Struct.new(:category, :distance)
 
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
-def build_changelog(line)
+def build_changelog(line, find_revert: false)
   if line == DEPENDABOT_COMMIT_MESSAGE
     SECURITY_CHANGELOG
+  elsif find_revert && (commit = REVERT_COMMIT_MESSAGE.match(line)&.[](1))
+    REVERT_CHANGELOG.dup.merge(change: REVERT_CHANGELOG[:change] % [commit])
   else
     CHANGELOG_REGEX.match(line)
   end
 end
 
+def revert_commit?(commit)
+  commit.title.start_with?('Revert ')
+end
+
 def build_changelog_from_commit(commit)
   [*commit.commit_messages, commit.title].
     lazy.
-    map { |message| build_changelog(message) }.
+    map { |message| build_changelog(message, find_revert: revert_commit?(commit)) }.
     find(&:itself)
 end
 
@@ -93,7 +106,7 @@ def generate_invalid_changes(git_log)
 end
 
 def closest_change_category(change)
-  CATEGORIES.
+  category = CATEGORIES.
     map do |category|
       CategoryDistance.new(
         category,
@@ -103,6 +116,10 @@ def closest_change_category(change)
     filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
     max { |category_distance| category_distance.distance }&.
     category
+
+  # Temporarily normalize legacy category in transitional period
+  category = 'User-Facing Improvements' if category == 'Improvements'
+  category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
@@ -249,7 +266,7 @@ def main(args)
         changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 
         example:
-        changelog: Improvements, Authentication, Updating Authentication (LG-9998)
+        changelog: User-Facing Improvements, WebAuthn, Improve error flow for WebAuthn (LG-5515)
 
         categories:
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}

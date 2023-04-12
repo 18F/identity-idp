@@ -22,12 +22,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       instance_id: instance_id,
       image: DocAuthImageFixtures.document_back_image,
     )
-    get_results_response = client.get_results(instance_id: instance_id, liveness_enabled: false)
-
-    selfie_response = client.post_selfie(
-      instance_id: instance_id,
-      image: DocAuthImageFixtures.selfie_image,
-    )
+    get_results_response = client.get_results(instance_id: instance_id)
 
     expect(create_document_response.success?).to eq(true)
     expect(create_document_response.instance_id).to_not be_blank
@@ -53,9 +48,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_issued: '2019-12-31',
       phone: nil,
     )
-
-    expect(selfie_response.success?).to eq(true)
-    expect(selfie_response.attention_with_barcode?).to eq(false)
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do
@@ -87,7 +79,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
-      liveness_enabled: false,
     )
 
     expect(get_results_response.pii_from_doc).to eq(
@@ -132,7 +123,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       post_images_response = client.post_images(
         front_image: DocAuthImageFixtures.document_front_image,
         back_image: DocAuthImageFixtures.document_back_image,
-        selfie_image: nil,
       )
 
       expect(post_images_response.success?).to eq(false)
@@ -145,7 +135,6 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     post_images_response = client.post_images(
       front_image: DocAuthImageFixtures.document_front_image,
       back_image: DocAuthImageFixtures.document_back_image,
-      selfie_image: nil,
       image_source: DocAuth::ImageSources::UNKNOWN,
     )
 

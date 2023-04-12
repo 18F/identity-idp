@@ -99,7 +99,6 @@ export class FormStepsWait {
 
   bind() {
     this.elements.form.addEventListener('submit', (event) => this.handleSubmit(event));
-    this.elements.form.addEventListener('invalid', () => this.stopSpinner(), true);
   }
 
   /**
@@ -116,22 +115,13 @@ export class FormStepsWait {
     const response = await window.fetch(action, {
       method,
       body: new window.FormData(form),
+      headers: {
+        // Signal to backend that this request is coming from this JS.
+        'X-Form-Steps-Wait': '1',
+      },
     });
 
-    if ('polyfill' in window.fetch) {
-      // The fetch polyfill is implemented using XMLHttpRequest, which suffers from an issue where a
-      // Content-Type header from a POST is carried into a redirected GET, which is exactly the flow
-      // we are handling here. The current version of Rack neither handles nor provides easy insight
-      // into an empty-bodied (GET) multi-part form. This will change in Rack 3 with the addition of
-      // the Rack::Multipart::EmptyContentError class. In the meantime, only allow non-polyfilled
-      // fetch environmnents to handle the initial response.
-      //
-      // See: https://github.com/whatwg/fetch/issues/609
-      // See: https://github.com/rack/rack/issues/1603
-      this.poll();
-    } else {
-      this.handleResponse(response);
-    }
+    this.handleResponse(response);
   }
 
   /**
@@ -213,7 +203,12 @@ export class FormStepsWait {
 
   async poll() {
     const { waitStepPath } = this.options;
-    const response = await window.fetch(waitStepPath);
+    const response = await window.fetch(waitStepPath, {
+      headers: {
+        // Signal to backend that this request is coming from this JS.
+        'X-Form-Steps-Wait': '1',
+      },
+    });
     this.handleResponse(response);
   }
 }

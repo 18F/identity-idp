@@ -25,6 +25,47 @@ describe SignUp::RegistrationsController, devise: true do
       expect { get :new }.
         to raise_error(Mime::Type::InvalidMimeType)
     end
+
+    it 'tracks visit event' do
+      stub_analytics
+      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
+
+      expect(@analytics).to receive(:track_event).with(
+        'User Registration: enter email visited',
+        sign_in_a_b_test_bucket: :default,
+        from_sign_in: false,
+      )
+
+      get :new
+    end
+
+    context 'with source parameter' do
+      it 'tracks visit event' do
+        stub_analytics
+        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
+
+        expect(@analytics).to receive(:track_event).with(
+          'User Registration: enter email visited',
+          sign_in_a_b_test_bucket: :default,
+          from_sign_in: true,
+        )
+
+        get :new, params: { source: :sign_in }
+      end
+    end
+
+    context 'IdV unavailable' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_available).and_return(false)
+      end
+      it 'redirects to idv vendor outage page when ial2 requested' do
+        allow(controller).to receive(:ial2_requested?).and_return(true)
+        get :new
+        expect(response).to redirect_to(
+          idv_unavailable_path(from: SignUp::RegistrationsController::CREATE_ACCOUNT),
+        )
+      end
+    end
   end
 
   describe '#create' do
@@ -62,7 +103,8 @@ describe SignUp::RegistrationsController, devise: true do
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
-        post :create, params: { user: { email: 'test@test.com', email_language: 'es',
+        post :create, params: { user: { email: 'test@test.com',
+                                        email_language: 'es',
                                         terms_accepted: '1' } }
 
         expect(User.find_with_email('test@test.com').email_language).to eq('es')

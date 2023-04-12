@@ -5,7 +5,7 @@ feature 'disabling GPO address verification' do
 
   context 'with GPO address verification disabled' do
     before do
-      allow(FeatureManagement).to receive(:enable_gpo_verification?).and_return(false)
+      allow(FeatureManagement).to receive(:gpo_verification_enabled?).and_return(false)
       # Whether GPO is available affects the routes that are available
       # We want path helpers for unavailable routes to raise and fail the tests
       # so we reload the routes here
@@ -13,7 +13,7 @@ feature 'disabling GPO address verification' do
     end
 
     after do
-      allow(FeatureManagement).to receive(:enable_gpo_verification?).and_call_original
+      allow(FeatureManagement).to receive(:gpo_verification_enabled?).and_call_original
       Rails.application.reload_routes!
     end
 
@@ -26,11 +26,6 @@ feature 'disabling GPO address verification' do
       expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
 
       fill_out_phone_form_ok('2342255432')
-      click_idv_continue
-
-      # Link to the GPO flow should not be visible
-      expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
-
       choose_idv_otp_delivery_method_sms
       fill_in_code_with_last_phone_otp
       click_submit_default

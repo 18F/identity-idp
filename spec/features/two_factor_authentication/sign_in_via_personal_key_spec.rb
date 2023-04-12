@@ -21,18 +21,19 @@ feature 'Signing in via one-time use personal key' do
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [user.email_addresses.first.email],
-        subject: t('user_mailer.personal_key_sign_in.subject'),
-      }
+      to: [user.email_addresses.first.email],
+      subject: t('user_mailer.personal_key_sign_in.subject'),
     )
   end
 
   context 'user enters incorrect personal key' do
     it 'locks user out when max login attempts has been reached' do
-      user = create(:user, :signed_up)
+      user = create(
+        :user,
+        :signed_up,
+        second_factor_attempts_count: IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
+      )
       sign_in_before_2fa(user)
-      allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
       personal_key = PersonalKeyGenerator.new(user).create
       wrong_personal_key = personal_key.split('-').reverse.join
 

@@ -70,9 +70,14 @@ RSpec.describe Reports::DailyAuthsReport do
           friendly_name: 'The App',
           agency: agency,
         )
-        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
-        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
-        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
+        # rubocop:disable Layout/LineLength
+        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+        create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: true)
+
+        # extra non-billable row that shouldn't be counter
+        create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp, billable: false)
+        # rubocop:enable Layout/LineLength
       end
 
       it 'aggregates by issuer' do
@@ -106,16 +111,6 @@ RSpec.describe Reports::DailyAuthsReport do
 
         report.perform(report_date)
       end
-    end
-  end
-
-  describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
-
-    it 'is the job name and the date' do
-      job = described_class.new(date)
-      expect(job.good_job_concurrency_key).
-        to eq("#{described_class::REPORT_NAME}-#{date}")
     end
   end
 end

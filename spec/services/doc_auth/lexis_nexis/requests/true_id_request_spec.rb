@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
-  let(:liveness_checking_enabled) { nil }
   let(:image_source) { nil }
   let(:account_id) { 'test_account' }
   let(:workflow) { nil }
@@ -13,8 +12,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     DocAuth::LexisNexis::Config.new(
       trueid_account_id: account_id,
       base_url: base_url,
-      trueid_liveness_cropping_workflow: 'test_workflow_cropping_liveness',
-      trueid_liveness_nocropping_workflow: 'test_workflow_liveness',
       trueid_noliveness_cropping_workflow: 'test_workflow_cropping',
       trueid_noliveness_nocropping_workflow: 'test_workflow',
     )
@@ -24,8 +21,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       config: config,
       front_image: DocAuthImageFixtures.document_front_image,
       back_image: DocAuthImageFixtures.document_back_image,
-      selfie_image: DocAuthImageFixtures.selfie_image,
-      liveness_checking_enabled: liveness_checking_enabled,
       image_source: image_source,
       user_uuid: applicant[:uuid],
       uuid_prefix: applicant[:uuid_prefix],
@@ -45,40 +40,18 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     end
   end
 
-  context 'with liveness checking enabled' do
-    let(:liveness_checking_enabled) { true }
+  context 'with acuant image source' do
+    let(:workflow) { 'test_workflow' }
+    let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
-    context 'with acuant image source' do
-      let(:workflow) { 'test_workflow_liveness' }
-      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-
-      it_behaves_like 'a successful request'
-    end
-
-    context 'with unknown image source' do
-      let(:workflow) { 'test_workflow_cropping_liveness' }
-      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
-      it_behaves_like 'a successful request'
-    end
+    it_behaves_like 'a successful request'
   end
 
-  context 'with liveness checking disabled' do
-    let(:liveness_checking_enabled) { false }
+  context 'with unknown image source' do
+    let(:workflow) { 'test_workflow_cropping' }
+    let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
-    context 'with acuant image source' do
-      let(:workflow) { 'test_workflow' }
-      let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
-
-      it_behaves_like 'a successful request'
-    end
-
-    context 'with unknown image source' do
-      let(:workflow) { 'test_workflow_cropping' }
-      let(:image_source) { DocAuth::ImageSources::UNKNOWN }
-
-      it_behaves_like 'a successful request'
-    end
+    it_behaves_like 'a successful request'
   end
 end
 

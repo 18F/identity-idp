@@ -25,6 +25,13 @@ module Idv
       def flow_path
         'hybrid'
       end
+
+      def extra_analytics_properties
+        {
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid]),
+        }
+      end
     end
   end
 end

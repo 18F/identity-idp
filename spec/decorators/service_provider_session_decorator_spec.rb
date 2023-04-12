@@ -42,10 +42,10 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#custom_alert' do
+  describe '#sp_alert' do
     context 'sp has custom alert' do
       it 'uses the custom template' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to eq "<b>custom sign in help text for #{sp.friendly_name}</b>"
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build_stubbed(:service_provider_without_help_text) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build(:service_provider, help_text: nil) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end
@@ -72,7 +72,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       let(:sp) { build_stubbed(:service_provider, :with_blank_help_text) }
 
       it 'returns nil' do
-        expect(subject.custom_alert('sign_in')).
+        expect(subject.sp_alert('sign_in')).
           to be_nil
       end
     end
@@ -280,7 +280,18 @@ RSpec.describe ServiceProviderSessionDecorator do
       end
     end
 
-    context 'without a irs_attempts_api_session_id on the request url' do
+    context 'with a tid on the request url' do
+      let(:service_provider_request) do
+        url = 'https://example.com/auth?tid=123abc'
+        ServiceProviderRequest.new(url: url)
+      end
+
+      it 'returns the value of irs_attempts_api_session_id' do
+        expect(subject.irs_attempts_api_session_id).to eq('123abc')
+      end
+    end
+
+    context 'without a irs_attempts_api_session_id or tid on the request url' do
       let(:service_provider_request) { ServiceProviderRequest.new }
 
       it 'returns nil' do

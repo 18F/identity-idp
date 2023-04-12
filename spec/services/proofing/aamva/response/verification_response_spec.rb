@@ -42,6 +42,18 @@ describe Proofing::Aamva::Response::VerificationResponse do
       end
     end
 
+    context 'with a non-200 status code and a non-xml body' do
+      let(:status_code) { 504 }
+      let(:response_body) { '<h1>Oh no</h1><hr><p>This is not xml.' }
+
+      it 'raises a VerificationError' do
+        expect { subject }.to raise_error(
+          Proofing::Aamva::VerificationError,
+          /Unexpected status code in response: 504/,
+        )
+      end
+    end
+
     context 'when the API response has an error' do
       let(:response_body) { AamvaFixtures.soap_fault_response_simplified }
 

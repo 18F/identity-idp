@@ -2,13 +2,6 @@ module Reports
   class DailyAuthsReport < BaseReport
     REPORT_NAME = 'daily-auths-report'
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     attr_reader :report_date
 
     def perform(report_date)
@@ -60,8 +53,8 @@ module Reports
         LEFT JOIN
           agencies ON service_providers.agency_id = agencies.id
         WHERE
-          sp_return_logs.requested_at::date BETWEEN %{start} AND %{finish}
-          AND sp_return_logs.returned_at IS NOT NULL
+          sp_return_logs.returned_at::date BETWEEN %{start} AND %{finish}
+          AND sp_return_logs.billable = true
         GROUP BY
           sp_return_logs.ial
         , sp_return_logs.issuer

@@ -7,6 +7,8 @@ describe Users::TotpSetupController, devise: true do
         :before,
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
+        :apply_secure_headers_override,
+        :confirm_recently_authenticated_2fa,
       )
     end
   end
@@ -15,7 +17,7 @@ describe Users::TotpSetupController, devise: true do
     context 'user is setting up authenticator app after account creation' do
       before do
         stub_analytics
-        user = build(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
+        user = create(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
         stub_sign_in(user)
         allow(@analytics).to receive(:track_event)
         get :new
@@ -49,8 +51,9 @@ describe Users::TotpSetupController, devise: true do
 
     context 'user is setting up authenticator app during account creation' do
       before do
+        user = create(:user)
         stub_analytics
-        stub_sign_in_before_2fa
+        stub_sign_in_before_2fa(user)
         allow(@analytics).to receive(:track_event)
         get :new
       end
@@ -285,7 +288,6 @@ describe Users::TotpSetupController, devise: true do
           allow(@irs_attempts_api_tracker).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
-          allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
@@ -399,12 +401,24 @@ describe Users::TotpSetupController, devise: true do
         expect(@analytics).to have_received(:track_event).with('TOTP: User Disabled')
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
+
+      it 'revokes remember device cookies' do
+        user = create(:user, :signed_up, :with_phone)
+        totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
+        user.save
+        stub_sign_in(user)
+        expect(user.remember_device_revoked_at).to eq nil
+        freeze_time do
+          delete :disable, params: { id: totp_app.id }
+          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+        end
+      end
     end
 
     context 'when totp is the last mfa method' do
       it 'does not disable totp' do
         user = create(:user, :with_authentication_app)
-        sign_in user
+        stub_sign_in user
 
         delete :disable
         expect(response).to redirect_to(account_two_factor_authentication_path)

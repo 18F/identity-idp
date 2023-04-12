@@ -19,10 +19,10 @@ feature 'disavowing an action' do
   end
 
   scenario 'disavowing a new device sign in' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(3)
     signin(user.email, user.password)
     Capybara.reset_session!
     visit root_path
-    OtpRequestsTracker.destroy_all # Prevent OTP rate limit from preventing sign in
     signin(user.email, user.password)
 
     disavow_last_action_and_reset_password
@@ -111,7 +111,9 @@ feature 'disavowing an action' do
     fill_in 'New password', with: 'invalid'
     click_button t('forms.passwords.edit.buttons.submit')
 
-    expect(page).to have_content('is too short (minimum is 12 characters)')
+    expect(page).to have_content t(
+      'errors.attributes.password.too_short.other', count: Devise.password_length.first
+    )
 
     fill_in 'New password', with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')

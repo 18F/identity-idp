@@ -2,34 +2,46 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
+    include PhoneOtpRateLimitable
+    include PhoneOtpSendable
 
     attr_reader :idv_form
 
+    before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
 
     def new
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
+      async_state = step.async_state
+
+      # It's possible that create redirected here after a success and left the
+      # throttle maxed out. Check for success before checking throttle.
+      return async_state_done(async_state) if async_state.done?
+
       redirect_to failure_url(:fail) and return if throttle.throttled?
 
-      async_state = step.async_state
       if async_state.none?
+        Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+          call(:verify_phone, :view, true)
+
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
-        render :wait
+        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new, locals: { gpo_letter_available: gpo_letter_available }
-      elsif async_state.done?
-        async_state_done(async_state)
       end
     end
 
     def create
       result = idv_form.submit(step_params)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
+        call(:verify_phone, :update, result.success?)
+
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
@@ -48,19 +60,12 @@ module Idv
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
     end
 
-    def max_attempts_reached
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :proof_address,
-        step_name: step_name,
-      )
-    end
-
     def redirect_to_next_step
       if phone_confirmation_required?
-        if VendorStatus.new.all_phone_vendor_outage?
+        if OutageStatus.new.all_phone_vendor_outage?
           redirect_to vendor_outage_path(from: :idv_phone)
         else
-          redirect_to idv_otp_delivery_method_url
+          send_phone_confirmation_otp_and_handle_result
         end
       else
         redirect_to idv_review_url
@@ -75,8 +80,35 @@ module Idv
       step.submit(step_params.to_h)
     end
 
+    def send_phone_confirmation_otp_and_handle_result
+      save_delivery_preference
+      result = send_phone_confirmation_otp
+      analytics.idv_phone_confirmation_otp_sent(
+        **result.to_h.merge(adapter: Telephony.config.adapter),
+      )
+
+      irs_attempts_api_tracker.idv_phone_otp_sent(
+        phone_number: @idv_phone,
+        success: result.success?,
+        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
+        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
+      )
+      if result.success?
+        redirect_to idv_otp_verification_url
+      else
+        handle_send_phone_confirmation_otp_failure(result)
+      end
+    end
+
+    def handle_send_phone_confirmation_otp_failure(result)
+      if send_phone_confirmation_otp_rate_limited?
+        handle_too_many_otp_sends
+      else
+        invalid_phone_number(result.extra[:telephony_response].error)
+      end
+    end
+
     def handle_proofing_failure
-      max_attempts_reached if step.failure_reason == :fail
       redirect_to failure_url(step.failure_reason)
     end
 
@@ -85,11 +117,16 @@ module Idv
     end
 
     def step
-      @step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
+      @step ||= Idv::PhoneStep.new(
+        idv_session: idv_session,
+        trace_id: amzn_trace_id,
+        analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
     end
 
     def step_params
-      params.require(:idv_phone_form).permit(:phone)
+      params.require(:idv_phone_form).permit(:phone, :international_code, :otp_delivery_preference)
     end
 
     def confirm_step_needed
@@ -145,10 +182,28 @@ module Idv
 
     def gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
-      @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed? &&
-                                !(sp_session[:ial2_strict] &&
-                                  !IdentityConfig.store.gpo_allowed_for_strict_ial2)
+      @gpo_letter_available ||= FeatureManagement.gpo_verification_enabled? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
+    end
+
+    # Migrated from otp_delivery_method_controller
+    def otp_sent_tracker_error(result)
+      if send_phone_confirmation_otp_rate_limited?
+        { rate_limited: true }
+      else
+        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+      end
+    end
+
+    # Migrated from otp_delivery_method_controller
+    def save_delivery_preference
+      original_session = idv_session.user_phone_confirmation_session
+      idv_session.user_phone_confirmation_session = Idv::PhoneConfirmationSession.new(
+        code: original_session.code,
+        phone: original_session.phone,
+        sent_at: original_session.sent_at,
+        delivery_method: original_session.delivery_method,
+      )
     end
   end
 end

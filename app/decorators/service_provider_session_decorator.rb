@@ -19,15 +19,6 @@ class ServiceProviderSessionDecorator
     @sp.redirect_uris
   end
 
-  def custom_alert(section)
-    return if sp.help_text.nil?
-    language = I18n.locale.to_s
-    alert = sp.help_text.dig(section, language)
-    if alert.present?
-      format(alert, sp_name: sp_name, sp_create_link: sp_create_link, app_name: APP_NAME)
-    end
-  end
-
   def sp_logo
     sp.logo.presence || DEFAULT_LOGO
   end
@@ -57,10 +48,6 @@ class ServiceProviderSessionDecorator
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end
 
-  def registration_heading
-    'sign_up/registrations/sp_registration_heading'
-  end
-
   def verification_method_choice
     I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
@@ -85,11 +72,13 @@ class ServiceProviderSessionDecorator
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
 
-  def sp_alert(path)
-    path_to_section_map = { new_user_session_path => 'sign_in',
-                            sign_up_email_path => 'sign_up',
-                            new_user_password_path => 'forgot_password' }
-    custom_alert(path_to_section_map[path])
+  def sp_alert(section)
+    return if sp.help_text.nil?
+    language = I18n.locale.to_s
+    alert = sp.help_text.dig(section, language)
+    if alert.present?
+      format(alert, sp_name: sp_name, sp_create_link: sp_create_link, app_name: APP_NAME)
+    end
   end
 
   def mfa_expiration_interval
@@ -118,7 +107,8 @@ class ServiceProviderSessionDecorator
   end
 
   def irs_attempts_api_session_id
-    @irs_attempts_api_session_id ||= request_url_params['irs_attempts_api_session_id']
+    @irs_attempts_api_session_id ||=
+      request_url_params['irs_attempts_api_session_id'] || request_url_params['tid']
   end
 
   def request_url_params

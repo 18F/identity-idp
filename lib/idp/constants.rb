@@ -1,5 +1,6 @@
 module Idp
   module Constants
+    UUID_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'
@@ -75,13 +76,13 @@ module Idp
     IAL_MAX = 0
     IAL1 = 1
     IAL2 = 2
-    IAL2_STRICT = 22
 
     DEFAULT_AAL = 0
     AAL1 = 1
     AAL2 = 2
     AAL3 = 3
 
+    MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
     MOCK_IDV_APPLICANT = {
       first_name: 'FAKEY',
       middle_name: nil,
@@ -93,12 +94,20 @@ module Idp
       zipcode: '59010',
       dob: '1938-10-06',
       state_id_number: '1111111111111',
-      state_id_jurisdiction: 'ND',
+      state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_type: 'drivers_license',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       phone: nil,
     }.freeze
+
+    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
+      state_id_address1: '123 Way St',
+      state_id_address2: '2nd Address Line',
+      state_id_city: 'Best City',
+      state_id_zipcode: '12345',
+      state_id_state: 'VA',
+    ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
@@ -106,5 +115,6 @@ module Idp
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
+    MOCK_IDV_APPLICANT_FULL_STATE_ID_STATE = 'Virginia'
   end
 end

@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
+    include Api::CsrfTokenConcern
+    include SignInABTestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -13,22 +17,23 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
+    after_action :add_csrf_token_header_to_response, only: [:keepalive]
 
     def new
+      override_csp_for_google_analytics
+
+      @ial = sp_session_ial
+      @browser_is_ie11 = browser_is_ie11?
+      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
+        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
       )
-      override_csp_for_google_analytics
-
-      @request_id = request_id_if_valid
-      @ial = sp_session_ial
       super
     end
 
     def create
-      track_authentication_attempt(auth_params[:email])
-
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
@@ -37,6 +42,7 @@ module Users
       handle_valid_authentication
     ensure
       increment_session_bad_password_count if throttle_password_failure && !current_user
+      track_authentication_attempt(auth_params[:email])
     end
 
     def destroy
@@ -48,18 +54,16 @@ module Users
     end
 
     def active
-      response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now
       Rails.logger.debug(alive?: alive?, expires_at: expires_at)
-      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
+      render json: { live: alive?, timeout: expires_at }
     end
 
     def keepalive
-      response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
       analytics.session_kept_alive if alive?
 
-      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
+      render json: { live: alive?, timeout: expires_at }
     end
 
     def timeout
@@ -99,7 +103,7 @@ module Users
       )
 
       flash[:error] = t('errors.sign_in.bad_password_limit')
-      redirect_to root_url(request_id: request_id)
+      redirect_to root_url
     end
 
     def redirect_to_signin
@@ -119,7 +123,7 @@ module Users
     end
 
     def auth_params
-      params.require(:user).permit(:email, :password, :request_id)
+      params.require(:user).permit(:email, :password)
     end
 
     def process_locked_out_user
@@ -150,8 +154,8 @@ module Users
       session[:session_expires_at]&.to_datetime || (now - 1)
     end
 
-    def remaining_session_time
-      expires_at.to_i - Time.zone.now.to_i
+    def browser_is_ie11?
+      BrowserCache.parse(request.user_agent).ie?(11)
     end
 
     def alive?
@@ -168,6 +172,7 @@ module Users
         success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        bad_password_count: session[:bad_password_count].to_i,
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
@@ -216,20 +221,16 @@ module Users
       ).call
     end
 
-    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i
-
-    def request_id_if_valid
-      request_id = (params[:request_id] || sp_session[:request_id]).to_s
-
-      request_id if LETTERS_AND_DASHES.match?(request_id)
-    end
-
     def override_csp_for_google_analytics
       return unless IdentityConfig.store.participate_in_dap
       policy = current_content_security_policy
       policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
       policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
       request.content_security_policy = policy
+    end
+
+    def sign_in_params
+      params[resource_name]&.permit(:email) if request.post?
     end
   end
 

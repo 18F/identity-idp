@@ -13,6 +13,14 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
   post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
+  namespace :api do
+    namespace :internal do
+      get '/sessions' => 'sessions#show'
+      put '/sessions' => 'sessions#update'
+      delete '/sessions' => 'sessions#destroy'
+    end
+  end
+
   # SAML secret rotation paths
   constraints(path_year: SamlEndpoint.suffixes) do
     get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
@@ -31,6 +39,7 @@ Rails.application.routes.draw do
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
+  post '/api/addresses' => 'idv/in_person/address_search#index'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
@@ -118,13 +127,12 @@ Rails.application.routes.draw do
       get '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#new',
           as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_uuid/opt_in' => 'two_factor_authentication/sms_opt_in#create'
+      get '/login/two_factor/otp_expired' => 'two_factor_authentication/otp_expired#show'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-      get 'login/additional_mfa_required' => 'users/additional_mfa_required#show'
-      post 'login/additional_mfa_required/skip' => 'users/additional_mfa_required#skip'
 
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
@@ -152,6 +160,11 @@ Rails.application.routes.draw do
 
         get '/session_data' => 'session_data#index'
       end
+    end
+
+    if IdentityConfig.store.component_previews_enabled
+      require 'lookbook'
+      mount Lookbook::Engine, at: '/components'
     end
 
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
@@ -246,7 +259,7 @@ Rails.application.routes.draw do
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
-    patch '/phone_setup' => 'users/phone_setup#create'
+    post '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
@@ -286,23 +299,36 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
+    get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     get '/restricted' => 'banned_user#show', as: :banned_user
+
+    get '/errors/idv_unavailable' => 'idv/unavailable#show', as: :idv_unavailable
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
     end
     scope '/verify', module: 'idv', as: 'idv' do
+      if !FeatureManagement.idv_available?
+        # IdV has been disabled.
+        match '/*path' => 'unavailable#show', via: %i[get post]
+      end
+
+      get '/mail_only_warning' => 'gpo_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
-      get '/otp_delivery_method' => 'otp_delivery_method#new'
-      put '/otp_delivery_method' => 'otp_delivery_method#create'
+      get '/document_capture' => 'document_capture#show'
+      put '/document_capture' => 'document_capture#update'
+      get '/ssn' => 'ssn#show'
+      put '/ssn' => 'ssn#update'
+      get '/verify_info' => 'verify_info#show'
+      put '/verify_info' => 'verify_info#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'
@@ -319,7 +345,9 @@ Rails.application.routes.draw do
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/setup_errors' => 'setup_errors#show'
+      get '/setup_errors', to: redirect('/please_call')
+      get '/not_verified' => 'not_verified#show'
+      get '/please_call' => 'please_call#show'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
@@ -343,18 +371,13 @@ Rails.application.routes.draw do
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
-      get '/in_person/usps_locations' => 'in_person/usps_locations#index'
+      post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      post '/in_person/addresses' => 'in_person/address_search#index'
+      get '/in_person/verify_info' => 'in_person/verify_info#show'
+      put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
-
-      get '/inherited_proofing' => 'inherited_proofing#index'
-      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
-      put '/inherited_proofing/:step' => 'inherited_proofing#update'
-      get '/inherited_proofing/return_to_sp' => 'inherited_proofing#return_to_sp'
-      get '/inherited_proofing/cancel/' => 'inherited_proofing_cancellations#new', as: :inherited_proofing_cancel
-      put '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#update'
-      delete '/inherited_proofing/cancel' => 'inherited_proofing_cancellations#destroy'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
@@ -368,7 +391,7 @@ Rails.application.routes.draw do
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
-    if FeatureManagement.enable_gpo_verification?
+    if FeatureManagement.gpo_verification_enabled?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'

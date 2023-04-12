@@ -22,6 +22,7 @@ class UserMailer < ActionMailer::Base
 
   before_action :validate_user_and_email_address
   before_action :attach_images
+  after_action :add_metadata
   default(
     from: email_with_name(
       IdentityConfig.store.email_from,
@@ -37,10 +38,14 @@ class UserMailer < ActionMailer::Base
     @user = params.fetch(:user)
     @email_address = params.fetch(:email_address)
     if @user.id != @email_address.user_id
-      raise UserEmailAddressMisMatchError.new(
+      raise UserEmailAddressMismatchError.new(
         "User ID #{@user.id} does not match EmailAddress ID #{@email_address.id}",
       )
     end
+  end
+
+  def add_metadata
+    message.instance_variable_set(:@_metadata, { user: user, action: action_name })
   end
 
   def email_confirmation_instructions(token, request_id:, instructions:)
@@ -80,10 +85,11 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def reset_password_instructions(token:)
+  def reset_password_instructions(token:, request_id:)
     with_user_locale(user) do
       @locale = locale_url_param
       @token = token
+      @request_id = request_id
       @pending_profile_requires_verification = user.decorate.pending_profile_requires_verification?
       @hide_title = @pending_profile_requires_verification
       mail(to: email_address.email, subject: t('user_mailer.reset_password_instructions.subject'))
@@ -182,14 +188,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def doc_auth_desktop_link_to_sp(application, link)
-    with_user_locale(user) do
-      @link = link
-      @application = application
-      mail(to: email_address.email, subject: t('user_mailer.doc_auth_link.subject'))
-    end
-  end
-
   def letter_reminder
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
@@ -234,13 +232,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_verified(date_time:, sp_name:, disavowal_token:)
+  # remove disavowal_token after next deploy
+  def account_verified(date_time:, sp_name:, disavowal_token: nil) # rubocop:disable Lint/UnusedMethodArgument
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name
-      @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_verified.subject', sp_name: @sp_name),
@@ -260,13 +258,27 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_deadline_passed(enrollment:)
+    with_user_locale(user) do
+      @header = t('user_mailer.in_person_deadline_passed.header')
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_deadline_passed.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   def in_person_ready_to_verify(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
 
     with_user_locale(user) do
-      @header = t('in_person_proofing.headings.barcode')
+      @header = t('in_person_proofing.headings.barcode', app_name: APP_NAME)
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
@@ -274,6 +286,30 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
+  def in_person_ready_to_verify_reminder(enrollment:)
+    attachments.inline['barcode.png'] = BarcodeOutputter.new(
+      code: enrollment.enrollment_code,
+    ).image_data
+
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
+        enrollment: enrollment,
+        barcode_image_url: attachments['barcode.png'].url,
+      )
+      @header = t(
+        'user_mailer.in_person_ready_to_verify_reminder.heading',
+        count: @presenter.days_remaining,
+      )
+      mail(
+        to: email_address.email,
+        subject: t(
+          'user_mailer.in_person_ready_to_verify_reminder.subject',
+          count: @presenter.days_remaining,
+        ),
       )
     end
   end
@@ -314,6 +350,15 @@ class UserMailer < ActionMailer::Base
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed_suspected_fraud.subject'),
+      )
+    end
+  end
+
+  def account_rejected
+    with_user_locale(user) do
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_rejected.subject'),
       )
     end
   end

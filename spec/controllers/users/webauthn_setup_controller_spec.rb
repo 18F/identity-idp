@@ -9,6 +9,8 @@ describe Users::WebauthnSetupController do
         :before,
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
+        :apply_secure_headers_override,
+        :confirm_recently_authenticated_2fa,
       )
     end
   end
@@ -106,17 +108,25 @@ describe Users::WebauthnSetupController do
       let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
 
       it 'creates a webauthn key removed event' do
-        expect(Event).to receive(:create).
-          with(hash_including(
-            user_id: controller.current_user.id,
-            event_type: :webauthn_key_removed, ip: '0.0.0.0'
-          ))
-
         delete :delete, params: { id: webauthn_configuration.id }
 
         expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash.now[:success]).to eq t('notices.webauthn_deleted')
         expect(WebauthnConfiguration.count).to eq(0)
+        expect(
+          Event.where(
+            user_id: controller.current_user.id,
+            event_type: :webauthn_key_removed, ip: '0.0.0.0'
+          ).count,
+        ).to eq 1
+      end
+
+      it 'revokes remember device cookies' do
+        expect(user.remember_device_revoked_at).to eq nil
+        freeze_time do
+          delete :delete, params: { id: webauthn_configuration.id }
+          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+        end
       end
 
       it 'tracks the delete in analytics' do
@@ -172,12 +182,11 @@ describe Users::WebauthnSetupController do
       request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
-    context ' Multiple MFA options turned on' do
+    describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
       context 'with multiple MFA methods chosen on account creation' do

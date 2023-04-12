@@ -1,12 +1,11 @@
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
-      attr_reader :uploaded_file, :config, :liveness_enabled
+      attr_reader :uploaded_file, :config
 
-      def initialize(uploaded_file, config, liveness_enabled)
+      def initialize(uploaded_file, config)
         @uploaded_file = uploaded_file.to_s
         @config = config
-        @liveness_enabled = liveness_enabled
         super(
           success: success?,
           errors: errors,
@@ -163,7 +162,6 @@ module DocAuth
           },
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
-          liveness_enabled: liveness_enabled,
           portrait_match_results: { FaceMatchResult: liveness_result },
         }
       end

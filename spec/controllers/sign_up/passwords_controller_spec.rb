@@ -29,10 +29,7 @@ describe SignUp::PasswordsController do
         success_properties,
       )
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: user.email_addresses.first.email,
-        **success_properties,
-      )
+      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
       post :create, params: {
         password_form: { password: 'NewVal!dPassw0rd' },
@@ -83,7 +80,7 @@ describe SignUp::PasswordsController do
         success: false,
         errors: {
           password:
-            ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
+            ["Password must be at least #{Devise.password_length.first} characters long"],
         },
         error_details: password_short_error,
         user_id: user.uuid,
@@ -102,10 +99,7 @@ describe SignUp::PasswordsController do
         success: false,
         failure_reason: password_short_error,
       )
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_email_confirmation).with(
-        email: user.email_addresses.first.email,
-        **success_properties,
-      )
+      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
       post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end

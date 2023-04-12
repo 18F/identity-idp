@@ -7,6 +7,20 @@ en:
           method if you have one, or try again later.
         idv: We cannot verify phones at this time. Please try again later or verify your
           address by mail instead.
+      pinpoint:
+        idv:
+          header: We can only verify your identity by mail right now
+          message_html: Unfortunately, %{app_name} is having technical difficulties. We’re
+            working to resolve an error so that we can verify your identity for
+            <strong>%{sp_name}</strong> quickly.
+          options_html:
+            - <a href="%{status_page_url}" class="usa-link usa-link--external"
+              target="_blank">Get updates on our status page</a> to learn when
+              the error is resolved
+            - Continue now and verify by mail, which takes <strong>3 to 7
+              business days</strong>
+            - Exit Login.gov and try again later
+          options_prompt: 'You can:'
       sms:
         default: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or choose another authentication method if you have one.
@@ -22,18 +36,8 @@ en:
       idv:
         generic: We are having technical difficulties on our end and cannot verify your
           identity at this time. Please try again later.
-        with_sp: '%{service_provider} needs to make sure you are you — not someone
-          pretending to be you. Unfortunately, we are having technical
-          difficulties and cannot verify your identity at this time. Please try
-          again later.'
-        without_sp: The agency that you are trying to access needs to make sure you are
-          you — not someone pretending to be you. Unfortunately, we are having
-          technical difficulties and cannot verify your identity at this time.
-          Please try again later.
       phone:
         default: We cannot verify phones at this time. Please try again later.
-        idv: We cannot verify phones at this time. Please try again later or verify your
-          address by mail instead.
     get_updates: Get updates
     get_updates_on_status_page: Get updates on our status page
     working: We are working to resolve an error

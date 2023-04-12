@@ -31,14 +31,11 @@ module Idv
     end
 
     def increment_second_factor_attempts
-      user.second_factor_attempts_count += 1
-      attributes = {}
+      user.increment_second_factor_attempts_count!
+
       if user.max_login_attempts?
-        attributes[:second_factor_locked_at] = Time.zone.now
         irs_attempts_api_tracker.idv_phone_otp_submitted_rate_limited(phone_number: user_phone)
       end
-
-      UpdateUser.new(user: user, attributes: attributes).call
     end
 
     def user_phone

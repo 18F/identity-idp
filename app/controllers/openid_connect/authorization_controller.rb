@@ -6,20 +6,22 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
-    include InheritedProofingConcern
+    include FraudReviewConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
-    before_action :apply_secure_headers_override, only: [:index]
+    before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :bump_auth_count, only: [:index]
 
     def index
+      return redirect_to_fraud_review if fraud_review_pending_for_ial2_request?
+      return redirect_to_fraud_rejection if fraud_rejection_for_ial2_request?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -84,6 +86,16 @@ module OpenidConnect
       redirect_to(idv_url) if identity_needs_verification?
     end
 
+    def fraud_review_pending_for_ial2_request?
+      return false unless @authorize_form.ial2_or_greater?
+      fraud_review_pending?
+    end
+
+    def fraud_rejection_for_ial2_request?
+      return false unless @authorize_form.ial2_or_greater?
+      fraud_rejection?
+    end
+
     def profile_or_identity_needs_verification?
       return false unless @authorize_form.ial2_or_greater?
       profile_needs_verification? || identity_needs_verification?
@@ -97,18 +109,22 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
+      (@authorize_form.ial2_requested? &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
-        identity_needs_strict_ial2_verification?
-    end
-
-    def identity_needs_strict_ial2_verification?
-      @authorize_form.ial2_strict_requested? && !current_user.active_profile&.strict_ial2_proofed?
+        current_user.decorate.reproof_for_irs?(service_provider: current_sp)
     end
 
     def build_authorize_form_from_params
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
+    end
+
+    def secure_headers_override
+      csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
+        @authorize_form.redirect_uri,
+        @authorize_form.service_provider.redirect_uris,
+      )
+      override_form_action_csp(csp_uris)
     end
 
     def authorization_params

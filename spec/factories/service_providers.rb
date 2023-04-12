@@ -31,6 +31,14 @@ FactoryBot.define do
       end
     end
 
+    trait :irs do
+      friendly_name { 'An IRS Service Provider' }
+      ial { 2 }
+      active { true }
+      irs_attempts_api_enabled { true }
+      redirect_uris { ['http://localhost:7654/auth/result'] }
+    end
+
     factory :service_provider_without_help_text, traits: [:without_help_text]
   end
 end

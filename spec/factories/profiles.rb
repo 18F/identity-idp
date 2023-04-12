@@ -21,6 +21,11 @@ FactoryBot.define do
       deactivation_reason { :password_reset }
     end
 
+    trait :fraud_review_pending do
+      fraud_review_pending { true }
+      proofing_components { { threatmetrix_review_status: 'review' } }
+    end
+
     trait :verification_cancelled do
       deactivation_reason { :verification_cancelled }
     end

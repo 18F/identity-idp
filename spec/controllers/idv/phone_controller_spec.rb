@@ -17,7 +17,7 @@ describe Idv::PhoneController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started,
+        :confirm_verify_info_step_complete,
       )
     end
   end
@@ -38,6 +38,15 @@ describe Idv::PhoneController do
 
     before do
       stub_verify_steps_one_and_two(user)
+    end
+
+    it 'updates the doc auth log for the user for the usps_letter_sent event' do
+      unstub_analytics
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :new }.to(
+        change { doc_auth_log.reload.verify_phone_view_count }.from(0).to(1),
+      )
     end
 
     context 'when the phone number has been confirmed as user 2FA phone' do
@@ -66,6 +75,21 @@ describe Idv::PhoneController do
       end
     end
 
+    context 'when the user has not finished the verify step' do
+      before do
+        subject.idv_session.applicant = nil
+        subject.idv_session.resolution_successful = nil
+
+        allow(controller).to receive(:confirm_idv_applicant_created).and_call_original
+      end
+
+      it 'redirects to the verify step' do
+        get :new
+
+        expect(response).to redirect_to idv_verify_info_url
+      end
+    end
+
     context 'when the user is throttled' do
       before do
         Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
@@ -90,8 +114,11 @@ describe Idv::PhoneController do
       it 'logs an event showing that the user wants to choose a different number' do
         get :new, params: params
 
-        expect(@analytics).to have_received(:track_event).
-          with('IdV: use different phone number', step: step)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: use different phone number',
+          step: step,
+          proofing_components: nil,
+        )
       end
     end
 
@@ -107,9 +134,9 @@ describe Idv::PhoneController do
       expect(@analytics).to have_received(:track_event).with('Proofing Address Result Missing')
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
-      put :create, params: { idv_phone_form: { phone: good_phone } }
+      put :create, params: { idv_phone_form: { phone: good_phone, otp_delivery_preference: :sms } }
       get :new
-      expect(response).to redirect_to idv_otp_delivery_method_path
+      expect(response).to redirect_to idv_otp_verification_path
     end
 
     it 'shows waiting interstitial if async process is in progress' do
@@ -131,10 +158,24 @@ describe Idv::PhoneController do
 
   describe '#create' do
     context 'when form is invalid' do
-      let(:improbable_phone_error) { { phone: [:improbable_phone] } }
+      let(:improbable_phone_error) do
+        {
+          phone: [:improbable_phone],
+          otp_delivery_preference: [:inclusion],
+        }
+      end
       let(:improbable_phone_message) { t('errors.messages.improbable_phone') }
+      let(:improbable_otp_message) { 'is not included in the list' }
       let(:improbable_phone_number) { '703' }
-      let(:improbable_phone_form) { { idv_phone_form: { phone: improbable_phone_number } } }
+      let(:improbable_phone_form) do
+        {
+          idv_phone_form:
+            {
+              phone: improbable_phone_number,
+              otp_delivery_preference: :🎷,
+            },
+        }
+      end
       before do
         user = build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' })
         stub_verify_steps_one_and_two(user)
@@ -172,6 +213,7 @@ describe Idv::PhoneController do
           success: false,
           errors: {
             phone: [improbable_phone_message],
+            otp_delivery_preference: [improbable_otp_message],
           },
           error_details: improbable_phone_error,
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
@@ -179,7 +221,9 @@ describe Idv::PhoneController do
           area_code: nil,
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
+          otp_delivery_preference: '🎷',
           types: [],
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -206,7 +250,14 @@ describe Idv::PhoneController do
           failure_reason: nil,
         )
 
-        put :create, params: { idv_phone_form: { phone: good_phone } }
+        phone_params = {
+          idv_phone_form: {
+            phone: good_phone,
+            otp_delivery_preference: :sms,
+          },
+        }
+
+        put :create, params: phone_params
 
         result = {
           success: true,
@@ -216,11 +267,25 @@ describe Idv::PhoneController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           carrier: 'Test Mobile Carrier',
           phone_type: :mobile,
+          otp_delivery_preference: 'sms',
           types: [:fixed_or_mobile],
+          proofing_components: nil,
         }
 
         expect(@analytics).to have_received(:track_event).with(
           'IdV: phone confirmation form', result
+        )
+      end
+
+      it 'updates the doc auth log for the user with verify_phone_submit step' do
+        user = create(:user, :with_phone, with: { phone: good_phone, confirmed_at: Time.zone.now })
+        unstub_analytics
+        stub_verify_steps_one_and_two(user)
+
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { put :create, params: { idv_phone_form: { phone: good_phone } } }.to(
+          change { doc_auth_log.reload.verify_phone_submit_count }.from(0).to(1),
         )
       end
 
@@ -237,11 +302,16 @@ describe Idv::PhoneController do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
 
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.applicant).to eq(
             original_applicant.merge(
@@ -255,7 +325,7 @@ describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
               and_return(true)
           end
 
@@ -280,11 +350,16 @@ describe Idv::PhoneController do
         end
 
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+          put :create, params: {
+            idv_phone_form: {
+              phone: good_phone,
+              otp_delivery_preference: 'sms',
+            },
+          }
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_otp_delivery_method_path
+          expect(response).to redirect_to idv_otp_verification_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
@@ -292,7 +367,7 @@ describe Idv::PhoneController do
 
         context 'with full vendor outage' do
           before do
-            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+            allow_any_instance_of(OutageStatus).to receive(:all_phone_vendor_outage?).
               and_return(true)
           end
 
@@ -329,6 +404,7 @@ describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
+          proofing_components: nil,
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
@@ -384,6 +460,7 @@ describe Idv::PhoneController do
             transaction_id: 'address-mock-transaction-id-123',
             reference: '',
           },
+          proofing_components: nil,
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
@@ -402,28 +479,25 @@ describe Idv::PhoneController do
 
       context 'when the user is throttled by submission' do
         before do
+          stub_analytics
+
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
+
           throttle = Throttle.new(throttle_type: :proof_address, user: user)
-          (max_attempts - 1).times do
-            throttle.increment!
-          end
+          throttle.increment_to_throttled!
+
+          put :create, params: { idv_phone_form: { phone: bad_phone } }
         end
 
         it 'tracks throttled event' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
-
-          expect(@analytics).to receive(:track_event).with(
+          expect(@analytics).to have_logged_event(
             'Throttler Rate Limit Triggered',
             {
               throttle_type: :proof_address,
               step_name: :phone,
             },
           )
-
-          put :create, params: { idv_phone_form: { phone: bad_phone } }
-          get :new
         end
       end
     end

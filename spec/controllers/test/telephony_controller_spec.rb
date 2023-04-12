@@ -8,16 +8,20 @@ describe Test::TelephonyController do
         otp: '123456',
         expiration: 10,
         channel: :sms,
+        otp_format: 'digit',
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
         otp: '654321',
         expiration: 10,
         channel: :voice,
+        otp_format: 'digit',
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
 
       get :index
@@ -45,16 +49,20 @@ describe Test::TelephonyController do
         otp: '123456',
         expiration: 10,
         channel: :sms,
+        otp_format: 'digit',
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
         otp: '654321',
         expiration: 10,
         channel: :voice,
+        otp_format: 'digit',
         domain: IdentityConfig.store.domain_name,
         country_code: 'US',
+        extra_metadata: {},
       )
 
       delete :destroy

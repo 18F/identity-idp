@@ -1,6 +1,7 @@
 class AddUserEmailForm
   include ActiveModel::Model
   include FormAddEmailValidator
+  include ActionView::Helpers::TranslationHelper
 
   attr_reader :email
 

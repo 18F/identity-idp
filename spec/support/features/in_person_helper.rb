@@ -7,7 +7,12 @@ module InPersonHelper
 
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
   GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
+  # the date in the format '1938-10-06'
   GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+  # the date in the format 'October 6, 1938'
+  GOOD_DOB_FORMATTED_EVENT = I18n.l(
+    Date.parse(GOOD_DOB), format: I18n.t('time.formats.event_date')
+  )
   GOOD_STATE_ID_JURISDICTION = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
   GOOD_STATE_ID_NUMBER = Idp::Constants::MOCK_IDV_APPLICANT[:state_id_number]
 
@@ -16,8 +21,13 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
+  GOOD_STATE_ID_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address1]
+  GOOD_STATE_ID_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address2]
+  GOOD_STATE_ID_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_STATE
+  GOOD_STATE_ID_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:city]
+  GOOD_STATE_ID_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:zipcode]
 
-  def fill_out_state_id_form_ok
+  def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     year, month, day = GOOD_DOB.split('-')
@@ -27,51 +37,85 @@ module InPersonHelper
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
+
+    if double_address_verification
+      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_STATE_ID_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_STATE_ID_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_STATE_ID_CITY
+      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_STATE_ID_ZIPCODE
+      if same_address_as_id
+        select GOOD_STATE_ID_STATE, from: t('in_person_proofing.form.state_id.state_id_state')
+        choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+      else
+        select GOOD_STATE, from: t('in_person_proofing.form.state_id.state_id_state')
+        choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+      end
+    end
   end
 
-  def fill_out_address_form_ok
-    fill_in t('in_person_proofing.form.address.address1'), with: GOOD_ADDRESS1
-    fill_in t('in_person_proofing.form.address.address2'), with: GOOD_ADDRESS2
-    fill_in t('in_person_proofing.form.address.city'), with: GOOD_CITY
-    fill_in t('in_person_proofing.form.address.zipcode'), with: GOOD_ZIPCODE
-    select GOOD_STATE, from: t('in_person_proofing.form.address.state')
-    choose t('in_person_proofing.form.address.same_address_choice_yes')
+  def fill_out_address_form_ok(double_address_verification: false, same_address_as_id: false)
+    fill_in t('idv.form.address1'),
+            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS1 : GOOD_ADDRESS1
+    fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2 unless double_address_verification
+    fill_in t('idv.form.address2'),
+            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS2 : GOOD_ADDRESS2
+    fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_STATE_ID_CITY : GOOD_CITY
+    fill_in t('idv.form.zipcode'), with: same_address_as_id ? GOOD_STATE_ID_ZIPCODE : GOOD_ZIPCODE
+    if same_address_as_id
+      select GOOD_STATE_ID_STATE, from: t('idv.form.state')
+    else
+      select GOOD_STATE, from: t('idv.form.state')
+    end
+
+    unless double_address_verification
+      choose t('in_person_proofing.form.address.same_address_choice_yes')
+    end
   end
 
   def begin_in_person_proofing(_user = nil)
     complete_doc_auth_steps_before_document_capture_step
     mock_doc_auth_attention_with_barcode
     attach_and_submit_images
+    click_button t('in_person_proofing.body.cta.button')
+  end
 
-    click_link t('idv.troubleshooting.options.verify_in_person')
+  def search_for_post_office
+    fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
+            with: GOOD_ADDRESS1
+    click_button(t('in_person_proofing.body.location.po_search.search_button'))
+    # Wait for page to load before selecting location
+    expect(page).to have_css('.location-collection-item', wait: 10)
   end
 
   def complete_location_step(_user = nil)
-    # Wait for page to load before selecting location
-    expect(page).to have_css('.location-collection-item')
-    first('.location-collection-item').
-      click_button(t('in_person_proofing.body.location.location_button'))
+    search_for_post_office
+    within first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
   end
 
   def complete_prepare_step(_user = nil)
-    # Wait for page to load before clicking continue
-    expect(page).to have_content(
-      t('in_person_proofing.headings.prepare'),
-    )
-    click_link t('forms.buttons.continue')
+    expect(page).to have_text(t('forms.buttons.continue'), wait: 10)
+    click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
-  def complete_state_id_step(_user = nil)
+  def complete_state_id_step(_user = nil, same_address_as_id: true,
+                             double_address_verification: false)
     # Wait for page to load before attempting to fill out form
-    expect(page).to have_current_path(
-      idv_in_person_step_path(step: :state_id),
+    expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+    fill_out_state_id_form_ok(
+      double_address_verification: double_address_verification,
+      same_address_as_id: same_address_as_id,
     )
-    fill_out_state_id_form_ok
     click_idv_continue
+    unless double_address_verification && same_address_as_id
+      expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    end
   end
 
-  def complete_address_step(_user = nil)
-    fill_out_address_form_ok
+  def complete_address_step(_user = nil, double_address_verification: false)
+    fill_out_address_form_ok(double_address_verification: double_address_verification)
     click_idv_continue
   end
 

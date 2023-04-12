@@ -15,7 +15,7 @@ module Idv
       step_url: :idv_capture_doc_step_url,
       final_url: :root_url,
       flow: Idv::Flows::CaptureDocFlow,
-      analytics_id: Analytics::DOC_AUTH,
+      analytics_id: 'Doc Auth',
     }.freeze
 
     def return_to_sp
@@ -33,9 +33,12 @@ module Idv
                 token.blank? &&
                 document_capture_session_uuid.blank?
 
-      result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
+      result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
+      to_log = result.to_h
+      # Log value used to determine session type ("hybrid flow" or not)
+      to_log[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
 
-      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
+      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], to_log)
       process_result(result)
     end
 

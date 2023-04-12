@@ -3,10 +3,6 @@ class SessionDecorator
     @view_context = view_context
   end
 
-  def registration_heading
-    'sign_up/registrations/registration_heading'
-  end
-
   def new_session_heading
     I18n.t('headings.sign_in_without_sp')
   end
@@ -39,7 +35,7 @@ class SessionDecorator
 
   def requested_attributes; end
 
-  def sp_alert(_path); end
+  def sp_alert(_section); end
 
   def requested_more_recent_verification?
     false

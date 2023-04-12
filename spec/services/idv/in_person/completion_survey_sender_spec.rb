@@ -28,16 +28,12 @@ describe Idv::InPerson::CompletionSurveySender do
 
         expect_delivered_email_count(2)
         expect_delivered_email(
-          0, {
-            to: [user.confirmed_email_addresses[0].email],
-            subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
-          }
+          to: [user.confirmed_email_addresses[0].email],
+          subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
         )
         expect_delivered_email(
-          1, {
-            to: [user.confirmed_email_addresses[1].email],
-            subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
-          }
+          to: [user.confirmed_email_addresses[1].email],
+          subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
         )
       end
       it 'marks the user as having received a survey' do

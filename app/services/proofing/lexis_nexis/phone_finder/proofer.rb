@@ -5,12 +5,12 @@ module Proofing
         attr_reader :config
 
         def initialize(config)
-          @config = LexisNexis::Proofer::Config.new(config)
+          @config = LexisNexis::Config.new(config)
         end
 
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send
-          return build_result_from_response(response)
+          build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           AddressResult.new(
@@ -31,6 +31,7 @@ module Proofing
             vendor_name: 'lexisnexis:phone_finder',
             transaction_id: verification_response.conversation_id,
             reference: verification_response.reference,
+            vendor_workflow: config.phone_finder_workflow,
           )
         end
 

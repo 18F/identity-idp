@@ -1,12 +1,18 @@
 require 'rails_helper'
 
 describe IdvController do
-  describe '#index' do
-    it 'tracks page visit' do
-      stub_sign_in
-      stub_analytics
+  before do
+    stub_sign_in
+  end
 
-      expect(@analytics).to receive(:track_event).with('IdV: intro visited')
+  describe '#index' do
+    let(:analytics_name) { 'IdV: intro visited' }
+    before do
+      stub_analytics
+    end
+
+    it 'tracks page visit' do
+      expect(@analytics).to receive(:track_event).with(analytics_name)
 
       get :index
     end
@@ -15,29 +21,57 @@ describe IdvController do
       profile = create(:profile, :active, :verified)
 
       stub_sign_in(profile.user)
-      stub_analytics
 
-      expect(@analytics).to_not receive(:track_event).with('IdV: intro visited')
+      expect(@analytics).to_not receive(:track_event).with(analytics_name)
 
       get :index
     end
 
-    it 'redirects to failure page if number of attempts has been exceeded' do
-      stub_attempts_tracker
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:idv_verification_rate_limited)
-      user = create(:user)
-      profile = create(
-        :profile,
-        user: user,
-      )
-      Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
+    it 'redirects to sad face page if fraud review is pending' do
+      profile = create(:profile, fraud_review_pending: true)
 
       stub_sign_in(profile.user)
 
       get :index
 
-      expect(response).to redirect_to idv_session_errors_failure_url
+      expect(response).to redirect_to(idv_please_call_url)
+    end
+
+    it 'redirects to fraud rejection page if profile is rejected' do
+      profile = create(:profile, fraud_rejection: true)
+
+      stub_sign_in(profile.user)
+
+      get :index
+
+      expect(response).to redirect_to(idv_not_verified_url)
+    end
+
+    context 'if number of attempts has been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          user: user,
+        )
+        Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects to failure page' do
+        get :index
+
+        expect(response).to redirect_to idv_session_errors_failure_url
+      end
+
+      it 'logs appropriate attempts event' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
+          with({ throttle_context: 'single-session' })
+
+        get :index
+      end
     end
 
     it 'redirects to account recovery if user has a password reset profile' do
@@ -51,43 +85,13 @@ describe IdvController do
     end
 
     it 'redirects to doc auth if doc auth is enabled and exclusive' do
-      stub_sign_in
-
       get :index
 
       expect(response).to redirect_to idv_doc_auth_path
     end
 
-    context 'with a VA inherited proofing session' do
-      before do
-        stub_sign_in
-        allow(controller).to receive(:va_inherited_proofing?).and_return(true)
-      end
-
-      it 'redirects to inherited proofing' do
-        get :index
-        expect(response).to redirect_to idv_inherited_proofing_path
-      end
-    end
-
-    context 'sp has reached quota limit' do
-      let(:issuer) { 'foo' }
-
-      it 'does not allow user to be verified and redirects to account url with error message' do
-        stub_sign_in
-        ServiceProviderQuotaLimit.create(issuer: issuer, ial: 2, percent_full: 100)
-        session[:sp] = { issuer: issuer, ial: 2 }
-
-        get :index
-
-        expect(flash[:error]).to eq t('errors.doc_auth.quota_reached')
-        expect(response).to redirect_to account_url
-      end
-    end
-
     context 'no SP context' do
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
-      let(:idv_sp_required) { false }
 
       before do
         stub_sign_in(user)
@@ -140,14 +144,11 @@ describe IdvController do
         get :activated
 
         expect(response).to render_template(:activated)
-        expect(subject.idv_session.alive?).to eq false
       end
     end
 
     context 'user does not have an active profile' do
       it 'does not allow direct access' do
-        stub_sign_in
-
         get :activated
 
         expect(response).to redirect_to idv_url

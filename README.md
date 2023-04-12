@@ -7,7 +7,12 @@ This repository contains the core code base and documentation for the identity m
 
 ## Contributing to this code base
 
-Thank you for your interest in contributing to the Login.gov IdP! For complete instructions on how to contribute code, please read through our [CONTRIBUTING.md](CONTRIBUTING.md) documentation.
+Thank you for your interest in contributing to the Login.gov IdP! For instructions on how to contribute and to learn more about conventions at Login.gov, refer to the following resources:
+
+- [The Contributing Guide](CONTRIBUTING.md) includes basic guidelines around pull requests, commit messages, and the code review process.
+- [Front-end Architecture](./docs/frontend.md) provides a high-level overview of frontend development practices and tools.
+- [Back-end Architecture](./docs/backend.md) outlines a similar overview for backend development practices and tools.
+- [The Login.gov Handbook](https://handbook.login.gov/) describes organizational practices, including process runbooks and team structures.
 
 ## Creating your local development environment
 
@@ -20,7 +25,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 #### Dependencies
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby ~> 3.0.4
+- Ruby ~> 3.2.0
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v16](https://nodejs.org)
@@ -120,10 +125,25 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
+  In local development, the application does not deliver real email messages. Instead, we use a tool
+  called [letter_opener](https://github.com/ryanb/letter_opener) to display messages.
 
-  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
-  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+##### Disabling letter opener new window behavior
+
+  Letter opener will open each outgoing email in a new browser window or tab. In cases where this
+  will be annoying the application also supports writing outgoing emails to a file. To write emails
+  to a file add the following config to the `development` group in `config/application.yml`:
+
+  ```
+  development:
+    development_mailer_deliver_method: file
+  ```
+
+  After restarting the app emails will be written to the `tmp/mails` folder.
+
+##### Email template previews
+
+  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 
@@ -189,6 +209,22 @@ There was an initial attempt to dockerize the IDP but it is currently deprecated
 
 If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container.
 
+### Linting
+
+Run `make lint` to look for errors; `make lintfix` can repair some linting errors.
+
+### Configuration variables
+
+Default configuration values &mdash; like feature flags, timeout settings, and third-party connection details &mdash; are found in [`config/application.yml.default`](config/application.yml/default). From these defaults the file `config/application.yml` is created during `make setup` for use during local development. [See the handbook](https://handbook.login.gov/articles/appdev-secrets-configuration.html).
+
+In deployed environments, configuration values are managed with the [app-s3-secret](https://github.com/18F/identity-devops/blob/main/bin/app-s3-secret) script. [See the handbook](https://handbook.login.gov/articles/devops-scripts.html#app-s3-secret).
+
+### Running jobs
+
+We run background jobs / workers with ActiveJob and GoodJob. You shouldn't normally have to start it manually because `make run` runs [the `Procfile`](Procfile), which handles it. The manual command is: `bundle exec good_job start`
+
+Processes can be configured to run via async jobs or synchronously using flags such as `deliver_mail_async` in [application.yml](config/application.yml.default)
+
 ### Troubleshooting
 #### I am receiving errors when running `$ make setup`
 
@@ -197,11 +233,6 @@ If this command returns errors, you may need to install the dependencies first, 
 $ bundle install
 $ yarn install
 ```
-
-#### I am receiving errors related to Capybara in feature tests
-You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
-
-chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up.
 
 #### I am receiving errors when creating the development and test databases
 
@@ -222,12 +253,23 @@ $ createdb `whoami`
 $ make test_serial
 ```
 
-##### Errors related to too many _open files_
+##### Errors related to Capybara in feature tests
+You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
+
+chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up. After your system recieves an automatic Chrome browser update you may have to upgrade (or reinstall) chromedriver.
+
+If `chromedriver -v` does not work you may have to [allow it](https://stackoverflow.com/questions/60362018/macos-catalinav-10-15-3-error-chromedriver-cannot-be-opened-because-the-de) with `xattr`.
+
+##### Errors related to _too many open files_
 You may receive connection errors similar to the following:
 
 `Failed to open TCP connection to 127.0.0.1:9515 (Too many open files - socket(2) for "127.0.0.1" port 9515)`
 
-Running the following, _prior_ to running tests, may solve the problem:
+You are encountering you OS's [limits on allowed file descriptors](https://wilsonmar.github.io/maximum-limits/). Check the limits with both:
+* `ulimit -n`
+* `launchctl limit maxfiles`
+
+Try this to increase the user limit:
 ```
 $ ulimit -Sn 65536 && make test
 ```
@@ -235,3 +277,55 @@ To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_prof
 ```
 ulimit -Sn 65536
 ```
+
+If you are running MacOS, you may find it is not taking your revised ulimit seriously. [You must insist.](https://medium.com/mindful-technology/too-many-open-files-limit-ulimit-on-mac-os-x-add0f1bfddde) Run this command to edit a property list file:
+```
+sudo nano /Library/LaunchDaemons/limit.maxfiles.plist
+```
+Paste the following contents into the text editor:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+          "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>limit.maxfiles</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>launchctl</string>
+      <string>limit</string>
+      <string>maxfiles</string>
+      <string>524288</string>
+      <string>524288</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ServiceIPC</key>
+    <false/>
+  </dict>
+</plist>
+
+```
+Use Control+X to save the file.
+
+Restart your Mac to cause the .plist to take effect. Check the limits again and you should see both `ulimit -n` and `launchctl limit maxfiles` return a limit of 524288.
+
+##### Errors related to _sassc_
+
+If you are getting the error:
+```
+LoadError: cannot load such file -- sassc
+```
+Try `make run` for a short time, then use Ctrl+C to kill it
+
+##### Errors relating to OpenSSL versions
+
+If you get this error during test runs:
+```
+     Failure/Error: JWT::JWK.import(certs_response[:keys].first).public_key
+     OpenSSL::PKey::PKeyError:
+       rsa#set_key= is incompatible with OpenSSL 3.0
+```
+See [this document](docs/FixingOpenSSLVersionProblem.md) for how to fix it.
+

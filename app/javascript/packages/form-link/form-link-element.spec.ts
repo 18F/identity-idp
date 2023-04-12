@@ -20,8 +20,8 @@ describe('FormLinkElement', () => {
 
     const onSubmit = sinon.stub().callsFake((event) => event.preventDefault());
     window.addEventListener('submit', onSubmit);
-
     const didPreventDefault = !fireEvent.click(link);
+    window.removeEventListener('submit', onSubmit);
 
     expect(onSubmit).to.have.been.called();
     expect(didPreventDefault).to.be.true();

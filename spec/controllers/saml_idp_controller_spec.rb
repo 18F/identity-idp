@@ -226,9 +226,9 @@ describe SamlIdpController do
     end
 
     it 'accepts requests with correct cert and correct session index and renders logout response' do
-      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+      REDIS_POOL.with { |client| client.flushdb }
       session_accessor = OutOfBandSessionAccessor.new(session_id)
-      session_accessor.put(foo: 'bar')
+      session_accessor.put_pii(foo: 'bar')
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
@@ -261,12 +261,12 @@ describe SamlIdpController do
       )
 
       expect(response).to be_ok
-      expect(session_accessor.load).to be_empty
+      expect(session_accessor.load_pii).to be_nil
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)
       expect(logout_response.in_response_to).to eq(saml_request.uuid)
-      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+      REDIS_POOL.with { |client| client.flushdb }
     end
 
     it 'rejects requests from a correct cert but no session index' do
@@ -577,7 +577,7 @@ describe SamlIdpController do
             authn_context_comparison: 'exact',
             requested_ial: authn_context,
             service_provider: sp1_issuer,
-            endpoint: '/api/saml/auth2022',
+            endpoint: '/api/saml/auth2023',
             idv: false,
             finish_profile: false,
             request_signed: true,
@@ -607,25 +607,6 @@ describe SamlIdpController do
       it_behaves_like 'a verified identity',
                       Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                       Idp::Constants::IAL2
-    end
-
-    context 'with IAL2 strict and the identity is already verified' do
-      before do
-        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-      end
-
-      it_behaves_like 'a verified identity',
-                      Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-                      Idp::Constants::IAL2_STRICT
-    end
-
-    context 'with IAL2 and the identity is not already verified' do
-      it 'redirects to IdV URL for IAL2 proofer' do
-        user = create(:user, :signed_up)
-        generate_saml_response(user, ial2_settings)
-
-        expect(response).to redirect_to idv_path
-      end
     end
 
     context 'with IAL2 and the profile is reset' do
@@ -737,7 +718,7 @@ describe SamlIdpController do
             authn_context_comparison: 'minimum',
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
-            endpoint: '/api/saml/auth2022',
+            endpoint: '/api/saml/auth2023',
             idv: false,
             finish_profile: false,
             request_signed: true,
@@ -907,16 +888,32 @@ describe SamlIdpController do
       end
     end
 
-    context 'ForceAuthn set to true' do
-      it 'signs the user out if a session is active' do
-        user = create(:user, :signed_up)
+    context 'with ForceAuthn' do
+      let(:user) { create(:user, :signed_up) }
+
+      it 'signs user out if a session is active and sp_session[:final_auth_request] is falsey' do
         sign_in(user)
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
-
         # would be 200 if the user's session persists
         expect(response.status).to eq(302)
         # implicit test of request storage since request_id would be missing otherwise
         expect(response.location).to match(%r{#{root_url}\?request_id=.+})
+      end
+
+      it 'skips signing out the user when sp_session[:final_auth_request] is true' do
+        link_user_to_identity(user, true, saml_settings(overrides: { force_authn: true }))
+        sign_in(user)
+        controller.session[:sp] = { final_auth_request: true }
+        saml_final_post_auth(saml_request(saml_settings(overrides: { force_authn: true })))
+        expect(response).to_not be_redirect
+        expect(response.status).to eq(200)
+      end
+
+      it 'sets sp_session[:final_auth_request] to false before returning' do
+        sign_in(user)
+        controller.session[:sp] = { final_auth_request: true }
+        saml_final_post_auth(saml_request(saml_settings(overrides: { force_authn: true })))
+        expect(session[:sp][:final_auth_request]).to be_falsey
       end
     end
 
@@ -1081,7 +1078,6 @@ describe SamlIdpController do
           phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
-          ial2_strict: false,
           ialmax: false,
           request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
@@ -1113,7 +1109,6 @@ describe SamlIdpController do
           phishing_resistant_requested: false,
           ial: 1,
           ial2: false,
-          ial2_strict: false,
           ialmax: false,
           request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
@@ -1244,7 +1239,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: false,
@@ -1285,7 +1280,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: 'none',
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1322,7 +1317,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1357,7 +1352,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1429,7 +1424,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1461,7 +1456,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1493,7 +1488,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1508,7 +1503,7 @@ describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2022?SAMLRequest=bang!'
+        head '/api/saml/auth2023?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -1618,7 +1613,7 @@ describe SamlIdpController do
         end
 
         it 'includes an ID attribute with a valid UUID' do
-          expect(UUID.validate(assertion['ID'][1..-1])).to eq(true)
+          expect(Idp::Constants::UUID_REGEX.match?(assertion['ID'][1..-1])).to eq(true)
           expect(assertion['ID']).to eq "_#{user.last_identity.session_uuid}"
         end
 
@@ -1680,7 +1675,7 @@ describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2022_cert
+          crt = AppArtifacts.store.saml_2023_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
@@ -1741,7 +1736,7 @@ describe SamlIdpController do
           end
 
           it 'includes a URI attribute' do
-            expect(UUID.validate(reference['URI'][2..-1])).to eq(true)
+            expect(Idp::Constants::UUID_REGEX.match?(reference['URI'][2..-1])).to eq(true)
           end
         end
       end
@@ -1983,7 +1978,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: true,
           finish_profile: false,
           request_signed: false,
@@ -2028,7 +2023,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -2064,7 +2059,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2022',
+          endpoint: '/api/saml/auth2023',
           idv: false,
           finish_profile: true,
           request_signed: true,

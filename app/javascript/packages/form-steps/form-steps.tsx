@@ -166,12 +166,6 @@ interface FormStepsProps {
   promptOnNavigate?: boolean;
 
   /**
-   * When using path fragments for maintaining history, the base path to which the current step name
-   * is appended.
-   */
-  basePath?: string;
-
-  /**
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
@@ -236,13 +230,12 @@ function FormSteps({
   initialActiveErrors = [],
   autoFocus,
   promptOnNavigate = true,
-  basePath,
   titleFormat,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep);
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepCanComplete, setStepCanComplete] = useState<boolean | undefined>(undefined);

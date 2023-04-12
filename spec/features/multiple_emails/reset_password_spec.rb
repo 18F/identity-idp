@@ -7,30 +7,26 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email1
+    fill_in t('account.index.email'), with: email1
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [email1],
-        subject: t('user_mailer.reset_password_instructions.subject'),
-      }
+      to: [email1],
+      subject: t('user_mailer.reset_password_instructions.subject'),
     )
 
     Capybara.reset_session!
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email2
+    fill_in t('account.index.email'), with: email2
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(2)
     expect_delivered_email(
-      1, {
-        to: [email2],
-        subject: t('user_mailer.reset_password_instructions.subject'),
-      }
+      to: [email2],
+      subject: t('user_mailer.reset_password_instructions.subject'),
     )
   end
 
@@ -46,16 +42,14 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: unconfirmed_email_address.email
+    fill_in t('account.index.email'), with: unconfirmed_email_address.email
     click_button t('forms.buttons.continue')
 
     expect_delivered_email_count(1)
     expect_delivered_email(
-      0, {
-        to: [unconfirmed_email_address.email],
-        subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
-        body: [create_account_instructions_text],
-      }
+      to: [unconfirmed_email_address.email],
+      subject: t('user_mailer.email_confirmation_instructions.email_not_found'),
+      body: [create_account_instructions_text],
     )
   end
 end

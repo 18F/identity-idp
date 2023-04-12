@@ -69,5 +69,16 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
         )
       end
     end
+
+    context 'with a nil state id number' do
+      it 'returns a good result' do
+        applicant[:state_id_number] = nil
+
+        result = subject.proof(applicant)
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq({})
+      end
+    end
   end
 end

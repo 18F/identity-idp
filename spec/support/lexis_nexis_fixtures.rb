@@ -3,19 +3,19 @@ require 'rails_helper'
 module LexisNexisFixtures
   class << self
     def example_config
-      Proofing::LexisNexis::Proofer::Config.new(
+      Proofing::LexisNexis::Config.new(
         base_url: 'https://example.com',
         request_mode: 'testing',
         account_id: 'test_account',
         username: 'test_username',
         password: 'test_password',
-        instant_verify_workflow: 'customers.gsa.instant.verify.workflow',
-        phone_finder_workflow: 'customers.gsa.phonefinder.workflow',
+        instant_verify_workflow: 'gsa2.chk32.test.wf',
+        phone_finder_workflow: 'customers.gsa2.phonefinder.workflow',
       )
     end
 
     def example_ddp_config
-      Proofing::LexisNexis::Proofer::Config.new(
+      Proofing::LexisNexis::Config.new(
         api_key: 'test_api_key',
         base_url: 'https://example.com',
         org_id: 'test_org_id',
@@ -45,6 +45,17 @@ module LexisNexisFixtures
     def ddp_error_response_json
       raw = read_fixture_file_at_path('ddp/error_response.json')
       JSON.parse(raw).to_json
+    end
+
+    def ddp_unexpected_review_status
+      'unexpected_review_status_that_causes_problems'
+    end
+
+    def ddp_unexpected_review_status_response_json
+      raw = read_fixture_file_at_path('ddp/successful_response.json')
+      JSON.parse(raw).merge(
+        review_status: ddp_unexpected_review_status,
+      ).to_json
     end
 
     def instant_verify_request_json
@@ -84,18 +95,42 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def instant_verify_drivers_license_failure_response_json
+      raw = read_fixture_file_at_path(
+        'instant_verify/drivers_license_failure_response.json',
+      )
+      JSON.parse(raw).to_json
+    end
+
+    def instant_verify_drivers_license_info_missing_response_json
+      raw = read_fixture_file_at_path(
+        'instant_verify/drivers_license_info_missing_response.json',
+      )
+      JSON.parse(raw).to_json
+    end
+
     def phone_finder_request_json
       raw = read_fixture_file_at_path('phone_finder/request.json')
       JSON.parse(raw).to_json
     end
 
-    def phone_finder_success_response_json
-      raw = read_fixture_file_at_path('phone_finder/response.json')
+    def phone_finder_rdp1_success_response_json
+      raw = read_fixture_file_at_path('phone_finder/rdp1_response.json')
       JSON.parse(raw).to_json
     end
 
-    def phone_finder_fail_response_json
-      raw = read_fixture_file_at_path('phone_finder/fail_response.json')
+    def phone_finder_rdp2_success_response_json
+      raw = read_fixture_file_at_path('phone_finder/rdp2_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def phone_finder_rdp1_fail_response_json
+      raw = read_fixture_file_at_path('phone_finder/rdp1_fail_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def phone_finder_rdp2_fail_response_json
+      raw = read_fixture_file_at_path('phone_finder/rdp2_fail_response.json')
       JSON.parse(raw).to_json
     end
 

@@ -88,7 +88,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         )
       end
       before do
-        Pii::SessionStore.new(identity.rails_session_id).put({}, 50)
+        OutOfBandSessionAccessor.new(identity.rails_session_id).put_pii({}, 50)
       end
 
       it 'renders user info' do
@@ -113,14 +113,8 @@ RSpec.describe OpenidConnect::UserInfoController do
       it 'only changes the paths visited in session' do
         action
         session_hash = {
-          'paths_visited' => { '/api/openid_connect/userinfo' => true },
-          'first_path_visit' => true,
           'events' => { 'OpenID Connect: bearer token authentication' => true },
           'first_event' => true,
-          'first_success_state' => true,
-          'success_states' => {
-            'POST|/api/openid_connect/userinfo|OpenID Connect: bearer token authentication' => true,
-          },
         }
         expect(request.session.to_h).to eq(session_hash)
       end

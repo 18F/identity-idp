@@ -11,6 +11,11 @@ module Idv
     end
 
     # @return [String]
+    def content_type
+      @header.split(';', 2).first
+    end
+
+    # @return [String]
     def read
       if base64_encoded?
         Base64.decode64(@data)

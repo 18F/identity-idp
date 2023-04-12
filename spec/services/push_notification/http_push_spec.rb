@@ -69,9 +69,11 @@ RSpec.describe PushNotification::HttpPush do
             AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
+            kid: JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid,
           )
 
           expect(headers['typ']).to eq('secevent+jwt')
+          expect(headers['kid']).to eq(JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid)
 
           expect(payload['iss']).to eq(root_url)
           expect(payload['iat']).to eq(now.to_i)

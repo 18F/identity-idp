@@ -1,28 +1,47 @@
 require 'ab_test_bucket'
 
 module AbTests
-  NATIVE_CAMERA = AbTestBucket.new(
-    experiment_name: 'Native Camera Only',
-    buckets: {
-      native_camera_only: IdentityConfig.store.idv_native_camera_a_b_testing_enabled ?
-        IdentityConfig.store.idv_native_camera_a_b_testing_percent :
-        nil,
-    }.compact,
-  )
-
   DOC_AUTH_VENDOR = AbTestBucket.new(
     experiment_name: 'Doc Auth Vendor',
     buckets: {
       alternate_vendor: IdentityConfig.store.doc_auth_vendor_randomize ?
         IdentityConfig.store.doc_auth_vendor_randomize_percent :
-        nil,
+        0,
     }.compact,
   )
 
-  KEY_PAIR_GENERATION = AbTestBucket.new(
-    experiment_name: 'Key Pair Generation',
+  ACUANT_SDK = AbTestBucket.new(
+    experiment_name: 'Acuant SDK Upgrade',
     buckets: {
-      key_pair_group: IdentityConfig.store.key_pair_generation_percent,
+      use_alternate_sdk: IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled ?
+        IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_percent :
+        0,
     },
+  )
+
+  SIGN_IN = AbTestBucket.new(
+    experiment_name: 'Sign In Experience',
+    buckets: IdentityConfig.store.sign_in_a_b_testing,
+  )
+
+  def self.in_person_cta_variant_testing_buckets
+    buckets = Hash.new
+    percents = IdentityConfig.store.in_person_cta_variant_testing_percents
+    if IdentityConfig.store.in_person_cta_variant_testing_enabled
+      percents.each do |variant, rate|
+        bucket_name = 'in_person_variant_' + variant.to_s.downcase
+        buckets[bucket_name.to_sym] = rate
+      end
+    else
+      buckets['in_person_variant_a'] = 100
+    end
+
+    buckets
+  end
+
+  IN_PERSON_CTA = AbTestBucket.new(
+    experiment_name: 'In-Person Proofing CTA',
+    buckets: in_person_cta_variant_testing_buckets,
+    default_bucket: 'in_person_variant_a',
   )
 end

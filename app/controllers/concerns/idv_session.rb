@@ -7,24 +7,16 @@ module IdvSession
     before_action :redirect_if_sp_context_needed
   end
 
-  def confirm_idv_session_started
-    redirect_to idv_doc_auth_url if idv_session.applicant.blank?
-  end
-
   def confirm_idv_needed
     return if effective_user.active_profile.blank? ||
               decorated_session.requested_more_recent_verification? ||
-              strict_ial2_upgrade_required?
+              effective_user.decorate.reproof_for_irs?(service_provider: current_sp)
 
     redirect_to idv_activated_url
   end
 
   def hybrid_session?
     session[:doc_capture_user_id].present?
-  end
-
-  def strict_ial2_upgrade_required?
-    sp_session[:ial2_strict] && !effective_user.active_profile&.strict_ial2_proofed?
   end
 
   def confirm_idv_vendor_session_started

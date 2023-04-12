@@ -17,24 +17,25 @@ fr:
     add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
+    address: Adresse
     cancellations:
       prompt: Es-tu sûre de vouloir annuler?
     confirmations:
       new: Envoyer un autre courriel de confirmation
+    create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
       cta: Première fois que vous utilisez %{app_name}?
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
         compte de façon sûre et sécurisée.
-    create_account_without_sp: Créer un compte %{app_name}
     edit_info:
       password: Changez votre mot de passe
       phone: Administrer les paramètres de votre téléphone
+    otp_expired: Votre code à usage unique a expiré
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
       confirm_for_personal_key: Entrez le mot de passe et obtenez une nouvelle clé personnelle
       forgot: Vous avez oublié votre mot de passe?
-    personal_key: Enregistrez votre clé personnelle
     piv_cac:
       certificate:
         bad: Le certificat PIV/CAC que vous avez sélectionné n’est pas valide.
@@ -61,10 +62,14 @@ fr:
       already_associated: La carte PIV/CAC que vous avez présentée est associée à un
         autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
+    residential_address: Adresse de résidence actuelle
     session_timeout_warning: Vous avez besoin de plus de temps?
+    sign_in_existing_users: S’identifier pour les utilisateurs existants
     sign_in_with_sp: Connectez-vous pour continuer à %{sp}
     sign_in_without_sp: Connexion
     sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
+    ssn: Numéro de sécurité sociale
+    state_id: Carte d’identité délivrée par l’État
     totp_setup:
       new: Ajouter une application d’authentification
     verify: Vérifier votre information

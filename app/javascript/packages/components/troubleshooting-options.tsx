@@ -17,18 +17,12 @@ interface TroubleshootingOptionsProps {
   heading?: ReactNode;
 
   options: TroubleshootingOption[];
-
-  isNewFeatures?: boolean;
-
-  divider?: boolean;
 }
 
 function TroubleshootingOptions({
   headingTag = 'h2',
   heading,
   options,
-  isNewFeatures,
-  divider = true,
 }: TroubleshootingOptionsProps) {
   const { t } = useI18n();
 
@@ -36,18 +30,10 @@ function TroubleshootingOptions({
     return null;
   }
 
-  const classes = ['troubleshooting-options', divider && 'troubleshooting-options--divider']
-    .filter(Boolean)
-    .join(' ');
   const HeadingTag = headingTag;
 
   return (
-    <section className={classes}>
-      {isNewFeatures && (
-        <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
-          {t('components.troubleshooting_options.new_feature')}
-        </span>
-      )}
+    <section className="troubleshooting-options">
       <HeadingTag className="troubleshooting-options__heading">
         {heading ?? t('components.troubleshooting_options.default_heading')}
       </HeadingTag>

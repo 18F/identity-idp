@@ -8,7 +8,7 @@
       <div class="grid-col-8 tablet:grid-col-6 truncate">
         <%= cfg.name %>
       </div>
-      <% if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled? %>
+      <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
         <div class="grid-col-4 tablet:grid-col-6 text-right">
           <%= link_to(
                 t('account.index.webauthn_platform_delete'),
@@ -20,11 +20,12 @@
     <div class="clearfix"></div>
   <% end %>
 </div>
-
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(webauthn_setup_path(platform: true), **tag_options, &block)
-      end,
-      icon: :add,
-      class: 'usa-button usa-button--outline margin-top-2',
-    ).with_content(t('account.index.webauthn_platform_add')) %>
+<% if IdentityConfig.store.platform_auth_set_up_enabled %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(webauthn_setup_path(platform: true), **tag_options, &block)
+        end,
+        icon: :add,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ).with_content(t('account.index.webauthn_platform_add')) %>
+<% end %>

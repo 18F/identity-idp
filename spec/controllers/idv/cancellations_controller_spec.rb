@@ -17,9 +17,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -28,9 +32,13 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new', step: nil }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'users/sessions#new',
+        step: nil,
+        proofing_components: nil,
+      )
 
       get :new
     end
@@ -38,9 +46,13 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when step param is present' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer', step: 'first' }
 
-      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation visited',
+        request_came_from: 'no referer',
+        step: 'first',
+        proofing_components: nil,
+      )
 
       get :new, params: { step: 'first' }
     end
@@ -91,8 +103,11 @@ describe Idv::CancellationsController do
   end
 
   describe '#update' do
+    let(:user) { create(:user) }
+    let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+
     before do
-      stub_sign_in
+      stub_sign_in(user)
       stub_analytics
     end
 
@@ -100,9 +115,23 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation go back',
         step: 'first',
+        proofing_components: nil,
       )
 
       put :update, params: { step: 'first', cancel: 'true' }
+    end
+
+    it 'logs cancellation go back with extra analytics attributes for barcode step' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation go back',
+        step: 'barcode',
+        proofing_components: nil,
+        cancelled_enrollment: false,
+        enrollment_code: enrollment.enrollment_code,
+        enrollment_id: enrollment.id,
+      )
+
+      put :update, params: { step: 'barcode', cancel: 'true' }
     end
 
     it 'redirects to idv_path' do
@@ -136,6 +165,7 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         'IdV: cancellation confirmed',
         step: 'first',
+        proofing_components: nil,
       )
 
       delete :destroy, params: { step: 'first' }

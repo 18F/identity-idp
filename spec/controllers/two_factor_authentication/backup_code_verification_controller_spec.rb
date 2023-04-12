@@ -78,7 +78,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       let(:payload) { { backup_code_verification_form: backup_code } }
 
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
         form = instance_double(BackupCodeVerificationForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
@@ -100,8 +100,8 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
     context 'when the user enters an invalid backup code' do
       render_views
+      let(:user) { create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }) }
       before do
-        user = build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
         stub_sign_in_before_2fa(user)
         form = BackupCodeVerificationForm.new(user)
         response = FormResponse.new(
@@ -123,7 +123,9 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 'tracks the max attempts event' do
-        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+        user.second_factor_attempts_count =
+          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+        user.save
         properties = {
           success: false,
           errors: {},

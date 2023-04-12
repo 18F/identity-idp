@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe IrsAttemptsApi::AttemptEvent do
-  let(:irs_attempt_api_private_key) { OpenSSL::PKey::RSA.new(4096) }
-  let(:irs_attempt_api_public_key) { irs_attempt_api_private_key.public_key }
+  let(:irs_attempts_api_private_key) { OpenSSL::PKey::RSA.new(4096) }
+  let(:irs_attempts_api_public_key) { irs_attempts_api_private_key.public_key }
 
   before do
-    encoded_public_key = Base64.strict_encode64(irs_attempt_api_public_key.to_der)
+    encoded_public_key = Base64.strict_encode64(irs_attempts_api_public_key.to_der)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
       and_return(encoded_public_key)
   end
@@ -32,7 +32,14 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
     it 'returns a JWE for the event' do
       jwe = subject.to_jwe
 
-      decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempt_api_private_key)
+      header_str, *_rest = JWE::Serialization::Compact.decode(jwe)
+      headers = JSON.parse(header_str)
+
+      expect(headers['alg']).to eq('RSA-OAEP')
+      expect(headers['kid']).to eq(JWT::JWK.new(irs_attempts_api_public_key).kid)
+
+      decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempts_api_private_key)
+
       token = JSON.parse(decrypted_jwe_payload)
 
       expect(token['iss']).to eq('http://www.example.com/')
@@ -47,7 +54,7 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
         'subject_type' => 'session', 'session_id' => 'test-session-id',
       )
       expect(event_data['foo']).to eq('bar')
-      expect(event_data['occurred_at']).to eq(occurred_at.to_i)
+      expect(event_data['occurred_at']).to eq(occurred_at.to_f)
     end
   end
 
@@ -55,7 +62,7 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
     it 'returns an event decrypted from the JWE' do
       jwe = subject.to_jwe
 
-      decrypted_event = described_class.from_jwe(jwe, irs_attempt_api_private_key)
+      decrypted_event = described_class.from_jwe(jwe, irs_attempts_api_private_key)
 
       expect(decrypted_event.jti).to eq(subject.jti)
       expect(decrypted_event.iat).to eq(subject.iat)

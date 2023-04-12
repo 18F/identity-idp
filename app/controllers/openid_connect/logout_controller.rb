@@ -1,6 +1,7 @@
 module OpenidConnect
   class LogoutController < ApplicationController
     include SecureHeadersConcern
+    include FullyAuthenticatable
 
     before_action :apply_secure_headers_override, only: [:index, :delete]
     before_action :confirm_two_factor_authenticated, only: [:delete]
@@ -62,6 +63,8 @@ module OpenidConnect
         }
         @params[:state] = logout_params[:state] if !logout_params[:state].nil?
         @service_provider_name = @logout_form.service_provider&.friendly_name
+        delete_branded_experience(logout: true)
+
         render :index
       else
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))

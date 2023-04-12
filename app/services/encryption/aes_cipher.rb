@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# This module is still needed by existing functionality, but any new AES encryption
+# should prefer using AesEncryptorV2 and AesCipherV2.
 module Encryption
   class AesCipher
     include Encodable
@@ -30,7 +34,7 @@ module Encryption
     def encipher(plaintext)
       iv = cipher.random_iv
       cipher.auth_data = 'PII'
-      ciphertext = cipher.update(plaintext) + cipher.final
+      ciphertext = cipher.update(plaintext) << cipher.final
       tag = cipher.auth_tag
       { iv: encode(iv), ciphertext: encode(ciphertext), tag: encode(tag) }.to_json
     end
@@ -44,9 +48,9 @@ module Encryption
     end
 
     def try_decipher(unpacked_payload)
-      cipher.update(ciphertext(unpacked_payload)) + cipher.final
+      cipher.update(ciphertext(unpacked_payload)) << cipher.final
     rescue OpenSSL::Cipher::CipherError => err
-      raise EncryptionError, 'failed to decipher payload: ' + err.to_s
+      raise EncryptionError, "failed to decipher payload: #{err}"
     end
 
     def unpack_payload(payload)

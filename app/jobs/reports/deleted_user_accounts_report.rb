@@ -5,13 +5,6 @@ module Reports
   class DeletedUserAccountsReport < BaseReport
     REPORT_NAME = 'deleted-user-accounts-report'.freeze
 
-    include GoodJob::ActiveJobExtensions::Concurrency
-
-    good_job_control_concurrency_with(
-      total_limit: 1,
-      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
-    )
-
     def perform(_date)
       configs = IdentityConfig.store.deleted_user_accounts_report_configs
       configs.each do |report_hash|
@@ -25,7 +18,7 @@ module Reports
             name: name,
             issuers: issuers,
             data: report,
-          ).deliver_now_or_later
+          ).deliver_now
         end
       end
     end

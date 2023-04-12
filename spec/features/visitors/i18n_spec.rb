@@ -64,20 +64,14 @@ feature 'Internationalization' do
 
     it 'allows user to manually toggle language from dropdown menu', js: true do
       visit root_path
-      using_wait_time(5) do
-        within(:css, '.i18n-desktop-toggle') do
-          click_button t('i18n.language', locale: 'en')
-          click_link t('i18n.locale.es')
-        end
-      end
+      click_button t('i18n.language', locale: 'en')
+      click_link t('i18n.locale.es')
 
       expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
       expect(page).to have_content t('i18n.language', locale: 'es')
 
-      within(:css, '.i18n-desktop-toggle') do
-        click_button t('i18n.language', locale: 'es')
-        click_link t('i18n.locale.en')
-      end
+      click_button t('i18n.language', locale: 'es')
+      click_link t('i18n.locale.en')
 
       expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
       expect(page).to have_content t('i18n.language', locale: 'en')
@@ -93,14 +87,13 @@ feature 'Internationalization' do
   end
 
   context 'visit homepage with host parameter' do
-    it 'does not include the host parameter in the language link URLs' do
+    it 'maintains query parameters as query parameters' do
       visit '/fr?host=test.com'
 
       %w[en es fr].each do |locale|
-        expect(page).to_not have_link(
-          t("i18n.locale.#{locale}"),
-          href: "http://test.com/#{locale}",
-        )
+        links = page.all(:link, t("i18n.locale.#{locale}"), visible: :all)
+        expect(links).to be_present
+        expect(links).to all satisfy { |link| link[:href] == "/#{locale}?host=test.com" }
       end
     end
   end
@@ -115,12 +108,8 @@ feature 'Internationalization' do
       visit_idp_from_sp_with_ial2(:oidc)
       visit root_path # help out following the redirect
 
-      using_wait_time(5) do
-        within(:css, '.i18n-desktop-toggle') do
-          click_button t('i18n.language', locale: 'en')
-          click_link t('i18n.locale.es')
-        end
-      end
+      click_button t('i18n.language', locale: 'en')
+      click_link t('i18n.locale.es')
 
       I18n.with_locale(:es) do
         fill_in_credentials_and_submit(user.email, user.password)

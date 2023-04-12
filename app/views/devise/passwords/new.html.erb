@@ -1,7 +1,6 @@
 <% title t('titles.passwords.forgot') %>
-<% request_id = params[:request_id] || sp_session[:request_id] %>
 
-<%= render 'shared/sp_alert' %>
+<%= render 'shared/sp_alert', section: 'forgot_password' %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.forgot')) %>
 
@@ -14,11 +13,14 @@
       url: user_password_path,
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
-  <%= f.input :email,
-              required: true,
-              input_html: { autocorrect: 'off',
-                            aria: { invalid: false, describedby: 'email-description' } } %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :email,
+        label: t('account.index.email'),
+        required: true,
+        input_html: { autocorrect: 'off',
+                      aria: { describedby: 'email-description' } },
+      ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 

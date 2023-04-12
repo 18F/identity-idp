@@ -26,9 +26,23 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       allow(@presenter).to receive(:reauthn).and_return(false)
     end
 
+    it 'allow user to return to two factor options screen' do
+      render
+      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
+    end
+
+    it 'does not show a landline setup warning' do
+      render
+
+      expect(rendered).not_to have_link(
+        'phone call',
+        href: phone_setup_path(otp_delivery_preference: 'voice'),
+      )
+    end
+
     context 'common OTP delivery screen behavior' do
       it 'has a localized title' do
-        expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
+        expect(view).to receive(:title).with(t('titles.enter_2fa_code.one_time_code'))
 
         render
       end
@@ -38,11 +52,6 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         expect(rendered).to have_content t('two_factor_authentication.header_text')
       end
-    end
-
-    it 'allow user to return to two factor options screen' do
-      render
-      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
 
     context 'OTP copy' do
@@ -168,7 +177,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end
@@ -207,7 +216,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.get_another_code'),
+          t('links.two_factor_authentication.send_another_code'),
           href: resend_path,
         )
       end
@@ -251,6 +260,97 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         render
 
         expect(rendered).to have_link(t('forms.two_factor.try_again'), href: phone_setup_path)
+      end
+    end
+
+    context 'with landline setup warning' do
+      before do
+        assign(:landline_alert, true)
+      end
+
+      it 'shows landline warning' do
+        render
+
+        expect(rendered).to have_link(
+          'phone call',
+          href: phone_setup_path(otp_delivery_preference: 'voice'),
+        )
+      end
+    end
+
+    context 'when user has otp_expiration but the otp_expired redirect flag off' do
+      before do
+        user = create(
+          :user, :signed_up, otp_delivery_preference: 'voice',
+                             direct_otp_sent_at: Time.zone.now
+        )
+        allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
+          and_return(false)
+      end
+
+      it 'should render countdown component without redirect-url' do
+        render
+        expect(rendered).not_to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
+      end
+    end
+
+    context 'when user has otp_expiration but the otp_expired redirect flag on' do
+      before do
+        user = create(
+          :user, :signed_up, otp_delivery_preference: 'voice',
+                             direct_otp_sent_at: Time.zone.now
+        )
+        allow(view).to receive(:current_user).and_return(user)
+        otp_expiration = user.direct_otp_sent_at +
+                         TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
+        allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
+        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
+          and_return(true)
+      end
+
+      it 'should render countdown component with redirect-url' do
+        render
+        expect(rendered).to have_selector(
+          "lg-countdown-alert[redirect-url='#{login_two_factor_otp_expired_path}']",
+        )
+      end
+    end
+
+    context 'troubleshooting options content' do
+      context 'when phone is unconfirmed' do
+        it 'has option to change phone number' do
+          data = presenter_data.merge(unconfirmed_phone: true)
+
+          @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: data,
+            view: view,
+            service_provider: nil,
+          )
+
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+            href: phone_setup_path,
+          )
+        end
+      end
+
+      context 'when phone is confirmed' do
+        it 'has option to select different authentication method' do
+          render
+
+          expect(rendered).to have_link(
+            t('two_factor_authentication.login_options_link_text'),
+            href: login_two_factor_options_path,
+          )
+        end
       end
     end
   end

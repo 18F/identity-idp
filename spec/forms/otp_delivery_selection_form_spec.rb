@@ -31,7 +31,7 @@ describe OtpDeliverySelectionForm do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
-        expect(subject.submit(otp_delivery_preference: 'sms', resend: true).to_h).to eq(
+        expect(subject.submit(otp_delivery_preference: 'sms', resend: 'true').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -48,7 +48,7 @@ describe OtpDeliverySelectionForm do
 
         extra = {
           otp_delivery_preference: 'foo',
-          resend: nil,
+          resend: false,
           country_code: nil,
           area_code: nil,
           context: 'authentication',

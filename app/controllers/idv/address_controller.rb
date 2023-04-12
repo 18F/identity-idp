@@ -1,12 +1,14 @@
 module Idv
   class AddressController < ApplicationController
     include IdvSession
+    include IdvStepConcern
 
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_pii_from_doc
+    before_action :confirm_document_capture_complete
 
     def new
       analytics.idv_address_visit
+
+      @presenter = AddressPresenter.new(pii: pii_from_doc)
     end
 
     def update
@@ -22,21 +24,15 @@ module Idv
 
     private
 
-    def confirm_pii_from_doc
-      @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
-      return if @pii.present?
-      redirect_to idv_doc_auth_url
-    end
-
     def idv_form
-      Idv::AddressForm.new(@pii)
+      Idv::AddressForm.new(pii_from_doc)
     end
 
     def success
       profile_params.each do |key, value|
         user_session['idv/doc_auth']['pii_from_doc'][key] = value
       end
-      redirect_to idv_doc_auth_url
+      redirect_to idv_verify_info_url
     end
 
     def failure

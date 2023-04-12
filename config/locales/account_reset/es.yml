@@ -43,7 +43,7 @@ es:
       check_webauthn_platform_info: Si configuró el desbloqueo facial o táctil cuando
         creó su cuenta, asegúrese de utilizar el mismo dispositivo con el que
         creó su cuenta de %{app_name}.
-      header: ¿Seguro que desea eliminar su cuenta?
+      header: '¿Seguro que desea eliminar su cuenta?'
       help_text: Si sigue sin poder acceder a %{app_name}, pruebe con estos pasos en
         su lugar.
       try_another_device: Pruebe otro dispositivo donde pueda haber seleccionado la

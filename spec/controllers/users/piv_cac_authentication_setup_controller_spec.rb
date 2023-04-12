@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 describe Users::PivCacAuthenticationSetupController do
+  describe 'before_actions' do
+    it 'includes appropriate before_actions' do
+      expect(subject).to have_actions(
+        :before,
+        :authenticate_user!,
+        :confirm_user_authenticated_for_2fa_setup,
+        :confirm_recently_authenticated_2fa,
+      )
+    end
+  end
+
   describe 'when not signed in' do
     describe 'GET index' do
       it 'redirects to root url' do
@@ -64,6 +75,8 @@ describe Users::PivCacAuthenticationSetupController do
         allow(PivCacService).to receive(:decode_token).with(bad_token) { bad_token_response }
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
+        subject.user_session[:authn_at] = Time.zone.now
+        subject.user_session[:auth_method] = 'phone'
       end
 
       let(:nonce) { 'nonce' }
@@ -94,137 +107,92 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         context 'when redirected with a good token' do
-          context 'with multiple MFA options feature toggle on' do
-            let(:user) do
-              create(:user)
-            end
-            let(:mfa_selections) { ['piv_cac', 'voice'] }
-            before do
-              subject.user_session[:mfa_selections] = mfa_selections
-              allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
-            end
+          let(:user) do
+            create(:user)
+          end
+          let(:mfa_selections) { ['piv_cac', 'voice'] }
+          before do
+            subject.user_session[:mfa_selections] = mfa_selections
+          end
 
-            context 'with no additional MFAs chosen on setup' do
-              let(:mfa_selections) { ['piv_cac'] }
-              it 'redirects to suggest 2nd MFA page' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
+          context 'with no additional MFAs chosen on setup' do
+            let(:mfa_selections) { ['piv_cac'] }
+            it 'redirects to suggest 2nd MFA page' do
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+                :mfa_enroll_piv_cac,
+                success: true,
+                subject_dn: 'some dn',
+                failure_reason: nil,
+              )
 
-                get :new, params: { token: good_token }
-                expect(response).to redirect_to(auth_method_confirmation_url)
-              end
-
-              it 'sets the piv/cac session information' do
-                get :new, params: { token: good_token }
-                json = {
-                  'subject' => 'some dn',
-                  'issuer' => nil,
-                  'presented' => true,
-                }.to_json
-
-                expect(subject.user_session[:decrypted_x509]).to eq json
-              end
-
-              it 'sets the session to not require piv setup upon sign-in' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
-
-                get :new, params: { token: good_token }
-
-                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
-              end
+              get :new, params: { token: good_token }
+              expect(response).to redirect_to(auth_method_confirmation_url)
             end
 
-            context 'with additional MFAs leftover' do
-              it 'redirects to Mfa Confirmation page' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
+            it 'sets the piv/cac session information' do
+              get :new, params: { token: good_token }
+              json = {
+                'subject' => 'some dn',
+                'issuer' => nil,
+                'presented' => true,
+              }.to_json
 
-                get :new, params: { token: good_token }
-                expect(response).to redirect_to(phone_setup_url)
-              end
+              expect(subject.user_session[:decrypted_x509]).to eq json
+            end
 
-              it 'sets the piv/cac session information' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
+            it 'sets the session to not require piv setup upon sign-in' do
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+                :mfa_enroll_piv_cac,
+                success: true,
+                subject_dn: 'some dn',
+                failure_reason: nil,
+              )
 
-                get :new, params: { token: good_token }
-                json = {
-                  'subject' => 'some dn',
-                  'issuer' => nil,
-                  'presented' => true,
-                }.to_json
+              get :new, params: { token: good_token }
 
-                expect(subject.user_session[:decrypted_x509]).to eq json
-              end
-
-              it 'sets the session to not require piv setup upon sign-in' do
-                get :new, params: { token: good_token }
-
-                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
-              end
+              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
             end
           end
 
-          context 'with multiple MFA options feature toggle off' do
-            context 'with no additional MFAs chosen on setup' do
-              it 'redirects to suggest account page' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
+          context 'with additional MFAs leftover' do
+            it 'redirects to Mfa Confirmation page' do
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+                :mfa_enroll_piv_cac,
+                success: true,
+                subject_dn: 'some dn',
+                failure_reason: nil,
+              )
 
-                get :new, params: { token: good_token }
-                expect(response).to redirect_to(account_url)
-              end
+              get :new, params: { token: good_token }
+              expect(response).to redirect_to(phone_setup_url)
+            end
 
-              it 'sets the piv/cac session information' do
-                get :new, params: { token: good_token }
-                json = {
-                  'subject' => 'some dn',
-                  'issuer' => nil,
-                  'presented' => true,
-                }.to_json
+            it 'sets the piv/cac session information' do
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+                :mfa_enroll_piv_cac,
+                success: true,
+                subject_dn: 'some dn',
+                failure_reason: nil,
+              )
 
-                expect(subject.user_session[:decrypted_x509]).to eq json
-              end
+              get :new, params: { token: good_token }
+              json = {
+                'subject' => 'some dn',
+                'issuer' => nil,
+                'presented' => true,
+              }.to_json
 
-              it 'sets the session to not require piv setup upon sign-in' do
-                stub_attempts_tracker
-                expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                  :mfa_enroll_piv_cac,
-                  success: true,
-                  subject_dn: 'some dn',
-                  failure_reason: nil,
-                )
+              expect(subject.user_session[:decrypted_x509]).to eq json
+            end
 
-                get :new, params: { token: good_token }
+            it 'sets the session to not require piv setup upon sign-in' do
+              get :new, params: { token: good_token }
 
-                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
-              end
+              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
             end
           end
         end
@@ -287,9 +255,11 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         it 'resets the remember device revocation date/time' do
-          delete :delete, params: { id: piv_cac_configuration_id }
-          expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \
-            be_within(1).of(Time.zone.now.to_i)
+          expect(user.remember_device_revoked_at).to eq nil
+          freeze_time do
+            delete :delete, params: { id: piv_cac_configuration_id }
+            expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+          end
         end
 
         it 'removes the piv/cac information from the user session' do

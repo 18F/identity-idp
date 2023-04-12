@@ -24,8 +24,7 @@ fr:
       authenticator:
         confirm_code_html: Entrez le code à partir de votre application
           d’authentification. Si vous avez plusieurs comptes configurés dans
-          votre application, entrez le code correspondant à %{email} à
-          %{app_name}.
+          votre application, entrez le code correspondant à %{app_name}.
         manual_entry: Ou entrez ce code manuellement dans votre application
           d’authentification
       piv_cac:
@@ -79,11 +78,12 @@ fr:
       sms:
         confirm_code_html: Vous avez besoin d’un autre code? %{resend_code_link}. Les
           frais liés aux messages texte peuvent s’appliquer.
-        number_message_html: Nous avons envoyé un code de sécurité au %{number}. Ce code
-          expirera dans %{expiration} minutes.
+        number_message_html: Nous avons envoyé un texte (SMS) avec un code à usage
+          unique au %{number}. Ce code expirera dans %{expiration} minutes.
       voice:
         confirm_code_html: Vous voulez que nous vous appelions de nouveau? %{resend_code_link}
-        number_message_html: Nous venons de vous appeler à %{number}.
+        number_message_html: Nous avons envoyé un code à usage unique par appel au
+          %{number}. Ce code expirera dans %{expiration} minutes.
       webauthn:
         confirm_webauthn_html: Présentez la clé de sécurité associée à votre compte.
         confirm_webauthn_only_html: Cette application nécessite un niveau de sécurité
@@ -100,14 +100,15 @@ fr:
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir
         confirmé votre adresse courriel.
-      help_text: Plus long et inhabituel est le mot de passe, plus difficile il sera à
-        trouver. Évitez donc d’utiliser des phrases communes. Évitez aussi de
-        répéter des mots de passe d’autres comptes en ligne comme les comptes
-        bancaires, les comptes courriel et les comptes de médias sociaux.
+      help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels
+        que ceux de vos banques, de vos comptes de courriel et de vos réseaux
+        sociaux. N’incluez pas les mots de votre adresse de courriel. bancaires,
+        les comptes courriel et les comptes de médias sociaux.
       help_text_header: Conseils sur la sécurité du mot de passe
       info:
-        lead: Il doit avoir une longueur minimale de %{min_length} caractères et ne pas
-          être un mot de passe couramment utilisé. C’est tout!
+        lead_html: Votre mot de passe doit comporter <strong>%{min_length}
+          caractères</strong> ou plus. N’utilisez pas de phrases courantes ou de
+          caractères répétés, comme « abc » ou « 111 ».
       password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
         réinitialiser votre mot de passe si vous avez vérifié votre identité
         avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
@@ -115,18 +116,10 @@ fr:
       strength:
         i: Très faible
         ii: Faible
-        iii: Correct
+        iii: Moyen
         intro: 'Force du mot de passe : '
         iv: Bonne
-        v: Excellente!
-    personal_key:
-      email_body: Ne perdez pas votre clé personnelle et ne la partagez pas avec
-        d’autres. Nous vous le demanderons si vous réinitialisez votre mot de
-        passe.
-      email_title: Sauvegarde le. Garde-le en sécurité.
-      info: Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de
-        passe. Si vous réinitialisez votre mot de passe et que vous ne possédez
-        pas cette clé, vous devrez vérifier votre identité à nouveau.
+        v: Excellente
     sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
       %{app_name}. Veuillez contacter %{sp_link} pour obtenir de l’aide.
     sp_handoff_bounced_with_no_sp: votre fournisseur de service

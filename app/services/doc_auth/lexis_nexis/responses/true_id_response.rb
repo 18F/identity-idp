@@ -6,15 +6,10 @@ module DocAuth
       class TrueIdResponse < LexisNexisResponse
         PII_EXCLUDES = %w[
           Age
-          DocIssuerCode
-          DocIssuerName
-          DocIssue
-          DocumentName
           DocSize
           DOB_Day
           DOB_Month
           DOB_Year
-          DocIssueType
           ExpirationDate_Day
           ExpirationDate_Month
           ExpirationDate_Year
@@ -28,6 +23,7 @@ module DocAuth
           'Fields_MiddleName' => :middle_name,
           'Fields_Surname' => :last_name,
           'Fields_AddressLine1' => :address1,
+          'Fields_AddressLine2' => :address2,
           'Fields_City' => :city,
           'Fields_State' => :state,
           'Fields_PostalCode' => :zipcode,
@@ -46,8 +42,7 @@ module DocAuth
         }.freeze
         attr_reader :config
 
-        def initialize(http_response, liveness_checking_enabled, config)
-          @liveness_checking_enabled = liveness_checking_enabled
+        def initialize(http_response, config)
           @config = config
 
           super http_response
@@ -63,7 +58,7 @@ module DocAuth
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
-            ErrorGenerator.wrapped_general_error(@liveness_checking_enabled)
+            ErrorGenerator.wrapped_general_error
           else
             { network: true } # return a generic technical difficulties error to user
           end
@@ -141,7 +136,6 @@ module DocAuth
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
-            liveness_enabled: @liveness_checking_enabled,
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
             product_status: product_status,
@@ -151,6 +145,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
+            address_line2_present: !pii_from_doc[:address2].blank?,
           }
         end
 

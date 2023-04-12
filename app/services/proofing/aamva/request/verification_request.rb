@@ -128,7 +128,7 @@ module Proofing
 
         def user_provided_data_map
           {
-            '//ns2:IdentificationID' => applicant.state_id_data.state_id_number,
+            '//ns2:IdentificationID' => state_id_number,
             '//ns1:MessageDestinationId' => message_destination_id,
             '//ns2:PersonGivenName' => applicant.first_name,
             '//ns2:PersonSurName' => applicant.last_name,
@@ -138,6 +138,15 @@ module Proofing
             '//ns2:LocationStateUsPostalServiceCode' => applicant.state,
             '//ns2:LocationPostalCode' => applicant.zipcode,
           }
+        end
+
+        def state_id_number
+          case applicant.state_id_data.state_id_jurisdiction
+          when 'SC'
+            applicant.state_id_data.state_id_number.rjust(8, '0')
+          else
+            applicant.state_id_data.state_id_number
+          end
         end
 
         def timeout

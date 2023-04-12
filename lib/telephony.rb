@@ -43,25 +43,31 @@ module Telephony
     @config
   end
 
-  def self.send_authentication_otp(to:, otp:, expiration:, channel:, domain:, country_code:)
+  def self.send_authentication_otp(to:, otp:, expiration:, otp_format:,
+                                   channel:, domain:, country_code:, extra_metadata:)
     OtpSender.new(
       to: to,
       otp: otp,
       expiration: expiration,
+      otp_format: otp_format,
       channel: channel,
       domain: domain,
       country_code: country_code,
+      extra_metadata: extra_metadata,
     ).send_authentication_otp
   end
 
-  def self.send_confirmation_otp(to:, otp:, expiration:, channel:, domain:, country_code:)
+  def self.send_confirmation_otp(to:, otp:, expiration:, otp_format:,
+                                 channel:, domain:, country_code:, extra_metadata:)
     OtpSender.new(
       to: to,
       otp: otp,
       expiration: expiration,
+      otp_format: otp_format,
       channel: channel,
       domain: domain,
       country_code: country_code,
+      extra_metadata: extra_metadata,
     ).send_confirmation_otp
   end
 

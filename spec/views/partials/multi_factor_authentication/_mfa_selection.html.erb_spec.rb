@@ -20,9 +20,6 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
         option: presenter.options[4],
       }
     end
-    it 'does not display any errors' do
-      expect(rendered).to_not have_css('.checkbox__invalid')
-    end
 
     it 'renders a field with mfa-selection class' do
       expect(rendered).to have_css('.mfa-selection')
@@ -39,7 +36,9 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
     subject(:rendered) do
       render partial: 'mfa_selection', locals: {
         form: form_builder,
-        option: presenter.options[3],
+        option: presenter.options.find do |option|
+                  option.is_a?(TwoFactorAuthentication::AuthAppSelectionPresenter)
+                end,
       }
     end
 

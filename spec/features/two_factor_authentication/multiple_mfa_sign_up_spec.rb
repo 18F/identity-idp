@@ -1,11 +1,6 @@
 require 'rails_helper'
 
 feature 'Multi Two Factor Authentication' do
-  before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-    allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-  end
-
   describe 'When the user has not set up 2FA' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
@@ -23,7 +18,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -32,7 +27,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -56,7 +51,7 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
 
       fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      click_send_one_time_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -93,7 +88,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -121,7 +116,7 @@ feature 'Multi Two Factor Authentication' do
 
       click_continue
 
-      expect(page).to have_link(t('forms.backup_code.download'))
+      expect(page).to have_link(t('components.download_button.label'))
 
       click_continue
 
@@ -138,34 +133,6 @@ feature 'Multi Two Factor Authentication' do
       click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
-    end
-  end
-
-  describe 'user attempts to submit with only the phone MFA method selected', js: true do
-    before do
-      sign_in_before_2fa
-      click_2fa_option('phone')
-      click_on t('forms.buttons.continue')
-    end
-
-    scenario 'redirects to the two_factor path with an error and phone option selected' do
-      expect(page).
-        to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
-      expect(
-        URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
-      ).to eq authentication_methods_setup_path(anchor: 'select_phone')
-    end
-
-    scenario 'clears the error when another mfa method is selected' do
-      click_2fa_option('backup_code')
-      expect(page).
-        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
-    end
-
-    scenario 'clears the error when phone mfa method is unselected' do
-      click_2fa_option('phone')
-      expect(page).
-        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
     end
   end
 

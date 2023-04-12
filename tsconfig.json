@@ -7,7 +7,7 @@
     "strictNullChecks": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "ESNext",
@@ -18,6 +18,7 @@
   },
   "include": [
     "app/components",
+    "app/javascript/app",
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascripts/spec_helper.d.ts",
@@ -27,15 +28,8 @@
   "exclude": [
     "**/fixtures",
     "**/*.spec.js",
-    "app/javascript/packs/application.js",
-    "app/javascript/packs/personal-key-page-controller.js",
     "app/javascript/packs/pw-strength.js",
-    "app/javascript/packs/reactivate-account-modal.js",
     "app/javascript/packs/saml-post.js",
-    "app/javascript/packs/ssn-field.js",
-    "app/javascript/packs/upload-step.js",
-    "app/javascript/packs/webauthn-authenticate.js",
-    "app/javascript/packs/webauthn-setup.js",
-    "app/javascript/packs/webauthn-unhide.js"
+    "app/javascript/packs/ssn-field.js"
   ]
 }

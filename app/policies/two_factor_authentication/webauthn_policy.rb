@@ -29,8 +29,12 @@ module TwoFactorAuthentication
       roaming_configured?
     end
 
-    def visible?
+    def roaming_visible?
       true
+    end
+
+    def platform_visible?
+      platform_configured? || IdentityConfig.store.platform_auth_set_up_enabled
     end
 
     private

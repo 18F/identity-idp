@@ -4,8 +4,9 @@ class StoreSpMetadataInSession
     @request_id = request_id
   end
 
-  def call
-    Rails.logger.info(event_attributes)
+  def call(service_provider_request: nil, requested_service_provider: nil)
+    @sp_request = service_provider_request if service_provider_request
+    @service_provider = requested_service_provider
 
     return if sp_request.is_a?(NullServiceProviderRequest)
 
@@ -20,14 +21,6 @@ class StoreSpMetadataInSession
     @ial_context ||= IalContext.new(ial: sp_request.ial, service_provider: service_provider)
   end
 
-  def event_attributes
-    {
-      event: 'StoreSpMetadataInSession',
-      request_id_present: request_id.present?,
-      sp_request_class: sp_request.class.to_s,
-    }.to_json
-  end
-
   def sp_request
     @sp_request ||= ServiceProviderRequestProxy.from_uuid(request_id)
   end
@@ -37,7 +30,6 @@ class StoreSpMetadataInSession
       issuer: sp_request.issuer,
       ial: ial_context.ial,
       ial2: ial_context.ial2_requested?,
-      ial2_strict: ial_context.ial2_strict_requested?,
       ialmax: ial_context.ialmax_requested?,
       aal_level_requested: aal_requested,
       piv_cac_requested: hspd12_requested,
@@ -63,6 +55,7 @@ class StoreSpMetadataInSession
   end
 
   def service_provider
-    ServiceProvider.find_by(issuer: sp_request.issuer)
+    return @service_provider if defined?(@service_provider)
+    @service_provider = ServiceProvider.find_by(issuer: sp_request.issuer)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -16,6 +18,11 @@ class OpenidConnectAuthorizeForm
   ].freeze
 
   ATTRS = [:unauthorized_scope, :acr_values, :scope, :verified_within, *SIMPLE_ATTRS].freeze
+  AALS_BY_PRIORITY = [Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF].freeze
 
   attr_reader(*ATTRS)
 
@@ -41,7 +48,6 @@ class OpenidConnectAuthorizeForm
   validate :validate_prompt
   validate :validate_verified_within_format
   validate :validate_verified_within_duration
-  validate :validate_liveness_checking_enabled_if_ial2_strict_requested
 
   def initialize(params)
     @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
@@ -79,6 +85,8 @@ class OpenidConnectAuthorizeForm
       nonce: nonce,
       rails_session_id: rails_session_id,
       ial: ial_context.ial,
+      aal: aal,
+      requested_aal_value: requested_aal_value,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )
@@ -95,10 +103,6 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/ial/}.match?(acr) || %r{/loa/}.match?(acr) }
   end
 
-  def aal_values
-    acr_values.filter { |acr| %r{/aal/}.match? acr }
-  end
-
   def ial_context
     @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
   end
@@ -107,10 +111,22 @@ class OpenidConnectAuthorizeForm
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
   end
 
+  def aal_values
+    acr_values.filter { |acr| %r{/aal/}.match? acr }
+  end
+
+  def aal
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_aal_value]
+  end
+
+  def requested_aal_value
+    highest_level_aal(aal_values) ||
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+  end
+
   def_delegators :ial_context,
                  :ial2_or_greater?,
-                 :ial2_requested?,
-                 :ial2_strict_requested?
+                 :ial2_requested?
 
   private
 
@@ -250,11 +266,7 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def validate_liveness_checking_enabled_if_ial2_strict_requested
-    return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
-    errors.add(
-      :acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'),
-      type: :liveness_checking_disabled
-    )
+  def highest_level_aal(aal_values)
+    AALS_BY_PRIORITY.find { |aal| aal_values.include?(aal) }
   end
 end

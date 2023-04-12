@@ -15,14 +15,21 @@ describe Idv::Steps::InPerson::VerifyStep do
       remote_ip: Faker::Internet.ip_v4_address,
     )
   end
+  let(:controller_args) do
+    {
+      request: request,
+      session: { sp: { issuer: service_provider.issuer } },
+      url_options: {},
+    }
+  end
+
   let(:controller) do
     instance_double(
       'controller',
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_user: user,
-      request: request,
-      session: { sp: { issuer: service_provider.issuer } },
-      url_options: {},
+      **controller_args,
     )
   end
 
@@ -30,9 +37,13 @@ describe Idv::Steps::InPerson::VerifyStep do
     Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
   end
 
+  let(:flow_args) do
+    [{}, 'idv/in_person']
+  end
+  let(:pii_hash) { { pii_from_user: pii } }
   let(:flow) do
-    Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-      flow.flow_session = { pii_from_user: pii }
+    Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
+      flow.flow_session = pii_hash
     end
   end
 
@@ -59,7 +70,6 @@ describe Idv::Steps::InPerson::VerifyStep do
           threatmetrix_session_id: nil,
           user_id: anything,
           request_ip: request.remote_ip,
-          issuer: anything,
         )
 
       step.call
@@ -73,77 +83,63 @@ describe Idv::Steps::InPerson::VerifyStep do
     end
 
     context 'when pii_from_user is blank' do
+      let(:idv_in_person_step) { 'Idv::Steps::InPerson::SsnStep' }
       let(:flow) do
-        Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-          flow.flow_session = { 'Idv::Steps::InPerson::SsnStep' => true, pii_from_user: {} }
+        Idv::Flows::InPersonFlow.new(controller, *flow_args).tap do |flow|
+          flow.flow_session = { idv_in_person_step => true, pii_from_user: {} }
         end
       end
 
       it 'marks step as incomplete' do
-        expect(flow.flow_session['Idv::Steps::InPerson::SsnStep']).to eq true
+        expect(flow.flow_session[idv_in_person_step]).to eq true
         result = step.call
-        expect(flow.flow_session['Idv::Steps::InPerson::SsnStep']).to eq nil
+        expect(flow.flow_session[idv_in_person_step]).to eq nil
         expect(result.success?).to eq false
       end
     end
 
     context 'when different users use the same SSN within the same timeframe' do
       let(:user2) { create(:user) }
-      let(:flow2) do
-      end
       let(:controller2) do
         instance_double(
           'controller',
           analytics: FakeAnalytics.new,
+          irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
           current_user: user2,
-          request: request,
-          session: { sp: { issuer: service_provider.issuer } },
-          url_options: {},
+          **controller_args,
         )
       end
 
-      def build_step(controller)
-        flow = Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-          flow.flow_session = { pii_from_user: pii }
+      def build_step(controller_instance)
+        flow = Idv::Flows::InPersonFlow.new(controller_instance, *flow_args).tap do |flow|
+          flow.flow_session = { **pii_hash }
         end
 
         Idv::Steps::InPerson::VerifyStep.new(flow)
       end
 
       before do
-        stub_const(
-          'Throttle::THROTTLE_CONFIG',
-          {
-            proof_ssn: {
-              max_attempts: 2,
-              attempt_window: 10,
-            },
-          }.with_indifferent_access,
-        )
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).and_return(3)
+        allow(IdentityConfig.store).to receive(:proof_ssn_max_attempt_window_in_minutes).
+          and_return(10)
       end
 
-      def redirect(step)
-        step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
+      def redirect(step_instance)
+        step_instance.instance_variable_get(:@flow).instance_variable_get(:@redirect)
       end
 
       it 'throttles them all' do
         expect(build_step(controller).call).to be_kind_of(ApplicationJob)
         expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
 
-        step = build_step(controller)
-        expect(step.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
+        user1_step = build_step(controller)
+        expect(user1_step.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(user1_step)).to eq(idv_session_errors_ssn_failure_url)
 
-        step2 = build_step(controller2)
-        expect(step2.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
+        user2_step = build_step(controller2)
+        expect(user2_step.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(user2_step)).to eq(idv_session_errors_ssn_failure_url)
       end
-    end
-
-    it 'updates proofing component vendor' do
-      step.call
-
-      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
     end
   end
 end

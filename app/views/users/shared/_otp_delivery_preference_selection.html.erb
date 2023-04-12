@@ -3,21 +3,18 @@
    form_name_tag_sms = form_name + '_otp_delivery_preference_sms'
    form_name_tag_voice = form_name + '_otp_delivery_preference_voice' %>
 
-<div class="js-otp-delivery-preferences margin-bottom-4">
+<div class="js-otp-delivery-preferences margin-bottom-2">
   <fieldset class="margin-0 padding-0 border-0">
-    <legend class="margin-bottom-1">
+    <legend class="usa-label margin-bottom-1">
       <%= t('two_factor_authentication.otp_delivery_preference.title') %>
     </legend>
-    <p class="margin-top-0 margin-bottom-2" id="otp_delivery_preference_instruction">
-      <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
-    </p>
     <div class="grid-row grid-gap-2">
       <div class="grid-col-12 tablet:grid-col-6">
         <%= radio_button_tag(
               form_name_label,
               :sms,
               form_obj.delivery_preference_sms?,
-              disabled: VendorStatus.new.vendor_outage?(:sms),
+              disabled: OutageStatus.new.vendor_outage?(:sms),
               class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_sms %>">
@@ -29,7 +26,7 @@
               form_name_label,
               :voice,
               form_obj.delivery_preference_voice?,
-              disabled: VendorStatus.new.vendor_outage?(:voice),
+              disabled: OutageStatus.new.vendor_outage?(:voice),
               class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_voice %>">
@@ -37,6 +34,9 @@
         </label>
       </div>
     </div>
+    <p class="margin-top-1 margin-bottom-2" id="otp_delivery_preference_instruction">
+      <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
+    </p>
   </fieldset>
 </div>
 <%= javascript_packs_tag_once('otp-delivery-preference') %>

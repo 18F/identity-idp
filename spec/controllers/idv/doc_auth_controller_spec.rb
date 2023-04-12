@@ -70,7 +70,6 @@ describe Idv::DocAuthController do
         locals: hash_including(
           :back_image_upload_url,
           :front_image_upload_url,
-          :selfie_image_upload_url,
           :flow_session,
           step_template: 'idv/doc_auth/document_capture',
           flow_namespace: 'idv',
@@ -95,23 +94,19 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome', flow_path: 'standard', step_count: 1 }
+      result = {
+        step: 'welcome',
+        flow_path: 'standard',
+        irs_reproofing: false,
+        step_count: 1,
+        analytics_id: 'Doc Auth',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
+      }
 
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase, result
-      )
-    end
-
-    it 'tracks analytics for the optional step' do
-      mock_next_step(:verify_wait)
-      result = { errors: {}, step: 'verify_wait_step_show', success: true }
-
-      get :show, params: { step: 'verify_wait' }
-
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} optional verify_wait submitted".downcase, result
+        'IdV: doc auth welcome visited', result
       )
     end
 
@@ -120,11 +115,15 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase,
-        hash_including(step: 'welcome', step_count: 1),
+        'IdV: doc auth welcome visited',
+        hash_including(
+          step: 'welcome',
+          step_count: 1,
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+        ),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase,
+        'IdV: doc auth welcome visited',
         hash_including(step: 'welcome', step_count: 2),
       )
     end
@@ -143,7 +142,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_ssn_url
       end
     end
   end
@@ -156,16 +155,18 @@ describe Idv::DocAuthController do
       result = {
         success: true,
         errors: {},
-        step: 'ssn',
+        step: 'agreement',
         flow_path: 'standard',
         step_count: 1,
-        pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+        irs_reproofing: false,
+        analytics_id: 'Doc Auth',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase, result
+        'IdV: doc auth agreement submitted', result
       )
     end
 
@@ -174,16 +175,20 @@ describe Idv::DocAuthController do
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '666-66-6666' } }
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
+      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
-        hash_including(step: 'ssn', step_count: 1),
+        'IdV: doc auth agreement submitted',
+        hash_including(
+          step: 'agreement',
+          step_count: 1,
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+        ),
       )
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
-        hash_including(step: 'ssn', step_count: 2),
+        'IdV: doc auth agreement submitted',
+        hash_including(step: 'agreement', step_count: 2),
       )
     end
 
@@ -195,7 +200,10 @@ describe Idv::DocAuthController do
         },
         step: 'welcome',
         flow_path: 'standard',
+        irs_reproofing: false,
         step_count: 1,
+        analytics_id: 'Doc Auth',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
       put :update, params: {
@@ -206,7 +214,7 @@ describe Idv::DocAuthController do
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
+        'IdV: doc auth welcome submitted', result
       )
     end
 
@@ -224,7 +232,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_review_url
+        expect(response).to redirect_to idv_ssn_url
       end
     end
   end
@@ -382,7 +390,7 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        "IdV: #{Analytics::DOC_AUTH.downcase} image upload vendor pii validation", include(
+        'IdV: doc auth image upload vendor pii validation', include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
@@ -397,7 +405,7 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        "IdV: #{Analytics::DOC_AUTH.downcase} verify_document_status submitted", include(
+        'IdV: doc auth verify_document_status submitted', include(
           errors: include(
             pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
@@ -446,9 +454,7 @@ describe Idv::DocAuthController do
       receive(:flow_session).and_return(
         'document_capture_session_uuid' => document_capture_session_uuid,
         'Idv::Steps::WelcomeStep' => true,
-        'Idv::Steps::SendLinkStep' => true,
         'Idv::Steps::LinkSentStep' => true,
-        'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
       )
   end

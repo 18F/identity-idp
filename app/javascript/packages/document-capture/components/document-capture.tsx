@@ -2,17 +2,16 @@ import { useState, useMemo, useContext, useEffect } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { FlowContext, VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
+import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
+import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
-import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
-import InPersonLocationStep from './in-person-location-step';
+import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
-import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
@@ -22,6 +21,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
+import { InPersonContext } from '../context';
 
 /**
  * Returns a new object with specified keys removed.
@@ -57,10 +57,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonURL } = useContext(FlowContext);
+  const { inPersonURL } = useContext(InPersonContext);
+  const appName = getConfigValue('appName');
+
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -81,7 +82,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
+        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
         flow_path: flowPath,
       },
     [isAsyncForm, formValues, flowPath],
@@ -112,15 +113,18 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       : ([
           {
             name: 'location',
-            form: InPersonLocationStep,
+            form: InPersonLocationPostOfficeSearchStep,
+            title: t('in_person_proofing.headings.po_search.location'),
           },
           {
             name: 'prepare',
             form: InPersonPrepareStep,
+            title: t('in_person_proofing.headings.prepare'),
           },
           flowPath === 'hybrid' && {
             name: 'switch_back',
             form: InPersonSwitchBackStep,
+            title: t('in_person_proofing.headings.switch_back'),
           },
         ].filter(Boolean) as FormStep[]);
 
@@ -138,6 +142,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
+            title: t('errors.doc_auth.throttled_heading'),
           },
         ] as FormStep[]
       ).concat(inPersonSteps)
@@ -145,10 +150,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
         {
           name: 'documents',
           form: DocumentsStep,
-        },
-        serviceProvider.isLivenessRequired && {
-          name: 'selfie',
-          form: SelfieStep,
+          title: t('doc_auth.headings.document_capture'),
         },
       ].filter(Boolean) as FormStep[]);
 
@@ -191,6 +193,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             onStepChange={setStepName}
             onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
+            titleFormat={`%{step} - ${appName}`}
           />
         </>
       )}

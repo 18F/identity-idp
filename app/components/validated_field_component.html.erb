@@ -1,4 +1,4 @@
-<lg-validated-field>
+<%= content_tag(:'lg-validated-field', 'error-id': error_id) do %>
   <%= content_tag(
         :script,
         error_messages.to_json,
@@ -17,18 +17,12 @@
           input_html: {
             class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
             aria: {
-              invalid: false,
-              describedby: [
-                *tag_options.dig(:input_html, :aria, :describedby),
-                "validated-field-error-#{unique_id}",
-                "validated-field-hint-#{unique_id}",
-              ],
+              invalid: has_errors?,
+              describedby: aria_describedby_idrefs,
             },
           },
-          hint_html: {
-            id: "validated-field-hint-#{unique_id}",
-          },
-          error_html: { id: "validated-field-error-#{unique_id}" },
+          hint_html: { id: hint_id },
+          error_html: { id: error_id },
         ),
       ) %>
-</lg-validated-field>
+<% end %>

@@ -1,7 +1,7 @@
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::StaleJobHelper
 
-  queue_as :default
+  queue_as :high_resolution_proofing
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
@@ -9,6 +9,7 @@ class ResolutionProofingJob < ApplicationJob
     :result,
     :resolution_success,
     :state_id_success,
+    :device_profiling_success,
     keyword_init: true,
   )
 
@@ -19,9 +20,7 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil,
-    issuer: nil,
-    dob_year_only: nil # rubocop:disable Lint:UnusedMethodArgument
+    request_ip: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -36,27 +35,14 @@ class ResolutionProofingJob < ApplicationJob
 
     user = User.find_by(id: user_id)
 
-    optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-      applicant_pii: applicant_pii,
+    callback_log_data = make_vendor_proofing_requests(
+      timer: timer,
       user: user,
+      applicant_pii: applicant_pii,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      issuer: issuer,
-      timer: timer,
-    )
-
-    callback_log_data = proof_lexisnexis_then_aamva(
-      timer: timer,
-      applicant_pii: applicant_pii,
       should_proof_state_id: should_proof_state_id,
     )
-
-    if optional_threatmetrix_result.present?
-      add_threatmetrix_result_to_callback_result(
-        callback_log_data: callback_log_data,
-        threatmetrix_result: optional_threatmetrix_result,
-      )
-    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -66,58 +52,74 @@ class ResolutionProofingJob < ApplicationJob
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
       state_id_success: callback_log_data&.state_id_success,
+      device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
     )
   end
 
   private
 
-  def log_threatmetrix_info(threatmetrix_result, user)
-    logger_info_hash(
-      name: 'ThreatMetrix',
-      user_id: user&.uuid,
-      threatmetrix_request_id: threatmetrix_result.transaction_id,
-      threatmetrix_success: threatmetrix_result.success?,
+  # @return [CallbackLogData]
+  def make_vendor_proofing_requests(
+    timer:,
+    user:,
+    applicant_pii:,
+    threatmetrix_session_id:,
+    request_ip:,
+    should_proof_state_id:
+  )
+    device_profiling_result = proof_with_threatmetrix_if_needed(
+      applicant_pii: applicant_pii,
+      user: user,
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      timer: timer,
+    )
+
+    resolution_result = timer.time('resolution') do
+      resolution_proofer.proof(applicant_pii)
+    end
+
+    state_id_result = Proofing::StateIdResult.new(
+      success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
+    )
+    if should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
+      timer.time('state_id') do
+        state_id_result = state_id_proofer.proof(applicant_pii)
+      end
+    end
+
+    result = Proofing::ResolutionResultAdjudicator.new(
+      resolution_result: resolution_result,
+      state_id_result: state_id_result,
+      should_proof_state_id: should_proof_state_id,
+      device_profiling_result: device_profiling_result,
+    ).adjudicated_result.to_h
+
+    CallbackLogData.new(
+      result: result,
+      resolution_success: resolution_result.success?,
+      state_id_success: state_id_result.success?,
+      device_profiling_success: device_profiling_result.success?,
     )
   end
 
-  def logger_info_hash(hash)
-    logger.info(hash.to_json)
-  end
-
-  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
-    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
-
-    response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
-      redact(threatmetrix_result.response_body)
-    callback_log_data.result[:context][:stages][:threatmetrix] = {
-      client: lexisnexis_ddp_proofer.class.vendor_name,
-      errors: threatmetrix_result.errors,
-      exception: exception,
-      success: threatmetrix_result.success?,
-      timed_out: threatmetrix_result.timed_out?,
-      transaction_id: threatmetrix_result.transaction_id,
-      review_status: threatmetrix_result.review_status,
-      response_body: response_h,
-    }
-  end
-
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+  def proof_with_threatmetrix_if_needed(
     applicant_pii:,
     user:,
     threatmetrix_session_id:,
     request_ip:,
-    issuer:,
     timer:
   )
-    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
-    return unless issuer_allows_threatmetrix?(issuer)
+    if !FeatureManagement.proofing_device_profiling_collecting_enabled?
+      return threatmetrix_disabled_result
+    end
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.
-    return if threatmetrix_session_id.blank?
+    return threatmetrix_disabled_result if threatmetrix_session_id.blank?
 
-    return unless applicant_pii
+    return threatmetrix_disabled_result unless applicant_pii
 
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
@@ -134,40 +136,39 @@ class ResolutionProofingJob < ApplicationJob
     result
   end
 
-  # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
-    resolution_result = timer.time('resolution') do
-      resolution_proofer.proof(applicant_pii)
-    end
-
-    state_id_result = Proofing::StateIdResult.new(
-      success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
+  def threatmetrix_disabled_result
+    Proofing::DdpResult.new(
+      success: true,
+      client: 'tmx_disabled',
+      review_status: 'pass',
     )
-    if should_proof_state_id && resolution_result.success?
-      timer.time('state_id') do
-        state_id_result = state_id_proofer.proof(applicant_pii)
-      end
-    end
+  end
 
-    result = {
-      success: resolution_result.success? && state_id_result.success?,
-      errors: resolution_result.errors.merge(state_id_result.errors),
-      exception: resolution_result.exception || state_id_result.exception,
-      timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
-      context: {
-        should_proof_state_id: should_proof_state_id,
-        stages: {
-          resolution: resolution_result.to_h,
-          state_id: state_id_result.to_h,
-        },
-      },
-    }
-
-    CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_result.success?,
-      state_id_success: state_id_result.success?,
+  def log_threatmetrix_info(threatmetrix_result, user)
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      user_id: user&.uuid,
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
     )
+  end
+
+  def logger_info_hash(hash)
+    logger.info(hash.to_json)
+  end
+
+  def user_can_pass_after_state_id_check?(resolution_result)
+    return true if resolution_result.success?
+    # For failed IV results, this method validates that the user is eligible to pass if the
+    # failed attributes are covered by the same attributes in a successful AAMVA response
+    # aka the Get-to-Yes w/ AAMVA feature.
+    return false unless resolution_result.failed_result_can_pass_with_additional_verification?
+
+    attributes_aamva_can_pass = [:address, :dob, :state_id_number]
+    results_that_cannot_pass_aamva =
+      resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
+
+    results_that_cannot_pass_aamva.blank?
   end
 
   def resolution_proofer
@@ -221,10 +222,5 @@ class ResolutionProofingJob < ApplicationJob
       create_or_find_by(user_id: user_id).
       update(threatmetrix: true,
              threatmetrix_review_status: threatmetrix_result.review_status)
-  end
-
-  def issuer_allows_threatmetrix?(issuer)
-    return IdentityConfig.store.no_sp_device_profiling_enabled if issuer.blank?
-    ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end

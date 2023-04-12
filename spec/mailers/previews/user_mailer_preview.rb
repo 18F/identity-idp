@@ -28,7 +28,7 @@ class UserMailerPreview < ActionMailer::Preview
 
   def reset_password_instructions
     UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
-      token: SecureRandom.hex,
+      token: SecureRandom.hex, request_id: SecureRandom.hex,
     )
   end
 
@@ -83,11 +83,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
-  def doc_auth_desktop_link_to_sp
-    UserMailer.with(user: user, email_address: email_address_record).
-      doc_auth_desktop_link_to_sp('Example App', '/')
-  end
-
   def letter_reminder
     UserMailer.with(user: user, email_address: email_address_record).letter_reminder
   end
@@ -121,8 +116,23 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_completion_survey
   end
 
+  def in_person_deadline_passed
+    UserMailer.with(user: user, email_address: email_address_record).in_person_deadline_passed(
+      enrollment: in_person_enrollment,
+    )
+  end
+
   def in_person_ready_to_verify
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
       enrollment: in_person_enrollment,
     )
   end
@@ -143,6 +153,10 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed_fraud(
       enrollment: in_person_enrollment,
     )
+  end
+
+  def account_rejected
+    UserMailer.with(user: user, email_address: email_address_record).account_rejected
   end
 
   private
@@ -166,6 +180,10 @@ class UserMailerPreview < ActionMailer::Preview
         profile: unsaveable(Profile.new(user: user)),
         enrollment_code: '2048702198804358',
         created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+        ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
         selected_location_details: {
@@ -177,7 +195,6 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
-        service_provider: params[:issuer] ? ServiceProvider.find_by(issuer: params[:issuer]) : nil,
       ),
     )
   end

@@ -117,10 +117,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     end
   end
 
-  def self.reports_logger
-    @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
-  end
-
   def self.worker_logger
     @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
   end
@@ -196,7 +192,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def should_error?(job, ex)
-    job.class.warning_error_classes.none? { |warning_class| ex.is_a?(warning_class) }
+    if job.is_a?(ApplicationJob)
+      job.class.warning_error_classes.none? { |warning_class| ex.is_a?(warning_class) }
+    else
+      true
+    end
   end
 end
 

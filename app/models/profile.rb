@@ -1,7 +1,12 @@
 class Profile < ApplicationRecord
-  self.ignored_columns = %w[phone_confirmed]
-
   belongs_to :user
+  # rubocop:disable Rails/InverseOf
+  belongs_to :initiating_service_provider,
+             class_name: 'ServiceProvider',
+             foreign_key: 'initiating_service_provider_issuer',
+             primary_key: 'issuer',
+             optional: true
+  # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
 
@@ -16,25 +21,75 @@ class Profile < ApplicationRecord
     gpo_verification_pending: 3,
     verification_cancelled: 4,
     in_person_verification_pending: 5,
-    threatmetrix_review_pending: 6,
   }
 
   attr_reader :personal_key
 
+  def fraud_review_pending?
+    !!(fraud_review_pending || fraud_review_pending_at)
+  end
+
+  def fraud_rejection?
+    !!(fraud_rejection || fraud_rejection_at)
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
+    return if fraud_review_pending? || fraud_rejection?
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
+      update!(
+        active: true,
+        activated_at: now,
+        deactivation_reason: nil,
+        fraud_review_pending: false,
+        fraud_rejection: false,
+        verified_at: now,
+      )
     end
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
 
+  def activate_after_passing_review
+    update!(
+      fraud_review_pending: false,
+      fraud_rejection: false,
+      fraud_review_pending_at: nil,
+      fraud_rejection_at: nil,
+    )
+    track_fraud_review_adjudication(decision: 'pass')
+    activate
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  def deactivate_for_fraud_review
+    update!(
+      active: false,
+      fraud_review_pending: true,
+      fraud_rejection: false,
+      fraud_review_pending_at: Time.zone.now,
+      fraud_rejection_at: nil,
+    )
+  end
+
+  def reject_for_fraud(notify_user:)
+    update!(
+      active: false,
+      fraud_review_pending: false,
+      fraud_rejection: true,
+      fraud_review_pending_at: nil,
+      fraud_rejection_at: Time.zone.now,
+    )
+    track_fraud_review_adjudication(
+      decision: notify_user ? 'manual_reject' : 'automatic_reject',
+    )
+    UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
 
   def decrypt_pii(password)
@@ -83,28 +138,46 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def includes_liveness_check?
-    return false if proofing_components.blank?
-    proofing_components['liveness_check'].present?
-  end
-
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
-  def strict_ial2_proofed?
-    return false unless active
-    return false unless includes_liveness_check?
-    return true if IdentityConfig.store.gpo_allowed_for_strict_ial2
-    includes_phone_check?
   end
 
   def has_proofed_before?
     Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
+  def irs_attempts_api_tracker
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
+      session_id: nil,
+      request: nil,
+      user: user,
+      sp: initiating_service_provider,
+      cookie_device_uuid: nil,
+      sp_request_uri: nil,
+      enabled_for_session: initiating_service_provider&.irs_attempts_api_enabled?,
+      analytics: Analytics.new(
+        user: user,
+        request: nil,
+        sp: initiating_service_provider&.issuer,
+        session: {},
+        ahoy: nil,
+      ),
+    )
+  end
+
   private
+
+  def track_fraud_review_adjudication(decision:)
+    if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review
+      fraud_review_request = user.fraud_review_requests.last
+      irs_attempts_api_tracker.fraud_review_adjudicated(
+        decision: decision,
+        cached_irs_session_id: fraud_review_request&.irs_session_id,
+        cached_login_session_id: fraud_review_request&.login_session_id,
+      )
+    end
+  end
 
   def personal_key_generator
     @personal_key_generator ||= PersonalKeyGenerator.new(user)

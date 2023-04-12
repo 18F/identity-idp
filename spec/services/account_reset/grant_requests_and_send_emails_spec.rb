@@ -70,21 +70,6 @@ describe AccountReset::GrantRequestsAndSendEmails do
     end
   end
 
-  describe '#good_job_concurrency_key' do
-    it 'is the job name and the current time, rounded to the nearest 5 minutes' do
-      now = Time.zone.at(1629819000)
-
-      job_now = AccountReset::GrantRequestsAndSendEmails.new(now)
-      expect(job_now.good_job_concurrency_key).to eq("grant-requests-and-send-emails-#{now.to_i}")
-
-      job_plus_1m = AccountReset::GrantRequestsAndSendEmails.new(now + 1.minute)
-      expect(job_plus_1m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
-
-      job_plus_5m = AccountReset::GrantRequestsAndSendEmails.new(now + 5.minutes)
-      expect(job_plus_5m.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
-    end
-  end
-
   def before_waiting_the_full_wait_period(now)
     days = IdentityConfig.store.account_reset_wait_period_days.days
     travel_to(now - 1 - days) do

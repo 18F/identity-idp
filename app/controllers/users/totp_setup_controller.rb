@@ -4,12 +4,16 @@ module Users
     include MfaSetupConcern
     include RememberDeviceConcern
     include SecureHeadersConcern
+    include ReauthenticationRequiredConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_totp_setup_presenter
     before_action :apply_secure_headers_override
     before_action :cap_auth_app_count, only: %i[new confirm]
+    before_action :confirm_recently_authenticated_2fa, if: -> do
+      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
+    end
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -39,9 +43,7 @@ module Users
     end
 
     def disable
-      if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
-        process_successful_disable
-      end
+      process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to account_two_factor_authentication_path
     end
 

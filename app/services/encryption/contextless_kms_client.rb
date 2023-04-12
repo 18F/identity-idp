@@ -3,6 +3,15 @@ module Encryption
     include Encodable
     include ::NewRelic::Agent::MethodTracer
 
+    KMS_CLIENT_POOL = ConnectionPool.new(
+      size: IdentityConfig.store.aws_kms_client_contextless_pool_size,
+    ) do
+      Aws::KMS::Client.new(
+        instance_profile_credentials_timeout: 1, # defaults to 1 second
+        instance_profile_credentials_retries: 5, # defaults to 0 retries
+      )
+    end
+
     KEY_TYPE = {
       KMS: 'KMSx',
     }.freeze
@@ -49,10 +58,12 @@ module Encryption
 
     def encrypt_raw_kms(plaintext)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      aws_client.encrypt(
-        key_id: IdentityConfig.store.aws_kms_key_id,
-        plaintext: plaintext,
-      ).ciphertext_blob
+      KMS_CLIENT_POOL.with do |aws_client|
+        aws_client.encrypt(
+          key_id: IdentityConfig.store.aws_kms_key_id,
+          plaintext: plaintext,
+        ).ciphertext_blob
+      end
     end
 
     def decrypt_kms(ciphertext)
@@ -72,7 +83,9 @@ module Encryption
     end
 
     def decrypt_raw_kms(raw_ciphertext)
-      aws_client.decrypt(ciphertext_blob: raw_ciphertext).plaintext
+      KMS_CLIENT_POOL.with do |aws_client|
+        aws_client.decrypt(ciphertext_blob: raw_ciphertext).plaintext
+      end
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
@@ -83,13 +96,6 @@ module Encryption
 
     def decrypt_local(ciphertext)
       encryptor.decrypt(ciphertext, IdentityConfig.store.password_pepper)
-    end
-
-    def aws_client
-      @aws_client ||= Aws::KMS::Client.new(
-        instance_profile_credentials_timeout: 1, # defaults to 1 second
-        instance_profile_credentials_retries: 5, # defaults to 0 retries
-      )
     end
 
     def encryptor

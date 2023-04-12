@@ -1,15 +1,8 @@
-module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
+module TwoFactorAuthenticatableMethods
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
   include MfaSetupConcern
-
-  DELIVERY_METHOD_MAP = {
-    authenticator: 'authenticator',
-    sms: 'phone',
-    voice: 'phone',
-    piv_cac: 'piv_cac',
-  }.freeze
 
   private
 
@@ -77,12 +70,11 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     redirect_to after_otp_verification_confirmation_url
   end
 
-  def check_sp_required_mfa_bypass
+  def check_sp_required_mfa_bypass(auth_method:)
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
-    method = two_factor_authentication_method
     return if service_provider_mfa_policy.phishing_resistant_required? &&
-              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(method)
-    return if service_provider_mfa_policy.piv_cac_required? && method == 'piv_cac'
+              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
+    return if service_provider_mfa_policy.piv_cac_required? && auth_method == 'piv_cac'
     prompt_to_verify_sp_required_mfa
   end
 
@@ -98,8 +90,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     ).call
   end
 
-  def handle_valid_otp(next_url = nil)
-    handle_valid_otp_for_context
+  def handle_valid_otp(next_url:, auth_method: nil)
+    handle_valid_otp_for_context(auth_method: auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -111,20 +103,12 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     save_remember_device_preference
   end
 
-  def handle_valid_otp_for_context
+  def handle_valid_otp_for_context(auth_method:)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_otp_for_authentication_context
+      handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_otp_for_confirmation_context
     end
-  end
-
-  def two_factor_authentication_method
-    auth_method = params[:otp_delivery_preference] || request.path.split('/').last
-    # the above check gets a wrong value for piv_cac when there is no OTP screen
-    # so we patch it to fix LG-3228
-    auth_method = 'piv_cac' if auth_method == 'present_piv_cac'
-    auth_method
   end
 
   # Method will be renamed in the next refactor.
@@ -145,7 +129,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
-      t('two_factor_authentication.invalid_otp')
+      [t('two_factor_authentication.invalid_otp'),
+       otp_attempts_remaining_warning].select(&:present?).join(' ')
     when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
@@ -157,20 +142,27 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
+  def otp_attempts_remaining_warning
+    return if otp_attempts_count_remaining >
+              IdentityConfig.store.otp_min_attempts_remaining_warning_count
+    t(
+      'two_factor_authentication.attempt_remaining_warning_html',
+      count: otp_attempts_count_remaining,
+    )
+  end
+
+  def otp_attempts_count_remaining
+    IdentityConfig.store.login_otp_confirmation_max_attempts -
+      current_user.second_factor_attempts_count
+  end
+
   def render_show_after_invalid
     @presenter = presenter_for_two_factor_authentication_method
     render :show
   end
 
   def update_invalid_user
-    current_user.second_factor_attempts_count += 1
-    attributes = {}
-    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
-
-    UpdateUser.new(
-      user: current_user,
-      attributes: attributes,
-    ).call
+    current_user.increment_second_factor_attempts_count!
   end
 
   def handle_valid_otp_for_confirmation_context
@@ -178,6 +170,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     assign_phone
     track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
+    reset_second_factor_attempts_count
     flash[:success] = t('notices.phone_confirmed')
   end
 
@@ -188,13 +181,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
   end
 
-  def handle_valid_otp_for_authentication_context
-    user_session[:auth_method] = two_factor_authentication_method.to_s
+  def handle_valid_otp_for_authentication_context(auth_method:)
+    user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
     bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
-    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+    reset_second_factor_attempts_count
   end
 
   def assign_phone
@@ -207,6 +200,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
 
     update_phone_attributes
+  end
+
+  def reset_second_factor_attempts_count
+    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
   def phone_changed
@@ -223,17 +220,18 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def send_phone_added_email
-    event = create_user_event_with_disavowal(:phone_added, current_user)
+    _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
     current_user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user: current_user, email_address: email_address).
-        phone_added(disavowal_token: event.disavowal_token).deliver_now_or_later
+        phone_added(disavowal_token: disavowal_token).deliver_now_or_later
     end
   end
 
   def update_phone_attributes
     UpdateUser.new(
       user: current_user,
-      attributes: { phone_id: user_session[:phone_id], phone: user_session[:unconfirmed_phone],
+      attributes: { phone_id: user_session[:phone_id],
+                    phone: user_session[:unconfirmed_phone],
                     phone_confirmed_at: Time.zone.now,
                     otp_make_default_number: selected_otp_make_default_number },
     ).call
@@ -266,8 +264,9 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     current_user.direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
-  def personal_key_unavailable?
-    current_user.encrypted_recovery_code_digest.blank?
+  def otp_expiration
+    return if current_user.direct_otp_sent_at.blank?
+    current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
   end
 
   def user_opted_remember_device_cookie
@@ -278,36 +277,12 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session[:unconfirmed_phone] && UserSessionContext.confirmation_context?(context)
   end
 
-  def phone_view_data
-    { confirmation_for_add_phone: confirmation_for_add_phone?,
-      phone_number: display_phone_to_deliver_to,
-      code_value: direct_otp_code,
-      otp_delivery_preference: two_factor_authentication_method,
-      otp_make_default_number: selected_otp_make_default_number,
-      voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
-      unconfirmed_phone: unconfirmed_phone?,
-      account_reset_token: account_reset_token }.merge(generic_data)
-  end
-
   def selected_otp_make_default_number
     params&.dig(:otp_make_default_number)
   end
 
-  def account_reset_token
-    current_user&.account_reset_request&.request_token
-  end
-
-  def authenticator_view_data
-    {
-      two_factor_authentication_method: two_factor_authentication_method,
-      user_email: current_user.email_addresses.take.email,
-    }.merge(generic_data)
-  end
-
   def generic_data
     {
-      personal_key_unavailable: personal_key_unavailable?,
-      reauthn: reauthn?,
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
   end
@@ -320,36 +295,12 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def voice_otp_delivery_unsupported?
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
-    else
-      phone = user_session[:unconfirmed_phone]
-      PhoneNumberCapabilities.new(phone, phone_confirmed: false).supports_voice?
-    end
-  end
-
   def decorated_user
     current_user.decorate
   end
 
   def confirmation_for_add_phone?
     UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-  end
-
-  def presenter_for_two_factor_authentication_method
-    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
-
-    return unless type
-
-    data = send("#{type}_view_data".to_sym)
-
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
-      data: data,
-      view: view_context,
-      service_provider: current_sp,
-      remember_device_default: remember_device_default,
-    )
   end
 
   def phone_configuration

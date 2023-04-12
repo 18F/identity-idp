@@ -7,25 +7,19 @@ feature 'doc auth document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { false }
   let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
-      and_return(liveness_enabled)
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
       and_return(doc_auth_enable_presigned_s3_urls)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
-    if liveness_enabled
-      visit_idp_from_oidc_sp_with_ial2_strict
-    else
-      visit_idp_from_oidc_sp_with_ial2
-    end
+
+    visit_idp_from_oidc_sp_with_ial2
+
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end
@@ -38,44 +32,60 @@ feature 'doc auth document capture step', :js do
     within_window new_window do
       expect(fake_analytics).to have_logged_event(
         'Return to SP: Failed to proof',
-        step: 'document_capture',
+        flow: nil,
         location: 'document_capture_troubleshooting_options',
+        redirect_url: instance_of(String),
+        step: 'document_capture',
       )
     end
   end
 
-  it 'throttles calls to acuant', allow_browser_log: true do
-    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :post_front_image,
-      response: DocAuth::Response.new(
-        success: false,
-        errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-      ),
-    )
-
-    allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-    (max_attempts - 1).times do
-      attach_and_submit_images
-      click_on t('idv.failure.button.warning')
-    end
-
-    freeze_time do
-      attach_and_submit_images
-      timeout = distance_of_time_in_words(
-        Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+  context 'throttles calls to acuant', allow_browser_log: true do
+    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(
+        :irs_attempts_api_tracker,
+      ).and_return(fake_attempts_tracker)
+      allow(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
+      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_front_image,
+        response: DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+        ),
       )
-      message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
-      expect(page).to have_content(message)
+
+      (max_attempts - 1).times do
+        attach_and_submit_images
+        click_on t('idv.failure.button.warning')
+      end
     end
 
-    expect(page).to have_current_path(idv_session_errors_throttled_path)
-    # Bug: Rate limit event is not always logged (LG-6543)
-    # expect(fake_analytics).to have_logged_event(
-    #   'Throttler Rate Limit Triggered',
-    #   throttle_type: :idv_doc_auth,
-    # )
-    # expect(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
+    it 'redirects to the throttled error page' do
+      freeze_time do
+        attach_and_submit_images
+        timeout = distance_of_time_in_words(
+          Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+        )
+        message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+        expect(page).to have_content(message)
+        expect(page).to have_current_path(idv_session_errors_throttled_path)
+      end
+    end
+
+    it 'logs the throttled analytics event for doc_auth' do
+      attach_and_submit_images
+      expect(fake_analytics).to have_logged_event(
+        'Throttler Rate Limit Triggered',
+        throttle_type: :idv_doc_auth,
+      )
+    end
+
+    it 'logs irs attempts event for rate limiting' do
+      attach_and_submit_images
+      expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
+    end
   end
 
   it 'catches network connection errors on post_front_image', allow_browser_log: true do
@@ -93,127 +103,21 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
   end
 
-  context 'when liveness checking is enabled' do
-    let(:liveness_enabled) { true }
+  it 'proceeds to the next page with valid info' do
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-    it 'is on the correct page and shows the document upload options' do
-      expect(current_path).to eq(idv_doc_auth_document_capture_step)
-      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+    attach_and_submit_images
 
-      # Document capture tips
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-
-      # Selfie option, evidenced by "Continue" button instead of "Submit"
-      expect(page).to have_content(t('forms.buttons.continue'))
-    end
-
-    it 'proceeds to the next page with valid info and logs analytics info' do
-      expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
-        to receive(:post_images).
-        with(hash_including(image_source: DocAuth::ImageSources::UNKNOWN)).
-        and_call_original
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(next_step)
-      expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
-        step: 'document_capture',
-        flow_path: 'standard',
-      )
-      expect_costing_for_document
-    end
-
-    it 'does not proceed to the next page with invalid info', allow_browser_log: true do
-      mock_general_doc_auth_client_error(:create_document)
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-    end
-
-    it 'allows users to retake photos with attention with barcode', allow_browser_log: true do
-      mock_doc_auth_attention_with_barcode
-      attach_and_submit_images
-
-      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
-      expect(page).to have_content('DAVID')
-      expect(page).to have_content('SAMPLE')
-      expect(page).to have_content('1986-10-13')
-
-      click_button t('doc_auth.buttons.add_new_photos')
-      submit_images
-
-      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
-      click_button t('forms.buttons.continue')
-
-      expect(page).to have_current_path(next_step, wait: 10)
-    end
-
-    it 'does not proceed if doc auth is success but missing information', allow_browser_log: true do
-      mock_doc_auth_no_name_pii(:post_images)
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth image upload vendor pii validation',
-        flow_path: 'standard',
-        success: false,
-      )
-    end
-
-    context 'when javascript is enabled', js: true do
-      it 'proceeds to the next step' do
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
-    end
+    expect(page).to have_current_path(next_step)
+    expect_costing_for_document
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
   end
 
-  context 'when liveness checking is not enabled' do
-    let(:liveness_enabled) { false }
+  it 'does not track state if state tracking is disabled' do
+    allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+    attach_and_submit_images
 
-    it 'is on the correct page and shows the document upload options' do
-      expect(current_path).to eq(idv_doc_auth_document_capture_step)
-      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      # Document capture tips
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-
-      # No selfie option, evidenced by "Submit" button instead of "Continue"
-      expect(page).to have_content(t('forms.buttons.submit.default'))
-    end
-
-    it 'proceeds to the next page with valid info' do
-      attach_and_submit_images
-
-      expect(page).to have_current_path(next_step)
-      expect_costing_for_document
-      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
-    end
-
-    it 'does not track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      attach_and_submit_images
-
-      expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
-    end
+    expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
   end
 
   context 'when using async uploads' do
@@ -246,8 +150,8 @@ feature 'doc auth document capture step', :js do
         },
       )
 
-      attach_file 'Front of your ID', 'app/assets/images/logo.png'
-      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_front'), 'app/assets/images/logo.png'
+      attach_file I18n.t('doc_auth.headings.document_capture_back'), 'app/assets/images/logo.png'
 
       form = page.find('#document-capture-form')
       front_url = form['data-front-image-upload-url']
@@ -304,7 +208,7 @@ feature 'doc auth document capture step', :js do
   end
 
   def next_step
-    idv_doc_auth_ssn_step
+    idv_ssn_url
   end
 
   def expect_costing_for_document

@@ -24,6 +24,13 @@ module Proofing
               },
               DateOfBirth: DateFormatter.new(applicant[:dob]).formatted_date,
               Addresses: [formatted_address],
+              Licenses: [
+                {
+                  Number: applicant[:state_id_number],
+                  Issuer: applicant[:state_id_jurisdiction],
+                  Type: 'drivers',
+                },
+              ],
             },
           }.to_json
         end

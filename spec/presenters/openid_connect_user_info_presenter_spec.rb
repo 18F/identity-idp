@@ -17,6 +17,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       user: create(:user, profiles: [profile]),
       service_provider: service_provider.issuer,
       scope: scope,
+      aal: 2,
+      requested_aal_value: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
     )
   end
 
@@ -26,12 +28,17 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     subject(:user_info) { presenter.user_info }
 
     it 'has basic attributes' do
+      ial = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+      aal = Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
+
       aggregate_failures do
         expect(user_info[:sub]).to eq(identity.uuid)
         expect(user_info[:iss]).to eq(root_url)
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
         expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+        expect(user_info[:ial]).to eq(ial)
+        expect(user_info[:aal]).to eq(aal)
       end
     end
 
@@ -45,7 +52,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       let(:x509_subject) { 'x509-subject' }
 
       before do
-        X509::SessionStore.new(rails_session_id).put(x509, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(rails_session_id).put_x509(x509, 5.minutes.to_i)
       end
 
       context 'when the identity has piv/cac associated' do
@@ -101,7 +108,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       before do
-        Pii::SessionStore.new(rails_session_id).put(pii, 5.minutes.to_i)
+        OutOfBandSessionAccessor.new(rails_session_id).put_pii(pii, 5.minutes.to_i)
       end
 
       context 'when the identity has ial2 access' do

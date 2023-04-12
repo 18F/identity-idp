@@ -36,7 +36,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
   it 'allows the user to resend an OTP and confirm with the new OTP' do
     visit_otp_confirmation(delivery_method)
     old_code = last_otp(delivery_method)
-    click_on t('links.two_factor_authentication.get_another_code')
+    click_on t('links.two_factor_authentication.send_another_code')
     new_code = last_otp(delivery_method)
 
     expect(old_code).to_not eq(new_code)

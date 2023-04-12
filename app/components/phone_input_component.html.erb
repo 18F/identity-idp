@@ -2,8 +2,9 @@
       'lg-phone-input',
       class: tag_options[:class],
       data: {
-        delivery_methods: delivery_methods,
-        translated_country_code_names: translated_country_code_names,
+        delivery_methods:,
+        translated_country_code_names:,
+        captcha_exempt_countries:,
       },
     ) do %>
   <%= content_tag(
@@ -35,12 +36,6 @@
         :phone,
         class: 'usa-label',
       ) { t('two_factor_authentication.phone_label') } %>
-  <div class="js">
-    <%= f.hint(capture do %>
-      <%= t('forms.example') %>
-      <span class="phone-input__example"></span>
-    <% end) %>
-  </div>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :phone,
@@ -48,7 +43,7 @@
           valueMissing: t('errors.messages.phone_required'),
         },
         as: :tel,
-        required: required,
+        required:,
         label: false,
         wrapper_html: {
           class: 'margin-bottom-0',

@@ -1,10 +1,10 @@
-# Front-end architecture
+# Front-end Architecture
 
 ## CSS + HTML
 
 ### At a Glance
 
-- Leverages components and utilities from the [Login.gov Design System](https://design.login.gov/),
+- Leverages components and utilities from the [Login.gov Design System](https://github.com/18f/identity-style-guide),
   which is based on the [U.S. Web Design System](https://designsystem.digital.gov/).
 - Uses [Sass](https://sass-lang.com/) as the CSS preprocessor and [Stylelint](https://stylelint.io/)
   to keep files tidy.
@@ -15,11 +15,9 @@
 To the extent possible, use design system components and utilities when implementing designs.
 
 **Components** are simple and consistent solutions to common user interface needs, like form fields,
-buttons, and icons. Any component from the U.S. Web Design system is available to use. Through the
-Login.gov Design System, we have customized some of these components to suit our needs.
-
-- [Login.gov components](https://design.login.gov/components/)
-- [U.S. Web Design System components](https://designsystem.digital.gov/components/overview/)
+buttons, and icons. Any of the [U.S. Web Design system components](https://designsystem.digital.gov/components/overview/)
+are available to use. Through the Login.gov Design System, we have customized some of these
+components to suit our needs.
 
 **Utilities** are CSS classes which allow you to add consistent styling to an HTML element, such as
 margins or borders.
@@ -83,8 +81,8 @@ In practice:
   - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
   - ...a listing of its own dependencies, including to other workspace packages using
     [`file:` prefix](https://classic.yarnpkg.com/en/docs/cli/add/).
-  - ...[`"private": true`](https://docs.npmjs.com/files/package.json#private), since workspaces
-    packages are currently not published to NPM.
+  - ...[`"private": true`](https://docs.npmjs.com/files/package.json#private) if the workspace
+    package is not intended to be published to NPM.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
 - Each package should include an `index.js` which serves as the entry-point and public API for the
@@ -151,6 +149,14 @@ For more information, refer to the [components `README.md`](../app/components/RE
 For non-trivial client-side interactivity, we use [React](https://reactjs.org/) to build and combine
 JavaScript components for stateful applications.
 
+* Components should be implemented as [function components](https://react.dev/learn/your-first-component),
+using [hooks](https://react.dev/reference/react) to manage the component lifecycle.
+* Application state is managed using [context](https://react.dev/learn/passing-data-deeply-with-context),
+where domain-specific state is passed from a context provider to a child component.
+* Client-side routing is not a concern that you should typically encounter, since the project is not
+a single-page application. However, the [`@18f/identity-form-steps` package](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/form-steps)
+is available if you need to implement a series of steps within a page.
+
 #### Custom Elements
 
 For simple client-side interactivity tied to singular components (React or ViewComponent), we use
@@ -161,7 +167,11 @@ Custom elements provide several advantages in that they...
 - can be initialized from any markup renderer, supporting both server-side (ViewComponent) and
   client-side (React) component implementations
 - have no dependencies, limiting overall page size in the critical path
-- are portable and avoid vendor lock-in (e.g. for use in a [design system](https://design.login.gov))
+- are portable and avoid vendor lock-in
+
+### Localization
+
+See [`@18f/identity-i18n` package documentation](https://github.com/18F/identity-idp/blob/main/app/javascript/packages/i18n/README.md).
 
 ## Testing
 
@@ -192,16 +202,15 @@ yarn test
 To run a single test file:
 
 ```
-npx mocha spec/javascripts/app/utils/ms-formatter_spec.js
+yarn mocha app/javascript/packages/analytics/index.spec.ts
 ```
 
-Using `npx`, you can also pass any
-[Mocha command-line arguments](https://mochajs.org/#command-line-usage).
+You can also pass any [Mocha command-line arguments](https://mochajs.org/#command-line-usage).
 
 For example, to watch a file and rerun tests after any change:
 
 ```
-npx mocha spec/javascripts/app/utils/ms-formatter_spec.js --watch
+yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
 ```
 
 #### ESLint
@@ -219,6 +228,64 @@ Many issues can be fixed automatically by appending a `--fix` flag to the comman
 ```
 yarn run lint --fix
 ```
+
+## Forms
+
+Login.gov is a form-heavy application, and there are some conventions to consider when implementing
+a new form.
+
+For details on back-end form processing, refer to the [equivalent section of the Back-end Architecture document](./backend.md#forms-formresponse-analytics-and-controllers).
+
+### Form Rendering
+
+[Simple Form](https://github.com/heartcombo/simple_form) is a wrapper which enhances [Ruby on Rails' default `form_for` helper](https://guides.rubyonrails.org/form_helpers.html),
+including some nice conveniences:
+
+- Standardizing markup layout for common input types
+- Adding additional input types not available in Ruby on Rails
+- Pre-filling values associated with form's associated record
+- Displaying user-facing error messages after an invalid form submission
+
+Typical usage should combine the `simple_form_for` helper with a record and associated block of form content:
+
+```erb
+<%= simple_form_for(@reset_password_form, url: user_password_path) do |f| %>
+  <%= f.input :reset_password_token, as: :hidden %>
+<% end >
+```
+
+If there is no record available, you can initialize `simple_form_for` with an empty string:
+
+```erb
+<%= simple_form_for('', url: user_password_path) do |f| %>
+  <%= f.input :reset_password_token, as: :hidden %>
+<% end >
+```
+
+### Form Validation
+
+Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
+wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#using_built-in_form_validation)
+to define validation constraints. For advanced validation, consider using the [`setCustomValidity`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setCustomValidity)
+function to assign or remove validation messages when an input's value changes.
+
+A form's contents are validated when a user submits the form. Errors messages should only be
+displayed at this point, and the user's focus should be drawn to the first field with an error
+present. Error messages should be removed from a field when that field's value changes. It's
+recommended that you use [`ValidatedFieldComponent`](#validatedfieldcomponent), which automatically
+manages these behaviors.
+
+#### ValidatedFieldComponent
+
+The [`ValidatedFieldComponent` View Component](https://github.com/18F/identity-idp/blob/main/app/components/validated_field_component.rb)
+is a wrapper component for Simple Form's `f.input` helper. It enhances the behavior of an input by:
+
+- Displaying an error message on the page when form submission results in a validation error
+- Moving focus to the first invalid field when form submission results in a validation error
+- Providing default error messages for common validation constraints (e.g. required field missing)
+- Allowing you to customize error messages associated with default field validation
+- Creating a relationship between an input and its error message to ensure that the error is announced to assistive technology
+- Resetting the error state when an input value changes
 
 ## Debugging
 

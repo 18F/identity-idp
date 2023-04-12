@@ -12,6 +12,7 @@ require 'rails/test_unit/railtie'
 require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'
+require 'email_spec/rspec'
 require 'factory_bot'
 require 'view_component/test_helpers'
 require 'capybara/rspec'
@@ -59,7 +60,7 @@ RSpec.configure do |config|
     end
 
     begin
-      REDIS_POOL.with { |namespaced| namespaced.redis.info }
+      REDIS_POOL.with { |client| client.info }
     rescue RuntimeError => error
       # rubocop:disable Rails/Output
       puts error
@@ -109,7 +110,7 @@ RSpec.configure do |config|
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
-    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
+    REDIS_THROTTLE_POOL.with { |client| client.flushdb }
   end
 
   config.before(:each) do
@@ -122,6 +123,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     IrsAttemptsApi::RedisClient.clear_attempts!
+  end
+
+  config.before(:each) do
+    Rails.cache.clear
   end
 
   config.around(:each, type: :feature) do |example|
@@ -149,5 +154,19 @@ RSpec.configure do |config|
 
     # Consider any browser console logging as a failure.
     raise BrowserConsoleLogError.new(javascript_errors) if javascript_errors.present?
+  end
+
+  config.around(:each, allow_net_connect_on_start: true) do |example|
+    # Avoid "Too many open files - socket(2)" error on some local machines
+    WebMock.allow_net_connect!(net_http_connect_on_start: true)
+    example.run
+    WebMock.disable_net_connect!(
+      allow: [
+        /localhost/,
+        /127\.0\.0\.1/,
+        /codeclimate.com/, # For uploading coverage reports
+        /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
+      ],
+    )
   end
 end

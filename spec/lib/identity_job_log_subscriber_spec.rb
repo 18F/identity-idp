@@ -302,6 +302,25 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       subscriber.enqueue_at(event)
     end
 
+    it 'is compatible with job classes that do not inherit from ApplicationJob' do
+      # rubocop:disable Rails/ApplicationJob
+      class SampleJob < ActiveJob::Base; def perform(_); end; end
+      # rubocop:enable Rails/ApplicationJob
+
+      job = SampleJob.new
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: Errno::ECONNREFUSED.new,
+      )
+
+      subscriber.enqueue_at(event)
+    end
+
     it 'halts' do
       job = RiscDeliveryJob.new
 

@@ -9,6 +9,7 @@ class FrontendLogController < ApplicationController
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
     'IdV: location visited' => :idv_in_person_location_visited,
     'IdV: location submitted' => :idv_in_person_location_submitted,
+    'IdV: Mobile device and camera check' => :idv_mobile_device_and_camera_check,
     'IdV: prepare visited' => :idv_in_person_prepare_visited,
     'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
     'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
@@ -17,6 +18,9 @@ class FrontendLogController < ApplicationController
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
+    'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
+    'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
+    'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 
@@ -49,6 +53,6 @@ class FrontendLogController < ApplicationController
   end
 
   def valid_payload?
-    !log_params[:payload].nil?
+    params[:payload].nil? || !log_params[:payload].nil?
   end
 end

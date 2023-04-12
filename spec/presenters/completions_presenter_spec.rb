@@ -224,6 +224,27 @@ describe CompletionsPresenter do
         end
       end
 
+      context 'user has reverified since last consent for sp' do
+        let(:identities) do
+          [
+            build(
+              :service_provider_identity,
+              service_provider: current_sp.issuer,
+              last_consented_at: 2.months.ago,
+            ),
+          ]
+        end
+        let(:completion_context) { :reverified_after_consent }
+        it 'renders the reverified IAL2 consent intro message' do
+          expect(presenter.intro).to eq(
+            I18n.t(
+              'help_text.requested_attributes.ial2_reverified_consent_info',
+              sp: current_sp.friendly_name,
+            ),
+          )
+        end
+      end
+
       context 'when consent has not expired' do
         it 'renders the standard intro message' do
           expect(presenter.intro).to eq(
@@ -302,7 +323,7 @@ describe CompletionsPresenter do
               address: '123 main st apt 123 Washington, DC 20405',
               phone: '+1 202-212-1000',
               all_emails: [current_user.email],
-              birthdate: 'January 01, 1990',
+              birthdate: 'January 1, 1990',
               social_security_number: '900-12-3456',
               verified_at: nil,
               x509_subject: nil,

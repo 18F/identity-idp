@@ -4,10 +4,6 @@ describe MfaConfirmationPresenter do
   let(:user) { create(:user, :with_phone) }
   let(:presenter) { described_class.new(user) }
 
-  before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-  end
-
   describe '#heading?' do
     it 'supplies a message' do
       expect(presenter.heading).

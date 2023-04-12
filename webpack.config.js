@@ -4,6 +4,7 @@ const { sync: glob } = require('fast-glob');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
+const UnpolyfillWebpackPlugin = require('@18f/identity-unpolyfill-webpack-plugin');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
@@ -20,7 +21,7 @@ const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool,
-  target: ['web', 'es5'],
+  target: ['web'],
   devServer: {
     static: {
       directory: './public',
@@ -43,7 +44,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
   },
   module: {
     rules: [
@@ -54,9 +55,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.[jt]sx?$/,
-        exclude:
-          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+        test: /\.[cm]?[jt]sx?$/,
+        exclude: /node_modules\/(?!@18f\/identity-)/,
         use: {
           loader: 'babel-loader',
         },
@@ -65,7 +65,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({
@@ -79,6 +78,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       writeToDisk: true,
       integrity: isProductionEnv,
+      integrityHashes: ['sha512'],
       output: 'manifest.json',
       transform(manifest) {
         const srcIntegrity = {};
@@ -101,5 +101,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
     }),
     new RailsAssetsWebpackPlugin(),
+    new UnpolyfillWebpackPlugin(),
   ],
 });

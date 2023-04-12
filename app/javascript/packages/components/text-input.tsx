@@ -9,6 +9,11 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
 
   /**
+   * Muted explainer text sitting below the label.
+   */
+  hint?: string;
+
+  /**
    * Optional explicit ID to use in place of default behavior.
    */
   id?: string;
@@ -20,11 +25,12 @@ export interface TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 function TextInput(
-  { label, id, className, ...inputProps }: TextInputProps,
+  { label, hint, id, className, ...inputProps }: TextInputProps,
   ref: ForwardedRef<HTMLInputElement>,
 ) {
   const instanceId = useInstanceId();
   const inputId = id ?? `text-input-${instanceId}`;
+  const hintId = id ?? `text-input-hint-${instanceId}`;
   const classes = ['usa-input', className].filter(Boolean).join(' ');
 
   return (
@@ -32,7 +38,18 @@ function TextInput(
       <label className="usa-label" htmlFor={inputId}>
         {label}
       </label>
-      <input ref={ref} className={classes} id={inputId} {...inputProps} />
+      {hint && (
+        <div id={hintId} className="usa-hint">
+          {hint}
+        </div>
+      )}
+      <input
+        ref={ref}
+        className={classes}
+        id={inputId}
+        aria-describedby={hint && hintId}
+        {...inputProps}
+      />
     </>
   );
 }

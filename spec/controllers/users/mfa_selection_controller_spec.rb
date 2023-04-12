@@ -2,9 +2,6 @@ require 'rails_helper'
 
 describe Users::MfaSelectionController do
   let(:current_sp) { create(:service_provider) }
-  before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-  end
 
   describe '#index' do
     before do
@@ -45,29 +42,6 @@ describe Users::MfaSelectionController do
       expect(form).to receive(:selection).and_return(['voice'])
 
       patch :update, params: voice_params
-    end
-
-    context 'when the selection is only phone and multi mfa is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
-        stub_sign_in_before_2fa
-
-        patch :update, params: {
-          two_factor_options_form: {
-            selection: 'phone',
-          },
-        }
-      end
-
-      it 'the redirect to the form page with an anchor' do
-        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
-      end
-      it 'contains a flash message' do
-        expect(flash[:phone_error]).to eq(
-          t('errors.two_factor_auth_setup.must_select_additional_option'),
-        )
-      end
     end
 
     context 'when the selection is phone' do
@@ -183,8 +157,7 @@ describe Users::MfaSelectionController do
       context 'with no active MFA' do
         it 'redirects to the index page with a flash error' do
           patch :update, params: {
-            two_factor_options_form: {
-            },
+            two_factor_options_form: {},
           }
 
           expect(response).to redirect_to two_factor_options_path

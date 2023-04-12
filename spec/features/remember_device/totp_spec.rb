@@ -30,6 +30,7 @@ describe 'Remembering a TOTP device' do
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
       click_submit_default
+      skip_second_mfa_prompt
 
       first(:link, t('links.sign_out')).click
       user

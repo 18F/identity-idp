@@ -1,8 +1,10 @@
 require 'rails_helper'
 
-describe 'Hybrid Flow' do
+describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include DocAuthHelper
+
+  let(:phone_number) { '415-555-0199' }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -23,9 +25,9 @@ describe 'Hybrid Flow' do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_send_link_step
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      complete_doc_auth_steps_before_upload_step
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
@@ -40,6 +42,7 @@ describe 'Hybrid Flow' do
 
     perform_in_browser(:desktop) do
       expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+      expect(page).to have_current_path(idv_ssn_path)
 
       fill_out_ssn_form_ok
       click_idv_continue
@@ -48,7 +51,6 @@ describe 'Hybrid Flow' do
       click_idv_continue
 
       fill_out_phone_form_ok
-      click_idv_continue
       verify_phone_otp
 
       fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
@@ -66,9 +68,9 @@ describe 'Hybrid Flow' do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_send_link_step
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      complete_doc_auth_steps_before_upload_step
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
@@ -83,9 +85,8 @@ describe 'Hybrid Flow' do
 
     perform_in_browser(:desktop) do
       expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
-      click_on t('doc_auth.buttons.use_phone')
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end

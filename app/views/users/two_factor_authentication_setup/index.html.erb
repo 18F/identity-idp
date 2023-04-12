@@ -21,34 +21,11 @@
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
-      <% if IdentityConfig.store.select_multiple_mfa_options %>
-        <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
-      <% end %>
+      <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-          <% if IdentityConfig.store.select_multiple_mfa_options %>
-            <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                       locals: { form: f, option: option } %>
-          <% else %>
-            <%= radio_button_tag(
-                  'two_factor_options_form[selection]',
-                  option.type,
-                  false,
-                  disabled: option.disabled?,
-                  class: 'usa-radio__input usa-radio__input--tile',
-                ) %>
-            <%= label_tag(
-                  "two_factor_options_form_selection_#{option.type}",
-                  class: 'usa-radio__label usa-radio__label--illustrated',
-                ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
-                    <div class="usa-radio__label--text"><%= option.label %>
-                      <span class="usa-radio__label-description">
-                        <%= option.info %>
-                      </span>
-                    </div>
-                  <% end %>
-          <% end %>
+          <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                     locals: { form: f, option: option } %>
         </div>
       <% end %>
     </fieldset>

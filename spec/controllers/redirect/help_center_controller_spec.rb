@@ -5,12 +5,8 @@ describe Redirect::HelpCenterController do
     stub_analytics
   end
 
-  let(:category) { nil }
-  let(:article) { nil }
-  let(:location_params) { {} }
-  subject(:response) do
-    get :show, params: { category: category, article: article, **location_params }
-  end
+  let(:params) { {} }
+  subject(:response) { get :show, params: }
 
   describe '#show' do
     context 'without help center article' do
@@ -21,8 +17,7 @@ describe Redirect::HelpCenterController do
     end
 
     context 'with invalid help center article' do
-      let(:category) { 'foo' }
-      let(:article) { 'bar' }
+      let(:params) { super().merge(category: 'foo', article: 'bar') }
 
       it 'redirects to the root url' do
         expect(response).to redirect_to root_url
@@ -33,34 +28,46 @@ describe Redirect::HelpCenterController do
     context 'with valid help center article' do
       let(:category) { 'verify-your-identity' }
       let(:article) { 'accepted-state-issued-identification' }
+      let(:params) { super().merge(category:, article:) }
 
       it 'redirects to the help center article and logs' do
-        redirect_url = MarketingSite.help_center_article_url(
-          category: 'verify-your-identity',
-          article: 'accepted-state-issued-identification',
-        )
+        redirect_url = MarketingSite.help_center_article_url(category:, article:)
         expect(response).to redirect_to redirect_url
         expect(@analytics).to have_logged_event(
           'External Redirect',
-          redirect_url: redirect_url,
+          hash_including(redirect_url: redirect_url),
         )
       end
 
+      context 'with optional anchor' do
+        let(:article_anchor) { 'heading' }
+        let(:params) { super().merge(article_anchor:) }
+
+        it 'redirects to the help center article and logs' do
+          redirect_url = MarketingSite.help_center_article_url(category:, article:, article_anchor:)
+          expect(response).to redirect_to redirect_url
+          expect(@analytics).to have_logged_event(
+            'External Redirect',
+            hash_including(redirect_url: redirect_url),
+          )
+        end
+      end
+
       context 'with location params' do
-        let(:location_params) { { flow: 'flow', step: 'step', location: 'location', foo: 'bar' } }
+        let(:flow) { 'flow' }
+        let(:step) { 'step' }
+        let(:location) { 'location' }
+        let(:params) { super().merge(flow:, step:, location:, foo: 'bar') }
 
         it 'logs with location params' do
           response
 
           expect(@analytics).to have_logged_event(
             'External Redirect',
-            redirect_url: MarketingSite.help_center_article_url(
-              category: 'verify-your-identity',
-              article: 'accepted-state-issued-identification',
-            ),
-            flow: 'flow',
-            step: 'step',
-            location: 'location',
+            redirect_url: MarketingSite.help_center_article_url(category:, article:),
+            flow:,
+            step:,
+            location:,
           )
         end
       end

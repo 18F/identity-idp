@@ -7,6 +7,7 @@ require:
   - rubocop-rails
   - rubocop-performance
   - ./lib/linters/localized_validation_message_linter.rb
+  - ./lib/linters/image_size_linter.rb
   - ./lib/linters/mail_later_linter.rb
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
@@ -24,7 +25,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  TargetRubyVersion: 3.0.4
+  TargetRubyVersion: 3.2.0
   TargetRailsVersion: 7.0
   UseCache: true
   DisabledByDefault: true
@@ -57,6 +58,16 @@ IdentityIdp/ErrorsAddLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
+
+IdentityIdp/ImageSizeLinter:
+  Enabled: true
+  Exclude:
+    - app/components/barcode_component.html.erb
+    - app/views/partials/multi_factor_authentication/_mfa_selection.html.erb
+    - app/views/shared/_nav_branded.html.erb
+    - app/views/sign_up/completions/show.html.erb
+    - app/views/users/two_factor_authentication_setup/index.html.erb
+    - app/views/users/webauthn_setup/new.html.erb
 
 IdentityIdp/RedirectBackLinter:
   Enabled: true
@@ -223,6 +234,9 @@ Layout/MultilineBlockLayout:
 Layout/MultilineHashBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
 
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
@@ -622,7 +636,7 @@ Metrics/BlockLength:
   CountComments: false
   Enabled: true
   Max: 25
-  IgnoredMethods:
+  AllowedMethods:
     - Struct.new
     - RedactedStruct.new
   Exclude:
@@ -632,14 +646,6 @@ Metrics/BlockLength:
     - config/routes.rb
     - spec/**/*.rb
     - scripts/**/*
-
-Metrics/ModuleLength:
-  CountComments: false
-  Max: 200
-  Description: Avoid modules longer than 200 lines of code.
-  Enabled: true
-  Exclude:
-    - spec/**/*
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
@@ -1029,6 +1035,7 @@ Style/HashExcept:
 
 Style/HashSyntax:
   EnforcedStyle: ruby19
+  EnforcedShorthandSyntax: either
 
 Style/IdenticalConditionalBranches:
   Enabled: true
@@ -1066,7 +1073,7 @@ Style/LineEndConcatenation:
 
 Style/MethodCallWithoutArgsParentheses:
   Enabled: true
-  IgnoredMethods: []
+  AllowedMethods: []
 
 Style/MethodDefParentheses:
   Enabled: true

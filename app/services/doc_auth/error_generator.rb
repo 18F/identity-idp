@@ -12,14 +12,12 @@ module DocAuth
     ID = :id
     FRONT = :front
     BACK = :back
-    SELFIE = :selfie
     GENERAL = :general
 
     ERROR_KEYS = [
       ID,
       FRONT,
       BACK,
-      SELFIE,
       GENERAL,
     ].to_set.freeze
 
@@ -50,7 +48,6 @@ module DocAuth
     }.freeze
 
     def generate_doc_auth_errors(response_info)
-      liveness_enabled = response_info[:liveness_enabled]
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
         0 : response_info[:alert_failure_count]
 
@@ -60,8 +57,7 @@ module DocAuth
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
 
-      alert_errors = get_error_messages(liveness_enabled, response_info)
-      alert_error_count += 1 if alert_errors.include?(SELFIE)
+      alert_errors = get_error_messages(response_info)
 
       error = ''
       side = nil
@@ -72,7 +68,7 @@ module DocAuth
           response_info: response_info,
         )
 
-        error = self.class.general_error(liveness_enabled)
+        error = Errors::GENERAL_ERROR
         side = ID
       elsif alert_error_count == 1
         error = alert_errors.values[0].to_a.pop
@@ -84,19 +80,14 @@ module DocAuth
           side = error_fields.first
           case side
           when ID
-            error = self.class.general_error(false)
+            error = Errors::GENERAL_ERROR
           when FRONT
             error = Errors::MULTIPLE_FRONT_ID_FAILURES
           when BACK
             error = Errors::MULTIPLE_BACK_ID_FAILURES
           end
         elsif error_fields.length > 1
-          if error_fields.include?(SELFIE)
-            error = self.class.general_error(liveness_enabled)
-          else
-            # If we don't have a selfie error don't give the message suggesting retaking selfie.
-            error = self.class.general_error(false)
-          end
+          error = Errors::GENERAL_ERROR
           side = ID
         end
       end
@@ -150,7 +141,7 @@ module DocAuth
       error_result
     end
 
-    def get_error_messages(liveness_enabled, response_info)
+    def get_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
       if response_info[:doc_auth_result] != 'Passed'
@@ -162,11 +153,6 @@ module DocAuth
             errors[field_type.to_sym] << alert_msg_hash[:msg_key]
           end
         end
-      end
-
-      portrait_match_results = response_info[:portrait_match_results] || {}
-      if liveness_enabled && portrait_match_results.dig(:FaceMatchResult) != 'Pass'
-        errors[SELFIE] << Errors::SELFIE_FAILURE
       end
 
       errors
@@ -199,12 +185,8 @@ module DocAuth
       unknown_fail_count
     end
 
-    def self.general_error(liveness_enabled)
-      liveness_enabled ? Errors::GENERAL_ERROR_LIVENESS : Errors::GENERAL_ERROR_NO_LIVENESS
-    end
-
-    def self.wrapped_general_error(liveness_enabled)
-      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
+    def self.wrapped_general_error
+      { general: [Errors::GENERAL_ERROR], hints: true }
     end
   end
 end

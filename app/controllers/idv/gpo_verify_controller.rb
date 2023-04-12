@@ -2,6 +2,7 @@ module Idv
   class GpoVerifyController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
+    include FraudReviewConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -27,8 +28,8 @@ module Idv
     def create
       @gpo_verify_form = build_gpo_verify_form
 
-      if throttle.throttled_else_increment?
-        irs_attempts_api_tracker.idv_gpo_verification_rate_limited
+      throttle.increment!
+      if throttle.throttled?
         render_throttled
       else
         result = @gpo_verify_form.submit
@@ -42,15 +43,18 @@ module Idv
           if result.extra[:pending_in_person_enrollment]
             redirect_to idv_in_person_ready_to_verify_url
           else
-            event = create_user_event_with_disavowal(:account_verified)
-            UserAlerts::AlertUserAboutAccountVerified.call(
-              user: current_user,
-              date_time: event.created_at,
-              sp_name: decorated_session.sp_name,
-              disavowal_token: event.disavowal_token,
-            )
-            flash[:success] = t('account.index.verification.success')
-            redirect_to sign_up_completed_url
+            event, _disavowal_token = create_user_event(:account_verified)
+
+            if !threatmetrix_check_failed?(result)
+              UserAlerts::AlertUserAboutAccountVerified.call(
+                user: current_user,
+                date_time: event.created_at,
+                sp_name: decorated_session.sp_name,
+              )
+              flash[:success] = t('account.index.verification.success')
+            end
+
+            redirect_to next_step
           end
         else
           flash[:error] = @gpo_verify_form.errors.first.message
@@ -61,6 +65,11 @@ module Idv
 
     private
 
+    def next_step
+      enable_personal_key_generation
+      idv_personal_key_url
+    end
+
     def throttle
       @throttle ||= Throttle.new(
         user: current_user,
@@ -69,6 +78,7 @@ module Idv
     end
 
     def render_throttled
+      irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,
       )
@@ -92,6 +102,19 @@ module Idv
     def confirm_verification_needed
       return if current_user.decorate.pending_profile_requires_verification?
       redirect_to account_url
+    end
+
+    def threatmetrix_check_failed?(result)
+      result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
+    end
+
+    def threatmetrix_enabled?
+      FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    end
+
+    def enable_personal_key_generation
+      idv_session.resolution_successful = 'gpo'
+      idv_session.applicant = pii
     end
   end
 end

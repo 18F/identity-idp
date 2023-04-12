@@ -3,21 +3,12 @@ module BillableEventTrackable
     if current_session_has_been_billed?
       create_sp_return_log(billable: false)
     else
-      increment_sp_monthly_auths
       create_sp_return_log(billable: true)
       mark_current_session_billed
     end
   end
 
   private
-
-  def increment_sp_monthly_auths
-    MonthlySpAuthCount.increment(
-      user_id: current_user.id,
-      service_provider: current_sp,
-      ial: sp_session_ial,
-    )
-  end
 
   def create_sp_return_log(billable:)
     user_ial_context = IalContext.new(

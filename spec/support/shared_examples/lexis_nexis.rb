@@ -1,9 +1,8 @@
-shared_examples 'a lexisnexis proofer' do
+shared_examples 'a lexisnexis rdp proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
   let(:verification_errors) { {} }
-  let(:result) { Proofing::Result.new }
 
   before do
     response = instance_double(Proofing::LexisNexis::Response)
@@ -11,14 +10,17 @@ shared_examples 'a lexisnexis proofer' do
     allow(response).to receive(:conversation_id).and_return(conversation_id)
     allow(response).to receive(:reference).and_return(reference)
     allow(response).to receive(:verification_errors).and_return(verification_errors)
+    allow(response).to receive(:response_body).and_return({})
+    allow(response).to receive(:transaction_reason_code).and_return('123abc')
+    allow(response).to receive(:product_list).and_return([])
 
     allow(verification_request).to receive(:send).and_return(response)
     allow(verification_request.class).to receive(:new).
-      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Proofer::Config)).
+      with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config)).
       and_return(verification_request)
   end
 
-  describe '#proof_applicant' do
+  describe '#proof' do
     context 'when proofing succeeds' do
       it 'results in a successful result' do
         result = subject.proof(applicant)
@@ -82,6 +84,10 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
       expect(ln_response).to be_a(Proofing::LexisNexis::Response)
       expect(ln_response.response.status).to eq 200
       expect(ln_response.response.body).to eq response_body
+      expect(ln_response.conversation_id).to be_a(String)
+      expect(ln_response.reference).to be_a(String)
+      expect(ln_response.verification_status).to be_a(String)
+      expect(ln_response.verification_errors).to be_a(Hash)
     end
   end
 end

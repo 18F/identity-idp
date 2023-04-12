@@ -4,7 +4,6 @@ module Rack
   class Timeout
     @excludes = [
       '/api/verify/images',
-      '/verify/doc_auth/selfie',
       '/verify/doc_auth/document_capture',
       '/verify/doc_auth/verify',
       '/verify/capture_doc/document_capture',
@@ -27,6 +26,8 @@ module Rack
     alias call call_with_excludes
   end
 end
+
+Rack::Timeout::Logger.level = Logger::ERROR
 
 Rails.application.config.middleware.insert_before(
   Rack::Runtime,

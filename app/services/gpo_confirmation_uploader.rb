@@ -1,6 +1,6 @@
 class GpoConfirmationUploader
-  def initialize
-    @now = Time.zone.now
+  def initialize(now = Time.zone.now)
+    @now = now
   end
 
   def run

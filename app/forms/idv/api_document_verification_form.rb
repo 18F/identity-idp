@@ -8,26 +8,23 @@ module Idv
     validates_presence_of :document_capture_session
     validates_presence_of :front_image_iv
     validates_presence_of :back_image_iv
-    validates_presence_of :selfie_image_iv, if: :liveness_checking_enabled?
 
     validate :throttle_if_rate_limited
 
     def initialize(
       params,
-      liveness_checking_enabled:,
       analytics:,
       irs_attempts_api_tracker:,
       flow_path: nil
     )
       @params = params
-      @liveness_checking_enabled = liveness_checking_enabled
       @analytics = analytics
       @irs_attempts_api_tracker = irs_attempts_api_tracker
       @flow_path = flow_path
     end
 
     def submit
-      throttled_else_increment
+      increment_throttle!
 
       response = FormResponse.new(
         success: valid?,
@@ -48,10 +45,6 @@ module Idv
     def remaining_attempts
       return unless document_capture_session
       throttle.remaining_count
-    end
-
-    def liveness_checking_enabled?
-      @liveness_checking_enabled
     end
 
     def document_capture_session_uuid
@@ -80,10 +73,6 @@ module Idv
       params[:back_image_iv]
     end
 
-    def selfie_image_iv
-      params[:selfie_image_iv]
-    end
-
     def valid_url?(key)
       uri = params[key]
       parsed_uri = URI.parse(uri)
@@ -99,9 +88,10 @@ module Idv
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
-    def throttled_else_increment
+    def increment_throttle!
       return unless document_capture_session
-      @throttled = throttle.throttled_else_increment?
+      throttle.increment!
+      @throttled = throttle.throttled?
     end
 
     def throttle
@@ -121,13 +111,6 @@ module Idv
       unless valid_url?(:back_image_url)
         errors.add(
           :back_image_url, invalid_link,
-          type: :invalid_link
-        )
-      end
-      return if valid_url?(:selfie_image_url)
-      if liveness_checking_enabled?
-        errors.add(
-          :selfie_image_url, invalid_link,
           type: :invalid_link
         )
       end

@@ -2,7 +2,6 @@
 # session UUID) instead of having access to the user session from Devise/Warden.
 # Should only used outside of a normal browser session (such as the OpenID
 # Connect API or remote SAML Logout).
-
 class OutOfBandSessionAccessor
   attr_reader :session_uuid
 
@@ -12,30 +11,70 @@ class OutOfBandSessionAccessor
 
   def ttl
     uuid = session_uuid
-    session_store.instance_eval { redis.ttl(prefixed(uuid)) }
+    session_store.instance_eval do
+      with_redis { |client| client.ttl(prefixed(uuid)) }
+    end
   end
 
-  def load
-    session_store.send(:load_session_from_redis, session_uuid) || {}
+  # @return [Pii::Attributes, nil]
+  def load_pii
+    session = session_data.dig('warden.user.user.session')
+    Pii::Cacher.new(nil, session).fetch if session
+  end
+
+  # @return [X509::Attributes]
+  def load_x509
+    X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
   end
 
   def destroy
-    session_store.send(:destroy_session_from_sid, session_uuid, drop: true)
+    session_store.send(:delete_session, {}, Rack::Session::SessionId.new(session_uuid), drop: true)
   end
 
   # @api private
   # Only used for convenience in tests
   # @param [Pii::Attributes] pii
+  def put_pii(pii, expiration = 5.minutes)
+    data = {
+      decrypted_pii: pii.to_h.to_json,
+    }
+
+    put(data, expiration)
+  end
+
+  # @api private
+  # Only used for convenience in tests
+  # @param [X509::Attributes] piv_cert_info
+  def put_x509(piv_cert_info, expiration = 5.minutes)
+    data = {
+      decrypted_x509: piv_cert_info.to_h.to_json,
+    }
+
+    put(data, expiration)
+  end
+
+  private
+
   def put(data, expiration = 5.minutes)
     session_data = {
       'warden.user.user.session' => data.to_h,
     }
 
-    session_store.
-      send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
+    session_store.send(
+      :write_session,
+      {},
+      Rack::Session::SessionId.new(session_uuid),
+      session_data,
+      expire_after: expiration.to_i,
+    )
   end
 
-  private
+  # @return [Hash]
+  def session_data
+    @session_data ||= session_store.send(
+      :find_session, {}, Rack::Session::SessionId.new(session_uuid)
+    ).last || {}
+  end
 
   def session_store
     @session_store ||= begin

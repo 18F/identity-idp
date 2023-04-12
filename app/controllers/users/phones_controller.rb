@@ -1,21 +1,28 @@
 module Users
-  class PhonesController < ReauthnRequiredController
+  class PhonesController < ApplicationController
     include PhoneConfirmation
+    include RecaptchaConcern
+    include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
+    before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+    before_action :confirm_recently_authenticated
 
     def add
       user_session[:phone_id] = nil
-      @new_phone_form = NewPhoneForm.new(current_user)
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(current_user)
-      if @new_phone_form.submit(user_params).success?
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      result = @new_phone_form.submit(user_params)
+      if result.success?
         confirm_phone
         bypass_sign_in current_user
+      elsif recoverable_recaptcha_error?(result)
+        render 'users/phone_setup/spam_protection'
       else
         render :add
       end
@@ -24,24 +31,29 @@ module Users
     private
 
     def redirect_if_phone_vendor_outage
-      return unless VendorStatus.new.all_phone_vendor_outage?
+      return unless OutageStatus.new.all_phone_vendor_outage?
       redirect_to vendor_outage_path(from: :users_phones)
     end
 
     def user_params
       params.require(:new_phone_form).permit(
-        :phone, :international_code,
+        :phone,
+        :international_code,
         :otp_delivery_preference,
-        :otp_make_default_number
+        :otp_make_default_number,
+        :recaptcha_token,
+        :recaptcha_version,
+        :recaptcha_mock_score,
       )
     end
 
     def confirm_phone
       flash[:info] = t('devise.registrations.phone_update_needs_confirmation')
       prompt_to_confirm_phone(
-        id: user_session[:phone_id], phone: @new_phone_form.phone,
+        id: user_session[:phone_id],
+        phone: @new_phone_form.phone,
         selected_delivery_method: @new_phone_form.otp_delivery_preference,
-        selected_default_number: @new_phone_form.otp_make_default_number
+        selected_default_number: @new_phone_form.otp_make_default_number,
       )
     end
 
@@ -53,6 +65,10 @@ module Users
                         account_two_factor_authentication_url(anchor: 'phones') :
                         account_url(anchor: 'phones')
       redirect_to redirect_path
+    end
+
+    def recaptcha_enabled?
+      FeatureManagement.phone_recaptcha_enabled?
     end
   end
 end

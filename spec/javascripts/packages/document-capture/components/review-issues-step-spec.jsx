@@ -5,6 +5,8 @@ import {
   UploadContextProvider,
   AnalyticsContext,
 } from '@18f/identity-document-capture';
+import { I18n } from '@18f/identity-i18n';
+import { I18nContext } from '@18f/identity-react-i18n';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { useSandbox } from '@18f/identity-test-helpers';
@@ -38,10 +40,25 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders initially with warning page and displays attempts remaining', () => {
-    const { getByRole, getByText } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
+    const { getByRole, getByText } = render(
+      <I18nContext.Provider
+        value={
+          new I18n({
+            strings: {
+              'idv.failure.attempts': {
+                one: 'One attempt remaining',
+                other: '%{count} attempts remaining',
+              },
+            },
+          })
+        }
+      >
+        <ReviewIssuesStep {...DEFAULT_PROPS} />
+      </I18nContext.Provider>,
+    );
 
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
-    expect(getByText('idv.failure.attempts.other')).to.be.ok();
+    expect(getByText('3 attempts remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
 
     expect(
@@ -56,19 +73,32 @@ describe('document-capture/components/review-issues-step', () => {
 
   it('renders warning page with error and displays one attempt remaining then continues on', async () => {
     const { getByRole, getByLabelText, getByText } = render(
-      <ReviewIssuesStep
-        remainingAttempts={1}
-        unknownFieldErrors={[
-          {
-            field: 'unknown',
-            error: toFormEntryError({ field: 'unknown', message: 'An unknown error occurred' }),
-          },
-        ]}
-      />,
+      <I18nContext.Provider
+        value={
+          new I18n({
+            strings: {
+              'idv.failure.attempts': {
+                one: 'One attempt remaining',
+                other: '%{count} attempts remaining',
+              },
+            },
+          })
+        }
+      >
+        <ReviewIssuesStep
+          remainingAttempts={1}
+          unknownFieldErrors={[
+            {
+              field: 'unknown',
+              error: toFormEntryError({ field: 'unknown', message: 'An unknown error occurred' }),
+            },
+          ]}
+        />
+      </I18nContext.Provider>,
     );
 
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
-    expect(getByText('idv.failure.attempts.one')).to.be.ok();
+    expect(getByText('One attempt remaining')).to.be.ok();
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
 
@@ -78,14 +108,13 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
   });
 
-  it('renders with front, back, and selfie inputs', async () => {
+  it('renders with front and back inputs', async () => {
     const { getByLabelText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-    expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', async () => {
@@ -150,7 +179,6 @@ describe('document-capture/components/review-issues-step', () => {
         value={{
           name: 'Example App',
           failureToProofURL: 'https://example.com/?step=document_capture',
-          isLivenessRequired: false,
         }}
       >
         <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -178,7 +206,6 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -188,18 +215,16 @@ describe('document-capture/components/review-issues-step', () => {
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-        expect(() => getByLabelText('doc_auth.headings.document_capture_selfie')).to.throw();
       });
     });
 
     context('ial2 strict', () => {
-      it('renders with front, back, and selfie inputs', async () => {
+      it('renders with front and back inputs', async () => {
         const { getByLabelText, getByRole } = render(
           <ServiceProviderContextProvider
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              isLivenessRequired: true,
             }}
           >
             <ReviewIssuesStep {...DEFAULT_PROPS} />
@@ -209,7 +234,6 @@ describe('document-capture/components/review-issues-step', () => {
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
-        expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
       });
     });
   });

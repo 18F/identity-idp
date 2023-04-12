@@ -5,7 +5,6 @@ module Health
     def health_checker
       checkers = {
         database: DatabaseHealthChecker,
-        account_reset: AccountResetHealthChecker,
       }
       MultiHealthChecker.new(**checkers)
     end

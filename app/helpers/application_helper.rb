@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
   def title(title)
     content_for(:title) { title }
@@ -28,12 +30,6 @@ module ApplicationHelper
 
   def ial2_requested?
     sp_session && sp_session[:ial2]
-  end
-
-  def liveness_checking_enabled?
-    return false if !FeatureManagement.liveness_checking_enabled?
-    return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
-    !!current_user&.decorate&.password_reset_profile&.strict_ial2_proofed?
   end
 
   def cancel_link_text

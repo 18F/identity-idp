@@ -4,16 +4,15 @@
 
 <p>
   <%# for follow up: translate factor_to_change (LG-5701) %>
-  <%= user_session[:no_factor_message] ||
-        t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
+  <%= t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>
 
 <%= simple_form_for(
       current_user,
       url: reauthn_user_password_path,
-      html: { autocomplete: 'off', method: 'post', class: 'margin-top-6' },
+      html: { autocomplete: 'off', method: 'post', class: 'margin-top-4' },
     ) do |f| %>
-  <%= render PasswordToggleComponent.new(form: f, required: true) %>
+  <%= render PasswordToggleComponent.new(form: f, field_options: { required: true }) %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 <%= render 'shared/cancel', link: account_path %>

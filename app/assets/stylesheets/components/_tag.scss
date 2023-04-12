@@ -1,0 +1,11 @@
+// ===============================================
+// Pending upstream Login Design System revisions:
+// ===============================================
+
+.usa-tag {
+  display: inline-block;
+}
+
+.usa-tag--informative {
+  @include u-bg('accent-cool-darker');
+}

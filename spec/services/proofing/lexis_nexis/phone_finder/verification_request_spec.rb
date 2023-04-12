@@ -12,7 +12,7 @@ describe Proofing::LexisNexis::PhoneFinder::VerificationRequest do
       phone: '5551231234',
     }
   end
-  let(:response_body) { LexisNexisFixtures.phone_finder_success_response_json }
+  let(:response_body) { LexisNexisFixtures.phone_finder_rdp1_success_response_json }
   subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_config) }
 
   it_behaves_like 'a lexisnexis request'
@@ -39,7 +39,7 @@ describe Proofing::LexisNexis::PhoneFinder::VerificationRequest do
   describe '#url' do
     it 'returns a url for the Phone Finder endpoint' do
       expect(subject.url).to eq(
-        'https://example.com/restws/identity/v2/test_account/customers.gsa.phonefinder.workflow/conversation',
+        'https://example.com/restws/identity/v2/test_account/customers.gsa2.phonefinder.workflow/conversation',
       )
     end
   end

@@ -10,11 +10,11 @@
 <% title t('forms.verify_profile.title') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.welcome_back')) %>
-<%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %i[p strong] %>
+<%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %w[p strong] %>
 <hr class="margin-y-4" />
 <h2><%= t('forms.verify_profile.title') %></h2>
 
-<p>
+<p class="margin-bottom-1">
   <%= t('forms.verify_profile.instructions') %>
 </p>
 
@@ -23,7 +23,7 @@
       url: idv_gpo_verify_path,
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
-  <div class="grid-row margin-bottom-5">
+  <div class="grid-row margin-top-neg-2 margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= render ValidatedFieldComponent.new(
             form: f,
@@ -41,7 +41,7 @@
   </div>
 <% end %>
 
-<% if FeatureManagement.enable_gpo_verification? && !@mail_spammed %>
+<% if FeatureManagement.gpo_verification_enabled? && !@mail_spammed %>
   <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
 <% end %>
 

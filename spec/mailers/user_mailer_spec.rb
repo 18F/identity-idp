@@ -6,6 +6,25 @@ describe UserMailer, type: :mailer do
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
   let(:banned_email_address) { create(:email_address, email: banned_email, user: user) }
 
+  describe '#validate_user_and_email_address' do
+    let(:mail) { UserMailer.with(user: user, email_address: email_address).signup_with_your_email }
+
+    context 'with user and email address match' do
+      it 'does not raise an error' do
+        expect { mail.body }.not_to raise_error
+      end
+    end
+
+    context 'with user and email address mismatch' do
+      let(:user) { create(:user) }
+      let(:email_address) { EmailAddress.new }
+
+      it 'raises an error' do
+        expect { mail.body }.to raise_error(UserMailer::UserEmailAddressMismatchError)
+      end
+    end
+  end
+
   describe '#add_email' do
     let(:token) { SecureRandom.hex }
     let(:mail) { UserMailer.with(user: user, email_address: email_address).add_email(token) }
@@ -451,33 +470,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#doc_auth_desktop_link_to_sp' do
-    let(:app) { 'login.gov' }
-    let(:link) { root_url }
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).
-        doc_auth_desktop_link_to_sp(app, link)
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.doc_auth_link.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_link(app, href: link)
-
-      expect(mail.html_part.body).to \
-        have_content(strip_tags(I18n.t('user_mailer.doc_auth_link.message', sp_link: nil)))
-    end
-  end
-
   describe '#letter_reminder' do
     let(:mail) { UserMailer.with(user: user, email_address: email_address).letter_reminder }
 
@@ -535,6 +527,10 @@ describe UserMailer, type: :mailer do
         )
       expect(mail.to).to eq(nil)
     end
+
+    it 'links to the forgot password page' do
+      expect(mail.html_part.body).to have_selector("a[href='#{new_user_password_url}']")
+    end
   end
 
   describe '#in_person_ready_to_verify' do
@@ -549,6 +545,26 @@ describe UserMailer, type: :mailer do
 
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+        enrollment: enrollment,
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
+  describe '#in_person_ready_to_verify_reminder' do
+    let!(:enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        selected_location_details: { name: 'FRIENDSHIP' },
+        status_updated_at: Time.zone.now - 2.hours,
+      )
+    end
+
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify_reminder(
         enrollment: enrollment,
       )
     end
@@ -649,6 +665,31 @@ describe UserMailer, type: :mailer do
         to have_selector(
           "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
         )
+    end
+  end
+
+  describe '#deliver_later' do
+    it 'does not queue email if it potentially contains sensitive value' do
+      user = create(:user)
+      mailer = UserMailer.with(
+        user: user,
+        email_address: user.email_addresses.first,
+      ).add_email(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveValueError,
+      )
+    end
+
+    it 'does not queue email if it potentially contains sensitive keys' do
+      user = create(:user)
+      mailer = UserMailer.with(user: user, email_address: user.email_addresses.first).add_email(
+        {
+          first_name: nil,
+        },
+      )
+      expect { mailer.deliver_later }.to raise_error(
+        MailerSensitiveInformationChecker::SensitiveKeyError,
+      )
     end
   end
 end

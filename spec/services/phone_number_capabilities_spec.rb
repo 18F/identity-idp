@@ -83,8 +83,8 @@ describe PhoneNumberCapabilities do
       it { expect(subject.sms_only?).to eq(true) }
     end
 
-    context 'Morocco number' do
-      let(:phone) { '+212 661-289325' }
+    context 'United Kingdom number' do
+      let(:phone) { '+44 661-289325' }
       it { expect(subject.sms_only?).to eq(true) }
     end
 

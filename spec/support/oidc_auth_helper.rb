@@ -15,14 +15,6 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def visit_idp_from_ial2_strict_oidc_sp(**args)
-    args[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-    params = ial2_params(**args)
-    oidc_path = openid_connect_authorize_path params
-    visit oidc_path
-    oidc_path
-  end
-
   def visit_idp_from_ial_max_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
     params = ial2_params(**args)
@@ -66,7 +58,8 @@ module OidcAuthHelper
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
                   client_id: OIDC_ISSUER,
-                  irs_attempts_api_session_id: nil)
+                  irs_attempts_api_session_id: nil,
+                  tid: nil)
     ial1_params = {
       client_id: client_id,
       response_type: 'code',
@@ -79,6 +72,7 @@ module OidcAuthHelper
     if irs_attempts_api_session_id
       ial1_params[:irs_attempts_api_session_id] = irs_attempts_api_session_id
     end
+    ial1_params[:tid] = tid if tid
     ial1_params[:prompt] = prompt if prompt
     ial1_params
   end
@@ -88,7 +82,8 @@ module OidcAuthHelper
                   nonce: SecureRandom.hex,
                   client_id: OIDC_ISSUER,
                   acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                  irs_attempts_api_session_id: nil)
+                  irs_attempts_api_session_id: nil,
+                  tid: nil)
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
@@ -101,6 +96,7 @@ module OidcAuthHelper
     if irs_attempts_api_session_id
       ial2_params[:irs_attempts_api_session_id] = irs_attempts_api_session_id
     end
+    ial2_params[:tid] = tid if tid
     ial2_params[:prompt] = prompt if prompt
     ial2_params
   end

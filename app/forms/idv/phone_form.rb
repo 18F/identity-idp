@@ -4,10 +4,12 @@ module Idv
 
     ALL_DELIVERY_METHODS = [:sms, :voice].freeze
 
-    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code
+    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code,
+                :otp_delivery_preference
 
     validate :validate_valid_phone_for_allowed_countries
     validate :validate_phone_delivery_methods
+    validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
 
     # @param [User] user
     # @param [Hash] previous_params
@@ -23,33 +25,47 @@ module Idv
       @user = user
       @allowed_countries = allowed_countries
       @delivery_methods = delivery_methods
-      self.phone = initial_phone_value(previous_params[:phone]) unless user_has_multiple_phones?
+
+      @international_code, @phone = determine_initial_values(
+        **previous_params.
+        symbolize_keys.
+        slice(:international_code, :phone),
+      )
     end
 
     def submit(params)
       self.phone = PhoneFormatter.format(params[:phone])
+      self.otp_delivery_preference = params[:otp_delivery_preference]
+      self.otp_delivery_preference = 'sms' if self.otp_delivery_preference.nil?
       success = valid?
       self.phone = params[:phone] unless success
 
       FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
 
-    def user_has_multiple_phones?
-      @user.phone_configurations.many?
-    end
-
     private
 
-    attr_writer :phone
+    attr_writer :phone, :otp_delivery_preference
 
-    def initial_phone_value(input_phone)
-      initial_phone = input_phone
-      initial_phone ||= begin
-        user_phone = MfaContext.new(user).phone_configurations.take&.phone
-        user_phone if valid_phone?(user_phone, phone_confirmed: true)
+    # @return [Array<string,string>] The international_code and phone values to use.
+    def determine_initial_values(international_code: nil, phone: nil)
+      if phone.nil? && international_code.nil?
+        default_phone = user.default_phone_configuration&.phone
+        if valid_phone?(default_phone, phone_confirmed: true)
+          phone = default_phone
+          international_code = country_code_for(default_phone)
+        end
+      else
+        international_code ||= country_code_for(phone)
       end
 
-      PhoneFormatter.format(initial_phone) if initial_phone
+      phone = PhoneFormatter.format(phone, country_code: international_code)
+
+      [international_code, phone]
+    end
+
+    def country_code_for(phone)
+      Phonelib.parse(phone).country
     end
 
     def validate_valid_phone_for_allowed_countries
@@ -86,7 +102,7 @@ module Idv
     def phone_info
       return @phone_info if defined?(@phone_info)
 
-      if phone.blank? || !IdentityConfig.store.voip_check
+      if phone.blank? || !IdentityConfig.store.phone_service_check
         @phone_info = nil
       else
         @phone_info = Telephony.phone_info(phone)
@@ -121,6 +137,7 @@ module Idv
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]], # see errors.add(:phone)
+        otp_delivery_preference: otp_delivery_preference,
       }.tap do |extra|
         extra[:warn] = @warning_message if @warning_message
       end

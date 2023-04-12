@@ -10,11 +10,9 @@ en:
         go_to_the_post_office: Go to the Post Office
         secure_account: Secure your account
         verify_id: Verify your ID
-        verify_info: Verify your personal details
-        verify_phone: Verify phone
+        verify_info: Verify your information
         verify_phone_or_address: Verify phone or address
     status:
       complete: Completed
       current: Current step
       not_complete: Not completed
-      pending: Pending

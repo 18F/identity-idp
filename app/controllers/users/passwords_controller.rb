@@ -1,7 +1,10 @@
 module Users
-  class PasswordsController < ReauthnRequiredController
+  class PasswordsController < ApplicationController
+    include ReauthenticationRequiredConcern
+
     before_action :confirm_two_factor_authenticated
     before_action :capture_password_if_pii_requested_but_locked
+    before_action :confirm_recently_authenticated
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
@@ -56,8 +59,8 @@ module Users
     end
 
     def create_event_and_notify_user_about_password_change
-      event = create_user_event_with_disavowal(:password_changed)
-      UserAlerts::AlertUserAboutPasswordChange.call(current_user, event.disavowal_token)
+      _event, disavowal_token = create_user_event_with_disavowal(:password_changed)
+      UserAlerts::AlertUserAboutPasswordChange.call(current_user, disavowal_token)
     end
 
     def handle_invalid_password

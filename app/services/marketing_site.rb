@@ -1,4 +1,4 @@
-require 'set'
+# frozen_string_literal: true
 
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
@@ -10,7 +10,7 @@ class MarketingSite
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person
-    verify-your-identity/phone-number-and-phone-plan-in-your-name
+    verify-your-identity/phone-number
     verify-your-identity/verify-your-address-by-mail
     get-started/authentication-options
   ].to_set.freeze
@@ -25,7 +25,7 @@ class MarketingSite
   end
 
   def self.security_and_privacy_practices_url
-    URI.join(BASE_URL, locale_segment, 'policy').to_s
+    URI.join(BASE_URL, locale_segment, 'policy/').to_s
   end
 
   def self.security_and_privacy_how_it_works_url
@@ -45,15 +45,15 @@ class MarketingSite
   end
 
   def self.contact_url
-    URI.join(BASE_URL, locale_segment, 'contact').to_s
+    URI.join(BASE_URL, locale_segment, 'contact/').to_s
   end
 
   def self.nice_help_url
-    URI.join(BASE_URL, locale_segment, 'help').to_s.gsub('https://', '')
+    help_url.to_s.gsub('https://www.', '')
   end
 
   def self.help_url
-    URI.join(BASE_URL, locale_segment, 'help').to_s
+    URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
   def self.help_authentication_app_url
@@ -81,15 +81,15 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end
 
-  def self.help_center_article_url(category:, article:)
-    if !valid_help_center_article?(category: category, article: article)
+  def self.help_center_article_url(category:, article:, article_anchor: '')
+    if !valid_help_center_article?(category:, article:, article_anchor:)
       raise ArgumentError.new("Unknown help center article category #{category}/#{article}")
     end
-
-    URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/").to_s
+    anchor_text = article_anchor.present? ? "##{article_anchor}" : ''
+    URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}").to_s
   end
 
-  def self.valid_help_center_article?(category:, article:)
+  def self.valid_help_center_article?(category:, article:, **_article_anchor)
     HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
   end
 end

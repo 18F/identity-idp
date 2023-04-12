@@ -13,7 +13,7 @@
             MarketingSite.messaging_practices_url,
             class: 'margin-top-2' %>
 
-<%= button_to t('forms.buttons.send_security_code'),
+<%= button_to t('forms.buttons.send_one_time_code'),
               login_two_factor_sms_opt_in_path(opt_out_uuid: @phone_number_opt_out),
               class: 'usa-button usa-button--wide usa-button--big',
               form_class: 'margin-y-5' %>

@@ -15,7 +15,6 @@ feature 'IAL1 Single Sign On' do
 
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
-        click_submit_default
         expect(current_path).to eq sign_up_completed_path
         within('.requested-attributes') do
           expect(page).to have_content t('help_text.requested_attributes.email')
@@ -162,11 +161,11 @@ feature 'IAL1 Single Sign On' do
     it 'preserves the request_id in the url' do
       visit saml_authn_request_url
 
-      within(:css, '.i18n-desktop-dropdown', visible: false) do
+      within(first('.language-picker', visible: false)) do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es\?request_id=.+})
+      expect(current_url).to match(%r{http://www.example.com/es/\?request_id=.+})
     end
   end
 

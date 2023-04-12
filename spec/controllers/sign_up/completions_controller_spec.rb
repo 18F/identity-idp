@@ -26,8 +26,10 @@ describe SignUp::CompletionsController do
           user = create(:user)
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: false, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: false,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           get :show
 
@@ -53,8 +55,10 @@ describe SignUp::CompletionsController do
         before do
           stub_sign_in(user)
           subject.session[:sp] = {
-            issuer: current_sp.issuer, ial2: true, requested_attributes: [:email],
-            request_url: 'http://localhost:3000'
+            issuer: current_sp.issuer,
+            ial2: true,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
           }
           allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
         end
@@ -114,7 +118,9 @@ describe SignUp::CompletionsController do
         user = create(:user)
         sp = create(:service_provider, issuer: 'https://awesome')
         stub_sign_in(user)
-        subject.session[:sp] = { issuer: sp.issuer, ial2: false, requested_attributes: [:email],
+        subject.session[:sp] = { issuer: sp.issuer,
+                                 ial2: false,
+                                 requested_attributes: [:email],
                                  request_url: 'http://localhost:3000' }
         get :show
 
@@ -129,6 +135,7 @@ describe SignUp::CompletionsController do
     before do
       stub_analytics
       allow(@analytics).to receive(:track_event)
+      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
       @linker = instance_double(IdentityLinker)
       allow(@linker).to receive(:link_identity).and_return(true)
       allow(IdentityLinker).to receive(:new).and_return(@linker)
@@ -152,6 +159,7 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sign_in_a_b_test_bucket: :default,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: nil,
         )
@@ -211,6 +219,7 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sign_in_a_b_test_bucket: :default,
           sp_request_requested_attributes: nil,
           sp_session_requested_attributes: ['email'],
         )
@@ -262,6 +271,52 @@ describe SignUp::CompletionsController do
           travel_to(now)
           patch :update
         end
+      end
+    end
+
+    context 'when the user goes through reproofing' do
+      let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
+
+      before do
+        stub_attempts_tracker
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
+      end
+
+      it 'does not log a reproofing event during initial proofing' do
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          issuer: 'foo',
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+        patch :update
+      end
+
+      it 'logs a reproofing event upon reproofing' do
+        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          issuer: 'foo',
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
+        patch :update
+      end
+
+      it 'does not log a reproofing event during account redirect' do
+        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          ial2: false,
+          request_url: 'http://example.com',
+        }
+        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
+
+        patch :update
+
+        expect(response).to redirect_to account_path
       end
     end
   end
