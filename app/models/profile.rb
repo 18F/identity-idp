@@ -69,6 +69,14 @@ class Profile < ApplicationRecord
     fraud_rejected?
   end
 
+  def fraud_review_pending_at
+    fraud_reviewing_at
+  end
+
+  def fraud_rejection_at
+    fraud_rejected_at
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     return if fraud_review_pending? || fraud_rejection?

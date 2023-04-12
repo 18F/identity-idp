@@ -376,9 +376,9 @@ describe Profile do
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_reviewing_at).to_not be_nil
+      expect(profile.fraud_review_pending_at).to_not be_nil
       expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejected_at).to be_nil
+      expect(profile.fraud_rejection_at).to be_nil
     end
   end
 
