@@ -49,7 +49,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to include(
-          PhoneFinder: include(a_kind_of(Hash)),
+          Execute_PhoneFinder: include(a_kind_of(Hash)),
         )
         expect(result.vendor_workflow).to(
           eq(LexisNexisFixtures.example_config.phone_finder_workflow),

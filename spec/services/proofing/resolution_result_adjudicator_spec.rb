@@ -29,11 +29,24 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
 
   let(:should_proof_state_id) { true }
 
+  let(:device_profiling_success) { true }
+  let(:device_profiling_exception) { nil }
+  let(:device_profiling_review_status) { 'pass' }
+  let(:device_profiling_result) do
+    Proofing::DdpResult.new(
+      success: device_profiling_success,
+      review_status: device_profiling_review_status,
+      client: 'test-device-profiling-vendor',
+      exception: device_profiling_exception,
+    )
+  end
+
   subject do
     described_class.new(
       resolution_result: resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
+      device_profiling_result: device_profiling_result,
     )
   end
 
@@ -91,6 +104,36 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
         result = subject.adjudicated_result
 
         expect(result.success?).to eq(false)
+      end
+    end
+
+    context 'Device profiling fails and everything else passes' do
+      let(:device_profiling_success) { false }
+      let(:device_profiling_review_status) { 'fail' }
+
+      it 'returns a successful response including the review status' do
+        result = subject.adjudicated_result
+
+        expect(result.success?).to eq(true)
+
+        threatmetrix_context = result.extra[:context][:stages][:threatmetrix]
+        expect(threatmetrix_context[:success]).to eq(false)
+        expect(threatmetrix_context[:review_status]).to eq('fail')
+      end
+    end
+
+    context 'Device profiling experiences an exception' do
+      let(:device_profiling_success) { false }
+      let(:device_profiling_exception) { 'this is a test value' }
+
+      it 'returns a failed response' do
+        result = subject.adjudicated_result
+
+        expect(result.success?).to eq(false)
+
+        threatmetrix_context = result.extra[:context][:stages][:threatmetrix]
+        expect(threatmetrix_context[:success]).to eq(false)
+        expect(threatmetrix_context[:exception]).to eq('this is a test value')
       end
     end
   end
