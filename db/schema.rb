@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_224328) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_12_003834) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -449,6 +449,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_224328) do
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.string "fraud_state"
+    t.datetime "fraud_reviewing_at", precision: nil
+    t.datetime "fraud_rejected_at", precision: nil
+    t.datetime "fraud_passed_at", precision: nil
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
