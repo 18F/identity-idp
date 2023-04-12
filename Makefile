@@ -114,6 +114,9 @@ lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfil
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
+lint_readme: README.md ## Lints README.md
+	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
+
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
@@ -254,8 +257,5 @@ update: ## Update dependencies, useful after a git pull
 	yarn install
 	bundle exec rails db:migrate
 
-README.md: docs/
+README.md: docs/ ## Generates README.md based on the contents of the docs directory
 	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
-
-lint_readme: README.md
-	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
