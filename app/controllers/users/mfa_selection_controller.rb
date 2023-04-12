@@ -10,13 +10,20 @@ module Users
     def index
       two_factor_options_form
       @after_setup_path = after_mfa_setup_path
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
       @presenter = two_factor_options_presenter
-      analytics.user_registration_2fa_additional_setup_visit
+      analytics.user_registration_2fa_additional_setup_visit(
+        sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket,
+      )
     end
 
     def update
       result = submit_form
-      analytics.user_registration_2fa_additional_setup(**result.to_h)
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+      analytics_hash = result.to_h.merge(
+        sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket,
+      )
+      analytics.user_registration_2fa_additional_setup(**analytics_hash)
 
       if result.success?
         process_valid_form
@@ -38,6 +45,7 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
+        priority_bucket: @sign_up_mfa_selection_order_bucket,
         user: current_user,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,

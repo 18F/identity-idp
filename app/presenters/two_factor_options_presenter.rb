@@ -1,19 +1,25 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user
+  attr_reader :user, :priority_bucket
 
-  def initialize(user_agent:, user: nil, phishing_resistant_required: false,
-                 piv_cac_required: false)
+  def initialize(user_agent:, user: nil, priority_bucket: :default,
+                 phishing_resistant_required: false, piv_cac_required: false)
     @user_agent = user_agent
     @user = user
+    @priority_bucket = priority_bucket
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
   end
 
   def options
-    webauthn_platform_option + webauthn_option + piv_cac_option + totp_option +
-      phone_options + backup_code_option
+    if priority_bucket == :authentication_app_priority
+      totp_option + webauthn_platform_option + webauthn_option + piv_cac_option +
+        phone_options + backup_code_option
+    else
+      webauthn_platform_option + webauthn_option + piv_cac_option + totp_option +
+        phone_options + backup_code_option
+    end
   end
 
   def icon
