@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/shared/_ssn.html.erb' do
+describe 'idv/in_person/ssn.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:threatmetrix_enabled) { nil }
@@ -25,9 +25,8 @@ describe 'idv/shared/_ssn.html.erb' do
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
-    render partial: 'idv/shared/ssn', locals: {
+    render template: 'idv/in_person/ssn', locals: {
       flow_session: {},
-      success_alert_enabled: false,
       threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
       threatmetrix_javascript_urls: [tags_js_url],
