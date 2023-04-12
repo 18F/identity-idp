@@ -12,19 +12,18 @@ describe PasswordForm, type: :model do
     }
   end
 
-  # it_behaves_like 'password validation'
-  # it_behaves_like 'strong password', 'PasswordForm'
+  it_behaves_like 'password validation'
+  it_behaves_like 'strong password', 'PasswordForm'
 
   describe '#submit' do
-    subject(:result) { described_class.new(user).submit(params) }
+    subject(:result) { form.submit(params) }
+    let(:params) do
+      {
+        password: password,
+      }
+    end
 
     context 'when the form is valid' do
-      let(:params) do
-        {
-          password: password,
-          password_confirmation: password,
-        }
-      end
       let(:request_id_present) { false }
 
       it 'returns true' do
@@ -34,16 +33,11 @@ describe PasswordForm, type: :model do
     end
 
     context 'when the form is invalid' do
-      context 'when passwords are invalid' do
-        let(:params) do
-          {
-            password: invalid_password,
-            password_confirmation: invalid_password,
-          }
-        end
-        let(:confirmation_error) do
+      context 'when password is invalid' do
+        let(:password) { invalid_password }
+        let(:validation_error) do
           t(
-            'errors.messages.too_short.other',
+            'errors.attributes.password.too_short.other',
             count: Devise.password_length.first,
           )
         end
@@ -51,67 +45,34 @@ describe PasswordForm, type: :model do
 
         it 'returns false' do
           expect(result.success?).to eq false
-          expect(result.errors[:password_confirmation]).to include confirmation_error
+          expect(result.errors[:password]).to include validation_error
           expect(result.extra).to eq extra
-        end
-      end
-
-      context 'when passwords do not match' do
-        let(:password_confirmation) { 'invalid_password_confirmation!' }
-        let(:params) do
-          {
-            password: password,
-            password_confirmation: password_confirmation,
-          }
-        end
-
-        it 'returns false' do
-          expect(result.success?).to eq false
-          expect(result.errors[:password_confirmation]).to include("doesn't match Password confirmation")
-        end
-      end
-
-      context 'when confirmation password is missing' do
-        let(:params) do
-          { password: password }
-        end
-
-        it 'returns false' do
-          expect(result.success?).to eq false
-          expect(result.errors[:password_confirmation]).to include(t('errors.messages.blank'))
         end
       end
     end
 
-    context 'when the request_id is passed in the params' do
+    context 'with request_id in the params' do
       let(:params) do
         {
           password: password,
-          password_confirmation: password,
-          request_id: 'foo',
+          request_id: request_id,
         }
       end
+      let(:request_id) { 'foo' }
       let(:request_id_present) { true }
 
       it 'tracks that it is present' do
         expect(result.success?).to eq true
         expect(result.extra).to eq extra
       end
-    end
 
-    context 'when the request_id is not properly encoded' do
-      let(:params) do
-        {
-          password: password,
-          password_confirmation: password,
-          request_id: "\xFFbar\xF8",
-        }
-      end
-      let(:request_id_present) { true }
+      context 'when the request_id is not properly encoded' do
+        let(:request_id) { "\xFFbar\xF8" }
 
-      it 'does not throw an exception' do
-        expect(result.success?).to eq true
-        expect(result.extra).to eq extra
+        it 'does not throw an exception' do
+          expect(result.success?).to eq true
+          expect(result.extra).to eq extra
+        end
       end
     end
   end
