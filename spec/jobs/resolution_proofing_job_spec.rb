@@ -299,7 +299,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:timed_out]).to be false
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
@@ -323,7 +324,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:timed_out]).to be false
 
         # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix).to be_nil
+        expect(result_context_stages_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_disabled')
 
         expect(@threatmetrix_stub).to_not have_been_requested
       end
