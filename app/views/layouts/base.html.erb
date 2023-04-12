@@ -101,7 +101,7 @@
         :script,
         {
           'appName' => APP_NAME,
-          'analyticsEndpoint' => api_logger_path,
+          'analyticsEndpoint' => (api_logger_path if IdentityConfig.store.frontend_analytics_enabled),
         }.to_json,
         { type: 'application/json', data: { config: '' } },
         false,
