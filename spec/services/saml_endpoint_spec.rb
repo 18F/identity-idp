@@ -14,7 +14,7 @@ describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2023])
+      expect(result).to eq(%w[2023 2022])
     end
   end
 
@@ -25,6 +25,13 @@ describe SamlEndpoint do
       expect(result).to eq(
         [
           { suffix: '2023', secret_key_passphrase: 'trust-but-verify' },
+          {
+            # rubocop:disable Layout/LineLength
+            comment: 'this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb',
+            # rubocop:enable Layout/LineLength
+            secret_key_passphrase: 'trust-but-verify',
+            suffix: '2022',
+          },
         ],
       )
     end
