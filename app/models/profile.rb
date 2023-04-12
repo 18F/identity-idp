@@ -54,9 +54,11 @@ class Profile < ApplicationRecord
   end
 
   def fraud_review_pending
+    fraud_reviewing?
   end
 
   def fraud_rejection
+    fraud_rejected?
   end
 
   def fraud_review_pending?
