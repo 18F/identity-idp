@@ -29,13 +29,13 @@ module SamlAuthHelper
     # IdP setting
     settings.idp_sso_target_url = url_helpers.api_saml_auth_url(
       protocol: 'http',
-      domain: IdentityConfig.store.domain_name,
+      host: IdentityConfig.store.domain_name,
       port: nil,
       path_year: PATH_YEAR,
     )
     settings.idp_slo_target_url = url_helpers.api_saml_logout_url(
       protocol: 'http',
-      domain: IdentityConfig.store.domain_name,
+      host: IdentityConfig.store.domain_name,
       port: nil,
       path_year: PATH_YEAR,
     )
@@ -95,7 +95,7 @@ module SamlAuthHelper
   def saml_remote_logout_request_url(overrides: {}, params: {})
     overrides[:idp_slo_target_url] = Rails.application.routes.url_helpers.api_saml_remotelogout(
       protocol: 'http',
-      domain: IdentityConfig.store.domain_name,
+      host: IdentityConfig.store.domain_name,
       port: nil,
       path_year: PATH_YEAR,
     )

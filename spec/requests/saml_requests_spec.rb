@@ -34,7 +34,7 @@ RSpec.describe 'SAML requests', type: :request do
         overrides: {
           idp_sso_target_url: api_saml_auth_url(
             protocol: 'http',
-            domain: IdentityConfig.store.domain_name,
+            host: IdentityConfig.store.domain_name,
             port: nil,
             path_year: path_year,
           ),
@@ -73,7 +73,7 @@ RSpec.describe 'SAML requests', type: :request do
     let(:remote_slo_url) do
       api_saml_remotelogout_url(
         protocol: 'http',
-        domain: IdentityConfig.store.domain_name,
+        host: IdentityConfig.store.domain_name,
         port: nil,
         path_year: path_year,
       )
