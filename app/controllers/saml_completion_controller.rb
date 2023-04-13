@@ -9,8 +9,12 @@ class SamlCompletionController < ApplicationController
 
   def index
     request_url = URI(sp_session[:request_url])
-    action_path = build_action_path(request_url.path)
-    return render_not_found if !action_path
+    path_year = request_url.path[-4..-1]
+    action_path = api_saml_finalauthpost_path(path_year: path_year)
+    if !valid_path?(action_path)
+      render_not_found
+      return
+    end
 
     # Takes the query params which were set internally in the
     # sp_session (so they should always be valid).
@@ -26,11 +30,8 @@ class SamlCompletionController < ApplicationController
     render_not_found unless sp_session.present? && sp_session[:request_url].present?
   end
 
-  def build_action_path(path)
-    path_year = path[-4..-1]
-    path = "/api/saml/finalauthpost#{path_year}"
-    recognized_path = Rails.application.routes.recognize_path(path, method: :post)
-
-    path if recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
+  def valid_path?(action_path)
+    recognized_path = Rails.application.routes.recognize_path(action_path, method: :post)
+    recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
   end
 end
