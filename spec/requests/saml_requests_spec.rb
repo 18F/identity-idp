@@ -32,12 +32,7 @@ RSpec.describe 'SAML requests', type: :request do
 
       overridden_saml_settings = saml_settings(
         overrides: {
-          idp_sso_target_url: api_saml_auth_url(
-            protocol: 'http',
-            host: IdentityConfig.store.domain_name,
-            port: nil,
-            path_year: path_year,
-          ),
+          idp_sso_target_url: api_saml_auth_url(path_year: path_year),
         },
       )
       path_year = overridden_saml_settings.idp_sso_target_url[-4..-1]
@@ -71,12 +66,7 @@ RSpec.describe 'SAML requests', type: :request do
   describe '/api/saml/remotelogout' do
     let(:path_year) { SamlAuthHelper::PATH_YEAR }
     let(:remote_slo_url) do
-      api_saml_remotelogout_url(
-        protocol: 'http',
-        host: IdentityConfig.store.domain_name,
-        port: nil,
-        path_year: path_year,
-      )
+      api_saml_remotelogout_url(path_year: path_year)
     end
 
     xit 'does not accept GET requests' do
