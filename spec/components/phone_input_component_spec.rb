@@ -16,6 +16,7 @@ RSpec.describe PhoneInputComponent, type: :component do
   let(:delivery_methods) { nil }
   let(:captcha_exempt_countries) { nil }
   let(:tag_options) { {} }
+  let(:hint) { nil }
   let(:options) do
     {
       form: form_builder,
@@ -24,6 +25,7 @@ RSpec.describe PhoneInputComponent, type: :component do
       required:,
       delivery_methods:,
       captcha_exempt_countries:,
+      hint: hint,
       **tag_options,
     }.compact
   end
@@ -72,6 +74,14 @@ RSpec.describe PhoneInputComponent, type: :component do
 
     it 'renders with custom class' do
       expect(rendered).to have_css('lg-phone-input.example-class')
+    end
+  end
+
+  context 'with hint' do
+    let(:hint) { 'Example' }
+
+    it 'renders the hint' do
+      expect(rendered).to have_content('Example')
     end
   end
 
