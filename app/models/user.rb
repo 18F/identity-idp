@@ -275,7 +275,7 @@ class User < ApplicationRecord
     active_profile.activated_at >= pending_profile.created_at
   end
 
-    # This user's most recently activated profile that has also been deactivated
+  # This user's most recently activated profile that has also been deactivated
   # due to a password reset, or nil if there is no such profile
   def password_reset_profile
     profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
@@ -340,7 +340,7 @@ class User < ApplicationRecord
     end
   end
   # End moved from UserDecorator
-  
+
   # Devise automatically downcases and strips any attribute defined in
   # config.case_insensitive_keys and config.strip_whitespace_keys via
   # before_validation callbacks. Email is included by default, which means that

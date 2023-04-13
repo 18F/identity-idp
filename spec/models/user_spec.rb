@@ -1000,7 +1000,7 @@ RSpec.describe User do
 
     it 'returns true when pending profile is newer than active profile' do
       user = User.new
-      
+
       allow(user).to receive(:pending_profile).and_return('profile')
       allow(user).to receive(:identity_not_verified?).and_return(false)
       allow(user).to receive(:active_profile_newer_than_pending_profile?).
@@ -1116,7 +1116,7 @@ RSpec.describe User do
 
   describe '#recent_events' do
     let!(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
-    
+
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
     let!(:identity) do
       create(
@@ -1247,5 +1247,4 @@ RSpec.describe User do
       end
     end
   end
-  
 end
