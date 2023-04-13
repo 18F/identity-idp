@@ -13,7 +13,7 @@ describe AccountShowPresenter do
           dob: birthday
         )
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user,
+          decrypted_pii: decrypted_pii, personal_key: '', user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -24,11 +24,11 @@ describe AccountShowPresenter do
 
     context 'AccountShowPresenter instance does not have decrypted_pii' do
       it 'returns the email the user used to sign in last' do
-        decorated_user = create(:user, :with_multiple_emails).decorate
-        email_address = decorated_user.user.reload.email_addresses.last
+        user = create(:user, :with_multiple_emails)
+        email_address = user.reload.email_addresses.last
         email_address.update!(last_sign_in_at: 1.minute.from_now)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
+          decrypted_pii: {}, personal_key: '', user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -47,7 +47,7 @@ describe AccountShowPresenter do
         ).to receive(:enabled?).and_return(true)
 
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user,
+          decrypted_pii: {}, personal_key: '', user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -63,7 +63,7 @@ describe AccountShowPresenter do
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
         profile_index = AccountShowPresenter.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user,
+          decrypted_pii: {}, personal_key: '', user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
@@ -84,7 +84,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        decorated_user: user.reload.decorate,
+        user: user.reload.decorate,
         locked_for_session: false,
       )
 
@@ -103,7 +103,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        decorated_user: user.reload.decorate,
+        user: user.reload.decorate,
         locked_for_session: false,
       )
 
@@ -123,7 +123,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        decorated_user: user,
+        user: user,
         locked_for_session: false,
       )
     end
@@ -159,7 +159,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user,
+          user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -183,7 +183,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user,
+          user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
@@ -202,7 +202,7 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
-          decorated_user: user,
+          user: user,
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,

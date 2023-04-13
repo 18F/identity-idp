@@ -1,12 +1,12 @@
 class AccountShowPresenter
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
+  attr_reader :user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
               :sp_session_request_url, :sp_name
 
-  def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, decorated_user:,
+  def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, user:,
                  locked_for_session:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
-    @decorated_user = decorated_user
+    @user = user
     @sp_name = sp_name
     @sp_session_request_url = sp_session_request_url
     @locked_for_session = locked_for_session
@@ -18,16 +18,16 @@ class AccountShowPresenter
   end
 
   def show_password_reset_partial?
-    decorated_user.password_reset_profile.present?
+    user.password_reset_profile.present?
   end
 
   def show_pii_partial?
-    decrypted_pii.present? || decorated_user.identity_verified?
+    decrypted_pii.present? || user.identity_verified?
   end
 
   def show_manage_personal_key_partial?
-    decorated_user.user.encrypted_recovery_code_digest.present? &&
-      decorated_user.password_reset_profile.blank?
+    user.encrypted_recovery_code_digest.present? &&
+      user.password_reset_profile.blank?
   end
 
   def show_service_provider_continue_partial?
@@ -35,7 +35,7 @@ class AccountShowPresenter
   end
 
   def show_gpo_partial?
-    decorated_user.pending_profile_requires_verification?
+    user.pending_profile_requires_verification?
   end
 
   def showing_any_partials?
@@ -46,11 +46,11 @@ class AccountShowPresenter
   end
 
   def show_unphishable_badge?
-    MfaPolicy.new(decorated_user.user).unphishable?
+    MfaPolicy.new(user).unphishable?
   end
 
   def show_verified_badge?
-    decorated_user.identity_verified?
+    user.identity_verified?
   end
 
   def showing_any_badges?
@@ -58,28 +58,28 @@ class AccountShowPresenter
   end
 
   def backup_codes_generated_at
-    decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
+    user.backup_code_configurations.order(created_at: :asc).first&.created_at
   end
 
   def personal_key_generated_at
-    decorated_user.user.personal_key_generated_at
+    user.personal_key_generated_at
   end
 
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    EmailContext.new(decorated_user.user).last_sign_in_email_address.email
+    EmailContext.new(user).last_sign_in_email_address.email
   end
 
   def totp_content
-    if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
+    if TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
       I18n.t('account.index.auth_app_enabled')
     else
       I18n.t('account.index.auth_app_disabled')
     end
   end
 
-  delegate :recent_events, :recent_devices, :connected_apps, to: :decorated_user
+  delegate :recent_events, :recent_devices, :connected_apps, to: :user
 
   private
 

@@ -21,13 +21,13 @@ RSpec.describe Idv::GpoVerifyController do
     stub_analytics
     stub_attempts_tracker
     stub_sign_in(user)
-    decorated_user = stub_decorated_user_with_pending_profile(user)
+    pending_user = stub_user_with_pending_profile(user)
     create(
       :gpo_confirmation_code,
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
-    allow(decorated_user).to receive(:pending_profile_requires_verification?).
+    allow(pending_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).

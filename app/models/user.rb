@@ -220,10 +220,6 @@ class User < ApplicationRecord
     devise_mailer.send(notification, self, *args).deliver_now_or_later
   end
 
-  def decorate
-    UserDecorator.new(self)
-  end
-
   # Begin extracted methods from UserDecorator here
   def email_language_preference_description
     if I18n.locale_available?(email_language)

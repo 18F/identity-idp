@@ -135,7 +135,7 @@ describe Idv::GpoController do
 
       before do
         stub_sign_in(user)
-        stub_decorated_user_with_pending_profile(user)
+        stub_user_with_pending_profile(user)
         allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
       end
 
