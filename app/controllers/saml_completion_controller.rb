@@ -31,7 +31,7 @@ class SamlCompletionController < ApplicationController
   end
 
   def valid_path?(action_path)
-    route = Rails.application.routes.recognize_path(action_path, method: :post)
-    route[:action] != 'page_not_found'
+    recognized_path = Rails.application.routes.recognize_path(action_path, method: :post)
+    recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
   end
 end
