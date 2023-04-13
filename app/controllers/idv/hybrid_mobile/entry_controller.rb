@@ -3,7 +3,8 @@ module Idv
     # Controller responsible for taking a `document-capture-session` UUID and configuring
     # the user's Session to work when they're forwarded on to document capture.
     class EntryController < ApplicationController
-      before_action :render_404_if_hybrid_mobile_controllers_disabled
+      include HybridMobileConcern
+
       before_action :track_document_capture_session_id_usage
       before_action :validate_document_capture_session_id
       before_action :validate_document_capture_user_id
@@ -28,10 +29,6 @@ module Idv
       def handle_invalid_session
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
-      end
-
-      def render_404_if_hybrid_mobile_controllers_disabled
-        render_not_found unless IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
       end
 
       def request_id
