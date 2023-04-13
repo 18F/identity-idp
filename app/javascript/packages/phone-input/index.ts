@@ -105,6 +105,13 @@ export class PhoneInputElement extends HTMLElement {
     return this.#strings;
   }
 
+  /**
+   * Returns the element which represents the flag dropdown's currently selected value, which is
+   * rendered as a text element within the combobox. As defined by the ARIA specification, a
+   * combobox's value is determined by its contents if it is not an input element.
+   *
+   * @see https://w3c.github.io/aria/#combobox
+   */
   get valueText(): HTMLElement {
     return this.iti.selectedFlag.querySelector('.usa-sr-only')!;
   }
@@ -129,6 +136,8 @@ export class PhoneInputElement extends HTMLElement {
     if (country.iso2 && this.codeInput) {
       this.codeInput.value = country.iso2.toUpperCase();
       if (this.hasDropdown) {
+        // Move value text from title attribute to the flag's hidden text element.
+        // See: https://github.com/jackocnr/intl-tel-input/blob/d54b127/src/js/intlTelInput.js#L1191-L1197
         this.valueText.textContent = this.iti.selectedFlag.title;
         this.iti.selectedFlag.removeAttribute('title');
       }
