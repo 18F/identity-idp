@@ -58,7 +58,7 @@ describe AccountShowPresenter do
 
     context 'user does not have an authenticator app enabled' do
       it 'returns localization for auth_app_disabled' do
-        user = User.new.decorate
+        user = User.new
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
@@ -84,7 +84,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        user: user.reload.decorate,
+        user: user.reload,
         locked_for_session: false,
       )
 
@@ -103,7 +103,7 @@ describe AccountShowPresenter do
         personal_key: '',
         sp_session_request_url: nil,
         sp_name: nil,
-        user: user.reload.decorate,
+        user: user.reload,
         locked_for_session: false,
       )
 
