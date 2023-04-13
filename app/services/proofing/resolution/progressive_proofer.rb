@@ -23,14 +23,16 @@ module Proofing
           user_email: user_email,
         )
 
-        # todo(LG-8693): Begin verifing both the user's residential address and identity document
-        # address
-        applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
-
-        resolution_result = proof_resolution(
+        residential_address_result = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
         )
+
+        resolution_result = proof_resolution_if_needed(
+          applicant_pii: applicant_pii,
+          timer: timer,
+        )
+
         state_id_result = proof_state_id_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
@@ -44,6 +46,7 @@ module Proofing
           resolution_result: resolution_result,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result,
+          residential_address_result: residential_address_result,
         )
       end
 
@@ -76,20 +79,51 @@ module Proofing
         end
       end
 
-      def proof_resolution(applicant_pii:, timer:)
+      def proof_residential_address_if_needed(
+        applicant_pii:,
+        timer:,
+        double_address_verification:
+      )
+        return residential_address_unnecessary unless double_address_verification
+
+        timer.time('residential address') do
+          resolution_proofer.proofer(applicant_pii)
+        end
+      end
+
+      def proof_resolution_if_needed(
+        applicant_pii:,
+        timer:,
+        double_address_verification:,
+        residential_address_result:
+      )
+
+        unless residential_address_can_pass_after_state_id_check?(residential_address_result)
+          return resolution_unnecessary_result
+        end
+
+        applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
+
         timer.time('resolution') do
-          resolution_proofer.proof(applicant_pii)
+          resolution_proofer.proofer(applicant_pii)
         end
       end
 
       def proof_state_id_if_needed(
-        applicant_pii:, timer:,
+        applicant_pii:,
+        timer:,
         resolution_result:,
-        should_proof_state_id:
+        should_proof_state_id:,
+        double_address_verification_enabled:,
+        residential_address_result:
       )
-        unless should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
+        unless should_proof_state_id &&
+               residential_address_can_pass_after_state_id_check?(residential_address_result) &&
+               resolution_result_can_pass_after_state_id_check?(resolution_result)
           return out_of_aamva_jurisdiction_result
         end
+
+        applicant_pii = with_state_id_address(applicant_pii) if double_address_verification_enabled
 
         timer.time('state_id') do
           state_id_proofer.proof(applicant_pii)
@@ -115,6 +149,18 @@ module Proofing
           success: true,
           client: 'tmx_disabled',
           review_status: 'pass',
+        )
+      end
+
+      def residential_address_unnecessary_result
+        Proofing::AddressResult.new(
+          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
+        )
+      end
+
+      def resolution_unnecessary_result
+        Proofing::AddressResult.new(
+          success: true, errors: {}, exception: nil, vendor_name: 'ResolutionUnnecessary',
         )
       end
 
