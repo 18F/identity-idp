@@ -24,9 +24,21 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
 
+    url_helpers = Rails.application.routes.url_helpers
+
     # IdP setting
-    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2023"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2023"
+    settings.idp_sso_target_url = url_helpers.api_saml_auth_url(
+      protocol: 'http',
+      domain: IdentityConfig.store.domain_name,
+      port: nil,
+      path_year: PATH_YEAR,
+    )
+    settings.idp_slo_target_url = url_helpers.api_saml_logout_url(
+      protocol: 'http',
+      domain: IdentityConfig.store.domain_name,
+      port: nil,
+      path_year: PATH_YEAR,
+    )
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -81,7 +93,13 @@ module SamlAuthHelper
   end
 
   def saml_remote_logout_request_url(overrides: {}, params: {})
-    overrides[:idp_slo_target_url] = "http://#{IdentityConfig.store.domain_name}/api/saml/remotelogout2023"
+    overrides[:idp_slo_target_url] = Rails.application.routes.url_helpers.api_saml_remotelogout(
+      protocol: 'http',
+      domain: IdentityConfig.store.domain_name,
+      port: nil,
+      path_year: PATH_YEAR,
+    )
+
     logout_request.create(
       saml_settings(overrides: overrides),
       params,

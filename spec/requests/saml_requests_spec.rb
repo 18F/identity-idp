@@ -7,9 +7,16 @@ RSpec.describe 'SAML requests', type: :request do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
     it 'renders a form for the SAML year that was requested' do
+      path_year = '2022'
+
       overridden_saml_settings = saml_settings(
         overrides: {
-          idp_sso_target_url: "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022",
+          idp_sso_target_url: api_saml_auth_url(
+            protocol: 'http',
+            domain: IdentityConfig.store.domain_name,
+            port: nil,
+            path_year: path_year,
+          ),
         },
       )
       path_year = overridden_saml_settings.idp_sso_target_url[-4..-1]
@@ -28,11 +35,27 @@ RSpec.describe 'SAML requests', type: :request do
 
       expect(new_cookies).not_to include('_identity_idp_session')
     end
+
+    context 'for an unsupported year' do
+      let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
+
+      it '404s' do
+        post api_saml_auth_url(path_year: path_year)
+
+        expect(response).to be_not_found
+      end
+    end
   end
 
   describe '/api/saml/remotelogout' do
+    let(:path_year) { '2023' }
     let(:remote_slo_url) do
-      saml_settings.idp_slo_target_url.gsub('logout', 'remotelogout')
+      api_saml_remotelogout_url(
+        protocol: 'http',
+        domain: IdentityConfig.store.domain_name,
+        port: nil,
+        path_year: path_year,
+      )
     end
 
     xit 'does not accept GET requests' do
@@ -49,6 +72,16 @@ RSpec.describe 'SAML requests', type: :request do
       post remote_slo_url
       # fails (:bad_request) without SAMLRequest param but not 404
       expect(response.status).to eq(400)
+    end
+
+    context 'for an unsupported year' do
+      let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
+
+      it '404s' do
+        post api_saml_remotelogout_url(path_year: path_year)
+
+        expect(response).to be_not_found
+      end
     end
   end
 end

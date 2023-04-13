@@ -26,7 +26,8 @@ Rails.application.routes.draw do
     get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
     match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete],
           as: :api_saml_logout
-    match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post]
+    match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post],
+          as: :api_saml_remotelogout
     # JS-driven POST redirect route to preserve existing session
     post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
     # actual SAML handling POST route
