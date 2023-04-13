@@ -15,8 +15,8 @@ fr:
     attributes:
       password:
         too_short:
-          one: Ce mot de passe est trop court (le minimum est de 1 caractère)
-          other: Ce mot de passe est trop court (le minimum est de %{count} caractères)
+          one: Le mot de passe doit comporter au moins un caractère
+          other: Le mot de passe doit comporter au moins %{count} caractères
     capture_doc:
       invalid_link: Ce lien a expiré ou n’est pas valide. Veuillez demander un autre
         lien pour vérifier votre identité sur un téléphone mobile.

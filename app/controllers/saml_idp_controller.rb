@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
   skip_before_action :verify_authenticity_token
+  before_action :require_path_year
   before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
@@ -92,7 +93,7 @@ class SamlIdpController < ApplicationController
   end
 
   def saml_metadata
-    SamlEndpoint.new(request).saml_metadata
+    SamlEndpoint.new(params[:path_year]).saml_metadata
   end
 
   def redirect_to_verification_url
@@ -117,7 +118,7 @@ class SamlIdpController < ApplicationController
 
   def capture_analytics
     analytics_payload = @result.to_h.merge(
-      endpoint: remap_auth_post_path(request.env['PATH_INFO']),
+      endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
@@ -171,5 +172,9 @@ class SamlIdpController < ApplicationController
       billed_ial: ial_context.bill_for_ial_1_or_2,
     )
     track_billing_events
+  end
+
+  def require_path_year
+    render_not_found if params[:path_year].blank?
   end
 end

@@ -20,12 +20,8 @@ module SamlIdpAuthConcern
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     return unless user_signed_in? && saml_request.force_authn?
 
-    if IdentityConfig.store.saml_internal_post
-      sign_out unless sp_session[:final_auth_request]
-      sp_session[:final_auth_request] = false
-    else
-      sign_out unless sp_session[:request_url] == request.original_url
-    end
+    sign_out unless sp_session[:final_auth_request]
+    sp_session[:final_auth_request] = false
   end
 
   def check_sp_active
@@ -195,7 +191,7 @@ module SamlIdpAuthConcern
   end
 
   def saml_response_signature_options
-    endpoint = SamlEndpoint.new(request)
+    endpoint = SamlEndpoint.new(params[:path_year])
     {
       x509_certificate: endpoint.x509_certificate,
       secret_key: endpoint.secret_key,
@@ -212,9 +208,9 @@ module SamlIdpAuthConcern
   end
 
   def request_url
-    url = URI.parse request.original_url
-    url.path = remap_auth_post_path(url.path)
-    query_params = Rack::Utils.parse_nested_query url.query
+    url = URI(api_saml_auth_url(path_year: params[:path_year]))
+
+    query_params = request.query_parameters
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
       query_params['SAMLRequest'] = orig_saml_request
@@ -226,12 +222,5 @@ module SamlIdpAuthConcern
 
     url.query = Rack::Utils.build_query(query_params).presence
     url.to_s
-  end
-
-  def remap_auth_post_path(path)
-    path_match = path.match(%r{/api/saml/authpost(?<year>\d{4})})
-    return path unless path_match.present?
-
-    "/api/saml/auth#{path_match[:year]}"
   end
 end

@@ -6,7 +6,7 @@ module TwoFactorAuthCode
 
     def help_text
       t(
-        "instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
+        'instructions.mfa.authenticator.confirm_code_html',
         app_name: content_tag(:strong, APP_NAME),
       )
     end
@@ -22,9 +22,5 @@ module TwoFactorAuthCode
         sign_out_path
       end
     end
-
-    private
-
-    attr_reader :two_factor_authentication_method
   end
 end

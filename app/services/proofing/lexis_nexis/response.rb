@@ -26,6 +26,10 @@ module Proofing
         @reference ||= response_body.dig('Status', 'Reference')
       end
 
+      def transaction_reason_code
+        response_body.dig('Status', 'TransactionReasonCode', 'Code')
+      end
+
       # @api private
       def response_body
         @response_body ||= JSON.parse(response.body)
@@ -37,6 +41,10 @@ module Proofing
         content_type = response.headers&.[]('Content-Type')
         error_message = "An error occured parsing the response body JSON, status=#{response.status} content_type=#{content_type}" # rubocop:disable Layout/LineLength
         raise JSON::ParserError, error_message
+      end
+
+      def product_list
+        @product_list = response_body.fetch('Products', [])
       end
 
       private

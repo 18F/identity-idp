@@ -3,7 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.password')) %>
 
 <p id="password-description">
-  <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
+  <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
 
 <%= simple_form_for(

@@ -44,9 +44,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         result = subject.proof(applicant)
 
         expect(result.success?).to eq(true)
-        expect(result.errors).to include(InstantVerify: include(a_kind_of(Hash)))
+        expect(result.errors).to include('Execute Instant Verify': include(a_kind_of(Hash)))
         expect(result.vendor_workflow).to(
-          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          eq(LexisNexisFixtures.example_config.instant_verify_workflow),
         )
       end
     end
@@ -65,12 +65,12 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          InstantVerify: include(a_kind_of(Hash)),
+          'Execute Instant Verify': include(a_kind_of(Hash)),
         )
         expect(result.transaction_id).to eq('123456')
         expect(result.reference).to eq('0987:1234-abcd')
         expect(result.vendor_workflow).to(
-          eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          eq(LexisNexisFixtures.example_config.instant_verify_workflow),
         )
       end
     end
@@ -88,7 +88,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.errors).to eq({})
         expect(result.exception).to be_a(Proofing::TimeoutError)
         expect(result.timed_out?).to eq(true)
-        expect(result.vendor_workflow).to be(nil)
+        expect(result.vendor_workflow).to eq(
+          LexisNexisFixtures.example_config.instant_verify_workflow,
+        )
       end
     end
 
@@ -106,7 +108,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         expect(result.exception).to be_a(RuntimeError)
         expect(result.exception.message).to eq('fancy test error')
         expect(result.timed_out?).to eq(false)
-        expect(result.vendor_workflow).to be(nil)
+        expect(result.vendor_workflow).to eq(
+          LexisNexisFixtures.example_config.instant_verify_workflow,
+        )
       end
     end
 
@@ -124,8 +128,8 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
           expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
           expect(result.attributes_requiring_additional_verification).to eq([:dob])
-          expect(result.vendor_workflow).to(
-            eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          expect(result.vendor_workflow).to eq(
+            LexisNexisFixtures.example_config.instant_verify_workflow,
           )
         end
       end
@@ -143,62 +147,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
           expect(result.failed_result_can_pass_with_additional_verification?).to eq(false)
           expect(result.attributes_requiring_additional_verification).to be_empty
-          expect(result.vendor_workflow).to(
-            eq(LexisNexisFixtures.example_config.phone_finder_workflow),
+          expect(result.vendor_workflow).to eq(
+            LexisNexisFixtures.example_config.instant_verify_workflow,
           )
-        end
-      end
-    end
-
-    context 'detecting drivers license failures' do
-      context 'both drivers license checks pass' do
-        it 'marks that the drivers license was a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_success_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(true)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(true)
-        end
-      end
-
-      context 'a drivers license check fails' do
-        it 'marks that the drivers license was not a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_drivers_license_failure_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(false)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(false)
-        end
-      end
-
-      context 'the drivers license checks are not present' do
-        it 'marks that the drivers license was not a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_drivers_license_info_missing_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(false)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(false)
         end
       end
     end

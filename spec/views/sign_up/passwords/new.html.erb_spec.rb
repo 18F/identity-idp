@@ -21,8 +21,11 @@ describe 'sign_up/passwords/new.html.erb' do
   end
 
   it 'renders the proper help text' do
-    expect(rendered).to have_content(
-      t('instructions.password.info.lead', min_length: Devise.password_length.first),
+    expect(rendered).to have_content strip_tags(
+      t(
+        'instructions.password.info.lead_html',
+        min_length: Devise.password_length.min,
+      ),
     )
   end
 

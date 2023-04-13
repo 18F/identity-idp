@@ -213,7 +213,7 @@ RSpec.describe Idv::GpoVerifyController do
             )
           end
 
-          it 'redirects to the sad face screen' do
+          it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',
               success: true,
@@ -226,7 +226,7 @@ RSpec.describe Idv::GpoVerifyController do
 
             action
 
-            expect(response).to redirect_to(idv_please_call_url)
+            expect(response).to redirect_to(idv_personal_key_url)
           end
 
           it 'does not show a flash message' do
@@ -247,7 +247,7 @@ RSpec.describe Idv::GpoVerifyController do
               threatmetrix_review_status: 'review'
             )
           end
-          it 'redirects to the sad face screen' do
+          it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',
               success: true,
@@ -260,7 +260,7 @@ RSpec.describe Idv::GpoVerifyController do
 
             action
 
-            expect(response).to redirect_to(idv_please_call_url)
+            expect(response).to redirect_to(idv_personal_key_url)
           end
         end
       end

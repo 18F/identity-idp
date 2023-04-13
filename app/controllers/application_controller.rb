@@ -291,13 +291,11 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? &&
-      two_factor_enabled? &&
+    !reauthn? &&
+      user_signed_in? &&
       session['warden.user.user.session'] &&
-      !session['warden.user.user.session'].try(
-        :[],
-        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
-      )
+      !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
+      two_factor_enabled?
   end
 
   def reauthn?
@@ -425,23 +423,18 @@ class ApplicationController < ActionController::Base
   # Conditionally sets the final_auth_request service provider session attribute
   # when applicable (the original SP request is SAML)
   def sp_session_request_url_with_updated_params
-    # Temporarily place SAML route update behind a feature flag
-    if IdentityConfig.store.saml_internal_post
-      return unless sp_session[:request_url].present?
-      request_url = URI(sp_session[:request_url])
-      url = if request_url.path.match?('saml')
-              sp_session[:final_auth_request] = true
-              complete_saml_url
-            else
-              # Login.gov redirects to the orginal request_url after a user authenticates
-              # replace prompt=login with prompt=select_account to prevent sign_out
-              # which should only ever occur once when the user
-              # lands on Login.gov with prompt=login
-              sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
-            end
-    else
-      url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
-    end
+    return unless sp_session[:request_url].present?
+    request_url = URI(sp_session[:request_url])
+    url = if request_url.path.match?('saml')
+            sp_session[:final_auth_request] = true
+            complete_saml_url
+          else
+            # Login.gov redirects to the orginal request_url after a user authenticates
+            # replace prompt=login with prompt=select_account to prevent sign_out
+            # which should only ever occur once when the user
+            # lands on Login.gov with prompt=login
+            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+          end
 
     # If the user has changed the locale, we should preserve that as well
     if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param
