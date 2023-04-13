@@ -4,6 +4,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
   let(:flow_session) { {} }
   let(:user_fully_authenticated) { true }
   let(:sp_name) { nil }
+  let(:user) { create(:user) }
 
   before do
     @decorated_session = instance_double(ServiceProviderSessionDecorator)
@@ -19,11 +20,8 @@ describe 'idv/doc_auth/welcome.html.erb' do
     let(:need_irs_reproofing) { false }
 
     before do
-      user_decoration = instance_double('user decoration')
-      allow(user_decoration).to receive(:reproof_for_irs?).and_return(need_irs_reproofing)
-      fake_user = instance_double(User)
-      allow(fake_user).to receive(:decorate).and_return(user_decoration)
-      assign(:current_user, fake_user)
+      allow(user).to receive(:reproof_for_irs?).and_return(need_irs_reproofing)
+      assign(:current_user, user)
 
       render template: 'idv/doc_auth/welcome'
     end
@@ -40,6 +38,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
       let(:need_irs_reproofing) { true }
 
       it 'renders the IRS reproofing explanation' do
+
         expect(rendered).to have_text(t('doc_auth.info.irs_reproofing_explanation'))
       end
     end
