@@ -42,7 +42,10 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     percent_enrollments_errored = 0
     if enrollment_outcomes[:enrollments_checked] > 0
-      percent_enrollments_errored = ((enrollment_outcomes[:enrollments_errored].fdiv(enrollment_outcomes[:enrollments_checked]))*100).round
+      percent_enrollments_errored =
+        (enrollment_outcomes[:enrollments_errored].fdiv(
+          enrollment_outcomes[:enrollments_checked],
+        ) * 100).round
     end
 
     analytics.idv_in_person_usps_proofing_results_job_completed(

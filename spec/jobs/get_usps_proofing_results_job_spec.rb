@@ -302,7 +302,7 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'logs a message with counts and a calculation of various outcomes when the job completes (% enrollment errored > 0)' do
+      it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           and_return(pending_enrollments)
         stub_request_proofing_results_with_responses(
@@ -333,11 +333,11 @@ RSpec.describe GetUspsProofingResultsJob do
         ).to be >= 0.0
       end
 
-      it 'logs a message with counts and a calculation of various outcomes when the job completes (% enrollment errored = 0)' do
+      it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           and_return(pending_enrollments)
         stub_request_proofing_results_with_responses(
-          request_passed_proofing_results_args
+          request_passed_proofing_results_args,
         )
 
         job.perform(Time.zone.now)
@@ -364,7 +364,7 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           and_return([])
         stub_request_proofing_results_with_responses(
-          request_passed_proofing_results_args
+          request_passed_proofing_results_args,
         )
 
         job.perform(Time.zone.now)
