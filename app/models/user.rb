@@ -319,7 +319,7 @@ class User < ApplicationRecord
       map(&:decorate)
   end
 
-  def devices?
+  def recent_devices?
     !recent_devices.empty?
   end
 
