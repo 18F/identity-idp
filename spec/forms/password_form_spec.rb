@@ -1,10 +1,9 @@
 require 'rails_helper'
 
 describe PasswordForm, type: :model do
-  let(:user) { build_stubbed(:user, uuid: '123') }
   subject(:form) { described_class.new(user) }
+  let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
-  let(:invalid_password) { 'invalid' }
   let(:extra) do
     {
       user_id: user.uuid,
@@ -34,7 +33,7 @@ describe PasswordForm, type: :model do
 
     context 'when the form is invalid' do
       context 'when password is invalid' do
-        let(:password) { invalid_password }
+        let(:password) { 'invalid' }
         let(:validation_error) do
           t(
             'errors.attributes.password.too_short.other',

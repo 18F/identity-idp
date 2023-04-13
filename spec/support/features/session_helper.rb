@@ -157,6 +157,7 @@ module Features
     def sign_up_and_set_password
       user = sign_up
       fill_in t('forms.password'), with: VALID_PASSWORD
+      fill_in t('components.password_confirmation.confirm_label'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end

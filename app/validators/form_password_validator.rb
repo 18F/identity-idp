@@ -12,10 +12,8 @@ module FormPasswordValidator
               presence: true,
               length: { in: Devise.password_length },
               if: -> { validate_confirmation }
-    validate :password_graphemes_length
-    validate :strong_password
-    validate :not_pwned
-    validate :passwords_match
+
+    validate :password_graphemes_length, :strong_password, :not_pwned, :passwords_match
   end
 
   private

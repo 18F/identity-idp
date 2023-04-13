@@ -13,11 +13,8 @@ module SignUp
 
     def create
       result = password_form.submit(permitted_params)
-      analytics.password_creation(**result.to_h)
-      irs_attempts_api_tracker.user_registration_password_submitted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
+
+      track_analytics(result)
       store_sp_metadata_in_session unless sp_request_id.empty?
 
       if result.success?
@@ -43,8 +40,21 @@ module SignUp
       )
     end
 
+    def track_analytics(result)
+      failure_reason = irs_attempts_api_tracker.parse_failure_reason(result)
+
+      analytics.password_creation(**result.to_h)
+      irs_attempts_api_tracker.user_registration_password_submitted(
+        success: result.success?,
+        failure_reason: failure_reason,
+      )
+    end
+
     def permitted_params
-      params.require(:password_form).permit(:confirmation_token, :password, :password_confirmation, :request_id)
+      params.require(:password_form).permit(
+        :confirmation_token, :password, :password_confirmation,
+        :request_id
+      )
     end
 
     def process_successful_password_creation
