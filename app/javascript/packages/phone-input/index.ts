@@ -64,9 +64,9 @@ export class PhoneInputElement extends HTMLElement {
 
     this.textInput = textInput;
     this.codeInput = codeInput;
-    this.iti = this.initializeIntlTelInput();
+    this.initializeIntlTelInput();
 
-    this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
+    this.textInput.addEventListener('countrychange', () => this.syncCountryToCodeInput());
     this.textInput.addEventListener('input', () => this.validate());
     this.codeInput.addEventListener('change', () => this.formatTextInput());
     this.codeInput.addEventListener('change', () => this.validate());
@@ -105,6 +105,14 @@ export class PhoneInputElement extends HTMLElement {
     return this.#strings;
   }
 
+  get valueText(): HTMLElement {
+    return this.iti.selectedFlag.querySelector('.usa-sr-only')!;
+  }
+
+  get hasDropdown(): boolean {
+    return Boolean(this.supportedCountryCodes && this.supportedCountryCodes.length > 1);
+  }
+
   get captchaExemptCountries(): string[] | boolean {
     try {
       return JSON.parse(this.dataset.captchaExemptCountries!);
@@ -116,17 +124,22 @@ export class PhoneInputElement extends HTMLElement {
   /**
    * Mirrors country change to the hidden select field, which holds the value for form submission.
    */
-  syncCountryChangeToCodeInput() {
+  syncCountryToCodeInput({ fireChangeEvent = true }: { fireChangeEvent?: boolean } = {}) {
     const country = this.iti.getSelectedCountryData();
     if (country.iso2 && this.codeInput) {
       this.codeInput.value = country.iso2.toUpperCase();
-      this.codeInput.dispatchEvent(new CustomEvent('change', { bubbles: true }));
+      if (this.hasDropdown) {
+        this.valueText.textContent = this.iti.selectedFlag.title;
+        this.iti.selectedFlag.removeAttribute('title');
+      }
+      if (fireChangeEvent) {
+        this.codeInput.dispatchEvent(new CustomEvent('change', { bubbles: true }));
+      }
     }
   }
 
   initializeIntlTelInput() {
     const { supportedCountryCodes, countryCodePairs } = this;
-    const allowDropdown = supportedCountryCodes && supportedCountryCodes.length > 1;
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
@@ -134,10 +147,12 @@ export class PhoneInputElement extends HTMLElement {
       localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
-      allowDropdown,
+      allowDropdown: this.hasDropdown,
     }) as IntlTelInput;
 
-    if (allowDropdown) {
+    this.iti = iti;
+
+    if (this.hasDropdown) {
       // Remove duplicate items in the country list
       const preferred: NodeListOf<HTMLLIElement> =
         iti.countryList.querySelectorAll('.iti__preferred');
@@ -152,16 +167,14 @@ export class PhoneInputElement extends HTMLElement {
       });
 
       // Improve base accessibility of intl-tel-input
-      iti.flagsContainer.setAttribute('aria-label', this.strings.country_code_label);
-      iti.selectedFlag.setAttribute('aria-haspopup', 'true');
-      iti.selectedFlag.setAttribute('role', 'button');
+      const valueText = document.createElement('div');
+      valueText.classList.add('usa-sr-only');
+      iti.selectedFlag.appendChild(valueText);
+      iti.selectedFlag.setAttribute('aria-label', this.strings.country_code_label);
       iti.selectedFlag.removeAttribute('aria-owns');
     }
 
-    const country = iti.getSelectedCountryData();
-    if (country.iso2 && this.codeInput) {
-      this.codeInput.value = country.iso2.toUpperCase();
-    }
+    this.syncCountryToCodeInput({ fireChangeEvent: false });
 
     return iti;
   }
