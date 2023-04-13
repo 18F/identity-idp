@@ -53,6 +53,13 @@ module Idv
 
         result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
 
+        event_properties = result.to_h.tap do |properties|
+          # See LG-8890 for context
+          properties[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
+        end
+
+        analytics.track_event 'Doc Auth', event_properties
+
         if result.success?
           reset_session
 
@@ -63,18 +70,6 @@ module Idv
         else
           handle_invalid_session
         end
-
-        #         return if session[:doc_capture_user_id] &&
-        #         token.blank? &&
-        #         document_capture_session_uuid.blank?
-
-        # result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
-        # to_log = result.to_h
-        # # Log value used to determine session type ("hybrid flow" or not)
-        # to_log[:doc_capture_user_id?] = session[:doc_capture_user_id].present?
-
-        # analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], to_log)
-        # process_result(result)
       end
 
       def validate_document_capture_user_id
