@@ -214,10 +214,12 @@ FactoryBot.define do
       signed_up
 
       after :build do |user|
-        user.profiles.create(
+        create(
+          :profile,
           :fraud_review_pending,
           :verified,
           :with_pii,
+          user: user,
         )
       end
     end
