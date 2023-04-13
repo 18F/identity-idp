@@ -3,6 +3,27 @@ require 'rails_helper'
 RSpec.describe 'SAML requests', type: :request do
   include SamlAuthHelper
 
+  describe 'GET /api/saml/auth' do
+    let(:path_year) { SamlAuthHelper::PATH_YEAR }
+
+    it 'is successful' do
+      get api_saml_auth_url(path_year: path_year),
+          params: UriService.params(saml_authn_request_url)
+
+      expect(response).to be_redirect
+    end
+
+    context 'for an unsupported year' do
+      let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
+
+      it '404s' do
+        get api_saml_auth_url(path_year: path_year)
+
+        expect(response).to be_not_found
+      end
+    end
+  end
+
   describe 'POST /api/saml/auth' do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
@@ -48,7 +69,7 @@ RSpec.describe 'SAML requests', type: :request do
   end
 
   describe '/api/saml/remotelogout' do
-    let(:path_year) { '2023' }
+    let(:path_year) { SamlAuthHelper::PATH_YEAR }
     let(:remote_slo_url) do
       api_saml_remotelogout_url(
         protocol: 'http',
