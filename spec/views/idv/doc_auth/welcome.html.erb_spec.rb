@@ -38,7 +38,6 @@ describe 'idv/doc_auth/welcome.html.erb' do
       let(:need_irs_reproofing) { true }
 
       it 'renders the IRS reproofing explanation' do
-
         expect(rendered).to have_text(t('doc_auth.info.irs_reproofing_explanation'))
       end
     end
