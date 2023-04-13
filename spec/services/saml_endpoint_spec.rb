@@ -1,14 +1,9 @@
 require 'rails_helper'
 
 describe SamlEndpoint do
-  let(:path) { '/api/saml/auth2023' }
-  let(:request) do
-    request_double = double
-    allow(request_double).to receive(:path).and_return(path)
-    request_double
-  end
+  let(:year) { '2023' }
 
-  subject { described_class.new(request) }
+  subject { described_class.new(year) }
 
   describe '.suffixes' do
     it 'should list the suffixes that are configured' do
@@ -50,7 +45,7 @@ describe SamlEndpoint do
     end
 
     context 'when the key file does not exist' do
-      let(:path) { '/saml/auth_dne' }
+      let(:year) { '_dne' }
 
       before do
         allow(SamlEndpoint).to receive(:endpoint_configs).and_return(
