@@ -93,7 +93,7 @@ module SamlAuthHelper
   end
 
   def saml_remote_logout_request_url(overrides: {}, params: {})
-    overrides[:idp_slo_target_url] = Rails.application.routes.url_helpers.api_saml_remotelogout(
+    overrides[:idp_slo_target_url] = Rails.application.routes.url_helpers.api_saml_remotelogout_url(
       protocol: 'http',
       host: IdentityConfig.store.domain_name,
       port: nil,
