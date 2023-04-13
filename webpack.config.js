@@ -28,7 +28,11 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       watch: false,
     },
     port: devServerPort,
-    headers: { 'Access-Control-Allow-Origin': '*' },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Cache-Control': 'no-store',
+      Vary: '*',
+    },
     hot: false,
   },
   entry: entries.reduce((result, path) => {
