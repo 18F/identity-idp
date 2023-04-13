@@ -327,6 +327,7 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      get '/documents', to: redirect('/verify/hybrid_mobile'), as: :hybrid_document_capture_entry
       get '/hybrid_mobile' => 'hybrid_mobile/entry#show'
       get '/hybrid_mobile/capture_doc' => 'hybrid_mobile/capture_doc#show'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
