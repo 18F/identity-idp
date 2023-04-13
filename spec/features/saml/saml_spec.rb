@@ -226,7 +226,7 @@ feature 'saml api' do
 
       it 'redirects to root' do
         travel(Devise.timeout_in + 1.second) do
-          visit api_saml_logout2023_url
+          visit api_saml_logout_url(path_year: SamlAuthHelper::PATH_YEAR)
           expect(page.current_path).to eq('/')
         end
       end
