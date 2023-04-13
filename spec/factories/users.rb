@@ -228,7 +228,7 @@ FactoryBot.define do
       signed_up
 
       after :build do |user|
-        user.profiles.create(:password_reset, :with_pii)
+        create(:profile, :password_reset, :with_pii, user: user)
       end
     end
   end
