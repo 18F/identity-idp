@@ -3,11 +3,11 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.combined_upload') %>
+  <%= t('doc_auth.headings.upload') %>
 <% end %>
 
 <p>
-  <%= t('doc_auth.info.combined_upload') %>
+  <%= t('doc_auth.info.upload') %>
 </p>
 
 <div class="grid-row grid-gap grid-gap-2">
@@ -24,9 +24,9 @@
       <%= t('doc_auth.info.tag') %>
     </div>
     <h2 class="margin-y-105">
-      <%= t('doc_auth.headings.combined_upload_from_phone') %>
+      <%= t('doc_auth.headings.upload_from_phone') %>
     </h2>
-    <%= t('doc_auth.info.combined_upload_from_phone') %>
+    <%= t('doc_auth.info.upload_from_phone') %>
     <%= simple_form_for(
           idv_phone_form,
           as: :doc_auth,
@@ -58,9 +58,9 @@
   </div>
   <div class="grid-col-12 tablet:grid-col-fill">
     <h2 class="margin-y-105">
-      <%= t('doc_auth.headings.combined_upload_from_computer') %>
+      <%= t('doc_auth.headings.upload_from_computer') %>
     </h2>
-    <%= t('doc_auth.info.combined_upload_from_computer') %>&nbsp;
+    <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
     <%= simple_form_for(
           :doc_auth,
           url: url_for(type: :desktop),
