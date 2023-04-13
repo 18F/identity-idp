@@ -17,14 +17,6 @@ class SamlPostController < ApplicationController
 
   private
 
-  def build_action_url(path)
-    path_year = path[-4..-1]
-    path = "/api/saml/authpost#{path_year}"
-    recognized_path = Rails.application.routes.recognize_path(path, method: :post)
-
-    path if recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
-  end
-
   def valid_path?(action_path)
     route = Rails.application.routes.recognize_path(action_path, method: :post)
     route[:action] != 'page_not_found'
