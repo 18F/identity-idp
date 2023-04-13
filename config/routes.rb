@@ -329,7 +329,7 @@ Rails.application.routes.draw do
       put '/document_capture' => 'document_capture#update'
       get '/documents', to: redirect('/verify/hybrid_mobile'), as: :hybrid_document_capture_entry
       get '/hybrid_mobile' => 'hybrid_mobile/entry#show'
-      get '/hybrid_mobile/capture_doc' => 'hybrid_mobile/capture_doc#show'
+      get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'

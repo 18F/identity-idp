@@ -10,7 +10,7 @@ module Idv
       before_action :validate_document_capture_user_id
 
       def show
-        redirect_to idv_hybrid_mobile_capture_doc_url
+        redirect_to idv_hybrid_mobile_document_capture_url
       end
 
       private

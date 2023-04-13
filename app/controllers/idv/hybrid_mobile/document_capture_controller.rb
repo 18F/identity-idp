@@ -1,6 +1,6 @@
 module Idv
   module HybridMobile
-    class CaptureDocController < ApplicationController
+    class DocumentCaptureController < ApplicationController
       include HybridMobileConcern
 
       def show

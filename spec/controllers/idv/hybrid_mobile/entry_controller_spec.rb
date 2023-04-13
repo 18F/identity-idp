@@ -105,7 +105,7 @@ describe Idv::HybridMobile::EntryController do
       end
 
       it 'redirects to the first step' do
-        expect(response).to redirect_to idv_hybrid_mobile_capture_doc_url
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
 
       it 'logs an analytics event' do
@@ -148,7 +148,7 @@ describe Idv::HybridMobile::EntryController do
         end
 
         it 'redirects to the document capture screen' do
-          expect(response).to redirect_to idv_hybrid_mobile_capture_doc_url
+          expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
     end
@@ -166,7 +166,7 @@ describe Idv::HybridMobile::EntryController do
       end
 
       it 'redirects to the first step' do
-        expect(response).to redirect_to idv_hybrid_mobile_capture_doc_url
+        expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
     end
   end
