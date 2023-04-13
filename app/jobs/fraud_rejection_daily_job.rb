@@ -18,9 +18,6 @@ class FraudRejectionDailyJob < ApplicationJob
   end
 
   def profiles_eligible_for_fraud_rejection
-    Profile.where(
-      fraud_review_pending: true,
-      verified_at: ..30.days.ago,
-    )
+    Profile.fraud_reviewing.where(verified_at: ..30.days.ago)
   end
 end
