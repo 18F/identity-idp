@@ -189,7 +189,7 @@ module Users
     end
 
     def user_locked_out?(user)
-      UserDecorator.new(user).locked_out?
+      user.locked_out?
     end
 
     def store_sp_metadata_in_session
