@@ -209,7 +209,7 @@ module SamlIdpAuthConcern
 
   def request_url
     url = URI(api_saml_auth_url(path_year: params[:path_year]))
-    
+
     query_params = request.query_parameters
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
