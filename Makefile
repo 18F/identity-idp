@@ -35,6 +35,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	run \
 	update \
 	urn \
+	README.md \
 	setup \
 	test \
 	update_pinpoint_supported_countries
@@ -91,6 +92,8 @@ endif
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
 	yarn lint:css
+	@echo "--- README.md ---"
+	make lint_readme
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
@@ -110,6 +113,9 @@ lint_yarn_lock: package.json yarn.lock ## Lints the package.json and its lockfil
 	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
+
+lint_readme: README.md ## Lints README.md
+	(! git diff --name-only | grep "^README.md$$") || (echo "Error: Run 'make README.md' to regenerate the README.md"; exit 1)
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
 	@echo "--- rubocop fix ---"
@@ -251,3 +257,5 @@ update: ## Update dependencies, useful after a git pull
 	yarn install
 	bundle exec rails db:migrate
 
+README.md: docs/ ## Generates README.md based on the contents of the docs directory
+	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
