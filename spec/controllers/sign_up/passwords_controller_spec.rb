@@ -32,7 +32,10 @@ describe SignUp::PasswordsController do
       expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
       post :create, params: {
-        password_form: { password: 'NewVal!dPassw0rd' },
+        password_confirmation_form: {
+          password: 'NewVal!dPassw0rd',
+          password_confirmation: 'NewVal!dPassw0rd',
+        },
         confirmation_token: token,
       }
 
@@ -69,9 +72,13 @@ describe SignUp::PasswordsController do
     end
 
     it 'tracks an invalid password event' do
-      password_short_error = { password: [:too_short] }
+      password_short_error = {
+        password: [:too_short],
+        password_confirmation: [:too_short],
+      }
       token = 'new token'
       user = create(:user, :unconfirmed, confirmation_token: token)
+      password = 'NewVal'
 
       stub_analytics
       stub_attempts_tracker
@@ -81,6 +88,8 @@ describe SignUp::PasswordsController do
         errors: {
           password:
             ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
+          password_confirmation:
+            ["is too short (minimum is #{Devise.password_length.first} characters)"],
         },
         error_details: password_short_error,
         user_id: user.uuid,
@@ -101,7 +110,9 @@ describe SignUp::PasswordsController do
       )
       expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
-      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
+      post :create,
+           params: { password_confirmation_form: { password: password, password_confirmation: password },
+                     confirmation_token: token }
     end
   end
 

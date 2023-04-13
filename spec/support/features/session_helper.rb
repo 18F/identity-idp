@@ -442,7 +442,7 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      submit_form_with_valid_password
+      submit_form_with_valid_password_confirmation
 
       set_up_2fa_with_valid_phone
       skip_second_mfa_prompt
@@ -509,6 +509,12 @@ module Features
       click_button t('forms.buttons.continue')
     end
 
+    def submit_form_with_valid_password_confirmation(password = VALID_PASSWORD)
+      fill_in t('forms.password'), with: password
+      fill_in t('components.password_confirmation.confirm_label'), with: password
+      click_button t('forms.buttons.continue')
+    end
+
     def set_up_2fa_with_valid_phone
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
@@ -546,7 +552,7 @@ module Features
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
-      submit_form_with_valid_password
+      submit_form_with_valid_password_confirmation
     end
 
     def register_user_with_authenticator_app(email = 'test@test.com')
