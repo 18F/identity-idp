@@ -261,8 +261,6 @@ recaptcha_secret_key_v3: ''
 recovery_code_length: 4
 redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
-redis_throttle_alternate_url: ''
-redis_throttle_alternate_pool_write_enabled: false
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
