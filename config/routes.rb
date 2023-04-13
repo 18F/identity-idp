@@ -327,7 +327,10 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
-      get '/documents', to: redirect('/verify/hybrid_mobile'), as: :hybrid_document_capture_entry
+      # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
+      # should be kept short, and should not include underscores ("_").
+      get '/documents', to: redirect('/verify/hybrid_mobile'),
+                        as: :hybrid_mobile_document_capture_entry
       get '/hybrid_mobile' => 'hybrid_mobile/entry#show'
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
