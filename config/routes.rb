@@ -66,6 +66,7 @@ Rails.application.routes.draw do
     devise_scope :user do
       get '/users/password/new' => 'users/reset_passwords#new', as: :new_user_password
       get '/users/password/edit' => 'users/reset_passwords#edit', as: :edit_user_password
+      get '/users/password/forgot_password' => 'users/reset_passwords#forgot_password', as: :forgot_user_password
       patch '/users/password' => 'users/reset_passwords#update', as: :user_password
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil

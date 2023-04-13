@@ -440,6 +440,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_04_131517) do
     t.string "ssn_signature", limit: 64
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
+    t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"

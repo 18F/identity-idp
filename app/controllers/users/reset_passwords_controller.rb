@@ -21,24 +21,19 @@ module Users
     end
 
     def edit
-      if user_params[:reset_password_token]
-        session[:reset_password_token] = user_params[:reset_passwork_token]
-        
-      elsif session[:reset_passwork_token]
-        result = PasswordResetTokenValidator.new(token_user).submit
+      if FeatureManagement.redirect_to_clean_edit_password_url?
+        session[:reset_password_token] = params[:reset_password_token]
+        redirect_to forgot_user_password_path
+      else
+        process_forgot_password_load
+      end
+    end
 
-        analytics.password_reset_token(**result.to_h)
-        irs_attempts_api_tracker.forgot_password_email_confirmed(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-        )
-
-        if result.success?
-          @reset_password_form = ResetPasswordForm.new(build_user)
-          @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
-        else
-          handle_invalid_or_expired_token(result)
-        end
+    def forgot_password
+      if session[:reset_password_token].blank?
+        redirect_to new_user_password_url
+      else
+        process_forgot_password_load
       end
     end
 
@@ -96,6 +91,24 @@ module Users
       redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
+    def process_forgot_password_load
+      result = PasswordResetTokenValidator.new(token_user).submit
+
+      analytics.password_reset_token(**result.to_h)
+      irs_attempts_api_tracker.forgot_password_email_confirmed(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
+
+      if result.success?
+        @reset_password_form = ResetPasswordForm.new(build_user)
+        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        render 'edit'
+      else
+        handle_invalid_or_expired_token(result)
+      end
+    end
+
     def create_account_if_email_not_found
       user, result = RequestPasswordReset.new(
         email: email,
@@ -128,12 +141,16 @@ module Users
       user
     end
 
+    def password_token
+      session[:reset_password_token] || params[:reset_password_token]
+    end
+
     def token_user
-      @token_user ||= User.with_reset_password_token(session[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(password_token)
     end
 
     def build_user
-      User.new(reset_password_token: params[:reset_password_token])
+      User.new(reset_password_token: password_token)
     end
 
     def handle_successful_password_reset
