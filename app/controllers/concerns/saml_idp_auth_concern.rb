@@ -208,12 +208,9 @@ module SamlIdpAuthConcern
   end
 
   def request_url
-    url = URI.parse(request.original_url)
-
-    # we need to grab just the .path, in case the full value includes query params like ?locale=
-    url.path = URI(api_saml_auth_path(path_year: params[:path_year])).path
-
-    query_params = Rack::Utils.parse_nested_query(url.query)
+    url = URI(api_saml_auth_url(path_year: params[:path_year]))
+    
+    query_params = request.query_parameters
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
       query_params['SAMLRequest'] = orig_saml_request
