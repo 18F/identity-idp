@@ -5,7 +5,10 @@ describe Idv::PleaseCallController do
   let(:verify_date) { 20.days.ago }
 
   before do
-    create(:profile, fraud_review_pending: true, verified_at: verify_date, user: user)
+    user.profiles.create(
+      fraud_state: 'fraud_reviewing',
+      verified_at: verify_date,
+    )
 
     stub_sign_in(user)
   end
