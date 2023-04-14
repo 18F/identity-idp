@@ -134,9 +134,9 @@ es:
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint: Puede incluir letras y números
-        state_id_state: Estado emisor
-        state_id_state_hint: Este es el estado que emitió su identificación
-        state_id_state_prompt: '- Seleccione -'
+        identity_doc_state: Estado emisor
+        identity_doc_state_hint: Este es el estado que emitió su identificación
+        identity_doc_state_prompt: '- Seleccione -'
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual
