@@ -15,7 +15,7 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonCtaVariantActive, inPersonURL } = useContext(InPersonContext);
+  const { inPersonURL } = useContext(InPersonContext);
   const { t } = useI18n();
 
   const [inProgress, setInProgress] = useState<boolean>(false);
