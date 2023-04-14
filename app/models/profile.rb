@@ -53,33 +53,9 @@ class Profile < ApplicationRecord
     end
   end
 
-  def fraud_review_pending
-    fraud_reviewing?
-  end
-
-  def fraud_rejection
-    fraud_rejected?
-  end
-
-  def fraud_review_pending?
-    fraud_reviewing?
-  end
-
-  def fraud_rejection?
-    fraud_rejected?
-  end
-
-  def fraud_review_pending_at
-    fraud_reviewing_at
-  end
-
-  def fraud_rejection_at
-    fraud_rejected_at
-  end
-
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if fraud_review_pending? || fraud_rejection?
+    return if fraud_reviewing? || fraud_rejected?
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do

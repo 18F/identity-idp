@@ -370,15 +370,15 @@ describe Profile do
   end
 
   describe '#deactivate_for_fraud_review' do
-    it 'sets fraud_review_pending to true' do
+    it 'changes fraud state to reviewing' do
       profile = create(:profile, user: user)
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_review_pending_at).to_not be_nil
-      expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejection_at).to be_nil
+      expect(profile.fraud_reviewing?).to eq(true)
+      expect(profile.fraud_reviewing_at).to_not be_nil
+      expect(profile.fraud_rejected?).to eq(false)
+      expect(profile.fraud_rejected_at).to be_nil
     end
   end
 
@@ -410,7 +410,7 @@ describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
-        expect(profile.fraud_rejection_at).to_not be_nil
+        expect(profile.fraud_rejected_at).to_not be_nil
       end
     end
 
