@@ -27,8 +27,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(user, double_address_verification: double_address_verification)
       complete_address_step(user, double_address_verification: double_address_verification)
       complete_ssn_step(user)
@@ -94,8 +94,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
        allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(
         user, same_address_as_id: same_address_as_id,
               double_address_verification: double_address_verification
@@ -143,8 +143,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
        allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(
         user, same_address_as_id: same_address_as_id,
               double_address_verification: double_address_verification
