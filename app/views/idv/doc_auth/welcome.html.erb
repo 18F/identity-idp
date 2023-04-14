@@ -8,7 +8,7 @@
         intro: t('idv.welcome.no_js_intro', sp_name: decorated_session.sp_name || t('doc_auth.info.no_sp_name')),
       ) do %>
 
-    <% if @current_user&.decorate&.reproof_for_irs?(service_provider: @current_sp) %>
+    <% if @current_user&.reproof_for_irs?(service_provider: @current_sp) %>
     <%= render AlertComponent.new(
           type: :info,
           message: t('doc_auth.info.irs_reproofing_explanation'),
