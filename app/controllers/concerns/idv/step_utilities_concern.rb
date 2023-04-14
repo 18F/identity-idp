@@ -17,7 +17,7 @@ module Idv
     end
 
     def irs_reproofing?
-      effective_user&.decorate&.reproof_for_irs?(
+      effective_user&.reproof_for_irs?(
         service_provider: current_sp,
       ).present?
     end
