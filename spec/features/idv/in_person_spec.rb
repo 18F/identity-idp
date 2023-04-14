@@ -124,11 +124,7 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_location_step
 
     # prepare page
-    # the 10s wait is added because the prepare page isn't
-    # consistently loading within the default wait time
-    expect(page).to(
-      have_content(t('in_person_proofing.body.prepare.verify_step_about'), wait: 10),
-    )
+    expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
 
@@ -345,11 +341,7 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_location_step
 
         # prepare page
-        # the 10s wait is added because the prepare page isn't
-        # consistently loading within the default wait time
-        expect(page).to(
-          have_content(t('in_person_proofing.body.prepare.verify_step_about'), wait: 10),
-        )
+        expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
         click_idv_continue
 
         # switch back page

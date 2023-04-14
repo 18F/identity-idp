@@ -91,6 +91,14 @@ module InPersonHelper
     within first('.location-collection-item') do
       click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
     end
+
+    # pause for the location list to disappear
+    begin
+      expect(page).to have_no_css('.location-collection-item', wait: 10)
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      # A StaleElementReferenceError means that the context the element
+      # was in has disappeared, which means the element is gone too.
+    end
   end
 
   def complete_prepare_step(_user = nil)
