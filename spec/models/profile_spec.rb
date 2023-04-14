@@ -271,6 +271,7 @@ describe Profile do
     end
 
     it 'does not activate a profile if rejected for fraud' do
+      profile.fraud_review
       profile.fraud_reject
       profile.activate
 
@@ -296,7 +297,7 @@ describe Profile do
     it 'activates a profile if it passes fraud review' do
       profile = create(
         :profile, user: user, active: false,
-                  fraud_review_pending_at: 1.day.ago
+                  fraud_state: 'fraud_reviewing'
       )
       profile.activate_after_passing_review
 
@@ -310,7 +311,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_state: 'fraud_reviewing',
           initiating_service_provider: sp,
         )
       end
@@ -356,7 +357,7 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_state: 'fraud_reviewing',
           initiating_service_provider: sp,
         )
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
@@ -394,7 +395,7 @@ describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = user.profiles.create(fraud_state: 'fraud_reviewing')
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -414,7 +415,7 @@ describe Profile do
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = user.profiles.create(fraud_state: 'fraud_reviewing')
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -431,7 +432,7 @@ describe Profile do
       let(:profile) do
         user.profiles.create(
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_state: 'fraud_reviewing',
           initiating_service_provider: sp,
         )
       end
@@ -476,7 +477,7 @@ describe Profile do
         sp = create(:service_provider)
         profile = user.profiles.create(
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_state: 'fraud_reviewing',
           initiating_service_provider: sp,
         )
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
