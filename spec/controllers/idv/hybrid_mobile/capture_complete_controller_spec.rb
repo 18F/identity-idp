@@ -32,7 +32,7 @@ describe Idv::HybridMobile::CaptureCompleteController do
     end
   end
 
-  context 'when doc_auth_document_capture_controller_enabled' do
+  context 'when doc_auth_hybrid_mobile_controllers_enabled' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
         and_return(true)
