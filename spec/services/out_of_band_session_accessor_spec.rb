@@ -17,6 +17,52 @@ RSpec.describe OutOfBandSessionAccessor do
 
       expect(store.ttl).to eq(5.minutes.to_i)
     end
+
+    it 'returns the remaining time-to-live of the session data in redis' do
+      store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+
+      expect(store.ttl).to eq(5.minutes.to_i)
+    end
+
+    context 'with read and write fallback enabled' do
+      it 'returns the TTL' do
+        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(true)
+
+        store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+
+        expect(store.ttl).to eq(5.minutes.to_i)
+      end
+    end
+
+    context 'with read fallback enabled and write fallback disabled' do
+      it 'returns the TTL whether it was written to the new key or fallback key' do
+        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(false)
+
+        old_store = described_class.new(session_uuid)
+        old_store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+        expect(old_store.ttl).to eq(5.minutes.to_i)
+
+        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(true)
+
+        new_store = described_class.new(session_uuid)
+        new_store.put_pii({ first_name: 'Fakey2' }, 5.minutes.to_i)
+
+        expect(old_store.ttl).to eq(5.minutes.to_i)
+      end
+    end
+
+    context 'with read and write fallback disabled' do
+      it 'returns the TTL' do
+        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(false)
+        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(false)
+
+        store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+
+        expect(store.ttl).to eq(5.minutes.to_i)
+      end
+    end
   end
 
   describe '#load_pii' do

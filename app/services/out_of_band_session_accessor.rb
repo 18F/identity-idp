@@ -11,8 +11,16 @@ class OutOfBandSessionAccessor
 
   def ttl
     uuid = Rack::Session::SessionId.new(session_uuid)
-    session_store.instance_eval do
-      with_redis_connection { |client| client.ttl(prefixed_fallback(uuid)) }
+    if IdentityConfig.store.redis_session_read_fallback_key
+      session_store.instance_eval do
+        with_redis_connection do |client|
+          client.ttl(prefixed(uuid)) || client.ttl(prefixed_fallback(uuid))
+        end
+      end
+    else
+      session_store.instance_eval do
+        with_redis_connection { |client| client.ttl(prefixed(uuid)) }
+      end
     end
   end
 
@@ -28,7 +36,7 @@ class OutOfBandSessionAccessor
   end
 
   def destroy
-    session_store.send(:delete_session, {}, Rack::Session::SessionId.new(session_uuid), drop: true)
+    session_store.send(:delete_session, nil, Rack::Session::SessionId.new(session_uuid), drop: true)
   end
 
   # @api private
@@ -68,7 +76,7 @@ class OutOfBandSessionAccessor
 
     session_store.send(
       :write_session,
-      {},
+      ActionDispatch::TestRequest.create,
       Rack::Session::SessionId.new(session_uuid),
       session_data,
       expire_after: expiration.to_i,
@@ -77,7 +85,16 @@ class OutOfBandSessionAccessor
 
   # @return [Hash]
   def session_data
-    @session_data ||= session_store.send(:find_session, {}, Rack::Session::SessionId.new(session_uuid)).last || {}
+    uuid = Rack::Session::SessionId.new(session_uuid)
+    @session_data ||= session_store.instance_eval do
+      with_redis_connection do |client|
+        load_session_from_redis(
+          client,
+          ActionDispatch::TestRequest.create,
+          uuid,
+        )
+      end
+    end || {}
   end
 
   def session_store
