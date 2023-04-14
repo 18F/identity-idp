@@ -10,7 +10,7 @@ module Idv
 
         return handle_invalid_session if !validate_document_capture_session_id
 
-        return handle_invalid_session if !validate_document_capture_session_id
+        return handle_invalid_session if !validate_document_capture_user_id
 
         redirect_to idv_hybrid_mobile_document_capture_url
       end
