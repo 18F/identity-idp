@@ -4,7 +4,6 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
-    include DocumentCaptureConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
@@ -69,6 +68,16 @@ module Idv
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    # This is copied from DocumentCaptureConcern, with out the step check
+    def override_document_capture_step_csp
+      policy = current_content_security_policy
+      policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
+      policy.script_src(*policy.script_src, :unsafe_eval)
+      policy.style_src(*policy.style_src, :unsafe_inline)
+      policy.img_src(*policy.img_src, 'blob:')
+      request.content_security_policy = policy
     end
 
     def analytics_arguments
