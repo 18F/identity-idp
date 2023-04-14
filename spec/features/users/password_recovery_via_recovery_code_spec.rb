@@ -10,7 +10,7 @@ feature 'Password recovery via personal key' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  scenario 'resets password and reactivates profile with personal key', email: true, js: true do
+  scenario 'resets password and reactivates profile with personal key', email: true do
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)
@@ -84,7 +84,7 @@ feature 'Password recovery via personal key' do
       expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
 
-    scenario 'resets password, view modal and close it', email: true, js: true do
+    scenario 'resets password, view modal and close it', email: true do
       click_on t('links.account.reactivate.without_key')
       click_on t('links.cancel')
 
