@@ -33,6 +33,9 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with empty email address', js: true do
     sign_up_with('')
 
+    # NOTE: If JS is disabled, the browser's built-in frontend validation for the `required`
+    # attribute will prevent the form from being submitted, and the user will see the browser's
+    # default validation error message.
     expect(page).to have_content t('simple_form.required.text')
   end
 
