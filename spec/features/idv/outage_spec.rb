@@ -12,8 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-# This feature is currently _very_ flaky in CI.
-feature.skip 'IdV Outage Spec' do
+feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
@@ -82,6 +81,10 @@ feature.skip 'IdV Outage Spec' do
     config_flags.each do |key|
       allow(IdentityConfig.store).to receive(key).and_call_original
     end
+
+    # Let e.g. frontend analytics requests to /api/logger settle before we reload routes
+    # to avoid flakiness in CI.
+    page.server.wait_for_pending_requests if page&.server
 
     Rails.application.reload_routes!
   end

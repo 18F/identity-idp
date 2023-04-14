@@ -51,10 +51,6 @@ module TwoFactorAuthentication
       save_remember_device_preference
     end
 
-    def two_factor_authentication_method
-      'webauthn'
-    end
-
     def handle_invalid_webauthn
       is_platform_auth = params[:platform].to_s == 'true'
       if is_platform_auth

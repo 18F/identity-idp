@@ -70,9 +70,5 @@ module TwoFactorAuthCode
         ''
       end
     end
-
-    private
-
-    attr_reader :two_factor_authentication_method
   end
 end

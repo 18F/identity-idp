@@ -513,8 +513,13 @@ RSpec.describe User do
   describe '#fraud_review_eligible?' do
     context 'when verified_at is nil' do
       it 'returns false' do
-        user = User.new
-        create(:profile, user: user, fraud_review_pending: true, verified_at: nil)
+        verified_at = nil
+
+        user = create(:user)
+        user.profiles.create(
+          verified_at: verified_at,
+          fraud_review_pending: true,
+        )
 
         expect(user.fraud_review_eligible?).to be_falsey
       end
@@ -522,8 +527,13 @@ RSpec.describe User do
 
     context 'when verified_at is within 30 days' do
       it 'returns true' do
-        user = User.new
-        create(:profile, user: user, fraud_review_pending: true, verified_at: 15.days.ago)
+        verified_at = 15.days.ago
+
+        user = create(:user)
+        user.profiles.create(
+          verified_at: verified_at,
+          fraud_review_pending: true,
+        )
 
         expect(user.fraud_review_eligible?).to eq true
       end
@@ -531,8 +541,13 @@ RSpec.describe User do
 
     context 'when verified_at is older than 30 days' do
       it 'returns false' do
-        user = User.new
-        create(:profile, user: user, fraud_review_pending: true, verified_at: 45.days.ago)
+        verified_at = 45.days.ago
+
+        user = create(:user)
+        user.profiles.create(
+          verified_at: verified_at,
+          fraud_review_pending: true,
+        )
 
         expect(user.fraud_review_eligible?).to eq false
       end
@@ -541,9 +556,10 @@ RSpec.describe User do
 
   describe '#fraud_review_pending?' do
     it 'returns true if fraud review is pending' do
-      user = User.new
-      create(
-        :profile, user: user, active: false, fraud_review_pending: true
+      user = create(:user)
+      user.profiles.create(
+        active: false,
+        fraud_review_pending: true,
       )
 
       expect(user.fraud_review_pending?).to eq true
@@ -552,9 +568,10 @@ RSpec.describe User do
 
   describe '#fraud_rejection?' do
     it 'returns true if fraud rejection is pending' do
-      user = User.new
-      create(
-        :profile, user: user, active: false, fraud_rejection: true
+      user = create(:user)
+      user.profiles.create(
+        active: false,
+        fraud_rejection: true,
       )
 
       expect(user.fraud_rejection?).to eq true
@@ -564,9 +581,10 @@ RSpec.describe User do
   describe '#fraud_review_pending_profile' do
     context 'with a fraud review pending profile' do
       it 'returns the profile pending review' do
-        user = User.new
-        profile = create(
-          :profile, user: user, active: false, fraud_review_pending: true
+        user = create(:user)
+        profile = user.profiles.create(
+          active: false,
+          fraud_review_pending: true,
         )
 
         expect(user.fraud_review_pending_profile).to eq(profile)
@@ -582,9 +600,10 @@ RSpec.describe User do
   describe '#fraud_rejection_profile' do
     context 'with a fraud rejection profile' do
       it 'returns the profile with rejection' do
-        user = User.new
-        profile = create(
-          :profile, user: user, active: false, fraud_rejection: true
+        user = create(:user)
+        profile = user.profiles.create(
+          active: false,
+          fraud_rejection: true,
         )
 
         expect(user.fraud_rejection_profile).to eq(profile)

@@ -1,8 +1,8 @@
 class SamlEndpoint
-  attr_reader :request
+  attr_reader :year
 
-  def initialize(request)
-    @request = request
+  def initialize(year)
+    @year = year
   end
 
   def self.suffixes
@@ -15,9 +15,9 @@ class SamlEndpoint
 
   def secret_key
     key_contents = begin
-      AppArtifacts.store["saml_#{suffix}_key"]
+      AppArtifacts.store["saml_#{year}_key"]
     rescue NameError
-      raise "No SAML private key for suffix #{suffix}"
+      raise "No SAML private key for suffix #{year}"
     end
 
     OpenSSL::PKey::RSA.new(
@@ -27,17 +27,17 @@ class SamlEndpoint
   end
 
   def x509_certificate
-    AppArtifacts.store["saml_#{suffix}_cert"]
+    AppArtifacts.store["saml_#{year}_cert"]
   rescue NameError
-    raise "No SAML certificate for suffix #{suffix}"
+    raise "No SAML certificate for suffix #{year}"
   end
 
   def saml_metadata
     config = SamlIdp.config.dup
-    config.single_service_post_location += suffix
+    config.single_service_post_location += year
     if IdentityConfig.store.include_slo_in_saml_metadata
-      config.single_logout_service_post_location += suffix
-      config.remote_logout_service_post_location += suffix
+      config.single_logout_service_post_location += year
+      config.remote_logout_service_post_location += year
     else
       config.single_logout_service_post_location = nil
       config.remote_logout_service_post_location = nil
@@ -54,16 +54,7 @@ class SamlEndpoint
 
   def endpoint_config
     @endpoint_config ||= self.class.endpoint_configs.find do |config|
-      config[:suffix] == suffix
-    end
-  end
-
-  def suffix
-    @suffix ||= begin
-      suffixes = self.class.endpoint_configs.pluck(:suffix)
-      suffixes.find do |suffix|
-        request.path.match(/(metadata|auth(post)?|logout)#{suffix}$/)
-      end
+      config[:suffix] == year
     end
   end
 end
