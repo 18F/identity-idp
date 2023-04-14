@@ -3,9 +3,9 @@ module Idv
     include ActiveModel::Model
     include FormStateIdValidator
 
-    ATTRIBUTES = %i[first_name last_name dob state_id_address1 state_id_address2
-                    state_id_city state_id_zipcode state_id_jurisdiction
-                    state_id_state state_id_number same_address_as_id].freeze
+    ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
+                    identity_doc_city identity_doc_zipcode state_id_jurisdiction
+                    identity_doc_state state_id_number same_address_as_id].freeze
 
     attr_accessor(*ATTRIBUTES)
 
@@ -23,9 +23,9 @@ module Idv
       cleaned_errors = errors.dup
       cleaned_errors.delete(:first_name, :nontransliterable_field)
       cleaned_errors.delete(:last_name, :nontransliterable_field)
-      cleaned_errors.delete(:state_id_city, :nontransliterable_field)
-      cleaned_errors.delete(:state_id_address1, :nontransliterable_field)
-      cleaned_errors.delete(:state_id_address2, :nontransliterable_field)
+      cleaned_errors.delete(:identity_doc_city, :nontransliterable_field)
+      cleaned_errors.delete(:identity_doc_address1, :nontransliterable_field)
+      cleaned_errors.delete(:identity_doc_address2, :nontransliterable_field)
 
       FormResponse.new(
         success: valid?,

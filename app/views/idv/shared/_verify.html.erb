@@ -44,23 +44,23 @@ locals:
       <% if !remote_identity_proofing && capture_secondary_id_enabled %>
         <div class="margin-top-105">
           <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_address1] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_address1] %> </dd>
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.address2') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_address2] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_address2] %> </dd>
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_city] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_city] %> </dd>
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_state] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_state] %> </dd>
         </div>
         <div>
           <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
-          <dd class="display-inline margin-left-0"> <%= pii[:state_id_zipcode] %> </dd>
+          <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_zipcode] %> </dd>
         </div>
       <% end %>
     </dl>

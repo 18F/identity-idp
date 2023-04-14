@@ -95,11 +95,11 @@ module UspsInPersonProofing
       private
 
       SECONDARY_ID_ADDRESS_MAP = {
-        state_id_address1: :address1,
-        state_id_address2: :address2,
-        state_id_city: :city,
-        state_id_state: :state,
-        state_id_zipcode: :zipcode,
+        identity_doc_address1: :address1,
+        identity_doc_address2: :address2,
+        identity_doc_city: :city,
+        identity_doc_state: :state,
+        identity_doc_zipcode: :zipcode,
       }.freeze
 
       def handle_bad_request_error(err, enrollment)

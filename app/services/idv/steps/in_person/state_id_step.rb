@@ -21,11 +21,11 @@ module Idv
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
           if capture_secondary_id_enabled? && pii_from_user[:same_address_as_id] == 'true'
-            pii_from_user[:address1] = flow_params[:state_id_address1]
-            pii_from_user[:address2] = flow_params[:state_id_address2]
-            pii_from_user[:city] = flow_params[:state_id_city]
-            pii_from_user[:state] = flow_params[:state_id_state]
-            pii_from_user[:zipcode] = flow_params[:state_id_zipcode]
+            pii_from_user[:address1] = flow_params[:identity_doc_address1]
+            pii_from_user[:address2] = flow_params[:identity_doc_address2]
+            pii_from_user[:city] = flow_params[:identity_doc_city]
+            pii_from_user[:state] = flow_params[:identity_doc_state]
+            pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
             mark_step_complete(:address)
           end
         end
