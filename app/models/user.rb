@@ -382,12 +382,10 @@ class User < ApplicationRecord
 
   private
 
-  # Private from UserDecorator
   def lockout_period
     IdentityConfig.store.lockout_period_in_minutes.minutes
   end
 
-  # Private from UserDecorator
   def lockout_period_expired?
     lockout_time_expiration < Time.zone.now
   end
