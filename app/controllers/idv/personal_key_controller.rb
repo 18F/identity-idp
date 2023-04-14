@@ -23,8 +23,8 @@ module Idv
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,
-        fraud_review_pending: idv_session.profile&.fraud_review_pending?,
-        fraud_rejection: idv_session.profile&.fraud_rejection?,
+        fraud_review_pending: idv_session.profile&.fraud_reviewing?,
+        fraud_rejection: idv_session.profile&.fraud_rejected?,
       )
       redirect_to next_step
     end
@@ -94,7 +94,7 @@ module Idv
 
     def blocked_by_device_profiling?
       !profile.active &&
-        profile.fraud_review_pending? || profile.fraud_rejection
+        profile.fraud_reviewing? || profile.fraud_rejected?
     end
   end
 end
