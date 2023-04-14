@@ -44,7 +44,6 @@ class Profile < ApplicationRecord
     event :fraud_pass do
       transitions(
         from: [
-          :fraud_none,
           :fraud_reviewing,
           :fraud_rejected,
         ],
