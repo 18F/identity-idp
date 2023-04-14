@@ -558,7 +558,7 @@ describe Idv::ReviewController do
           it 'creates a disabled profile' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-            expect(user.profiles.last.fraud_review_pending?).to eq(true)
+            expect(user.profiles.last.fraud_reviewing?).to eq(true)
           end
 
           it 'logs events' do
