@@ -5,10 +5,8 @@ describe Idv::ComeBackLaterController do
   let(:pending_profile_requires_verification) { true }
 
   before do
-    user_decorator = instance_double(UserDecorator)
-    allow(user_decorator).to receive(:pending_profile_requires_verification?).
+    allow(user).to receive(:pending_profile_requires_verification?).
       and_return(pending_profile_requires_verification)
-    allow(user).to receive(:decorate).and_return(user_decorator)
     stub_sign_in(user)
   end
 

@@ -44,4 +44,8 @@ class AnonymousUser
   def confirmed_at
     Time.zone.now
   end
+
+  def locked_out?
+    second_factor_locked_at.present? && !lockout_period_expired?
+  end
 end

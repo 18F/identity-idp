@@ -52,7 +52,7 @@ module Idv
     end
 
     def confirm_user_not_pending_gpo_verificaiton
-      return unless current_user.decorate.pending_profile_requires_verification?
+      return unless current_user.pending_profile_requires_verification?
       redirect_to idv_come_back_later_url
     end
 

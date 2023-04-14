@@ -52,7 +52,7 @@ module TwoFactorAuthentication
     def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
       if password_reset_profile.present?
         re_encrypt_profile_recovery_pii
-      elsif decorated_user.identity_verified?
+      elsif current_user.identity_verified?
         user_session[:personal_key] = PersonalKeyGenerator.new(current_user).create
       else
         remove_personal_key
@@ -73,7 +73,7 @@ module TwoFactorAuthentication
     end
 
     def password_reset_profile
-      @password_reset_profile ||= current_user.decorate.password_reset_profile
+      @password_reset_profile ||= current_user.password_reset_profile
     end
 
     def pii
@@ -90,7 +90,7 @@ module TwoFactorAuthentication
 
     def handle_valid_otp
       handle_valid_otp_for_authentication_context(auth_method: 'personal_key')
-      if decorated_user.identity_verified? || decorated_user.password_reset_profile.present?
+      if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to after_mfa_setup_path

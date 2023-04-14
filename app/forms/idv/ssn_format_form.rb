@@ -8,11 +8,12 @@ module Idv
     attr_accessor :ssn
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, 'Ssn')
+      ActiveModel::Name.new(self, nil, 'doc_auth')
     end
 
-    def initialize(user)
+    def initialize(user, flow_session = {})
       @user = user
+      @ssn = flow_session.dig('pii_from_doc', :ssn)
     end
 
     def submit(params)
@@ -23,6 +24,10 @@ module Idv
         errors: errors,
         extra: { pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]] },
       )
+    end
+
+    def updating_ssn?
+      ssn.present?
     end
 
     private
