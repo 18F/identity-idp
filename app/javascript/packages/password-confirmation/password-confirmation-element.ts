@@ -5,7 +5,7 @@ class PasswordConfirmationElement extends HTMLElement {
   connectedCallback() {
     this.toggle.addEventListener('change', () => this.setInputType());
     this.toggle.addEventListener('click', () => this.trackToggleEvent());
-    this.input_confirmation.addEventListener('change', () => this.validatePassword());
+    this.inputConfirmation.addEventListener('change', () => this.validatePassword());
     this.setInputType();
   }
 
@@ -26,14 +26,14 @@ class PasswordConfirmationElement extends HTMLElement {
   /**
    * Text or password confirmation input.
    */
-  get input_confirmation(): HTMLInputElement {
+  get inputConfirmation(): HTMLInputElement {
     return this.querySelector('.password-confirmation__input2')! as HTMLInputElement;
   }
 
   setInputType() {
     const checked = this.toggle.checked ? 'text' : 'password';
     this.input.type = checked;
-    this.input_confirmation.type = checked;
+    this.inputConfirmation.type = checked;
   }
 
   trackToggleEvent() {
@@ -42,13 +42,13 @@ class PasswordConfirmationElement extends HTMLElement {
 
   validatePassword() {
     const password = this.input.value;
-    const confirmation = this.input_confirmation.value;
+    const confirmation = this.inputConfirmation.value;
 
     if (password && password !== confirmation) {
       const errorMsg = t('components.password_confirmation.errors.mismatch');
-      this.input_confirmation.setCustomValidity(errorMsg);
+      this.inputConfirmation.setCustomValidity(errorMsg);
     } else {
-      this.input_confirmation.setCustomValidity('');
+      this.inputConfirmation.setCustomValidity('');
     }
   }
 }

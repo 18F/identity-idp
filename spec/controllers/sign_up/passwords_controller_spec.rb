@@ -32,7 +32,7 @@ describe SignUp::PasswordsController do
       expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
       post :create, params: {
-        password_confirmation_form: {
+        password_form: {
           password: 'NewVal!dPassw0rd',
           password_confirmation: 'NewVal!dPassw0rd',
         },
@@ -111,7 +111,7 @@ describe SignUp::PasswordsController do
       expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
       post :create,
-           params: { password_confirmation_form: { password: password, password_confirmation: password },
+           params: { password_form: { password: password, password_confirmation: password },
                      confirmation_token: token }
     end
   end
