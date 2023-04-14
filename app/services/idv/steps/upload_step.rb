@@ -36,7 +36,7 @@ module Idv
 
       def link_for_send_link(session_uuid)
         if IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
-          idv_hybrid_mobile_document_capture_entry_url(
+          idv_hybrid_mobile_entry_url(
             'document-capture-session': session_uuid,
             request_id: sp_session[:request_id],
           )
