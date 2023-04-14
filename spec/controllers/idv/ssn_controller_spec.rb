@@ -144,7 +144,8 @@ describe Idv::SsnController do
       end
 
       it 'adds a threatmetrix session id to flow session' do
-        subject.extra_view_variables
+        put :update, params: params
+        subject.threatmetrix_view_variables
         expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
       end
 
@@ -152,7 +153,7 @@ describe Idv::SsnController do
         flow_session['pii_from_doc'][:ssn] = ssn
         put :update, params: params
         session_id = flow_session[:threatmetrix_session_id]
-        subject.extra_view_variables
+        subject.threatmetrix_view_variables
         expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
       end
     end

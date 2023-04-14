@@ -3,7 +3,7 @@ module TwoFactorAuthentication
   class WebauthnVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    before_action :check_sp_required_mfa_bypass
+    before_action :check_sp_required_mfa
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
@@ -49,10 +49,6 @@ module TwoFactorAuthentication
     def handle_remember_device
       save_user_opted_remember_device_pref
       save_remember_device_preference
-    end
-
-    def two_factor_authentication_method
-      'webauthn'
     end
 
     def handle_invalid_webauthn
@@ -131,6 +127,10 @@ module TwoFactorAuthentication
         credential_id: params[:credential_id],
         webauthn_error: params[:webauthn_error],
       )
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: 'webauthn')
     end
   end
 end

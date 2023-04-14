@@ -47,7 +47,7 @@ module TwoFactorAuthenticatableMethods
   def handle_max_attempts(type)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
-      decorated_user,
+      current_user,
     )
     sign_out
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
@@ -70,17 +70,16 @@ module TwoFactorAuthenticatableMethods
     redirect_to after_otp_verification_confirmation_url
   end
 
-  def check_sp_required_mfa_bypass
+  def check_sp_required_mfa_bypass(auth_method:)
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
-    method = two_factor_authentication_method
     return if service_provider_mfa_policy.phishing_resistant_required? &&
-              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(method)
-    return if service_provider_mfa_policy.piv_cac_required? && method == 'piv_cac'
+              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
+    return if service_provider_mfa_policy.piv_cac_required? && auth_method == 'piv_cac'
     prompt_to_verify_sp_required_mfa
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless decorated_user.no_longer_locked_out?
+    return unless current_user.no_longer_locked_out?
 
     UpdateUser.new(
       user: current_user,
@@ -92,7 +91,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_otp(next_url:, auth_method: nil)
-    handle_valid_otp_for_context(auth_method)
+    handle_valid_otp_for_context(auth_method: auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -104,20 +103,12 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference
   end
 
-  def handle_valid_otp_for_context(auth_method)
+  def handle_valid_otp_for_context(auth_method:)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_otp_for_confirmation_context
     end
-  end
-
-  def two_factor_authentication_method
-    auth_method = params[:otp_delivery_preference] || request.path.split('/').last
-    # the above check gets a wrong value for piv_cac when there is no OTP screen
-    # so we patch it to fix LG-3228
-    auth_method = 'piv_cac' if auth_method == 'present_piv_cac'
-    auth_method
   end
 
   # Method will be renamed in the next refactor.
@@ -128,7 +119,7 @@ module TwoFactorAuthenticatableMethods
 
     flash.now[:error] = invalid_otp_error(type)
 
-    if decorated_user.locked_out?
+    if current_user.locked_out?
       handle_second_factor_locked_user(context: context, type: type)
     else
       render_show_after_invalid
@@ -286,26 +277,8 @@ module TwoFactorAuthenticatableMethods
     user_session[:unconfirmed_phone] && UserSessionContext.confirmation_context?(context)
   end
 
-  def phone_view_data
-    {
-      confirmation_for_add_phone: confirmation_for_add_phone?,
-      phone_number: display_phone_to_deliver_to,
-      code_value: direct_otp_code,
-      otp_expiration: otp_expiration,
-      otp_delivery_preference: two_factor_authentication_method,
-      otp_make_default_number: selected_otp_make_default_number,
-      unconfirmed_phone: unconfirmed_phone?,
-    }.merge(generic_data)
-  end
-
   def selected_otp_make_default_number
     params&.dig(:otp_make_default_number)
-  end
-
-  def authenticator_view_data
-    {
-      two_factor_authentication_method: two_factor_authentication_method,
-    }.merge(generic_data)
   end
 
   def generic_data
@@ -322,31 +295,8 @@ module TwoFactorAuthenticatableMethods
     end
   end
 
-  def decorated_user
-    current_user.decorate
-  end
-
   def confirmation_for_add_phone?
     UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-  end
-
-  def presenter_for_two_factor_authentication_method
-    case two_factor_authentication_method.to_sym
-    when :authenticator
-      TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-        data: authenticator_view_data,
-        view: view_context,
-        service_provider: current_sp,
-        remember_device_default: remember_device_default,
-      )
-    when :sms, :voice
-      TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-        data: phone_view_data,
-        view: view_context,
-        service_provider: current_sp,
-        remember_device_default: remember_device_default,
-      )
-    end
   end
 
   def phone_configuration

@@ -162,6 +162,7 @@ class IdentityConfig
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
+    config.add(:doc_auth_hybrid_mobile_controllers_enabled, type: :boolean)
     config.add(:doc_auth_max_attempts, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
@@ -358,8 +359,6 @@ class IdentityConfig
     config.add(:redis_irs_attempt_api_url)
     config.add(:redis_irs_attempt_api_pool_size, type: :integer)
     config.add(:redis_throttle_url)
-    config.add(:redis_throttle_alternate_url)
-    config.add(:redis_throttle_alternate_pool_write_enabled, type: :boolean)
     config.add(:redis_url)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_session_pool_size, type: :integer)
@@ -398,7 +397,6 @@ class IdentityConfig
     config.add(:secret_key_base, type: :string)
     config.add(:seed_agreements_data, type: :boolean)
     config.add(:service_provider_request_ttl_hours, type: :integer)
-    config.add(:saml_internal_post, type: :boolean)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
     config.add(:session_encryption_key, type: :string)
@@ -410,6 +408,10 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
+    config.add(
+      :sign_up_mfa_selection_order_testing, type: :json,
+                                            options: { symbolize_names: true }
+    )
     config.add(:sign_in_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)

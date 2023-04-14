@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_04_131517) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_11_160948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -440,7 +440,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_04_131517) do
     t.string "ssn_signature", limit: 64
     t.text "encrypted_pii_recovery"
     t.integer "deactivation_reason"
-    t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"

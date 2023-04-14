@@ -2,6 +2,7 @@ module TwoFactorAuthentication
   class TotpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
+    before_action :check_sp_required_mfa
     before_action :confirm_totp_enabled
 
     def show
@@ -34,6 +35,25 @@ module TwoFactorAuthentication
       return if current_user.auth_app_configurations.any?
 
       redirect_to user_two_factor_authentication_url
+    end
+
+    def presenter_for_two_factor_authentication_method
+      TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+        data: authenticator_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    end
+
+    def authenticator_view_data
+      {
+        two_factor_authentication_method: 'authenticator',
+      }.merge(generic_data)
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: 'authenticator')
     end
   end
 end

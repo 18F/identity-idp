@@ -1,27 +1,38 @@
 module Proofing
   class ResolutionResultAdjudicator
-    attr_reader :resolution_result, :state_id_result
+    attr_reader :resolution_result, :state_id_result, :device_profiling_result
 
-    def initialize(resolution_result:, state_id_result:, should_proof_state_id:)
+    def initialize(
+      resolution_result:,
+      state_id_result:,
+      should_proof_state_id:,
+      device_profiling_result:
+    )
       @resolution_result = resolution_result
       @state_id_result = state_id_result
       @should_proof_state_id = should_proof_state_id
+      @device_profiling_result = device_profiling_result
     end
 
     def adjudicated_result
-      success, adjudication_reason = result_and_adjudication_reason
+      resolution_success, resolution_reason = resolution_result_and_reason
+      device_profiling_success, device_profiling_reason = device_profiling_result_and_reason
+
       FormResponse.new(
-        success: success,
-        errors: resolution_result.errors.merge(state_id_result.errors),
+        success: resolution_success && device_profiling_success,
+        errors: errors,
         extra: {
-          exception: resolution_result.exception || state_id_result.exception,
-          timed_out: resolution_result.timed_out? || state_id_result.timed_out?,
+          exception: exception,
+          timed_out: timed_out?,
+          threatmetrix_review_status: device_profiling_result.review_status,
           context: {
-            adjudication_reason: adjudication_reason,
+            device_profiling_adjudication_reason: device_profiling_reason,
+            resolution_adjudication_reason: resolution_reason,
             should_proof_state_id: should_proof_state_id?,
             stages: {
               resolution: resolution_result.to_h,
               state_id: state_id_result.to_h,
+              threatmetrix: device_profiling_result.to_h,
             },
           },
         },
@@ -34,7 +45,32 @@ module Proofing
 
     private
 
-    def result_and_adjudication_reason
+    def errors
+      resolution_result.errors.
+        merge(state_id_result.errors).
+        merge(device_profiling_result.errors || {})
+    end
+
+    def exception
+      resolution_result.exception || state_id_result.exception || device_profiling_result.exception
+    end
+
+    def timed_out?
+      resolution_result.timed_out? || state_id_result.timed_out? ||
+        device_profiling_result.timed_out?
+    end
+
+    def device_profiling_result_and_reason
+      if device_profiling_result.exception?
+        [false, :device_profiling_exception]
+      elsif device_profiling_result.success?
+        [true, :device_profiling_result_pass]
+      else
+        [true, :device_profiling_result_review_required]
+      end
+    end
+
+    def resolution_result_and_reason
       if resolution_result.success? && state_id_result.success?
         [true, :pass_resolution_and_state_id]
       elsif !state_id_result.success?

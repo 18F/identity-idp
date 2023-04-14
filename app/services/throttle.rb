@@ -80,18 +80,6 @@ class Throttle
       end
     end
 
-    if write_to_alternate?
-      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
-        _alternate_value, _success = client.multi do |multi|
-          multi.incr(key)
-          multi.expire(
-            key,
-            Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
-          )
-        end
-      end
-    end
-
     @redis_attempts = value.to_i
     @redis_attempted_at = Time.zone.now
 
@@ -133,12 +121,6 @@ class Throttle
       client.del(key)
     end
 
-    if write_to_alternate?
-      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
-        client.del(key)
-      end
-    end
-
     @redis_attempts = 0
     @redis_attempted_at = nil
   end
@@ -154,16 +136,6 @@ class Throttle
       )
     end
 
-    if write_to_alternate?
-      REDIS_THROTTLE_ALTERNATE_POOL.with do |client|
-        client.setex(
-          key,
-          Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
-          value,
-        )
-      end
-    end
-
     @redis_attempts = value.to_i
     @redis_attempted_at = Time.zone.now
 
@@ -176,11 +148,6 @@ class Throttle
     else
       "throttle:throttle:#{@target}:#{throttle_type}"
     end
-  end
-
-  def write_to_alternate?
-    REDIS_THROTTLE_ALTERNATE_POOL &&
-      IdentityConfig.store.redis_throttle_alternate_pool_write_enabled
   end
 
   def self.attempt_window_in_minutes(throttle_type)

@@ -3,8 +3,8 @@ class SamlPostController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def auth
-    action_url = build_action_url(request.path)
-    if !action_url
+    action_url = api_saml_authpost_path(path_year: params[:path_year])
+    if !valid_path?(action_url)
       render_not_found
       return
     end
@@ -17,13 +17,8 @@ class SamlPostController < ApplicationController
 
   private
 
-  def build_action_url(path)
-    path_year = path[-4..-1]
-    path = "/api/saml/authpost#{path_year}"
-    recognized_path = Rails.application.routes.recognize_path(path, method: :post)
-
-    if recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
-      Rails.application.routes.url_for(**recognized_path)
-    end
+  def valid_path?(action_path)
+    recognized_path = Rails.application.routes.recognize_path(action_path, method: :post)
+    recognized_path[:controller] == 'saml_idp' && recognized_path[:action] == 'auth'
   end
 end

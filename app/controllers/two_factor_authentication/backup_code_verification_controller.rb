@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    before_action :check_sp_required_mfa_bypass
+    before_action :check_sp_required_mfa
 
     def show
       analytics.multi_factor_auth_enter_backup_code_visit(context: context)
@@ -52,7 +52,7 @@ module TwoFactorAuthentication
 
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
 
-      if decorated_user.locked_out?
+      if current_user.locked_out?
         handle_second_factor_locked_user(context: context, type: 'backup_code')
       else
         render_show_after_invalid
@@ -76,6 +76,10 @@ module TwoFactorAuthentication
     def handle_valid_backup_code
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: 'backup_code')
     end
   end
 end
