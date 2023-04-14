@@ -50,7 +50,7 @@ locals:
 <% end %>
 
 <%= simple_form_for(
-      :doc_auth,
+      Idv::SsnFormatForm.new(current_user),
       url: url_for,
       method: :put,
       html: { autocomplete: 'off' },
