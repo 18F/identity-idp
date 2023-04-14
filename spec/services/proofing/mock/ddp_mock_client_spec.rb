@@ -31,7 +31,7 @@ RSpec.describe Proofing::Mock::DdpMockClient do
     context 'with explicit no_result' do
       let(:redis_result) { 'no_result' }
 
-      it 'has returns an exception result' do
+      it 'has an exception result' do
         expect(result.review_status).to be_nil
         expect(result.response_body).to be_nil
         expect(result.exception.inspect).to include('Unexpected ThreatMetrix review_status value')
