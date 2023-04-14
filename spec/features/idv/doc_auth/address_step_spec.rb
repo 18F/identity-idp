@@ -61,10 +61,8 @@ feature 'doc auth verify step', :js do
     end
   end
 
-  context 'with document capture controller flag set, no PII in session' do
+  context 'with no PII in session' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
-        and_return(true)
       sign_in_and_2fa_user
     end
 
