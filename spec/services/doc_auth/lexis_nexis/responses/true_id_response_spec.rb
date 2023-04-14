@@ -146,6 +146,38 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
+  context 'when True_ID Decision product is not present' do
+    it 'excludes decision_product_status from logging' do
+      true_id_reaponse_success_2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2)
+      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }).not_to be_nil
+      body_no_line2 = true_id_reaponse_success_2.tap do |json|
+        json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
+      end.to_json
+
+      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }).to be_nil
+      success_response_no_line2 = instance_double(Faraday::Response, status: 200, body: body_no_line2)
+      response = described_class.new(success_response_no_line2, config)
+
+      expect(response.to_h[:decision_product_status]).to be_nil
+    end
+  end
+
+  context 'when ProductStatus for True_ID Decision product is not present' do
+    it 'excludes decision_product_status from logging' do
+      true_id_reaponse_success_2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2)
+      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'].not_to be_nil
+      body_no_line2 = expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'] do |json|
+        json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
+      end.to_json
+
+      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'].to be_nil
+      success_response_no_line2 = instance_double(Faraday::Response, status: 200, body: body_no_line2)
+      response = described_class.new(success_response_no_line2, config)
+
+      expect(response.to_h[:decision_product_status]).to be_nil
+    end
+  end
+
   context 'when the barcode can not be read' do
     let(:response) do
       described_class.new(attention_barcode_read, config)
