@@ -23,7 +23,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_failed: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
-      percent_enrollments_errored: 0,
     }
 
     reprocess_delay_minutes = IdentityConfig.store.
