@@ -21,7 +21,7 @@ Refer to the [_Local Development_ documentation](./docs/local-development.md) to
 - [Docker](docs/Docker.md)
 - [Front-end Architecture](docs/frontend.md)
 - [Local Development](docs/local-development.md)
-- [Mobile Development](docs/mobile.md)
+- [Mobile local development](docs/mobile.md)
 - [SAML Profile](docs/SAML_PROFILE.md)
 - [Security](docs/SECURITY.md)
 - [Troubleshooting Local Development](docs/troubleshooting.md)
