@@ -21,7 +21,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       enrollment_established_at: enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details: enrollment_selected_location_details,
-      capture_secondary_id_enabled:
+      capture_secondary_id_enabled: capture_secondary_id_enabled,
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
@@ -108,6 +108,12 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'with double address verification disabled' do
       let(:capture_secondary_id_enabled) { false }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(false)
+      end
+
       context 'with current address matching id' do
         let(:current_address_matches_id) { true }
 
@@ -123,6 +129,12 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'with double address verification enabled' do
       let(:capture_secondary_id_enabled) { true }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(true)
+      end
+
       context 'with current address matching id' do
         let(:current_address_matches_id) { true }
 
