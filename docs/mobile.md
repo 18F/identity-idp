@@ -51,7 +51,7 @@ These instructions will allow you to debug your phone browser with Chrome DevToo
    **USB debugging** is a setting the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 5 times.
 
 
-2. Plug your Android phone into your development computer with a USB cable. Don't use a USB hub; cable it directly into your computer. If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
+2. Plug your Android phone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
 
 3. Visit `chrome://inspect` in the Chrome browser of your development computer. (It may already be open from the previous set of instructions.) You should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
 
@@ -71,7 +71,7 @@ These instructions work only if your development computer is an Apple product. Y
 
 3. On your iPhone, go to **Settings → Safari → Advanced** and turn on Web Inspector. Make sure JavaScript is also on.
 
-4. Plug your iPhone into your development computer with a USB cable. Don't use a USB hub; cable it directly into your computer. If you see a message on your phone asking you to **Trust This Computer?** click to trust it.
+4. Plug your iPhone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Trust This Computer?** click to trust it.
 
 5. Revisit the Safari **Develop** menu of your laptop. You'll see a menu item that wasn't there before: the name of your phone.
 
