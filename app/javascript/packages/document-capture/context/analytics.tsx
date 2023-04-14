@@ -71,7 +71,7 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
 
   const extraAnalyticsAttributes = (stepName) => {
     const extra: EventMetadata = { ...DEFAULT_EVENT_METADATA };
-    if (stepName === 'location') {
+    if (stepName === 'prepare') {
       extra.in_person_cta_variant = inPersonCtaVariantActive;
     }
     return extra;
