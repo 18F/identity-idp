@@ -2,7 +2,7 @@
 
 Instructions to use an iPhone or Android mobile device for local app development, in two sections:
 * [§ Use the app from a mobile device](#use-the-app-from-a-mobile-device) by running it over your home or office WiFi
-* [§ Debugging with the desktop browser](#debugging-with-the-desktop-browser) by pulgging your phone into your comptuer with a USB cable
+* [§ Debugging with the desktop browser](#debugging-with-the-desktop-browser) by plugging your phone into your computer with a USB cable
 
 ## Use the app from a mobile device
 
@@ -44,11 +44,11 @@ To do this, you will plug your phone into your laptop. You will need a USB cable
 
 ### Android / Chrome
 
-These instructions will allow you to debug your phone browser with Chrome DevTools on your developmet machine. Also, they let you view and interact with your phone's browser screen on your laptop screen or development monitor, which lets you screenshare your development work with coworkers.
+These instructions will allow you to debug your phone browser with Chrome DevTools on your development machine. Also, they let you view and interact with your phone's browser screen on your laptop screen or development monitor, which lets you screenshare your development work with coworkers.
 
 1. In your Android phone, turn on USB debugging. This will allow your development computer to connect to your phone.
 
-   **USB debugging** is a setting the the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 5 times.
+   **USB debugging** is a setting the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 5 times.
 
 
 2. Plug your Android phone into your development computer with a USB cable. Don't use a USB hub; cable it directly into your computer. If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
@@ -61,7 +61,7 @@ These instructions will allow you to debug your phone browser with Chrome DevToo
 
 ### iPhone / Safari
 
-These instructions work only if your development comptuer is an Apple product. You will need a USB cable with the appropriate "lightning" connector to plug into an iPhone.
+These instructions work only if your development computer is an Apple product. You will need a USB cable with the appropriate "lightning" connector to plug into an iPhone.
 
 1. On your development Apple machine, open the Safari web browser. Go to menu items **Safari → Preferences → Advanced** and check **Show Develop menu in menu bar**. A screenshot:
 
@@ -77,4 +77,4 @@ These instructions work only if your development comptuer is an Apple product. Y
 
 6. Within that menu item, you'll find a list of Safari browser tabs open on your iPhone. To see them, the iPhone must be unlocked, and the Safari browser must be displayed on the phone's screen.
 
-7. Click on the tab you wish to inspect. You will see browser debugging tools like Elements, Console, and Layers. (Unlike the above Androd instructions, you will not see a picture of your phone's browser screen on your laptop's screen.)
+7. Click on the tab you wish to inspect. You will see browser debugging tools like Elements, Console, and Layers. (Unlike the above Android instructions, you will not see a picture of your phone's browser screen on your laptop's screen.)
