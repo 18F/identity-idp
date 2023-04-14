@@ -41,7 +41,7 @@ describe 'Add a new phone number' do
     )
   end
 
-  scenario 'adding a new phone number validates number', js: true do
+  scenario 'adding a new phone number validates number' do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
     within('.sidenav') do
@@ -139,7 +139,7 @@ describe 'Add a new phone number' do
     )
   end
 
-  scenario 'adding a phone that is already on the user account shows error message', js: true do
+  scenario 'adding a phone that is already on the user account shows error message' do
     user = create(:user, :signed_up)
     # Regression handling: Previously, non-U.S. "+1" numbers were not correctly disambiguated, and
     # would fail to check uniqueness.
@@ -183,7 +183,7 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('errors.messages.voip_check_error'))
   end
 
-  scenario 'adding a phone in a different country', js: true do
+  scenario 'adding a phone in a different country' do
     user = create(:user, :signed_up)
 
     sign_in_and_2fa_user(user)
@@ -204,7 +204,7 @@ describe 'Add a new phone number' do
     expect(page.find('#otp_delivery_preference_instruction')).to have_content('Australia')
   end
 
-  scenario 'adding a phone with a reCAPTCHA challenge', js: true do
+  scenario 'adding a phone with a reCAPTCHA challenge' do
     user = create(:user, :signed_up)
 
     allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
