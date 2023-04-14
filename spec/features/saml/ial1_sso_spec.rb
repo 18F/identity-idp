@@ -165,7 +165,7 @@ feature 'IAL1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to eq('http://www.example.com/es/')
+      expect(current_url).to eq root_url(locale: :es, trailing_slash: true)
       expect_branded_experience
     end
   end
@@ -175,12 +175,12 @@ feature 'IAL1 Single Sign On' do
       request_url = saml_authn_request_url
       visit request_url
 
-      expect(current_url).to eq('http://www.example.com/')
+      expect(current_url).to eq root_url
       expect_branded_experience
 
       visit request_url
 
-      expect(current_url).to eq('http://www.example.com/')
+      expect(current_url).to eq root_url
       expect_branded_experience
     end
   end
