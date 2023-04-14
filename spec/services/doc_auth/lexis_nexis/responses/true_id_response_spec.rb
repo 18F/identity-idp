@@ -146,35 +146,43 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
-  context 'when True_ID Decision product is not present' do
-    it 'excludes decision_product_status from logging' do
-      true_id_reaponse_success_2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2)
-      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }).not_to be_nil
-      body_no_line2 = true_id_reaponse_success_2.tap do |json|
-        json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
-      end.to_json
+  context 'when True_ID response does not contain a decision product status' do
+    let(:true_id_response_success_2) { JSON.parse(LexisNexisFixtures.true_id_response_success_2) }
+    describe 'when a True_ID Decision product is not present in the response' do
+      it 'excludes decision_product_status from logging' do
+        decision_product = get_decision_product(true_id_response_success_2)
+        expect(decision_product).not_to be_nil
+        body_no_decision = true_id_response_success_2.tap do |json|
+          json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
+        end.to_json
 
-      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }).to be_nil
-      success_response_no_line2 = instance_double(Faraday::Response, status: 200, body: body_no_line2)
-      response = described_class.new(success_response_no_line2, config)
+        decision_product = get_decision_product(true_id_response_success_2)
+        expect(decision_product).to be_nil
+        success_response_no_decision = instance_double(Faraday::Response, status: 200, body: body_no_decision)
+        response = described_class.new(success_response_no_decision, config)
 
-      expect(response.to_h[:decision_product_status]).to be_nil
+        expect(response.to_h[:decision_product_status]).to be_nil
+      end
     end
-  end
 
-  context 'when ProductStatus for True_ID Decision product is not present' do
-    it 'excludes decision_product_status from logging' do
-      true_id_reaponse_success_2 = JSON.parse(LexisNexisFixtures.true_id_response_success_2)
-      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'].not_to be_nil
-      body_no_line2 = expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'] do |json|
-        json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
-      end.to_json
+    describe 'when a True_ID_Decision does not containta status' do
+      it 'excludes decision_product_status from logging' do
+        decision_product = get_decision_product(true_id_response_success_2)
+        expect(decision_product['ProductStatus']).not_to be_nil
+        body_no_decision_status = decision_product.tap do |json|
+          json.delete('ProductStatus')
+        end.to_json
 
-      expect(true_id_reaponse_success_2['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' })['ProductStatus'].to be_nil
-      success_response_no_line2 = instance_double(Faraday::Response, status: 200, body: body_no_line2)
-      response = described_class.new(success_response_no_line2, config)
+        expect(decision_product['ProductStatus']).to be_nil
+        success_response_no_decision_status = instance_double(Faraday::Response, status: 200, body: body_no_decision_status)
+        response = described_class.new(success_response_no_decision_status, config)
 
-      expect(response.to_h[:decision_product_status]).to be_nil
+        expect(response.to_h[:decision_product_status]).to be_nil
+      end
+    end
+
+    def get_decision_product(resp)
+      resp['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }
     end
   end
 
