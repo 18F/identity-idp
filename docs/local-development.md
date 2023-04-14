@@ -156,6 +156,8 @@ The app will start using that Geolite2 file for geolocation after restart.
 
 ### Testing on a mobile device or in a virtual machine
 
+[More detailed moble device instructions are here](mobile.md)
+
 By default, the application binds to `localhost`. To test on a network device or within a virtual machine, you can bind to `0.0.0.0` instead, using the following instructions:
 
 1. Determine your computer's network IP address. On macOS, you can find this in the "Network" system settings, shown under the "Status: Connected" label. This often takes the format of `192.168.1.x` or `10.0.0.x`.

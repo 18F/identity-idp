@@ -8,6 +8,8 @@ Instructions to use an iPhone or Android mobile device for local app development
 
 These instructions will configure your local copy of the identity-idp app to serve web pages over your local computer network &mdash; the wifi in your home or office. You can broadcast the app to a mobile phone or tablet. Both your mobile device and your development computer (your laptop) must be connected to the same wifi network.
 
+By default, the application binds to `localhost`. These instructions bind to `0.0.0.0` instead. Some Android users report they can access `localhost:3000` directly on their phone, however.
+
 1. Find your Local Area Network IP address. On a MacBook, this is available at **System Preferences → Network**. The address may start with `192.168`.
 
 2. To your app's `application.yml` file, add the below. Fill in your actual LAN IP address. The final line creates a **confirm now** link in place of email confirmation.
@@ -33,8 +35,6 @@ HOST=0.0.0.0 make run-https
 6. In the Chrome browser on your phone, open a new incognito tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
 
 After you complete these steps, pages from the app are served from your development machine to your mobile device, where you may now use the identity-idp app. For front-end development, you may now want to turn on browser development tools per the next section of these instructions.
-
-Some Android users report they can access `localhost:3000` on their phone, without the need to use `https://192.168.x.x:3000`.
 
 ## Debugging with the desktop browser
 
