@@ -1,10 +1,6 @@
 @forward 'required';
-@forward '@18f/identity-design-system/dist/assets/scss/packages/required';
+@forward 'uswds';
 @forward 'design-system-waiting-room';
-@forward '@18f/identity-design-system/dist/assets/scss/uswds-theme';
-@forward '@18f/identity-design-system/dist/assets/scss/packages/global';
-@forward '@18f/identity-design-system/dist/assets/scss/packages/components';
 @forward 'components/all';
-@forward '@18f/identity-design-system/dist/assets/scss/packages/utilities';
 @forward 'utilities/all';
 @forward 'print';

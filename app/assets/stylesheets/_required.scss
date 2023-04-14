@@ -1,4 +1,4 @@
-@use '@18f/identity-design-system/dist/assets/scss/uswds-theme' with (
+@use 'uswds-core' with (
   $theme-body-font-size: 'sm',
   $theme-font-path: '.',
   $theme-image-path: '@18f/identity-design-system/dist/assets/img',

@@ -1,5 +1,5 @@
 @forward 'required';
-@use '@18f/identity-design-system/dist/assets/scss/uswds-theme' as *;
+@use 'uswds-core' as *;
 @import 'variables/app';
 @import 'variables/email';
 @import 'foundation-emails/scss/foundation-emails';

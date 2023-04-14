@@ -18,7 +18,7 @@
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
     "build": "webpack && yarn generate-browsers-json",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss --load-path=node_modules/@uswds/uswds/packages --out-dir=app/assets/builds"
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss --load-path=node_modules/@18f/identity-design-system/packages --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@babel/core": "^7.20.7",
