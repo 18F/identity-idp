@@ -5,11 +5,13 @@ module Idv
     class EntryController < ApplicationController
       include HybridMobileConcern
 
-      before_action :track_document_capture_session_id_usage
-      before_action :validate_document_capture_session_id
-      before_action :validate_document_capture_user_id
-
       def show
+        track_document_capture_session_id_usage
+
+        return handle_invalid_session if !validate_document_capture_session_id
+
+        return handle_invalid_session if !validate_document_capture_session_id
+
         redirect_to idv_hybrid_mobile_document_capture_url
       end
 
@@ -48,7 +50,7 @@ module Idv
         if document_capture_session_uuid.blank?
           # If we've already gotten a document capture user id previously, just continue
           # processing and (eventually) redirect the user where they're supposed to be.
-          return if document_capture_user_id
+          return true if document_capture_user_id
         end
 
         result = Idv::DocumentCaptureSessionForm.new(document_capture_session_uuid).submit
@@ -67,13 +69,13 @@ module Idv
           session[:document_capture_session_uuid] = document_capture_session_uuid
 
           update_sp_session
-        else
-          handle_invalid_session
+
+          true
         end
       end
 
       def validate_document_capture_user_id
-        handle_invalid_session unless document_capture_user_id
+        !!document_capture_user_id
       end
     end
   end
