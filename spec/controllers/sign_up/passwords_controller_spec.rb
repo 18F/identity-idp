@@ -1,118 +1,177 @@
 require 'rails_helper'
 
 describe SignUp::PasswordsController do
+  let(:token) { 'new token' }
+
   describe '#create' do
-    let(:success_properties) { { success: true, failure_reason: nil } }
-    it 'tracks a valid password event' do
-      token = 'new token'
-      user = create(:user, :unconfirmed, confirmation_token: token)
-
-      stub_analytics
-      stub_attempts_tracker
-
-      analytics_hash = {
-        success: true,
-        errors: {},
-        user_id: user.uuid,
-        request_id_present: false,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with(
-          'User Registration: Email Confirmation',
-          { errors: {}, error_details: nil, success: true, user_id: user.uuid },
-        )
-      expect(@analytics).to receive(:track_event).
-        with('Password Creation', analytics_hash)
-
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
-        success_properties,
-      )
-
-      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
-
-      post :create, params: {
+    subject(:response) { post :create, params: params }
+    let(:params) do
+      {
         password_form: {
-          password: 'NewVal!dPassw0rd',
-          password_confirmation: 'NewVal!dPassw0rd',
+          password: password,
+          password_confirmation: password_confirmation,
         },
         confirmation_token: token,
       }
-
-      user.reload
-
-      expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
-      expect(user.confirmed?).to eq true
     end
+    let(:password) { 'NewVal!dPassw0rd' }
+    let(:password_confirmation) { password }
+    let(:success_properties) { { success: true, failure_reason: nil } }
 
-    it 'rejects when confirmation_token is invalid' do
-      invalid_confirmation_sent_at =
-        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
-      token = 'new token'
-      user = create(
-        :user,
-        :unconfirmed,
-        confirmation_token: token,
-        confirmation_sent_at: invalid_confirmation_sent_at,
-      )
+    context 'with valid password' do
+      let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
+      let(:analytics_hash) do
+        {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+        }
+      end
 
-      validator = EmailConfirmationTokenValidator.new(user.email_addresses.first)
-      result = validator.submit
-      expect(result.success?).to eq false
+      before do
+        stub_analytics
+        stub_attempts_tracker
+      end
 
-      post :create, params: {
-        password_form: { password: 'NewVal!dPassw0rd' },
-        confirmation_token: token,
-      }
-
-      user.reload
-      expect(user.valid_password?('NewVal!dPassw0rd')).to eq false
-      expect(user.confirmed?).to eq false
-      expect(response).to redirect_to(sign_up_email_resend_url)
-    end
-
-    it 'tracks an invalid password event' do
-      password_short_error = {
-        password: [:too_short],
-        password_confirmation: [:too_short],
-      }
-      token = 'new token'
-      user = create(:user, :unconfirmed, confirmation_token: token)
-      password = 'NewVal'
-
-      stub_analytics
-      stub_attempts_tracker
-
-      analytics_hash = {
-        success: false,
-        errors: {
-          password:
-            ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
-          password_confirmation:
-            ["is too short (minimum is #{Devise.password_length.first} characters)"],
-        },
-        error_details: password_short_error,
-        user_id: user.uuid,
-        request_id_present: false,
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with(
+      it 'tracks analytics' do
+        expect(@analytics).to receive(:track_event).with(
           'User Registration: Email Confirmation',
-          { errors: {}, error_details: nil, success: true, user_id: user.uuid },
+          analytics_hash.merge({ error_details: nil }),
         )
-      expect(@analytics).to receive(:track_event).
-        with('Password Creation', analytics_hash)
+        expect(@analytics).to receive(:track_event).with(
+          'Password Creation',
+          analytics_hash.merge({ request_id_present: false }),
+        )
 
-      expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
-        success: false,
-        failure_reason: password_short_error,
-      )
-      expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
+        expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
+          with(success_properties)
+        expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
-      post :create,
-           params: { password_form: { password: password, password_confirmation: password },
-                     confirmation_token: token }
+        subject
+      end
+
+      it 'confirms the user' do
+        subject
+
+        user.reload
+        expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
+        expect(user.confirmed?).to eq true
+      end
+    end
+
+    context 'with an invalid password' do
+      let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: errors,
+          error_details: error_details,
+          user_id: user.uuid,
+          request_id_present: false,
+        }
+      end
+
+      before do
+        stub_analytics
+        stub_attempts_tracker
+      end
+
+      context 'with a password that is too short' do
+        let(:password) { 'NewVal' }
+        let(:password_confirmation) { 'NewVal' }
+        let(:errors) do
+          {
+            password:
+              [t(
+                'errors.attributes.password.too_short.other',
+                count: Devise.password_length.first,
+              )],
+            password_confirmation:
+              ["is too short (minimum is #{Devise.password_length.first} characters)"],
+          }
+        end
+        let(:error_details) do
+          {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          }
+        end
+
+        it 'tracks an invalid password event' do
+          expect(@analytics).to receive(:track_event).
+            with(
+              'User Registration: Email Confirmation',
+              { errors: {}, error_details: nil, success: true, user_id: user.uuid },
+            )
+          expect(@analytics).to receive(:track_event).
+            with('Password Creation', analytics_hash)
+
+          expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+            success: false,
+            failure_reason: error_details,
+          )
+          expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
+
+          subject
+        end
+      end
+
+      context 'when password confirmation does not match' do
+        let(:password) { 'NewVal!dPassw0rd' }
+        let(:password_confirmation) { 'bad match password' }
+        let(:errors) do
+          {
+            password_confirmation:
+              ["doesn't match Password confirmation"],
+          }
+        end
+        let(:error_details) do
+          {
+            password_confirmation: [:confirmation],
+          }
+        end
+
+        it 'tracks invalid password_confirmation error' do
+          expect(@analytics).to receive(:track_event).
+            with(
+              'User Registration: Email Confirmation',
+              { errors: {}, error_details: nil, success: true, user_id: user.uuid },
+            )
+
+          expect(@analytics).to receive(:track_event).
+            with('Password Creation', analytics_hash)
+
+          subject
+        end
+      end
+    end
+
+    context 'with an with an invalid confirmation_token' do
+      let(:token) { 'new token' }
+      let(:invalid_confirmation_sent_at) do
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+      end
+      let!(:user) do
+        create(
+          :user,
+          :unconfirmed,
+          confirmation_token: token,
+          confirmation_sent_at: invalid_confirmation_sent_at,
+        )
+      end
+
+      it 'rejects when confirmation_token is invalid' do
+        validator = EmailConfirmationTokenValidator.new(user.email_addresses.first)
+        result = validator.submit
+        expect(result.success?).to eq false
+
+        subject
+
+        user.reload
+        expect(user.valid_password?(password)).to eq false
+        expect(user.confirmed?).to eq false
+        expect(response).to redirect_to(sign_up_email_resend_url)
+      end
     end
   end
 
@@ -129,7 +188,6 @@ describe SignUp::PasswordsController do
     it 'rejects when confirmation_token is invalid' do
       invalid_confirmation_sent_at =
         Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
-      token = 'new token'
       create(
         :user,
         :unconfirmed,

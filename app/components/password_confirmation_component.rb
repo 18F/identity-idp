@@ -1,14 +1,13 @@
 class PasswordConfirmationComponent < BaseComponent
-  attr_reader :form, :label, :toggle_label, :field_options, :tag_options
+  attr_reader :form, :toggle_label, :field_options, :tag_options
 
   def initialize(
     form:,
-    toggle_label: t('components.password_toggle.toggle_label'),
+    toggle_label: t('components.password_confirmation.toggle_label'),
     field_options: {},
     **tag_options
   )
     @form = form
-    @label = label
     @toggle_label = toggle_label
     @field_options = field_options
     @tag_options = tag_options
