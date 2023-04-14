@@ -92,6 +92,7 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+doc_auth_hybrid_mobile_controllers_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
@@ -293,7 +294,6 @@ rules_of_use_horizon_years: 6
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_public_reports_enabled: false
 s3_reports_enabled: false
-saml_internal_post: true
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
@@ -306,6 +306,7 @@ session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
+sign_up_mfa_selection_order_testing: '{ "default": 100, "authentication_app_priority": 0 }'
 sign_in_a_b_testing: '{"default":100,"tabbed":0}'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
@@ -571,8 +572,7 @@ test:
   reset_password_email_window_in_minutes: 80
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
-  saml_internal_post: true
+  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"},{"suffix":"2022","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120

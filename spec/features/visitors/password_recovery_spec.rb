@@ -211,7 +211,9 @@ feature 'Password Recovery' do
         click_button t('forms.passwords.edit.buttons.submit')
 
         expect(page).
-          to have_content "is too short (minimum is #{Devise.password_length.first} characters)"
+          to have_content t(
+            'errors.attributes.password.too_short.other', count: Devise.password_length.first
+          )
       end
 
       it "does not update the user's password when password is invalid" do
@@ -226,12 +228,16 @@ feature 'Password Recovery' do
         fill_in 'New password', with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
-        expect(page).to have_content 'is too short'
+        expect(page).to have_content t(
+          'errors.attributes.password.too_short.other', count: Devise.password_length.first
+        )
 
         fill_in 'New password', with: '5678'
         click_button t('forms.passwords.edit.buttons.submit')
 
-        expect(page).to have_content 'is too short'
+        expect(page).to have_content t(
+          'errors.attributes.password.too_short.other', count: Devise.password_length.first
+        )
       end
     end
   end

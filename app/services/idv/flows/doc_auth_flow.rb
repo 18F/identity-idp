@@ -29,7 +29,6 @@ module Idv
 
       ACTIONS = {
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
-        redo_address: Idv::Actions::RedoAddressAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze

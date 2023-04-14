@@ -82,6 +82,10 @@ feature 'IdV Outage Spec' do
       allow(IdentityConfig.store).to receive(key).and_call_original
     end
 
+    # Let e.g. frontend analytics requests to /api/logger settle before we reload routes
+    # to avoid flakiness in CI.
+    page.server.wait_for_pending_requests if page&.server
+
     Rails.application.reload_routes!
   end
 

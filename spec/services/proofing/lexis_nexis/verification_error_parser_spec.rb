@@ -11,29 +11,31 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
 
     it 'should return an array of errors from the response' do
       expect(errors[:base]).to start_with('Verification failed with code:')
-      expect(errors[:InstantVerify]).to eq(response_body['Products'].first) # log product error
+      expect(errors[:'Execute Instant Verify']).to eq(response_body['Products'].first)
     end
 
     it 'should not log a passing response containing no important information' do
+      response_body['Products'].first['ExecutedStepName'] = 'Executed Fake Product'
       response_body['Products'].first['ProductType'] = 'Fake Product'
       response_body['Products'].first['ProductStatus'] = 'pass'
       response_body['Products'].first['Items'].map { |i| i.delete('ItemReason') }
 
-      expect(errors[:'Fake Product']).to eq(nil)
+      expect(errors[:'Executed Fake Product']).to eq(nil)
     end
 
     it 'should log any Instant Verify response, including a pass' do
       response_body['Products'].first['ProductStatus'] = 'pass'
       response_body['Products'].first['Items'].map { |i| i.delete('ItemReason') }
 
-      expect(errors[:InstantVerify]).to be_a Hash
+      expect(errors[:'Execute Instant Verify']).to be_a Hash
     end
 
     it 'should log any response with an ItemReason, including a pass' do
+      response_body['Products'].first['ExecutedStepName'] = 'Executed Fake Product'
       response_body['Products'].first['ProductType'] = 'Fake Product'
       response_body['Products'].first['ProductStatus'] = 'pass'
 
-      expect(errors[:'Fake Product']).to be_a Hash
+      expect(errors[:'Executed Fake Product']).to be_a Hash
     end
   end
 end

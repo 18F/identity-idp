@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include MfaSetupConcern
 
-    before_action :check_sp_required_mfa_bypass
+    before_action :check_sp_required_mfa
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
@@ -58,11 +58,11 @@ module TwoFactorAuthentication
     end
 
     def landline_warning?
-      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'sms'
+      user_session[:phone_type] == 'landline' && params[:otp_delivery_preference] == 'sms'
     end
 
     def confirm_voice_capability
-      return if two_factor_authentication_method == 'sms'
+      return if params[:otp_delivery_preference] == 'sms'
 
       phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
 
@@ -133,6 +133,31 @@ module TwoFactorAuthentication
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
+    end
+
+    def presenter_for_two_factor_authentication_method
+      TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: phone_view_data,
+        view: view_context,
+        service_provider: current_sp,
+        remember_device_default: remember_device_default,
+      )
+    end
+
+    def phone_view_data
+      {
+        confirmation_for_add_phone: confirmation_for_add_phone?,
+        phone_number: display_phone_to_deliver_to,
+        code_value: direct_otp_code,
+        otp_expiration: otp_expiration,
+        otp_delivery_preference: params[:otp_delivery_preference],
+        otp_make_default_number: selected_otp_make_default_number,
+        unconfirmed_phone: unconfirmed_phone?,
+      }.merge(generic_data)
+    end
+
+    def check_sp_required_mfa
+      check_sp_required_mfa_bypass(auth_method: params[:otp_delivery_preference])
     end
   end
 end
