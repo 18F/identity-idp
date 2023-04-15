@@ -1,7 +1,12 @@
 class Profile < ApplicationRecord
   include AASM
 
-  self.ignored_columns += %w[fraud_review_pending fraud_rejection]
+  self.ignored_columns += %w[
+    fraud_review_pending
+    fraud_rejection
+    fraud_review_pending_at
+    fraud_rejection_at
+  ]
 
   belongs_to :user
   # rubocop:disable Rails/InverseOf
