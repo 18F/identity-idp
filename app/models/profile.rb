@@ -40,7 +40,7 @@ class Profile < ApplicationRecord
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(
+      update(
         active: true,
         activated_at: now,
         deactivation_reason: nil,
@@ -54,7 +54,7 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/SkipsModelValidations
 
   def activate_after_passing_review
-    update!(
+    update(
       fraud_review_pending: false,
       fraud_rejection: false,
       fraud_review_pending_at: nil,
@@ -65,11 +65,11 @@ class Profile < ApplicationRecord
   end
 
   def deactivate(reason)
-    update!(active: false, deactivation_reason: reason)
+    update(active: false, deactivation_reason: reason)
   end
 
   def deactivate_for_fraud_review
-    update!(
+    update(
       active: false,
       fraud_review_pending: true,
       fraud_rejection: false,
@@ -79,7 +79,7 @@ class Profile < ApplicationRecord
   end
 
   def reject_for_fraud(notify_user:)
-    update!(
+    update(
       active: false,
       fraud_review_pending: false,
       fraud_rejection: true,
