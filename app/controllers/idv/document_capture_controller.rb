@@ -8,7 +8,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
-    before_action :override_document_capture_step_csp
+    before_action :override_csp_to_allow_acuant
 
     def show
       increment_step_counts
@@ -71,7 +71,7 @@ module Idv
     end
 
     # This is copied from DocumentCaptureConcern, with out the step check
-    def override_document_capture_step_csp
+    def override_csp_to_allow_acuant
       policy = current_content_security_policy
       policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
       policy.script_src(*policy.script_src, :unsafe_eval)
