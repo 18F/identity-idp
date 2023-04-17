@@ -46,7 +46,6 @@ en:
       label: Password
       toggle_label: Show password
     password_confirmation:
-      label: Password
       confirm_label: Confirm password
       toggle_label: Show password
       errors:

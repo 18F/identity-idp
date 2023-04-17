@@ -14,7 +14,7 @@ class PasswordConfirmationComponent < BaseComponent
   end
 
   def default_label
-    t('components.password_confirmation.label')
+    t('forms.password')
   end
 
   def confirmation_label

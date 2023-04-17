@@ -46,7 +46,6 @@ fr:
       label: Mot de passe
       toggle_label: Afficher le mot de passe
     password_confirmation:
-      label: Mot de passe
       confirm_label: Confirmer le mot de passe
       toggle_label: Afficher le mot de passe
       errors:
