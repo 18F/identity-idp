@@ -30,11 +30,12 @@ module Users
     end
 
     def forgot_password
-      if session[:reset_password_token].blank?
-        redirect_to new_user_password_url
-      else
+      if session[:reset_password_token].present?
         process_forgot_password_load
+        return
       end
+
+      redirect_to :new_user_password
     end
 
     # PUT /resource/password
@@ -99,6 +100,7 @@ module Users
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
+      session.delete(:reset_password_token)
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)

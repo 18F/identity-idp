@@ -101,6 +101,71 @@ describe Users::ResetPasswordsController, devise: true do
         expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
       end
     end
+
+    context 'when clean url feature toggle is set to true' do
+      let(:user) { instance_double('User', uuid: '123') }
+      let(:email_address) { instance_double('EmailAddress') }
+      before do
+        stub_analytics
+        allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(true)
+
+        allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
+        allow(user).to receive(:reset_password_period_valid?).and_return(true)
+        allow(user).to receive(:email_addresses).and_return([email_address])
+      end
+
+      it 'redirects properly and stores the token in the session' do
+        get :edit, params: { reset_password_token: 'foo' }
+
+        expect(response).to redirect_to(forgot_user_password_path)
+        expect(session[:reset_password_token]).to eq('foo')
+      end
+    end
+  end
+
+  describe '#forgot_password' do
+    let(:user) { instance_double('User', uuid: '123') }
+    let(:email_address) { instance_double('EmailAddress') }
+
+    before do
+      stub_analytics
+      stub_attempts_tracker
+      allow(@analytics).to receive(:track_event)
+    end
+
+    context 'when reset_password_token is present in session' do
+      let(:token) { 'abc' }
+      let(:token_valid) { true }
+      before do
+        stub_analytics
+
+        allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
+        allow(user).to receive(:reset_password_period_valid?).and_return(token_valid)
+        allow(user).to receive(:email_addresses).and_return([email_address])
+      end
+      context 'token is valid' do
+        it 'redirects displays valid token' do
+          session[:reset_password_token] = 'abc'
+          expect(email_address).to receive(:email).twice
+
+          forbidden = instance_double(ForbiddenPasswords)
+          allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
+          expect(forbidden).to receive(:call)
+
+          get :forgot_password
+
+          expect(response).to have_http_status(:success)
+        end
+      end
+    end
+
+    context 'when reset_password_token is not present in session' do
+      it 'redirects to new_user_password_url' do
+        get :forgot_password
+
+        expect(response).to redirect_to(new_user_password_url)
+      end
+    end
   end
 
   describe '#update' do
