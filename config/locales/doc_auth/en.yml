@@ -112,9 +112,6 @@ en:
         information below is incorrect, please %{link} of your state-issued ID.
       capture_scan_warning_link: upload new photos
       capture_troubleshooting_tips: Having trouble adding your state-issued ID?
-      combined_upload: How would you like to add your ID?
-      combined_upload_from_computer: Continue on this computer
-      combined_upload_from_phone: Use your phone to take photos
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
@@ -126,6 +123,9 @@ en:
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       text_message: We sent a message to your phone
+      upload: How would you like to add your ID?
+      upload_from_computer: Continue on this computer
+      upload_from_phone: Use your phone to take photos
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     hybrid_flow_warning:
@@ -146,11 +146,6 @@ en:
       capture_status_none: Align
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
-      combined_upload: We’ll collect information about you by reading your state-issued ID.
-      combined_upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
-      combined_upload_from_phone: You won’t have to sign in again, and you’ll switch
-        back to this computer after you take photos. Your mobile phone must have
-        a camera and a web browser.
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state-issued ID. We use this information to verify your
         identity.
@@ -179,6 +174,10 @@ en:
         address.
       tag: Recommended
       upload: We’ll collect information about you by reading your state-issued ID.
+      upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
+      upload_from_phone: You won’t have to sign in again, and you’ll switch back to
+        this computer after you take photos. Your mobile phone must have a
+        camera and a web browser.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone

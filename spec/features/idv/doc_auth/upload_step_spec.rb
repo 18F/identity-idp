@@ -28,9 +28,9 @@ feature 'doc auth upload step' do
     end
 
     it 'displays with the expected content' do
-      expect(page).to have_content(t('doc_auth.headings.combined_upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.info.combined_upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.headings.combined_upload_from_phone'))
+      expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+      expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
+      expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
     end
 
     it 'proceeds to document capture when user chooses to upload from computer' do
