@@ -99,6 +99,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         transaction_status: 'passed',
         transaction_reason_code: 'trueid_pass',
         product_status: 'pass',
+        decision_product_status: 'pass',
         doc_auth_result: 'Passed',
         processed_alerts: a_hash_including(:failed),
         address_line2_present: true,
@@ -142,6 +143,49 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'notes that address line 2 was not present' do
       expect(response.pii_from_doc[:address2]).to be_nil
       expect(response.to_h).to include(address_line2_present: false)
+    end
+  end
+
+  context 'when True_ID response does not contain a decision product status' do
+    let(:true_id_response_success_2) { JSON.parse(LexisNexisFixtures.true_id_response_success_2) }
+    describe 'when a True_ID Decision product is not present in the response' do
+      it 'excludes decision_product_status from logging' do
+        body_no_decision = true_id_response_success_2.tap do |json|
+          json['Products'].delete_if { |products| products['ProductType'] == 'TrueID_Decision' }
+        end.to_json
+
+        decision_product = get_decision_product(true_id_response_success_2)
+        expect(decision_product).to be_nil
+        success_response_no_decision = instance_double(
+          Faraday::Response, status: 200,
+                             body: body_no_decision
+        )
+        response = described_class.new(success_response_no_decision, config)
+
+        expect(response.to_h[:decision_product_status]).to be_nil
+      end
+    end
+
+    describe 'when a True_ID_Decision does not contain a status' do
+      it 'excludes decision_product_status from logging' do
+        decision_product = get_decision_product(true_id_response_success_2)
+        body_no_decision_status = decision_product.tap do |json|
+          json.delete('ProductStatus')
+        end.to_json
+
+        expect(decision_product['ProductStatus']).to be_nil
+        success_response_no_decision_status = instance_double(
+          Faraday::Response, status: 200,
+                             body: body_no_decision_status
+        )
+        response = described_class.new(success_response_no_decision_status, config)
+
+        expect(response.to_h[:decision_product_status]).to be_nil
+      end
+    end
+
+    def get_decision_product(resp)
+      resp['Products'].find { |product| product['ProductType'] == 'TrueID_Decision' }
     end
   end
 
@@ -241,6 +285,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         transaction_status: 'failed',
         transaction_reason_code: 'failed_true_id',
         product_status: 'pass',
+        decision_product_status: 'fail',
         doc_auth_result: 'Failed',
         processed_alerts: a_hash_including(:passed, :failed),
         address_line2_present: false,
