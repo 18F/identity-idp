@@ -302,7 +302,7 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'logs a message with counts of various outcomes when the job completes' do
+      it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           and_return(pending_enrollments)
         stub_request_proofing_results_with_responses(
@@ -324,6 +324,61 @@ RSpec.describe GetUspsProofingResultsJob do
           enrollments_failed: 1,
           enrollments_in_progress: 1,
           enrollments_passed: 1,
+          percent_enrollments_errored: 20,
+        )
+
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+            first[:duration_seconds],
+        ).to be >= 0.0
+      end
+
+      it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return(pending_enrollments)
+        stub_request_proofing_results_with_responses(
+          request_passed_proofing_results_args,
+        )
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Job completed',
+          duration_seconds: anything,
+          enrollments_checked: 5,
+          enrollments_errored: 0,
+          enrollments_expired: 0,
+          enrollments_failed: 0,
+          enrollments_in_progress: 0,
+          enrollments_passed: 5,
+          percent_enrollments_errored: 0,
+        )
+
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+            first[:duration_seconds],
+        ).to be >= 0.0
+      end
+
+      it 'logs a message with counts of various outcomes when the job completes (no enrollments)' do
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([])
+        stub_request_proofing_results_with_responses(
+          request_passed_proofing_results_args,
+        )
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Job completed',
+          duration_seconds: anything,
+          enrollments_checked: 0,
+          enrollments_errored: 0,
+          enrollments_expired: 0,
+          enrollments_failed: 0,
+          enrollments_in_progress: 0,
+          enrollments_passed: 0,
+          percent_enrollments_errored: 0,
         )
 
         expect(
