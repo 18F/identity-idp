@@ -60,5 +60,12 @@ describe Users::EmailConfirmationsController do
         expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       end
     end
+
+    describe 'Invalid email confirmation tokens' do
+      it 'rejects invalid parameters' do
+        get :create, params: { confirmation_token: { confirmation_token: 'abc' } }
+        expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      end
+    end
   end
 end
