@@ -5,14 +5,14 @@ feature 'capture complete step', :js do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:user) { user_with_2fa }
-
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
       and_return(true)
-    complete_doc_capture_steps_before_capture_complete_step(user)
-    allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
-    sign_in_and_2fa_user(user)
+
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_upload_step
+    click_send_link
+
     visit(idv_hybrid_mobile_capture_complete_url)
   end
 
