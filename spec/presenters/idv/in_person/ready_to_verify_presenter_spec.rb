@@ -21,7 +21,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       enrollment_established_at: enrollment_established_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details: enrollment_selected_location_details,
-      capture_secondary_id_enabled: capture_secondary_id_enabled,
+      capture_secondary_id_enabled: capture_secondary_id_enabled
     )
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
