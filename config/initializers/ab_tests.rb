@@ -49,4 +49,9 @@ module AbTests
     buckets: in_person_cta_variant_testing_buckets,
     default_bucket: 'in_person_variant_a',
   )
+
+  CREATE_AN_ACCOUNT_BANNER = AbTestBucket.new(
+    experiment_name: 'Create an Account Banner',
+    buckets: IdentityConfig.store.create_account_banner_testing,
+  )
 end

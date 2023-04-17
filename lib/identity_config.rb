@@ -127,6 +127,7 @@ class IdentityConfig
     config.add(:broken_personal_key_window_start, type: :timestamp)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:component_previews_enabled, type: :boolean)
+    config.add(:create_account_banner_testing, type: :json, options: { symbolize_names: true })
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
