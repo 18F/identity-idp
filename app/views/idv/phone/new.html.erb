@@ -38,14 +38,16 @@
 </ul>
 
 <p>
-    <a href="<% help_center_redirect_url(
-                  category: 'verify-your-identity',
-                  article: 'phone-number',
-                  flow: :idv,
-                  step: :phone,
-                ) %>" class="usa-link usa-link--external">
-        <%= t('idv.troubleshooting.options.learn_more_verify_by_phone') %>
-    </a>
+    <%= link_to(
+          t('idv.troubleshooting.options.learn_more_verify_by_phone'),
+          help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'phone-number',
+            flow: :idv,
+            step: :phone,
+          ),
+          class: 'usa-link usa-link--external',
+        ) %>
 </p>
 
 <%= simple_form_for(
