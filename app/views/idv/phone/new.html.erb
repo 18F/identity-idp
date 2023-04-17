@@ -38,7 +38,14 @@
 </ul>
 
 <p>
-  <%= t('idv.messages.phone.final_note_html') %>
+    <a href="<% help_center_redirect_url(
+             category: 'verify-your-identity',
+             article: 'phone-number',
+             flow: :idv,
+             step: :phone,
+             ) %>" class="usa-link usa-link--external">
+        <%= t('idv.troubleshooting.options.learn_more_verify_by_phone') %>
+    </a>
 </p>
 
 <%= simple_form_for(
@@ -103,16 +110,6 @@
       'shared/troubleshooting_options',
       heading: t('components.troubleshooting_options.default_heading'),
       options: [
-        {
-          url: help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'phone-number',
-            flow: :idv,
-            step: :phone,
-          ),
-          text: t('idv.troubleshooting.options.learn_more_verify_by_phone'),
-          new_tab: true,
-        },
         gpo_letter_available && {
           url: idv_gpo_path,
           text: t('idv.troubleshooting.options.verify_by_mail'),
