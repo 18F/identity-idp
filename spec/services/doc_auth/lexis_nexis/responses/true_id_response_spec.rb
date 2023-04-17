@@ -150,7 +150,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:true_id_response_success_2) { JSON.parse(LexisNexisFixtures.true_id_response_success_2) }
     describe 'when a True_ID Decision product is not present in the response' do
       it 'excludes decision_product_status from logging' do
-        decision_product = get_decision_product(true_id_response_success_2)
         body_no_decision = true_id_response_success_2.tap do |json|
           json['Products'].delete_if { |products| products['ProductType'] == 'TrueID_Decision' }
         end.to_json
