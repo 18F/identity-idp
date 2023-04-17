@@ -50,6 +50,8 @@ module Proofing
         response_body = response_body_json(review_status: review_status)
         request_result = response_body['request_result']
 
+        return exception_result if review_status.nil?
+
         result.review_status = review_status
         result.response_body = response_body
 
@@ -76,6 +78,13 @@ module Proofing
         JSON.parse(json).tap do |json_body|
           json_body['review_status'] = review_status
         end
+      end
+
+      def exception_result
+        Proofing::DdpResult.new(
+          success: false,
+          exception: RuntimeError.new('Unexpected ThreatMetrix review_status value'),
+        )
       end
     end
   end

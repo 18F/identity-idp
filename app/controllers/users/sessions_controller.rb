@@ -129,7 +129,7 @@ module Users
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
-        current_user.decorate,
+        current_user,
       )
       sign_out
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
@@ -189,7 +189,7 @@ module Users
     end
 
     def user_locked_out?(user)
-      UserDecorator.new(user).locked_out?
+      user.locked_out?
     end
 
     def store_sp_metadata_in_session

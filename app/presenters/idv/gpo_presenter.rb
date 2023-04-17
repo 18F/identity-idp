@@ -23,7 +23,7 @@ module Idv
     end
 
     def resend_requested?
-      current_user.decorate.pending_profile_requires_verification?
+      current_user.pending_profile_requires_verification?
     end
 
     def back_or_cancel_partial

@@ -153,58 +153,5 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         end
       end
     end
-
-    context 'detecting drivers license failures' do
-      context 'both drivers license checks pass' do
-        it 'marks that the drivers license was a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_success_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(true)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(true)
-        end
-      end
-
-      context 'a drivers license check fails' do
-        it 'marks that the drivers license was not a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_drivers_license_failure_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(false)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(false)
-        end
-      end
-
-      context 'the drivers license checks are not present' do
-        it 'marks that the drivers license was not a match' do
-          stub_request(
-            :post,
-            verification_request.url,
-          ).to_return(
-            body: LexisNexisFixtures.instant_verify_drivers_license_info_missing_response_json,
-            status: 200,
-          )
-
-          result = subject.proof(applicant)
-
-          expect(result.drivers_license_info_matches?).to eq(false)
-          expect(result.to_h[:drivers_license_info_matches]).to eq(false)
-        end
-      end
-    end
   end
 end

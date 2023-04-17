@@ -110,9 +110,9 @@ module OpenidConnect
 
     def identity_needs_verification?
       (@authorize_form.ial2_requested? &&
-        (current_user.decorate.identity_not_verified? ||
+        (current_user.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
-        current_user.decorate.reproof_for_irs?(service_provider: current_sp)
+        current_user.reproof_for_irs?(service_provider: current_sp)
     end
 
     def build_authorize_form_from_params
@@ -167,7 +167,7 @@ module OpenidConnect
 
     def pii_requested_but_locked?
       sp_session && sp_session_ial > 1 &&
-        UserDecorator.new(current_user).identity_verified? &&
+        current_user.identity_verified? &&
         !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
 

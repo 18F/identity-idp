@@ -8,6 +8,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_vendor_session_started
     before_action :confirm_profile_has_been_created
+    before_action :confirm_user_not_pending_gpo_verificaiton
 
     def show
       analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
@@ -39,7 +40,7 @@ module Idv
         idv_in_person_ready_to_verify_url
       elsif blocked_by_device_profiling?
         idv_please_call_url
-      elsif session[:sp] && !pending_profile?
+      elsif session[:sp]
         sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
@@ -48,6 +49,11 @@ module Idv
 
     def confirm_profile_has_been_created
       redirect_to account_url if profile.blank?
+    end
+
+    def confirm_user_not_pending_gpo_verificaiton
+      return unless current_user.pending_profile_requires_verification?
+      redirect_to idv_come_back_later_url
     end
 
     def add_proofing_component
@@ -63,9 +69,7 @@ module Idv
 
       irs_attempts_api_tracker.idv_personal_key_generated
 
-      if idv_session.address_verification_mechanism != 'gpo'
-        flash.now[:success] = t('idv.messages.confirm')
-      end
+      flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true
     end
 
@@ -86,10 +90,6 @@ module Idv
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
       current_user.pending_in_person_enrollment.present?
-    end
-
-    def pending_profile?
-      current_user.pending_profile?
     end
 
     def blocked_by_device_profiling?

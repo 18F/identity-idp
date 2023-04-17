@@ -100,7 +100,7 @@ module Idv
     end
 
     def confirm_verification_needed
-      return if current_user.decorate.pending_profile_requires_verification?
+      return if current_user.pending_profile_requires_verification?
       redirect_to account_url
     end
 
