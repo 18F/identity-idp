@@ -30,26 +30,28 @@ feature 'doc auth verify step', :js do
       complete_doc_auth_steps_before_address_step
     end
 
-    it 'does not show the Puerto Rico guidance and hint fields' do
+    it 'does not show the Puerto Rico guidance and hint fields unless the address is in Puerto Rico' do
       expect(page).not_to have_content(puerto_rico_guidance_text)
       expect(page).not_to have_content(puerto_rico_address1_hint)
       expect(page).not_to have_content(puerto_rico_address2_hint)
       expect(page).not_to have_content(puerto_rico_city_hint)
       expect(page).not_to have_content(puerto_rico_zipcode_hint)
-    end
 
-    context 'that gets changed to a Puerto Rico address' do
-      before do
-        select 'Puerto Rico', from: 'idv_form_state'
-      end
+      select 'Puerto Rico', from: 'idv_form_state'
 
-      it 'shows the Puerto Rico address guidance' do
-        expect(page).to have_content(puerto_rico_guidance_text)
-        expect(page).to have_content(puerto_rico_address1_hint)
-        expect(page).to have_content(puerto_rico_address2_hint)
-        expect(page).to have_content(puerto_rico_city_hint)
-        expect(page).to have_content(puerto_rico_zipcode_hint)
-      end
+      expect(page).to have_content(puerto_rico_guidance_text)
+      expect(page).to have_content(puerto_rico_address1_hint)
+      expect(page).to have_content(puerto_rico_address2_hint)
+      expect(page).to have_content(puerto_rico_city_hint)
+      expect(page).to have_content(puerto_rico_zipcode_hint)
+
+      select 'Iowa', from: 'idv_form_state'
+
+      expect(page).not_to have_content(puerto_rico_guidance_text)
+      expect(page).not_to have_content(puerto_rico_address1_hint)
+      expect(page).not_to have_content(puerto_rico_address2_hint)
+      expect(page).not_to have_content(puerto_rico_city_hint)
+      expect(page).not_to have_content(puerto_rico_zipcode_hint)
     end
 
     it 'allows the user to enter in a new address' do
