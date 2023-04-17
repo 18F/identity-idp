@@ -9,7 +9,7 @@ interface BackLinkProps extends ComponentProps<typeof Button> {
 
 function BackButton({ includeBorder = false, ...props }: BackLinkProps) {
   const button = (
-    <Button isUnstyled {...props}>
+    <Button isUnstyled {...props} aria-label={t('forms.buttons.back')}>
       &#x2039; {t('forms.buttons.back')}
     </Button>
   );
