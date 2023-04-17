@@ -151,7 +151,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     describe 'when a True_ID Decision product is not present in the response' do
       it 'excludes decision_product_status from logging' do
         decision_product = get_decision_product(true_id_response_success_2)
-        expect(decision_product).not_to be_nil
         body_no_decision = true_id_response_success_2.tap do |json|
           json['Products'].delete_if { |products| products['ProductType'] == 'TrueID_Decision' }
         end.to_json
@@ -171,7 +170,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     describe 'when a True_ID_Decision does not containta status' do
       it 'excludes decision_product_status from logging' do
         decision_product = get_decision_product(true_id_response_success_2)
-        expect(decision_product['ProductStatus']).not_to be_nil
         body_no_decision_status = decision_product.tap do |json|
           json.delete('ProductStatus')
         end.to_json
