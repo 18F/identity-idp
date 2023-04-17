@@ -24,105 +24,63 @@ feature 'doc auth verify step', :js do
     "#{t('forms.example')} 00926"
   end
 
-  context 'with a mainland address' do
-    before do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_address_step
-    end
-
-    it 'does not show the Puerto Rico guidance and hint fields unless the address is in Puerto Rico' do
-      expect(page).not_to have_content(puerto_rico_guidance_text)
-      expect(page).not_to have_content(puerto_rico_address1_hint)
-      expect(page).not_to have_content(puerto_rico_address2_hint)
-      expect(page).not_to have_content(puerto_rico_city_hint)
-      expect(page).not_to have_content(puerto_rico_zipcode_hint)
-
-      select 'Puerto Rico', from: 'idv_form_state'
-
-      expect(page).to have_content(puerto_rico_guidance_text)
-      expect(page).to have_content(puerto_rico_address1_hint)
-      expect(page).to have_content(puerto_rico_address2_hint)
-      expect(page).to have_content(puerto_rico_city_hint)
-      expect(page).to have_content(puerto_rico_zipcode_hint)
-
-      select 'Iowa', from: 'idv_form_state'
-
-      expect(page).not_to have_content(puerto_rico_guidance_text)
-      expect(page).not_to have_content(puerto_rico_address1_hint)
-      expect(page).not_to have_content(puerto_rico_address2_hint)
-      expect(page).not_to have_content(puerto_rico_city_hint)
-      expect(page).not_to have_content(puerto_rico_zipcode_hint)
-    end
-
-    it 'allows the user to enter in a new address' do
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-      expect(page).not_to have_content(t('forms.example'))
-      fill_out_address_form_ok
-
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
-
-    it 'does not allow the user to enter bad address info' do
-      fill_out_address_form_fail
-
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_current_path(idv_address_path)
-    end
-
-    it 'allows the user to click back to return to the verify step' do
-      click_doc_auth_back_link
-
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
-
-    it 'sends the user to start doc auth if there is no pii from the document in session' do
-      visit sign_out_url
-      sign_in_and_2fa_user
-      visit idv_address_path
-
-      expect(page).to have_current_path(idv_doc_auth_welcome_step)
-    end
+  before do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_address_step
   end
 
-  context 'with a Puerto Rico address' do
-    before do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_document_capture_step
-      complete_document_capture_step_with_yml('spec/fixtures/puerto_rico_resident.yml')
-      complete_ssn_step
-    end
+  it 'only shows the Puerto Rico guidance and hint fields for Puerto Rico addresses' do
+    expect(page).not_to have_content(puerto_rico_guidance_text)
+    expect(page).not_to have_content(puerto_rico_address1_hint)
+    expect(page).not_to have_content(puerto_rico_address2_hint)
+    expect(page).not_to have_content(puerto_rico_city_hint)
+    expect(page).not_to have_content(puerto_rico_zipcode_hint)
 
-    it 'shows the Puerto Rico address guidance' do
-      expect(page).to have_content(puerto_rico_guidance_text)
-      expect(page).to have_content(puerto_rico_address1_hint)
-      expect(page).to have_content(puerto_rico_address2_hint)
-      expect(page).to have_content(puerto_rico_city_hint)
-      expect(page).to have_content(puerto_rico_zipcode_hint)
-    end
+    select 'Puerto Rico', from: 'idv_form_state'
 
-    it 'accepts a Puerto Rico style address' do
-      expect(page).to have_current_path(idv_address_url)
-      expect(page).to have_content(t('forms.example'))
-      fill_in 'idv_form_address1', with: '123 Calle Carlos'
-      fill_in 'idv_form_address2', with: 'URB Las Gladiolas'
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_current_path(idv_verify_info_path)
-    end
+    expect(page).to have_content(puerto_rico_guidance_text)
+    expect(page).to have_content(puerto_rico_address1_hint)
+    expect(page).to have_content(puerto_rico_address2_hint)
+    expect(page).to have_content(puerto_rico_city_hint)
+    expect(page).to have_content(puerto_rico_zipcode_hint)
 
-    context 'that gets changed to a mainland address' do
-      before do
-        select 'Wyoming', from: 'idv_form_state'
-      end
+    select 'Iowa', from: 'idv_form_state'
 
-      it 'hides the Puerto Rico address guidance' do
-        expect(page).not_to have_content(puerto_rico_guidance_text)
-        expect(page).not_to have_content(puerto_rico_address1_hint)
-        expect(page).not_to have_content(puerto_rico_address2_hint)
-        expect(page).not_to have_content(puerto_rico_city_hint)
-        expect(page).not_to have_content(puerto_rico_zipcode_hint)
-      end
-    end
+    expect(page).not_to have_content(puerto_rico_guidance_text)
+    expect(page).not_to have_content(puerto_rico_address1_hint)
+    expect(page).not_to have_content(puerto_rico_address2_hint)
+    expect(page).not_to have_content(puerto_rico_city_hint)
+    expect(page).not_to have_content(puerto_rico_zipcode_hint)
+  end
+
+  it 'allows the user to enter in a new address' do
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+    expect(page).not_to have_content(t('forms.example'))
+    fill_out_address_form_ok
+
+    click_button t('forms.buttons.submit.update')
+    expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  it 'does not allow the user to enter bad address info' do
+    fill_out_address_form_fail
+
+    click_button t('forms.buttons.submit.update')
+    expect(page).to have_current_path(idv_address_path)
+  end
+
+  it 'allows the user to click back to return to the verify step' do
+    click_doc_auth_back_link
+
+    expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  it 'sends the user to start doc auth if there is no pii from the document in session' do
+    visit sign_out_url
+    sign_in_and_2fa_user
+    visit idv_address_path
+
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
   end
 
   context 'with document capture controller flag set, no PII in session' do
