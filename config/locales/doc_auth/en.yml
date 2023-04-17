@@ -178,7 +178,6 @@ en:
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
         this computer after you take photos. Your mobile phone must have a
         camera and a web browser.
-
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
       welcome_html: '%{sp_name} needs to make sure you are you — not someone

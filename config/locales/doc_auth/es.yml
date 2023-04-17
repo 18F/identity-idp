@@ -212,7 +212,6 @@ es:
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a
         esta computadora después de tomar las fotos. Su teléfono móvil debe
         tener una cámara y un navegador web.
-
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
       welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
