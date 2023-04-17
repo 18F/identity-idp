@@ -534,12 +534,16 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_ready_to_verify' do
+    let(:capture_secondary_id_enabled) { false }
+    let(:current_address_matches_id) { false }
     let!(:enrollment) do
       create(
         :in_person_enrollment,
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
+        capture_secondary_id_enabled: capture_secondary_id_enabled,
+        current_address_matches_id: current_address_matches_id
       )
     end
 
@@ -551,15 +555,37 @@ describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
+
+    context 'double address verification is not enabled' do
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.proof_of_address.heading'))
+      end
+    end
+
+    context 'double address verification is enabled' do
+      let (:capture_secondary_id_enabled) { true }
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to_not have_content(
+            t('in_person_proofing.process.proof_of_address.heading'))
+      end
+    end
   end
 
+  # Add condition for secondary ID capture
   describe '#in_person_ready_to_verify_reminder' do
+    let(:capture_secondary_id_enabled) { false }
+    let(:current_address_matches_id) { false }
     let!(:enrollment) do
       create(
         :in_person_enrollment,
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
+        capture_secondary_id_enabled: capture_secondary_id_enabled,
+        current_address_matches_id: current_address_matches_id
       )
     end
 
@@ -571,6 +597,23 @@ describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
+
+    context 'double address verification is not enabled' do
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.proof_of_address.heading'))
+      end
+    end
+
+    context 'double address verification is enabled' do
+      let (:capture_secondary_id_enabled) { true }
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to_not have_content(
+            t('in_person_proofing.process.proof_of_address.heading'))
+      end
+    end
   end
 
   describe '#in_person_verified' do
@@ -593,11 +636,15 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_failed' do
-    let(:enrollment) do
+    let(:capture_secondary_id_enabled) { false }
+    let(:current_address_matches_id) { false }
+    let!(:enrollment) do
       create(
         :in_person_enrollment,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
+        current_address_matches_id: current_address_matches_id,
+        capture_secondary_id_enabled: capture_secondary_id_enabled,
       )
     end
 
@@ -609,6 +656,23 @@ describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
+
+     context 'double address verification is not enabled' do
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('user_mailer.in_person_failed.verifying_step_proof_of_address'))
+      end
+    end
+
+    context 'double address verification is enabled' do
+      let (:capture_secondary_id_enabled) { true }
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to_not have_content(
+            t('user_mailer.in_person_failed.verifying_step_proof_of_address'))
+      end
+    end
   end
 
   describe '#in_person_failed_fraud' do
