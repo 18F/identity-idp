@@ -153,12 +153,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         decision_product = get_decision_product(true_id_response_success_2)
         expect(decision_product).not_to be_nil
         body_no_decision = true_id_response_success_2.tap do |json|
-          json['Products'].delete_if{ |products| products['ProductType'] == 'TrueID_Decision' }
+          json['Products'].delete_if { |products| products['ProductType'] == 'TrueID_Decision' }
         end.to_json
 
         decision_product = get_decision_product(true_id_response_success_2)
         expect(decision_product).to be_nil
-        success_response_no_decision = instance_double(Faraday::Response, status: 200, body: body_no_decision)
+        success_response_no_decision = instance_double(
+          Faraday::Response, status: 200,
+                             body: body_no_decision
+        )
         response = described_class.new(success_response_no_decision, config)
 
         expect(response.to_h[:decision_product_status]).to be_nil
@@ -174,7 +177,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end.to_json
 
         expect(decision_product['ProductStatus']).to be_nil
-        success_response_no_decision_status = instance_double(Faraday::Response, status: 200, body: body_no_decision_status)
+        success_response_no_decision_status = instance_double(
+          Faraday::Response, status: 200,
+                             body: body_no_decision_status
+        )
         response = described_class.new(success_response_no_decision_status, config)
 
         expect(response.to_h[:decision_product_status]).to be_nil
@@ -182,7 +188,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     def get_decision_product(resp)
-      resp['Products'].find{ |product| product['ProductType'] == 'TrueID_Decision' }
+      resp['Products'].find { |product| product['ProductType'] == 'TrueID_Decision' }
     end
   end
 
