@@ -72,9 +72,11 @@
         id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
       ) do %>
       
-    <div class="grid-container padding-y-2 card tablet:margin-bottom-2">
-      <%= render 'shared/create_an_account_banner' %>
-    </div>
+    <% if @sign_in_a_b_test_bucket == :banner %>
+      <div class="grid-container padding-y-2 card tablet:margin-bottom-2">
+        <%= render 'shared/create_an_account_banner', locals: { sign_in_a_b_test_bucket: true }%>
+      </div>
+    <%= end %>
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render FlashComponent.new(flash: flash) %>
