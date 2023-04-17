@@ -168,7 +168,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
 
-    describe 'when a True_ID_Decision does not containta status' do
+    describe 'when a True_ID_Decision does not contain a status' do
       it 'excludes decision_product_status from logging' do
         decision_product = get_decision_product(true_id_response_success_2)
         expect(decision_product['ProductStatus']).not_to be_nil
