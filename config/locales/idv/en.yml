@@ -187,8 +187,6 @@ en:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
-        final_note_html: '<strong>If you set up a phone for multi-factor
-          authentication</strong>, this can be a different number.'
         phone_of_record: Phone of record
         rules:
           - Based in the United States (including U.S. territories)
@@ -222,7 +220,6 @@ en:
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        phone: Enter your phone number
         review: Re-enter your %{app_name} password to protect your data
       unavailable: 'We are working to resolve an error'
     troubleshooting:

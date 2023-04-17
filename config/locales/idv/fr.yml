@@ -209,9 +209,6 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
-        final_note_html: '<strong>Si vous configurez un téléphone pour
-          l’authentification multifactorielle</strong>, il peut s’agir d’un
-          numéro différent.'
         phone_of_record: numéro de téléphone enregistré
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
@@ -249,7 +246,6 @@ fr:
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        phone: Entrez votre numéro de téléphone
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:

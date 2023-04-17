@@ -199,8 +199,6 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        final_note_html: '<strong>Si configura un teléfono para la autenticación
-          multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
@@ -235,7 +233,6 @@ es:
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
