@@ -196,19 +196,15 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: '<strong>Este número de teléfono:</strong>'
+        alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
         final_note_html: '<strong>Si configura un teléfono para la autenticación
           multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un
-            número de tarifa premium (de pago)
-          - Debe ser un número de Estados Unidos (incluidos los territorios de
-            Estados Unidos)
-          - Debe ser su número principal o el número que utilice con más
-            frecuencia
+          - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
+          - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
