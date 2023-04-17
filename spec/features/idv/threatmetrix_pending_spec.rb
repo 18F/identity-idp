@@ -86,9 +86,22 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     end
   end
 
-  scenario 'users pending threatmetrix No Result, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users pending threatmetrix No Result, it results in an error', :js do
     freeze_time do
-      expect_pending_failure_reason(threatmetrix: 'No Result')
+      user = create(:user, :signed_up)
+      visit_idp_from_ial1_oidc_sp(
+        client_id: service_provider.issuer,
+        irs_attempts_api_session_id: 'test-session-id',
+      )
+      visit root_path
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_ssn_step
+      select 'No Result', from: :mock_profiling_result
+      complete_ssn_step
+      click_idv_continue
+
+      expect(page).to have_content(t('idv.failure.sessions.exception'))
+      expect(page).to have_current_path(idv_session_errors_exception_path)
     end
   end
 
