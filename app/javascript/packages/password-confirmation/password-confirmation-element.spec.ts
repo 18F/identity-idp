@@ -16,9 +16,9 @@ describe('PasswordConfirmationElement', () => {
     const idSuffix = ++idCounter;
     element.innerHTML = `
       <label for="input-${idSuffix}">Password</label>
-      <input id="input-${idSuffix}" class="password-confirmation__input1">
+      <input id="input-${idSuffix}" class="password-confirmation__input">
       <label for="input-${idSuffix}b">Confirm password</label>
-      <input id="input-${idSuffix}b" class="password-confirmation__input2">
+      <input id="input-${idSuffix}b" class="password-confirmation__input-confirmation">
       <div class="password-toggle__toggle-wrapper">
         <input
           id="toggle-${idSuffix}"

@@ -117,7 +117,9 @@ function checkPasswordStrength(password, forbiddenPasswords, input) {
 }
 
 function analyzePw() {
-  const input = document.querySelector('.password-toggle__input') || document.querySelector('.password-confirmation__input1');
+  const input =
+    document.querySelector('.password-toggle__input') ||
+    document.querySelector('.password-confirmation__input');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 

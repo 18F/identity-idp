@@ -20,14 +20,14 @@ class PasswordConfirmationElement extends HTMLElement {
    * Text or password input.
    */
   get input(): HTMLInputElement {
-    return this.querySelector('.password-confirmation__input1')! as HTMLInputElement;
+    return this.querySelector('.password-confirmation__input')! as HTMLInputElement;
   }
 
   /**
    * Text or password confirmation input.
    */
   get inputConfirmation(): HTMLInputElement {
-    return this.querySelector('.password-confirmation__input2')! as HTMLInputElement;
+    return this.querySelector('.password-confirmation__input-confirmation')! as HTMLInputElement;
   }
 
   setInputType() {
