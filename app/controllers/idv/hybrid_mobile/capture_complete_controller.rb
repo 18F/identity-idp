@@ -3,6 +3,8 @@ module Idv
     class CaptureCompleteController < ApplicationController
       include HybridMobileConcern
 
+      before_action :check_valid_document_capture_session
+
       def show
         analytics.idv_doc_auth_capture_complete_visited(**analytics_arguments)
 

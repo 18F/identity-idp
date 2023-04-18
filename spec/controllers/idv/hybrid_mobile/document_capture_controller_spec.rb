@@ -25,7 +25,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
       and_return(feature_flag_enabled)
 
-    session[:doc_capture_user_id] = user.id if user
+    session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
   end
 
