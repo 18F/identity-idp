@@ -22,17 +22,19 @@ Rails.application.routes.draw do
   end
 
   # SAML secret rotation paths
-  SamlEndpoint.suffixes.each do |suffix|
-    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
-    match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
-    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post]
+  constraints(path_year: SamlEndpoint.suffixes) do
+    get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
+    match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete],
+          as: :api_saml_logout
+    match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post],
+          as: :api_saml_remotelogout
     # JS-driven POST redirect route to preserve existing session
-    post "/api/saml/auth#{suffix}" => 'saml_post#auth'
+    post '/api/saml/auth(:path_year)' => 'saml_post#auth', as: :api_saml_auth
     # actual SAML handling POST route
-    post "/api/saml/authpost#{suffix}" => 'saml_idp#auth'
+    post '/api/saml/authpost(:path_year)' => 'saml_idp#auth', as: :api_saml_authpost
     # The internal auth post which will not be logged as an external request
-    post "/api/saml/finalauthpost#{suffix}" => 'saml_idp#auth'
-    get "/api/saml/auth#{suffix}" => 'saml_idp#auth'
+    post '/api/saml/finalauthpost(:path_year)' => 'saml_idp#auth', as: :api_saml_finalauthpost
+    get '/api/saml/auth(:path_year)' => 'saml_idp#auth'
   end
   get '/api/saml/complete' => 'saml_completion#index', as: :complete_saml
 
@@ -325,6 +327,11 @@ Rails.application.routes.draw do
       post '/forgot_password' => 'forgot_password#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
+      # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
+      # should be kept short, and should not include underscores ("_").
+      get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
+      get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
+      get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'

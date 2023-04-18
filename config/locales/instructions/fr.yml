@@ -76,12 +76,9 @@ fr:
           votre PIV / CAC ).
         try_again: réessayer
       sms:
-        confirm_code_html: Vous avez besoin d’un autre code? %{resend_code_link}. Les
-          frais liés aux messages texte peuvent s’appliquer.
         number_message_html: Nous avons envoyé un texte (SMS) avec un code à usage
           unique au %{number}. Ce code expirera dans %{expiration} minutes.
       voice:
-        confirm_code_html: Vous voulez que nous vous appelions de nouveau? %{resend_code_link}
         number_message_html: Nous avons envoyé un code à usage unique par appel au
           %{number}. Ce code expirera dans %{expiration} minutes.
       webauthn:

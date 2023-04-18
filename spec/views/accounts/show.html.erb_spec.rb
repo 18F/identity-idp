@@ -2,15 +2,13 @@ require 'rails_helper'
 
 describe 'accounts/show.html.erb' do
   let(:user) { create(:user, :signed_up, :with_personal_key) }
-  let(:decorated_user) { user.decorate }
 
   before do
-    allow(user).to receive(:decorate).and_return(decorated_user)
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+        decrypted_pii: nil, personal_key: nil, user: user,
         sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false
       ),
@@ -25,7 +23,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when current user has password_reset_profile' do
     before do
-      allow(decorated_user).to receive(:password_reset_profile).and_return(true)
+      allow(user).to receive(:password_reset_profile).and_return(true)
     end
 
     it 'displays an alert with instructions to reactivate their profile' do
@@ -46,7 +44,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when the user does not have pending_profile' do
     before do
-      allow(decorated_user).to receive(:pending_profile).and_return(false)
+      allow(user).to receive(:pending_profile).and_return(false)
     end
 
     it 'lacks a pending profile section' do
@@ -60,7 +58,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when current user has pending_profile' do
     before do
-      allow(decorated_user).to receive(:pending_profile).and_return(build(:profile))
+      allow(user).to receive(:pending_profile).and_return(build(:profile))
     end
 
     it 'contains a link to activate profile' do
@@ -169,7 +167,7 @@ describe 'accounts/show.html.erb' do
       assign(
         :presenter,
         AccountShowPresenter.new(
-          decrypted_pii: nil, personal_key: 'abc123', decorated_user: decorated_user,
+          decrypted_pii: nil, personal_key: 'abc123', user: user,
           sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
           locked_for_session: false
         ),

@@ -252,16 +252,16 @@ class ApplicationController < ActionController::Base
   end
 
   def user_needs_to_reactivate_account?
-    return false if current_user.decorate.password_reset_profile.blank?
+    return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
     sp_session[:ial2] == true
   end
 
   def pending_profile_newer_than_password_reset_profile?
-    return false if current_user.decorate.pending_profile.blank?
-    return false if current_user.decorate.password_reset_profile.blank?
-    current_user.decorate.pending_profile.created_at >
-      current_user.decorate.password_reset_profile.updated_at
+    return false if current_user.pending_profile.blank?
+    return false if current_user.password_reset_profile.blank?
+    current_user.pending_profile.created_at >
+      current_user.password_reset_profile.updated_at
   end
 
   def reauthn_param
@@ -291,13 +291,11 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? &&
-      two_factor_enabled? &&
+    !reauthn? &&
+      user_signed_in? &&
       session['warden.user.user.session'] &&
-      !session['warden.user.user.session'].try(
-        :[],
-        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
-      )
+      !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
+      two_factor_enabled?
   end
 
   def reauthn?

@@ -34,7 +34,7 @@ module Users
     private
 
     def capture_password_if_pii_requested_but_locked
-      return unless current_user.decorate.identity_verified? &&
+      return unless current_user.identity_verified? &&
                     !Pii::Cacher.new(current_user, user_session).exists_in_session?
       user_session[:stored_location] = request.url
       redirect_to capture_password_url

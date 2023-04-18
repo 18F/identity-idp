@@ -71,7 +71,7 @@ module SamlIdpLogoutConcern
   end
 
   def saml_response_signature_options
-    endpoint = SamlEndpoint.new(request)
+    endpoint = SamlEndpoint.new(params[:path_year])
     {
       x509_certificate: endpoint.x509_certificate,
       secret_key: endpoint.secret_key,

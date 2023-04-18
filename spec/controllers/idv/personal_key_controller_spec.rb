@@ -17,6 +17,9 @@ describe Idv::PersonalKeyController do
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
+    subject.idv_session.address_verification_mechanism = 'phone'
+    idv_session.vendor_phone_confirmation = true
+    idv_session.user_phone_confirmation = true
     allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 
@@ -129,11 +132,15 @@ describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
+        subject.idv_session.vendor_phone_confirmation = false
+        subject.idv_session.user_phone_confirmation = false
+        subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'does not show a flash in new gpo flow' do
+      it 'redirects to the come back later url' do
         get :show
-        expect(flash[:success]).to eq nil
+
+        expect(response).to redirect_to idv_come_back_later_url
       end
     end
   end
@@ -145,9 +152,6 @@ describe Idv::PersonalKeyController do
 
     context 'user selected phone verification' do
       before do
-        subject.idv_session.address_verification_mechanism = 'phone'
-        subject.idv_session.vendor_phone_confirmation = true
-        subject.idv_session.user_phone_confirmation = true
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
@@ -188,31 +192,17 @@ describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
+        subject.idv_session.vendor_phone_confirmation = false
+        subject.idv_session.user_phone_confirmation = false
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
       context 'with gpo personal key after verification' do
-        it 'redirects to sign up completed_url for a sp' do
-          allow(subject).to receive(:pending_profile?).and_return(false)
-          subject.session[:sp] = { ial2: true }
-
+        it 'redirects to the come back later url' do
           patch :update
 
-          expect(response).to redirect_to sign_up_completed_url
+          expect(response).to redirect_to idv_come_back_later_url
         end
-      end
-
-      it 'logs key submitted event' do
-        patch :update
-
-        expect(@analytics).to have_logged_event(
-          'IdV: personal key submitted',
-          address_verification_method: nil,
-          fraud_review_pending: false,
-          fraud_rejection: false,
-          deactivation_reason: 'gpo_verification_pending',
-          proofing_components: nil,
-        )
       end
     end
 

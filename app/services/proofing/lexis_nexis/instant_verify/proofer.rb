@@ -2,8 +2,6 @@ module Proofing
   module LexisNexis
     module InstantVerify
       class Proofer
-        DRIVERS_LICENSE_CHECK_NAMES = %w[DriversLicense DriversLicenseVerification].freeze
-
         attr_reader :config
 
         def initialize(config)
@@ -42,7 +40,6 @@ module Proofing
             attributes_requiring_additional_verification:
               attributes_requiring_additional_verification(instant_verify_product),
             vendor_workflow: config.instant_verify_workflow,
-            drivers_license_info_matches: drivers_license_info_matches?(instant_verify_product),
           )
         end
 
@@ -67,19 +64,6 @@ module Proofing
 
         def attributes_requiring_additional_verification(instant_verify_product)
           CheckToAttributeMapper.new(instant_verify_product).map_failed_checks_to_attributes
-        end
-
-        def drivers_license_info_matches?(instant_verify_product)
-          dln_products = instant_verify_product&.fetch('Items', [])&.select do |item|
-            DRIVERS_LICENSE_CHECK_NAMES.include?(item['ItemName'])
-          end
-
-          return false if dln_products.nil?
-          return false unless dln_products.length == DRIVERS_LICENSE_CHECK_NAMES.length
-
-          dln_products.none? do |item|
-            item['ItemStatus'] != 'pass'
-          end
         end
 
         def find_instant_verify_product(verification_response)
