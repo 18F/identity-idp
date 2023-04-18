@@ -22,9 +22,8 @@ module Idv
     end
 
     def update
-      handle_stored_result
-
-      analytics.idv_doc_auth_document_capture_submitted(**analytics_arguments)
+      result = handle_stored_result
+      analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
@@ -135,7 +134,8 @@ module Idv
     def handle_stored_result
       if stored_result&.success?
         save_proofing_components
-        extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        result = extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        successful_response
       else
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
@@ -196,6 +196,10 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
+    end
+
+    def successful_response
+      FormResponse.new(success: true)
     end
 
     # copied from Flow::Failure module
