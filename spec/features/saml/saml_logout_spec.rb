@@ -159,14 +159,13 @@ feature 'SAML logout' do
 
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
-      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).ttl).to be_positive
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq true
 
       # simulate a remote request
       agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
-      # -2 is the TTL value returned from Redis when the key does not exist
-      expect(OutOfBandSessionAccessor.new(session_id).ttl).to eq(-2)
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq false
 
       # should be logged out...
       visit account_path
