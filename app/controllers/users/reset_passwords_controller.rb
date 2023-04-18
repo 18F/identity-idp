@@ -23,19 +23,19 @@ module Users
     def edit
       if FeatureManagement.redirect_to_clean_edit_password_url?
         session[:reset_password_token] = params[:reset_password_token]
-        redirect_to forgot_user_password_path
+        redirect_to change_user_password_url
       else
-        process_forgot_password_load
+        process_edit_password_page_load
       end
     end
 
-    def forgot_password
+    def change_password
       if session[:reset_password_token].present?
-        process_forgot_password_load
+        process_edit_password_page_load
         return
       end
 
-      redirect_to :new_user_password
+      redirect_to new_user_password_url
     end
 
     # PUT /resource/password
@@ -92,7 +92,7 @@ module Users
       redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
-    def process_forgot_password_load
+    def process_edit_password_page_load
       result = PasswordResetTokenValidator.new(token_user).submit
 
       analytics.password_reset_token(**result.to_h)
@@ -100,11 +100,11 @@ module Users
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      session.delete(:reset_password_token)
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
         @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        session.delete(:reset_password_token)
         render 'edit'
       else
         handle_invalid_or_expired_token(result)
@@ -132,6 +132,7 @@ module Users
 
     def handle_invalid_or_expired_token(result)
       flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
+      session.delete(:reset_password_token)
       redirect_to new_user_password_url
     end
 

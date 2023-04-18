@@ -117,7 +117,7 @@ describe Users::ResetPasswordsController, devise: true do
       it 'redirects properly and stores the token in the session' do
         get :edit, params: { reset_password_token: 'foo' }
 
-        expect(response).to redirect_to(forgot_user_password_path)
+        expect(response).to redirect_to(change_user_password_path)
         expect(session[:reset_password_token]).to eq('foo')
       end
     end
