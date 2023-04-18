@@ -15,28 +15,12 @@
 To the extent possible, use design system components and utilities when implementing designs.
 
 **Components** are simple and consistent solutions to common user interface needs, like form fields,
-buttons, and icons. Any of the [U.S. Web Design system components](https://designsystem.digital.gov/components/overview/)
-are available to use. Through the Login.gov Design System, we have customized some of these
-components to suit our needs.
+buttons, and icons. See the [Components section](#components) below for more information.
 
 **Utilities** are CSS classes which allow you to add consistent styling to an HTML element, such as
 margins or borders.
 
 - [U.S. Web Design System utilities](https://designsystem.digital.gov/utilities/)
-
-### Stylelint
-
-Login.gov publishes and uses
-[our own custom Stylelint configuration](https://www.npmjs.com/package/@18f/identity-stylelint-config),
-which is based on [TTS engineering best-practices](https://engineering.18f.gov/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
-enforces
-[BEM-style class naming conventions](https://en.bem.info/methodology/naming-convention/#two-dashes-style).
-
-It may be useful to consider installing a
-[Prettier editor integration](https://prettier.io/docs/en/editors.html) to automatically format
-files on save. Similarly, a
-[Stylelint editor integration](https://stylelint.io/user-guide/integrations/editor) can help
-identify issues in your code as you write.
 
 ## JavaScript
 
@@ -132,7 +116,19 @@ workspace packages. Otherwise, it can inflate the size of the compiled bundles a
 performance impact on users. Similarly, consider using a tool like [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
 to deduplicate resolved package versions within the Yarn lockfile.
 
-### Components
+### Localization
+
+See [`@18f/identity-i18n` package documentation](https://github.com/18F/identity-idp/blob/main/app/javascript/packages/i18n/README.md).
+
+## Components
+
+### Design System
+
+Any of the [U.S. Web Design system components](https://designsystem.digital.gov/components/overview/)
+are available to use. Through the Login.gov Design System, we have customized some of these
+components to suit our needs.
+
+### Implementations
 
 We use a mixture of complementary component implementation approaches to support both server-side
 and client-side rendering.
@@ -169,13 +165,52 @@ Custom elements provide several advantages in that they...
 - have no dependencies, limiting overall page size in the critical path
 - are portable and avoid vendor lock-in
 
-### Localization
+### Conventions
 
-See [`@18f/identity-i18n` package documentation](https://github.com/18F/identity-idp/blob/main/app/javascript/packages/i18n/README.md).
+#### Naming
+
+Each component should have a name that is used consistently in its implementation and which
+describes its purpose. This should be reflected in file names and the code itself.
+
+- ViewComponent classes should be named `[ExampleName]Component`
+- ViewComponent files should be named `app/components/[example_name]_component.rb`
+- Stylesheet files should be named `app/stylesheets/components/_[example-name].scss`
+- Stylesheet selectors should use `[example-name]` as the ["block name" in BEM](https://en.bem.info/methodology/naming-convention/#two-dashes-style)
+- React components should be named `<[ExampleName] />`
+- React component files should be named `app/javascript/packages/[example-name]/[example-name].ts`
+- Web components should be named `[ExampleName]Element`
+- Web components files should be named `app/javascript/packages/[example-name]/[example-name]-element.tsx`
+
+For example, consider a **Password Input** component:
+
+- A ViewComponent implementation would be called `PasswordInputComponent`
+- A ViewComponent file would be named `app/components/password_input_component.rb`
+- A stylesheet file would be named `app/stylesheets/componewnts/_password-input.scss`
+- A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
+- A react component would be named `<PasswordInput />`
+- A react component file would be named `app/javascript/packages/password-input/password-input.tsx`
+- A web component would be named `PasswordInputElement`
+- A web components file would be named `app/javascript/packages/password-input/password-input-element.ts`
 
 ## Testing
 
-### At a Glance
+### Stylelint
+
+Login.gov publishes and uses
+[our own custom Stylelint configuration](https://www.npmjs.com/package/@18f/identity-stylelint-config),
+which is based on [TTS engineering best-practices](https://engineering.18f.gov/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
+enforces
+[BEM-style class naming conventions](https://en.bem.info/methodology/naming-convention/#two-dashes-style).
+
+It may be useful to consider installing a
+[Prettier editor integration](https://prettier.io/docs/en/editors.html) to automatically format
+files on save. Similarly, a
+[Stylelint editor integration](https://stylelint.io/user-guide/integrations/editor) can help
+identify issues in your code as you write.
+
+### Mocha
+
+[Mocha](https://mochajs.org/) is used as a test runner for JavaScript code.
 
 JavaScript tests include a combination of unit tests and integration tests, with a heavier emphasis
 on integration tests since the bulk of our front-end code is in service of user interactivity.
@@ -186,12 +221,6 @@ render and query [basic DOM elements](https://testing-library.com/docs/dom-testi
 well as advanced [React components](https://testing-library.com/docs/react-testing-library/intro).
 Their APIs are designed in a way to [accurately simulate real user behavior](https://testing-library.com/docs/user-event/intro)
 and support [querying by accessible semantics](https://testing-library.com/docs/queries/byrole).
-
-### Running Tests
-
-#### Mocha
-
-[Mocha](https://mochajs.org/) is used as a test runner for JavaScript code.
 
 To run all test specs:
 
@@ -213,7 +242,7 @@ For example, to watch a file and rerun tests after any change:
 yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
 ```
 
-#### ESLint
+### ESLint
 
 [ESLint](https://eslint.org/) is used to ensure code quality and enforce styling conventions.
 
