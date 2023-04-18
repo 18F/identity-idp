@@ -177,9 +177,9 @@ describes its purpose. This should be reflected in file names and the code itsel
 - Stylesheet files should be named `app/stylesheets/components/_[example-name].scss`
 - Stylesheet selectors should use `[example-name]` as the ["block name" in BEM](https://en.bem.info/methodology/naming-convention/#two-dashes-style)
 - React components should be named `<[ExampleName] />`
-- React component files should be named `app/javascript/packages/[example-name]/[example-name].ts`
+- React component files should be named `app/javascript/packages/[example-name]/[example-name].tsx`
 - Web components should be named `[ExampleName]Element`
-- Web components files should be named `app/javascript/packages/[example-name]/[example-name]-element.tsx`
+- Web components files should be named `app/javascript/packages/[example-name]/[example-name]-element.ts`
 
 For example, consider a **Password Input** component:
 
