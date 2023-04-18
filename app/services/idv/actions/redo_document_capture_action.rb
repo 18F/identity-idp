@@ -6,6 +6,7 @@ module Idv
       end
 
       def call
+        flow_session['redo_document_capture'] = true
         unless flow_session[:skip_upload_step]
           mark_step_incomplete(:link_sent)
           mark_step_incomplete(:upload)

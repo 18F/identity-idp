@@ -22,6 +22,7 @@ module Idv
     end
 
     def update
+      flow_session['redo_document_capture'] = nil # done with this redo
       result = handle_stored_result
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
@@ -68,6 +69,8 @@ module Idv
     end
 
     def confirm_document_capture_needed
+      return if flow_session['redo_document_capture']
+
       pii = flow_session['pii_from_doc'] # hash with indifferent access
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
