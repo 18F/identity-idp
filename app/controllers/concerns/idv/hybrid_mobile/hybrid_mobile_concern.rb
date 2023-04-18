@@ -7,6 +7,30 @@ module Idv
         before_action :render_404_if_hybrid_mobile_controllers_disabled
       end
 
+      def acuant_sdk_ab_test_analytics_args
+        {
+          acuant_sdk_upgrade_ab_test_bucket:
+            AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
+        }
+      end
+
+      def acuant_sdk_upgrade_a_b_testing_variables
+        bucket = AbTests::ACUANT_SDK.bucket(document_capture_session_uuid)
+        testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
+        use_alternate_sdk = (bucket == :use_alternate_sdk)
+        if use_alternate_sdk
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
+        else
+          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
+        end
+        {
+          acuant_sdk_upgrade_a_b_testing_enabled:
+              testing_enabled,
+          use_alternate_sdk: use_alternate_sdk,
+          acuant_version: acuant_version,
+        }
+      end
+
       def check_valid_document_capture_session
         if !document_capture_user
           # The user has not "logged in" to document capture via the EntryController
@@ -19,6 +43,12 @@ module Idv
         end
 
         return handle_invalid_document_capture_session if document_capture_session.expired?
+      end
+
+      def current_flow_step_counts
+        session['idv/doc_auth_flow_step_counts'] ||= {}
+        session['idv/doc_auth_flow_step_counts'].default = 0
+        session['idv/doc_auth_flow_step_counts']
       end
 
       def document_capture_session
@@ -54,6 +84,16 @@ module Idv
           current_user: document_capture_user,
           service_provider: current_sp,
         )
+      end
+
+      def increment_step_count(step_name)
+        current_flow_step_counts[step_name] += 1
+      end
+
+      def irs_reproofing?
+        document_capture_user.reproof_for_irs?(
+          service_provider: current_sp,
+        ).present?
       end
 
       def render_404_if_hybrid_mobile_controllers_disabled

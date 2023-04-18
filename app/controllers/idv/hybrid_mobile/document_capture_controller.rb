@@ -4,9 +4,10 @@ module Idv
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
+      before_action :override_document_capture_step_csp
 
       def show
-        increment_step_counts
+        increment_step_count 'Idv::Steps::DocumentCaptureStep'
 
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
@@ -46,30 +47,6 @@ module Idv
       end
 
       private
-
-      def acuant_sdk_ab_test_analytics_args
-        {
-          acuant_sdk_upgrade_ab_test_bucket:
-            AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
-        }
-      end
-
-      def acuant_sdk_upgrade_a_b_testing_variables
-        bucket = AbTests::ACUANT_SDK.bucket(document_capture_session_uuid)
-        testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
-        use_alternate_sdk = (bucket == :use_alternate_sdk)
-        if use_alternate_sdk
-          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
-        else
-          acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
-        end
-        {
-          acuant_sdk_upgrade_a_b_testing_enabled:
-              testing_enabled,
-          use_alternate_sdk: use_alternate_sdk,
-          acuant_version: acuant_version,
-        }
-      end
 
       def analytics_arguments
         {
@@ -128,16 +105,6 @@ module Idv
           IdentityConfig.store.in_person_cta_variant_testing_enabled,
           in_person_cta_variant_active: bucket,
         }
-      end
-
-      def increment_step_counts
-        current_flow_step_counts['Idv::Steps::DocumentCaptureStep'] += 1
-      end
-
-      def irs_reproofing?
-        document_capture_user.reproof_for_irs?(
-          service_provider: current_sp,
-        ).present?
       end
 
       def native_camera_ab_testing_variables
