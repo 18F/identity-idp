@@ -111,6 +111,21 @@ aws-vault exec prod-power — bin/ls-servers -e prod
 
 Monitor that the servers come back up after recycling. Check that they enter the `running` state and accumulate uptime.
 
+Check NewRelic for errors during this time, also.
+
+#### For the next 1 hour
+
+After 15 minutes, per our handbook [Production in the Deploy instructions](https://handbook.login.gov/articles/appdev-deploy.html#production), you may remove the old servers. This will remove us from a 50/50 state. These commands are for **production only**. 
+
+```zhs
+aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod idp
+aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod worker
+```
+
+Manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
+
+Check NewRelic for errors at the end of one hour.
+
 #### For 2 weeks after deploy:
 
 Monitor with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
