@@ -58,6 +58,8 @@ Steps:
 
 After you have added the new SDK files per [the above instructions](#add-new-sdk-files), and after those new files have been merged into the main Git branch and deployed, you may A/B test the new Acuant SDK version.
 
+You may want to first A/B tests in staging. These instructions show how to A/B test in production.
+
 You will need:
 * the AWS prod-power role ([request access](https://github.com/18F/identity-devops/issues/new?assignees=&labels=administration&template=onboarding-devops-prod.md&title=Onboarding+to+Production+for+%5BTEAM_MEMBER%5D))
 * a YubiKey ([setup](https://github.com/18F/identity-devops/wiki/Setting-Up-your-Login.gov-Infrastructure-Configuration#configuring-a-yubikey-as-a-virtual-mfa-device))
@@ -71,7 +73,10 @@ You will need:
 
     The command downloads a configuration file and opens an editor so you can modify it.
 
-2. Make the file look like this:
+2. Start a Slack thread in `#login-appdev` notifying people that you are going to recycle prod. An example message:
+> &#9851; prod IdP to update Acuant SDK
+
+3. Make the file look like this:
 
     ```yml
     idv_acuant_sdk_upgrade_a_b_testing_enabled: true
@@ -82,9 +87,9 @@ You will need:
  
     Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.) The percentage should already be set to 50, so it does not need to be changed.
     
-3. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Type `y` to accept them.
+4. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Copy the diff and paste it into the Slack thread. Type `y` to accept the changes.
 
-4. Recycle the servers to deploy the changes:
+5. Recycle the servers to deploy the changes:
 
     ```zsh
     aws-vault exec prod-power -- bin/asg-recycle prod idp
