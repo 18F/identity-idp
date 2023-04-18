@@ -23,16 +23,12 @@ RSpec.describe 'In Person Proofing', js: true do
     it 'allows the user to continue down the happy path', allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_prepare_step(user)
-      search_for_post_office
-
-      # location page
-      within page.first('.location-collection-item') do
-        click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
-      end
 
       # prepare page
       complete_prepare_step(user)
+
+      # location page
+      complete_location_step
 
       # state ID page
       complete_state_id_step(user)
@@ -124,16 +120,14 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing(user)
 
     # prepare page
-    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
 
     # location page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-    search_for_post_office
-    within page.first('.location-collection-item') do
-      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
-    end
+    complete_location_step
 
     # state ID page
     expect_in_person_step_indicator_current_step(
@@ -265,12 +259,9 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_prepare_step
 
     # location page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-
-    # location page results
-    search_for_post_office
-    expect(page).to have_css('.location-collection-item', wait: 10)
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    complete_location_step
 
     # back to prepare page
     click_button t('forms.buttons.back')
@@ -327,11 +318,11 @@ RSpec.describe 'In Person Proofing', js: true do
 
     it 'resumes desktop session with in-person proofing', allow_browser_log: true do
       user = nil
-      phone_number = '415-555-0199'
+
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
         complete_doc_auth_steps_before_upload_step
-        clear_and_fill_in(:doc_auth_phone, phone_number)
+        clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 
         expect(page).to have_content(t('doc_auth.headings.text_message'))
@@ -340,18 +331,23 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(@sms_link).to be_present
 
       perform_in_browser(:mobile) do
+        # doc auth page
         visit @sms_link
         mock_doc_auth_attention_with_barcode
         attach_and_submit_images
 
-        click_link t('in_person_proofing.body.cta.button')
+        # error page
+        click_button t('in_person_proofing.body.cta.button')
+
+        # prepare page
+        expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
         click_idv_continue
 
-        search_for_post_office
-        within page.first('.location-collection-item') do
-          click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
-        end
+        # location page
+        expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+        complete_location_step
 
+        # switch back page
         expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
       end
 
@@ -618,7 +614,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_prepare_step(user)
       complete_location_step(user)
     end
-    # prepare page
+
     it 'successfully proceeds through the flow' do
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
 
