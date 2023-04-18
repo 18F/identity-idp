@@ -134,7 +134,7 @@ module Idv
     def handle_stored_result
       if stored_result&.success?
         save_proofing_components
-        result = extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
         successful_response
       else
         extra = { stored_result_present: stored_result.present? }
