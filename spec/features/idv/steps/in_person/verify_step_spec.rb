@@ -71,7 +71,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       complete_verify_step(user)
 
       # phone page
-      expect(page).to have_content(t('idv.titles.session.phone'))
+      expect(page).to have_content(t('titles.idv.phone'))
     end
   end
 
