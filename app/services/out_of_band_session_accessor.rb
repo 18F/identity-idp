@@ -85,6 +85,7 @@ class OutOfBandSessionAccessor
 
   # @return [Hash]
   def session_data
+    return {} unless session_uuid
     uuid = Rack::Session::SessionId.new(session_uuid)
     @session_data ||= session_store.instance_eval do
       with_redis_connection do |client|
