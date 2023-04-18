@@ -18,7 +18,7 @@ Someone on the team should watch the current version so we know when to upgrade.
 Steps in this section add new, tested SDK files to the repo. They do not activate a new version of the SDK; they simply put it in place.
 
 You will need:
-* a mobile phone with a camera
+* a mobile phone with a camera (Android or iPhone or both)
 * a USB cable that plugs into the phone
 * your state ID, or a substitute wallet-sized card
 
