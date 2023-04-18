@@ -3,9 +3,9 @@
 Instructions to upgrade the Acuant JavaScript Web SDK, which the identity-idp app uses for identity document image capture.
 * [§ Watch SDK versions](#watch-sdk-versions)
 * [§ Add new SDK files](#add-new-sdk-files)
-* [§ Turn on A/B testing]()
-* [§ Monitor A/B testing]()
-* [§ Switch over to new version]()
+* [§ Turn on A/B testing](#turn-on-ab-testing)
+* [§ Monitor A/B testing](#monitor-ab-testing)
+* [§ Switch over to new version](#switch-over-to-new-version)
 
 ## Watch SDK versions
 
@@ -52,5 +52,16 @@ Steps:
 
 10. After you have photographed the front and back of your card, you have tested the SDK locally. You do not need to submit the images. If you have both an Android and an iPhone, test the SDK with both of them. (Or, pair with someone who has the other type of phone.)
 
-11. Open a pull request for the modified SDK files. The next process &mdash; A/B testing the new version &mdash; can only take place after the files are accepted into the master branch.
+11. Open a pull request for the modified SDK files. The next process &mdash; A/B testing the new version &mdash; can only take place after the files are accepted into the main branch.
 
+## Turn on A/B testing
+
+After you have added the new SDK files per [the above instructions], and after those new files have been merged into the main Git branch, you may A/B test the new Acuant SDK version.
+
+1. In identity-devops, run the command:
+
+    ```bash
+    aws-vault exec prod-power -- bin/app-s3-secret --env prod --app idp --edit
+    ```
+
+    The command downloads a configuration file and opens an editor so you can modify it.
