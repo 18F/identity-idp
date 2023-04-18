@@ -57,7 +57,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.verify_phone_or_address'),
       )
-      expect(page).to have_content(t('idv.titles.session.phone'))
+      expect(page).to have_content(t('titles.idv.phone'))
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
       expect_in_person_step_indicator_current_step(
@@ -184,7 +184,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.verify_phone_or_address'),
     )
-    expect(page).to have_content(t('idv.titles.session.phone'))
+    expect(page).to have_content(t('titles.idv.phone'))
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     click_idv_send_security_code
     expect_in_person_step_indicator_current_step(

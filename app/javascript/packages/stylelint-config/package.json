@@ -1,6 +1,6 @@
 {
   "name": "@18f/identity-stylelint-config",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": false,
   "description": "Stylelint shareable configuration for Login.gov CSS/SASS standards",
   "repository": {
@@ -17,12 +17,11 @@
   },
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
-    "stylelint-config-prettier": "^9.0.3",
-    "stylelint-config-recommended-scss": "^5.0.2",
-    "stylelint-prettier": "^2.0.0"
+    "stylelint-config-recommended-scss": "^10.0.0",
+    "stylelint-prettier": "^3.0.0"
   },
   "peerDependencies": {
-    "stylelint": "^14.0.0",
-    "prettier": "*"
+    "prettier": "*",
+    "stylelint": "^15.0.0"
   }
 }

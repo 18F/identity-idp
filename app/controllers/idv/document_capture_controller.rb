@@ -40,7 +40,7 @@ module Idv
         flow_session: flow_session,
         flow_path: 'standard',
         sp_name: decorated_session.sp_name,
-        failure_to_proof_url: idv_doc_auth_return_to_sp_url,
+        failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
 
         front_image_upload_url: url_builder.presigned_image_upload_url(
           image_type: 'front',
