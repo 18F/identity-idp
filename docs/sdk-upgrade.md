@@ -117,7 +117,7 @@ Check NewRelic for errors during this time, also.
 
 After 15 minutes, per our handbook [Production in the Deploy instructions](https://handbook.login.gov/articles/appdev-deploy.html#production), you may remove the old servers. This will remove us from a 50/50 state. These commands are for **production only**. 
 
-```zhs
+```zsh
 aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod idp
 aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod worker
 ```
