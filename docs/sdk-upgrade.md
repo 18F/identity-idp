@@ -9,7 +9,7 @@ Instructions to upgrade the Acuant JavaScript Web SDK, which the identity-idp ap
 
 ## Watch SDK versions
 
-New versions come from [this Acuant repo](https://github.com/Acuant/JavascriptWebSDKV11). To determine if we need an upgrade, compare the [lastest release](https://github.com/Acuant/JavascriptWebSDKV11/releases) version number to the latest in our [`/public/acuant`](/public/acuant) directory.
+New versions come from [this Acuant repo](https://github.com/Acuant/JavascriptWebSDKV11). To determine if we need an upgrade, compare the [latest release](https://github.com/Acuant/JavascriptWebSDKV11/releases) version number to the latest in our [`/public/acuant`](/public/acuant) directory.
 
 Someone on the team should watch the current version so we know when to upgrade. Team members can sign up for notifications of new versions at **Watch → Custom → Releases** in the Acuant repo.
 
@@ -48,7 +48,7 @@ Steps:
     ![acuant-vesion-location](https://user-images.githubusercontent.com/546123/232644328-35922329-ad30-489e-943f-4125c009f74d.png)
 
 
-9. Assuming the version is correct, you are ready to test it. On your phone, tap to photograph your state ID card. Point the camera at the card. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show were it believes the edges are.
+9. Assuming the version is correct, you are ready to test it. On your phone, tap to photograph your state ID card. Point the camera at the card. Ensure the SDK finds the edges of the card and captures an image. Normally the SDK will put a yellowish box over the card to show where it believes the edges are.
 
 10. After you have photographed the front and back of your card, you have tested the SDK locally. You do not need to submit the images. If you have both an Android and an iPhone, test the SDK with both of them. (Or, pair with someone who has the other type of phone.)
 
@@ -80,7 +80,7 @@ You will need:
     idv_acuant_sdk_version_default: 11.N.N
     ```
  
-    Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.) The percentage should already be set to 50, so it does not need to be chagned.
+    Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.) The percentage should already be set to 50, so it does not need to be changed.
     
 3. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Type `y` to accept them.
 
@@ -151,4 +151,4 @@ Use the same [tools for monitoring](#monitor-ab-testing).
 
 ### Cleanup
 
-After successful A/B testing clears us to move to a new version of the Acuant SDK, we want to remove the oldest version from our repository. In the `/public/acuant/`(/public/acuant/) directory, there should be three versions. We only want to keep the newer two. Delete the directory containing the oldest of the three versions. Create a pull requst for this.
+After successful A/B testing clears us to move to a new version of the Acuant SDK, we want to remove the oldest version from our repository. In the `/public/acuant/`(/public/acuant/) directory, there should be three versions. We only want to keep the newer two. Delete the directory containing the oldest of the three versions. Create a pull request for this.
