@@ -89,7 +89,9 @@ module TwoFactorAuthentication
     end
 
     def sanitized_otp_code
-      form_params[:code].to_s.strip
+      code = form_params[:code].to_s.strip
+      code = code[1..] if code[0] == '#'
+      code
     end
 
     def form_params
