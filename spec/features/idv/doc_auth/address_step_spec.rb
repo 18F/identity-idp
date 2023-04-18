@@ -4,10 +4,6 @@ feature 'doc auth verify step', :js do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:puerto_rico_guidance_text) do
-    t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
-  end
-
   let(:puerto_rico_address1_hint) do
     "#{t('forms.example')} 150 Calle A Apt 3"
   end
@@ -22,6 +18,10 @@ feature 'doc auth verify step', :js do
 
   let(:puerto_rico_zipcode_hint) do
     "#{t('forms.example')} 00926"
+  end
+
+  let(:puerto_rico_guidance_text) do
+    t('doc_auth.info.address_guidance_puerto_rico_html').gsub('<br>', "\n")
   end
 
   before do
