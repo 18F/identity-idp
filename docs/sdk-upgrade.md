@@ -101,6 +101,8 @@ Monitoring the A/B test begins now. Proceed to the next section.
 
 ## Monitor A/B testing
 
+Monitoring must begin immediately after the recycle; it includes monitoring of the deployment itself. These instructions show how to monitor A/B testing in production.
+
 #### For 15 minutes after deploy:
 
 Use our [`ls-servers` command](https://handbook.login.gov/articles/devops-scripts.html#ls-servers) to view a table of our servers:
@@ -115,7 +117,7 @@ Check NewRelic for errors during this time, also.
 
 #### For the next 1 hour
 
-After 15 minutes, per our [production deploy instructions](https://handbook.login.gov/articles/appdev-deploy.html#production), you may remove the old servers. This take us back out from a 50/50 deployment state. These commands are for **production only**. 
+After 15 minutes, per our [production deploy instructions](https://handbook.login.gov/articles/appdev-deploy.html#production), you may remove the old servers. This takes us back out from a 50/50 deployment state. These commands are for **production only**:
 
 ```zsh
 aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod idp
