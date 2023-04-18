@@ -146,7 +146,7 @@ class AttributeAsserter
 
   def uuid_getter_function
     lambda do |principal|
-      identity = principal.decorate.active_identity_for(service_provider)
+      identity = principal.active_identity_for(service_provider)
       AgencyIdentityLinker.new(identity).link_identity.uuid
     end
   end

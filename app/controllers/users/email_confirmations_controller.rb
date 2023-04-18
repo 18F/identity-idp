@@ -15,7 +15,9 @@ module Users
     def email_address
       return @email_address if defined?(@email_address)
 
-      email_address = EmailAddress.find_with_confirmation_token(params[:confirmation_token])
+      email_address = EmailAddress.find_with_confirmation_token(
+        confirmation_params[:confirmation_token],
+      )
       if email_address&.user&.confirmed?
         @email_address = email_address
       else
@@ -89,6 +91,10 @@ module Users
     def email_address_already_confirmed_by_current_user?
       user_signed_in? &&
         email_confirmation_token_validator.email_address_already_confirmed_by_user?(current_user)
+    end
+
+    def confirmation_params
+      params.permit(:confirmation_token)
     end
   end
 end

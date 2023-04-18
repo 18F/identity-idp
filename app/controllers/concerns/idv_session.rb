@@ -10,7 +10,7 @@ module IdvSession
   def confirm_idv_needed
     return if effective_user.active_profile.blank? ||
               decorated_session.requested_more_recent_verification? ||
-              effective_user.decorate.reproof_for_irs?(service_provider: current_sp)
+              effective_user.reproof_for_irs?(service_provider: current_sp)
 
     redirect_to idv_activated_url
   end

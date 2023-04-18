@@ -8,7 +8,7 @@ module Idv
     end
 
     def call
-      otp_rate_limiter.reset_count_and_otp_last_sent_at if user.decorate.no_longer_locked_out?
+      otp_rate_limiter.reset_count_and_otp_last_sent_at if user.no_longer_locked_out?
 
       return too_many_otp_sends_response if rate_limit_exceeded?
       otp_rate_limiter.increment

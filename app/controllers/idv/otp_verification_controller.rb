@@ -61,7 +61,7 @@ module Idv
     end
 
     def handle_otp_confirmation_failure
-      if decorated_user.locked_out?
+      if current_user.locked_out?
         handle_too_many_otp_attempts
       else
         flash.now[:error] = t('two_factor_authentication.invalid_otp')

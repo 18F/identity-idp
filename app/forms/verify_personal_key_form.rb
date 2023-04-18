@@ -30,7 +30,7 @@ class VerifyPersonalKeyForm
   private
 
   def password_reset_profile
-    user.decorate.password_reset_profile
+    user.password_reset_profile
   end
 
   def validate_personal_key
