@@ -52,6 +52,15 @@ describe Idv::Steps::InPerson::VerifyStep do
   end
 
   describe '#call' do
+    let(:same_address_as_id) { 'false' }
+    let(:capture_secondary_id_enabled) { true }
+    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
+    before do
+      allow(user).to receive(:establishing_in_person_enrollment).
+        and_return(enrollment)
+      pii[:same_address_as_id] = same_address_as_id
+    end
+
     it 'sets uuid_prefix on pii_from_user' do
       expect(Idv::Agent).to receive(:new).
         with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
@@ -61,7 +70,7 @@ describe Idv::Steps::InPerson::VerifyStep do
       expect(flow.flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
     end
 
-    it 'passes the X-Amzn-Trace-Id to the proofer' do
+    it 'passes the correct X-Amzn-Trace-Id and double_address_verification value to the proofer' do
       expect(step.send(:idv_agent)).to receive(:proof_resolution).
         with(
           kind_of(DocumentCaptureSession),
@@ -70,7 +79,7 @@ describe Idv::Steps::InPerson::VerifyStep do
           threatmetrix_session_id: nil,
           user_id: anything,
           request_ip: request.remote_ip,
-          double_address_verification: nil,
+          double_address_verification: true,
         )
 
       step.call

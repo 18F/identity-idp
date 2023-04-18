@@ -120,7 +120,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 end
 
-# TKTK: this is copied from resolution_proofing_job_spec.rb.  Maybe make a helper file that contains the setup method?
+# TKTK: this is copied from resolution_proofing_job_spec.rb.
+# Maybe make a helper file that contains the setup method?
 def stub_instant_verify_request(instant_verify_response)
   instant_verify_url = URI.join(
     IdentityConfig.store.lexisnexis_base_url,
