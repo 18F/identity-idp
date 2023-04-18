@@ -88,7 +88,7 @@ module Idv
       # @param [DocAuth::Response,
       #   DocumentCaptureSessionAsyncResult,
       #   DocumentCaptureSessionResult] response
-      def extract_pii_from_doc(response, store_in_session: false)
+      def extract_pii_from_doc(response)
         pii_from_doc = response.pii_from_doc.merge(
           uuid: effective_user.uuid,
           phone: effective_user.phone_configurations.take&.phone,
@@ -96,11 +96,7 @@ module Idv
         )
 
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-        if store_in_session
-          flow_session[:pii_from_doc] ||= {}
-          flow_session[:pii_from_doc].merge!(pii_from_doc)
-          idv_session.delete('applicant')
-        end
+
         track_document_state(pii_from_doc[:state])
       end
 
@@ -115,7 +111,7 @@ module Idv
       def handle_stored_result
         if stored_result&.success?
           save_proofing_components
-          extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+          extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)

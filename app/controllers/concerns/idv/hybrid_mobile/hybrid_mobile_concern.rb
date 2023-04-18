@@ -8,7 +8,17 @@ module Idv
       end
 
       def check_valid_document_capture_session
-        return redirect_to root_url if !document_capture_user
+        if !document_capture_user
+          # The user has not "logged in" to document capture via the EntryController
+          return handle_invalid_document_capture_session
+        end
+
+        if !document_capture_session
+          # The user has not visited the EntryController with a valid document capture session UUID
+          return handle_invalid_document_capture_session
+        end
+
+        return handle_invalid_document_capture_session if document_capture_session.expired?
       end
 
       def document_capture_session
@@ -31,6 +41,11 @@ module Idv
 
       def flow_session
         session['idv/doc_auth'] ||= {}
+      end
+
+      def handle_invalid_document_capture_session
+        flash[:error] = t('errors.capture_doc.invalid_link')
+        redirect_to root_url
       end
 
       def idv_session
