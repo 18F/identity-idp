@@ -124,6 +124,7 @@ module Idv
 
     def in_person_cta_variant_testing_variables
       bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
+      session[:in_person_cta_variant] = bucket
       {
         in_person_cta_variant_testing_enabled:
         IdentityConfig.store.in_person_cta_variant_testing_enabled,
