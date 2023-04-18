@@ -123,7 +123,7 @@ describe Users::ResetPasswordsController, devise: true do
     end
   end
 
-  describe '#forgot_password' do
+  describe '#change_password' do
     let(:user) { instance_double('User', uuid: '123') }
     let(:email_address) { instance_double('EmailAddress') }
 
@@ -152,7 +152,7 @@ describe Users::ResetPasswordsController, devise: true do
           allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
           expect(forbidden).to receive(:call)
 
-          get :forgot_password
+          get :change_password
 
           expect(response).to have_http_status(:success)
         end
@@ -161,7 +161,7 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'when reset_password_token is not present in session' do
       it 'redirects to new_user_password_url' do
-        get :forgot_password
+        get :change_password
 
         expect(response).to redirect_to(new_user_password_url)
       end
