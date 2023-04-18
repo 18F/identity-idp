@@ -110,6 +110,8 @@ describe Idv::DocumentCaptureController do
     let(:analytics_name) { 'IdV: doc auth document_capture submitted' }
     let(:analytics_args) do
       {
+        success: true,
+        errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
         irs_reproofing: false,
@@ -123,13 +125,6 @@ describe Idv::DocumentCaptureController do
         and_return(false)
       allow(subject).to receive(:stored_result).and_return(nil)
       put :update
-    end
-
-    it 'sends analytics_submitted event with correct step count' do
-      get :show
-      put :update
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog document_capture_submit_count' do
