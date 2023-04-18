@@ -107,7 +107,6 @@ class ResolutionProofingJob < ApplicationJob
 
   def resolution_proofer
     @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
-    @resolution_proofer
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
