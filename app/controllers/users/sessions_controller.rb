@@ -3,6 +3,7 @@
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
+    include ::ActionView::Helpers::UrlHelper
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
@@ -24,6 +25,7 @@ module Users
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
+      @is_on_home_page = is_on_home_page?
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
@@ -156,6 +158,10 @@ module Users
 
     def browser_is_ie11?
       BrowserCache.parse(request.user_agent).ie?(11)
+    end
+
+    def is_on_home_page?
+      current_page?(root_url)
     end
 
     def alive?
