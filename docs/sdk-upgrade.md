@@ -74,7 +74,7 @@ You will need:
     The command downloads a configuration file and opens an editor so you can modify it.
 
 2. Start a Slack thread in `#login-appdev` notifying people that you are going to recycle prod. An example message:
-> &#9851; prod IdP to update Acuant SDK
+    > ♻ prod IdP to update Acuant SDK
 
 3. Make the file look like this:
 
@@ -125,7 +125,7 @@ If the new version of the SDK is performing well for a couple weeks of A/B testi
 
 When the test is concluded, for better or for worse, you'll want to end A/B testing, leaving only one SDK version. The procedure is the same as the above procedure to [turn on A/B testing](#turn-on-ab-testing) with one exception:
 
-#### &#9989; If the test went well
+#### ✅ If the test went well
 
 The only line in the configuration file that needs to be changed is this:
 
@@ -135,7 +135,7 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 
 This switches A/B testing off. The new, desired SDK version should already be set in the `idv_acuant_sdk_version_default` field, so it should not need to be changed. Double-check that this number is correct.
 
-#### &#10060; If the test went poorly
+#### ❌ If the test went poorly
 
 If the new version under A/B testing is performing poorly, you may want to end the test, returning to the *old* SDK version. Hence, you should set the default back to the version you want. Edit these two lines of the configuration file:
 
@@ -144,7 +144,7 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_version_default: 11.M.M
 ```
 
-#### &#128260; In either case
+#### 🔄 In either case
 Save the configuration file, recycle, and monitor the recycle just as you did when you turned A/B testing on.
 
 Once again, the command to recycle is:
