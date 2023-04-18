@@ -67,6 +67,14 @@ describe Idv::HybridMobile::DocumentCaptureController do
       end
 
       it 'renders the show template' do
+        expect(controller).to receive(:render).with(
+          :show,
+          locals: hash_including(
+            document_capture_session_uuid: document_capture_session_uuid,
+            flow_path: 'hybrid',
+          ),
+        ).and_call_original
+
         get :show
 
         expect(response).to render_template :show

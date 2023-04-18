@@ -4,7 +4,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:async_uploads_enabled) { false }
-  let(:flow_session) { {} }
+  let(:document_capture_session_uuid) { nil }
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
@@ -43,7 +43,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
   subject(:render_partial) do
     render partial: 'idv/shared/document_capture', locals: {
-      flow_session: flow_session,
+      document_capture_session_uuid: document_capture_session_uuid,
       sp_name: sp_name,
       flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,

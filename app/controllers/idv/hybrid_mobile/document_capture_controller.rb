@@ -28,6 +28,8 @@ module Idv
         url_builder = ImageUploadPresignedUrlGenerator.new
 
         {
+          flow_path: 'hybrid',
+          document_capture_session_uuid: document_capture_session_uuid,
           front_image_upload_url: url_builder.presigned_image_upload_url(
             image_type: 'front',
             transaction_id: document_capture_session_uuid,
