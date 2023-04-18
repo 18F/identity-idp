@@ -2,12 +2,12 @@ require 'rails_helper'
 
 describe Idv::PleaseCallController do
   let(:user) { create(:user) }
-  let(:verify_date) { 20.days.ago }
+  let(:fraud_rejection_date) { 5.days.ago }
 
   before do
     user.profiles.create(
       fraud_review_pending: true,
-      verified_at: verify_date,
+      fraud_rejection_at: fraud_rejection_date,
     )
 
     stub_sign_in(user)
@@ -28,10 +28,10 @@ describe Idv::PleaseCallController do
 
   render_views
 
-  it 'asks user to call 2 weeks from verified_at date' do
+  it 'asks user to call 2 weeks from  date' do
     get :show
 
-    call_by_date = verify_date + 14.days
+    call_by_date = fraud_rejection_date + 14.days
     call_by_formatted = I18n.l(call_by_date, format: :event_date)
     expect(response.body).to include(call_by_formatted)
   end
