@@ -78,6 +78,8 @@ describe 'review_profile' do
       invoke_task
       expect(user.reload.profiles.first.active).to eq(false)
       expect(user.reload.profiles.first.fraud_rejection).to eq(true)
+
+      # to be replaced
       expect(user.reload.profiles.first.fraud_rejection_at).to_not be_nil
     end
 

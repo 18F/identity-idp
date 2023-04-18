@@ -57,8 +57,14 @@ class Profile < ApplicationRecord
     update!(
       fraud_review_pending: false,
       fraud_rejection: false,
+
+      # to be replaced
       fraud_review_pending_at: nil,
       fraud_rejection_at: nil,
+
+      # replacing
+      fraud_reviewing_at: nil,
+      fraud_rejected_at: nil,
     )
     track_fraud_review_adjudication(decision: 'pass')
     activate
@@ -73,8 +79,14 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending: true,
       fraud_rejection: false,
+
+      # to be replaced
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
+
+      # replacing
+      fraud_reviewing_at: Time.zone.now,
+      fraud_rejected_at: nil,
     )
   end
 
@@ -83,8 +95,14 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending: false,
       fraud_rejection: true,
+
+      # to be replaced
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
+
+      # replacing
+      fraud_reviewing_at: nil,
+      fraud_rejected_at: Time.zone.now,
     )
     track_fraud_review_adjudication(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',

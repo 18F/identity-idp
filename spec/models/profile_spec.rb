@@ -264,14 +264,24 @@ describe Profile do
     end
 
     it 'does not activate a profile if under fraud review' do
+      # to be replaced
       profile.update(fraud_review_pending_at: 1.day.ago)
+
+      # replacing
+      profile.update(fraud_reviewing_at: 1.day.ago)
+
       profile.activate
 
       expect(profile).to_not be_active
     end
 
     it 'does not activate a profile if rejected for fraud' do
+      # to be replaced
       profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+
+      # replacing
+      profile.update(fraud_rejected_at: Time.zone.now - 1.day)
+
       profile.activate
 
       expect(profile).to_not be_active
@@ -296,7 +306,8 @@ describe Profile do
     it 'activates a profile if it passes fraud review' do
       profile = create(
         :profile, user: user, active: false,
-                  fraud_review_pending_at: 1.day.ago
+                  fraud_review_pending_at: 1.day.ago, # to be replaced
+                  fraud_reviewing_at: 1.day.ago # replacing
       )
       profile.activate_after_passing_review
 
@@ -310,7 +321,8 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
           initiating_service_provider: sp,
         )
       end
@@ -356,7 +368,8 @@ describe Profile do
           :profile,
           user: user,
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
           initiating_service_provider: sp,
         )
         expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
@@ -374,9 +387,9 @@ describe Profile do
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_review_pending_at).to_not be_nil
+      expect(profile.fraud_review_pending_at).to_not be_nil # to be replaced
       expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejection_at).to be_nil
+      expect(profile.fraud_rejection_at).to be_nil # to be replaced
     end
   end
 
@@ -394,7 +407,10 @@ describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = user.profiles.create(
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
+        )
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -408,13 +424,17 @@ describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
+        # to be replaced
         expect(profile.fraud_rejection_at).to_not be_nil
       end
     end
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = user.profiles.create(
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
+        )
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -431,7 +451,8 @@ describe Profile do
       let(:profile) do
         user.profiles.create(
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
           initiating_service_provider: sp,
         )
       end
@@ -476,7 +497,8 @@ describe Profile do
         sp = create(:service_provider)
         profile = user.profiles.create(
           active: false,
-          fraud_review_pending_at: 1.day.ago,
+          fraud_review_pending_at: 1.day.ago, # to be replaced
+          fraud_reviewing_at: 1.day.ago, # replacing
           initiating_service_provider: sp,
         )
         allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
