@@ -58,6 +58,11 @@ Steps:
 
 After you have added the new SDK files per [the above instructions], and after those new files have been merged into the main Git branch, you may A/B test the new Acuant SDK version.
 
+You will need:
+* AWS prod-power role access, which you can apply for here
+* a YubiKey
+* a GFE computer
+
 1. In identity-devops, run the command:
 
     ```zsh
@@ -79,12 +84,32 @@ After you have added the new SDK files per [the above instructions], and after t
     
 3. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Type `y` to accept them.
 
-4. Recycle the servers to cause the changes to take effect:
+4. Recycle the servers to deploy the changes:
 
     ```zsh
     aws-vault exec prod-power -- bin/asg-recycle prod idp
     ```
     
-    [This script](https://github.com/18F/identity-devops/wiki/Deploying-Infrastructure-Code#recycle-hosts) kicks off a migration instance instance, runs database migrations, and doubles the instances into a 50/50 state.
+    Using [this script](https://github.com/18F/identity-devops/wiki/Deploying-Infrastructure-Code#recycle-hosts) we kick off a migration instance instance, run database migrations, and double the instances into a 50/50 state.
 
-Monitoring the A/B test begins now.
+Monitoring the A/B test begins now. Proceed to the next section.
+
+## Monitor A/B testing
+
+#### For 15 minutes after deploy:
+
+Use our [`ls-servers` command](https://handbook.login.gov/articles/devops-scripts.html#ls-servers) to view a table of our servers:
+
+```zsh
+aws-vault exec prod-power — bin/ls-servers -e prod
+```
+
+Monitor that the servers come back up after recycling. Check that they enter the `running` state and accumulate uptime.
+
+#### For 2 weeks after deploy:
+
+Monitor with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
+
+![pie-charts-sdk](https://user-images.githubusercontent.com/546123/232889932-432e5cd5-c460-4a0a-8c6b-9f54324f327b.png)
+
+In this screenshot from the dashboard, the pie chart on the right shows a newer version of the SDK approaching 50% of document capture requests as A/B testing kicks in. The chart on the left shows that the newer version of the SDK is responsible for a proportionately lesser share of document capture failures, indicating that the new version is likely an improvement on the old.
