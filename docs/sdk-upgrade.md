@@ -26,7 +26,7 @@ Steps:
 
 1. From [the list of Acuant SDK releases](https://github.com/Acuant/JavascriptWebSDKV11/releases), download the most recent release. Note the version number. The download will be a `.zip` or `.tar.gz` file. Uncompress it locally.
 
-2. In your local checkout of the identity-idp repo, create a new version number directory under [`/public/acuant`](/public/acuant) named for the version you downloaded. The name will be like `/public/acuant/11.9.0` for example. You will be placing it alongside a few previous versions.
+2. In your local checkout of the identity-idp repo, create a new version number directory under [`/public/acuant`](/public/acuant) named for the version you downloaded. The name will be similar to `/public/acuant/11.N.N`. You will be placing it alongside a few previous versions.
 
 3. In your uncompressed download, open the `webSdk` folder. Copy all `.min.js` or `.wasm` files from here into the empty directory you created in the previous step. These files should have the same (or similar) names as files in the neighboring directories with previous version numbers.
 
@@ -36,7 +36,7 @@ Steps:
     ```yml
     ---
     development:
-      idv_acuant_sdk_version_default: '11.8.1'
+      idv_acuant_sdk_version_default: '11.N.N'
     ```
 
 6. Follow [these instructions to use the app from your mobile phone](mobile.md). Complete both the "Use the app from a mobile device" section, which lets you view the app from your phone, and the "Debugging with the desktop browser" portion, which hooks your desktop/laptop browser debugging tools to your phone via USB cable.
@@ -60,8 +60,31 @@ After you have added the new SDK files per [the above instructions], and after t
 
 1. In identity-devops, run the command:
 
-    ```bash
+    ```zsh
     aws-vault exec prod-power -- bin/app-s3-secret --env prod --app idp --edit
     ```
 
     The command downloads a configuration file and opens an editor so you can modify it.
+
+2. Make the file look like this:
+
+    ```yml
+    idv_acuant_sdk_upgrade_a_b_testing_enabled: true
+    idv_acuant_sdk_upgrade_a_b_testing_percent: 50
+    idv_acuant_sdk_version_alternate: 11.M.M
+    idv_acuant_sdk_version_default: 11.N.N
+    ```
+ 
+    Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place for deafult use if the A/B testing goes well.)
+    
+3. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Type `y` to accept them.
+
+4. Recycle the servers to cause the changes to take effect:
+
+    ```zsh
+    aws-vault exec prod-power -- bin/asg-recycle prod idp
+    ```
+    
+    [This script](https://github.com/18F/identity-devops/wiki/Deploying-Infrastructure-Code#recycle-hosts) kicks off a migration instance instance, runs database migrations, and doubles the instances into a 50/50 state.
+
+Monitoring the A/B test begins now.
