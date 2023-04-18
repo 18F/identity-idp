@@ -183,7 +183,7 @@ describes its purpose. This should be reflected in file names and the code itsel
 
 For example, consider a **Password Input** component:
 
-- A ViewComponent implementation would be called `PasswordInputComponent`
+- A ViewComponent implementation would be named `PasswordInputComponent`
 - A ViewComponent file would be named `app/components/password_input_component.rb`
 - A stylesheet file would be named `app/stylesheets/componewnts/_password-input.scss`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
