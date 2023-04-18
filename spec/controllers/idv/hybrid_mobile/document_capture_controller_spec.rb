@@ -4,6 +4,15 @@ describe Idv::HybridMobile::DocumentCaptureController do
   include IdvHelper
 
   let(:user) { create(:user) }
+
+  let!(:document_capture_session) do
+    DocumentCaptureSession.create!(
+      user: user,
+    )
+  end
+
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
+
   let(:feature_flag_enabled) { true }
 
   before do
@@ -75,8 +84,8 @@ describe Idv::HybridMobile::DocumentCaptureController do
             step: 'document_capture',
             step_count: 1,
             analytics_id: 'Doc Auth',
-            # "irs_reproofing": false,
-            # "acuant_sdk_upgrade_ab_test_bucket": "default"
+            irs_reproofing: false,
+            acuant_sdk_upgrade_ab_test_bucket: 'default',
           ),
         )
       end
@@ -89,63 +98,73 @@ describe Idv::HybridMobile::DocumentCaptureController do
           hash_including(step_count: 2),
         )
       end
+
+      context 'with expired DocumentCaptureSession' do
+        before do
+          raise 'TODO: set to an expired DocumentCaptureSession'
+        end
+        it 'redirects to root' do
+          get :show
+          expect(response).to redirect_to(root_url)
+        end
+      end
     end
   end
 
   describe '#update' do
-    it 'tracks expected events' do
-      # "name": "IdV: doc auth image upload form submitted",
-      # "properties": {
-      #   "event_properties": {
-      #     "success": true,
-      #     "errors": {},
-      #     "attempts": 1,
-      #     "remaining_attempts": 4,
-      #     "flow_path": "hybrid"
-      #   }
+    before do
+      allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_return(
+        DocumentCaptureSessionResult.new(
+          id: 1234,
+          success: true,
+          pii: {},
+          attention_with_barcode: true,
+        ),
+      )
 
-      # "name": "IdV: doc auth image upload vendor submitted",
-      # "properties": {
-      #   "event_properties": {
-      #     "success": false,
-      #     "errors": {
-      #       "general": [
-      #         "We couldn’t read the control number barcode. Try taking new pictures."
-      #       ],
-      #       "back": [
-      #         "Please add a new image"
-      #       ],
-      #       "hints": true
-      #     },
-      #     "exception": null,
-      #     "billed": true,
-      #     "doc_auth_result": "Caution",
-      #     "state": "NY",
-      #     "state_id_type": null,
-      #     "async": false,
-      #     "attempts": 1,
-      #     "remaining_attempts": 4,
-      #     "client_image_metrics": {
-      #       "front": {
-      #         "width": null,
-      #         "height": null,
-      #         "mimeType": "application/x-yaml",
-      #         "source": "upload",
-      #         "size": 394,
-      #         "attempt": 1
-      #       },
-      #       "back": {
-      #         "width": null,
-      #         "height": null,
-      #         "mimeType": "application/x-yaml",
-      #         "source": "upload",
-      #         "size": 394,
-      #         "attempt": 1
-      #       }
-      #     },
-      #     "flow_path": "hybrid",
-      #     "attention_with_barcode": false
-      #   }
+      session[:document_capture_session_uuid] = document_capture_session.uuid
+    end
+
+    context 'with no user id in session' do
+      it 'redirects to root' do
+        get :show
+        expect(response).to redirect_to root_url
+      end
+    end
+
+    context 'with a user id in session' do
+      before do
+        session[:doc_capture_user_id] = user.id
+      end
+
+      it 'tracks expected events' do
+        get :show
+        put :update
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth document_capture submitted',
+          hash_including(
+            flow_path: 'hybrid',
+            step: 'document_capture',
+            step_count: 1,
+            analytics_id: 'Doc Auth',
+          ),
+        )
+      end
+
+      it 'does not raise an exception when stored_result is nil' do
+        allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
+          and_return(false)
+
+        allow(subject).to receive(:stored_result).and_return(nil)
+
+        put :update
+      end
+
+      it 'redirects to complete step' do
+        put :update
+        expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
+      end
     end
   end
 
@@ -296,9 +315,5 @@ describe Idv::HybridMobile::DocumentCaptureController do
         end
       end
     end
-  end
-
-  def mock_session(user_id)
-    session[:doc_capture_user_id] = user_id
   end
 end

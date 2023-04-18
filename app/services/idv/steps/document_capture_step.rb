@@ -83,8 +83,17 @@ module Idv
           save_proofing_components
           extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
         else
-          extra = { stored_result_present: stored_result.present? }
-          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
+          message = I18n.t('doc_auth.errors.general.network_error')
+
+          flow_session[:error_message] = message
+
+          form_response_params = {
+            success: false,
+            errors: { message: message },
+            extra: { stored_result_present: stored_result.present? },
+          }
+
+          FormResponse.new(**form_response_params)
         end
       end
 
