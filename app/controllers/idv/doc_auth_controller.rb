@@ -21,7 +21,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_ssn_url,
+      final_url: :idv_document_capture_url,
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: 'Doc Auth',
     }.freeze
