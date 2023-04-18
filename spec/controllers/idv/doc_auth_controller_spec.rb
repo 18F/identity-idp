@@ -140,7 +140,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
@@ -230,7 +230,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
