@@ -135,7 +135,7 @@ This switches A/B testing off. The new, desired SDK version should already be se
 If the new version under A/B testing is performing poorly, you may want to end the test, returning to the *old* SDK version. Hence, you should set the default back to the version you want. Edit these two lines of the configuration file:
 
 ```yml
-idv_acuant_sdk_upgrade_a_b_testing_enabled: true
+idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_version_default: 11.M.M
 ```
 
