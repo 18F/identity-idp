@@ -155,6 +155,7 @@ feature 'SAML logout' do
       visit_saml_authn_request_url
       click_continue
       click_agree_and_continue
+      click_button(t('forms.buttons.submit.default'))
 
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
