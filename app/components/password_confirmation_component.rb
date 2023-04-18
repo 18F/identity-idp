@@ -22,14 +22,14 @@ class PasswordConfirmationComponent < BaseComponent
   end
 
   def toggle_id
-    "password-toggle-#{unique_id}"
+    "password-confirmation-toggle-#{unique_id}"
   end
 
   def input_id
-    "password-input-#{unique_id}"
+    "password-confirmation-input-#{unique_id}"
   end
 
   def input_confirmation_id
-    "password-confirmation-input-#{unique_id}"
+    "password-confirmation-input-confirmation-#{unique_id}"
   end
 end

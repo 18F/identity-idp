@@ -13,7 +13,7 @@ class PasswordConfirmationElement extends HTMLElement {
    * Checkbox toggle for visibility.
    */
   get toggle(): HTMLInputElement {
-    return this.querySelector('.password-toggle__toggle')! as HTMLInputElement;
+    return this.querySelector('.password-confirmation__toggle')! as HTMLInputElement;
   }
 
   /**

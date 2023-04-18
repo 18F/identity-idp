@@ -19,14 +19,14 @@ describe('PasswordConfirmationElement', () => {
       <input id="input-${idSuffix}" class="password-confirmation__input">
       <label for="input-${idSuffix}b">Confirm password</label>
       <input id="input-${idSuffix}b" class="password-confirmation__input-confirmation">
-      <div class="password-toggle__toggle-wrapper">
+      <div class="password-confirmation__toggle-wrapper">
         <input
           id="toggle-${idSuffix}"
           type="checkbox"
-          class="password-toggle__toggle"
+          class="password-confirmation__toggle"
           aria-controls="input-${idSuffix}"
         >
-        <label for="toggle-${idSuffix}" class="usa-checkbox__label password-toggle__toggle-label">
+        <label for="toggle-${idSuffix}" class="usa-checkbox__label password-confirmation__toggle-label">
           Show password
         </label>
       </div>`;
