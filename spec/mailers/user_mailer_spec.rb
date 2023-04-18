@@ -547,7 +547,7 @@ describe UserMailer, type: :mailer do
       )
     end
     describe '#in_person_ready_to_verify' do
-        let(:mail) do
+      let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
         )
@@ -578,7 +578,10 @@ describe UserMailer, type: :mailer do
 
     describe '#in_person_ready_to_verify_reminder' do
       let(:mail) do
-        UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify_reminder(
+        UserMailer.with(
+          user: user,
+          email_address: email_address,
+        ).in_person_ready_to_verify_reminder(
           enrollment: enrollment,
         )
       end
