@@ -5,10 +5,7 @@ describe Idv::PleaseCallController do
   let(:fraud_rejection_date) { 5.days.ago }
 
   before do
-    user.profiles.create(
-      fraud_rejection_at: fraud_rejection_date,
-    )
-
+    user.profiles.create(fraud_rejection_at: fraud_rejection_date)
     stub_sign_in(user)
   end
 
