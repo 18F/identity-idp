@@ -101,7 +101,9 @@ module Idp
       zipcode: '59010',
     }.freeze
 
-    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
+
+    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       state_id_address1: '123 Way St',
       state_id_address2: '2nd Address Line',
       state_id_city: 'Best City',
@@ -109,23 +111,10 @@ module Idp
       state_id_state: 'VA',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
-
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
     MOCK_IDV_APPLICANT_FULL_STATE_ID_STATE = 'Virginia'
-
-    MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
-      {
-        same_address_as_id: 'false',
-        state_id_address1: '73 FAKE CIRCLE',
-        state_id_address2: '#2',
-        state_id_city: 'LESSER FALLS',
-        state_id_state: 'VA',
-        state_id_zipcode: '59022',
-      },
-    ).freeze
   end
 end

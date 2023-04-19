@@ -298,7 +298,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context "when the user's state ID address does not match their residential address" do
-      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS }
+      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
 
       let(:state_id_address) do
         {

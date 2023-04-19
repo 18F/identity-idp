@@ -108,6 +108,27 @@ describe Idv::InPerson::VerifyInfoController do
           expect(flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
         end
 
+        context 'a user does not have an establishing in person enrollment associated with them' do
+          before do
+            allow(user).to receive(:establishing_in_person_enrollment).and_return(nil)
+          end
+
+          it 'disables double address verification for the user' do
+            expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
+              with(
+                kind_of(DocumentCaptureSession),
+                should_proof_state_id: anything,
+                trace_id: subject.send(:amzn_trace_id),
+                threatmetrix_session_id: nil,
+                user_id: anything,
+                request_ip: request.remote_ip,
+                double_address_verification: false,
+              )
+
+            put :update
+          end
+        end
+
         it 'passes the X-Amzn-Trace-Id to the proofer' do
           expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).
             with(
@@ -169,7 +190,7 @@ describe Idv::InPerson::VerifyInfoController do
       end
 
       context 'double address verification is enabled' do
-        let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_STATE_ID_ADDRESS.dup }
+        let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
         let(:capture_secondary_id_enabled) { true }
         let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
         before do

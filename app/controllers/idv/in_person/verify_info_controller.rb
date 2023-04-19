@@ -78,7 +78,7 @@ module Idv
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
           double_address_verification: current_user.establishing_in_person_enrollment&.
-            capture_secondary_id_enabled,
+            capture_secondary_id_enabled || false,
         )
 
         redirect_to idv_in_person_verify_info_url

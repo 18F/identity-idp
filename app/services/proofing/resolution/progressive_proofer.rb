@@ -5,6 +5,14 @@ module Proofing
     #   1. The user is or is not within an AAMVA-participating jurisdiction
     #   2. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
+    # @param [Hash] applicant_pii, keys are symbols and values are strings, confidential user info
+    # @param [Boolean] double_address_verification, flag that indicates if user will have both state id address and current residential address verified
+    # @param [String] request_ip, IP address for request
+    # @param [Boolean] should_proof_state_id, based on state id jurisdiction, indicates if there should be a state id proofing request made to aamva
+    # param [String] threatmetrix_session_id, identifies the threatmetrix session
+    # param [JobHelpers::Timer] timer, indicates time elapsed to obtain results
+    # param [String] user_email, email address for applicant
+    # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
     class ProgressiveProofer
       def proof(
         applicant_pii:,
