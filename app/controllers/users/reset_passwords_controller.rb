@@ -27,6 +27,7 @@ module Users
       else
         @reset_password_form = ResetPasswordForm.new(build_user)
         @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        session.delete(:reset_password_token)
       end
     end
 
@@ -118,6 +119,7 @@ module Users
 
     def handle_invalid_or_expired_token(result)
       flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
+      session.delete(:reset_password_token)
       redirect_to new_user_password_url
     end
 
