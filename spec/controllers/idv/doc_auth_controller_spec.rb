@@ -6,7 +6,7 @@ describe Idv::DocAuthController do
   let(:user) { build(:user) }
 
   describe 'before_actions' do
-    it 'includes corrects before_actions' do
+    it 'includes correct before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -68,23 +68,21 @@ describe Idv::DocAuthController do
       expect(subject).to receive(:render).with(
         template: 'layouts/flow_step',
         locals: hash_including(
-          :back_image_upload_url,
-          :front_image_upload_url,
           :flow_session,
-          step_template: 'idv/doc_auth/document_capture',
+          step_template: 'idv/doc_auth/agreement',
           flow_namespace: 'idv',
         ),
       ).and_call_original
 
-      mock_next_step(:document_capture)
-      get :show, params: { step: 'document_capture' }
+      mock_next_step(:agreement)
+      get :show, params: { step: 'agreement' }
     end
 
     it 'redirects to the right step' do
-      mock_next_step(:document_capture)
-      get :show, params: { step: 'ssn' }
+      mock_next_step(:agreement)
+      get :show, params: { step: 'welcome' }
 
-      expect(response).to redirect_to idv_doc_auth_step_url(:document_capture)
+      expect(response).to redirect_to idv_doc_auth_step_url(:agreement)
     end
 
     it 'renders a 404 with a non existent step' do
@@ -142,7 +140,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
@@ -232,7 +230,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
