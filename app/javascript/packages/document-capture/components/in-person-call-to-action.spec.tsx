@@ -14,14 +14,14 @@ describe('InPersonCallToAction', () => {
 
   it('logs an event when clicking the call to action button', async () => {
     const trackEvent = sinon.stub();
-    const { getByText } = render(
+    const { getByRole } = render(
       <AnalyticsContextProvider trackEvent={trackEvent}>
         <InPersonCallToAction />
       </AnalyticsContextProvider>,
     );
 
-    const link = getByText('in_person_proofing.body.cta.button');
-    await userEvent.click(link);
+    const button = getByRole('button', { name: 'in_person_proofing.body.cta.button' });
+    await userEvent.click(button);
 
     expect(trackEvent).to.have.been.calledWith(
       'IdV: verify in person troubleshooting option clicked',

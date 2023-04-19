@@ -32,14 +32,14 @@ describe('InPersonPrepareStep', () => {
 
     it('logs prepare step submission when clicking continue', async () => {
       const trackEvent = sinon.stub();
-      const { getByText } = render(
+      const { getByRole } = render(
         <AnalyticsContextProvider trackEvent={trackEvent}>
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </AnalyticsContextProvider>,
         { wrapper },
       );
 
-      await userEvent.click(getByText('forms.buttons.continue'));
+      await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
       await waitFor(() => window.location.hash === inPersonURL);
 
       expect(trackEvent).to.have.been.calledWith('IdV: prepare submitted');
@@ -53,17 +53,17 @@ describe('InPersonPrepareStep', () => {
         const trackEvent = sinon
           .stub()
           .callsFake(() => new Promise((resolve) => setTimeout(resolve, delay)));
-        const { getByText } = render(
+        const { getByRole } = render(
           <AnalyticsContextProvider trackEvent={trackEvent}>
             <InPersonPrepareStep {...DEFAULT_PROPS} />
           </AnalyticsContextProvider>,
           { wrapper },
         );
 
-        const link = getByText('forms.buttons.continue');
+        const button = getByRole('button', { name: 'forms.buttons.continue' });
 
-        const didFollowLinkOnFirstClick = fireEvent.click(link);
-        const didFollowLinkOnSecondClick = fireEvent.click(link);
+        const didFollowLinkOnFirstClick = fireEvent.click(button);
+        const didFollowLinkOnSecondClick = fireEvent.click(button);
 
         clock.tick(delay);
 
