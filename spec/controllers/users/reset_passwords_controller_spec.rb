@@ -114,56 +114,30 @@ describe Users::ResetPasswordsController, devise: true do
         allow(user).to receive(:email_addresses).and_return([email_address])
       end
 
-      it 'redirects properly and stores the token in the session' do
-        get :edit, params: { reset_password_token: 'foo' }
+      context 'when token isnt stored in session' do
 
-        expect(response).to redirect_to(change_user_password_path)
-        expect(session[:reset_password_token]).to eq('foo')
+        it 'redirects to the clean edit password url with token stored in session' do
+          get :edit, params: { reset_password_token: 'foo' }
+          expect(response).to redirect_to(edit_user_password_url)
+          expect(session[:reset_password_token]).to eq('foo')
+        end
       end
-    end
-  end
 
-  describe '#change_password' do
-    let(:user) { instance_double('User', uuid: '123') }
-    let(:email_address) { instance_double('EmailAddress') }
-
-    before do
-      stub_analytics
-      stub_attempts_tracker
-      allow(@analytics).to receive(:track_event)
-    end
-
-    context 'when reset_password_token is present in session' do
-      let(:token) { 'abc' }
-      let(:token_valid) { true }
-      before do
-        stub_analytics
-
-        allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
-        allow(user).to receive(:reset_password_period_valid?).and_return(token_valid)
-        allow(user).to receive(:email_addresses).and_return([email_address])
-      end
-      context 'token is valid' do
-        it 'redirects displays valid token' do
-          session[:reset_password_token] = 'abc'
+      context 'when token is stored in session' do
+        before do
+          session[:reset_password_token] = 'foo'
+        end
+        it 'renders the template to the clean edit password url with token stored in session' do
           expect(email_address).to receive(:email).twice
-
+          
           forbidden = instance_double(ForbiddenPasswords)
           allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
           expect(forbidden).to receive(:call)
 
-          get :change_password
-
-          expect(response).to have_http_status(:success)
+          get :edit
+          expect(response).to render_template :edit
+          expect(flash.keys).to be_empty
         end
-      end
-    end
-
-    context 'when reset_password_token is not present in session' do
-      it 'redirects to new_user_password_url' do
-        get :change_password
-
-        expect(response).to redirect_to(new_user_password_url)
       end
     end
   end
