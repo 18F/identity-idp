@@ -4,7 +4,7 @@ Login.gov is the public's one account for government. Use one account and passwo
 
 This repository contains the core code base and documentation for the identity management system powering secure.login.gov.
 
-**This file is auto-generated** by [`scripts/generate_readme.rb`](scripts/generate_readme.rb). To edit it, run `make README.md`.
+**This file is auto-generated**. Run `make README.md` to regenerate its contents.
 
 ## Getting Started
 
