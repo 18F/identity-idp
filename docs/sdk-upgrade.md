@@ -36,7 +36,7 @@ Steps:
     ```yml
     ---
     development:
-      idv_acuant_sdk_version_default: '11.N.N'
+      idv_acuant_sdk_version_default: '11.N.N' # new version
     ```
 
 6. Follow [these instructions to use the app from your mobile phone](mobile.md). Complete both the "Use the app from a mobile device" section, which lets you view the app from your phone, and the "Debugging with the desktop browser" section, which hooks your desktop/laptop browser debugging tools to your phone via USB cable.
@@ -58,12 +58,16 @@ Steps:
 
 After you have added the new SDK files per [the above instructions](#add-new-sdk-files), and after those new files have been merged into the main Git branch and deployed, you may A/B test the new Acuant SDK version.
 
-You may want to first A/B tests in staging. These instructions show how to A/B test in production.
+👥 Consider pairing with someone. There is a lot to monitor; you could use another set of eyes.
+
+You may want to first A/B test in staging. These instructions show how to A/B test in production.
 
 You will need:
 * the AWS prod-power role ([request access](https://github.com/18F/identity-devops/issues/new?assignees=&labels=administration&template=onboarding-devops-prod.md&title=Onboarding+to+Production+for+%5BTEAM_MEMBER%5D))
 * a YubiKey ([setup](https://github.com/18F/identity-devops/wiki/Setting-Up-your-Login.gov-Infrastructure-Configuration#configuring-a-yubikey-as-a-virtual-mfa-device))
 * a GFE computer
+
+Steps:
 
 1. In identity-devops, run the command:
 
@@ -74,63 +78,36 @@ You will need:
     The command downloads a configuration file and opens an editor so you can modify it.
 
 2. Start a Slack thread in `#login-appdev` notifying people that you are going to recycle prod. An example message:
-    > ♻ prod IdP to update Acuant SDK
+   > ♻ prod IdP to update Acuant SDK
 
 3. Make the file look like this:
 
     ```yml
     idv_acuant_sdk_upgrade_a_b_testing_enabled: true
-    idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-    idv_acuant_sdk_version_alternate: 11.M.M
-    idv_acuant_sdk_version_default: 11.N.N
+    idv_acuant_sdk_upgrade_a_b_testing_percent: 50 # ignored
+    idv_acuant_sdk_version_alternate: 11.M.M       # previous
+    idv_acuant_sdk_version_default: 11.N.N         # newest
     ```
  
-    Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.) The percentage should already be set to 50, so it does not need to be changed.
+    Set the default to the new SDK version and the alternate to the old version. (That way, the new version is in place if the A/B testing goes well.)
     
 4. Save the file. If the file opened in the vi editor, use `:wq` to save. A diff of your changes will appear. Copy the diff and paste it into the Slack thread. Type `y` to accept the changes.
 
-5. Recycle the servers to deploy the changes:
+5. Recycle the servers [with these Handbook instructions](https://handbook.login.gov/articles/appdev-deploy.html#production). This will involve:
+    * recycling server instances (which will double the instances into a 50/50 mix of old and new)
+    * monitoring that new instances come up (using `ls-servers`)
+    * checking NewRelic for errors
+    * in production only: removing old servers, taking us back out of the 50/50 state
 
-    ```zsh
-    aws-vault exec prod-power -- bin/asg-recycle prod idp
-    ```
-    
-    The above uses [this script](https://github.com/18F/identity-devops/wiki/Deploying-Infrastructure-Code#recycle-hosts) to kick off a migration instance, run database migrations, and double the instances into a 50/50 state.
+6. While you monitor the recycle, manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
 
 Monitoring the A/B test begins now. Proceed to the next section.
 
 ## Monitor A/B testing
 
-Monitoring must begin immediately after the recycle; it includes monitoring of the deployment itself. These instructions show how to monitor A/B testing in production.
+Per the handbook, above, you should monitor the server instances as they come online and manually verify image capture still works.
 
-#### For 15 minutes after deploy:
-
-Use our [`ls-servers` command](https://handbook.login.gov/articles/devops-scripts.html#ls-servers) to view a table of our servers:
-
-```zsh
-aws-vault exec prod-power — bin/ls-servers -e prod
-```
-
-Monitor that the servers come back up after recycling. Check that they enter the `running` state and accumulate uptime.
-
-Check NewRelic for errors during this time, also.
-
-#### For the next 1 hour
-
-After 15 minutes, per our [production deploy instructions](https://handbook.login.gov/articles/appdev-deploy.html#production), you may remove the old servers. This takes us back out from a 50/50 deployment state. These commands are for **production only**:
-
-```zsh
-aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod idp
-aws-vault exec prod-power -- ./bin/scale-remove-old-instances prod worker
-```
-
-Manually check the document capture page in the environment you are deploying to. Ensure the SDK loads and can capture images.
-
-Check NewRelic for errors at the end of one hour.
-
-#### For 2 weeks after deploy:
-
-Monitor with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
+For 2 weeks, monitor the A/B test with this [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
 
 ![pie-charts-sdk](https://user-images.githubusercontent.com/546123/232889932-432e5cd5-c460-4a0a-8c6b-9f54324f327b.png)
 
