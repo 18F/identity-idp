@@ -174,7 +174,7 @@ describes its purpose. This should be reflected in file names and the code itsel
 
 - ViewComponent classes should be named `[ExampleName]Component`
 - ViewComponent files should be named `app/components/[example_name]_component.rb`
-- Stylesheet files should be named `app/stylesheets/components/_[example-name].scss`
+- Stylesheet files should be named `app/assets/stylesheets/components/_[example-name].scss`
 - Stylesheet selectors should use `[example-name]` as the ["block name" in BEM](https://en.bem.info/methodology/naming-convention/#two-dashes-style)
 - React components should be named `<[ExampleName] />`
 - React component files should be named `app/javascript/packages/[example-name]/[example-name].tsx`
@@ -185,7 +185,7 @@ For example, consider a **Password Input** component:
 
 - A ViewComponent implementation would be named `PasswordInputComponent`
 - A ViewComponent file would be named `app/components/password_input_component.rb`
-- A stylesheet file would be named `app/stylesheets/componewnts/_password-input.scss`
+- A stylesheet file would be named `app/assets/stylesheets/componewnts/_password-input.scss`
 - A stylesheet selector would be named `.password-input`, with child elements prefixed as `.password-input__`
 - A react component would be named `<PasswordInput />`
 - A react component file would be named `app/javascript/packages/password-input/password-input.tsx`
