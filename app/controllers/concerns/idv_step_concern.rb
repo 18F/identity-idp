@@ -24,8 +24,7 @@ module IdvStepConcern
   def confirm_document_capture_complete
     return if pii_from_doc.present?
 
-    if IdentityConfig.store.doc_auth_document_capture_controller_enabled &&
-       flow_path == 'standard'
+    if flow_path == 'standard'
       redirect_to idv_document_capture_url
     else
       flow_session.delete('Idv::Steps::DocumentCaptureStep')

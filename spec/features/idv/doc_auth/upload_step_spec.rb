@@ -42,7 +42,7 @@ feature 'doc auth upload step' do
 
       click_upload_from_computer
 
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_document_capture_url)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :document_capture),
