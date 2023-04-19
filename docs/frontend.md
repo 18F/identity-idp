@@ -118,7 +118,7 @@ to deduplicate resolved package versions within the Yarn lockfile.
 
 ### Localization
 
-See [`@18f/identity-i18n` package documentation](https://github.com/18F/identity-idp/blob/main/app/javascript/packages/i18n/README.md).
+See [`@18f/identity-i18n` package documentation](../app/javascript/packages/i18n/README.md).
 
 ## Components
 
