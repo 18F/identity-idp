@@ -48,7 +48,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'capture_complete',
-          step_count: 1,
         }
       end
 
@@ -60,14 +59,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
 
       it 'sends analytics_visited event' do
         get :show
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end

@@ -49,7 +49,6 @@ feature 'doc auth document capture step', :js do
         'IdV: doc auth document_capture visited',
         flow_path: 'standard',
         step: 'document_capture',
-        step_count: 1,
         analytics_id: 'Doc Auth',
         irs_reproofing: false,
         acuant_sdk_upgrade_ab_test_bucket: :default,

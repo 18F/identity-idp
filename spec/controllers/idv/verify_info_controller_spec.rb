@@ -52,7 +52,6 @@ describe Idv::VerifyInfoController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'verify',
-        step_count: 1,
       }
     end
 
@@ -71,14 +70,6 @@ describe Idv::VerifyInfoController do
 
     it 'sends analytics_visited event' do
       get :show
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-    end
-
-    it 'sends correct step count to analytics' do
-      get :show
-      get :show
-      analytics_args[:step_count] = 2
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
@@ -273,10 +264,7 @@ describe Idv::VerifyInfoController do
 
       expect(@analytics).to have_logged_event(
         'IdV: doc auth verify submitted',
-        {
-          **analytics_hash,
-          step_count: 0,
-        },
+        **analytics_hash,
       )
     end
 
