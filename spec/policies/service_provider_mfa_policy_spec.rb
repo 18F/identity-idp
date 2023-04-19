@@ -197,50 +197,6 @@ describe ServiceProviderMfaPolicy do
     end
   end
 
-  describe '#auth_method_confirms_to_sp_request?' do
-    context 'the user used the required MFA' do
-      before do
-        setup_user_phone
-        setup_user_webauthn_token
-      end
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'webauthn' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(true) }
-    end
-
-    context 'the user did not use the required MFA' do
-      before do
-        setup_user_phone
-        setup_user_webauthn_token
-      end
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(false) }
-    end
-
-    context 'the user has not setup the required MFA' do
-      before { setup_user_phone }
-
-      let(:aal_level_requested) { 3 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(false) }
-    end
-
-    context 'there are no MFA requirements' do
-      before { setup_user_phone }
-
-      let(:aal_level_requested) { 1 }
-      let(:auth_method) { 'phone' }
-
-      it { expect(policy.auth_method_confirms_to_sp_request?).to eq(true) }
-    end
-  end
-
   describe '#allow_user_to_switch_method?' do
     context 'phishing-resistant required' do
       let(:aal_level_requested) { 3 }
