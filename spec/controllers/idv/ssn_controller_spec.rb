@@ -44,7 +44,6 @@ describe Idv::SsnController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'ssn',
-        step_count: 1,
       }
     end
 
@@ -56,14 +55,6 @@ describe Idv::SsnController do
 
     it 'sends analytics_visited event' do
       get :show
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-    end
-
-    it 'sends correct step count to analytics' do
-      get :show
-      get :show
-      analytics_args[:step_count] = 2
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
@@ -98,7 +89,6 @@ describe Idv::SsnController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'ssn',
-          step_count: 1,
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
@@ -117,13 +107,6 @@ describe Idv::SsnController do
         put :update, params: params
 
         expect(response).to redirect_to(idv_address_url)
-      end
-
-      it 'sends analytics_submitted event with correct step count' do
-        get :show
-        put :update, params: params
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
 
       it 'logs attempts api event' do
@@ -168,7 +151,6 @@ describe Idv::SsnController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'ssn',
-          step_count: 0,
           success: false,
           errors: {
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
