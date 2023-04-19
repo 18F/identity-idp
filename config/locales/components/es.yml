@@ -42,15 +42,15 @@ es:
         alphanumeric: 'Ejemplo: 123ABC'
         numeric: 'Ejemplo: 123456'
       label: Código de un solo uso
-    password_toggle:
-      label: Contraseña
-      toggle_label: Mostrar contraseña
     password_confirmation:
       confirm_label: Confirmar contraseña
-      toggle_label: Mostrar contraseña
       errors:
         empty: Vuelva a escribir su contraseña
         mismatch: Sus contraseñas no coinciden
+      toggle_label: Mostrar contraseña
+    password_toggle:
+      label: Contraseña
+      toggle_label: Mostrar contraseña
     phone_input:
       country_code_label: Código del país
     print_button:
