@@ -66,6 +66,29 @@ describe TwoFactorAuthentication::OtpVerificationController do
       get :show, params: { otp_delivery_preference: 'sms' }
     end
 
+    context 'when the user is registering a new landline phone_number with SMS preference' do
+      render_views
+      it 'display a landline warning' do
+        user = build_stubbed(:user)
+        stub_sign_in_before_2fa(user)
+        controller.user_session[:unconfirmed_phone] = '+1 (703) 555-0100'
+        controller.user_session[:context] = 'confirmation'
+        controller.user_session[:phone_type] = 'landline'
+
+        get :show, params: { otp_delivery_preference: 'sms' }
+
+        expect(response.body).to include(
+          t(
+            'two_factor_authentication.otp_delivery_preference.landline_warning_html',
+            phone_setup_path: controller.view_context.link_to(
+              t('two_factor_authentication.otp_delivery_preference.phone_call'),
+              phone_setup_path(otp_delivery_preference: 'voice'),
+            ),
+          ),
+        )
+      end
+    end
+
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
         expect(controller.user_session).to be_nil
@@ -196,10 +219,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        form = OtpVerificationForm.new(subject.current_user, nil)
-        result = FormResponse.new(success: true, serialize_error_details_only: {})
-        expect(form).to receive(:submit).and_return(result)
-        expect(subject).to receive(:otp_verification_form).and_return(form)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -265,6 +284,17 @@ describe TwoFactorAuthentication::OtpVerificationController do
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
         }
+      end
+
+      context "with a leading '#' sign" do
+        it 'redirects to the profile' do
+          post :create, params: {
+            code: "##{subject.current_user.reload.direct_otp}",
+            otp_delivery_preference: 'sms',
+          }
+
+          expect(response).to redirect_to account_path
+        end
       end
 
       context 'with remember_device in the params' do

@@ -9,7 +9,7 @@ class IdvController < ApplicationController
 
   def index
     if decorated_session.requested_more_recent_verification? ||
-       current_user.decorate.reproof_for_irs?(service_provider: current_sp)
+       current_user.reproof_for_irs?(service_provider: current_sp)
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url

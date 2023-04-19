@@ -36,10 +36,6 @@ module Users
 
     private
 
-    def two_factor_authentication_method
-      'piv_cac'
-    end
-
     def render_prompt
       analytics.user_registration_piv_cac_setup_visit
       @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)

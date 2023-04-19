@@ -2,8 +2,10 @@ require 'rails_helper'
 
 describe Idv::SsnFormatForm do
   let(:user) { create(:user) }
-  let(:subject) { Idv::SsnFormatForm.new(user) }
   let(:ssn) { '111-11-1111' }
+  let(:flow_session) { {} }
+
+  subject { Idv::SsnFormatForm.new(user, flow_session) }
 
   describe '#submit' do
     context 'when the form is valid' do
@@ -31,6 +33,24 @@ describe Idv::SsnFormatForm do
         expect { subject.submit(ssn: '111111111', foo: 1) }.
           to raise_error(ArgumentError, 'foo is an invalid ssn attribute')
       end
+    end
+  end
+
+  describe '#updating_ssn' do
+    context 'when no flow_session value is provided' do
+      subject { Idv::SsnFormatForm.new(user) }
+
+      it { expect(subject.updating_ssn?).to eq(false) }
+    end
+
+    context 'when the pii_from_doc hash does not contain an SSN value' do
+      it { expect(subject.updating_ssn?).to eq(false) }
+    end
+
+    context 'when there is an SSN in the pii_from_doc hash' do
+      let(:flow_session) { { 'pii_from_doc' => { ssn: '900-12-3456' } } }
+
+      it { expect(subject.updating_ssn?).to eq(true) }
     end
   end
 

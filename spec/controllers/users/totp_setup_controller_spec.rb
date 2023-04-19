@@ -31,9 +31,9 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.user_session[:new_totp_secret]).not_to be_nil
       end
 
-      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+      it 'can be used to generate a qrcode with User#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
+          subject.current_user.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 
@@ -66,9 +66,9 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.user_session[:new_totp_secret]).not_to be_nil
       end
 
-      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+      it 'can be used to generate a qrcode with User#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
+          subject.current_user.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 

@@ -6,7 +6,8 @@ describe 'redirect_uri validation' do
   context 'when redirect_uri param is included in SAML request' do
     it 'uses the return_to_sp_url URL and not the redirect_uri' do
       user = create(:user, :signed_up)
-      visit api_saml_auth2023_path(
+      visit api_saml_auth_path(
+        path_year: SamlAuthHelper::PATH_YEAR,
         SAMLRequest: CGI.unescape(saml_request(saml_settings)),
         redirect_uri: 'http://evil.com',
         state: '123abc',

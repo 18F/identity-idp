@@ -58,7 +58,7 @@ module TwoFactorAuthentication
     end
 
     def landline_warning?
-      user_session[:phone_type] == 'landline' && two_factor_authentication_method == 'sms'
+      user_session[:phone_type] == 'landline' && params[:otp_delivery_preference] == 'sms'
     end
 
     def confirm_voice_capability
@@ -89,7 +89,7 @@ module TwoFactorAuthentication
     end
 
     def sanitized_otp_code
-      form_params[:code].to_s.strip
+      form_params[:code].to_s.strip.sub(/^#/, '')
     end
 
     def form_params

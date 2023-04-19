@@ -68,7 +68,7 @@ feature 'idv phone step', :js do
 
       click_link t('forms.two_factor.try_again')
 
-      expect(page).to have_content(t('idv.titles.session.phone'))
+      expect(page).to have_content(t('titles.idv.phone'))
       expect(page).to have_current_path(idv_phone_path(step: 'phone_otp_verification'))
 
       fill_out_phone_form_ok('') # clear field

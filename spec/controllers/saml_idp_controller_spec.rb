@@ -5,6 +5,8 @@ describe SamlIdpController do
 
   render_views
 
+  let(:path_year) { SamlAuthHelper::PATH_YEAR }
+
   describe '/api/saml/logout' do
     it 'tracks the event when idp initiated' do
       stub_analytics
@@ -16,7 +18,7 @@ describe SamlIdpController do
         success: true,
       )
 
-      delete :logout
+      delete :logout, params: { path_year: path_year }
     end
 
     it 'tracks the event when sp initiated' do
@@ -30,7 +32,7 @@ describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { SAMLRequest: 'foo' }
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     it 'tracks the event when the saml request is invalid' do
@@ -43,7 +45,7 @@ describe SamlIdpController do
         success: true,
       )
 
-      delete :logout, params: { SAMLRequest: 'foo' }
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     let(:service_provider) do
@@ -102,7 +104,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      delete :logout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      delete :logout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: path_year,
+      )
 
       expect(response).to be_ok
     end
@@ -110,7 +115,7 @@ describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       delete :logout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      )
+      ).merge(path_year: path_year)
 
       expect(response).to be_bad_request
     end
@@ -123,7 +128,7 @@ describe SamlIdpController do
       result = { service_provider: nil, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Remote Logout initiated', result)
 
-      post :remotelogout, params: { SAMLRequest: 'foo' }
+      post :remotelogout, params: { SAMLRequest: 'foo', path_year: path_year }
     end
 
     let(:agency) { create(:agency) }
@@ -252,7 +257,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: path_year,
+      )
 
       expect(response).to be_ok
       expect(session_accessor.load_pii).to be_nil
@@ -289,7 +297,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: path_year,
+      )
 
       expect(response).to be_bad_request
     end
@@ -320,7 +331,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: path_year,
+      )
 
       expect(response).to be_bad_request
     end
@@ -351,7 +365,10 @@ describe SamlIdpController do
         ),
       ).to eq(true)
 
-      post :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+      post :remotelogout, params: payload.to_h.merge(
+        Signature: Base64.encode64(signature),
+        path_year: path_year,
+      )
 
       expect(response).to be_bad_request
     end
@@ -359,7 +376,7 @@ describe SamlIdpController do
     it 'rejects requests from a wrong cert' do
       post :remotelogout, params: UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
-      )
+      ).merge(path_year: path_year)
 
       expect(response).to be_bad_request
     end
@@ -367,7 +384,7 @@ describe SamlIdpController do
 
   describe '/api/saml/metadata' do
     before do
-      get :metadata
+      get :metadata, params: { path_year: path_year }
     end
 
     let(:org_name) { 'login.gov' }
@@ -562,7 +579,7 @@ describe SamlIdpController do
             authn_context_comparison: 'exact',
             requested_ial: authn_context,
             service_provider: sp1_issuer,
-            endpoint: '/api/saml/auth2023',
+            endpoint: "/api/saml/auth#{path_year}",
             idv: false,
             finish_profile: false,
             request_signed: true,
@@ -703,7 +720,7 @@ describe SamlIdpController do
             authn_context_comparison: 'minimum',
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
-            endpoint: '/api/saml/auth2023',
+            endpoint: "/api/saml/auth#{path_year}",
             idv: false,
             finish_profile: false,
             request_signed: true,
@@ -881,8 +898,8 @@ describe SamlIdpController do
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
         # would be 200 if the user's session persists
         expect(response.status).to eq(302)
-        # implicit test of request storage since request_id would be missing otherwise
-        expect(response.location).to match(%r{#{root_url}\?request_id=.+})
+        expect(response.location).to eq(root_url)
+        expect(controller.session[:sp][:request_id]).to be_present
       end
 
       it 'skips signing out the user when sp_session[:final_auth_request] is true' do
@@ -1224,7 +1241,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: false,
@@ -1265,7 +1282,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: 'none',
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1302,7 +1319,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1337,7 +1354,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1409,7 +1426,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1441,7 +1458,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1473,7 +1490,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -1511,10 +1528,11 @@ describe SamlIdpController do
     end
 
     context 'when user is not logged in' do
-      it 'redirects the user to the SP landing page with the request_id in the params' do
+      it 'redirects the user to the SP landing page with the request_id in the session' do
         saml_get_auth(saml_settings)
         sp_request_id = ServiceProviderRequestProxy.last.uuid
-        expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_path
+        expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
       it 'logs SAML Auth Request but does not log SAML Auth' do
@@ -1933,18 +1951,10 @@ describe SamlIdpController do
       end
     end
 
-    def stub_auth
-      allow(controller).to receive(:validate_saml_request_and_authn_context).and_return(true)
-      allow(controller).to receive(:user_fully_authenticated?).and_return(true)
-      allow(controller).to receive(:link_identity_from_session_data).and_return(true)
-      allow(controller).to receive(:current_user).and_return(build(:user))
-      allow(controller).to receive(:user_session).and_return({})
-    end
-
     context 'user requires ID verification' do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
-        stub_auth
+        stub_sign_in
         allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
@@ -1963,7 +1973,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: true,
           finish_profile: false,
           request_signed: false,
@@ -1978,7 +1988,7 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', analytics_hash)
 
-        get :auth
+        get :auth, params: { path_year: path_year }
       end
     end
 
@@ -2008,7 +2018,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: false,
           request_signed: true,
@@ -2044,7 +2054,7 @@ describe SamlIdpController do
           authn_context_comparison: 'exact',
           requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2023',
+          endpoint: "/api/saml/auth#{path_year}",
           idv: false,
           finish_profile: true,
           request_signed: true,
