@@ -54,7 +54,6 @@ describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
-        step_count: 1,
       }
     end
 
@@ -66,14 +65,6 @@ describe Idv::DocumentCaptureController do
 
     it 'sends analytics_visited event' do
       get :show
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-    end
-
-    it 'sends correct step count to analytics' do
-      get :show
-      get :show
-      analytics_args[:step_count] = 2
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
@@ -116,7 +107,6 @@ describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
-        step_count: 1,
       }
     end
 

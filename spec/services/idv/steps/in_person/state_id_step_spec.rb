@@ -224,5 +224,19 @@ describe Idv::Steps::InPerson::StateIdStep do
         expect(pii_from_user[:zipcode]).to_not eq state_id_zipcode
       end
     end
+
+    context 'capture secondary id is disabled' do
+      let(:capture_secondary_id_enabled) { false }
+      it 'does not add state id values to address values in pii' do
+        step.call
+
+        pii_from_user = flow.flow_session[:pii_from_user]
+        expect(pii_from_user[:address1]).to_not eq state_id_address1
+        expect(pii_from_user[:address2]).to_not eq state_id_address2
+        expect(pii_from_user[:city]).to_not eq state_id_city
+        expect(pii_from_user[:state]).to_not eq state_id_state
+        expect(pii_from_user[:zipcode]).to_not eq state_id_zipcode
+      end
+    end
   end
 end
