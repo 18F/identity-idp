@@ -333,6 +333,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/link_sent' => 'link_sent#show'
+      put '/link_sent' => 'link_sent#update'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
