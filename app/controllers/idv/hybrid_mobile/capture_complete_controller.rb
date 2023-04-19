@@ -5,8 +5,7 @@ module Idv
       include IdvStepConcern
       include StepIndicatorConcern
       include StepUtilitiesConcern
-
-      before_action :render_404_if_hybrid_mobile_controllers_disabled
+      include HybridMobileConcern
 
       def show
         increment_step_counts
@@ -20,10 +19,6 @@ module Idv
       end
 
       private
-
-      def render_404_if_hybrid_mobile_controllers_disabled
-        render_not_found unless IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
-      end
 
       def analytics_arguments
         {

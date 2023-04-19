@@ -42,6 +42,6 @@ feature 'doc auth test credentials', :js do
     click_on I18n.t('forms.buttons.submit.default')
 
     expect(page).to have_content(I18n.t('doc_auth.errors.alerts.barcode_content_check'))
-    expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+    expect(page).to have_current_path(idv_document_capture_url)
   end
 end

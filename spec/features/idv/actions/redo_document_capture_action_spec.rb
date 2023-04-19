@@ -61,7 +61,7 @@ feature 'doc auth redo document capture action', js: true do
         )
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_doc_auth_document_capture_step)
+        expect(current_path).to eq(idv_document_capture_path)
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
