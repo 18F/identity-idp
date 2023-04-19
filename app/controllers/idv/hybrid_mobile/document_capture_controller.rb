@@ -11,6 +11,9 @@ module Idv
 
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
+        Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
+          call('document_capture', :view, true)
+
         render :show, locals: extra_view_variables
       end
 
@@ -124,7 +127,7 @@ module Idv
       end
 
       def save_proofing_components
-        return unless current_user
+        return unless document_capture_user
 
         doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
           discriminator: document_capture_session_uuid,
@@ -135,7 +138,10 @@ module Idv
           document_check: doc_auth_vendor,
           document_type: 'state_id',
         }
-        ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
+
+        ProofingComponent.
+          create_or_find_by(user: document_capture_user).
+          update(component_attributes)
       end
 
       def stored_result

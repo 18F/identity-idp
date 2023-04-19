@@ -30,7 +30,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
   end
 
   describe 'before_actions' do
-    it 'includes corrects before_actions' do
+    it 'includes :check_valid_document_capture_session' do
       expect(subject).to have_actions(
         :before,
         :check_valid_document_capture_session,
@@ -50,12 +50,44 @@ describe Idv::HybridMobile::DocumentCaptureController do
     end
 
     context 'with a user id in session' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(true)
+      let(:analytics_name) { 'IdV: doc auth document_capture visited' }
+      let(:analytics_args) do
+        {
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+          analytics_id: 'Doc Auth',
+          flow_path: 'hybrid',
+          irs_reproofing: false,
+          step: 'document_capture',
+          step_count: 1,
+        }
+      end
 
-        # Pretend we're running in AWS so that we get S3 upload URLs generated
-        allow(Identity::Hostdata::EC2).to receive(:load).
-          and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
+      it 'renders the show template' do
+        get :show
+
+        expect(response).to render_template :show
+      end
+
+      it 'sends analytics_visited event' do
+        get :show
+
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      it 'sends correct step count to analytics' do
+        get :show
+        get :show
+        analytics_args[:step_count] = 2
+
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      it 'updates DocAuthLog document_capture_view_count' do
+        doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+        expect { get :show }.to(
+          change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
+        )
       end
 
       context 'feature flag disabled' do
@@ -64,45 +96,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
           get :show
           expect(response.status).to eql(404)
         end
-      end
-
-      it 'renders the show template' do
-        expect(controller).to receive(:render).with(
-          :show,
-          locals: hash_including(
-            document_capture_session_uuid: document_capture_session_uuid,
-            flow_path: 'hybrid',
-          ),
-        ).and_call_original
-
-        get :show
-
-        expect(response).to render_template :show
-      end
-
-      it 'tracks expected events' do
-        get :show
-
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(
-            flow_path: 'hybrid',
-            step: 'document_capture',
-            step_count: 1,
-            analytics_id: 'Doc Auth',
-            irs_reproofing: false,
-            # acuant_sdk_upgrade_ab_test_bucket: :default,
-          ),
-        )
-      end
-
-      it 'tracks step count' do
-        get :show
-        get :show
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth document_capture visited',
-          hash_including(step_count: 2),
-        )
       end
 
       context 'with expired DocumentCaptureSession' do
@@ -125,7 +118,9 @@ describe Idv::HybridMobile::DocumentCaptureController do
         DocumentCaptureSessionResult.new(
           id: 1234,
           success: true,
-          pii: {},
+          pii: {
+            state: 'WA',
+          },
           attention_with_barcode: true,
         ),
       )
