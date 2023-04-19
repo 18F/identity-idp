@@ -16,7 +16,7 @@ class GenerateReadme
 
       This repository contains the core code base and documentation for the identity management system powering secure.login.gov.
 
-      **This file is auto-generated** by [`#{__FILE__}`](#{__FILE__}). To edit it, run `make README.md`.
+      **This file is auto-generated**. Run `make README.md` to regenerate its contents.
 
       ## Getting Started
 
