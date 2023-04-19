@@ -4,7 +4,7 @@ module Idv
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
-      before_action :override_document_capture_step_csp
+      before_action :override_csp_to_allow_acuant
 
       def show
         increment_step_count 'Idv::Steps::DocumentCaptureStep'
@@ -112,6 +112,15 @@ module Idv
           acuant_sdk_upgrade_ab_test_bucket:
             AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
         }
+      end
+
+      def override_csp_to_allow_acuant
+        policy = current_content_security_policy
+        policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
+        policy.script_src(*policy.script_src, :unsafe_eval)
+        policy.style_src(*policy.style_src, :unsafe_inline)
+        policy.img_src(*policy.img_src, 'blob:')
+        request.content_security_policy = policy
       end
 
       def save_proofing_components
