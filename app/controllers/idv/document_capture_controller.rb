@@ -4,12 +4,11 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
-    include DocumentCaptureConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
-    before_action :override_document_capture_step_csp
+    before_action :override_csp_to_allow_acuant
 
     def show
       increment_step_counts
@@ -23,9 +22,9 @@ module Idv
     end
 
     def update
-      handle_stored_result
-
-      analytics.idv_doc_auth_document_capture_submitted(**analytics_arguments)
+      flow_session['redo_document_capture'] = nil # done with this redo
+      result = handle_stored_result
+      analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
@@ -34,6 +33,11 @@ module Idv
     end
 
     def extra_view_variables
+      # Used to call :verify_document_status in idv/shared/_document_capture.html.erb
+      # That code can be updated after the hybrid flow is out of the FSM, and then
+      # this can be removed.
+      @step_url = :idv_doc_auth_step_url
+
       url_builder = ImageUploadPresignedUrlGenerator.new
 
       {
@@ -65,10 +69,22 @@ module Idv
     end
 
     def confirm_document_capture_needed
+      return if flow_session['redo_document_capture']
+
       pii = flow_session['pii_from_doc'] # hash with indifferent access
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    # This is copied from DocumentCaptureConcern, with out the step check
+    def override_csp_to_allow_acuant
+      policy = current_content_security_policy
+      policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
+      policy.script_src(*policy.script_src, :unsafe_eval)
+      policy.style_src(*policy.style_src, :unsafe_inline)
+      policy.img_src(*policy.img_src, 'blob:')
+      request.content_security_policy = policy
     end
 
     def analytics_arguments
@@ -110,6 +126,7 @@ module Idv
 
     def in_person_cta_variant_testing_variables
       bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
+      session[:in_person_cta_variant] = bucket
       {
         in_person_cta_variant_testing_enabled:
         IdentityConfig.store.in_person_cta_variant_testing_enabled,
@@ -121,6 +138,7 @@ module Idv
       if stored_result&.success?
         save_proofing_components
         extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        successful_response
       else
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
@@ -181,6 +199,10 @@ module Idv
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
+    end
+
+    def successful_response
+      FormResponse.new(success: true)
     end
 
     # copied from Flow::Failure module

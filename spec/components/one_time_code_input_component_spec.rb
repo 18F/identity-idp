@@ -110,9 +110,9 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
 
   describe 'maxlength' do
     context 'no maxlength given' do
-      it 'renders input maxlength DIRECT_OTP_LENGTH' do
+      it 'renders input maxlength DIRECT_OTP_LENGTH + 1' do
         expect(rendered).to have_selector(
-          "[maxlength=\"#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}\"]",
+          "[maxlength=\"#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH + 1}\"]",
         )
       end
     end
