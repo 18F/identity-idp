@@ -412,8 +412,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if enrollment.capture_secondary_id_enabled &&
-         !SUPPORTED_ID_TYPES.include?(response['secondaryIdType'])
+      if enrollment.capture_secondary_id_enabled && response['secondaryIdType']
         retro_fail_enrollment(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)
