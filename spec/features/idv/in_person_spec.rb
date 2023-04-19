@@ -693,6 +693,31 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     end
+
+    it 'allows user to update their residential address as different from their state id' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_ssn_step(user)
+      # click "update residential address"
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      # change something in the address
+      fill_in t('idv.form.address1'), with: 'new address different from state address1'
+      # click update
+      click_button t('forms.buttons.submit.update')
+
+      # back to verify page
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+      expect(page).to have_content(t('headings.verify'))
+
+      # click update state id address
+      click_button t('idv.buttons.change_state_id_label')
+
+      # check that the "No, I live at a different address" is checked"
+      expect(page).to have_checked_field(
+        t('in_person_proofing.form.state_id.same_address_as_id_no'),
+        visible: false,
+      )
+    end
   end
 
   context 'in_person_capture_secondary_id_enabled feature flag enabled and' do

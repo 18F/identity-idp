@@ -44,7 +44,7 @@ describe Idv::Steps::InPerson::AddressStep do
       let(:city) { 'GREAT FALLS' }
       let(:zipcode) { '59010' }
       let(:state) { 'Montana' }
-      let(:same_address_as_id) { false }
+      let(:same_address_as_id) { 'false' }
       let(:submitted_values) do
         {
           address1:,
@@ -77,19 +77,14 @@ describe Idv::Steps::InPerson::AddressStep do
 
       context 'with secondary capture enabled' do
         let(:capture_secondary_id_enabled) { true }
-        it 'excludes same_address_as_id from session' do
-          expect(flow.flow_session[:pii_from_user]).not_to include(
-            same_address_as_id:,
-          )
-        end
-
-        it 'sets other values in flow session' do
+        it 'sets the values in flow session' do
           expect(flow.flow_session[:pii_from_user]).to include(
             address1:,
             address2:,
             city:,
             zipcode:,
             state:,
+            same_address_as_id:,
           )
         end
       end
