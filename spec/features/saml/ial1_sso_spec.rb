@@ -158,14 +158,15 @@ feature 'IAL1 Single Sign On' do
   end
 
   context 'visiting IdP via SP, then using the language selector' do
-    it 'preserves the request_id in the url' do
+    it 'displays the branded page' do
       visit saml_authn_request_url
 
       within(first('.language-picker', visible: false)) do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/\?request_id=.+})
+      expect(current_url).to eq root_url(locale: :es, trailing_slash: true)
+      expect_branded_experience
     end
   end
 
@@ -174,11 +175,13 @@ feature 'IAL1 Single Sign On' do
       request_url = saml_authn_request_url
       visit request_url
 
-      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
+      expect(current_url).to eq root_url
+      expect_branded_experience
 
       visit request_url
 
-      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
+      expect(current_url).to eq root_url
+      expect_branded_experience
     end
   end
 
