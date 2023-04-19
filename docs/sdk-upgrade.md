@@ -135,19 +135,25 @@ If the new version under A/B testing is performing poorly, you may want to end t
 
 ```yml
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
-idv_acuant_sdk_version_default: 11.M.M
+idv_acuant_sdk_version_default: 11.M.M # old version you are returning to
 ```
 
 #### 🔄 In either case
-Save the configuration file, recycle, and monitor the recycle just as you did when you turned A/B testing on.
+Save the configuration file, recycle, and monitor the recycle just as you did when you turned A/B testing on. This is covered in the [Deployment instructions in the Handbook](https://handbook.login.gov/articles/appdev-deploy.html#production).
 
-Once again, the command to recycle is:
-
-```zsh
-aws-vault exec prod-power -- bin/asg-recycle prod idp
-```
-Use the same [tools for monitoring](#monitor-ab-testing).
+Monitor the return to a single SDK version with the [AWS CloudWatch Acuant upgrade dashboard](https://us-west-2.console.aws.amazon.com/cloudwatch/home?region=us-west-2#dashboards:name=js-acuant-upgrade).
 
 ### Cleanup
 
-After successful A/B testing clears us to move to a new version of the Acuant SDK, we want to remove the oldest version from our repository. In the `/public/acuant/`(/public/acuant/) directory, there should be three versions. We only want to keep the newer two. Delete the directory containing the oldest of the three versions. Create a pull request for this.
+After successful A/B testing clears us to move to a new version of the Acuant SDK:
+
+1. We want to remove the oldest SDK version from our repository. In the [`/public/acuant/`](/public/acuant/) directory, there should be three versions. We only want to keep the newer two. Delete the directory containing the oldest of the three versions.
+
+2. We also want to update the SDK version in the app's [`config/application.yml.default`](config/application.yml.default) file. This governs the SDK version that will be used by any environment &mdash; including one's local dev environment &mdash; when no explicit value is set to override it. Modify the file to look something like this:
+
+    ```yml
+    idv_acuant_sdk_version_alternate: 11.M.M # previous
+    idv_acuant_sdk_version_default: 11.N.N   # newest
+    ```
+
+3. Create a pull request to move these changes to the main branch.
