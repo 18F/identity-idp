@@ -1,5 +1,6 @@
-import { getByLabelText } from '@testing-library/dom';
+import { getByLabelText, getByRole, getAllByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
+import { computeAccessibleName } from 'dom-accessibility-api';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-submit-button-element';
@@ -154,6 +155,44 @@ describe('PhoneInput', () => {
 
     await userEvent.selectOptions(countryCode, 'US');
     expect(phoneNumber.value).to.equal('+1 071');
+  });
+
+  it('renders as an accessible combobox', () => {
+    const phoneInput = createAndConnectElement();
+    const comboboxes = getAllByRole(phoneInput, 'combobox');
+    const listbox = getByRole(phoneInput, 'listbox');
+
+    // There are two comboboxes, one for no-JavaScript, and the other JavaScript enhanced. Only one
+    // is visible at a time. We're primarily concerned with testing the latter.
+    expect(comboboxes).to.have.lengthOf(2);
+    const [combobox] = comboboxes.filter(
+      (element) => !element.closest('.phone-input__international-code-wrapper'),
+    );
+
+    const hasPopup = combobox.getAttribute('aria-haspopup');
+    const name = computeAccessibleName(combobox);
+    // > Otherwise, the value of the `combobox` is represented by its descendant elements and can be
+    // > determined using the same method used to compute the name of a `button` from its descendant
+    // > content.
+    //
+    // See: https://w3c.github.io/aria/#combobox
+    const value = combobox.textContent;
+    const controlled = document.getElementById(combobox.getAttribute('aria-controls')!);
+
+    // "listbox" is the default value for a combobox role.
+    //
+    // > Elements with the role `combobox` have an implicit `aria-haspopup` value of `listbox`.
+    //
+    // See: https://w3c.github.io/aria/#combobox
+    //
+    // Ideally this could infer based on browser default behavior via e.g. ARIA reflection, but it
+    // is not (yet) supported in JSDOM.
+    //
+    // See: https://github.com/jsdom/jsdom/issues/3323
+    expect(hasPopup).to.be.oneOf([null, 'listbox']);
+    expect(name).to.equal('Country code');
+    expect(value).to.equal('United States: +1');
+    expect(controlled).to.equal(listbox);
   });
 
   context('with single option', () => {

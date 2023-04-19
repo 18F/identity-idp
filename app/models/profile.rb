@@ -46,6 +46,8 @@ class Profile < ApplicationRecord
         deactivation_reason: nil,
         fraud_review_pending: false,
         fraud_rejection: false,
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
         verified_at: now,
       )
     end
