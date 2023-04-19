@@ -29,6 +29,11 @@ module Idv
       end
 
       def extra_view_variables
+        # Used to call :verify_document_status in idv/shared/_document_capture.html.erb
+        # That code can be updated after the hybrid flow is out of the FSM, and then
+        # this can be removed.
+        @step_url = :idv_capture_doc_step_url
+
         url_builder = ImageUploadPresignedUrlGenerator.new
 
         {
