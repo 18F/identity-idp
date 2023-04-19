@@ -11,8 +11,6 @@ module Idv
     before_action :override_csp_to_allow_acuant
 
     def show
-      increment_step_counts
-
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -77,7 +75,7 @@ module Idv
       redirect_to idv_ssn_url
     end
 
-    # This is copied from DocumentCaptureConcern, with out the step check
+    # This is copied from DocumentCaptureConcern, without the step check
     def override_csp_to_allow_acuant
       policy = current_content_security_policy
       policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
@@ -91,20 +89,9 @@ module Idv
       {
         flow_path: flow_path,
         step: 'document_capture',
-        step_count: current_flow_step_counts['Idv::Steps::DocumentCaptureStep'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
-    end
-
-    def current_flow_step_counts
-      user_session['idv/doc_auth_flow_step_counts'] ||= {}
-      user_session['idv/doc_auth_flow_step_counts'].default = 0
-      user_session['idv/doc_auth_flow_step_counts']
-    end
-
-    def increment_step_counts
-      current_flow_step_counts['Idv::Steps::DocumentCaptureStep'] += 1
     end
 
     def acuant_sdk_upgrade_a_b_testing_variables
