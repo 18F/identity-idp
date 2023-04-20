@@ -5,6 +5,8 @@
 class OutOfBandSessionAccessor
   attr_reader :session_uuid
 
+  PLACEHOLDER_REQUEST = ActionDispatch::TestRequest.create.freeze
+
   def initialize(session_uuid)
     @session_uuid = session_uuid
   end
@@ -36,7 +38,12 @@ class OutOfBandSessionAccessor
   end
 
   def destroy
-    session_store.send(:delete_session, nil, Rack::Session::SessionId.new(session_uuid), drop: true)
+    session_store.send(
+      :delete_session,
+      PLACEHOLDER_REQUEST,
+      Rack::Session::SessionId.new(session_uuid),
+      drop: true,
+    )
   end
 
   # @api private
@@ -76,7 +83,7 @@ class OutOfBandSessionAccessor
 
     session_store.send(
       :write_session,
-      ActionDispatch::TestRequest.create,
+      PLACEHOLDER_REQUEST,
       Rack::Session::SessionId.new(session_uuid),
       session_data,
       expire_after: expiration.to_i,
@@ -91,7 +98,7 @@ class OutOfBandSessionAccessor
       with_redis_connection do |client|
         load_session_from_redis(
           client,
-          ActionDispatch::TestRequest.create,
+          PLACEHOLDER_REQUEST,
           uuid,
         )
       end
