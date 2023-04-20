@@ -9,7 +9,7 @@ feature 'doc auth cancel link sent action' do
     complete_doc_auth_steps_before_link_sent_step
   end
 
-  it 'returns to link sent step', js: true do
+  it 'returns to link sent step' do
     click_doc_auth_back_link
 
     expect(page).to have_current_path(idv_doc_auth_upload_step)
