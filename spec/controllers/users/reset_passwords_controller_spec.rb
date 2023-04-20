@@ -115,7 +115,6 @@ describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'when token isnt stored in session' do
-
         it 'redirects to the clean edit password url with token stored in session' do
           get :edit, params: { reset_password_token: 'foo' }
           expect(response).to redirect_to(edit_user_password_url)
@@ -129,7 +128,7 @@ describe Users::ResetPasswordsController, devise: true do
         end
         it 'renders the template to the clean edit password url with token stored in session' do
           expect(email_address).to receive(:email).twice
-          
+
           forbidden = instance_double(ForbiddenPasswords)
           allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
           expect(forbidden).to receive(:call)
