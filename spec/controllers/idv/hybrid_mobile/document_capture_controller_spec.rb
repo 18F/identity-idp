@@ -171,78 +171,9 @@ describe Idv::HybridMobile::DocumentCaptureController do
   describe '#extra_view_variables' do
     subject(:extra_view_variables) { controller.extra_view_variables }
 
-    describe 'acuant a/b testing' do
-      let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
-      let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
-
-      let(:document_capture_session_uuid) { SecureRandom.uuid }
-
-      before do
-        session[:document_capture_session_uuid] = document_capture_session_uuid
-      end
-
-      context 'with acuant sdk upgrade A/B testing disabled' do
-        before do
-          allow(IdentityConfig.store).
-            to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-            and_return(false)
-        end
-
-        context 'and A/B test specifies the older acuant version' do
-          before do
-            stub_const(
-              'AbTests::ACUANT_SDK',
-              FakeAbTestBucket.new.tap { |ab| ab.assign(document_capture_session_uuid => 0) },
-            )
-          end
-
-          it 'passes correct variables and acuant version when older is specified' do
-            expect(extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(false)
-            expect(extra_view_variables[:use_alternate_sdk]).to eq(false)
-            expect(extra_view_variables[:acuant_version]).to eq(default_sdk_version)
-          end
-        end
-      end
-
-      context 'with acuant sdk upgrade A/B testing enabled' do
-        before do
-          allow(IdentityConfig.store).
-            to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
-            and_return(true)
-        end
-
-        context 'and A/B test specifies the newer acuant version' do
-          before do
-            stub_const(
-              'AbTests::ACUANT_SDK',
-              FakeAbTestBucket.new.tap do |ab|
-                ab.assign(document_capture_session_uuid => :use_alternate_sdk)
-              end,
-            )
-          end
-
-          it 'passes correct variables and acuant version when newer is specified' do
-            expect(extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
-            expect(extra_view_variables[:use_alternate_sdk]).to eq(true)
-            expect(extra_view_variables[:acuant_version]).to eq(alternate_sdk_version)
-          end
-        end
-
-        context 'and A/B test specifies the older acuant version' do
-          before do
-            stub_const(
-              'AbTests::ACUANT_SDK',
-              FakeAbTestBucket.new.tap { |ab| ab.assign(document_capture_session_uuid => 0) },
-            )
-          end
-
-          it 'passes correct variables and acuant version when older is specified' do
-            expect(extra_view_variables[:acuant_sdk_upgrade_a_b_testing_enabled]).to eq(true)
-            expect(extra_view_variables[:use_alternate_sdk]).to eq(false)
-            expect(extra_view_variables[:acuant_version]).to eq(default_sdk_version)
-          end
-        end
-      end
+    it 'includes acuant a/b testing vars' do
+      expect(controller).to receive(:acuant_sdk_upgrade_a_b_testing_variables).and_call_original
+      controller.extra_view_variables
     end
 
     describe 'in-person CTA variant A/B testing' do
