@@ -82,15 +82,22 @@ module InPersonHelper
   def search_for_post_office
     fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
             with: GOOD_ADDRESS1
-    click_button(t('in_person_proofing.body.location.po_search.search_button'))
-    # Wait for page to load before selecting location
-    expect(page).to have_css('.location-collection-item', wait: 10)
+    click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
+    expect(page).to have_css('.location-collection-item')
   end
 
   def complete_location_step(_user = nil)
     search_for_post_office
     within first('.location-collection-item') do
       click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
+
+    # pause for the location list to disappear
+    begin
+      expect(page).to have_no_css('.location-collection-item')
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      # A StaleElementReferenceError means that the context the element
+      # was in has disappeared, which means the element is gone too.
     end
   end
 

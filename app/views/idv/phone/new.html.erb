@@ -19,7 +19,7 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.phone')) %>
+<%= render PageHeadingComponent.new.with_content(t('titles.idv.phone')) %>
 
 <p>
   <%= t('idv.messages.phone.description') %>
@@ -38,7 +38,15 @@
 </ul>
 
 <p>
-  <%= t('idv.messages.phone.final_note_html') %>
+    <%= new_window_link_to(
+          t('idv.troubleshooting.options.learn_more_verify_by_phone'),
+          help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'phone-number',
+            flow: :idv,
+            step: :phone,
+          ),
+        ) %>
 </p>
 
 <%= simple_form_for(
@@ -103,16 +111,6 @@
       'shared/troubleshooting_options',
       heading: t('components.troubleshooting_options.default_heading'),
       options: [
-        {
-          url: help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'phone-number',
-            flow: :idv,
-            step: :phone,
-          ),
-          text: t('idv.troubleshooting.options.learn_more_verify_by_phone'),
-          new_tab: true,
-        },
         gpo_letter_available && {
           url: idv_gpo_path,
           text: t('idv.troubleshooting.options.verify_by_mail'),

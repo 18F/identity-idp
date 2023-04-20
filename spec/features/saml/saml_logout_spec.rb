@@ -155,16 +155,17 @@ feature 'SAML logout' do
       visit_saml_authn_request_url
       click_continue
       click_agree_and_continue
-
-      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
-
-      # simulate a remote request
-      send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
+      click_button(t('forms.buttons.submit.default'))
 
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
-      session_id = identity.rails_session_id
-      expect(OutOfBandSessionAccessor.new(session_id).load_pii).to be_nil
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq true
+
+      # simulate a remote request
+      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
+      send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
+
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq false
 
       # should be logged out...
       visit account_path

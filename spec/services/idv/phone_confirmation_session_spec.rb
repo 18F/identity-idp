@@ -74,6 +74,12 @@ RSpec.describe Idv::PhoneConfirmationSession do
       expect(subject.matches_code?(uppercase_code)).to eq(true)
     end
 
+    it 'returns true if the code is prefixed with a # sign' do
+      prefixed_code = "##{code}"
+
+      expect(subject.matches_code?(prefixed_code)).to eq(true)
+    end
+
     it 'returns false if the code does not match' do
       bad_code = '1' * (TwoFactorAuthenticatable::DIRECT_OTP_LENGTH - 1)
       expect(subject.matches_code?(bad_code)).to eq(false)

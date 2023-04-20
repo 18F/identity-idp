@@ -29,6 +29,14 @@ shared_examples 'signing in with the site in Spanish' do |sp|
   end
 end
 
+shared_examples 'signing in from service provider' do |sp|
+  it 'does not display session timeout alert on sign in page' do
+    visit_idp_from_sp_with_ial1(sp)
+
+    expect(page).to_not have_content t('devise.failure.timeout')
+  end
+end
+
 shared_examples 'signing in as IAL1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
