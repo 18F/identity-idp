@@ -390,7 +390,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: false,
-      reason: 'Failed secondary id',
+      reason: 'Provided secondary proof of address',
     )
     enrollment.update(
       status: :failed,
