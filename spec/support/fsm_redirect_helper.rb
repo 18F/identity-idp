@@ -12,8 +12,8 @@ class ApplicationController
     def redirect_to(options = {}, response_status = {})
       # rubocop:disable Rails/Output
       # rubocop:disable Style/RescueModifier
-      print("Redirected FROM #{caller(1..1).first rescue "unknown"}\n")
-      print("  TO: #{options.inspect}\n")
+      puts("Redirected FROM #{caller(1..1).first rescue "unknown"}")
+      puts("  TO: #{options.inspect}")
       # rubocop:enable Rails/Output
       # rubocop:enable Style/RescueModifier
 
