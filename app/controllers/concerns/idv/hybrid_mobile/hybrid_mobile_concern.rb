@@ -43,14 +43,6 @@ module Idv
         redirect_to root_url
       end
 
-      def idv_session
-        @idv_session ||= Idv::Session.new(
-          user_session: session,
-          current_user: document_capture_user,
-          service_provider: current_sp,
-        )
-      end
-
       def irs_reproofing?
         document_capture_user.reproof_for_irs?(
           service_provider: current_sp,
