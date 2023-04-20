@@ -11,7 +11,7 @@ feature 'Visitor signs up with email address' do
     expect(Funnel::Registration::TotalRegisteredCount.call).to eq(0)
   end
 
-  scenario 'visitor cannot sign up with invalid email address', js: true do
+  scenario 'visitor cannot sign up with invalid email address' do
     sign_up_with('bogus')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
@@ -33,6 +33,9 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with empty email address', js: true do
     sign_up_with('')
 
+    # NOTE: If JS is disabled, the browser's built-in frontend validation for the `required`
+    # attribute will prevent the form from being submitted, and the user will see the browser's
+    # default validation error message.
     expect(page).to have_content t('simple_form.required.text')
   end
 

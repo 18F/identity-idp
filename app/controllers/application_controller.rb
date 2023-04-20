@@ -379,6 +379,7 @@ class ApplicationController < ActionController::Base
   end
 
   def skip_session_load
+    request.session_options[:skip] = true
     @skip_session_load = true
   end
 

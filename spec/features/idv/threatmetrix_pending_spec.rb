@@ -67,20 +67,20 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     expect(current_path).to eq('/auth/result')
   end
 
-  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event' do
     freeze_time do
       complete_all_idv_steps_with(threatmetrix: 'Pass')
       expect_irs_event(expected_success: true, expected_failure_reason: nil)
     end
   end
 
-  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Reject')
     end
   end
 
-  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Review')
     end
