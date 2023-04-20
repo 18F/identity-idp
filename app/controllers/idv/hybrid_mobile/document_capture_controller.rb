@@ -7,8 +7,6 @@ module Idv
       before_action :override_csp_to_allow_acuant
 
       def show
-        increment_step_count 'Idv::Steps::DocumentCaptureStep'
-
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
@@ -60,16 +58,9 @@ module Idv
         {
           flow_path: 'hybrid',
           step: 'document_capture',
-          step_count: current_flow_step_counts['Idv::Steps::DocumentCaptureStep'],
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
-      end
-
-      def current_flow_step_counts
-        session['idv/doc_auth_flow_step_counts'] ||= {}
-        session['idv/doc_auth_flow_step_counts'].default = 0
-        session['idv/doc_auth_flow_step_counts']
       end
 
       # @param [DocAuth::Response,

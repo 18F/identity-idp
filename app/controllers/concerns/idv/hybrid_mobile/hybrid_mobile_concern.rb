@@ -45,12 +45,6 @@ module Idv
         return handle_invalid_document_capture_session if document_capture_session.expired?
       end
 
-      def current_flow_step_counts
-        session['idv/doc_auth_flow_step_counts'] ||= {}
-        session['idv/doc_auth_flow_step_counts'].default = 0
-        session['idv/doc_auth_flow_step_counts']
-      end
-
       def document_capture_session
         return @document_capture_session if defined?(@document_capture_session)
         @document_capture_session =
@@ -81,10 +75,6 @@ module Idv
           current_user: document_capture_user,
           service_provider: current_sp,
         )
-      end
-
-      def increment_step_count(step_name)
-        current_flow_step_counts[step_name] += 1
       end
 
       def irs_reproofing?

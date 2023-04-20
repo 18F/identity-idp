@@ -58,7 +58,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
-          step_count: 1,
         }
       end
 
@@ -66,7 +65,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
         expect(subject).to receive(:render).with(
           :show,
           locals: hash_including(
-            document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+            document_capture_session_uuid: document_capture_session_uuid,
           ),
         ).and_call_original
 
@@ -77,14 +76,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
 
       it 'sends analytics_visited event' do
         get :show
-
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
@@ -156,7 +147,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
           hash_including(
             flow_path: 'hybrid',
             step: 'document_capture',
-            step_count: 1,
             analytics_id: 'Doc Auth',
           ),
         )
