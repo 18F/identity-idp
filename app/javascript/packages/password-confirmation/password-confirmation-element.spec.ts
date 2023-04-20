@@ -1,18 +1,19 @@
 import userEvent from '@testing-library/user-event';
-import { getByLabelText } from '@testing-library/dom';
+import { fireEvent, getByLabelText, waitFor } from '@testing-library/dom';
 import { useSandbox } from '@18f/identity-test-helpers';
 import * as analytics from '@18f/identity-analytics';
 import './password-confirmation-element';
 import type PasswordConfirmationElement from './password-confirmation-element';
 
 describe('PasswordConfirmationElement', () => {
+  let element: PasswordConfirmationElement;
+  let input1: HTMLInputElement;
+  let input2: HTMLInputElement;
   let idCounter = 0;
   const sandbox = useSandbox();
 
   function createElement() {
-    const element = document.createElement(
-      'lg-password-confirmation',
-    ) as PasswordConfirmationElement;
+    element = document.createElement('lg-password-confirmation') as PasswordConfirmationElement;
     const idSuffix = ++idCounter;
     element.innerHTML = `
       <label for="input-${idSuffix}">Password</label>
@@ -34,28 +35,30 @@ describe('PasswordConfirmationElement', () => {
     return element;
   }
 
+  beforeEach(() => {
+    element = createElement();
+    input1 = getByLabelText(element, 'Password') as HTMLInputElement;
+    input2 = getByLabelText(element, 'Confirm password') as HTMLInputElement;
+  });
+
+  afterEach(() => {
+    element.remove();
+  });
+
   it('initializes input type', () => {
-    const element = createElement();
-
-    const input = getByLabelText(element, 'Password') as HTMLInputElement;
-
-    expect(input.type).to.equal('password');
+    expect(input1.type).to.equal('password');
   });
 
   it('changes input type on toggle', async () => {
-    const element = createElement();
-
-    const input = getByLabelText(element, 'Password') as HTMLInputElement;
     const toggle = getByLabelText(element, 'Show password') as HTMLInputElement;
 
     await userEvent.click(toggle);
 
-    expect(input.type).to.equal('text');
+    expect(input1.type).to.equal('text');
   });
 
   it('logs an event when clicking the Show Password button', async () => {
     sandbox.stub(analytics, 'trackEvent');
-    const element = createElement();
     const toggle = getByLabelText(element, 'Show password') as HTMLInputElement;
 
     await userEvent.click(toggle);
@@ -65,17 +68,36 @@ describe('PasswordConfirmationElement', () => {
     });
   });
 
-  it('should validate password confirmation', async () => {
-    const element = createElement();
-    const input1 = getByLabelText(element, 'Password') as HTMLInputElement;
-    const input2 = getByLabelText(element, 'Confirm password') as HTMLInputElement;
+  describe('Password validation', () => {
+    it('validates passwords in both directions', async () => {
+      await userEvent.type(input1, 'salty pickles');
+      fireEvent.input(input1);
+      await userEvent.type(input2, 'salty pickles2');
+      fireEvent.input(input2);
+      await waitFor(() => {
+        expect(input2.checkValidity()).to.be.false();
+      });
 
-    await userEvent.type(input1, 'different_password1');
-    await userEvent.type(input2, 'different_password2');
-    expect(input2.validity.customError).to.be.true;
+      await userEvent.clear(input1);
+      await userEvent.type(input1, 'salty pickles2');
+      fireEvent.input(input1);
+      await waitFor(() => {
+        expect(input2.checkValidity()).to.be.true();
+      });
 
-    await userEvent.type(input1, 'matching_password!');
-    await userEvent.type(input2, 'matching_password!');
-    expect(input2.validity.customError).to.be.false;
+      await userEvent.clear(input1);
+      await userEvent.type(input1, 'salty pickles3');
+      fireEvent.input(input1);
+      await waitFor(() => {
+        expect(input2.checkValidity()).to.be.false();
+      });
+
+      await userEvent.clear(input2);
+      await userEvent.type(input2, 'salty pickles3');
+      fireEvent.input(input2);
+      await waitFor(() => {
+        expect(input2.checkValidity()).to.be.true();
+      });
+    });
   });
 });

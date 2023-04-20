@@ -5,7 +5,8 @@ class PasswordConfirmationElement extends HTMLElement {
   connectedCallback() {
     this.toggle.addEventListener('change', () => this.setInputType());
     this.toggle.addEventListener('click', () => this.trackToggleEvent());
-    this.inputConfirmation.addEventListener('change', () => this.validatePassword());
+    this.input.addEventListener('input', () => this.validatePassword());
+    this.inputConfirmation.addEventListener('input', () => this.validatePassword());
     this.setInputType();
   }
 
@@ -17,14 +18,14 @@ class PasswordConfirmationElement extends HTMLElement {
   }
 
   /**
-   * Text or password input.
+   * Password input.
    */
   get input(): HTMLInputElement {
     return this.querySelector('.password-confirmation__input')! as HTMLInputElement;
   }
 
   /**
-   * Text or password confirmation input.
+   * Password confirmation input.
    */
   get inputConfirmation(): HTMLInputElement {
     return this.querySelector('.password-confirmation__input-confirmation')! as HTMLInputElement;
