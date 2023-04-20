@@ -1061,7 +1061,7 @@ RSpec.describe GetUspsProofingResultsJob do
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
                 passed: false,
-                reason: 'Failed secondary id',
+                reason: 'Provided secondary proof of address',
               ),
             )
 
