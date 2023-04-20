@@ -118,6 +118,9 @@ fr:
             : %{char_list}. Veuillez réessayer en utilisant les caractères de
             votre carte d’identité.'
         first_name: Prénom
+        identity_doc_state: État émetteur
+        identity_doc_state_hint: Il s’agit de l’État qui a émis votre pièce d’identité
+        identity_doc_state_prompt: '- Sélectionnez -'
         last_name: Nom de famille
         memorable_date:
           errors:
@@ -135,9 +138,6 @@ fr:
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint: Peut comprendre des lettres et des chiffres
-        identity_doc_state: État émetteur
-        identity_doc_state_hint: Il s’agit de l’État qui a émis votre pièce d’identité
-        identity_doc_state_prompt: '- Sélectionnez -'
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle

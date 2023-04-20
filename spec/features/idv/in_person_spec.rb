@@ -493,7 +493,8 @@ RSpec.describe 'In Person Proofing', js: true do
                 with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1
         fill_in t('in_person_proofing.form.state_id.address2'),
                 with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2
-        fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
+        fill_in t('in_person_proofing.form.state_id.city'),
+                with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
         click_idv_continue
 
         expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)

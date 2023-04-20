@@ -21,11 +21,14 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
-  GOOD_IDENTITY_DOC_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]
-  GOOD_IDENTITY_DOC_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]
+  GOOD_IDENTITY_DOC_ADDRESS1 =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]
+  GOOD_IDENTITY_DOC_ADDRESS2 =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]
   GOOD_IDENTITY_DOC_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_STATE
   GOOD_IDENTITY_DOC_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city]
-  GOOD_IDENTITY_DOC_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
+  GOOD_IDENTITY_DOC_ZIPCODE =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
 
   def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
@@ -44,7 +47,8 @@ module InPersonHelper
       fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
       if same_address_as_id
-        select GOOD_IDENTITY_DOC_STATE, from: t('in_person_proofing.form.state_id.identity_doc_state')
+        select GOOD_IDENTITY_DOC_STATE,
+               from: t('in_person_proofing.form.state_id.identity_doc_state')
         choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
       else
         select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_state')
@@ -60,7 +64,8 @@ module InPersonHelper
     fill_in t('idv.form.address2'),
             with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS2 : GOOD_ADDRESS2
     fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_IDENTITY_DOC_CITY : GOOD_CITY
-    fill_in t('idv.form.zipcode'), with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
+    fill_in t('idv.form.zipcode'),
+            with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
     if same_address_as_id
       select GOOD_IDENTITY_DOC_STATE, from: t('idv.form.state')
     else

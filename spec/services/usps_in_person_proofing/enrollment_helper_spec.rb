@@ -123,7 +123,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                   state: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
                     :identity_doc_state
                   ],
-                  zip_code: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],
+                  zip_code:
+                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],
                 )
                 UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
               end
