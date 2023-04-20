@@ -169,7 +169,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
         Idp::Constants::
-                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_state],
+                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address_state],
       ).twice
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).once
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice

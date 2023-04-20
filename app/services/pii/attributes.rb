@@ -14,7 +14,7 @@ module Pii
     # the state that issued the id, which may be different than the state in the state id address
     :state_id_jurisdiction,
     # the state in the state id address, which may not be the state that issued the ID
-    :identity_doc_state,
+    :identity_doc_address_state,
     :ssn, :dob, :phone,
     *DEPRECATED_PII_ATTRIBUTES
   ) do

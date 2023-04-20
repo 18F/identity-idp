@@ -106,7 +106,7 @@ module Idp
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
       identity_doc_zipcode: '12345',
-      identity_doc_state: 'VA',
+      identity_doc_address_state: 'VA',
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
@@ -115,6 +115,6 @@ module Idp
 
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
-    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_STATE = 'Virginia'
+    MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
   end
 end

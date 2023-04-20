@@ -118,9 +118,9 @@ fr:
             : %{char_list}. Veuillez réessayer en utilisant les caractères de
             votre carte d’identité.'
         first_name: Prénom
-        identity_doc_state: État émetteur
-        identity_doc_state_hint: Il s’agit de l’État qui a émis votre pièce d’identité
-        identity_doc_state_prompt: '- Sélectionnez -'
+        identity_doc_address_state: État émetteur
+        identity_doc_address_state_hint: Il s’agit de l’État qui a émis votre pièce d’identité
+        identity_doc_address_state_prompt: '- Sélectionnez -'
         last_name: Nom de famille
         memorable_date:
           errors:

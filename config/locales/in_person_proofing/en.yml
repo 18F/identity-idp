@@ -104,9 +104,9 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
-        identity_doc_state: State
-        identity_doc_state_hint: Select the state shown on your ID
-        identity_doc_state_prompt: '- Select -'
+        identity_doc_address_state: State
+        identity_doc_address_state_hint: Select the state shown on your ID
+        identity_doc_address_state_prompt: '- Select -'
         last_name: Last name
         memorable_date:
           errors:

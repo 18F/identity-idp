@@ -43,7 +43,7 @@ describe Pii::Attributes do
         identity_doc_city: 'Washington',
         state_id_jurisdiction: 'DC',
         identity_doc_zipcode: '20005',
-        identity_doc_state: 'NY',
+        identity_doc_address_state: 'NY',
       )
 
       expect(pii.identity_doc_address1).to eq('1600 Pennsylvania Avenue')
@@ -51,7 +51,7 @@ describe Pii::Attributes do
       expect(pii.identity_doc_city).to eq('Washington')
       expect(pii.state_id_jurisdiction).to eq('DC')
       expect(pii.identity_doc_zipcode).to eq('20005')
-      expect(pii.identity_doc_state).to eq('NY')
+      expect(pii.identity_doc_address_state).to eq('NY')
     end
   end
 

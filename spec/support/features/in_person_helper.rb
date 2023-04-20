@@ -25,7 +25,8 @@ module InPersonHelper
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]
   GOOD_IDENTITY_DOC_ADDRESS2 =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]
-  GOOD_IDENTITY_DOC_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_STATE
+  GOOD_IDENTITY_DOC_ADDRESS_STATE =
+    Idp::Constants::MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE
   GOOD_IDENTITY_DOC_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city]
   GOOD_IDENTITY_DOC_ZIPCODE =
     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
@@ -47,11 +48,11 @@ module InPersonHelper
       fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
       if same_address_as_id
-        select GOOD_IDENTITY_DOC_STATE,
-               from: t('in_person_proofing.form.state_id.identity_doc_state')
+        select GOOD_IDENTITY_DOC_ADDRESS_STATE,
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
         choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
       else
-        select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_state')
+        select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
         choose t('in_person_proofing.form.state_id.same_address_as_id_no')
       end
     end
@@ -67,7 +68,7 @@ module InPersonHelper
     fill_in t('idv.form.zipcode'),
             with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
     if same_address_as_id
-      select GOOD_IDENTITY_DOC_STATE, from: t('idv.form.state')
+      select GOOD_IDENTITY_DOC_ADDRESS_STATE, from: t('idv.form.state')
     else
       select GOOD_STATE, from: t('idv.form.state')
     end

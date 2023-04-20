@@ -24,7 +24,7 @@ module Idv
             pii_from_user[:address1] = flow_params[:identity_doc_address1]
             pii_from_user[:address2] = flow_params[:identity_doc_address2]
             pii_from_user[:city] = flow_params[:identity_doc_city]
-            pii_from_user[:state] = flow_params[:identity_doc_state]
+            pii_from_user[:state] = flow_params[:identity_doc_address_state]
             pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
             mark_step_complete(:address)
           end

@@ -121,7 +121,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                   }",
                   city: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city],
                   state: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
-                    :identity_doc_state
+                    :identity_doc_address_state
                   ],
                   zip_code:
                     Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],

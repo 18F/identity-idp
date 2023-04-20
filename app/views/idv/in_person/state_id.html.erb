@@ -127,14 +127,14 @@
   <% if capture_secondary_id_enabled %>
     <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
       <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_state,
+            name: :identity_doc_address_state,
             collection: us_states_territories,
             form: f,
-            label: t('in_person_proofing.form.state_id.identity_doc_state'),
+            label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
             label_html: { class: 'usa-label' },
-            prompt: t('in_person_proofing.form.state_id.identity_doc_state_prompt'),
+            prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
             required: true,
-            selected: pii[:identity_doc_state],
+            selected: pii[:identity_doc_address_state],
           ) %>
       <%= render ValidatedFieldComponent.new(
             name: :identity_doc_address1,
@@ -172,7 +172,7 @@
             name: :state_id_jurisdiction,
             collection: us_states_territories,
             form: f,
-            hint: t('in_person_proofing.form.state_id.identity_doc_state_hint'),
+            hint: t('in_person_proofing.form.state_id.identity_doc_address_state_hint'),
             label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
             label_html: { class: 'usa-label' },
             prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
