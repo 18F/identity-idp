@@ -33,7 +33,7 @@ module Proofing
           user_email: user_email,
         )
 
-        # todo(LG-8693): Begin verifing both the user's residential address and identity document
+        # todo(LG-8693): Begin verifying both the user's residential address and identity document
         # address
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
 
@@ -66,7 +66,7 @@ module Proofing
         request_ip:,
         timer:
       )
-        if !FeatureManagement.proofing_device_profiling_collecting_enabled?
+        unless FeatureManagement.proofing_device_profiling_collecting_enabled?
           return threatmetrix_disabled_result
         end
 
@@ -185,7 +185,7 @@ module Proofing
 
       # Make a copy of pii with the user's state ID address overwriting the address keys
       def with_state_id_address(pii)
-        pii.transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        pii&.transform_keys(SECONDARY_ID_ADDRESS_MAP)
       end
 
       SECONDARY_ID_ADDRESS_MAP = {

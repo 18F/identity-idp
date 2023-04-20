@@ -15,7 +15,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   describe '#proof' do
     before do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-      stub_instant_verify_request(LexisNexisFixtures.instant_verify_success_response_json)
+      allow(Proofing::LexisNexis::InstantVerify::VerificationRequest).to receive(:new)
     end
     subject(:proof) do
       instance.proof(
@@ -50,12 +50,80 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           zipcode: applicant_pii[:state_id_zipcode],
         }
       end
-      it 'proofs the state id with LexisNexis' do
+      it 'makes a request to the instant verify proofer' do
         expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
         allow(resolution_result).to receive(:success?).and_return(true)
         allow(instance).to receive(:proof_state_id_if_needed)
 
         subject
+      end
+
+      context 'threatmetrix is enabled' do
+        let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer) }
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
+            and_return(false)
+          allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
+
+          allow(instance).to receive(:proof_resolution).and_return(resolution_result)
+          allow(resolution_result).to receive(:success?).and_return(true)
+          allow(instant_verify_proofer).to receive(:proof)
+        end
+
+        it 'makes a request to the threatmetrix proofer' do
+          expect(threatmetrix_proofer).to receive(:proof)
+
+          subject
+        end
+
+        context 'it lacks a session id' do
+          let(:threatmetrix_session_id) { nil }
+          it 'returns a disabled result' do
+            result = subject
+
+            device_profiling_result = result.device_profiling_result
+
+            expect(device_profiling_result.success).to be(true)
+            expect(device_profiling_result.client).to eq('tmx_disabled')
+            expect(device_profiling_result.review_status).to eq('pass')
+          end
+        end
+
+        context 'it lacks applicant pii' do
+          let(:applicant_pii) { nil }
+          it 'returns a disabled result' do
+            result = subject
+
+            device_profiling_result = result.device_profiling_result
+
+            expect(device_profiling_result.success).to be(true)
+            expect(device_profiling_result.client).to eq('tmx_disabled')
+            expect(device_profiling_result.review_status).to eq('pass')
+          end
+        end
+      end
+
+      context 'threatmetrix is disabled' do
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
+            and_return(false)
+
+          allow(instance).to receive(:proof_resolution).and_return(resolution_result)
+          allow(resolution_result).to receive(:success?).and_return(true)
+          allow(instant_verify_proofer).to receive(:proof)
+        end
+        it 'returns a disabled result' do
+          result = subject
+
+          device_profiling_result = result.device_profiling_result
+
+          expect(device_profiling_result.success).to be(true)
+          expect(device_profiling_result.client).to eq('tmx_disabled')
+          expect(device_profiling_result.review_status).to eq('pass')
+        end
       end
 
       context 'user is not in an AAMVA jurisdiction' do
@@ -64,7 +132,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:applicant_pii_outside_aamva) do
           applicant_pii.merge(state_id_jurisdiction: non_aamva_jurisdiction)
         end
-        let(:aamva_proofer) { double(Proofing::Aamva::Proofer) }
+        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         let(:should_proof_state_id) { false }
 
         subject(:proof) do
@@ -79,7 +147,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           )
         end
 
-        it 'does not make a request to AAMVA' do
+        it 'does not make a request to the AAMVA proofer' do
           allow(instant_verify_proofer).to receive(:proof)
           expect(aamva_proofer).to_not receive(:proof)
 
@@ -95,11 +163,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'user is in an AAMVA jurisdiction' do
-          let(:aamva_proofer) { double(Proofing::Aamva::Proofer) }
+          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
           let(:resolution_result_that_passes_aamva) do
             double(Proofing::LexisNexis::InstantVerify::VerificationRequest)
           end
-          it 'makes a request to AAMVA' do
+          it 'makes a request to the AAMVA proofer' do
             allow(instance).to receive(:proof_resolution).
               and_return(resolution_result_that_passes_aamva)
             allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
@@ -118,20 +186,4 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
   end
-end
-
-# TKTK: this is copied from resolution_proofing_job_spec.rb.
-# Maybe make a helper file that contains the setup method?
-def stub_instant_verify_request(instant_verify_response)
-  instant_verify_url = URI.join(
-    IdentityConfig.store.lexisnexis_base_url,
-    '/restws/identity/v2/',
-    IdentityConfig.store.lexisnexis_account_id + '/',
-    IdentityConfig.store.lexisnexis_instant_verify_workflow + '/',
-    'conversation',
-  )
-  stub_request(
-    :post,
-    instant_verify_url,
-  ).to_return(body: instant_verify_response)
 end
