@@ -9,14 +9,14 @@ module Idv
 
     def handle_locked_out_user
       reset_attempt_count_if_user_no_longer_locked_out
-      return unless decorated_user.locked_out?
+      return unless current_user.locked_out?
       analytics.idv_phone_confirmation_otp_rate_limit_locked_out
       handle_too_many_otp_attempts
       false
     end
 
     def reset_attempt_count_if_user_no_longer_locked_out
-      return unless decorated_user.no_longer_locked_out?
+      return unless current_user.no_longer_locked_out?
 
       UpdateUser.new(
         user: current_user,
@@ -41,13 +41,9 @@ module Idv
     def handle_max_attempts(type)
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         type,
-        decorated_user,
+        current_user,
       )
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
-    end
-
-    def decorated_user
-      current_user.decorate
     end
   end
 end

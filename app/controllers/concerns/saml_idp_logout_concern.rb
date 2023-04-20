@@ -27,7 +27,7 @@ module SamlIdpLogoutConcern
       find_by(user_id: user_id, service_provider: saml_request.issuer).
       rails_session_id
 
-    OutOfBandSessionAccessor.new(session_id).destroy
+    OutOfBandSessionAccessor.new(session_id).destroy if session_id
     sign_out if user_signed_in?
 
     # rubocop:disable Rails/RenderInline

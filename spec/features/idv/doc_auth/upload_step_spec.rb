@@ -28,9 +28,9 @@ feature 'doc auth upload step' do
     end
 
     it 'displays with the expected content' do
-      expect(page).to have_content(t('doc_auth.headings.combined_upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.info.combined_upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.headings.combined_upload_from_phone'))
+      expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
+      expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
+      expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
     end
 
     it 'proceeds to document capture when user chooses to upload from computer' do
@@ -42,7 +42,7 @@ feature 'doc auth upload step' do
 
       click_upload_from_computer
 
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_document_capture_url)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :document_capture),

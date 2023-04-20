@@ -11,8 +11,6 @@ feature 'doc auth document capture step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
-      and_return(true)
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
       and_return(doc_auth_enable_presigned_s3_urls)
     allow(Identity::Hostdata::EC2).to receive(:load).
@@ -25,17 +23,15 @@ feature 'doc auth document capture step', :js do
     sign_in_and_2fa_user(user)
   end
 
-  context 'standard desktop flow does not skip ahead' do
-    before do
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_doc_auth_welcome_step)
-      complete_welcome_step
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_doc_auth_agreement_step)
-      complete_agreement_step
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_doc_auth_upload_step)
-    end
+  it 'does not skip ahead in standard desktop flow' do
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    complete_welcome_step
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    complete_agreement_step
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_doc_auth_upload_step)
   end
 
   context 'standard desktop flow' do
@@ -53,16 +49,10 @@ feature 'doc auth document capture step', :js do
         'IdV: doc auth document_capture visited',
         flow_path: 'standard',
         step: 'document_capture',
-        step_count: 1,
         analytics_id: 'Doc Auth',
         irs_reproofing: false,
         acuant_sdk_upgrade_ab_test_bucket: :default,
       )
-
-      visit(idv_ssn_url)
-      expect(page).to have_current_path(idv_document_capture_url)
-      visit(idv_address_url)
-      expect(page).to have_current_path(idv_document_capture_url)
     end
 
     it 'logs return to sp link click' do

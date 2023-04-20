@@ -87,7 +87,6 @@ doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
-doc_auth_document_capture_controller_enabled: false
 doc_auth_enable_presigned_s3_urls: false
 doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
@@ -262,8 +261,6 @@ recaptcha_secret_key_v3: ''
 recovery_code_length: 4
 redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
-redis_throttle_alternate_url: ''
-redis_throttle_alternate_pool_write_enabled: false
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10

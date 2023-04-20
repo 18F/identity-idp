@@ -18,7 +18,7 @@
     </div>
   <% end %>
 </div>
-<% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.decorated_user.user).configured? %>
+<% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.user).configured? %>
   <%= render 'accounts/actions/regenerate_backup_codes' %>
 <% else %>
   <%= render 'accounts/actions/generate_backup_codes' %>

@@ -34,7 +34,7 @@ module SignUp
     private
 
     def verify_confirmed
-      redirect_to idv_url if current_user.decorate.identity_not_verified?
+      redirect_to idv_url if current_user.identity_not_verified?
     end
 
     def verify_needs_completions_screen

@@ -4,7 +4,7 @@ Login.gov is the public's one account for government. Use one account and passwo
 
 This repository contains the core code base and documentation for the identity management system powering secure.login.gov.
 
-**This file is auto-generated**, to edit it, check out [`scripts/generate_readme.rb`](scripts/generate_readme.rb)
+**This file is auto-generated**. Run `make README.md` to regenerate its contents.
 
 ## Getting Started
 
@@ -21,6 +21,8 @@ Refer to the [_Local Development_ documentation](./docs/local-development.md) to
 - [Docker](docs/Docker.md)
 - [Front-end Architecture](docs/frontend.md)
 - [Local Development](docs/local-development.md)
+- [Mobile local development](docs/mobile.md)
 - [SAML Profile](docs/SAML_PROFILE.md)
 - [Security](docs/SECURITY.md)
 - [Troubleshooting Local Development](docs/troubleshooting.md)
+- [Upgrade and A/B test Acuant SDK](docs/sdk-upgrade.md)

@@ -47,7 +47,7 @@ module TwoFactorAuthenticatableMethods
   def handle_max_attempts(type)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
-      decorated_user,
+      current_user,
     )
     sign_out
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
@@ -79,7 +79,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless decorated_user.no_longer_locked_out?
+    return unless current_user.no_longer_locked_out?
 
     UpdateUser.new(
       user: current_user,
@@ -119,7 +119,7 @@ module TwoFactorAuthenticatableMethods
 
     flash.now[:error] = invalid_otp_error(type)
 
-    if decorated_user.locked_out?
+    if current_user.locked_out?
       handle_second_factor_locked_user(context: context, type: type)
     else
       render_show_after_invalid
@@ -293,10 +293,6 @@ module TwoFactorAuthenticatableMethods
     else
       user_session[:unconfirmed_phone]
     end
-  end
-
-  def decorated_user
-    current_user.decorate
   end
 
   def confirmation_for_add_phone?

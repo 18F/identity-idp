@@ -188,7 +188,7 @@ feature 'IdV Outage Spec' do
           click_idv_continue
           complete_agreement_step
 
-          expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+          expect(current_path).to eq idv_document_capture_path
         end
       end
     end
@@ -234,7 +234,7 @@ feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+      expect(current_path).to eq idv_document_capture_path
     end
   end
 

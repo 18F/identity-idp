@@ -66,7 +66,7 @@ feature 'doc auth welcome step' do
     end
 
     it 'progresses to document capture' do
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_document_capture_url)
     end
 
     it 'logs analytics for upload step' do
