@@ -17,7 +17,7 @@ class ApplicationController
       # rubocop:enable Rails/Output
       # rubocop:enable Style/RescueModifier
 
-      super(options, response_status)
+      super
     end
   end
 end
