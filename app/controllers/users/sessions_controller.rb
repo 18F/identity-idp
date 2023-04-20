@@ -164,6 +164,12 @@ module Users
       current_page?(root_url)
     end
 
+    def create_an_account_banner_ab_test
+      AbTests::CREATE_AN_ACCOUNT_BANNER.bucket(
+        current_usser.uuid
+      )
+    end
+
     def alive?
       return false unless session && expires_at
       session_alive = expires_at > now
