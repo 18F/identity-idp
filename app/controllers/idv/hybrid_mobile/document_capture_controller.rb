@@ -113,15 +113,6 @@ module Idv
         }
       end
 
-      def override_csp_to_allow_acuant
-        policy = current_content_security_policy
-        policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
-        policy.script_src(*policy.script_src, :unsafe_eval)
-        policy.style_src(*policy.style_src, :unsafe_inline)
-        policy.img_src(*policy.img_src, 'blob:')
-        request.content_security_policy = policy
-      end
-
       def save_proofing_components
         return unless document_capture_user
 
