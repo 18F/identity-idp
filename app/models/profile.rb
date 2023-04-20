@@ -33,9 +33,13 @@ class Profile < ApplicationRecord
     !!(fraud_rejection || fraud_rejection_at)
   end
 
+  def gpo_verification_pending?
+    gpo_verification_pending_at.present?
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if fraud_review_pending? || fraud_rejection?
+    return if deactivation_checks
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
@@ -68,6 +72,14 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  def deactivation_checks
+    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+  end
+
+  def deactivate_for_gpo_verification
+    update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
   def deactivate_for_fraud_review
