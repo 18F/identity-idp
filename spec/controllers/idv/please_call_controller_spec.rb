@@ -27,7 +27,7 @@ describe Idv::PleaseCallController do
   it 'asks user to call 2 weeks from  date' do
     get :show
 
-    call_by_date = fraud_rejection_date + 14.days
+    call_by_date = fraud_review_pending_date + 14.days
     call_by_formatted = I18n.l(call_by_date, format: :event_date)
     expect(response.body).to include(call_by_formatted)
   end
