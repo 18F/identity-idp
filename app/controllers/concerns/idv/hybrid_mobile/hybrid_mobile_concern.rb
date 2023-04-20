@@ -38,10 +38,6 @@ module Idv
         @document_capture_user = User.find_by(id: session[:doc_capture_user_id])
       end
 
-      def flow_session
-        session['idv/doc_auth'] ||= {}
-      end
-
       def handle_invalid_document_capture_session
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url

@@ -73,14 +73,11 @@ module Idv
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
 
-        flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-
         track_document_state(pii_from_doc[:state])
       end
 
       # copied from Flow::Failure module
       def failure(message, extra = nil)
-        flow_session[:error_message] = message
         form_response_params = { success: false, errors: { message: message } }
         form_response_params[:extra] = extra unless extra.nil?
         FormResponse.new(**form_response_params)
