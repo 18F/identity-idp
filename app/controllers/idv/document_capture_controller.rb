@@ -115,7 +115,7 @@ module Idv
       return unless current_user
 
       doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: flow_session[document_capture_session_uuid_key],
+        discriminator: document_capture_session_uuid,
         analytics: analytics,
       )
 
