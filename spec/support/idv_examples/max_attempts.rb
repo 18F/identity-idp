@@ -27,7 +27,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       expect_user_to_fail_at_phone_step
     end
 
-    scenario 'user sees the failure screen' do
+    scenario 'user sees the failure screen', js: true do
       expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
       expect(page).to have_content(
         strip_tags(
