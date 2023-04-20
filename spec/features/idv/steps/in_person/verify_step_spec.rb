@@ -164,15 +164,15 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
         MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION}",
       )
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS1).twice
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS2).twice
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_CITY).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
         Idp::Constants::
-                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_state],
+                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address_state],
       ).twice
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).once
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ZIPCODE).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_content(t('headings.residential_address'))
       expect(page).to have_content(t('headings.ssn'))
       expect(page).to have_text('9**-**-***4')
