@@ -448,11 +448,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.boolean "fraud_rejection", default: false
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
-    t.boolean "gpo_verification_pending"
+    t.datetime "gpo_verification_pending_at"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
-    t.index ["gpo_verification_pending"], name: "index_profiles_on_gpo_verification_pending"
+    t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
