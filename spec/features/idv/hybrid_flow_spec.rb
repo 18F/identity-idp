@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
+  include IdvStepHelper
   include DocAuthHelper
 
   let(:phone_number) { '415-555-0199' }
@@ -37,7 +38,9 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:mobile) do
       visit @sms_link
       attach_and_submit_images
+      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
     end
 
     perform_in_browser(:desktop) do
