@@ -164,7 +164,7 @@ module Users
       current_page?(root_url)
     end
 
-    def create_an_account_banner_ab_test
+    def create_account_banner_a_b_test
       AbTests::CREATE_AN_ACCOUNT_BANNER.bucket(
         current_usser.uuid
       )

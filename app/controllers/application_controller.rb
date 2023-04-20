@@ -394,10 +394,6 @@ class ApplicationController < ActionController::Base
     @mfa_policy ||= MfaPolicy.new(current_user)
   end
 
-  def create_account_banner_a_b_test
-    IdentityConfig.store.create_account_banner_testing
-  end
-
   def service_provider_mfa_policy
     @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
       user: current_user,
