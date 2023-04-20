@@ -11,7 +11,7 @@ module Idv
                 presence: true
 
       validates_with UspsInPersonProofing::TransliterableValidator,
-                     fields: [:first_name, :last_name, :state_id_city],
+                     fields: [:first_name, :last_name, :identity_doc_city],
                      reject_chars: /[^A-Za-z\-' ]/,
                      message: ->(invalid_chars) do
                        I18n.t(
@@ -21,7 +21,7 @@ module Idv
                      end
 
       validates_with UspsInPersonProofing::TransliterableValidator,
-                     fields: [:state_id_address1, :state_id_address2],
+                     fields: [:identity_doc_address1, :identity_doc_address2],
                      reject_chars: /[^A-Za-z0-9\-' .\/#]/,
                      message: ->(invalid_chars) do
                        I18n.t(
