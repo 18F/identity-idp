@@ -7,7 +7,7 @@
     "primaryIdType": "State driver's license",
     "transactionStartDateTime": "12/17/2020 033855",
     "transactionEndDateTime": "12/17/2020 034055",
-    "secondaryIdType": "Deed of Trust",
+    "secondaryIdType": "State driver's license",
     "fraudSuspected": false,
     "proofingConfirmationNumber": "350040248346701",
     "ippAssuranceLevel": "1.5"
