@@ -6,13 +6,36 @@ class Analytics
 
   attr_reader :user, :request, :sp, :ahoy, :irs_session_id
 
+  class FakeAhoy
+    attr_reader :events
+
+    def initialize
+      @events = {}
+    end
+
+    def track(event, analytics_hash)
+      if analytics_hash[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
+        analytics_hash[:proofing_components] = analytics_hash[:proofing_components].as_json.symbolize_keys
+      end
+      @events[event] ||= []
+
+      event_properties = analytics_hash[:event_properties].merge(user_id: analytics_hash[:user_id])
+      @events[event] << event_properties
+    end
+  end
+
   def self.create_null
     Analytics.new(
-      user: nil,
+      user: OpenStruct.new(uuid: 'some-uuid'), # ToDo: Stub a real user
       request: nil,
       sp: nil,
-      session: nil,
-    )
+      session: {},
+      ahoy: FakeAhoy.new,
+)
+  end
+
+  def events
+    ahoy.events
   end
 
   def initialize(user:, request:, sp:, session:, ahoy: nil, irs_session_id: nil)
