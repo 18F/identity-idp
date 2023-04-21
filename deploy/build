@@ -33,7 +33,7 @@ else
   yarn install --production --frozen-lockfile --cache-folder .yarn-cache
 fi
 
-bundle binstubs --all
+bundle binstubs bundler --force
 
 set +x
 
