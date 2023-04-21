@@ -1,11 +1,17 @@
 import { useContext, useState } from 'react';
 import type { MouseEventHandler } from 'react';
-import { Alert, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
-import { removeUnloadProtection } from '@18f/identity-url';
+import {
+  Alert,
+  Button,
+  Link,
+  PageHeading,
+  ProcessList,
+  ProcessListItem,
+} from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
-import { SpinnerButton } from '@18f/identity-spinner-button';
+import useHistoryParam from '@18f/identity-form-steps/use-history-param';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
@@ -16,6 +22,7 @@ import { InPersonContext } from '../context';
 function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, setStepName] = useHistoryParam(undefined);
   const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
   const { flowPath } = useContext(UploadContext);
   const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
@@ -27,7 +34,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
     if (!isSubmitting) {
       setIsSubmitting(true);
-      removeUnloadProtection();
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       await trackEvent('IdV: prepare submitted');
       window.location.href = '#location'!;
@@ -60,9 +66,17 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <SpinnerButton href="#location" onClick={onContinue} isBig isWide>
+          <Button
+            isBig
+            isWide
+            href="#location"
+            className="margin-top-3 margin-bottom-1"
+            onClick={() => {
+              setStepName('location');
+            }}
+          >
             {t('forms.buttons.continue')}
-          </SpinnerButton>
+          </Button>
         </div>
       )}
       <p>
