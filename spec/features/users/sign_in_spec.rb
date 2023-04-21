@@ -655,6 +655,8 @@ feature 'Sign in' do
     end
   end
 
+  it_behaves_like 'signing in from service provider', :saml
+  it_behaves_like 'signing in from service provider', :oidc
   it_behaves_like 'signing in as IAL1 with personal key', :saml
   it_behaves_like 'signing in as IAL1 with personal key', :oidc
   it_behaves_like 'signing in as IAL2 with personal key', :saml

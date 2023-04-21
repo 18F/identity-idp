@@ -38,20 +38,20 @@ describe Pii::Attributes do
 
     it 'parses state ID address keys' do
       pii = described_class.new_from_hash(
-        state_id_address1: '1600 Pennsylvania Avenue',
-        state_id_address2: 'Apt 2',
-        state_id_city: 'Washington',
+        identity_doc_address1: '1600 Pennsylvania Avenue',
+        identity_doc_address2: 'Apt 2',
+        identity_doc_city: 'Washington',
         state_id_jurisdiction: 'DC',
-        state_id_zipcode: '20005',
-        state_id_state: 'NY',
+        identity_doc_zipcode: '20005',
+        identity_doc_address_state: 'NY',
       )
 
-      expect(pii.state_id_address1).to eq('1600 Pennsylvania Avenue')
-      expect(pii.state_id_address2).to eq('Apt 2')
-      expect(pii.state_id_city).to eq('Washington')
+      expect(pii.identity_doc_address1).to eq('1600 Pennsylvania Avenue')
+      expect(pii.identity_doc_address2).to eq('Apt 2')
+      expect(pii.identity_doc_city).to eq('Washington')
       expect(pii.state_id_jurisdiction).to eq('DC')
-      expect(pii.state_id_zipcode).to eq('20005')
-      expect(pii.state_id_state).to eq('NY')
+      expect(pii.identity_doc_zipcode).to eq('20005')
+      expect(pii.identity_doc_address_state).to eq('NY')
     end
   end
 

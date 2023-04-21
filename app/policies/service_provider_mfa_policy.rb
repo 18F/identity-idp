@@ -40,10 +40,6 @@ class ServiceProviderMfaPolicy
     false
   end
 
-  def auth_method_confirms_to_sp_request?
-    !user_needs_sp_auth_method_setup? && !user_needs_sp_auth_method_verification?
-  end
-
   def phishing_resistant_required?
     if phishing_resistant_requested? || aal_requested?
       !!phishing_resistant_requested?

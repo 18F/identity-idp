@@ -115,15 +115,16 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
                 ADDR = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
                 expect(applicant).to have_attributes(
                   address: "#{
-                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address1]
+                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]
                   } #{
-                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address2]
+                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]
                   }",
-                  city: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_city],
+                  city: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city],
                   state: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[
-                    :state_id_state
+                    :identity_doc_address_state
                   ],
-                  zip_code: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_zipcode],
+                  zip_code:
+                    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode],
                 )
                 UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
               end

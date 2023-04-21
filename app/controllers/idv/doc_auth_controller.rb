@@ -7,13 +7,11 @@ module Idv
 
     include IdvSession
     include Flow::FlowStateMachine
-    include Idv::DocumentCaptureConcern
     include Idv::ThreatMetrixConcern
     include FraudReviewConcern
 
     before_action :redirect_if_flow_completed
     before_action :handle_fraud
-    before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
@@ -23,7 +21,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_ssn_url,
+      final_url: :idv_document_capture_url,
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: 'Doc Auth',
     }.freeze
