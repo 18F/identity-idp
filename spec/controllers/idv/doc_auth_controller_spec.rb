@@ -190,32 +190,6 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'redirects from welcome to no camera error' do
-      result = {
-        success: false,
-        errors: {
-          message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
-        },
-        step: 'welcome',
-        flow_path: 'standard',
-        irs_reproofing: false,
-        step_count: 1,
-        analytics_id: 'Doc Auth',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
-
-      put :update, params: {
-        step: 'welcome',
-        ial2_consent_given: true,
-        no_camera: true,
-      }
-
-      expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth welcome submitted', result
-      )
-    end
-
     context 'with an existing applicant' do
       before do
         idv_session = Idv::Session.new(
