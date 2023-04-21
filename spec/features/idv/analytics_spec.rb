@@ -6,7 +6,7 @@ feature 'Analytics Regression', js: true do
   include InPersonHelper
 
   let(:user) { user_with_2fa }
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_analytics) { Analytics.create_null }
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
     {

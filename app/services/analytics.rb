@@ -4,7 +4,8 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :ahoy, :irs_session_id
+  attr_accessor :user
+  attr_reader :request, :sp, :ahoy, :irs_session_id, :events
 
   class FakeAhoy
     attr_reader :events
@@ -26,16 +27,12 @@ class Analytics
 
   def self.create_null
     Analytics.new(
-      user: OpenStruct.new(uuid: 'some-uuid'), # ToDo: Stub a real user
+      user: AnonymousUser.new,
       request: nil,
-      sp: nil,
+      sp: OpenStruct.new(value: 'something'),
       session: {},
       ahoy: FakeAhoy.new,
-)
-  end
-
-  def events
-    ahoy.events
+    )
   end
 
   def initialize(user:, request:, sp:, session:, ahoy: nil, irs_session_id: nil)
@@ -45,6 +42,7 @@ class Analytics
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
     @session = session
     @irs_session_id = irs_session_id
+    @events = {}
   end
 
   def track_event(event, attributes = {})
@@ -63,6 +61,13 @@ class Analytics
     analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)
+
+    duped_attributes = attributes.dup
+    if duped_attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
+      duped_attributes[:proofing_components] = duped_attributes[:proofing_components].as_json.symbolize_keys
+    end
+    events[event] ||= []
+    events[event] << duped_attributes
 
     # Tag NewRelic APM trace with a handful of useful metadata
     # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
