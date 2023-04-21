@@ -5,7 +5,7 @@ describe PhoneRecaptchaValidator do
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   let(:recaptcha_version) { 3 }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   subject(:validator) { described_class.new(parsed_phone:, recaptcha_version:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides).

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe RecaptchaValidator do
   let(:score_threshold) { 0.2 }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:extra_analytics_properties) { {} }
   let(:recaptcha_secret_key_v2) { 'recaptcha_secret_key_v2' }
   let(:recaptcha_secret_key_v3) { 'recaptcha_secret_key_v3' }

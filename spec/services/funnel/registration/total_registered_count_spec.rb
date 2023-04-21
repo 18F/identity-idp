@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Funnel::Registration::TotalRegisteredCount do
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   subject { described_class }
 
   it 'returns 0' do

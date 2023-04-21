@@ -12,7 +12,7 @@ describe Idv::Steps::InPerson::VerifyWaitStepShow do
   let(:controller) do
     instance_double(
       'controller',
-      analytics: FakeAnalytics.new,
+      analytics: Analytics.create_null,
       irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_sp: service_provider,
       current_user: user,

@@ -26,7 +26,7 @@ describe Idv::Steps::InPerson::VerifyStep do
   let(:controller) do
     instance_double(
       'controller',
-      analytics: FakeAnalytics.new,
+      analytics: Analytics.create_null,
       irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_user: user,
       **controller_args,
@@ -103,7 +103,7 @@ describe Idv::Steps::InPerson::VerifyStep do
       let(:controller2) do
         instance_double(
           'controller',
-          analytics: FakeAnalytics.new,
+          analytics: Analytics.create_null,
           irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
           current_user: user2,
           **controller_args,

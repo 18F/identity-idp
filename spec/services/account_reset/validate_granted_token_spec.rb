@@ -9,7 +9,7 @@ describe AccountReset::ValidateGrantedToken do
   let(:expired_token_error) { { token: [expired_token_message] } }
   let(:user) { create(:user) }
   let(:request) { FakeRequest.new }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   let(:service_provider) do

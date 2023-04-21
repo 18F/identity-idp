@@ -45,7 +45,7 @@ RSpec.describe DocAuthRouter do
     let(:doc_auth_vendor) { 'test1' }
     let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
     let(:discriminator) { SecureRandom.uuid }
-    let(:analytics) { FakeAnalytics.new }
+    let(:analytics) { Analytics.create_null }
     let(:doc_auth_vendor_randomize_percent) { 57 }
     let(:doc_auth_vendor_randomize) { true }
 

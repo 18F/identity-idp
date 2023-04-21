@@ -143,7 +143,7 @@ describe OutageStatus do
 
   describe '#track_event' do
     it 'logs status of all vendors' do
-      analytics = FakeAnalytics.new
+      analytics = Analytics.create_null
       expect(analytics).to receive(:track_event).with(
         'Vendor Outage',
         redirect_from: nil,

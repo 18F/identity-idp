@@ -163,7 +163,7 @@ RSpec.describe RequestPasswordReset do
     end
 
     context 'when the user requests password resets above the allowable threshold' do
-      let(:analytics) { FakeAnalytics.new }
+      let(:analytics) { Analytics.create_null }
       it 'throttles the email sending and logs a throttle event' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 

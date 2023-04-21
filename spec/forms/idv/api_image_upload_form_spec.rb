@@ -29,7 +29,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_analytics) { Analytics.create_null }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:store_encrypted_images) { false }
 

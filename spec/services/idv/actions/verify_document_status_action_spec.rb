@@ -20,7 +20,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     )
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:billed) { true }
   let(:attention_with_barcode) { false }
   let(:result) do

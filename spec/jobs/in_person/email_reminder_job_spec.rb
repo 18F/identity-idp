@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe InPerson::EmailReminderJob do
   let(:job) { InPerson::EmailReminderJob.new }
-  let(:job_analytics) { FakeAnalytics.new }
+  let(:job_analytics) { Analytics.create_null }
 
   before do
     ActiveJob::Base.queue_adapter = :test

@@ -14,7 +14,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     )
   end
   subject(:subject) { described_class }
-  let(:subject_analytics) { FakeAnalytics.new }
+  let(:subject_analytics) { Analytics.create_null }
   let(:transliterator) { UspsInPersonProofing::Transliterator.new }
   let(:service_provider) { nil }
   let(:usps_ipp_transliteration_enabled) { true }

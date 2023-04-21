@@ -47,7 +47,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   let(:user) { create(:user) }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:document_capture_session) do
     DocumentCaptureSession.create(user_id: user.id, result_id: SecureRandom.hex)
   end
@@ -69,7 +69,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   describe '#perform' do
-    let(:job_analytics) { FakeAnalytics.new }
+    let(:job_analytics) { Analytics.create_null }
     let(:instance) { DocumentProofingJob.new }
     subject(:perform) do
       instance.perform(

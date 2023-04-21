@@ -22,7 +22,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
   let(:cookie_device_uuid) { 'device_id' }
   let(:sp_request_uri) { 'https://example.com/auth_page' }
   let(:user) { create(:user) }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
 
   subject do
     described_class.new(

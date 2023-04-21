@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe RecaptchaMockValidator do
   let(:score_threshold) { 0.2 }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:score) { nil }
   subject(:validator) { RecaptchaMockValidator.new(score_threshold:, analytics:, score:) }
 

@@ -23,7 +23,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let(:back_image_iv) { 'back-iv' }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   describe '#valid?' do

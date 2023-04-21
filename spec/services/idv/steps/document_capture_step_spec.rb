@@ -16,7 +16,7 @@ describe Idv::Steps::DocumentCaptureStep do
       'controller',
       session: { sp: { issuer: service_provider.issuer } },
       current_user: user,
-      analytics: FakeAnalytics.new,
+      analytics: Analytics.create_null,
       url_options: {},
       request: double(
         'request',

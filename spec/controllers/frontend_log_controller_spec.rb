@@ -4,7 +4,7 @@ describe FrontendLogController do
   describe '#create' do
     subject(:action) { post :create, params: params, as: :json }
 
-    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_analytics) { Analytics.create_null }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:event) { 'Custom Event' }
     let(:payload) { { 'message' => 'To be logged...' } }

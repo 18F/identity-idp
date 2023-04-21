@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RegisterUserEmailForm do
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
 

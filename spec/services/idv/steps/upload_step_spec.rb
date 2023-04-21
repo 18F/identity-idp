@@ -36,7 +36,7 @@ describe Idv::Steps::UploadStep do
         params: params,
         current_user: user,
         current_sp: service_provider,
-        analytics: FakeAnalytics.new,
+        analytics: Analytics.create_null,
         url_options: {},
         request: request,
       )

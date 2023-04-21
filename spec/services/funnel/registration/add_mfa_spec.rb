@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Funnel::Registration::AddMfa do
-  let(:analytics) { FakeAnalytics.new }
+  let(:analytics) { Analytics.create_null }
   subject { described_class }
 
   let(:user_id) do

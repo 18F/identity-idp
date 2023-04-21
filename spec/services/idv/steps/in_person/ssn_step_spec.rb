@@ -20,7 +20,7 @@ describe Idv::Steps::InPerson::SsnStep do
       session: session,
       params: params,
       current_user: user,
-      analytics: FakeAnalytics.new,
+      analytics: Analytics.create_null,
       irs_attempts_api_tracker: attempts_api,
     )
   end
