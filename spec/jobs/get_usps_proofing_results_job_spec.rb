@@ -166,7 +166,7 @@ RSpec.describe GetUspsProofingResultsJob do
   let(:reprocess_delay_minutes) { 2.0 }
   let(:request_delay_ms) { 0 }
   let(:job) { GetUspsProofingResultsJob.new }
-  let(:job_analytics) { FakeAnalytics.new }
+  let(:job_analytics) { Analytics.create_null }
   let(:transaction_start_date_time) do
     ActiveSupport::TimeZone[-6].strptime(
       '12/17/2020 033855',
