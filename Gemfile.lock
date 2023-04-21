@@ -420,7 +420,7 @@ GEM
       net-protocol
     net-ssh (6.1.0)
     newrelic_rpm (8.15.0)
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.14.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
@@ -463,7 +463,7 @@ GEM
       pry (>= 0.10.4)
     psych (4.0.2)
     public_suffix (5.0.1)
-    puma (5.6.4)
+    puma (6.2.2)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.2)
