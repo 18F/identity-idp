@@ -3,10 +3,11 @@ class ValidatedFieldComponent < BaseComponent
 
   alias_method :f, :form
 
-  def initialize(form:, name:, error_messages: {}, **tag_options)
+  def initialize(form:, name:, error_messages: {}, hint_class: nil, **tag_options)
     @form = form
     @name = name
     @error_messages = error_messages
+    @hint_class = hint_class
     @tag_options = tag_options
     @input_type = inferred_input_type
   end
@@ -40,6 +41,10 @@ class ValidatedFieldComponent < BaseComponent
 
   def hint_id
     "validated-field-hint-#{unique_id}"
+  end
+
+  def hint_class
+    @hint_class || []
   end
 
   private

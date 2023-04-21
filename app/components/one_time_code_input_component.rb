@@ -27,7 +27,7 @@ class OneTimeCodeInputComponent < BaseComponent
     form:,
     name: :code,
     value: nil,
-    maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+    maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH + 1, # to allow for leading '#'
     autofocus: false,
     transport: 'sms',
     numeric: true,
@@ -55,9 +55,9 @@ class OneTimeCodeInputComponent < BaseComponent
 
   def input_pattern
     if numeric?
-      '[0-9]*'
+      '#?[0-9]*'
     else
-      '[a-zA-Z0-9]*'
+      '#?[a-zA-Z0-9]*'
     end
   end
 

@@ -14,7 +14,6 @@ module Idv
       def show
         @step_indicator_steps = step_indicator_steps
 
-        increment_step_counts
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :view, true) # specify in_person?
@@ -114,16 +113,6 @@ module Idv
         flow_session.delete(:pii_from_user)
       end
 
-      def current_flow_step_counts
-        user_session['idv/in_person_flow_step_counts'] ||= {}
-        user_session['idv/in_person_flow_step_counts'].default = 0
-        user_session['idv/in_person_flow_step_counts']
-      end
-
-      def increment_step_counts
-        current_flow_step_counts['verify'] += 1
-      end
-
       # override StepUtilitiesConcern
       def flow_session
         user_session.fetch('idv/in_person', {})
@@ -133,7 +122,6 @@ module Idv
         {
           flow_path: flow_path,
           step: 'verify',
-          step_count: current_flow_step_counts['verify'],
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)
