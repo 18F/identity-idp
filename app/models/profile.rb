@@ -48,6 +48,7 @@ class Profile < ApplicationRecord
         active: true,
         activated_at: now,
         deactivation_reason: nil,
+        gpo_verification_pending_at: nil,
         fraud_review_pending: false,
         fraud_rejection: false,
         fraud_review_pending_at: nil,
@@ -58,6 +59,11 @@ class Profile < ApplicationRecord
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def activate_after_gpo_verification
+    update!(gpo_verification_pending_at: nil)
+    activate
+  end
 
   def activate_after_passing_review
     update!(

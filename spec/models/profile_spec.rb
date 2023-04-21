@@ -301,6 +301,18 @@ describe Profile do
     end
   end
 
+  describe '#activate_after_gpo_verification' do
+    it 'activates a profile after gpo verification' do
+      profile = create(
+        :profile, user: user, active: false,
+                  gpo_verification_pending_at: 1.day.ago
+      )
+      profile.activate_after_gpo_verification
+
+      expect(profile).to be_active
+    end
+  end
+
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
       profile = create(
