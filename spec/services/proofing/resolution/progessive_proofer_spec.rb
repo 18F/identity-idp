@@ -9,7 +9,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:timer) { JobHelpers::Timer.new }
   let(:user) { create(:user, :signed_up) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
-
   let(:instance) { described_class.new }
 
   describe '#proof' do
@@ -38,7 +37,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
       end
 
-      let(:resolution_result) { double(Proofing::LexisNexis::InstantVerify::VerificationRequest) }
+      let(:resolution_result) do
+        instance_double(Proofing::Resolution::Result)
+      end
       let(:double_address_verification) { true }
       let(:state_id_address) do
         {
@@ -50,7 +51,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           zipcode: applicant_pii[:state_id_zipcode],
         }
       end
-      it 'makes a request to the instant verify proofer' do
+      it 'makes a request to the Instant Verify proofer' do
         expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
         allow(resolution_result).to receive(:success?).and_return(true)
         allow(instance).to receive(:proof_state_id_if_needed)
@@ -58,7 +59,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         subject
       end
 
-      context 'threatmetrix is enabled' do
+      context 'ThreatMetrix is enabled' do
         let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer) }
 
         before do
@@ -73,7 +74,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(instant_verify_proofer).to receive(:proof)
         end
 
-        it 'makes a request to the threatmetrix proofer' do
+        it 'makes a request to the ThreatMetrix proofer' do
           expect(threatmetrix_proofer).to receive(:proof)
 
           subject
@@ -106,7 +107,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      context 'threatmetrix is disabled' do
+      context 'ThreatMetrix is disabled' do
         before do
           allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
             and_return(false)
@@ -126,61 +127,130 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      context 'user is not in an AAMVA jurisdiction' do
-        # Alaska is not an AAMVA jurisdiction.  Logic for this check is in resolution proofing job.
-        let(:non_aamva_jurisdiction) { 'AK' }
-        let(:applicant_pii_outside_aamva) do
-          applicant_pii.merge(state_id_jurisdiction: non_aamva_jurisdiction)
-        end
-        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-        let(:should_proof_state_id) { false }
-
-        subject(:proof) do
-          instance.proof(
-            applicant_pii: applicant_pii_outside_aamva,
-            double_address_verification: double_address_verification,
-            request_ip: request_ip,
-            should_proof_state_id: should_proof_state_id,
-            threatmetrix_session_id: threatmetrix_session_id,
-            timer: timer,
-            user_email: user.confirmed_email_addresses.first.email,
-          )
-        end
-
-        it 'does not make a request to the AAMVA proofer' do
-          allow(instant_verify_proofer).to receive(:proof)
-          expect(aamva_proofer).to_not receive(:proof)
-
-          response = subject
-
-          expect(response.state_id_result.vendor_name).to eq('UnsupportedJurisdiction')
-        end
-      end
-
       context 'Instant Verify passes' do
+        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         before do
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
         end
 
         context 'user is in an AAMVA jurisdiction' do
-          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-          let(:resolution_result_that_passes_aamva) do
-            double(Proofing::LexisNexis::InstantVerify::VerificationRequest)
+          let(:resolution_result_that_passed_instant_verify) do
+            instance_double(Proofing::Resolution::Result)
           end
-          it 'makes a request to the AAMVA proofer' do
-            allow(instance).to receive(:proof_resolution).
-              and_return(resolution_result_that_passes_aamva)
-            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
-              and_return(resolution_result_that_passes_aamva)
-            allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(resolution_result_that_passes_aamva).and_return(true)
-            allow(resolution_result_that_passes_aamva).to receive(:success?).and_return(true)
-            allow(resolution_result).to receive(:attributes_requiring_additional_verification).
-              and_return([:address])
 
+          before do
+            allow(instance).to receive(:proof_resolution).
+              and_return(resolution_result_that_passed_instant_verify)
+            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+              and_return(resolution_result_that_passed_instant_verify)
+            allow(instance).to receive(:user_can_pass_after_state_id_check?).
+              with(resolution_result_that_passed_instant_verify).
+              and_return(true)
+            allow(resolution_result_that_passed_instant_verify).to receive(:success?).
+              and_return(true)
+          end
+
+          it 'makes a request to the AAMVA proofer' do
             expect(aamva_proofer).to receive(:proof)
 
             subject
+          end
+
+          context 'AAMVA proofing fails' do
+            let(:aamva_client) { instance_double(Proofing::Aamva::VerificationClient) }
+            let(:failed_aamva_proof) do
+              instance_double(Proofing::StateIdResult)
+            end
+            before do
+              allow(Proofing::Aamva::VerificationClient).to receive(:new).and_return(aamva_client)
+              allow(failed_aamva_proof).to receive(:success?).and_return(false)
+            end
+            it 'returns a result adjudicator that indicates the aamva proofing failed' do
+              allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+
+              result = subject
+
+              expect(result.state_id_result.success?).to eq(false)
+            end
+          end
+        end
+
+        context 'user is not in an AAMVA jurisdiction' do
+          # Alaska is not an AAMVA jurisdiction. Logic for this check is in resolution proofing job.
+          # The result of that logic is passed to the param should_proof_state_id.
+          let(:non_aamva_jurisdiction) { 'AK' }
+          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+          let(:should_proof_state_id) { false }
+
+          before do
+            applicant_pii.merge(state_id_jurisdiction: non_aamva_jurisdiction)
+          end
+
+          it 'does not make a request to the AAMVA proofer' do
+            allow(instant_verify_proofer).to receive(:proof)
+            expect(aamva_proofer).to_not receive(:proof)
+
+            response = subject
+
+            expect(response.state_id_result.vendor_name).to eq('UnsupportedJurisdiction')
+          end
+        end
+      end
+
+      context 'Instant Verify fails' do
+        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+        let(:result_that_failed_instant_verify) do
+          instance_double(Proofing::Resolution::Result)
+        end
+        before do
+          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+        end
+
+        before do
+          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+          allow(instance).to receive(:proof_resolution).
+            and_return(result_that_failed_instant_verify)
+          allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+            and_return(result_that_failed_instant_verify)
+        end
+
+        context 'the failure can be covered by AAMVA' do
+          before do
+            allow(instance).to receive(:user_can_pass_after_state_id_check?).
+              with(result_that_failed_instant_verify).
+              and_return(true)
+            # rubocop:disable Layout/LineLength
+            allow(result_that_failed_instant_verify).to receive(:attributes_requiring_additional_verification).
+              and_return([:address])
+            # rubocop:enable Layout/LineLength
+          end
+
+          context 'it is not covered by AAMVA' do
+            let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
+            before do
+              allow(instance).to receive(:proof_state_id_if_needed).and_return(failed_aamva_proof)
+              allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+              allow(failed_aamva_proof).to receive(:verified_attributes).and_return([])
+              allow(failed_aamva_proof).to receive(:success?).and_return(false)
+            end
+            it 'returns a failed proofing result' do
+              result = subject
+
+              expect(result.state_id_result.success?).to eq(false)
+            end
+          end
+
+          context 'it is covered by AAMVA' do
+            let(:successful_aamva_proof) { instance_double(Proofing::StateIdResult) }
+            before do
+              allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
+              allow(successful_aamva_proof).to receive(:verified_attributes).and_return([:address])
+            end
+            it 'returns a successful proofing result' do
+              result = subject
+
+              expect(result.state_id_result.success?).to eq(true)
+            end
           end
         end
       end
