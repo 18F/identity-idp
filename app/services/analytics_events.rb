@@ -222,6 +222,15 @@ module AnalyticsEvents
     track_event('Broken Personal Key: Regenerated')
   end
 
+  # For the create an account banner A/B test, add analytics for account creation rate, visits, 
+  # bounce rate, and time on sign in page
+
+  def create_account_banner_test
+    track_event(
+      'Create account banner test'
+    )
+  end
+
   # @param [String, nil] error error message
   # @param [String, nil] uuid document capture session uuid
   # @param [String, nil] result_id document capture session result id
@@ -2702,13 +2711,15 @@ module AnalyticsEvents
   # @param [String] flash
   # @param [String] stored_location
   # @param [String] sign_in_a_b_test_bucket
+  # @param [String] create_account_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, create_account_bucket:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
       sign_in_a_b_test_bucket:,
+      create_account_bucket:,
       **extra,
     )
   end
@@ -2974,11 +2985,11 @@ module AnalyticsEvents
   # Tracks when user visits enter email page
   # @param [String] sign_in_a_b_test_bucket
   # @param [Boolean] from_sign_in
-  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, create_an_account_a_b_test_bucket:, **extra)
+  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, create_account_bucket:, **extra)
     track_event(
       'User Registration: enter email visited',
       sign_in_a_b_test_bucket:,
-      create_an_account_a_b_test_bucket:,
+      create_account_bucket:,
       from_sign_in:,
       **extra,
     )

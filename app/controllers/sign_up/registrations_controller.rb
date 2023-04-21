@@ -18,7 +18,7 @@ module SignUp
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.user_registration_enter_email_visit(
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
-        create_an_account_a_b_test_bucket: @create_an_account_banner_ab_test,
+        create_account_bucket: @create_account_bucket,
         from_sign_in: params[:source] == 'sign_in',
       )
       render :new, formats: :html
