@@ -11,6 +11,31 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
       and_return(true)
   end
 
+  it 'accepts updates and redirects to the right place', allow_browser_log: true do
+    user = user_with_2fa
+
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    complete_location_step(user)
+    complete_prepare_step(user)
+    complete_state_id_step(user)
+    complete_address_step(user)
+    complete_ssn_step(user)
+
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+
+    # ASIDE: Hitting 'Back' (test below) redirects to verify instead of verify_info
+    # Do we want to fix that too?
+
+    # Updating name
+    click_button t('idv.buttons.change_state_id_label')
+    expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+    fill_in t('in_person_proofing.form.state_id.first_name'), with: 'Snuffleupagus'
+    click_button 'Update'
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+    expect(page).to have_text('Snuffleupagus')
+  end
+
   it 'provides back buttons for address, state ID, and SSN that discard changes',
      allow_browser_log: true do
     user = user_with_2fa

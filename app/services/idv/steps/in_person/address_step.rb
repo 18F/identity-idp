@@ -21,6 +21,7 @@ module Idv
             next if attr == :same_address_as_id && capture_secondary_id_enabled?
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
+          exit_flow_state_machine if avoid_fsm?
         end
 
         def extra_view_variables

@@ -122,6 +122,16 @@ module Idv
         doc_auth_log.save!
       end
 
+      # FIXME: bikeshed this name
+      def avoid_fsm?
+        IdentityConfig.store.in_person_verify_info_controller_enabled
+      end
+
+      def exit_flow_state_machine
+        flow_session[:flow_path] = @flow.flow_path
+        redirect_to idv_in_person_verify_info_url
+      end
+
       delegate :idv_session, :session, :flow_path, to: :@flow
     end
   end

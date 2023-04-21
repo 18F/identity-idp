@@ -28,6 +28,7 @@ module Idv
             pii_from_user[:zipcode] = flow_params[:state_id_zipcode]
             mark_step_complete(:address)
           end
+          exit_flow_state_machine if avoid_fsm?
         end
 
         def extra_view_variables
