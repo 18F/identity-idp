@@ -86,6 +86,8 @@ module InPersonHelper
   end
 
   def search_for_post_office
+    expect(page).to have_content(t('in_person_proofing.body.location.po_search.po_search_about'))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
             with: GOOD_ADDRESS1
 
@@ -98,19 +100,12 @@ module InPersonHelper
     within first('.location-collection-item') do
       click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
     end
-
-    # pause for the location list to disappear
-    begin
-      expect(page).to have_no_css('.location-collection-item')
-    rescue Selenium::WebDriver::Error::StaleElementReferenceError
-      # A StaleElementReferenceError means that the context the element
-      # was in has disappeared, which means the element is gone too.
-    end
   end
 
   def complete_prepare_step(_user = nil)
-    expect(page).to have_text(t('forms.buttons.continue'), wait: 10)
-    click_spinner_button_and_wait t('forms.buttons.continue')
+    expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    click_on t('forms.buttons.continue')
   end
 
   def complete_state_id_step(_user = nil, same_address_as_id: true,

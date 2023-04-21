@@ -120,13 +120,9 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing(user)
 
     # prepare page
-    expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
 
     # location page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
     complete_location_step
 
     # state ID page
@@ -255,13 +251,10 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing
 
     # prepare page
-    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     complete_prepare_step
 
     # location page
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    complete_location_step
+    search_for_post_office
 
     # back to prepare page
     click_button t('forms.buttons.back')
@@ -344,7 +337,6 @@ RSpec.describe 'In Person Proofing', js: true do
         click_idv_continue
 
         # location page
-        expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
         complete_location_step
 
         # switch back page
