@@ -6,11 +6,11 @@ import { act } from 'react-dom/test-utils';
 import BackButton from './back-button';
 
 const getButtonHtml = () =>
-  `<button type="button" class="usa-button usa-button--unstyled">\u2039 ${t(
+  `<button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039</span> ${t(
     'forms.buttons.back',
   )}</button>`;
 const getBorderedButtonHtml = () =>
-  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="usa-button usa-button--unstyled">\u2039 ${t(
+  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039</span> ${t(
     'forms.buttons.back',
   )}</button></div>`;
 
@@ -38,7 +38,7 @@ describe('BackButton', () => {
 
   it('renders a back button', () => {
     renderTestElement(<BackButton />);
-    const element = getByRole('button');
+    const element = getByRole('button', { name: t('forms.buttons.back') });
     expect(element).to.be.an.instanceof(HTMLElement);
     expect(container.innerHTML).to.equal(getButtonHtml());
   });
@@ -47,7 +47,7 @@ describe('BackButton', () => {
     const { wasClicked, onClick } = useOnClickTest();
     renderTestElement(<BackButton onClick={onClick} />);
     expect(wasClicked()).to.equal(false);
-    const button = getByRole('button');
+    const button = getByRole('button', { name: t('forms.buttons.back') });
     await userEvent.click(button);
     expect(wasClicked()).to.equal(true);
   });
@@ -55,7 +55,7 @@ describe('BackButton', () => {
   describe('with border', () => {
     it('renders a back button with a border', () => {
       renderTestElement(<BackButton includeBorder />);
-      const button = getByRole('button');
+      const button = getByRole('button', { name: t('forms.buttons.back') });
       expect(button).to.be.an.instanceof(HTMLButtonElement);
       expect(container.innerHTML).to.equal(getBorderedButtonHtml());
     });
@@ -64,7 +64,7 @@ describe('BackButton', () => {
       const { wasClicked, onClick } = useOnClickTest();
       renderTestElement(<BackButton includeBorder onClick={onClick} />);
       expect(wasClicked()).to.equal(false);
-      const button = getByRole('button');
+      const button = getByRole('button', { name: t('forms.buttons.back') });
       await userEvent.click(button);
       expect(wasClicked()).to.equal(true);
     });

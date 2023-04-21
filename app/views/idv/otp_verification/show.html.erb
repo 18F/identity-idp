@@ -21,7 +21,7 @@
         value: @code,
         numeric: false,
         autofocus: true,
-        maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
+        maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH + 1,
         class: 'margin-bottom-5',
       ) %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>

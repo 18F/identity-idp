@@ -386,7 +386,8 @@ module Features
     def sign_up_user_from_sp_without_confirming_email(email)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url
+      expect_branded_experience
 
       click_sign_in_from_landing_page_then_click_create_account
 
