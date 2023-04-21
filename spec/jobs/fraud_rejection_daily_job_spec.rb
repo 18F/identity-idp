@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe FraudRejectionDailyJob do
   subject(:job) { FraudRejectionDailyJob.new }
-  let(:job_analytics) { FakeAnalytics.new }
+  let(:job_analytics) { Analytics.create_null }
 
   before do
     allow(job).to receive(:analytics).and_return(job_analytics)
