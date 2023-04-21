@@ -21,13 +21,19 @@ module SamlIdpLogoutConcern
     sign_out if user_signed_in?
   end
 
-  def handle_valid_sp_remote_logout_request(user_id)
+  def handle_valid_sp_remote_logout_request(user_id:, issuer:)
     # Remotely delete the user's current session
     session_id = ServiceProviderIdentity.
-      find_by(user_id: user_id, service_provider: saml_request.issuer).
-      rails_session_id
+      where(user_id: user_id, service_provider: saml_request.issuer).pick(:rails_session_id)
 
-    OutOfBandSessionAccessor.new(session_id).destroy if session_id
+    if session_id
+      OutOfBandSessionAccessor.new(session_id).destroy
+      user = User.find_by(id: user_id)
+      analytics.remote_logout_completed(
+        service_provider: issuer,
+        user_id: user&.uuid,
+      )
+    end
     sign_out if user_signed_in?
 
     # rubocop:disable Rails/RenderInline
@@ -63,9 +69,9 @@ module SamlIdpLogoutConcern
     )
   end
 
-  def track_remote_logout_event
+  def track_remote_logout_event(issuer)
     analytics.remote_logout_initiated(
-      service_provider: saml_request&.issuer,
+      service_provider: issuer,
       saml_request_valid: valid_saml_request?,
     )
   end
