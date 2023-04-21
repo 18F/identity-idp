@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { removeUnloadProtection } from '@18f/identity-url';
+import { forceRedirect } from '@18f/identity-url';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch, {
@@ -15,13 +15,13 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonCtaVariantActive, inPersonURL } = useContext(InPersonContext);
   const { t } = useI18n();
 
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { setSubmitEventMetadata, trackEvent } = useContext(AnalyticsContext);
+  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
@@ -42,11 +42,14 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
+      e.preventDefault();
+
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
       setSubmitEventMetadata({
         selected_location: selectedLocationAddress,
+        in_person_cta_variant: inPersonCtaVariantActive,
       });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
@@ -58,11 +61,11 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         }, 250);
         return;
       }
-      // prevent navigation from continuing
-      e.preventDefault();
+
       if (inProgress) {
         return;
       }
+
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
@@ -70,20 +73,13 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           json: selected,
           method: 'PUT',
         });
-        await trackEvent('IdV: location submitted');
+
         if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
             // continue with navigation
             e.target.disabled = false;
             e.target.click();
-
-            e.preventDefault();
-
-            removeUnloadProtection();
-            if (inPersonURL) {
-              window.location.href = inPersonURL;
-            }
 
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
@@ -92,6 +88,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       } finally {
         if (mountedRef.current) {
           setInProgress(false);
+          forceRedirect(inPersonURL!);
         }
       }
     },
