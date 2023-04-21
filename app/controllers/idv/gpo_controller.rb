@@ -57,7 +57,7 @@ module Idv
     end
 
     def resend_requested?
-      current_user.decorate.pending_profile_requires_verification?
+      current_user.pending_profile_requires_verification?
     end
 
     def confirm_mail_not_spammed
@@ -68,7 +68,7 @@ module Idv
     def confirm_user_completed_idv_profile_step
       # If the user has a pending profile, they may have completed idv in a
       # different session and need a letter resent now
-      return if current_user.decorate.pending_profile_requires_verification?
+      return if current_user.pending_profile_requires_verification?
       return if idv_session.verify_info_step_complete?
 
       redirect_to idv_doc_auth_url

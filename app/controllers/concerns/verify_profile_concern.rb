@@ -17,14 +17,13 @@ module VerifyProfileConcern
   end
 
   def user_last_signed_in_more_than_5_months_ago?
-    user = UserDecorator.new(current_user)
-    second_last_signed_in_at = user.second_last_signed_in_at
+    second_last_signed_in_at = current_user.second_last_signed_in_at
     second_last_signed_in_at && second_last_signed_in_at < 5.months.ago
   end
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.decorate.pending_profile_requires_verification? ||
+    current_user.pending_profile_requires_verification? ||
       user_needs_to_reactivate_account?
   end
 end

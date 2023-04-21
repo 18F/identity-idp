@@ -252,16 +252,16 @@ class ApplicationController < ActionController::Base
   end
 
   def user_needs_to_reactivate_account?
-    return false if current_user.decorate.password_reset_profile.blank?
+    return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?
     sp_session[:ial2] == true
   end
 
   def pending_profile_newer_than_password_reset_profile?
-    return false if current_user.decorate.pending_profile.blank?
-    return false if current_user.decorate.password_reset_profile.blank?
-    current_user.decorate.pending_profile.created_at >
-      current_user.decorate.password_reset_profile.updated_at
+    return false if current_user.pending_profile.blank?
+    return false if current_user.password_reset_profile.blank?
+    current_user.pending_profile.created_at >
+      current_user.password_reset_profile.updated_at
   end
 
   def reauthn_param
@@ -303,9 +303,7 @@ class ApplicationController < ActionController::Base
     reauthn.present? && reauthn == 'true'
   end
 
-  def confirm_two_factor_authenticated(id = nil)
-    return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
-
+  def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
     if !two_factor_enabled?
@@ -348,10 +346,6 @@ class ApplicationController < ActionController::Base
     (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
-  def prompt_to_sign_in_with_request_id(request_id)
-    redirect_to new_user_session_url(request_id: request_id)
-  end
-
   def prompt_to_setup_mfa
     redirect_to authentication_methods_setup_url
   end
@@ -376,10 +370,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def user_needs_new_session_with_request_id?(id)
-    !user_signed_in? && id.present?
-  end
-
   def two_factor_enabled?
     MfaPolicy.new(current_user).two_factor_enabled?
   end
@@ -389,6 +379,7 @@ class ApplicationController < ActionController::Base
   end
 
   def skip_session_load
+    request.session_options[:skip] = true
     @skip_session_load = true
   end
 

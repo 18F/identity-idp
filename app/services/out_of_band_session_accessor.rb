@@ -53,6 +53,12 @@ class OutOfBandSessionAccessor
     put(data, expiration)
   end
 
+  # @api private
+  # Only used for convenience in tests
+  def exists?
+    session_data.present?
+  end
+
   private
 
   def put(data, expiration = 5.minutes)

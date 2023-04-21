@@ -32,7 +32,7 @@ describe Idv::HybridMobile::CaptureCompleteController do
     end
   end
 
-  context 'when doc_auth_document_capture_controller_enabled' do
+  context 'when doc_auth_hybrid_mobile_controllers_enabled' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
         and_return(true)
@@ -48,7 +48,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'capture_complete',
-          step_count: 1,
         }
       end
 
@@ -60,14 +59,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
 
       it 'sends analytics_visited event' do
         get :show
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end

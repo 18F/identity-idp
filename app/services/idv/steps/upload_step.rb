@@ -34,6 +34,20 @@ module Idv
         { idv_phone_form: build_form }
       end
 
+      def link_for_send_link(session_uuid)
+        if IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
+          idv_hybrid_mobile_entry_url(
+            'document-capture-session': session_uuid,
+            request_id: sp_session[:request_id],
+          )
+        else
+          idv_capture_doc_dashes_url(
+            'document-capture-session': session_uuid,
+            request_id: sp_session[:request_id],
+          )
+        end
+      end
+
       private
 
       def build_form
@@ -84,10 +98,10 @@ module Idv
 
       def bypass_send_link_steps
         mark_step_complete(:link_sent)
-        if IdentityConfig.store.doc_auth_document_capture_controller_enabled
-          flow_session[:flow_path] = @flow.flow_path
-          redirect_to idv_document_capture_url
-        end
+
+        flow_session[:flow_path] = @flow.flow_path
+        redirect_to idv_document_capture_url
+
         form_response(destination: :document_capture)
       end
 
@@ -135,13 +149,6 @@ module Idv
 
       def sp_or_app_name
         current_sp&.friendly_name.presence || APP_NAME
-      end
-
-      def link_for_send_link(session_uuid)
-        idv_capture_doc_dashes_url(
-          'document-capture-session': session_uuid,
-          request_id: sp_session[:request_id],
-        )
       end
 
       def send_link

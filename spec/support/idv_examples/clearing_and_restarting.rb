@@ -10,7 +10,7 @@ shared_examples 'clearing and restarting idv' do
     acknowledge_and_confirm_personal_key
 
     expect(page).to have_current_path(sign_up_completed_path)
-    expect(user.reload.decorate.identity_verified?).to eq(true)
+    expect(user.reload.identity_verified?).to eq(true)
   end
 
   it 'allows the user to retry verification with gpo', js: true do
@@ -32,7 +32,7 @@ shared_examples 'clearing and restarting idv' do
 
     expect(page).to have_content(t('idv.titles.come_back_later'))
     expect(page).to have_current_path(idv_come_back_later_path)
-    expect(user.reload.decorate.identity_verified?).to eq(false)
+    expect(user.reload.identity_verified?).to eq(false)
     expect(user.pending_profile?).to eq(true)
     expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end

@@ -21,11 +21,15 @@ module InPersonHelper
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
   GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
-  GOOD_STATE_ID_ADDRESS1 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address1]
-  GOOD_STATE_ID_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_address2]
-  GOOD_STATE_ID_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_STATE
-  GOOD_STATE_ID_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:city]
-  GOOD_STATE_ID_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:zipcode]
+  GOOD_IDENTITY_DOC_ADDRESS1 =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address1]
+  GOOD_IDENTITY_DOC_ADDRESS2 =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address2]
+  GOOD_IDENTITY_DOC_ADDRESS_STATE =
+    Idp::Constants::MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE
+  GOOD_IDENTITY_DOC_CITY = Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_city]
+  GOOD_IDENTITY_DOC_ZIPCODE =
+    Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_zipcode]
 
   def fill_out_state_id_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME
@@ -39,15 +43,16 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
 
     if double_address_verification
-      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_STATE_ID_ADDRESS1
-      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_STATE_ID_ADDRESS2
-      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_STATE_ID_CITY
-      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_STATE_ID_ZIPCODE
+      fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
+      fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2
+      fill_in t('in_person_proofing.form.state_id.city'), with: GOOD_IDENTITY_DOC_CITY
+      fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
       if same_address_as_id
-        select GOOD_STATE_ID_STATE, from: t('in_person_proofing.form.state_id.state_id_state')
+        select GOOD_IDENTITY_DOC_ADDRESS_STATE,
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
         choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
       else
-        select GOOD_STATE, from: t('in_person_proofing.form.state_id.state_id_state')
+        select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
         choose t('in_person_proofing.form.state_id.same_address_as_id_no')
       end
     end
@@ -55,14 +60,15 @@ module InPersonHelper
 
   def fill_out_address_form_ok(double_address_verification: false, same_address_as_id: false)
     fill_in t('idv.form.address1'),
-            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS1 : GOOD_ADDRESS1
+            with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS1 : GOOD_ADDRESS1
     fill_in t('idv.form.address2_optional'), with: GOOD_ADDRESS2 unless double_address_verification
     fill_in t('idv.form.address2'),
-            with: same_address_as_id ? GOOD_STATE_ID_ADDRESS2 : GOOD_ADDRESS2
-    fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_STATE_ID_CITY : GOOD_CITY
-    fill_in t('idv.form.zipcode'), with: same_address_as_id ? GOOD_STATE_ID_ZIPCODE : GOOD_ZIPCODE
+            with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS2 : GOOD_ADDRESS2
+    fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_IDENTITY_DOC_CITY : GOOD_CITY
+    fill_in t('idv.form.zipcode'),
+            with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
     if same_address_as_id
-      select GOOD_STATE_ID_STATE, from: t('idv.form.state')
+      select GOOD_IDENTITY_DOC_ADDRESS_STATE, from: t('idv.form.state')
     else
       select GOOD_STATE, from: t('idv.form.state')
     end
@@ -82,15 +88,22 @@ module InPersonHelper
   def search_for_post_office
     fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
             with: GOOD_ADDRESS1
-    click_button(t('in_person_proofing.body.location.po_search.search_button'))
-    # Wait for page to load before selecting location
-    expect(page).to have_css('.location-collection-item', wait: 10)
+    click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
+    expect(page).to have_css('.location-collection-item')
   end
 
   def complete_location_step(_user = nil)
     search_for_post_office
     within first('.location-collection-item') do
       click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
+
+    # pause for the location list to disappear
+    begin
+      expect(page).to have_no_css('.location-collection-item')
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      # A StaleElementReferenceError means that the context the element
+      # was in has disappeared, which means the element is gone too.
     end
   end
 

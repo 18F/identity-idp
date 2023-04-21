@@ -443,7 +443,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-        expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_url
+        expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
       end
 
       it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do

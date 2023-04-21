@@ -12,21 +12,22 @@ module Idv
     attr_accessor :error_message
 
     def show
-      increment_step_counts
+      @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
 
-      analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn
-
+      analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if @ssn_form.updating_ssn?
       analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('ssn', :view, true)
 
-      render :show, locals: extra_view_variables
+      render :show, locals: threatmetrix_view_variables
     end
 
     def update
       @error_message = nil
-      form_response = form_submit
+
+      @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+      form_response = @ssn_form.submit(params.require(:doc_auth).permit(:ssn))
 
       analytics.idv_doc_auth_ssn_submitted(
         **analytics_arguments.merge(form_response.to_h),
@@ -41,16 +42,8 @@ module Idv
         redirect_to next_url
       else
         @error_message = form_response.first_error_message
-        render :show, locals: extra_view_variables
+        render :show, locals: threatmetrix_view_variables
       end
-    end
-
-    def extra_view_variables
-      {
-        updating_ssn: updating_ssn,
-        success_alert_enabled: !updating_ssn,
-        **threatmetrix_view_variables,
-      }
     end
 
     private
@@ -67,28 +60,13 @@ module Idv
       {
         flow_path: flow_path,
         step: 'ssn',
-        step_count: current_flow_step_counts['Idv::Steps::SsnStep'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def current_flow_step_counts
-      user_session['idv/doc_auth_flow_step_counts'] ||= {}
-      user_session['idv/doc_auth_flow_step_counts'].default = 0
-      user_session['idv/doc_auth_flow_step_counts']
-    end
-
-    def increment_step_counts
-      current_flow_step_counts['Idv::Steps::SsnStep'] += 1
-    end
-
-    def form_submit
-      Idv::SsnFormatForm.new(current_user).submit(params.require(:doc_auth).permit(:ssn))
-    end
-
     def updating_ssn
-      flow_session.dig('pii_from_doc', :ssn).present?
+      @ssn_form.updating_ssn?
     end
   end
 end

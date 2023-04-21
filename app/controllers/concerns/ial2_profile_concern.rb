@@ -3,7 +3,7 @@ module Ial2ProfileConcern
 
   def cache_active_profile(raw_password)
     cacher = Pii::Cacher.new(current_user, user_session)
-    profile = current_user.decorate.active_or_pending_profile
+    profile = current_user.active_or_pending_profile
     begin
       cacher.save(raw_password, profile)
     rescue Encryption::EncryptionError => err

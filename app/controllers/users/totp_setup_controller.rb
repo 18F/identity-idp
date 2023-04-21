@@ -22,7 +22,7 @@ module Users
       track_event
 
       @code = new_totp_secret
-      @qrcode = current_user.decorate.qrcode(new_totp_secret)
+      @qrcode = current_user.qrcode(new_totp_secret)
     end
 
     def confirm

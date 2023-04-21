@@ -139,6 +139,7 @@ module DocAuth
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
             product_status: product_status,
+            decision_product_status: decision_product_status,
             doc_auth_result: doc_auth_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
@@ -189,8 +190,16 @@ module DocAuth
           true_id_product&.dig(:ProductStatus)
         end
 
+        def decision_product_status
+          true_id_product_decision&.dig(:ProductStatus)
+        end
+
         def true_id_product
           products[:TrueID] if products.present?
+        end
+
+        def true_id_product_decision
+          products[:TrueID_Decision] if products.present?
         end
 
         def parsed_alerts

@@ -60,7 +60,6 @@ module Idv
         if doc_pii_form_result.success?
           extract_pii_from_doc(async_result, store_in_session: !hybrid_flow_mobile?)
 
-          mark_step_complete(:document_capture)
           save_proofing_components
         end
 
