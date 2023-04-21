@@ -8,7 +8,7 @@ feature 'doc capture document capture step', js: true do
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
   let(:doc_auth_enable_presigned_s3_urls) { false }
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_analytics) { Analytics.create_null }
   let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).

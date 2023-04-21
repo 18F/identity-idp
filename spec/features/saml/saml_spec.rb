@@ -395,7 +395,7 @@ feature 'saml api' do
 
   context 'when sending POST request to /api/saml/auth/' do
     it 'logs one SAML Auth Requested event and multiple SAML Auth events for IAL1 request' do
-      fake_analytics = FakeAnalytics.new
+      fake_analytics = Analytics.create_null
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
       page.driver.post saml_authn_request_url
@@ -415,7 +415,7 @@ feature 'saml api' do
     end
 
     it 'logs one SAML Auth Requested event and two SAML Auth events for IAL2 request' do
-      fake_analytics = FakeAnalytics.new
+      fake_analytics = Analytics.create_null
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       profile = create(:profile, :active, :verified, pii: { ssn: '666-66-1234' })
       user = profile.user
@@ -451,7 +451,7 @@ feature 'saml api' do
     # SAML auth receives one external request and an internal redirect
     # This test helps ensure we can disambiguate the different events
     it 'logs one SAML Auth Requested event and multiple SAML Auth events' do
-      fake_analytics = FakeAnalytics.new
+      fake_analytics = Analytics.create_null
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       Capybara.current_session.driver.header 'Referer', 'http://example.com'
 

@@ -209,7 +209,7 @@ describe 'Add a new phone number' do
 
     allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
-    fake_analytics = FakeAnalytics.new(user:)
+    fake_analytics = Analytics.create_null(user:)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
     sign_in_and_2fa_user(user)

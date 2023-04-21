@@ -5,7 +5,7 @@ feature 'doc auth upload step' do
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_analytics) { Analytics.create_null }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:idv_send_link_max_attempts) { 3 }

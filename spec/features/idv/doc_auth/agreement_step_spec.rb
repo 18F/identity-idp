@@ -54,7 +54,7 @@ feature 'doc auth welcome step' do
   end
 
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
-    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_analytics) { Analytics.create_null }
 
     before do
       allow_any_instance_of(ApplicationController).

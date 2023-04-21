@@ -4,7 +4,7 @@ feature 'doc auth verify_info step', :js do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_analytics) { Analytics.create_null }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   # values from Idp::Constants::MOCK_IDV_APPLICANT
@@ -398,7 +398,7 @@ feature 'doc auth verify_info step', :js do
   end
 
   context 'phone vendor outage' do
-    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_analytics) { Analytics.create_null }
     let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
     # values from Idp::Constants::MOCK_IDV_APPLICANT

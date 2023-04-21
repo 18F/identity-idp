@@ -33,7 +33,7 @@ feature 'Session Timeout' do
   end
 
   context 'when total session duration expires' do
-    let(:fake_analytics) { FakeAnalytics.new }
+    let(:fake_analytics) { Analytics.create_null }
     before do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     end

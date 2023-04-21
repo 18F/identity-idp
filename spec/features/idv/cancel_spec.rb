@@ -7,7 +7,7 @@ describe 'cancel IdV' do
 
   let(:sp) { nil }
   let(:user) { user_with_2fa }
-  let(:fake_analytics) { FakeAnalytics.new(user: user) }
+  let(:fake_analytics) { Analytics.create_null(user: user) }
 
   before do
     start_idv_from_sp(sp)
