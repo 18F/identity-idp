@@ -125,6 +125,7 @@ module Idv
       if stored_result&.success?
         save_proofing_components
         extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else
         extra = { stored_result_present: stored_result.present? }
