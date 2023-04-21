@@ -6,6 +6,15 @@ class Analytics
 
   attr_reader :user, :request, :sp, :ahoy, :irs_session_id
 
+  def self.create_null
+    Analytics.new(
+      user: nil,
+      request: nil,
+      sp: nil,
+      session: nil,
+    )
+  end
+
   def initialize(user:, request:, sp:, session:, ahoy: nil, irs_session_id: nil)
     @user = user
     @request = request
