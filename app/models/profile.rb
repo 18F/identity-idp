@@ -39,7 +39,7 @@ class Profile < ApplicationRecord
 
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if deactivation_checks
+    return if has_deactivation_reason?
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
@@ -80,7 +80,7 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def deactivation_checks
+  def has_deactivation_reason?
     fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
   end
 
