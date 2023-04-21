@@ -5,7 +5,6 @@ module Funnel
         agreement
         welcome
         upload
-        link_sent
         front_image
         back_image
         mobile_front_image

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -99,12 +99,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.integer "welcome_view_count", default: 0
     t.datetime "upload_view_at", precision: nil
     t.integer "upload_view_count", default: 0
-    t.datetime "send_link_view_at", precision: nil
-    t.integer "send_link_view_count", default: 0
-    t.datetime "link_sent_view_at", precision: nil
-    t.integer "link_sent_view_count", default: 0
-    t.datetime "email_sent_view_at", precision: nil
-    t.integer "email_sent_view_count", default: 0
     t.datetime "front_image_view_at", precision: nil
     t.integer "front_image_view_count", default: 0
     t.integer "front_image_submit_count", default: 0
@@ -176,6 +170,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.datetime "back_image_submit_at", precision: nil
     t.datetime "capture_mobile_back_image_submit_at", precision: nil
     t.datetime "mobile_back_image_submit_at", precision: nil
+    t.integer "link_sent_view_count"
+    t.datetime "link_sent_view_at"
     t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
