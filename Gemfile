@@ -72,6 +72,7 @@ gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'yard', require: false
+gem 'puma'
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
@@ -103,11 +104,11 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
-  gem 'puma'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.43.0', require: false
   gem 'rubocop-performance', '~> 1.15.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'rubocop-thread_safety', require: false
 end
 
 group :test do
