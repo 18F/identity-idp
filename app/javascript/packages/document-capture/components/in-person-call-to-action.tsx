@@ -32,10 +32,9 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
         isBig
         isOutline
         isWide
-        href="#prepare"
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          setStepName('location');
+          setStepName('prepare');
           trackEvent('IdV: verify in person troubleshooting option clicked', {
             in_person_cta_variant: inPersonCtaVariantActive,
           });
