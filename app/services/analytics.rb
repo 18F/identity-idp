@@ -25,9 +25,9 @@ class Analytics
     end
   end
 
-  def self.create_null
+  def self.create_null(user: nil)
     Analytics.new(
-      user: AnonymousUser.new,
+      user: user || AnonymousUser.new,
       request: nil,
       sp: OpenStruct.new(value: 'something'),
       session: {},
