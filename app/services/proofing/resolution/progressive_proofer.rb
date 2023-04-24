@@ -86,6 +86,30 @@ module Proofing
         end
       end
 
+      def proof_residential_address_if_needed(
+        applicant_pii:,
+        timer:,
+        double_address_verification:
+      )
+        return residential_address_unnecessary_result unless double_address_verification
+
+        timer.time('residential address') do
+          resolution_proofer.proofer(applicant_pii)
+        end
+      end
+
+      def residential_address_unnecessary_result
+        Proofing::AddressResult.new(
+          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
+        )
+      end
+
+      def resolution_unnecessary_result
+        Proofing::AddressResult.new(
+          success: true, errors: {}, exception: nil, vendor_name: 'ResolutionUnnecessary',
+        )
+      end
+
       def proof_resolution(applicant_pii:, timer:)
         timer.time('resolution') do
           resolution_proofer.proof(applicant_pii)
