@@ -245,6 +245,18 @@ feature 'Sign Up' do
     expect(page).to have_current_path account_path
   end
 
+  it 'allows a user to sign up with PIV/CAC and only verifying once when HSPD12 is requested' do
+    visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
+    sign_up_and_set_password
+    set_up_2fa_with_piv_cac
+    skip_second_mfa_prompt
+    click_agree_and_continue
+
+    redirect_uri = URI(current_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
+
   it 'does not allow PIV/CAC during setup on mobile' do
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
