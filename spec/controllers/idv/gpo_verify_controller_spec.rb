@@ -213,6 +213,10 @@ RSpec.describe Idv::GpoVerifyController do
             )
           end
 
+          before do
+            allow(user).to receive(:fraud_rejection?).and_return(true)
+          end
+
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',
