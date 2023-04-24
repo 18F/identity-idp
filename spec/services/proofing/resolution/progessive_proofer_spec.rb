@@ -231,6 +231,39 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           end
         end
       end
+
+      context 'residential address is the same' do
+        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+
+        context 'Instant Verify fails for residential address' do
+          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+
+          before do
+            allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+          end
+  
+          before do
+            allow(instance).to receive(:proof_resolution).
+              and_return(resolution_result_that_passed_instant_verify)
+            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+              and_return(resolution_result_that_passed_instant_verify)
+            allow(instance).to receive(:user_can_pass_after_state_id_check?).
+              with(resolution_result_that_passed_instant_verify).
+              and_return(true)
+            allow(resolution_result_that_passed_instant_verify).to receive(:success?).
+              and_return(true)
+          end
+        end
+        context 'Instant Verify passes for residential address' do
+        end
+      end
+
+      context 'residential address is different' do
+        context 'Instant Verify fails for residential address' do
+        end
+        context 'Instant Verify passes for residential address' do
+        end
+      end
     end
   end
 end
