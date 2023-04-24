@@ -41,10 +41,6 @@ describe('PasswordConfirmationElement', () => {
     input2 = getByLabelText(element, 'Confirm password') as HTMLInputElement;
   });
 
-  afterEach(() => {
-    element.remove();
-  });
-
   it('initializes input type', () => {
     expect(input1.type).to.equal('password');
   });
