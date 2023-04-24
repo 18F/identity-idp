@@ -16,7 +16,8 @@ class Analytics
 
     def track(event, analytics_hash)
       if analytics_hash[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
-        analytics_hash[:proofing_components] = analytics_hash[:proofing_components].as_json.symbolize_keys
+        analytics_hash[:proofing_components] =
+          analytics_hash[:proofing_components].as_json.symbolize_keys
       end
       @events[event] ||= []
 
@@ -67,7 +68,8 @@ class Analytics
 
     duped_attributes = attributes.dup
     if duped_attributes[:proofing_components].instance_of?(Idv::ProofingComponentsLogging)
-      duped_attributes[:proofing_components] = duped_attributes[:proofing_components].as_json.symbolize_keys
+      duped_attributes[:proofing_components] =
+        duped_attributes[:proofing_components].as_json.symbolize_keys
     end
     events[event] ||= []
     events[event] << duped_attributes
