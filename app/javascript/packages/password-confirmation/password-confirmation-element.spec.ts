@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { fireEvent, getByLabelText, waitFor } from '@testing-library/dom';
+import { getByLabelText, waitFor } from '@testing-library/dom';
 import { useSandbox } from '@18f/identity-test-helpers';
 import * as analytics from '@18f/identity-analytics';
 import './password-confirmation-element';
@@ -41,10 +41,6 @@ describe('PasswordConfirmationElement', () => {
     input2 = getByLabelText(element, 'Confirm password') as HTMLInputElement;
   });
 
-  afterEach(() => {
-    element.remove();
-  });
-
   it('initializes input type', () => {
     expect(input1.type).to.equal('password');
   });
@@ -71,30 +67,25 @@ describe('PasswordConfirmationElement', () => {
   describe('Password validation', () => {
     it('validates passwords in both directions', async () => {
       await userEvent.type(input1, 'salty pickles');
-      fireEvent.input(input1);
       await userEvent.type(input2, 'salty pickles2');
-      fireEvent.input(input2);
       await waitFor(() => {
         expect(input2.checkValidity()).to.be.false();
       });
 
       await userEvent.clear(input1);
       await userEvent.type(input1, 'salty pickles2');
-      fireEvent.input(input1);
       await waitFor(() => {
         expect(input2.checkValidity()).to.be.true();
       });
 
       await userEvent.clear(input1);
       await userEvent.type(input1, 'salty pickles3');
-      fireEvent.input(input1);
       await waitFor(() => {
         expect(input2.checkValidity()).to.be.false();
       });
 
       await userEvent.clear(input2);
       await userEvent.type(input2, 'salty pickles3');
-      fireEvent.input(input2);
       await waitFor(() => {
         expect(input2.checkValidity()).to.be.true();
       });

@@ -4,6 +4,8 @@ describe PasswordForm, type: :model do
   subject(:form) { described_class.new(user) }
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
+  let(:password_confirmation) { nil }
+  let(:validate_confirmation) { nil }
   let(:extra) do
     {
       user_id: user.uuid,
@@ -19,6 +21,7 @@ describe PasswordForm, type: :model do
     let(:params) do
       {
         password: password,
+        password_confirmation: password_confirmation,
       }
     end
 
@@ -29,11 +32,25 @@ describe PasswordForm, type: :model do
         expect(result.success?).to eq true
         expect(result.extra).to eq extra
       end
+
+      context 'with password confirmation' do
+        subject(:form) { described_class.new(user, validate_confirmation) }
+
+        let(:validate_confirmation) do
+          { validate_confirmation: true }
+        end
+        let(:password_confirmation) { password }
+
+        it 'returns false' do
+          expect(result.success?).to eq true
+        end
+      end
     end
 
     context 'when the form is invalid' do
+      let(:password) { 'invalid' }
+
       context 'when password is invalid' do
-        let(:password) { 'invalid' }
         let(:validation_error) do
           t(
             'errors.attributes.password.too_short.other',
@@ -46,6 +63,49 @@ describe PasswordForm, type: :model do
           expect(result.success?).to eq false
           expect(result.errors[:password]).to include validation_error
           expect(result.extra).to eq extra
+        end
+      end
+
+      context 'with password confirmation' do
+        subject(:form) { described_class.new(user, validate_confirmation) }
+
+        let(:validate_confirmation) do
+          { validate_confirmation: true }
+        end
+
+        context 'when the passwords are invalid' do
+          let(:password_confirmation) { password }
+
+          let(:validation_error) do
+            [t(
+              'errors.attributes.password.too_short.other',
+              count: Devise.password_length.first,
+            )]
+          end
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password]).to eq(validation_error)
+          end
+        end
+
+        context 'when passwords do not match' do
+          let(:password_confirmation) { 'invalid_password_confirmation!' }
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password_confirmation]).
+              to include("doesn't match Password confirmation")
+          end
+        end
+
+        context 'when password confirmation is nil' do
+          let(:password_confirmation) { nil }
+
+          it 'returns false' do
+            expect(result.success?).to eq false
+            expect(result.errors[:password_confirmation]).to include(t('errors.messages.blank'))
+          end
         end
       end
     end

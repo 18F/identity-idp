@@ -65,7 +65,8 @@ module SignUp
     end
 
     def password_form
-      @password_form ||= PasswordConfirmationForm.new(@user)
+      validate_confirmation = true
+      @password_form ||= PasswordForm.new(@user, validate_confirmation: true)
     end
 
     def process_unsuccessful_password_creation
