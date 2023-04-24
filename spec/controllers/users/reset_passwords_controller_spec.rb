@@ -12,6 +12,7 @@ describe Users::ResetPasswordsController, devise: true do
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
     end
+
     context 'when clean url feature toggle is set to false' do
       before do
         allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(false)
@@ -111,12 +112,7 @@ describe Users::ResetPasswordsController, devise: true do
       let(:user) { instance_double('User', uuid: '123') }
       let(:email_address) { instance_double('EmailAddress') }
       before do
-        stub_analytics
         allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(true)
-
-        allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
-        allow(user).to receive(:reset_password_period_valid?).and_return(true)
-        allow(user).to receive(:email_addresses).and_return([email_address])
       end
 
       context 'no user matches token' do
@@ -178,6 +174,11 @@ describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'when token is valid' do
+        before do
+          allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
+          allow(user).to receive(:reset_password_period_valid?).and_return(true)
+          allow(user).to receive(:email_addresses).and_return([email_address])
+        end
         context 'when token isnt stored in session' do
           it 'redirects to the clean edit password url with token stored in session' do
             get :edit, params: { reset_password_token: 'foo' }
