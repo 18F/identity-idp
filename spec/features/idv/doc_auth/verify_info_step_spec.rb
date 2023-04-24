@@ -266,6 +266,7 @@ feature 'doc auth verify_info step', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
+        double_address_verification: false,
       }
     end
 
