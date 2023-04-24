@@ -330,7 +330,7 @@ verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
 use_dashboard_service_providers: false
-use_clean_edit_password_url: false
+use_clean_edit_password_url: true
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
@@ -493,6 +493,7 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
+  use_clean_edit_password_url: false
   use_kms: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
