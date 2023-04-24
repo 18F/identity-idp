@@ -24,7 +24,7 @@ describe Idv::HybridMobile::CaptureCompleteController do
 
   before do
     session[:doc_capture_user_id] = user&.id
-    session[:document_capture_session_uuid] = document_capture_session&.uuid
+    session[:document_capture_session_uuid] = document_capture_session_uuid
   end
 
   describe 'before_actions' do
