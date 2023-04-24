@@ -33,6 +33,7 @@ feature 'doc capture document capture step', js: true do
     attach_and_submit_images
 
     expect(page).to have_current_path(next_step)
+    expect(page).to have_content(t('doc_auth.headings.capture_complete'))
   end
 
   it 'offers the user the option to cancel and return to desktop' do

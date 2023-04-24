@@ -104,12 +104,6 @@ es:
           imagen. Tome nuevas fotos de su documento de identidad e inténtelo
           nuevamente. La profundidad de píxeles de la imagen admitida es de 24
           bits RGB.
-      no_camera:
-        explanation: Para continuar, inicie sesión en su cuenta de %{app_name} en
-          cualquier dispositivo que tenga una cámara, como un teléfono móvil,
-          una tableta o una computadora con cámara web.
-        heading: Necesita una cámara para verificar su identidad
-        title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
