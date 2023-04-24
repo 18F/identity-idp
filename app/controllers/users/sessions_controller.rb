@@ -3,7 +3,6 @@
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
-    include ::ActionView::Helpers::UrlHelper
     include SecureHeadersConcern
     include RememberDeviceConcern
     include Ial2ProfileConcern
@@ -32,7 +31,7 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
-        create_account_bucket: @create_account_bucket
+        create_account_bucket: @create_account_bucket,
       )
       super
     end
@@ -163,7 +162,7 @@ module Users
     end
 
     def is_on_home_page?
-      current_page?(root_url)
+      request.path == '/'
     end
 
     def create_account_bucket
