@@ -16,9 +16,9 @@ module Idv
       end
 
       def update
-        handle_stored_result
+        result = handle_stored_result
 
-        analytics.idv_doc_auth_document_capture_submitted(**analytics_arguments)
+        analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
           call('document_capture', :update, true)
@@ -87,6 +87,7 @@ module Idv
         if stored_result&.success?
           save_proofing_components
           extract_pii_from_doc(stored_result)
+          successful_response
         else
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
@@ -130,6 +131,10 @@ module Idv
 
       def stored_result
         @stored_result ||= document_capture_session.load_result
+      end
+
+      def successful_response
+        FormResponse.new(success: true)
       end
 
       def track_document_state(state)

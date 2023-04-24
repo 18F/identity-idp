@@ -134,6 +134,19 @@ describe Idv::HybridMobile::DocumentCaptureController do
     end
 
     context 'with a user id in session' do
+      let(:analytics_name) { 'IdV: doc auth document_capture submitted' }
+      let(:analytics_args) do
+        {
+          success: true,
+          errors: {},
+          analytics_id: 'Doc Auth',
+          flow_path: 'hybrid',
+          irs_reproofing: false,
+          step: 'document_capture',
+          acuant_sdk_upgrade_ab_test_bucket: :default,
+        }
+      end
+
       before do
         session[:doc_capture_user_id] = user.id
       end
@@ -142,14 +155,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
         get :show
         put :update
 
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth document_capture submitted',
-          hash_including(
-            flow_path: 'hybrid',
-            step: 'document_capture',
-            analytics_id: 'Doc Auth',
-          ),
-        )
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
       it 'does not raise an exception when stored_result is nil' do
