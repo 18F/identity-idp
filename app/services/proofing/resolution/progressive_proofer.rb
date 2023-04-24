@@ -192,7 +192,7 @@ module Proofing
         identity_doc_address1: :address1,
         identity_doc_address2: :address2,
         identity_doc_city: :city,
-        identity_doc_state: :state,
+        identity_doc_address_state: :state,
         identity_doc_zipcode: :zipcode,
       }.freeze
     end

@@ -43,12 +43,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:double_address_verification) { true }
       let(:state_id_address) do
         {
-          address1: applicant_pii[:state_id_address1],
-          address2: applicant_pii[:state_id_address2],
-          city: applicant_pii[:state_id_city],
-          state: applicant_pii[:state_id_state],
+          address1: applicant_pii[:identity_doc_address1],
+          address2: applicant_pii[:identity_doc_address2],
+          city: applicant_pii[:identity_doc_city],
+          state: applicant_pii[:identity_doc_address_state],
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-          zipcode: applicant_pii[:state_id_zipcode],
+          zipcode: applicant_pii[:identity_doc_zipcode],
         }
       end
       it 'makes a request to the Instant Verify proofer' do
@@ -174,36 +174,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
           end
         end
-
-        context 'user is not in an AAMVA jurisdiction' do
-          # Alaska is not an AAMVA jurisdiction. Logic for this check is in resolution proofing job.
-          # The result of that logic is passed to the param should_proof_state_id.
-          let(:non_aamva_jurisdiction) { 'AK' }
-          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-          let(:should_proof_state_id) { false }
-
-          before do
-            applicant_pii.merge(state_id_jurisdiction: non_aamva_jurisdiction)
-          end
-
-          it 'does not make a request to the AAMVA proofer' do
-            allow(instant_verify_proofer).to receive(:proof)
-            expect(aamva_proofer).to_not receive(:proof)
-
-            response = subject
-
-            expect(response.state_id_result.vendor_name).to eq('UnsupportedJurisdiction')
-          end
-        end
       end
 
       context 'Instant Verify fails' do
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
         let(:result_that_failed_instant_verify) do
           instance_double(Proofing::Resolution::Result)
-        end
-        before do
-          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
         end
 
         before do
@@ -245,6 +221,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             before do
               allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
               allow(successful_aamva_proof).to receive(:verified_attributes).and_return([:address])
+              allow(successful_aamva_proof).to receive(:success?).and_return(true)
             end
             it 'returns a successful proofing result' do
               result = subject

@@ -189,14 +189,8 @@ describe Idv::InPerson::VerifyInfoController do
         end
         it 'captures state id address fields in the pii' do
           expect(Idv::Agent).to receive(:new).
-            with(hash_including(
-              identity_doc_address1: flow_session[:pii_from_user][:identity_doc_address1],
-              identity_doc_address2: flow_session[:pii_from_user][:identity_doc_address2],
-              identity_doc_city: flow_session[:pii_from_user][:identity_doc_city],
-              identity_doc_state: flow_session[:pii_from_user][:identity_doc_state],
-              identity_doc_zipcode: flow_session[:pii_from_user][:identity_doc_zipcode],
-            )).and_call_original
-
+            with(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.merge(uuid_prefix: nil)).
+            and_call_original
           put :update
         end
 
