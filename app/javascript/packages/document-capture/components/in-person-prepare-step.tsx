@@ -29,13 +29,13 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationAddress } = value;
 
-  const onContinue: MouseEventHandler = async (event: React.MouseEvent) => {
+  const onContinue: MouseEventHandler = (event: React.MouseEvent) => {
     event.preventDefault();
 
     if (!isSubmitting) {
       setIsSubmitting(true);
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
-      await trackEvent('IdV: prepare submitted');
+      trackEvent('IdV: prepare submitted');
       setStepName('location');
     }
   };
@@ -69,7 +69,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
           <Button
             isBig
             isWide
-            href="#location"
             className="margin-top-3 margin-bottom-1"
             onClick={(event: React.MouseEvent) => onContinue(event)}
           >
