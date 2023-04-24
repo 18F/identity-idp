@@ -39,35 +39,37 @@ module Idv
           failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
         )
 
-        if result.success?
-          if result.extra[:pending_in_person_enrollment]
-            redirect_to idv_in_person_ready_to_verify_url
-          else
-            event, _disavowal_token = create_user_event(:account_verified)
-
-            if !threatmetrix_check_failed?
-              UserAlerts::AlertUserAboutAccountVerified.call(
-                user: current_user,
-                date_time: event.created_at,
-                sp_name: decorated_session.sp_name,
-              )
-              flash[:success] = t('account.index.verification.success')
-            end
-
-            redirect_to next_step
-          end
-        else
+        if !result.success?
           flash[:error] = @gpo_verify_form.errors.first.message
           redirect_to idv_gpo_verify_url
+          return
+        end
+
+        if result.extra[:pending_in_person_enrollment]
+          redirect_to idv_in_person_ready_to_verify_url
+        else
+          prepare_for_personal_key
+
+          redirect_to idv_personal_key_url
         end
       end
     end
 
     private
 
-    def next_step
+    def prepare_for_personal_key
+      event, _disavowal_token = create_user_event(:account_verified)
+
+      if !threatmetrix_check_failed?
+        UserAlerts::AlertUserAboutAccountVerified.call(
+          user: current_user,
+          date_time: event.created_at,
+          sp_name: decorated_session.sp_name,
+        )
+        flash[:success] = t('account.index.verification.success')
+      end
+
       enable_personal_key_generation
-      idv_personal_key_url
     end
 
     def throttle
