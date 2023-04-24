@@ -28,8 +28,11 @@ class Analytics
   def self.create_null(user: nil)
     Analytics.new(
       user: user || AnonymousUser.new,
-      request: nil,
-      sp: OpenStruct.new(value: 'something'),
+      request: OpenStruct.new(
+        user_agent: 'some-user-agent',
+        headers: {},
+      ),
+      sp: OpenStruct.new(value: 'some-sp'),
       session: {},
       ahoy: FakeAhoy.new,
     )
