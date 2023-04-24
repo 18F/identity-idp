@@ -161,7 +161,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
         put :update
       end
 
-      it 'redirects to complete step' do
+      it 'redirects to CaptureComplete step' do
         put :update
         expect(response).to redirect_to idv_hybrid_mobile_capture_complete_url
       end
