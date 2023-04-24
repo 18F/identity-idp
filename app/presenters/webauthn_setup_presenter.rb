@@ -27,6 +27,15 @@ class WebauthnSetupPresenter < SetupPresenter
     end
   end
 
+  def page_title
+    if @platform_authenticator
+      # TODO: A new key will likely be needed
+      t('headings.webauthn_platform_setup.new')
+    else
+      t('headings.webauthn_setup.new')
+    end    
+  end
+
   def heading
     if @platform_authenticator
       t('headings.webauthn_platform_setup.new')

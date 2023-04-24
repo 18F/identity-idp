@@ -25,7 +25,13 @@ describe WebauthnSetupPresenter do
   describe '#image_path' do
     subject { presenter.image_path }
 
-    it { is_expected.to  eq('security-key.svg') }
+    it { is_expected.to eq('security-key.svg') }
+  end
+
+  describe '#page_title' do
+    subject { presenter.image_path }
+
+    it { is_expected.to t('headings.webauthn_setup.new') }
   end
 
   describe '#heading' do
@@ -71,7 +77,13 @@ describe WebauthnSetupPresenter do
     describe '#image_path' do
       subject { presenter.image_path }
 
-      it { is_expected.to  eq('platform-authenticator.svg') }
+      it { is_expected.to eq('platform-authenticator.svg') }
+    end
+
+    describe '#page_title' do
+      subject { presenter.image_path }
+
+      it { is_expected.to t('headings.webauthn_platform_setup.new') }
     end
 
     describe '#heading' do
