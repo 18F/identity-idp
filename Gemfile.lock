@@ -25,8 +25,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
-  revision: af00031fc392c0db9700de7f07380adfa1efd1f9
-  branch: exists-opt
+  revision: 0b9d3e622cfebd0ce25e7f6ff2629e7237b38e62
+  tag: v1.0.0-18f
   specs:
     redis-session-store (1.0.0.pre.18f)
       actionpack (>= 6, < 8)
