@@ -2,15 +2,14 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :double_address_verification, :residential_address_result
+                  :double_address_verification
 
       def initialize(
         resolution_result:,
         state_id_result:,
         should_proof_state_id:,
         double_address_verification:,
-        device_profiling_result:,
-        residential_address_result:
+        device_profiling_result:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
@@ -39,7 +38,6 @@ module Proofing
                 resolution: resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix: device_profiling_result.to_h,
-                residential_address: residential_address_result.to_h,
               },
             },
           },
