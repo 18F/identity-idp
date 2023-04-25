@@ -2442,7 +2442,7 @@ module AnalyticsEvents
     track_event('Remembered device used for authentication')
   end
 
-  # User initiated remote logout
+  # Service provider initiated remote logout
   # @param [String] service_provider
   # @param [Boolean] saml_request_valid
   def remote_logout_initiated(
@@ -2454,6 +2454,22 @@ module AnalyticsEvents
       'Remote Logout initiated',
       service_provider: service_provider,
       saml_request_valid: saml_request_valid,
+      **extra,
+    )
+  end
+
+  # Service provider completed remote logout
+  # @param [String] service_provider
+  # @param [String] user_id
+  def remote_logout_completed(
+    service_provider:,
+    user_id:,
+    **extra
+  )
+    track_event(
+      'Remote Logout completed',
+      service_provider: service_provider,
+      user_id: user_id,
       **extra,
     )
   end

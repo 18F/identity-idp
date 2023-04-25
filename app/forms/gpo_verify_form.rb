@@ -95,6 +95,6 @@ class GpoVerifyForm
   end
 
   def activate_profile
-    user.pending_profile&.activate
+    user.pending_profile&.activate_after_gpo_verification
   end
 end
