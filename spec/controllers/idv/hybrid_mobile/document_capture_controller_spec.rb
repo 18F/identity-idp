@@ -16,14 +16,9 @@ describe Idv::HybridMobile::DocumentCaptureController do
 
   let(:document_capture_session_requested_at) { Time.zone.now }
 
-  let(:feature_flag_enabled) { true }
-
   before do
     stub_analytics
     stub_attempts_tracker
-
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(feature_flag_enabled)
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
