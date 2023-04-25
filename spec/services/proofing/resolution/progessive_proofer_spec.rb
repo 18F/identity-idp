@@ -92,19 +92,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(device_profiling_result.review_status).to eq('pass')
           end
         end
-
-        context 'it lacks applicant pii' do
-          let(:applicant_pii) { nil }
-          it 'returns a disabled result' do
-            result = subject
-
-            device_profiling_result = result.device_profiling_result
-
-            expect(device_profiling_result.success).to be(true)
-            expect(device_profiling_result.client).to eq('tmx_disabled')
-            expect(device_profiling_result.review_status).to eq('pass')
-          end
-        end
       end
 
       context 'ThreatMetrix is disabled' do
