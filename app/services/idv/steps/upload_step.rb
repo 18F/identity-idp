@@ -39,7 +39,6 @@ module Idv
           'document-capture-session': session_uuid,
           request_id: sp_session[:request_id],
         )
-        end
       end
 
       private
