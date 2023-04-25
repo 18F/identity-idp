@@ -16,6 +16,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	build_artifact \
 	check \
 	docker_setup \
+	download_acuant_sdk \
 	fast_setup \
 	fast_test \
 	help \
@@ -259,3 +260,6 @@ update: ## Update dependencies, useful after a git pull
 
 README.md: docs/ ## Generates README.md based on the contents of the docs directory
 	bundle exec ruby scripts/generate_readme.rb --docs-dir $< > $@
+
+download_acuant_sdk: ## Downloads the most recent Acuant SDK release from Github
+	@scripts/download_acuant_sdk.sh
