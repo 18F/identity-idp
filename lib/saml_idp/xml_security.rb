@@ -81,13 +81,15 @@ module SamlIdp
           algorithm(options[:get_params][:SigAlg])
         else
           ref_elem = REXML::XPath.first(self, "//ds:Reference", {"ds"=>DSIG})
+          return nil unless ref_elem
           algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod", {"ds"=>DSIG}))
         end
       end
 
       def fingerprint_cert(cert, options)
         digest_algorithm = signature_algorithm(options)
-        digest_algorithm.hexdigest(cert.to_der)
+        return nil unless digest_algorithm
+        digest_algorithm&.hexdigest(cert.to_der)
       end
 
       def fingerprint_cert_sha1(cert)
