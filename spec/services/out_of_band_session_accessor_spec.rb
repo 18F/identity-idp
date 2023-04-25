@@ -24,27 +24,33 @@ RSpec.describe OutOfBandSessionAccessor do
       expect(store.ttl).to eq(5.minutes.to_i)
     end
 
-    context 'with read and write fallback enabled' do
+    context 'with reading and writing public_id enabled' do
       it 'returns the TTL' do
-        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(true)
-        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_read_public_id).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_write_public_id).and_return(true)
 
-        store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
+        options = Rails.application.config.session_options.deep_dup
+        options[:redis][:write_public_id] = true
+        options[:redis][:write_private_id] = false
+        session_store = RedisSessionStore.new({}, options)
+        old_store = described_class.new(session_uuid, session_store)
+
+        old_store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
 
         expect(store.ttl).to eq(5.minutes.to_i)
       end
     end
 
-    context 'with read fallback enabled and write fallback disabled' do
-      it 'returns the TTL whether it was written to the new key or fallback key' do
-        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(true)
-        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(false)
+    context 'with reading public_id enabled and write public_id disabled' do
+      it 'returns the TTL whether it was written to the private_id key or private_id key' do
+        allow(IdentityConfig.store).to receive(:redis_session_read_public_id).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_write_public_id).and_return(false)
 
         old_store = described_class.new(session_uuid)
         old_store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
         expect(old_store.ttl).to eq(5.minutes.to_i)
 
-        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(true)
+        allow(IdentityConfig.store).to receive(:redis_session_write_public_id).and_return(true)
 
         new_store = described_class.new(session_uuid)
         new_store.put_pii({ first_name: 'Fakey2' }, 5.minutes.to_i)
@@ -53,10 +59,10 @@ RSpec.describe OutOfBandSessionAccessor do
       end
     end
 
-    context 'with read and write fallback disabled' do
+    context 'with reading and writing public_id disabled' do
       it 'returns the TTL' do
-        allow(IdentityConfig.store).to receive(:redis_session_read_fallback_key).and_return(false)
-        allow(IdentityConfig.store).to receive(:redis_session_write_fallback_key).and_return(false)
+        allow(IdentityConfig.store).to receive(:redis_session_read_public_id).and_return(false)
+        allow(IdentityConfig.store).to receive(:redis_session_write_public_id).and_return(false)
 
         store.put_pii({ first_name: 'Fakey' }, 5.minutes.to_i)
 

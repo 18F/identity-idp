@@ -11,8 +11,10 @@ Rails.application.config.session_store(
     # cookie expires with browser close
     expire_after: nil,
 
-    read_fallback: IdentityConfig.store.redis_session_read_fallback_key,
-    write_fallback: IdentityConfig.store.redis_session_write_fallback_key,
+    read_public_id: IdentityConfig.store.redis_session_read_public_id,
+    write_public_id: IdentityConfig.store.redis_session_write_public_id,
+    read_private_id: IdentityConfig.store.redis_session_read_private_id,
+    write_private_id: IdentityConfig.store.redis_session_write_private_id,
 
     # Redis expires session after N minutes
     ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,

@@ -25,10 +25,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
-  revision: 0b9d3e622cfebd0ce25e7f6ff2629e7237b38e62
-  tag: v1.0.0-18f
+  revision: ebc27f04e0fc314883add65b6209527c3d521934
+  branch: mitchellhenke/fix-fallback
   specs:
-    redis-session-store (1.0.0.pre.18f)
+    redis-session-store (1.0.1.pre.18f)
       actionpack (>= 6, < 8)
       redis (>= 4.3, < 6)
 
@@ -467,7 +467,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (2.2.7)
     rack-attack (6.5.0)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)

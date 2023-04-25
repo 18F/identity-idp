@@ -7,16 +7,19 @@ class OutOfBandSessionAccessor
 
   PLACEHOLDER_REQUEST = ActionDispatch::TestRequest.create.freeze
 
-  def initialize(session_uuid)
+  def initialize(session_uuid, session_store = nil)
     @session_uuid = session_uuid
+    @session_store = session_store
   end
 
   def ttl
     uuid = Rack::Session::SessionId.new(session_uuid)
-    if IdentityConfig.store.redis_session_read_fallback_key
+    if IdentityConfig.store.redis_session_read_public_id
       session_store.instance_eval do
         with_redis_connection do |client|
-          client.ttl(prefixed(uuid)) || client.ttl(prefixed_fallback(uuid))
+          public_id_ttl = client.ttl(prefixed(uuid))
+          return public_id_ttl if public_id_ttl >= 0
+          client.ttl(prefixed_public_id(uuid))
         end
       end
     else
