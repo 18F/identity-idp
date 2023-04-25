@@ -34,6 +34,7 @@ describe RecaptchaMockValidator do
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           recaptcha_version: 3,
+          validator_class: 'RecaptchaMockValidator',
           exception_class: nil,
         )
       end
@@ -60,6 +61,7 @@ describe RecaptchaMockValidator do
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           recaptcha_version: 3,
+          validator_class: 'RecaptchaMockValidator',
           exception_class: nil,
         )
       end
