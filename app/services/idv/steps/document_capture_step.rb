@@ -23,6 +23,7 @@ module Idv
         url_builder = ImageUploadPresignedUrlGenerator.new
 
         {
+          document_capture_session_uuid: flow_session[:document_capture_session_uuid],
           front_image_upload_url: url_builder.presigned_image_upload_url(
             image_type: 'front',
             transaction_id: flow_session[:document_capture_session_uuid],

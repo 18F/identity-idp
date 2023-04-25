@@ -4,7 +4,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:async_uploads_enabled) { false }
-  let(:flow_session) { {} }
+  let(:document_capture_session_uuid) { nil }
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
@@ -15,7 +15,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:back_image_upload_url) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:acuant_version) { '11.8.0' }
+  let(:acuant_version) { '11.8.1' }
   let(:in_person_cta_variant_testing_enabled) { false }
   let(:in_person_cta_variant_active) { '' }
 
@@ -43,7 +43,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
   subject(:render_partial) do
     render partial: 'idv/shared/document_capture', locals: {
-      flow_session: flow_session,
+      document_capture_session_uuid: document_capture_session_uuid,
       sp_name: sp_name,
       flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,
