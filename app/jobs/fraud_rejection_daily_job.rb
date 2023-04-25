@@ -5,7 +5,7 @@ class FraudRejectionDailyJob < ApplicationJob
     profiles_eligible_for_fraud_rejection.find_each do |profile|
       analytics.automatic_fraud_rejection(
         rejection_date: Time.zone.today,
-        verified_at: profile.verified_at,
+        fraud_review_pending_at: profile.fraud_review_pending_at,
       )
       profile.reject_for_fraud(notify_user: false)
     end
@@ -20,7 +20,7 @@ class FraudRejectionDailyJob < ApplicationJob
   def profiles_eligible_for_fraud_rejection
     Profile.where(
       fraud_review_pending: true,
-      verified_at: ..30.days.ago,
+      fraud_review_pending_at: ..30.days.ago,
     )
   end
 end
