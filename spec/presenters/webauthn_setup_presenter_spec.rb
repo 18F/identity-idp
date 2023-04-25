@@ -31,7 +31,7 @@ describe WebauthnSetupPresenter do
   describe '#page_title' do
     subject { presenter.image_path }
 
-    it { is_expected.to t('headings.webauthn_setup.new') }
+    it { is_expected.to t('titles.webauthn_setup') }
   end
 
   describe '#heading' do

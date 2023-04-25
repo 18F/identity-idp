@@ -29,10 +29,10 @@ class WebauthnSetupPresenter < SetupPresenter
 
   def page_title
     if @platform_authenticator
-      # TODO: A new key will likely be needed
+      # Note: The following title is incorrect and awaiting copy
       t('headings.webauthn_platform_setup.new')
     else
-      t('headings.webauthn_setup.new')
+      t('titles.webauthn_setup')
     end    
   end
 
