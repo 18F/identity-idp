@@ -40,7 +40,6 @@ describe 'New device tracking' do
   end
 
   context 'user signs up and confirms email in a different browser' do
-    # let(:email) { 'example@example.com' }
     let(:user) { build(:user) }
 
     it 'does not send an email' do
