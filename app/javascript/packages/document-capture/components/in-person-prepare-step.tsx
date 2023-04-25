@@ -1,13 +1,6 @@
 import { useContext, useState } from 'react';
 import type { MouseEventHandler } from 'react';
-import {
-  Alert,
-  Button,
-  Link,
-  PageHeading,
-  ProcessList,
-  ProcessListItem,
-} from '@18f/identity-components';
+import { Button, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -19,7 +12,7 @@ import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
 
-function InPersonPrepareStep({ toPreviousStep, value }) {
+function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, setStepName] = useHistoryParam(undefined);
@@ -27,7 +20,6 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { flowPath } = useContext(UploadContext);
   const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { selectedLocationAddress } = value;
 
   const onContinue: MouseEventHandler = (event: React.MouseEvent) => {
     event.preventDefault();
@@ -42,18 +34,15 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
   return (
     <>
-      {selectedLocationAddress && (
-        <Alert type="success" className="margin-bottom-4">
-          {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-            full_address: selectedLocationAddress,
-          })}
-        </Alert>
-      )}
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
 
       <ProcessList className="margin-bottom-4">
+        <ProcessListItem
+          heading={t('in_person_proofing.body.prepare.verify_step_post_office')}
+          headingUnstyled
+        />
         <ProcessListItem
           heading={t('in_person_proofing.body.prepare.verify_step_enter_pii')}
           headingUnstyled

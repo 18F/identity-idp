@@ -45,8 +45,8 @@ en:
             %{address}.
           none_found_tip: You can search using a different address, or add photos of your
             ID to try and verify your identity online again.
-          po_search_about: If you are having trouble adding your ID, you may be able to
-            verify your identity in person at a local United States Post Office.
+          po_search_about: You can verify your identity in person at a local participating
+            United States Post Office.
           results_description:
             one: There is one participating Post Office within 50 miles of %{address}.
             other: There are %{count} participating Post Offices within 50 miles of
@@ -59,7 +59,6 @@ en:
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
       prepare:
-        alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
@@ -69,6 +68,7 @@ en:
         verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
         verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
           address and Social Security number.
+        verify_step_post_office: Find a participating Post Office near you.
       state_id:
         alert_message: 'Your state-issued ID must not be expired. Accepted forms of ID are:'
         id_types:

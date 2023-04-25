@@ -26,7 +26,6 @@ function LocationCollectionItem({
 }: LocationCollectionItemProps) {
   const { t } = useI18n();
   const numericDistance = distance?.split(' ')[0];
-
   return (
     <li className="location-collection-item">
       <div className="usa-collection__body">
@@ -71,9 +70,7 @@ function LocationCollectionItem({
           <div className="grid-col-auto">
             <SpinnerButton
               className="display-none tablet:display-inline-block"
-              onClick={(event) => {
-                handleSelect(event, selectId);
-              }}
+              onClick={(event) => handleSelect(event, selectId)}
               type="submit"
             >
               {t('in_person_proofing.body.location.location_button')}

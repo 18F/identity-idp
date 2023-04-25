@@ -21,7 +21,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
@@ -43,14 +43,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
       e.preventDefault();
-
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
-      setSubmitEventMetadata({
-        selected_location: selectedLocationAddress,
-        in_person_cta_variant: inPersonCtaVariantActive,
-      });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
         setDisabledAddressSearch(true);
@@ -80,7 +75,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             // continue with navigation
             e.target.disabled = false;
             e.target.click();
-
+            trackEvent('IdV: location submitted', {
+              selected_location: selectedLocationAddress,
+              in_person_cta_variant: inPersonCtaVariantActive,
+            });
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
