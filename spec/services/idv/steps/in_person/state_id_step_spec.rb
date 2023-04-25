@@ -231,11 +231,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         step.call
 
         pii_from_user = flow.flow_session[:pii_from_user]
-        expect(pii_from_user[:address1]).to_not eq state_id_address1
-        expect(pii_from_user[:address2]).to_not eq state_id_address2
-        expect(pii_from_user[:city]).to_not eq state_id_city
-        expect(pii_from_user[:state]).to_not eq state_id_state
-        expect(pii_from_user[:zipcode]).to_not eq state_id_zipcode
+        expect(pii_from_user[:address1]).to_not eq identity_doc_address1
+        expect(pii_from_user[:address2]).to_not eq identity_doc_address2
+        expect(pii_from_user[:city]).to_not eq identity_doc_city
+        expect(pii_from_user[:state]).to_not eq identity_doc_address_state
+        expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
       end
     end
   end
