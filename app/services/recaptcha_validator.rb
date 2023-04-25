@@ -3,10 +3,15 @@ class RecaptchaValidator
   EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
   VALID_RECAPTCHA_VERSIONS = [2, 3]
 
-  attr_reader :recaptcha_version, :score_threshold, :analytics, :extra_analytics_properties
+  attr_reader :recaptcha_version,
+              :recaptcha_action,
+              :score_threshold,
+              :analytics,
+              :extra_analytics_properties
 
   def initialize(
     recaptcha_version: 3,
+    recaptcha_action: nil,
     score_threshold: 0.0,
     analytics: nil,
     extra_analytics_properties: {}
@@ -19,6 +24,7 @@ class RecaptchaValidator
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_version = recaptcha_version
+    @recaptcha_action = recaptcha_action
     @extra_analytics_properties = extra_analytics_properties
   end
 
@@ -30,7 +36,7 @@ class RecaptchaValidator
     return true if exempt?
     return false if recaptcha_token.blank?
     response = recaptcha_response(recaptcha_token)
-    log_analytics(recaptcha_result: response&.body)
+    log_analytics(recaptcha_result: logged_recaptcha_result(response&.body))
     recaptcha_result_valid?(response.body)
   rescue Faraday::Error => error
     log_analytics(error:)
@@ -53,6 +59,10 @@ class RecaptchaValidator
       conn.request :instrumentation, name: 'request_log.faraday'
       conn.response :json
     end
+  end
+
+  def logged_recaptcha_result(recaptcha_result)
+    recaptcha_result
   end
 
   def recaptcha_result_valid?(recaptcha_result)
@@ -86,6 +96,7 @@ class RecaptchaValidator
       recaptcha_version:,
       evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
       exception_class: error&.class&.name,
+      validator_class: self.class.name,
       **extra_analytics_properties,
     )
   end
