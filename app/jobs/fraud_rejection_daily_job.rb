@@ -6,7 +6,7 @@ class FraudRejectionDailyJob < ApplicationJob
       profile.reject_for_fraud(notify_user: false)
       analytics.automatic_fraud_rejection(
         rejection_date: Time.zone.today,
-        fraud_review_pending_at: profile.fraud_review_pending_at,
+        fraud_rejection_at: profile.fraud_rejection_at,
       )
     end
   end
