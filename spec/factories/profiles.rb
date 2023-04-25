@@ -22,7 +22,7 @@ FactoryBot.define do
     end
 
     trait :fraud_review_pending do
-      fraud_review_pending { true }
+      fraud_review_pending_at { 15.days.ago }
       proofing_components { { threatmetrix_review_status: 'review' } }
     end
 
