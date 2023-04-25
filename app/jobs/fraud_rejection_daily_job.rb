@@ -3,11 +3,11 @@ class FraudRejectionDailyJob < ApplicationJob
 
   def perform(_date)
     profiles_eligible_for_fraud_rejection.find_each do |profile|
+      profile.reject_for_fraud(notify_user: false)
       analytics.automatic_fraud_rejection(
         rejection_date: Time.zone.today,
         fraud_review_pending_at: profile.fraud_review_pending_at,
       )
-      profile.reject_for_fraud(notify_user: false)
     end
   end
 
