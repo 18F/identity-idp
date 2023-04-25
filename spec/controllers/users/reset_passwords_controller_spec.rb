@@ -115,8 +115,20 @@ describe Users::ResetPasswordsController, devise: true do
         allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(true)
       end
 
+      context 'when token isnt stored in session' do
+        it 'redirects to the clean edit password url with token stored in session' do
+          get :edit, params: { reset_password_token: 'foo' }
+          expect(response).to redirect_to(edit_user_password_url)
+          expect(session[:reset_password_token]).to eq('foo')
+        end
+      end
+
       context 'no user matches token' do
         let(:user_blank_error) { { user: [:blank] } }
+        let(:token) { 'foo' }
+        before do
+          session[:reset_password_token] = token
+        end
         let(:analytics_hash) do
           {
             success: false,
@@ -132,7 +144,7 @@ describe Users::ResetPasswordsController, devise: true do
             failure_reason: user_blank_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -143,6 +155,10 @@ describe Users::ResetPasswordsController, devise: true do
 
       context 'token expired' do
         let(:user_token_error) { { user: [token_expired_error] } }
+        let(:token) { 'foo' }
+        before do
+          session[:reset_password_token] = token
+        end
         let(:analytics_hash) do
           {
             success: false,
@@ -154,7 +170,7 @@ describe Users::ResetPasswordsController, devise: true do
         let(:user) { instance_double('User', uuid: '123') }
 
         before do
-          allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
+          allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
           allow(user).to receive(:reset_password_period_valid?).and_return(false)
         end
 
@@ -164,7 +180,7 @@ describe Users::ResetPasswordsController, devise: true do
             failure_reason: user_token_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -178,31 +194,19 @@ describe Users::ResetPasswordsController, devise: true do
           allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
           allow(user).to receive(:reset_password_period_valid?).and_return(true)
           allow(user).to receive(:email_addresses).and_return([email_address])
+          session[:reset_password_token] = 'foo'
         end
-        context 'when token isnt stored in session' do
-          it 'redirects to the clean edit password url with token stored in session' do
-            get :edit, params: { reset_password_token: 'foo' }
-            expect(response).to redirect_to(edit_user_password_url)
-            expect(session[:reset_password_token]).to eq('foo')
-          end
-        end
+        it 'renders the template to the clean edit password url with token stored in session' do
+          expect(email_address).to receive(:email).twice
 
-        context 'when token is stored in session' do
-          before do
-            session[:reset_password_token] = 'foo'
-          end
-          it 'renders the template to the clean edit password url with token stored in session' do
-            expect(email_address).to receive(:email).twice
+          forbidden = instance_double(ForbiddenPasswords)
+          allow(ForbiddenPasswords).to receive(:new).
+            with(email_address.email).and_return(forbidden)
+          expect(forbidden).to receive(:call)
 
-            forbidden = instance_double(ForbiddenPasswords)
-            allow(ForbiddenPasswords).to receive(:new).
-              with(email_address.email).and_return(forbidden)
-            expect(forbidden).to receive(:call)
-
-            get :edit
-            expect(response).to render_template :edit
-            expect(flash.keys).to be_empty
-          end
+          get :edit
+          expect(response).to render_template :edit
+          expect(flash.keys).to be_empty
         end
       end
     end

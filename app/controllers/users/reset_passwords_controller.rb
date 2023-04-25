@@ -53,7 +53,7 @@ module Users
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      
+
       if result.success?
         session.delete(:reset_password_token) if session[:reset_password_token]
         handle_successful_password_reset
