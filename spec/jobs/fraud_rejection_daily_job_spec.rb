@@ -27,7 +27,7 @@ RSpec.describe FraudRejectionDailyJob do
       expect(job_analytics).to have_logged_event(
         'Fraud: Automatic Fraud Rejection',
         rejection_date: Time.zone.today,
-        fraud_review_pending_at: rejected_profiles.first.fraud_review_pending_at,
+        fraud_rejection_at: rejected_profiles.first.fraud_rejection_at,
       )
     end
   end
