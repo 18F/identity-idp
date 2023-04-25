@@ -222,9 +222,6 @@ module AnalyticsEvents
     track_event('Broken Personal Key: Regenerated')
   end
 
-  # For the create an account banner A/B test, add analytics for account creation rate, visits, 
-  # bounce rate, and time on sign in page
-
   # @param [String, nil] error error message
   # @param [String, nil] uuid document capture session uuid
   # @param [String, nil] result_id document capture session result id
