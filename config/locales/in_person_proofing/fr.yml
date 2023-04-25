@@ -24,7 +24,7 @@ fr:
           afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
           accéder jusqu’à ce que votre identité ait été confitmée.
         return_to_partner_link: maintenant vous déconnecter et retourner à %{sp_name}
-        what_to_expect: À quoi s'attendre au bureau de poste
+        what_to_expect: À quoi s’attendre au bureau de poste
       cta:
         button: Vérifiez votre identité en personne
         button_variant: Essayer en personne
@@ -36,14 +36,14 @@ fr:
       expect:
         heading: Que faire après votre visite
         info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous enverrons un
-          courrier électronique pour vous indiquer si votre vérification d'identité a réussi ou échoué.
+          courrier électronique pour vous indiquer si votre vérification d’identité a réussi ou échoué.
       location:
         distance:
           one: 'à %{count} mile'
           other: 'à %{count} miles'
         heading: Informations sur les bureaux de poste
-        info: Aucun rendez-vous n'est nécessaire pour vérifier votre identité. Vous pouvez vous rendre
-          dans n'importe quel bureau de poste participant.
+        info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité. Vous pouvez vous rendre
+          dans n’importe quel bureau de poste participant.
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         po_search:
@@ -70,7 +70,7 @@ fr:
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
-        selection: 'Il s'agit du bureau que vous avez sélectionné:'
+        selection: 'Il s’agit du bureau que vous avez sélectionné:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste à %{full_address}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
@@ -146,7 +146,7 @@ fr:
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle
-      barcode: Présentez ce code-barres et votre pièce d'identité délivrée par l'État à un bureau de
+      barcode: Présentez ce code-barres et votre pièce d’identité délivrée par l’État à un bureau de
         poste pour terminer la vérification de votre identité
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       cta_variant: Essayez de vérifier votre identité en personne
@@ -167,11 +167,11 @@ fr:
         info: Le vendeur doit scanner votre code-barres en haut de cette page. Vous pouvez imprimer
           cette page ou la montrer sur votre appareil mobile.
       state_id:
-        heading: Présentez votre permis de conduire de l'État ou votre carte d'identité de
-          non-conducteur de l'État
-        info: Ce document ne doit pas avoir expiré. Nous n'acceptons actuellement aucune autre forme
-          d'identification, comme les passeports et les cartes d'identité militaires.
+        heading: Présentez votre permis de conduire de l’État ou votre carte d’identité de
+          non-conducteur de l’État
+        info: Ce document ne doit pas avoir expiré. Nous n’acceptons actuellement aucune autre forme
+          d’identification, comme les passeports et les cartes d’identité militaires.
       what_to_do:
         heading: Faites la queue
-        info: Dites à l'employé du bureau de poste que vous êtes ici pour vérifier votre identité avec
+        info: Dites à l’employé du bureau de poste que vous êtes ici pour vérifier votre identité avec
           Login.gov.
