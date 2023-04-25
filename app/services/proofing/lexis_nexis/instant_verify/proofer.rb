@@ -13,7 +13,7 @@ module Proofing
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          ResolutionResult.new(
+          Resolution::Result.new(
             success: false, errors: {}, exception: exception,
             vendor_name: 'lexisnexis:instant_verify',
             vendor_workflow: config.instant_verify_workflow
@@ -25,7 +25,7 @@ module Proofing
         def build_result_from_response(verification_response)
           instant_verify_product = find_instant_verify_product(verification_response)
 
-          Proofing::ResolutionResult.new(
+          Proofing::Resolution::Result.new(
             success: verification_response.verification_status == 'passed',
             errors: parse_verification_errors(verification_response),
             exception: nil,
