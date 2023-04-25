@@ -13,12 +13,12 @@ RSpec.describe FraudRejectionDailyJob do
       create(
         :profile,
         fraud_review_pending: true,
-        verified_at: 31.days.ago,
+        fraud_review_pending_at: 31.days.ago,
       )
       create(
         :profile,
         fraud_review_pending: true,
-        verified_at: 20.days.ago,
+        fraud_review_pending_at: 20.days.ago,
       )
 
       rejected_profiles = Profile.where(fraud_rejection: true)
@@ -27,7 +27,7 @@ RSpec.describe FraudRejectionDailyJob do
       expect(job_analytics).to have_logged_event(
         'Fraud: Automatic Fraud Rejection',
         rejection_date: Time.zone.today,
-        verified_at: rejected_profiles.first.verified_at,
+        fraud_review_pending_at: rejected_profiles.first.fraud_review_pending_at,
       )
     end
   end
