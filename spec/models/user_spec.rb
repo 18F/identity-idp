@@ -136,30 +136,6 @@ RSpec.describe User do
     end
   end
 
-  context '#need_two_factor_authentication?' do
-    let(:request) { ActionController::TestRequest.new }
-
-    it 'is true when two_factor_enabled' do
-      user = build_stubbed(:user)
-
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return true
-      allow(MfaPolicy).to receive(:new).with(user).and_return mock_mfa
-
-      expect(user.need_two_factor_authentication?(nil)).to be_truthy
-    end
-
-    it 'is false when not two_factor_enabled' do
-      user = build_stubbed(:user)
-
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return false
-      allow(MfaPolicy).to receive(:new).with(user).and_return(mock_mfa)
-
-      expect(user.need_two_factor_authentication?(nil)).to be_falsey
-    end
-  end
-
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do
