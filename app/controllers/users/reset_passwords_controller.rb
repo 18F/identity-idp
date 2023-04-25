@@ -53,8 +53,9 @@ module Users
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      session.delete(:reset_password_token) if session[:reset_password_token]
+      
       if result.success?
+        session.delete(:reset_password_token) if session[:reset_password_token]
         handle_successful_password_reset
       else
         handle_unsuccessful_password_reset(result)
@@ -164,6 +165,7 @@ module Users
     def handle_unsuccessful_password_reset(result)
       reset_password_token_errors = result.errors[:reset_password_token]
       if reset_password_token_errors.present?
+        session.delete(:reset_password_token) if session[:reset_password_token]
         flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return
