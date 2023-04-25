@@ -25,8 +25,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
-  revision: ebc27f04e0fc314883add65b6209527c3d521934
-  branch: mitchellhenke/fix-fallback
+  revision: 9e3f8a22a1b5d1e835e5cba20c51e38b8965b836
+  tag: v1.0.1-18f
   specs:
     redis-session-store (1.0.1.pre.18f)
       actionpack (>= 6, < 8)
