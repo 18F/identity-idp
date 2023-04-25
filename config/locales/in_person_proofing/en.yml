@@ -9,21 +9,19 @@ en:
       barcode:
         cancel_link_text: Cancel your barcode
         close_window: You may now close this window.
-        deadline: Visit the Post Office by %{deadline}.
-        deadline_restart: If you go after the deadline, your information will not be
+        deadline: You must visit any participating Post Office by %{deadline}.
+        deadline_restart: If you go after this deadline, your information will not be
           saved and you will need to restart the process.
-        email_sent: We have sent this information to the email you used to log in.
-        items_to_bring: 'Show the following items to any Post Office associate:'
+        email_sent: We have sent this information to the email you used to sign in.
         learn_more: Learn more about what to bring
         location_details: Location details
-        questions: Question?
+        questions: Questions?
         retail_hours: Retail hours
         retail_hours_closed: Closed
-        return_to_partner_html: You may now close this window or %{link} to complete any
-          next steps you can access until your identity has been verified.
-        return_to_partner_link: return to %{sp_name}
-        speak_to_associate: You can see any Post Office associate at the retail window
-          to verify your identity. No appointment is required.
+        return_to_partner_html: You may now %{link} to complete any next steps you can
+          access until your identity has been verified.
+        return_to_partner_link: sign out and return to %{sp_name}
+        what_to_expect: What to expect at the Post Office
       cta:
         button: Verify your ID in person
         button_variant: Try in person
@@ -31,10 +29,18 @@ en:
           Post Office near you.
         prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
           you may be able to try in person at limited post office locations.
+      expect:
+        heading: What to expect after your visit
+        info: We’ll send you an email to let you know if your identity verification was
+          successful or unsuccessful within 24 hours of your visit to the Post
+          Office.
       location:
         distance:
           one: '%{count} mile away'
           other: '%{count} miles away'
+        heading: Post Office information
+        info: No appointment is needed to verify your identity. You can visit any
+          participating Post Office location.
         inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
         po_search:
@@ -58,6 +64,7 @@ en:
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'
         retail_hours_weekday: 'Monday to Friday:'
+        selection: 'This is the location you selected:'
       prepare:
         alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
@@ -125,7 +132,8 @@ en:
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address
-      barcode: You’re ready to verify your identity in person with %{app_name}
+      barcode: Show this barcode and your state-issued ID at a Post Office to finish
+        verifying your identity
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
       id_address: Address on your ID
@@ -139,25 +147,15 @@ en:
     process:
       barcode:
         caption_label: Enrollment code
-        heading: A copy of your barcode
-        info: Print or scan from your mobile device.
-      proof_of_address:
-        acceptable_proof:
-          - Lease, Mortgage, or Deed of Trust
-          - Voter Registration
-          - Vehicle Registration Card
-          - Home or Vehicle Insurance Policy
-        heading: Proof of your current address
-        info: 'You need a proof of address if your current address is different than the
-          address on your ID. Acceptable forms of proof of address are:'
-        physical_or_digital_copy: You can bring a physical copy or show a digital copy
-          of the document. You cannot show a photo or screenshot of the
-          document.
+        heading: Show your Login.gov barcode
+        info: The retail associate needs to scan your barcode at the top of this page.
+          You can print this page or show it on your mobile device.
       state_id:
-        acceptable_documents:
-          - State Driver’s License
-          - State Non-Driver’s Identification Card
-        heading: Your State Driver’s License or State Non-Driver’s Identification Card
-        info: 'Your ID must not be expired. Acceptable forms of ID are:'
-        no_other_documents: We do not currently accept any other forms of
+        heading: Show your State Driver’s License or State Non-Driver’s Identification
+          Card
+        info: This must not be expired. We do not currently accept any other forms of
           identification, such as passports and military IDs.
+      what_to_do:
+        heading: Stand in any line
+        info: Tell the Post Office retail associate you are here to verify your identity
+          with Login.gov.
