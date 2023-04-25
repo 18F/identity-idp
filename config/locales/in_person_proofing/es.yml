@@ -10,7 +10,8 @@ es:
       barcode:
         cancel_link_text: Cancelar su código de barras
         close_window: Ya puede cerrar esta ventana
-        deadline: Debe dirigirse a cualquier oficina de correos asociada antes del %{deadline}
+        deadline: Debe dirigirse a cualquier oficina de correos asociada antes del
+          %{deadline}
         deadline_restart: Si supera la fecha límite, su información no se guardará y
           tendrá que reiniciar el proceso.
         email_sent: Enviamos toda esta información al correo electrónico que utilizó
@@ -168,8 +169,8 @@ es:
       state_id:
         heading: Muestre su licencia de conducir estatal o su tarjeta de identificación
           estatal de no conductor
-        info: No debe estar caducada. Actualmente no aceptamos otras formas de identificación, como
-          pasaportes e identificaciones militares..
+        info: No debe estar caducada. Actualmente no aceptamos otras formas de
+          identificación, como pasaportes e identificaciones militares..
       what_to_do:
         heading: Colóquese en cualquier fila
         info: Dígale al empleado de la oficina de correos que está aquí para verificar
