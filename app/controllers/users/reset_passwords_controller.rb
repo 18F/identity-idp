@@ -1,7 +1,7 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     before_action :store_sp_metadata_in_session, only: [:edit]
-    before_action :validate_password_reset_token, only: [:edit]
+    before_action :store_token_in_session, only: [:edit], if: :clean_edit_url_toggle_on?
 
     def new
       analytics.password_reset_visit
@@ -22,12 +22,22 @@ module Users
     end
 
     def edit
-      if params[:reset_password_token] && FeatureManagement.redirect_to_clean_edit_password_url?
+      if params[:reset_password_token] && clean_edit_url_toggle_on?
         redirect_to edit_user_password_url
       else
-        @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
-        session.delete(:reset_password_token)
+        result = PasswordResetTokenValidator.new(token_user).submit
+
+        analytics.password_reset_token(**result.to_h)
+        irs_attempts_api_tracker.forgot_password_email_confirmed(
+          success: result.success?,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+        )
+        if result.success?
+          @reset_password_form = ResetPasswordForm.new(build_user)
+          @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        else
+          handle_invalid_or_expired_token(result)
+        end
       end
     end
 
@@ -43,7 +53,7 @@ module Users
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-
+      session.delete(:reset_password_token) if session[:reset_password_token]
       if result.success?
         handle_successful_password_reset
       else
@@ -85,17 +95,13 @@ module Users
       redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
-    def validate_password_reset_token
+    def store_token_in_session
       return if session[:reset_password_token]
       session[:reset_password_token] = params[:reset_password_token]
-      result = PasswordResetTokenValidator.new(token_user).submit
+    end
 
-      analytics.password_reset_token(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_email_confirmed(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
-      handle_invalid_or_expired_token(result) unless result.success?
+    def clean_edit_url_toggle_on?
+      FeatureManagement.redirect_to_clean_edit_password_url?
     end
 
     def create_account_if_email_not_found
