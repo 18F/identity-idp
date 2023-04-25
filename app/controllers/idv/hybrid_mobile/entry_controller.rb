@@ -8,9 +8,9 @@ module Idv
       def show
         track_document_capture_session_id_usage
 
-        return handle_invalid_session if !validate_document_capture_session_id
+        return handle_invalid_document_capture_session if !validate_document_capture_session_id
 
-        return handle_invalid_session if !validate_document_capture_user_id
+        return handle_invalid_document_capture_session if !validate_document_capture_user_id
 
         redirect_to idv_hybrid_mobile_document_capture_url
       end
@@ -26,11 +26,6 @@ module Idv
       # This is the effective user for whom we are uploading documents.
       def document_capture_user_id
         session[:doc_capture_user_id]
-      end
-
-      def handle_invalid_session
-        flash[:error] = t('errors.capture_doc.invalid_link')
-        redirect_to root_url
       end
 
       def request_id

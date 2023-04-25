@@ -161,10 +161,8 @@ describe Idv::InPerson::VerifyInfoController do
 
           it 'throttles them all' do
             put :update
-            #          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
             subject.idv_session.verify_info_step_document_capture_session_uuid = nil
             put :update
-            #          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
             subject.idv_session.verify_info_step_document_capture_session_uuid = nil
 
             put :update

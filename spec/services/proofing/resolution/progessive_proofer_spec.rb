@@ -182,10 +182,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             allow(instance).to receive(:user_can_pass_after_state_id_check?).
               with(result_that_failed_instant_verify).
               and_return(true)
-            # rubocop:disable Layout/LineLength
-            allow(result_that_failed_instant_verify).to receive(:attributes_requiring_additional_verification).
+            allow(result_that_failed_instant_verify).
+              to receive(:attributes_requiring_additional_verification).
               and_return([:address])
-            # rubocop:enable Layout/LineLength
           end
 
           context 'it is not covered by AAMVA' do

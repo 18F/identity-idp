@@ -27,7 +27,6 @@ describe Idv::DocumentCaptureController do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
-    allow(@analytics).to receive(:track_event)
   end
 
   describe 'before_actions' do
@@ -58,6 +57,13 @@ describe Idv::DocumentCaptureController do
     end
 
     it 'renders the show template' do
+      expect(subject).to receive(:render).with(
+        :show,
+        locals: hash_including(
+          document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+        ),
+      ).and_call_original
+
       get :show
 
       expect(response).to render_template :show
@@ -66,7 +72,7 @@ describe Idv::DocumentCaptureController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog document_capture_view_count' do

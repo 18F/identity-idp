@@ -8,17 +8,16 @@
      request,
      [front_image_upload_url, back_image_upload_url],
    )
-   session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
       liveness_required: nil,
-      mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
+      mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: document_capture_session_uuid) == 'mock').presence,
       help_center_redirect_url: help_center_redirect_url(
         flow: :idv,
         step: :document_capture,
       ),
-      document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+      document_capture_session_uuid: document_capture_session_uuid,
       endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     api_verify_v2_document_capture_url :
     api_verify_images_url,
@@ -54,7 +53,7 @@
     <%= f.input(
           :document_capture_session_uuid,
           as: :hidden,
-          input_html: { value: flow_session[:document_capture_session_uuid] },
+          input_html: { value: document_capture_session_uuid },
         ) %>
   <% end %>
 </div>
