@@ -21,7 +21,7 @@ RSpec.describe FraudRejectionDailyJob do
         fraud_review_pending_at: 20.days.ago,
       )
 
-      rejected_profiles = Profile.where(fraud_rejection: true)
+      rejected_profiles = Profile.where.not(fraud_rejection_at: nil)
 
       expect { job.perform(Time.zone.today) }.to change { rejected_profiles.count }.by(1)
       expect(job_analytics).to have_logged_event(
