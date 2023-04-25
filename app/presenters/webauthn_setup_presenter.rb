@@ -33,7 +33,7 @@ class WebauthnSetupPresenter < SetupPresenter
       t('headings.webauthn_platform_setup.new')
     else
       t('titles.webauthn_setup')
-    end    
+    end
   end
 
   def heading

@@ -29,9 +29,9 @@ describe WebauthnSetupPresenter do
   end
 
   describe '#page_title' do
-    subject { presenter.image_path }
+    subject { presenter.page_title }
 
-    it { is_expected.to t('titles.webauthn_setup') }
+    it { is_expected.to eq(t('titles.webauthn_setup')) }
   end
 
   describe '#heading' do
@@ -81,9 +81,9 @@ describe WebauthnSetupPresenter do
     end
 
     describe '#page_title' do
-      subject { presenter.image_path }
+      subject { presenter.page_title }
 
-      it { is_expected.to t('headings.webauthn_platform_setup.new') }
+      it { is_expected.to eq(t('headings.webauthn_platform_setup.new')) }
     end
 
     describe '#heading' do
