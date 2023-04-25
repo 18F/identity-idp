@@ -331,6 +331,7 @@ Rails.application.routes.draw do
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
+      put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
