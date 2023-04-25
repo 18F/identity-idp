@@ -26,12 +26,10 @@ module Users
       @browser_is_ie11 = browser_is_ie11?
       @is_on_home_page = is_on_home_page?
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
-      @create_account_bucket = create_account_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
         sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
-        create_account_bucket: @create_account_bucket,
       )
       super
     end
@@ -163,12 +161,6 @@ module Users
 
     def is_on_home_page?
       request.path == '/'
-    end
-
-    def create_account_bucket
-      AbTests::CREATE_AN_ACCOUNT_BANNER.bucket(
-        sp_session[:request_id] || session.id
-      )
     end
 
     def alive?
