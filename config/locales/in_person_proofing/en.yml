@@ -92,7 +92,9 @@ en:
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
+        address1_hint: 'Example: 150 Calle A Apt 3'
         address2: Address line 2
+        address2_hint: 'Example: URB Las Gladiolas or COND Miraflor'
         city: City
         date_hint:
           day: 'Example: 28'
