@@ -10,7 +10,7 @@
 
 <% if decorated_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
-<% elsif @sign_in_a_b_test_bucket == :default %>
+<% elsif @sign_in_a_b_test_bucket != :tabbed %>
   <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
 <% end %>
 
