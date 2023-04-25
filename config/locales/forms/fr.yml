@@ -146,6 +146,7 @@ fr:
       instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
         avez reçue.
       name: Code à usage unique
+      return_to_profile: Retourner à votre profil
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir

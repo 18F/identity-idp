@@ -84,32 +84,32 @@ module Idp
 
     MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION = 'ND'
     MOCK_IDV_APPLICANT = {
-      first_name: 'FAKEY',
-      middle_name: nil,
-      last_name: 'MCFAKERSON',
       address1: '1 FAKE RD',
       address2: nil,
       city: 'GREAT FALLS',
-      state: 'MT',
-      zipcode: '59010',
       dob: '1938-10-06',
-      state_id_number: '1111111111111',
-      state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
-      state_id_type: 'drivers_license',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      middle_name: nil,
+      phone: nil,
+      state: 'MT',
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
-      phone: nil,
+      state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+      state_id_number: '1111111111111',
+      state_id_type: 'drivers_license',
+      zipcode: '59010',
     }.freeze
 
-    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT.merge(
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
+
+    MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
       identity_doc_address1: '123 Way St',
       identity_doc_address2: '2nd Address Line',
       identity_doc_city: 'Best City',
       identity_doc_zipcode: '12345',
       identity_doc_address_state: 'VA',
     ).freeze
-
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze
 
