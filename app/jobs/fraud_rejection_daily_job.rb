@@ -5,7 +5,6 @@ class FraudRejectionDailyJob < ApplicationJob
     profiles_eligible_for_fraud_rejection.find_each do |profile|
       profile.reject_for_fraud(notify_user: false)
       analytics.automatic_fraud_rejection(
-        rejection_date: Time.zone.today,
         fraud_rejection_at: profile.fraud_rejection_at,
       )
     end
