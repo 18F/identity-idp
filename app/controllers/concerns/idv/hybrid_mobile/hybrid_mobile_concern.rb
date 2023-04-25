@@ -5,10 +5,6 @@ module Idv
 
       include AcuantConcern
 
-      included do
-        before_action :render_404_if_hybrid_mobile_controllers_disabled
-      end
-
       def check_valid_document_capture_session
         if !document_capture_user
           # The user has not "logged in" to document capture via the EntryController
