@@ -26,6 +26,10 @@ FactoryBot.define do
       proofing_components { { threatmetrix_review_status: 'review' } }
     end
 
+    trait :fraud_rejection do
+      fraud_rejection_at { 15.days.ago }
+    end
+
     trait :verification_cancelled do
       deactivation_reason { :verification_cancelled }
     end
