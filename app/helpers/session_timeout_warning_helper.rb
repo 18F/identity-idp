@@ -11,6 +11,10 @@ module SessionTimeoutWarningHelper
     IdentityConfig.store.session_timeout_warning_seconds
   end
 
+  def expires_at
+    session[:session_expires_at]&.to_datetime || Time.zone.now - 1
+  end
+
   def timeout_refresh_path
     UriService.add_params(
       request.original_fullpath,

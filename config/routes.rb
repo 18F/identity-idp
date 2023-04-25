@@ -85,6 +85,8 @@ Rails.application.routes.draw do
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       delete '/logout' => 'users/sessions#destroy'
+      get '/active' => 'users/sessions#active'
+      post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
       get '/login/piv_cac_error' => 'users/piv_cac_login#error'
@@ -137,6 +139,7 @@ Rails.application.routes.draw do
 
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
+      get '/timeout' => 'users/sessions#timeout'
     end
 
     if IdentityConfig.store.enable_test_routes
