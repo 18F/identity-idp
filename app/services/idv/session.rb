@@ -15,6 +15,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      threatmetrix_review_status
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider

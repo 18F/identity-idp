@@ -182,6 +182,7 @@ describe Idv::VerifyInfoController do
           errors: {},
           exception: nil,
           success: true,
+          threatmetrix_review_status: review_status,
         }
       end
 
@@ -205,6 +206,12 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Pass' do
         let(:review_status) { 'pass' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
+        end
+
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
@@ -215,7 +222,12 @@ describe Idv::VerifyInfoController do
       end
 
       context 'when threatmetrix response is No Result' do
-        let(:review_status) { 'no_result' }
+        let(:review_status) { nil }
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
 
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
@@ -229,6 +241,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Reject' do
         let(:review_status) { 'reject' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
@@ -240,6 +257,11 @@ describe Idv::VerifyInfoController do
 
       context 'when threatmetrix response is Review' do
         let(:review_status) { 'review' }
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
 
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
