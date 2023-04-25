@@ -101,12 +101,12 @@ describe Idv::Steps::UploadStep do
 
       it 'generates a link to the hybrid mobile doc auth entry controller' do
         expect(link).to eql(
-                          Rails.application.routes.url_helpers.idv_hybrid_mobile_entry_url(
-                            params: {
-                              'document-capture-session': document_capture_session_uuid,
-                            },
-                          ),
-                        )
+          Rails.application.routes.url_helpers.idv_hybrid_mobile_entry_url(
+            params: {
+              'document-capture-session': document_capture_session_uuid,
+            },
+          ),
+        )
       end
     end
   end
