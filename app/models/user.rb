@@ -70,6 +70,10 @@ class User < ApplicationRecord
     MfaPolicy.new(self).two_factor_enabled?
   end
 
+  def fully_registered?
+    !!registration_log&.registered_at
+  end
+
   def confirmed?
     email_addresses.where.not(confirmed_at: nil).any?
   end

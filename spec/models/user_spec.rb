@@ -113,6 +113,29 @@ RSpec.describe User do
     end
   end
 
+  describe '#fully_registered?' do
+    let(:user) { create(:user) }
+    subject(:fully_registered?) { user.fully_registered? }
+
+    context 'with unconfirmed user' do
+      let(:user) { create(:user, :unconfirmed) }
+
+      it { expect(fully_registered?).to eq(false) }
+    end
+
+    context 'with confirmed user' do
+      let(:user) { create(:user) }
+
+      it { expect(fully_registered?).to eq(false) }
+    end
+
+    context 'with mfa-enabled user' do
+      let(:user) { create(:user, :signed_up) }
+
+      it { expect(fully_registered?).to eq(true) }
+    end
+  end
+
   context '#need_two_factor_authentication?' do
     let(:request) { ActionController::TestRequest.new }
 
