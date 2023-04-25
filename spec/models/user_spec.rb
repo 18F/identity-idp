@@ -1156,6 +1156,23 @@ RSpec.describe User do
     end
   end
 
+  describe '#has_devices?' do
+    let(:user) { create(:user) }
+    let(:has_devices?) { user.has_devices? }
+
+    context 'with no devices' do
+      it { expect(has_devices?).to eq(false) }
+    end
+
+    context 'with a device' do
+      before do
+        create(:device, user:)
+      end
+
+      it { expect(has_devices?).to eq(true) }
+    end
+  end
+
   describe '#password_reset_profile' do
     let(:user) { create(:user) }
 
