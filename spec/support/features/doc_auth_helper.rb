@@ -81,7 +81,7 @@ module DocAuthHelper
   end
 
   def complete_welcome_step
-    click_spinner_button_and_wait t('doc_auth.buttons.continue')
+    click_on t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
