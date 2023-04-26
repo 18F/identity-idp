@@ -31,6 +31,7 @@ module SignUp
     end
 
     def store_sp_metadata_in_session
+      binding.pry
       StoreSpMetadataInSession.new(session:, request_id:).call if request_id.present?
     end
 
