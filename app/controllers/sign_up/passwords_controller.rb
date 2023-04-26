@@ -65,7 +65,6 @@ module SignUp
     end
 
     def password_form
-      validate_confirmation = true
       @password_form ||= PasswordForm.new(@user, validate_confirmation: true)
     end
 

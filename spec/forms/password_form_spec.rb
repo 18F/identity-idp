@@ -5,7 +5,6 @@ describe PasswordForm, type: :model do
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
   let(:password_confirmation) { nil }
-  let(:validate_confirmation) { nil }
   let(:extra) do
     {
       user_id: user.uuid,
@@ -39,6 +38,7 @@ describe PasswordForm, type: :model do
         let(:validate_confirmation) do
           { validate_confirmation: true }
         end
+
         let(:password_confirmation) { password }
 
         it 'returns false' do
