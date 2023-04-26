@@ -98,7 +98,7 @@ class RecaptchaValidator
 
   def log_analytics(result: nil, error: nil)
     analytics&.recaptcha_verify_result_received(
-      recaptcha_result: result.presence && result.to_h,
+      recaptcha_result: result.to_h.presence,
       score_threshold:,
       recaptcha_version:,
       evaluated_as_valid: recaptcha_result_valid?(result),
