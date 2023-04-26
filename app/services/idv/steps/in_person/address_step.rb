@@ -40,7 +40,8 @@ module Idv
 
         def updating_address
           if IdentityConfig.store.in_person_capture_secondary_id_enabled
-            flow_session[:pii_from_user].has_key?(:address1) && !(flow_session[:pii_from_user][:address1].nil?)
+            flow_session[:pii_from_user].has_key?(:address1) &&
+              !flow_session[:pii_from_user][:address1].nil?
           else
             flow_session[:pii_from_user].has_key?(:address1)
           end
