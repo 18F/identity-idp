@@ -21,7 +21,7 @@ Rails.application.config.session_store(
     key_prefix: "#{IdentityConfig.store.domain_name}:session:",
     client_pool: REDIS_POOL,
   },
-  on_session_load_error: SessionEncryptorErrorHandler,
+  on_session_load_error: proc { |error, _sid| raise error },
   on_redis_down: proc { |error| raise error },
   serializer: SessionEncryptor.new,
 )
