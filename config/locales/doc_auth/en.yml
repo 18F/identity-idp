@@ -43,8 +43,8 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
       barcode_attention:
-        confirm_info: If the information below is incorrect, please upload new photos
-          of your state‑issued ID.
+        confirm_info: If the information below is incorrect, please upload new photos of
+          your state‑issued ID.
         heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
