@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_threatmetrix_profile) }
+  let(:user) { create(:user, :deactivated_fraud_profile) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
@@ -96,7 +96,7 @@ describe 'review_profile' do
       end
     end
 
-    context 'when the user profile has a nil verified_at' do
+    context 'when the user profile has a nil fraud_review_pending_at' do
       let(:user) do
         create(
           :user,
