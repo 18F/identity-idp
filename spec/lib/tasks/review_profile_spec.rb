@@ -96,7 +96,7 @@ describe 'review_profile' do
       end
     end
 
-    context 'when the user profile has a nil verified_at' do
+    context 'when the user profile has a nil fraud_review_pending_at' do
       let(:user) do
         create(
           :user,
