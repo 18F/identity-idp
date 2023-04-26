@@ -4,6 +4,8 @@ module Idv
       class StateIdStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
+        include TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_visited_event
           :idv_in_person_proofing_state_id_visited
         end
@@ -28,6 +30,8 @@ module Idv
             pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
             mark_step_complete(:address)
           end
+
+          maybe_redirect_to_verify_info if updating_state_id
         end
 
         def extra_view_variables
