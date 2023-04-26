@@ -5,7 +5,6 @@ es:
       masked_ssn: texto seguro, comenzando con %{first_number} y terminando con
         %{last_number}
     buttons:
-      cancel: Cancele y regrese a su perfil
       change_address_label: Actualizar su dirección actual
       change_label: Actualizar
       change_ssn_label: Actualizar su número de la Seguridad Social
