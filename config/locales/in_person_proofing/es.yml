@@ -105,7 +105,9 @@ es:
         state_prompt: '- Seleccione -'
       state_id:
         address1: Línea de dirección 1
+        address1_hint: 'Ejemplo: 150 Calle A Apt 3'
         address2: Línea de dirección 2
+        address2_hint: 'Ejemplo: URB Las Gladiolas or COND Miraflor'
         city: Ciudad
         date_hint:
           day: 'Ejemplo: 28'
