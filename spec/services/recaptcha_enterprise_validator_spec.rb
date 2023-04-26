@@ -9,8 +9,12 @@ describe RecaptchaEnterpriseValidator do
   let(:recaptcha_enterprise_project_id) { 'project_id' }
   let(:recaptcha_site_key_v3) { 'recaptcha_site_key_v3' }
   let(:assessment_url) do
-    "#{described_class::BASE_VERIFICATION_ENDPOINT}/#{recaptcha_enterprise_project_id}" \
-      "/assessments?key=#{recaptcha_enterprise_api_key}"
+    format(
+      '%{base_endpoint}/%{project_id}/assessments?key=%{api_key}',
+      base_endpoint: described_class::BASE_VERIFICATION_ENDPOINT,
+      project_id: recaptcha_enterprise_project_id,
+      api_key: recaptcha_enterprise_api_key,
+    )
   end
 
   subject(:validator) do

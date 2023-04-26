@@ -5,8 +5,11 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
 
   def assessment_url
     UriService.add_params(
-      "#{BASE_VERIFICATION_ENDPOINT}/#{IdentityConfig.store.recaptcha_enterprise_project_id}" \
-        "/assessments",
+      format(
+        '%{base_endpoint}/%{project_id}/assessments',
+        base_endpoint: BASE_VERIFICATION_ENDPOINT,
+        project_id: IdentityConfig.store.recaptcha_enterprise_project_id,
+      ),
       key: IdentityConfig.store.recaptcha_enterprise_api_key,
     )
   end
