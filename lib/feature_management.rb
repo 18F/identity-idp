@@ -49,10 +49,6 @@ class FeatureManagement
     IdentityConfig.store.use_kms
   end
 
-  def self.redirect_to_clean_edit_password_url?
-    IdentityConfig.store.use_clean_edit_password_url
-  end
-
   def self.kms_multi_region_enabled?
     IdentityConfig.store.aws_kms_multi_region_enabled
   end
