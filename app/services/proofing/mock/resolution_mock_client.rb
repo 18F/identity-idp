@@ -51,7 +51,7 @@ module Proofing
       end
 
       def resolution_result(success:, errors:, exception:)
-        ResolutionResult.new(
+        Resolution::Result.new(
           success: success,
           errors: errors,
           exception: exception,

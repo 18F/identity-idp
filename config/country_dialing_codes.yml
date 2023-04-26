@@ -128,11 +128,6 @@ BJ:
   name: Benin
   supports_sms: true
   supports_voice: false
-BL:
-  country_code: '590'
-  name: Burundi
-  supports_sms: true
-  supports_voice: false
 BM:
   country_code: '1441'
   name: Bermuda

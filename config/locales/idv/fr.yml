@@ -5,7 +5,6 @@ fr:
       masked_ssn: Texte sécurisé, commençant par %{first_number} et finissant par
         %{last_number}
     buttons:
-      cancel: Annuler et retourner à votre profil
       change_address_label: Mettre à jour votre adresse actuelle
       change_label: Mettre à jour
       change_ssn_label: Mettre à jour votre numéro de Sécurité Sociale

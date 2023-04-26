@@ -51,7 +51,7 @@ feature 'idv gpo step', :js do
       fill_in 'Password', with: user_password
       click_continue
       visit root_path
-      click_on t('idv.buttons.cancel')
+      click_on t('forms.verify_profile.return_to_profile')
       first(:link, t('links.sign_out')).click
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
