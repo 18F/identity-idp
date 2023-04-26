@@ -77,6 +77,7 @@ feature 'doc auth verify_info step', :js do
     click_link t('idv.buttons.change_ssn_label')
 
     expect(page).to have_current_path(idv_ssn_path)
+    expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
     expect(
       find_field(t('idv.form.ssn_label_html')).value,
     ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
@@ -265,6 +266,7 @@ feature 'doc auth verify_info step', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
+        double_address_verification: false,
       }
     end
 

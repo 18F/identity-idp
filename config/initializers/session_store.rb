@@ -2,9 +2,11 @@ require 'session_encryptor'
 require 'legacy_session_encryptor'
 require 'session_encryptor_error_handler'
 
+APPLICATION_SESSION_COOKIE_KEY = '_identity_idp_session'.freeze
+
 Rails.application.config.session_store(
   :redis_session_store,
-  key: '_identity_idp_session',
+  key: APPLICATION_SESSION_COOKIE_KEY,
   redis: {
     # cookie expires with browser close
     expire_after: nil,

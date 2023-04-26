@@ -62,8 +62,9 @@ class SamlIdpController < ApplicationController
     return head(:bad_request) if raw_saml_request.nil?
 
     decode_request(raw_saml_request)
+    issuer = saml_request&.issuer
 
-    track_remote_logout_event
+    track_remote_logout_event(issuer)
 
     return head(:bad_request) unless valid_saml_request?
 
@@ -71,7 +72,7 @@ class SamlIdpController < ApplicationController
 
     return head(:bad_request) unless user_id.present?
 
-    handle_valid_sp_remote_logout_request(user_id)
+    handle_valid_sp_remote_logout_request(user_id: user_id, issuer: issuer)
   end
 
   def external_saml_request?

@@ -83,11 +83,6 @@ en:
         pixel_depth: The pixel depth of your image file is not supported. Please take
           new photos of your ID and try again. Supported image pixel depth is
           24-bit RGB.
-      no_camera:
-        explanation: To continue, sign in to your %{app_name} account on any device that
-          has a camera, like a mobile phone, tablet or computer with a webcam.
-        heading: You need a camera to verify your identity
-        title: Camera needed
       not_a_file: The selection was not a valid file.
       pii:
         birth_date_min_age: Your birthday does not meet the minimum age requirement.
@@ -139,8 +134,8 @@ en:
       only_add_sp_services_html: You are trying to access
         <strong>%{service_provider_name}</strong> services
     info:
-      address_guidance_puerto_rico_html: For Puerto Rico residents:<br><br>Please
-        enter urbanization or condominium on address line 2.
+      address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your
+        address to list your urbanization or condominium on address line 2.
       capture_status_big_document: Too Close
       capture_status_capturing: Capturing
       capture_status_none: Align

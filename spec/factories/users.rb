@@ -210,7 +210,7 @@ FactoryBot.define do
       end
     end
 
-    trait :deactivated_threatmetrix_profile do
+    trait :deactivated_fraud_profile do
       signed_up
 
       after :build do |user|

@@ -127,19 +127,19 @@
   <% if capture_secondary_id_enabled %>
     <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
       <%= render ValidatedFieldComponent.new(
-            name: :state_id_state,
+            name: :identity_doc_address_state,
             collection: us_states_territories,
             form: f,
-            label: t('in_person_proofing.form.state_id.state_id_state'),
+            label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
             label_html: { class: 'usa-label' },
-            prompt: t('in_person_proofing.form.state_id.state_id_state_prompt'),
+            prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
             required: true,
-            selected: pii[:state_id_state],
+            selected: pii[:identity_doc_address_state],
           ) %>
       <%= render ValidatedFieldComponent.new(
-            name: :state_id_address1,
+            name: :identity_doc_address1,
             form: f,
-            input_html: { value: pii[:state_id_address1] },
+            input_html: { value: pii[:identity_doc_address1] },
             label: t('in_person_proofing.form.state_id.address1'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -147,9 +147,9 @@
           ) %>
 
       <%= render ValidatedFieldComponent.new(
-            name: :state_id_address2,
+            name: :identity_doc_address2,
             form: f,
-            input_html: { value: pii[:state_id_address2] },
+            input_html: { value: pii[:identity_doc_address2] },
             label: t('in_person_proofing.form.state_id.address2'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -157,9 +157,9 @@
           ) %>
  
       <%= render ValidatedFieldComponent.new(
-            name: :state_id_city,
+            name: :identity_doc_city,
             form: f,
-            input_html: { value: pii[:state_id_city] },
+            input_html: { value: pii[:identity_doc_city] },
             label: t('in_person_proofing.form.state_id.city'),
             label_html: { class: 'usa-label' },
             maxlength: 255,
@@ -172,7 +172,7 @@
             name: :state_id_jurisdiction,
             collection: us_states_territories,
             form: f,
-            hint: t('in_person_proofing.form.state_id.state_id_state_hint'),
+            hint: t('in_person_proofing.form.state_id.identity_doc_address_state_hint'),
             label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
             label_html: { class: 'usa-label' },
             prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
@@ -184,9 +184,9 @@
   <% if capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%= render ValidatedFieldComponent.new(
-            name: :state_id_zipcode,
+            name: :identity_doc_zipcode,
             form: f,
-            input_html: { value: pii[:state_id_zipcode] },
+            input_html: { value: pii[:identity_doc_zipcode] },
             label: t('in_person_proofing.form.state_id.zipcode'),
             label_html: { class: 'usa-label' },
             maxlength: 255,

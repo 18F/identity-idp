@@ -12,7 +12,7 @@ feature 'idv phone step', :js do
   end
 
   context 'defaults on page load' do
-    it 'selects sms delivery option by default', js: true do
+    it 'selects sms delivery option by default' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       expect(page).to have_checked_field(
@@ -22,8 +22,7 @@ feature 'idv phone step', :js do
   end
 
   context 'with valid information' do
-    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number',
-       js: true do
+    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
@@ -34,8 +33,8 @@ feature 'idv phone step', :js do
     end
   end
 
-  context 'invalid form information' do
-    it 'displays error message if no phone number is entered', js: true do
+  context 'with invalid form information' do
+    it 'displays error message if no phone number is entered' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_in('idv_phone_form_phone', with: '') # clear the pre-populated phone number
