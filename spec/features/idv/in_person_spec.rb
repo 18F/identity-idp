@@ -420,7 +420,7 @@ RSpec.describe 'In Person Proofing', js: true do
         and_return(true)
     end
 
-    context 'with double address validation' do
+    context 'with double address verification' do
       let(:capture_secondary_id_enabled) { true }
       let(:double_address_verification) { true }
       let(:user) { user_with_2fa }
@@ -433,7 +433,7 @@ RSpec.describe 'In Person Proofing', js: true do
           and_return(enrollment)
       end
 
-      it 'shows validation errors when double address validation is true',
+      it 'shows validation errors when double address verification is true',
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
@@ -501,8 +501,8 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    context 'without double address validation' do
-      it 'shows validation errors when double address validation is false',
+    context 'without double address verification' do
+      it 'shows validation errors when double address verification is false',
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
