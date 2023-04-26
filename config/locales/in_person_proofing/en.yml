@@ -104,6 +104,9 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using the characters on your ID.'
         first_name: First name
+        identity_doc_address_state: State
+        identity_doc_address_state_hint: Select the state shown on your ID
+        identity_doc_address_state_prompt: '- Select -'
         last_name: Last name
         memorable_date:
           errors:
@@ -119,9 +122,6 @@ en:
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: May include letters and numbers
-        state_id_state: State
-        state_id_state_hint: Select the state shown on your ID
-        state_id_state_prompt: '- Select -'
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address

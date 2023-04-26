@@ -33,20 +33,14 @@ function addFormInputsForMobileDeviceCapabilities() {
   // submit() to ensure that it completes in time.
   const cameraCheckPromise = measure(hasCamera).then(
     async ({ result: cameraPresent, duration }) => {
-      if (!cameraPresent) {
-        // Signal to the backend that this is a mobile device, but no camera is present
-        const ncInput = document.createElement('input');
-        ncInput.type = 'hidden';
-        ncInput.name = 'no_camera';
-        form.appendChild(ncInput);
+      if (cameraPresent) {
+        // Signal to the backend that this is a mobile device with a camera,
+        // and this user should skip the hybrid handoff ("upload") step.
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'skip_upload';
+        form.appendChild(input);
       }
-
-      // Signal to the backend that this is a mobile device, and this user should skip the
-      // "hybrid handoff" step.
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'skip_upload';
-      form.appendChild(input);
 
       await trackEvent(DEVICE_CHECK_EVENT, {
         is_camera_capable_mobile: true,

@@ -87,5 +87,17 @@ describe TwoFactorOptionsPresenter do
         )
       end
     end
+
+    context 'when priority is usability ordered in a/b testing bucket' do
+      let(:presenter) do
+        described_class.new(user_agent: user_agent, priority_bucket: :usability_priority)
+      end
+
+      it 'supplies phone as the first option' do
+        expect(presenter.options.first.class).to eq(
+          TwoFactorAuthentication::PhoneSelectionPresenter,
+        )
+      end
+    end
   end
 end
