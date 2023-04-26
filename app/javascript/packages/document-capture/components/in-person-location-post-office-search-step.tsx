@@ -82,11 +82,13 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
+          forceRedirect(inPersonURL!);
         }
+      } catch {
+        setAutoSubmit(false);
       } finally {
         if (mountedRef.current) {
           setInProgress(false);
-          forceRedirect(inPersonURL!);
         }
       }
     },

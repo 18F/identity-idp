@@ -577,18 +577,16 @@ RSpec.describe 'In Person Proofing', js: true do
     before(:each) do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(false)
-
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      # prepare page
-      complete_prepare_step(user)
-      complete_location_step(user)
     end
 
     it 'does not capture separate state id address from residential address' do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
-
+      # prepare page
+      complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(user)
       complete_address_step(user)
       complete_ssn_step(user)
