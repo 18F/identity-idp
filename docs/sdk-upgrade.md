@@ -153,4 +153,8 @@ After successful A/B testing clears us to move to a new version of the Acuant SD
     ```
 3. We also need to grep the codebase for any outstanding references to the old version. Examples will likely include test files and React component default parameters. You can replace these strings with the new version. 
 
+    ```bash
+    git grep 11.M.M # previous
+    ``` 
+
 4. Create a pull request to move these changes to the main branch.
