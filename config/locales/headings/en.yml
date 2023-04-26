@@ -66,7 +66,7 @@ en:
     sign_in_without_sp: Sign in
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     ssn: Social Security Number
-    state_id: "State\u2011issued\u00A0ID"
+    state_id: State‑issued ID
     totp_setup:
       new: Add an authentication app
     verify: Verify your information
