@@ -477,7 +477,6 @@ feature 'Sign in' do
       email = user.email
       allow(FeatureManagement).to receive(:use_kms?).and_return(true)
       stub_aws_kms_client_invalid_ciphertext
-      allow(SessionEncryptorErrorHandler).to receive(:call)
 
       signin(email, 'invalid')
 
