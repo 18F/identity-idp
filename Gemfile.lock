@@ -34,10 +34,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: d8e7deb7da3aa43bae0e5b0891c8de123d492484
-  tag: 0.18.1-18f
+  revision: 5d9a9b0411e3bd79bf1159c94293ec55053884d4
+  tag: 0.18.2-18f
   specs:
-    saml_idp (0.18.0.pre.18f)
+    saml_idp (0.18.2.pre.18f)
       activesupport
       builder
       faraday
@@ -284,10 +284,10 @@ GEM
       railties (>= 5.0.0)
     faker (2.19.0)
       i18n (>= 1.6, < 2)
-    faraday (2.6.0)
+    faraday (2.7.4)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (3.0.1)
+    faraday-net_http (3.0.2)
     faraday-retry (2.0.0)
       faraday (~> 2.0)
     ffi (1.15.4)
@@ -435,7 +435,7 @@ GEM
       openssl (> 2.0, < 3.1)
     orm_adapter (0.5.0)
     parallel (1.22.1)
-    parser (3.2.0.0)
+    parser (3.2.2.0)
       ast (~> 2.4.1)
     pg (1.4.5)
     pg_query (2.2.0)

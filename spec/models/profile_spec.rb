@@ -264,6 +264,13 @@ describe Profile do
     end
 
     context 'activation guards against deactivation reasons' do
+      it 'does not activate a profile with gpo verification pending' do
+        profile.update(gpo_verification_pending_at: 1.day.ago)
+        profile.activate
+
+        expect(profile).to_not be_active
+      end
+
       it 'does not activate a profile if under fraud review' do
         # to be replaced
         profile.update(fraud_review_pending_at: 1.day.ago)
@@ -301,6 +308,18 @@ describe Profile do
     it 'sets active flag to false' do
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
+    end
+  end
+
+  describe '#activate_after_gpo_verification' do
+    it 'activates a profile after gpo verification' do
+      profile = create(
+        :profile, user: user, active: false,
+                  gpo_verification_pending_at: 1.day.ago
+      )
+      profile.activate_after_gpo_verification
+
+      expect(profile).to be_active
     end
   end
 
@@ -379,6 +398,16 @@ describe Profile do
         expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
         profile.activate_after_passing_review
       end
+    end
+  end
+
+  describe '#deactivate_for_gpo_verification' do
+    it 'sets a timestamp for gpo_verification_pending_at' do
+      profile = create(:profile, user: user)
+      profile.deactivate_for_gpo_verification
+
+      expect(profile).to_not be_active
+      expect(profile.gpo_verification_pending_at).to_not be_nil
     end
   end
 

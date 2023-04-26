@@ -144,6 +144,7 @@ es:
     verify_profile:
       instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
       name: Código único
+      return_to_profile: Regrese a su perfil
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo

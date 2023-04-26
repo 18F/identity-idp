@@ -110,12 +110,6 @@ fr:
           Veuillez prendre de nouvelles photos de votre pièce d’identité et
           réessayer. La profondeur de pixel de l’image prise en charge est de 24
           bits RGB.
-      no_camera:
-        explanation: Pour continuer, connectez-vous à votre compte %{app_name} sur tout
-          appareil équipé d’une caméra, comme un téléphone portable, une
-          tablette ou un ordinateur avec une webcam.
-        heading: Vous avez besoin d’une caméra pour vérifier votre identité
-        title: Appareil photo nécessaire
       not_a_file: La sélection n’était pas un fichier valide.
       pii:
         birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.

@@ -1,7 +1,5 @@
 <% title t('doc_auth.headings.welcome') %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], only_if_all: true, context: :idv)) %>
-
 <%= render 'shared/maintenance_window_alert' do %>
   <%= render JavascriptRequiredComponent.new(
         header: t('idv.welcome.no_js_header'),
