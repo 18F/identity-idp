@@ -192,4 +192,15 @@ describe 'devise/sessions/new.html.erb' do
       )
     end
   end
+
+  context 'with banner A/B test' do
+    let(:sign_in_a_b_test_bucket) { :banner }
+
+    it 'has a localized page heading' do
+      render
+
+      binding.pry
+      expect(rendered).to have_selector('h1', text: t('headings.sign_in_without_sp'))
+    end
+  end
 end
