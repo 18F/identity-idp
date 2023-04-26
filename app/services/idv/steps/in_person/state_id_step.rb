@@ -29,13 +29,16 @@ module Idv
             mark_step_complete(:address)
           end
 
-          if capture_secondary_id_enabled? && pii_from_user[:same_address_as_id] == 'false' && (pii_from_user[:address1] === pii_from_user[:state_id_address1])
-            pii_from_user.delete(:address1)
-            pii_from_user.delete(:address2)
-            pii_from_user.delete(:city)
-            pii_from_user.delete(:state)
-            pii_from_user.delete(:zipcode)
-            mark_step_incomplete(:address)
+          if capture_secondary_id_enabled?
+            if pii_from_user[:same_address_as_id] == 'false' &&
+               (pii_from_user[:address1] === pii_from_user[:state_id_address1])
+              pii_from_user.delete(:address1)
+              pii_from_user.delete(:address2)
+              pii_from_user.delete(:city)
+              pii_from_user.delete(:state)
+              pii_from_user.delete(:zipcode)
+              mark_step_incomplete(:address)
+            end
           end
         end
 
