@@ -1,4 +1,5 @@
 class StoreSpMetadataInSession
+  include AuthorizationCountConcern
   def initialize(session:, request_id:)
     @session = session
     @request_id = request_id
@@ -9,7 +10,7 @@ class StoreSpMetadataInSession
     @service_provider = requested_service_provider
 
     return if sp_request.is_a?(NullServiceProviderRequest)
-
+    bump_auth_count
     update_session
   end
 
