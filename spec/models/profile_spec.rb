@@ -263,28 +263,30 @@ describe Profile do
       profile.activate
     end
 
-    it 'does not activate a profile if under fraud review' do
-      # to be replaced
-      profile.update(fraud_review_pending_at: 1.day.ago)
+    context 'activation guards against deactivation reasons' do
+      it 'does not activate a profile if under fraud review' do
+        # to be replaced
+        profile.update(fraud_review_pending_at: 1.day.ago)
 
-      # replacing
-      profile.update(fraud_reviewing_at: 1.day.ago)
+        # replacing
+        profile.update(fraud_reviewing_at: 1.day.ago)
 
-      profile.activate
+        profile.activate
 
-      expect(profile).to_not be_active
-    end
+        expect(profile).to_not be_active
+      end
 
-    it 'does not activate a profile if rejected for fraud' do
-      # to be replaced
-      profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+      it 'does not activate a profile if rejected for fraud' do
+        # to be replaced
+        profile.update(fraud_rejection_at: Time.zone.now - 1.day)
 
-      # replacing
-      profile.update(fraud_rejected_at: Time.zone.now - 1.day)
+        # replacing
+        profile.update(fraud_rejected_at: Time.zone.now - 1.day)
 
-      profile.activate
+        profile.activate
 
-      expect(profile).to_not be_active
+        expect(profile).to_not be_active
+      end
     end
   end
 
