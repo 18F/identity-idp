@@ -99,7 +99,7 @@ describe RecaptchaEnterpriseValidator do
       before do
         stub_recaptcha_response(
           body: {
-            tokenProperties: { valid: false, action: },
+            tokenProperties: { valid: false, action:, invalidReason: 'EXPIRED' },
             event: {},
           },
           action:,
@@ -115,7 +115,10 @@ describe RecaptchaEnterpriseValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'tokenProperties' => { 'valid' => false, 'action' => action },
+            success: false,
+            score: nil,
+            errors: [],
+            reasons: ['EXPIRED'],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
@@ -146,7 +149,12 @@ describe RecaptchaEnterpriseValidator do
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
-          recaptcha_result: { 'error' => { 'code' => 400, 'status' => 'INVALID_ARGUMENT' } },
+          recaptcha_result: {
+            success: false,
+            score: nil,
+            errors: ['INVALID_ARGUMENT'],
+            reasons: [],
+          },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           recaptcha_version: 3,
@@ -204,8 +212,10 @@ describe RecaptchaEnterpriseValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'tokenProperties' => { 'valid' => true, 'action' => action },
-            'riskAnalysis' => { 'score' => score, 'reasons' => ['AUTOMATION'] },
+            success: true,
+            score:,
+            reasons: ['AUTOMATION'],
+            errors: [],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
@@ -240,8 +250,10 @@ describe RecaptchaEnterpriseValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'tokenProperties' => { 'valid' => true, 'action' => action },
-            'riskAnalysis' => { 'score' => score, 'reasons' => ['LOW_CONFIDENCE'] },
+            success: true,
+            score:,
+            reasons: ['LOW_CONFIDENCE'],
+            errors: [],
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
@@ -276,8 +288,10 @@ describe RecaptchaEnterpriseValidator do
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
-              'tokenProperties' => { 'valid' => true, 'action' => action },
-              'riskAnalysis' => { 'score' => score, 'reasons' => ['LOW_CONFIDENCE'] },
+              success: true,
+              score:,
+              reasons: ['LOW_CONFIDENCE'],
+              errors: [],
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,

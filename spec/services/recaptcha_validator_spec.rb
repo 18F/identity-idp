@@ -94,8 +94,10 @@ describe RecaptchaValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'success' => false,
-            'error-codes' => ['timeout-or-duplicate'],
+            success: false,
+            score: nil,
+            reasons: ['timeout-or-duplicate'],
+            errors: [],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
@@ -122,8 +124,10 @@ describe RecaptchaValidator do
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
-                'success' => false,
-                'error-codes' => ['missing-input-secret'],
+                success: false,
+                score: nil,
+                errors: ['missing-input-secret'],
+                reasons: [],
               },
               evaluated_as_valid: true,
               score_threshold: score_threshold,
@@ -150,8 +154,10 @@ describe RecaptchaValidator do
             expect(analytics).to have_logged_event(
               'reCAPTCHA verify result received',
               recaptcha_result: {
-                'success' => false,
-                'error-codes' => ['invalid-input-secret'],
+                success: false,
+                score: nil,
+                errors: ['invalid-input-secret'],
+                reasons: [],
               },
               evaluated_as_valid: true,
               score_threshold: score_threshold,
@@ -204,8 +210,10 @@ describe RecaptchaValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'success' => true,
-            'score' => score,
+            success: true,
+            score:,
+            errors: [],
+            reasons: [],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
@@ -232,8 +240,10 @@ describe RecaptchaValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'success' => true,
-            'score' => score,
+            success: true,
+            score:,
+            errors: [],
+            reasons: [],
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
@@ -252,8 +262,10 @@ describe RecaptchaValidator do
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
-              'success' => true,
-              'score' => score,
+              success: true,
+              score:,
+              errors: [],
+              reasons: [],
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,
@@ -294,8 +306,10 @@ describe RecaptchaValidator do
           expect(analytics).to have_logged_event(
             'reCAPTCHA verify result received',
             recaptcha_result: {
-              'success' => true,
-              'score' => score,
+              success: true,
+              score:,
+              errors: [],
+              reasons: [],
             },
             evaluated_as_valid: true,
             score_threshold: score_threshold,

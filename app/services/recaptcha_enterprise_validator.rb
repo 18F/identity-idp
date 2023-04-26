@@ -14,12 +14,8 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
     )
   end
 
-  def logged_recaptcha_result(recaptcha_result)
-    recaptcha_result&.slice('tokenProperties', 'riskAnalysis', 'name', 'error')
-  end
-
-  def recaptcha_response(recaptcha_token)
-    faraday.post(
+  def recaptcha_result(recaptcha_token)
+    response = faraday.post(
       assessment_url,
       {
         event: {
@@ -31,6 +27,20 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
     ) do |request|
       request.options.context = { service_name: 'recaptcha' }
     end
+
+    if response.body['error'].present?
+      RecaptchaResult.new(success: false, errors: [response.body.dig('error', 'status')].compact)
+    else
+      RecaptchaResult.new(
+        success: response.body.dig('tokenProperties', 'valid') == true &&
+          response.body.dig('tokenProperties', 'action') == recaptcha_action,
+        score: response.body.dig('riskAnalysis', 'score'),
+        reasons: [
+          *response.body.dig('riskAnalysis', 'reasons').to_a,
+          response.body.dig('tokenProperties', 'invalidReason'),
+        ].compact,
+      )
+    end
   end
 
   def faraday
@@ -39,13 +49,6 @@ class RecaptchaEnterpriseValidator < RecaptchaValidator
       conn.request :json
       conn.response :json
     end
-  end
-
-  def recaptcha_result_valid?(recaptcha_result)
-    return true if recaptcha_result.blank? || recaptcha_result['error'].present?
-    recaptcha_result['tokenProperties']['valid'] &&
-      recaptcha_result['tokenProperties']['action'] == recaptcha_action &&
-      recaptcha_score_meets_threshold?(recaptcha_result['riskAnalysis']['score'])
   end
 
   def recaptcha_site_key
