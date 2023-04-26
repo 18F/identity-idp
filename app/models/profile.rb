@@ -96,7 +96,7 @@ class Profile < ApplicationRecord
   end
 
   def has_deactivation_reason?
-    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+    fraud_reviewing? || fraud_rejected? || gpo_verification_pending?
   end
 
   def deactivate_for_gpo_verification
