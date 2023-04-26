@@ -239,4 +239,146 @@ describe Idv::Steps::InPerson::StateIdStep do
       end
     end
   end
+
+  describe '#call' do
+    let(:pii_from_user) { flow.flow_session[:pii_from_user] }
+    let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
+    let(:capture_secondary_id_enabled) { true }
+
+    let(:dob) { '1972-02-23' }
+    let(:same_address_as_id) { 'false' }
+    # residential
+    let(:address1) { '123 Sesame Street' }
+    let(:address2) { 'Apt. #C' }
+    let(:city) { 'Twin Peaks' }
+    let(:state) { 'Nevada' }
+    let(:zipcode) { '90001' }
+    # state_id_
+    let(:state_id_address1) { '123 Sesame Street' }
+    let(:state_id_address2) { 'Apt. #C' }
+    let(:state_id_city) { 'Twin Peaks' }
+    let(:state_id_state) { 'Nevada' }
+    let(:state_id_zipcode) { '90001' }
+    let(:state_id_number) { 'ABC123234' }
+    let(:state_id_jurisdiction) { 'NEV'}
+
+    let(:submitted_values) { { 
+      dob:,
+      same_address_as_id:,
+      address1:,
+      address2:,
+      city:,
+      state:,
+      zipcode:,
+      state_id_address1:,
+      state_id_address2:,
+      state_id_city:,
+      state_id_state:,
+      state_id_zipcode:,
+      state_id_number:,
+      state_id_jurisdiction:,
+    } }
+
+    before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+        and_return(true)
+      allow(step).to receive(:current_user).
+        and_return(user)
+      allow(user).to receive(:establishing_in_person_enrollment).
+        and_return(enrollment)
+    end
+
+    # User selects radio button I live at the address on state-issued ID (same_address_as_id = 'true').
+    # On Verify, the user updates state-issued ID and
+    # changes response to No, I live at a different address ((same_address_as_id = 'false'))
+  
+    context 'when capture secondary id is enabled, same_address_as_id is "false", but address1 === state_id_address1' do
+      it 'marks the address step as incomplete (nil)' do
+        Idv::StateIdForm::ATTRIBUTES.each do |attr|
+          expect(flow.flow_session[:pii_from_user]).to_not have_key attr
+        end
+
+        pii_from_user[:same_address_as_id] = same_address_as_id
+        pii_from_user[:state_id_address1] = '123 Sesame Street'
+        pii_from_user[:state_id_address2] = 'Apt. #C'
+        pii_from_user[:state_id_city] = state_id_city
+        pii_from_user[:state_id_state] = state_id_state
+        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:state_id_number] = state_id_number
+        pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
+        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address2] = 'Apt. #C'
+        pii_from_user[:city] = city
+        pii_from_user[:state] = state
+        pii_from_user[:zipcode] = zipcode
+
+        step.call
+
+        address_step = flow.flow_session[Idv::Steps::InPerson::AddressStep.name]
+        expect(address_step).to eq nil
+      end
+
+      it 'retains state_id_VAR key/values in flow session' do
+        Idv::StateIdForm::ATTRIBUTES.each do |attr|
+          expect(flow.flow_session[:pii_from_user]).to_not have_key attr
+        end
+
+        pii_from_user[:same_address_as_id] = same_address_as_id
+        pii_from_user[:state_id_address1] = '123 Sesame Street'
+        pii_from_user[:state_id_address2] = 'Apt. #C'
+        pii_from_user[:state_id_city] = state_id_city
+        pii_from_user[:state_id_state] = state_id_state
+        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:state_id_number] = state_id_number
+        pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
+        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address2] = 'Apt. #C'
+        pii_from_user[:city] = city
+        pii_from_user[:state] = state
+        pii_from_user[:zipcode] = zipcode
+
+        step.call
+
+        expect(flow.flow_session[:pii_from_user]).to include(
+          state_id_address1:,
+          state_id_address2:,
+          state_id_city:,
+          state_id_state:,
+          state_id_zipcode:,
+          state_id_number:,
+          state_id_jurisdiction:,
+        )
+      end
+
+      it 'removes address values (non state_id_...) in flow session' do
+        Idv::StateIdForm::ATTRIBUTES.each do |attr|
+          expect(flow.flow_session[:pii_from_user]).to_not have_key attr
+        end
+
+        pii_from_user[:same_address_as_id] = same_address_as_id
+        pii_from_user[:state_id_address1] = '123 Sesame Street'
+        pii_from_user[:state_id_address2] = 'Apt. #C'
+        pii_from_user[:state_id_city] = state_id_city
+        pii_from_user[:state_id_state] = state_id_state
+        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:state_id_number] = state_id_number
+        pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
+        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address2] = 'Apt. #C'
+        pii_from_user[:city] = city
+        pii_from_user[:state] = state
+        pii_from_user[:zipcode] = zipcode
+
+        step.call
+
+        expect(flow.flow_session[:pii_from_user]).not_to include(
+          address1:,
+          address2:,
+          city:,
+          state:,
+          zipcode:,
+        )
+      end
+    end
+  end
 end
