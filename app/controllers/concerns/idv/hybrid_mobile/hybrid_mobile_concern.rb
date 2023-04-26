@@ -5,10 +5,6 @@ module Idv
 
       include AcuantConcern
 
-      included do
-        before_action :render_404_if_hybrid_mobile_controllers_disabled
-      end
-
       def check_valid_document_capture_session
         if !document_capture_user
           # The user has not "logged in" to document capture via the EntryController
@@ -47,10 +43,6 @@ module Idv
         document_capture_user.reproof_for_irs?(
           service_provider: current_sp,
         ).present?
-      end
-
-      def render_404_if_hybrid_mobile_controllers_disabled
-        render_not_found unless IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
       end
     end
   end
