@@ -9,6 +9,8 @@
 
 <% title t('titles.doc_auth.address') %>
 
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
+
 <%= render AlertComponent.new(
       type: :info,
       id: 'puerto-rico-extra-text',
@@ -17,8 +19,6 @@
       t('doc_auth.info.address_guidance_puerto_rico_html')
     end
 %>
-
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
 <%= simple_form_for(
       :idv_form,
