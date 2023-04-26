@@ -44,10 +44,6 @@ module Idv
           service_provider: current_sp,
         ).present?
       end
-
-      def render_404_if_hybrid_mobile_controllers_disabled
-        render_not_found unless IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
-      end
     end
   end
 end
