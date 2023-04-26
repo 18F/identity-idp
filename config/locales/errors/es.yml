@@ -31,9 +31,9 @@ es:
         como alternativa.
       throttled_heading: No pudimos verificar la identificación
       throttled_subheading: Intente tomar nuevas fotografías.
-      throttled_text_html: '<strong>Por favor, inténtelo de nuevo en
-        %{timeout}.</strong> Por su seguridad, limitamos el número de veces que
-        puede intentar verificar un documento en línea.'
+      throttled_text_html: 'Por su seguridad, limitamos el número de veces que
+        puede intentar verificar un documento en línea. <strong>Inténtelo de nuevo en
+        %{timeout}.</strong>'
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

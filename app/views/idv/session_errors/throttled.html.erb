@@ -2,14 +2,6 @@
       'idv/shared/error',
       heading: t('errors.doc_auth.throttled_heading'),
       options: [
-        decorated_session.sp_name && {
-          url: return_to_sp_failure_to_proof_path(
-            step: 'verify_info',
-            location: request.params[:action],
-          ),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-          new_tab: true,
-        },
         {
           url: MarketingSite.contact_url,
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
@@ -26,6 +18,22 @@
                 except: :seconds,
               ),
             ) %>
+          <% if decorated_session.sp_name.present? %>
+            <p>
+              <strong>
+                <%= link_to(
+                  t(
+                    'idv.cancel.headings.exit.with_sp',
+                    app_name: APP_NAME, sp_name: decorated_session.sp_name,
+                  ),
+                  return_to_sp_failure_to_proof_path(
+                    step: 'verify_info',
+                    location: request.params[:action],
+                  ),
+                ) %>
+              </strong>
+            </p>
+          <% end %>
       </p>
     <% end %>
 
