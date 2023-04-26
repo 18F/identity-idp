@@ -260,24 +260,26 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:state_id_state) { 'Nevada' }
     let(:state_id_zipcode) { '90001' }
     let(:state_id_number) { 'ABC123234' }
-    let(:state_id_jurisdiction) { 'NEV'}
+    let(:state_id_jurisdiction) { 'NEV' }
 
-    let(:submitted_values) { { 
-      dob:,
-      same_address_as_id:,
-      address1:,
-      address2:,
-      city:,
-      state:,
-      zipcode:,
-      state_id_address1:,
-      state_id_address2:,
-      state_id_city:,
-      state_id_state:,
-      state_id_zipcode:,
-      state_id_number:,
-      state_id_jurisdiction:,
-    } }
+    let(:submitted_values) do
+      {
+        dob:,
+        same_address_as_id:,
+        address1:,
+        address2:,
+        city:,
+        state:,
+        zipcode:,
+        state_id_address1:,
+        state_id_address2:,
+        state_id_city:,
+        state_id_state:,
+        state_id_zipcode:,
+        state_id_number:,
+        state_id_jurisdiction:,
+      }
+    end
 
     before(:each) do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
@@ -288,11 +290,12 @@ describe Idv::Steps::InPerson::StateIdStep do
         and_return(enrollment)
     end
 
-    # User selects radio button I live at the address on state-issued ID (same_address_as_id = 'true').
+    # User picks radio button I live at the address on state-issued ID, same_address_as_id = 'true'
     # On Verify, the user updates state-issued ID and
     # changes response to No, I live at a different address ((same_address_as_id = 'false'))
-  
-    context 'when capture secondary id is enabled, same_address_as_id is "false", but address1 === state_id_address1' do
+
+    context 'when capture secondary id is enabled, same_address_as_id is "false",
+      but address1 === state_id_address1' do
       it 'marks the address step as incomplete (nil)' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
@@ -306,7 +309,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:state_id_zipcode] = state_id_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
-        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address1] = '123 Sesame Street'
         pii_from_user[:address2] = 'Apt. #C'
         pii_from_user[:city] = city
         pii_from_user[:state] = state
@@ -331,7 +334,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:state_id_zipcode] = state_id_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
-        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address1] = '123 Sesame Street'
         pii_from_user[:address2] = 'Apt. #C'
         pii_from_user[:city] = city
         pii_from_user[:state] = state
@@ -363,7 +366,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:state_id_zipcode] = state_id_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
-        pii_from_user[:address1] = '123 Sesame Street' 
+        pii_from_user[:address1] = '123 Sesame Street'
         pii_from_user[:address2] = 'Apt. #C'
         pii_from_user[:city] = city
         pii_from_user[:state] = state
