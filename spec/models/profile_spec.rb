@@ -439,7 +439,7 @@ describe Profile do
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
 
-      it 'sets the fraud_rejection_at timestamp' do
+      it 'sets the fraud_rejected_at timestamp' do
         expect(profile.fraud_rejected_at).to_not be_nil
       end
     end
