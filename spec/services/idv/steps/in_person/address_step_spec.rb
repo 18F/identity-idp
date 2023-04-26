@@ -147,12 +147,12 @@ describe Idv::Steps::InPerson::AddressStep do
     let(:address1) { '123 Fourth St' }
     let(:uuid) { '0000' }
     let(:params) { ActionController::Parameters.new }
-    
+
     before do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
     end
-  
+
     context 'with secondary capture enabled' do
       let(:capture_secondary_id_enabled) { true }
 
