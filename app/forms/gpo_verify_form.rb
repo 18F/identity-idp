@@ -90,8 +90,7 @@ class GpoVerifyForm
   end
 
   def threatmetrix_check_failed?
-    status = pending_profile&.proofing_components&.[]('threatmetrix_review_status')
-    !status.nil? && status != 'pass'
+    user.fraud_review_pending? || user.fraud_rejection?
   end
 
   def activate_profile
