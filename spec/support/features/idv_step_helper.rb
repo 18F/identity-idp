@@ -60,7 +60,7 @@ module IdvStepHelper
   end
 
   def click_what_to_bring_link
-    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     click_link t('in_person_proofing.body.barcode.learn_more')
   end
 

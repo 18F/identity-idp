@@ -74,10 +74,10 @@ en:
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
           with you to the Post Office:'
         verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
-        verify_step_enter_pii: Enter your name, date of birth, state-issued ID number,
-          address and Social Security number.
+        verify_step_enter_pii: "Enter your name, date of birth, state\u2011issued\u00A0ID number,
+          address and Social Security number."
       state_id:
-        alert_message: 'Your state-issued ID must not be expired. Accepted forms of ID are:'
+        alert_message: "Your state\u2011issued\u00A0ID must not be expired. Accepted forms of ID are:"
         id_types:
           - State Driver’s License
           - State Non-Driver’s Identification Card
@@ -92,10 +92,10 @@ en:
           unsupported_chars: 'Our system cannot read the following characters:
             %{char_list}. Please try again using substitutes for those
             characters.'
-        same_address: Is this address displayed on the state-issued ID that you are
-          bringing to the Post Office?
+        same_address: "Is this address displayed on the state\u2011issued\u00A0ID that you are
+          bringing to the Post Office?"
         same_address_choice_no: I have a different address on my ID
-        same_address_choice_yes: This address is on my state-issued ID
+        same_address_choice_yes: "This address is on my state\u2011issued\u00A0ID"
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
@@ -121,9 +121,9 @@ en:
               missing_month_day_year: Enter a date of birth
               range_min_age: You must be over 13 years of age to use %{app_name}
               range_overflow: Enter a date that is in the past
-        same_address_as_id: Do you currently live at the address listed on your state-issued ID?
+        same_address_as_id: "Do you currently live at the address listed on your state\u2011issued\u00A0ID?"
         same_address_as_id_no: No, I live at a different address
-        same_address_as_id_yes: Yes, I live at the address on my state-issued ID
+        same_address_as_id_yes: "Yes, I live at the address on my state\u2011issued\u00A0ID"
         state_id_jurisdiction: Issuing state
         state_id_jurisdiction_hint: This is the state that issued your ID
         state_id_jurisdiction_prompt: '- Select -'
@@ -132,15 +132,15 @@ en:
         zipcode: ZIP Code
     headings:
       address: Enter your current residential address
-      barcode: Show this barcode and your state-issued ID at a Post Office to finish
-        verifying your identity
+      barcode: "Show this barcode and your state\u2011issued\u00A0ID at a Post Office to finish
+        verifying your identity"
       cta: Having trouble verifying your ID online?
       cta_variant: Try verifying your ID in person
       id_address: Address on your ID
       po_search:
         location: Find a participating Post Office
       prepare: Verify your identity in person
-      state_id_milestone_2: Enter the information on your state-issued ID
+      state_id_milestone_2: "Enter the information on your state\u2011issued\u00A0ID"
       switch_back: Switch back to your computer to prepare to verify your identity in person
       update_address: Update your current address
       update_state_id: Update the information on your ID

@@ -426,6 +426,7 @@ development:
     agency_id: 1
     ial: 2
     push_notification_url: http://localhost:9292/api/push_notifications
+    return_to_sp_url: 'http://localhost:9292'
     redirect_uris:
       - 'http://localhost:9292/'
       - 'http://localhost:9292/auth/result'
@@ -433,6 +434,7 @@ development:
     certs:
       - 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
+    in_person_proofing_enabled: true
 
   'urn:gov:gsa:openidconnect:sp:mock_irs':
     agency_id: 1
