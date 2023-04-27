@@ -67,7 +67,7 @@ class User < ApplicationRecord
   end
 
   def fully_registered?
-    MfaPolicy.new(self).two_factor_enabled?
+    !!registration_log&.registered_at
   end
 
   def confirmed?
