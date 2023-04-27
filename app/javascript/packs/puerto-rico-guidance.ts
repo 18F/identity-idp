@@ -41,6 +41,17 @@ function onUpdateAddress() {
   showOrHidePuertoRicoExtras(updateAddressStateSelector?.value);
 }
 
+function onUpdate() {
+  const { pathname } = window.location;
+
+  if (pathname === '/verify/in_person/state_id') {
+    onUpdateStateId();
+  }
+  if (pathname === '/verify/in_person/address') {
+    onUpdateAddress();
+  }
+}
+
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 document
   .getElementById('state_id_identity_doc_address_state')
@@ -54,5 +65,4 @@ onStateSelectionChange();
 onIdentityDocStateSelectionChange();
 onAddressStateSelectionChange();
 
-onUpdateStateId();
-onUpdateAddress();
+onUpdate();
