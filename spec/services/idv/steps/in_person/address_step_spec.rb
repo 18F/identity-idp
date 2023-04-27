@@ -148,63 +148,17 @@ describe Idv::Steps::InPerson::AddressStep do
     let(:uuid) { '0000' }
     let(:params) { ActionController::Parameters.new }
 
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(true)
+    it 'returns true when flow_session has key address1' do
+      pii_from_user[:address1] = address1
+      expect(step.extra_view_variables).to include(
+        updating_address: true,
+      )
     end
 
-    context 'with secondary capture enabled' do
-      let(:capture_secondary_id_enabled) { true }
-
-      it 'capture secondary id enabled returns true' do
-        expect(step.extra_view_variables).to include(
-          capture_secondary_id_enabled: true,
-        )
-      end
-
-      it 'returns true when flow_session has key address1 and the value is not nil' do
-        pii_from_user[:address1] = address1
-        expect(step.extra_view_variables).to include(
-          updating_address: true,
-        )
-      end
-
-      it 'returns false when flow_session has key address1 but the value is nil' do
-        pii_from_user[:address1] = nil
-        expect(step.extra_view_variables).to include(
-          updating_address: false,
-        )
-      end
-
-      it 'returns false when flow_session does not have key address1' do
-        pii_from_user[:uuid] = uuid
-        expect(step.extra_view_variables).to include(
-          updating_address: false,
-        )
-      end
-    end
-
-    context 'with secondary capture disabled' do
-      let(:capture_secondary_id_enabled) { false }
-
-      it 'capture secondary id enabled returns false' do
-        expect(step.extra_view_variables).to include(
-          capture_secondary_id_enabled: false,
-        )
-      end
-
-      it 'returns true when flow_session has key address1' do
-        pii_from_user[:address1] = address1
-        expect(step.extra_view_variables).to include(
-          updating_address: true,
-        )
-      end
-
-      it 'returns false when flow_session does not have key address1' do
-        expect(step.extra_view_variables).to include(
-          updating_address: false,
-        )
-      end
+    it 'returns false when flow_session does not have key address1' do
+      expect(step.extra_view_variables).to include(
+        updating_address: false,
+      )
     end
   end
 end
