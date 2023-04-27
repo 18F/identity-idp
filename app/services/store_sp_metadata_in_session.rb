@@ -10,8 +10,8 @@ class StoreSpMetadataInSession
     @service_provider = requested_service_provider
 
     return if sp_request.is_a?(NullServiceProviderRequest)
-    bump_auth_count
     update_session
+    bump_auth_count
   end
 
   private
@@ -39,6 +39,10 @@ class StoreSpMetadataInSession
       request_id: sp_request.uuid,
       requested_attributes: sp_request.requested_attributes,
     }
+  end
+
+  def sp_session
+    session[:sp]
   end
 
   def aal_requested
