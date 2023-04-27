@@ -55,7 +55,7 @@ describe 'two_factor_authentication/otp_expired/show.html.erb' do
   end
 
   context 'if a user is signing in to an existing account' do
-    let(:user) { create(:user, :signed_up, :with_phone) }
+    let(:user) { create(:user, :fully_registered, :with_phone) }
 
     it 'use another phone number option is not on screen' do
       render

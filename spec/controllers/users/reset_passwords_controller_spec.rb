@@ -237,7 +237,7 @@ describe Users::ResetPasswordsController, devise: true do
           Devise.token_generator.generate(User, :reset_password_token)
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           reset_password_sent_at: Time.zone.now - Devise.reset_password_within - 1.hour,
           reset_password_token: db_confirmation_token,
         )
@@ -274,7 +274,7 @@ describe Users::ResetPasswordsController, devise: true do
           Devise.token_generator.generate(User, :reset_password_token)
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now,
         )
@@ -335,7 +335,7 @@ describe Users::ResetPasswordsController, devise: true do
         freeze_time do
           user = create(
             :user,
-            :signed_up,
+            :fully_registered,
             reset_password_token: db_confirmation_token,
             reset_password_sent_at: Time.zone.now,
           )
@@ -513,7 +513,7 @@ describe Users::ResetPasswordsController, devise: true do
     context 'user exists' do
       let(:email) { 'test@example.com' }
       let(:email_param) { { email: email } }
-      let!(:user) { create(:user, :signed_up, **email_param) }
+      let!(:user) { create(:user, :fully_registered, **email_param) }
       let(:analytics_hash) do
         {
           success: true,
@@ -592,7 +592,7 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         stub_attempts_tracker
 
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
 
         analytics_hash = {

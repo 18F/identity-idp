@@ -5,7 +5,7 @@ describe EmailConfirmationTokenValidator do
     subject { described_class.new(email_address, current_user) }
 
     context 'the email of the user does not match the user confirming' do
-      let(:current_user) { create(:user, :signed_up) }
+      let(:current_user) { create(:user, :fully_registered) }
       let(:email_address) do
         create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
       end

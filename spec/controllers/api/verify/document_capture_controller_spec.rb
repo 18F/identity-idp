@@ -19,7 +19,7 @@ describe Api::Verify::DocumentCaptureController do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:password) { 'iambatman' }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:flow_path) { 'standard' }
   let(:analytics_data) do
     { browser_attributes:

@@ -7,7 +7,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:timer) { JobHelpers::Timer.new }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
   let(:instance) { described_class.new }
 

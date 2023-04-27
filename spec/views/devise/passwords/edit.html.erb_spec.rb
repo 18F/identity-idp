@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'devise/passwords/edit.html.erb' do
   before do
-    user = build_stubbed(:user, :signed_up)
+    user = build_stubbed(:user, :fully_registered)
     @reset_password_form = ResetPasswordForm.new(user)
   end
 

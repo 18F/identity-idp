@@ -58,7 +58,7 @@ feature 'Accessibility on pages that require authentication', :js do
     end
 
     scenario 'two factor auth page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))

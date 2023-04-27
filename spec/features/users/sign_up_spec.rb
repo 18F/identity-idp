@@ -194,7 +194,7 @@ feature 'Sign Up' do
 
   context 'user accesses password screen with already confirmed token', email: true do
     it 'returns them to the home page' do
-      create(:user, :signed_up, confirmation_token: 'foo')
+      create(:user, :fully_registered, confirmation_token: 'foo')
 
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
@@ -219,7 +219,7 @@ feature 'Sign Up' do
 
   context "user A is signed in and accesses password creation page with User B's token" do
     it "redirects to User A's account page" do
-      create(:user, :signed_up, email: 'userb@test.com', confirmation_token: 'foo')
+      create(:user, :fully_registered, email: 'userb@test.com', confirmation_token: 'foo')
       sign_in_and_2fa_user
       visit sign_up_enter_password_path(confirmation_token: 'foo')
 
@@ -255,7 +255,7 @@ feature 'Sign Up' do
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user(user)
     visit authenticator_setup_path
 
@@ -264,7 +264,7 @@ feature 'Sign Up' do
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
-    create(:user, :signed_up)
+    create(:user, :fully_registered)
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path

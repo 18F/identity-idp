@@ -8,7 +8,7 @@ feature 'taking an action that revokes remember device' do
   end
 
   context 'clicking forget browsers' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'forgets the current browser' do
       sign_in_with_remember_device_and_sign_out

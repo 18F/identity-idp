@@ -21,7 +21,7 @@ feature 'IRS Attempts API Event Tracking' do
 
   scenario 'signing in from an IRS SP with an attempts api session id tracks events' do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
@@ -48,7 +48,7 @@ feature 'IRS Attempts API Event Tracking' do
 
   scenario 'signing in from an IRS SP with a tid tracks events' do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
@@ -77,7 +77,7 @@ feature 'IRS Attempts API Event Tracking' do
     freeze_time do
       service_provider.update!(irs_attempts_api_enabled: false)
 
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
@@ -94,7 +94,7 @@ feature 'IRS Attempts API Event Tracking' do
 
   scenario 'signing in from an IRS SP without an attempts api session id or tid tracks events' do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
@@ -112,7 +112,7 @@ feature 'IRS Attempts API Event Tracking' do
     freeze_time do
       service_provider.update!(irs_attempts_api_enabled: false)
 
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
@@ -129,7 +129,7 @@ feature 'IRS Attempts API Event Tracking' do
 
   scenario 'reset password from an IRS with new browser session and request_id tracks events' do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
         irs_attempts_api_session_id: 'test-session-id',

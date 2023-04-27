@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'users/webauthn_setup/new.html.erb' do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'webauthn platform' do
     let(:platform_authenticator) { true }
