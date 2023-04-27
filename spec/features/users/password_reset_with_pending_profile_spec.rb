@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'reset password with pending profile' do
   include PersonalKeyHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   scenario 'password reset email includes warning for pending profile' do
     profile = create(

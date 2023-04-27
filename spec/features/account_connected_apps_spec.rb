@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Account connected applications' do
-  let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
+  let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(
       :service_provider_identity,

@@ -9,7 +9,7 @@ feature 'PIV/CAC Management' do
 
   context 'with no piv/cac associated yet' do
     let(:uuid) { SecureRandom.uuid }
-    let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
+    let(:user) { create(:user, :fully_registered, :with_phone, with: { phone: '+1 202-555-1212' }) }
 
     scenario 'allows association of a piv/cac with an account' do
       allow(Identity::Hostdata).to receive(:env).and_return('test')
@@ -152,7 +152,13 @@ feature 'PIV/CAC Management' do
 
   context 'with a piv/cac associated' do
     let(:user) do
-      create(:user, :signed_up, :with_piv_or_cac, :with_phone, with: { phone: '+1 202-555-1212' })
+      create(
+        :user,
+        :fully_registered,
+        :with_piv_or_cac,
+        :with_phone,
+        with: { phone: '+1 202-555-1212' },
+      )
     end
 
     scenario 'does allow association of another piv/cac with the account' do

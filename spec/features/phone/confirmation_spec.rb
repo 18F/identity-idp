@@ -34,7 +34,7 @@ describe 'phone otp confirmation' do
   end
 
   context 'on sign in' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:phone) { user.phone_configurations.first.phone }
 
     it_behaves_like 'phone otp confirmation', :sms
@@ -57,7 +57,7 @@ describe 'phone otp confirmation' do
   end
 
   context 'add phone' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it_behaves_like 'phone otp confirmation', :sms
     it_behaves_like 'phone otp confirmation', :voice

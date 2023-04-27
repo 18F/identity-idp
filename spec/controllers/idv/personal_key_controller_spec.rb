@@ -28,7 +28,7 @@ describe Idv::PersonalKeyController do
   end
 
   let(:password) { 'sekrit phrase' }
-  let(:user) { create(:user, :signed_up, password: password) }
+  let(:user) { create(:user, :fully_registered, password: password) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
   let(:idv_session) do

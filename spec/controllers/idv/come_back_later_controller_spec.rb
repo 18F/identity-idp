@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::ComeBackLaterController do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user, :fully_registered) }
   let(:pending_profile_requires_verification) { true }
 
   before do
