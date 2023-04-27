@@ -253,7 +253,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:city) { 'Twin Peaks' }
     let(:state) { 'Nevada' }
     let(:zipcode) { '90001' }
-    # state_id_
+    # identity_doc_
     let(:identity_doc_address1) { '123 Sesame Street' }
     let(:identity_doc_address2) { 'Apt. #C' }
     let(:identity_doc_city) { 'Twin Peaks' }
@@ -290,9 +290,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         and_return(enrollment)
     end
 
-    # User picks radio button I live at the address on state-issued ID, same_address_as_id = 'true'
-    # On Verify, the user updates state-issued ID and
-    # changes response to No, I live at a different address ((same_address_as_id = 'false'))
+    # User picks "Yes, I live at the address on my state-issued ID"
+    #   which sets same_address_as_id = 'true'
+    # On verify/in_person/verify, user clicks Update for state-issued ID.
+    # On verify/in_person/redo_state_id, the user changes response from "Yes,..."
+    #   to "No, I live at a different address" which sets same_address_as_id = 'false'
 
     context 'when capture secondary id is enabled, same_address_as_id is "false",
       but address1 === identity_doc_address1' do
@@ -321,7 +323,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         expect(address_step).to eq nil
       end
 
-      it 'retains state_id_VAR key/values in flow session' do
+      it 'retains identity_doc_ attributes and values in flow session' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
@@ -353,7 +355,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         )
       end
 
-      it 'removes address values (non state_id_...) in flow session' do
+      it 'removes address values (non identity_doc_ attributes) in flow session' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
