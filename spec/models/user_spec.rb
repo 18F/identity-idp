@@ -130,14 +130,14 @@ RSpec.describe User do
     end
 
     context 'with mfa-enabled user' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       it { expect(fully_registered?).to eq(true) }
     end
   end
 
   context 'when identities are present' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:active_identity) do
       ServiceProviderIdentity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
     end
@@ -155,7 +155,7 @@ RSpec.describe User do
   end
 
   context 'when user has multiple identities' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     before do
       user.identities << ServiceProviderIdentity.create(
@@ -180,7 +180,7 @@ RSpec.describe User do
   context 'when user has multiple profiles' do
     describe '#active_profile' do
       it 'returns the only active profile' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         profile1 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
         _profile2 = create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
 
@@ -190,7 +190,7 @@ RSpec.describe User do
   end
 
   context 'when user has IPP enrollments' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     let(:failed_enrollment_profile) do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
@@ -307,7 +307,7 @@ RSpec.describe User do
 
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       user.identities << ServiceProviderIdentity.create(
         service_provider: 'entity_id', session_uuid: SecureRandom.uuid,
       )
@@ -384,7 +384,7 @@ RSpec.describe User do
     let(:rules_of_use_horizon_years) { 6 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
-    let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+    let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
     before do
       allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
         and_return(rules_of_use_horizon_years)
@@ -1111,7 +1111,7 @@ RSpec.describe User do
   end
 
   describe '#recent_events' do
-    let!(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
+    let!(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
 
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
     let!(:identity) do

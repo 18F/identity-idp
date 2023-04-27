@@ -3,7 +3,7 @@ require 'rails_helper'
 describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
-  let(:user) { build(:user, :signed_up) }
+  let(:user) { build(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
   let(:international_code) { 'US' }
   let(:params) { { phone:, international_code:, otp_delivery_preference: 'sms' } }

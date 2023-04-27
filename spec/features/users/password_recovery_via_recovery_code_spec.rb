@@ -6,7 +6,7 @@ feature 'Password recovery via personal key' do
   include SamlAuthHelper
   include SpAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 

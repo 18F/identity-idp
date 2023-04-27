@@ -18,7 +18,7 @@ describe UserEventCreator do
       cookie_jar: cookie_jar,
     )
   end
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
   let(:event_type) { 'account_created' }
 

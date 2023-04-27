@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'legacy passwords' do
   scenario 'signing in with a password digested by the uak verifier updates the digest' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
     )
@@ -23,7 +23,7 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with an incorrect uak password digest does not grant access' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest('legacy password'),
     )
@@ -37,7 +37,7 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with a personal key digested by the uak verifier make a new digest' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
     )
@@ -56,7 +56,7 @@ feature 'legacy passwords' do
   end
 
   scenario 'signing in with an incorrect uak personal key digest does not grant access' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     user.update!(
       encrypted_recovery_code_digest: Encryption::UakPasswordVerifier.digest('1111 2222 3333 4444'),
     )

@@ -175,7 +175,7 @@ FactoryBot.define do
       role { :tech }
     end
 
-    trait :signed_up do
+    trait :fully_registered do
       with_phone
 
       after :create do |user|
@@ -189,7 +189,7 @@ FactoryBot.define do
     end
 
     trait :proofed do
-      signed_up
+      fully_registered
 
       after :build do |user|
         create(:profile, :active, :verified, :with_pii, user: user)
@@ -215,7 +215,7 @@ FactoryBot.define do
     end
 
     trait :deactivated_fraud_profile do
-      signed_up
+      fully_registered
 
       after :build do |user|
         create(
@@ -229,7 +229,7 @@ FactoryBot.define do
     end
 
     trait :deactivated_password_reset_profile do
-      signed_up
+      fully_registered
 
       after :build do |user|
         create(:profile, :password_reset, :with_pii, user: user)

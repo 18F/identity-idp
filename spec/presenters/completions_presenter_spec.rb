@@ -10,7 +10,7 @@ describe CompletionsPresenter do
       ),
     ]
   end
-  let(:current_user) { create(:user, :signed_up, identities: identities) }
+  let(:current_user) { create(:user, :fully_registered, identities: identities) }
   let(:current_sp) { create(:service_provider, friendly_name: 'Friendly service provider') }
   let(:decrypted_pii) do
     {

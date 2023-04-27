@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'New device tracking' do
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'user has existing devices' do
     before do

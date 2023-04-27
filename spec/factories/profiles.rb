@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :profile do
-    association :user, factory: %i[user signed_up]
+    association :user, factory: %i[user fully_registered]
 
     transient do
       pii { false }

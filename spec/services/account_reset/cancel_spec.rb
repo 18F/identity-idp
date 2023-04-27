@@ -3,7 +3,7 @@ require 'rails_helper'
 describe AccountReset::Cancel do
   include AccountResetHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   it 'validates presence of token' do
     request = AccountReset::Cancel.new(nil).call

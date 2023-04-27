@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'totp management' do
   context 'when the user has totp enabled' do
-    let(:user) { create(:user, :signed_up, :with_authentication_app) }
+    let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
     it 'allows the user to disable their totp app' do
       sign_in_and_2fa_user(user)
@@ -35,7 +35,7 @@ describe 'totp management' do
   end
 
   context 'when the user has totp disabled' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'allows the user to setup a totp app' do
       sign_in_and_2fa_user(user)
