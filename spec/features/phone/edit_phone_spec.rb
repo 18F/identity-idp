@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'editing a phone' do
   it 'allows a user to edit one of their phone numbers' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     phone_configuration = user.phone_configurations.first
     sign_in_and_2fa_user(user)
 
@@ -13,7 +13,7 @@ describe 'editing a phone' do
   end
 
   it "does not allow a user to edit another user's phone number" do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
 
     visit(manage_phone_path(id: create(:phone_configuration).id))
@@ -23,7 +23,7 @@ describe 'editing a phone' do
 
   context 'with only one phone number' do
     it 'does not allow you to check default phone number if only one number is set up' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       phone_configuration = user.phone_configurations.first
       sign_in_and_2fa_user(user)
 

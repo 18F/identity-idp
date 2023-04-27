@@ -6,7 +6,7 @@ describe Idv::ReviewController do
   let(:user) do
     create(
       :user,
-      :signed_up,
+      :fully_registered,
       password: ControllerHelper::VALID_PASSWORD,
       email: 'old_email@example.com',
     )

@@ -3,6 +3,7 @@
       **tag_options,
       'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key_v3,
       'recaptcha-action': action,
+      'recaptcha-enterprise': recaptcha_enterprise?,
     ) do %>
   <%= f.error(:recaptcha_token) %>
   <% if show_mock_score_field? %>

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Users::AuthorizationConfirmationController do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }
   let(:sp_request_url) { 'http://example.com/request/url' }

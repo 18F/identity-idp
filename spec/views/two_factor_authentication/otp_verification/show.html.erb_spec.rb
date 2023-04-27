@@ -82,7 +82,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'user signed up' do
       before do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         render
       end
@@ -97,7 +97,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'user is reauthenticating' do
       before do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         allow(@presenter).to receive(:reauthn).and_return(true)
         render
@@ -119,7 +119,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'user is changing phone number' do
       it 'provides a cancel link to return to profile' do
-        user = create(:user, :signed_up, personal_key: '1')
+        user = create(:user, :fully_registered, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         data = presenter_data.merge(confirmation_for_add_phone: true)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
@@ -281,8 +281,10 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
     context 'when user has otp_expiration but the otp_expired redirect flag off' do
       before do
         user = create(
-          :user, :signed_up, otp_delivery_preference: 'voice',
-                             direct_otp_sent_at: Time.zone.now
+          :user,
+          :fully_registered,
+          otp_delivery_preference: 'voice',
+          direct_otp_sent_at: Time.zone.now,
         )
         allow(view).to receive(:current_user).and_return(user)
         otp_expiration = user.direct_otp_sent_at +
@@ -303,8 +305,10 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
     context 'when user has otp_expiration but the otp_expired redirect flag on' do
       before do
         user = create(
-          :user, :signed_up, otp_delivery_preference: 'voice',
-                             direct_otp_sent_at: Time.zone.now
+          :user,
+          :fully_registered,
+          otp_delivery_preference: 'voice',
+          direct_otp_sent_at: Time.zone.now,
         )
         allow(view).to receive(:current_user).and_return(user)
         otp_expiration = user.direct_otp_sent_at +

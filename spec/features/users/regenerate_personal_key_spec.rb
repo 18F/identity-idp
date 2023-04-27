@@ -5,7 +5,7 @@ feature 'View personal key' do
   include PersonalKeyHelper
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   context 'after sign up' do
     context 'regenerating personal key' do
