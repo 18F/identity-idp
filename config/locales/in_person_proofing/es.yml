@@ -162,7 +162,7 @@ es:
     process:
       barcode:
         caption_label: Código de registro
-        heading: Muestre su código de barras de Login.gov
+        heading: Muestre su código de barras de %{app_name}
         info: El empleado deberá escanear el código de barras que aparece en la parte
           superior de esta página. Puede imprimir esta página o mostrarla en su
           dispositivo móvil.
@@ -174,4 +174,4 @@ es:
       what_to_do:
         heading: Colóquese en cualquier fila
         info: Dígale al empleado de la oficina de correos que está aquí para verificar
-          su identidad con Login.gov.
+          su identidad con %{app_name}.

@@ -165,7 +165,7 @@ fr:
     process:
       barcode:
         caption_label: Code d’inscription
-        heading: Montrez votre code-barres Login.gov
+        heading: Montrez votre code-barres %{app_name}
         info: Le vendeur doit scanner votre code-barres en haut de cette page. Vous
           pouvez imprimer cette page ou la montrer sur votre appareil mobile.
       state_id:
@@ -177,4 +177,4 @@ fr:
       what_to_do:
         heading: Faites la queue
         info: Dites à l’employé du bureau de poste que vous êtes ici pour vérifier votre
-          identité avec Login.gov.
+          identité avec %{app_name}.

@@ -42,7 +42,7 @@ feature 'doc auth document capture step', :js do
     it 'shows the new DocumentCapture page for desktop standard flow' do
       expect(page).to have_current_path(idv_document_capture_url)
 
-      expect(page).to have_content(t('doc_auth.headings.document_capture'))
+      expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
       expect(page).to have_content(t('step_indicator.flows.idv.verify_id'))
 
       expect(fake_analytics).to have_logged_event(
