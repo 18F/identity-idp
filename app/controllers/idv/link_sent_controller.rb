@@ -19,42 +19,23 @@ module Idv
     end
 
     def update
-      flow_session['redo_document_capture'] = nil # done with this redo
-
       analytics.idv_doc_auth_link_sent_submitted(analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('link_sent', :update, true)
 
+      return render_document_capture_cancelled if document_capture_session&.cancelled_at
+      return render_step_incomplete_error unless take_photo_with_phone_successful?
+
+      # The doc capture flow will have fetched the results already. We need
+      # to fetch them again here to add the PII to this session
+      handle_document_verification_success(document_capture_session_result)
+
       redirect_to idv_ssn_url
     end
 
     def extra_view_variables
-      # Used to call :verify_document_status in idv/shared/_document_capture.html.erb
-      # That code can be updated after the hybrid flow is out of the FSM, and then
-      # this can be removed.
-      @step_url = :idv_doc_auth_step_url
-
-      url_builder = ImageUploadPresignedUrlGenerator.new
-
-      {
-        flow_session: flow_session,
-        flow_path: 'standard',
-        sp_name: decorated_session.sp_name,
-        failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-
-        front_image_upload_url: url_builder.presigned_image_upload_url(
-          image_type: 'front',
-          transaction_id: flow_session[:document_capture_session_uuid],
-        ),
-        back_image_upload_url: url_builder.presigned_image_upload_url(
-          image_type: 'back',
-          transaction_id: flow_session[:document_capture_session_uuid],
-        ),
-      }.merge(
-        acuant_sdk_upgrade_a_b_testing_variables,
-        in_person_cta_variant_testing_variables,
-      )
+      { phone: idv_session[:phone_for_mobile_flow] }
     end
 
     private
@@ -83,31 +64,40 @@ module Idv
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def acuant_sdk_upgrade_a_b_testing_variables
-      bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
-      testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
-      use_alternate_sdk = (bucket == :use_alternate_sdk)
-      if use_alternate_sdk
-        acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
-      else
-        acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
-      end
-      {
-        acuant_sdk_upgrade_a_b_testing_enabled:
-            testing_enabled,
-        use_alternate_sdk: use_alternate_sdk,
-        acuant_version: acuant_version,
-      }
+    def handle_document_verification_success(get_results_response)
+      save_proofing_components
+      extract_pii_from_doc(get_results_response, store_in_session: true)
+      mark_upload_step_complete
+      flow_session[:flow_path] = @flow.flow_path
     end
 
-    def in_person_cta_variant_testing_variables
-      bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
-      session[:in_person_cta_variant] = bucket
-      {
-        in_person_cta_variant_testing_enabled:
-        IdentityConfig.store.in_person_cta_variant_testing_enabled,
-        in_person_cta_variant_active: bucket,
-      }
+    def render_document_capture_cancelled
+      mark_upload_step_incomplete
+      redirect_to idv_doc_auth_url # was idv_url, why?
+      failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
+    end
+
+    def render_step_incomplete_error
+      failure(I18n.t('errors.doc_auth.phone_step_incomplete'))
+    end
+
+    def take_photo_with_phone_successful?
+      document_capture_session_result.present? && document_capture_session_result.success?
+    end
+
+    def document_capture_session_result
+      @document_capture_session_result ||= begin
+        document_capture_session&.load_result ||
+          document_capture_session&.load_doc_auth_async_result
+      end
+    end
+
+    def mark_upload_step_complete
+      flow_session['Idv::Steps::UploadStep'] = true
+    end
+
+    def mark_upload_step_incomplete
+      flow_session['Idv::Steps::UploadStep'] = nil
     end
 
     def successful_response
