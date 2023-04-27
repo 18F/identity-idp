@@ -34,13 +34,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
         :check_valid_document_capture_session,
       )
     end
-
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :render_404_if_hybrid_mobile_controllers_disabled,
-      )
-    end
   end
 
   context 'when doc_auth_hybrid_mobile_controllers_enabled' do

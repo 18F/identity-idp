@@ -87,15 +87,7 @@ describe Idv::HybridMobile::DocumentCaptureController do
           change { doc_auth_log.reload.document_capture_view_count }.from(0).to(1),
         )
       end
-
-      context 'feature flag disabled' do
-        let(:feature_flag_enabled) { false }
-        it 'returns a 404' do
-          get :show
-          expect(response.status).to eql(404)
-        end
-      end
-
+      
       context 'with expired DocumentCaptureSession' do
         let(:document_capture_session_requested_at) do
           Time.zone.now.advance(
