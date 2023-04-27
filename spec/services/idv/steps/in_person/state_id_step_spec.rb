@@ -334,11 +334,10 @@ describe Idv::Steps::InPerson::StateIdStep do
       end
     end
 
-    context 'when capture secondary id is not enabled, same_address_as_id
-    changed from "true" to "false' do
+    context 'when capture secondary id is not enabled' do
       let(:capture_secondary_id_enabled) { false }
 
-      it 'retains identity_doc_ and address attr/values in flow session' do
+      it 'retains identity_doc_ attr/values in flow session' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
@@ -349,11 +348,6 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:identity_doc_city] = identity_doc_city
         pii_from_user[:identity_doc_address_state] = identity_doc_address_state
         pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-        pii_from_user[:address1] = address1
-        pii_from_user[:address2] = address2
-        pii_from_user[:city] = city
-        pii_from_user[:state] = state
-        pii_from_user[:zipcode] = zipcode
 
         step.call
 
@@ -363,11 +357,6 @@ describe Idv::Steps::InPerson::StateIdStep do
           identity_doc_city:,
           identity_doc_address_state:,
           identity_doc_zipcode:,
-          address1:,
-          address2:,
-          city:,
-          state:,
-          zipcode:,
         )
       end
     end
