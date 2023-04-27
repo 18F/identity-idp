@@ -160,7 +160,7 @@ module Users
     end
 
     def is_on_home_page?
-      request.path == '/'
+      request.path == root_path || "/#{locale}"
     end
 
     def alive?

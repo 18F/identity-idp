@@ -199,7 +199,6 @@ describe 'devise/sessions/new.html.erb' do
     it 'has a localized page heading' do
       render
 
-      binding.pry
       expect(rendered).to have_selector('h1', text: t('headings.sign_in_without_sp'))
     end
   end
