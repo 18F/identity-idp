@@ -24,7 +24,7 @@ module Users
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
-      @is_on_home_page = is_on_home_page?
+      @is_on_home_page = true
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
@@ -157,10 +157,6 @@ module Users
 
     def browser_is_ie11?
       BrowserCache.parse(request.user_agent).ie?(11)
-    end
-
-    def is_on_home_page?
-      request.path == root_path || "/#{locale}"
     end
 
     def alive?
