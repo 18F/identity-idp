@@ -10,7 +10,7 @@ describe RegisterUserEmailForm do
   describe '#submit' do
     context 'when email is already taken' do
       let(:email_address) { 'taken@gmail.com' }
-      let!(:existing_user) { create(:user, :signed_up, email: email_address) }
+      let!(:existing_user) { create(:user, :fully_registered, email: email_address) }
       let(:extra_params) do
         {
           email_already_exists: true,

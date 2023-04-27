@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'users/piv_cac_authentication_setup/new.html.erb' do
   context 'user has sufficient factors' do
     it 'renders a link to cancel and go back to the account page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:user_session).and_return(signing_up: false)
       allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)

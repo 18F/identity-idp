@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Users::EditPhoneController do
   describe '#update' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:phone_configuration) { user.phone_configurations.first }
 
     before do
@@ -58,7 +58,7 @@ describe Users::EditPhoneController do
   end
 
   describe '#destroy' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:phone_configuration) { create(:phone_configuration, user: user) }
 
     it 'deletes the phone configuration' do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::NotVerifiedController do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user, :fully_registered) }
 
   before do
     stub_sign_in(user)

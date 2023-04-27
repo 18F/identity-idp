@@ -53,7 +53,7 @@ shared_examples_for 'an idv session errors controller action' do
 
   context 'the user is not authenticated and in doc capture flow' do
     before do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       controller.session[:doc_capture_user_id] = user.id
     end
     it 'renders the error' do

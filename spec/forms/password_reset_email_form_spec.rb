@@ -9,7 +9,7 @@ describe PasswordResetEmailForm do
   describe '#submit' do
     context 'when email is valid and user exists' do
       it 'returns hash with properties about the event and the user' do
-        user = create(:user, :signed_up, email: 'test1@test.com')
+        user = create(:user, :fully_registered, email: 'test1@test.com')
         subject = PasswordResetEmailForm.new('Test1@test.com')
 
         expect(subject.submit.to_h).to eq(

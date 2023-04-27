@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'SAML logout' do
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do

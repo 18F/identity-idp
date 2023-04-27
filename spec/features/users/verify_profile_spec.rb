@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'verify profile with OTP' do
   include IdvStepHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:otp) { 'ABC123' }
 
   before do
