@@ -86,20 +86,18 @@ feature 'doc auth welcome step' do
   end
 
   context 'during the acuant maintenance window' do
-    context 'during the acuant maintenance window' do
-      let(:maintenance_window) do
-        [Time.zone.parse('2020-01-01T00:00:00Z'), Time.zone.parse('2020-01-01T23:59:59Z')]
-      end
-      let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
+    let(:maintenance_window) do
+      [Time.zone.parse('2020-01-01T00:00:00Z'), Time.zone.parse('2020-01-01T23:59:59Z')]
+    end
+    let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
 
-      around do |ex|
-        travel_to(now) { ex.run }
-      end
+    around do |ex|
+      travel_to(now) { ex.run }
+    end
 
-      it 'renders the warning banner but no other content' do
-        expect(page).to have_content('We are currently under maintenance')
-        expect(page).to_not have_content(t('doc_auth.headings.welcome'))
-      end
+    it 'renders the warning banner but no other content' do
+      expect(page).to have_content('We are currently under maintenance')
+      expect(page).to_not have_content(t('doc_auth.headings.welcome'))
     end
   end
 end

@@ -456,6 +456,25 @@ describe NewPhoneForm do
             end
           end
         end
+
+        context 'with recaptcha enterprise' do
+          let(:validator) do
+            PhoneRecaptchaValidator.new(
+              recaptcha_version: 3,
+              validator_class: RecaptchaEnterpriseValidator,
+              parsed_phone: nil,
+            )
+          end
+
+          before do
+            allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+          end
+
+          it 'is valid' do
+            expect(result.success?).to eq(true)
+            expect(result.errors).to be_blank
+          end
+        end
       end
 
       context 'with invalid recaptcha result' do

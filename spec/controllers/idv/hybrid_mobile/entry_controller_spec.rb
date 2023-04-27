@@ -25,22 +25,6 @@ describe Idv::HybridMobile::EntryController do
         and_return(feature_flag_enabled)
     end
 
-    context 'feature flag disabled' do
-      let(:feature_flag_enabled) { false }
-
-      before do
-        get :show, params: { 'document-capture-session': session_uuid }
-      end
-
-      it '404s' do
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it 'does not log that phone upload link was used' do
-        expect(@irs_attempts_api_tracker.events).not_to have_key(:idv_phone_upload_link_used)
-      end
-    end
-
     context 'with no session' do
       before do
         get :show

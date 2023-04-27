@@ -337,7 +337,12 @@ feature 'Sign in' do
         expect(page).to_not have_content(t('forms.buttons.continue'))
 
         # Redis doesn't respect ActiveSupport::Testing::TimeHelpers, so expire session manually.
-        session_store.send(:destroy_session_from_sid, session_cookie.value)
+        session_store.send(
+          :delete_session,
+          nil,
+          Rack::Session::SessionId.new(session_cookie.value),
+          drop: true,
+        )
 
         fill_in_credentials_and_submit(user.email, user.password)
         expect(page).to have_content t('errors.general')
@@ -472,7 +477,6 @@ feature 'Sign in' do
       email = user.email
       allow(FeatureManagement).to receive(:use_kms?).and_return(true)
       stub_aws_kms_client_invalid_ciphertext
-      allow(SessionEncryptorErrorHandler).to receive(:call)
 
       signin(email, 'invalid')
 
