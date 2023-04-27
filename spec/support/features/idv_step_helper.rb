@@ -116,7 +116,7 @@ module IdvStepHelper
   end
 
   def expect_step_indicator_current_step(text)
-    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 10)
+    expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
   end
 
   private
