@@ -196,7 +196,6 @@ module Features
 
     def sign_in_with_warden(user, auth_method: nil)
       login_as(user, scope: :user, run_callbacks: false)
-      allow(user).to receive(:need_two_factor_authentication?).and_return(false)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']

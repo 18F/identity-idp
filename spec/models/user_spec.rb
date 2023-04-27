@@ -113,27 +113,26 @@ RSpec.describe User do
     end
   end
 
-  context '#need_two_factor_authentication?' do
-    let(:request) { ActionController::TestRequest.new }
+  describe '#fully_registered?' do
+    let(:user) { create(:user) }
+    subject(:fully_registered?) { user.fully_registered? }
 
-    it 'is true when two_factor_enabled' do
-      user = build_stubbed(:user)
+    context 'with unconfirmed user' do
+      let(:user) { create(:user, :unconfirmed) }
 
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return true
-      allow(MfaPolicy).to receive(:new).with(user).and_return mock_mfa
-
-      expect(user.need_two_factor_authentication?(nil)).to be_truthy
+      it { expect(fully_registered?).to eq(false) }
     end
 
-    it 'is false when not two_factor_enabled' do
-      user = build_stubbed(:user)
+    context 'with confirmed user' do
+      let(:user) { create(:user) }
 
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return false
-      allow(MfaPolicy).to receive(:new).with(user).and_return(mock_mfa)
+      it { expect(fully_registered?).to eq(false) }
+    end
 
-      expect(user.need_two_factor_authentication?(nil)).to be_falsey
+    context 'with mfa-enabled user' do
+      let(:user) { create(:user, :signed_up) }
+
+      it { expect(fully_registered?).to eq(true) }
     end
   end
 
@@ -1130,6 +1129,23 @@ RSpec.describe User do
     it 'interleaves identities and events, decorates events, and sorts them in descending order' do
       expect(user.recent_events).
         to eq [another_event.decorate, identity, event.decorate]
+    end
+  end
+
+  describe '#has_devices?' do
+    let(:user) { create(:user) }
+    subject(:has_devices?) { user.has_devices? }
+
+    context 'with no devices' do
+      it { expect(has_devices?).to eq(false) }
+    end
+
+    context 'with a device' do
+      before do
+        create(:device, user:)
+      end
+
+      it { expect(has_devices?).to eq(true) }
     end
   end
 
