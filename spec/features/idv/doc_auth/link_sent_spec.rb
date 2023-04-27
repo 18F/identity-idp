@@ -15,8 +15,7 @@ feature 'doc auth link sent step' do
         to(receive(:doc_capture_polling_enabled?).and_return(doc_capture_polling_enabled))
       user
       complete_doc_auth_steps_before_upload_step
-      fill_in :doc_auth_phone, with: ''
-      fill_in :doc_auth_phone, with: phone_number
+      clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
     end
 
