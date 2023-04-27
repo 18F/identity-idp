@@ -254,11 +254,11 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:state) { 'Nevada' }
     let(:zipcode) { '90001' }
     # state_id_
-    let(:state_id_address1) { '123 Sesame Street' }
-    let(:state_id_address2) { 'Apt. #C' }
-    let(:state_id_city) { 'Twin Peaks' }
-    let(:state_id_state) { 'Nevada' }
-    let(:state_id_zipcode) { '90001' }
+    let(:identity_doc_address1) { '123 Sesame Street' }
+    let(:identity_doc_address2) { 'Apt. #C' }
+    let(:identity_doc_city) { 'Twin Peaks' }
+    let(:identity_doc_address_state) { 'Nevada' }
+    let(:identity_doc_zipcode) { '90001' }
     let(:state_id_number) { 'ABC123234' }
     let(:state_id_jurisdiction) { 'NEV' }
 
@@ -271,11 +271,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         city:,
         state:,
         zipcode:,
-        state_id_address1:,
-        state_id_address2:,
-        state_id_city:,
-        state_id_state:,
-        state_id_zipcode:,
+        identity_doc_address1:,
+        identity_doc_address2:,
+        identity_doc_city:,
+        identity_doc_address_state:,
+        identity_doc_zipcode:,
         state_id_number:,
         state_id_jurisdiction:,
       }
@@ -295,18 +295,18 @@ describe Idv::Steps::InPerson::StateIdStep do
     # changes response to No, I live at a different address ((same_address_as_id = 'false'))
 
     context 'when capture secondary id is enabled, same_address_as_id is "false",
-      but address1 === state_id_address1' do
+      but address1 === identity_doc_address1' do
       it 'marks the address step as incomplete (nil)' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
 
         pii_from_user[:same_address_as_id] = same_address_as_id
-        pii_from_user[:state_id_address1] = '123 Sesame Street'
-        pii_from_user[:state_id_address2] = 'Apt. #C'
-        pii_from_user[:state_id_city] = state_id_city
-        pii_from_user[:state_id_state] = state_id_state
-        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:identity_doc_address1] = '123 Sesame Street'
+        pii_from_user[:identity_doc_address2] = 'Apt. #C'
+        pii_from_user[:identity_doc_city] = identity_doc_city
+        pii_from_user[:identity_doc_address_state] = identity_doc_address_state
+        pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
         pii_from_user[:address1] = '123 Sesame Street'
@@ -327,11 +327,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         end
 
         pii_from_user[:same_address_as_id] = same_address_as_id
-        pii_from_user[:state_id_address1] = '123 Sesame Street'
-        pii_from_user[:state_id_address2] = 'Apt. #C'
-        pii_from_user[:state_id_city] = state_id_city
-        pii_from_user[:state_id_state] = state_id_state
-        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:identity_doc_address1] = '123 Sesame Street'
+        pii_from_user[:identity_doc_address2] = 'Apt. #C'
+        pii_from_user[:identity_doc_city] = identity_doc_city
+        pii_from_user[:identity_doc_address_state] = identity_doc_address_state
+        pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
         pii_from_user[:address1] = '123 Sesame Street'
@@ -343,11 +343,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         step.call
 
         expect(flow.flow_session[:pii_from_user]).to include(
-          state_id_address1:,
-          state_id_address2:,
-          state_id_city:,
-          state_id_state:,
-          state_id_zipcode:,
+          identity_doc_address1:,
+          identity_doc_address2:,
+          identity_doc_city:,
+          identity_doc_address_state:,
+          identity_doc_zipcode:,
           state_id_number:,
           state_id_jurisdiction:,
         )
@@ -359,11 +359,11 @@ describe Idv::Steps::InPerson::StateIdStep do
         end
 
         pii_from_user[:same_address_as_id] = same_address_as_id
-        pii_from_user[:state_id_address1] = '123 Sesame Street'
-        pii_from_user[:state_id_address2] = 'Apt. #C'
-        pii_from_user[:state_id_city] = state_id_city
-        pii_from_user[:state_id_state] = state_id_state
-        pii_from_user[:state_id_zipcode] = state_id_zipcode
+        pii_from_user[:identity_doc_address1] = '123 Sesame Street'
+        pii_from_user[:identity_doc_address2] = 'Apt. #C'
+        pii_from_user[:identity_doc_city] = identity_doc_city
+        pii_from_user[:identity_doc_address_state] = identity_doc_address_state
+        pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
         pii_from_user[:state_id_number] = state_id_number
         pii_from_user[:state_id_jurisdiction] = state_id_jurisdiction
         pii_from_user[:address1] = '123 Sesame Street'

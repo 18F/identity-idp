@@ -31,7 +31,7 @@ module Idv
 
           if capture_secondary_id_enabled?
             if pii_from_user[:same_address_as_id] == 'false' &&
-               (pii_from_user[:address1] === pii_from_user[:state_id_address1])
+               (pii_from_user[:address1] === pii_from_user[:identity_doc_address1])
               pii_from_user.delete(:address1)
               pii_from_user.delete(:address2)
               pii_from_user.delete(:city)
