@@ -1134,7 +1134,7 @@ RSpec.describe User do
 
   describe '#has_devices?' do
     let(:user) { create(:user) }
-    let(:has_devices?) { user.has_devices? }
+    subject(:has_devices?) { user.has_devices? }
 
     context 'with no devices' do
       it { expect(has_devices?).to eq(false) }
