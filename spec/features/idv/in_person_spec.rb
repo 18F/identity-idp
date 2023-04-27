@@ -553,7 +553,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
         # update state ID
         click_button t('idv.buttons.change_state_id_label')
-          binding.pry
+
         expect(page).to have_content(t('in_person_proofing.headings.update_state_id'), wait: 10)
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))

@@ -27,7 +27,7 @@ function onAddressStateSelectionChange() {
   showOrHidePuertoRicoExtras(addressStateSelector?.value);
 }
 
-function onUpdateStateId() {
+function onUpdateIdentityDoc() {
   const updateIdentityDocStateSelector: HTMLInputElement = <HTMLInputElement>(
     document.getElementById('state_id_identity_doc_address_state')
   );
@@ -45,7 +45,7 @@ function onUpdate() {
   const { pathname } = window.location;
 
   if (pathname === '/verify/in_person/state_id') {
-    onUpdateStateId();
+    onUpdateIdentityDoc();
   }
   if (pathname === '/verify/in_person/address') {
     onUpdateAddress();
