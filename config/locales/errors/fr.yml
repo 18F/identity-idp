@@ -35,8 +35,8 @@ fr:
         d’utiliser votre ordinateur à la place.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
       throttled_subheading: Essayez de prendre de nouvelles photos.
-      throttled_text_html: 'Pour votre sécurité, nous limitons le nombre de fois
-        où vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
+      throttled_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
+        vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
