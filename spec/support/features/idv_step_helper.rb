@@ -60,7 +60,7 @@ module IdvStepHelper
   end
 
   def click_what_to_bring_link
-    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
     click_link t('in_person_proofing.body.barcode.learn_more')
   end
 
@@ -68,14 +68,17 @@ module IdvStepHelper
     click_sp_link
   end
 
+  def link_text
+    'return to Test SP'
+  end
+
   def click_sp_link
     expect(page).to have_content(sp_text)
-    click_link('return to Test SP')
+    click_link(link_text)
   end
 
   def sp_text
-    'You may now close this window or return to Test SP to complete any next steps' \
-      ' you can access until your identity has been verified.'
+    t('in_person_proofing.body.barcode.return_to_partner_html', link: link_text)
   end
 
   def complete_review_step(user = user_with_2fa)
