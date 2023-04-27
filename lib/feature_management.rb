@@ -125,6 +125,11 @@ class FeatureManagement
       IdentityConfig.store.phone_recaptcha_score_threshold.positive?
   end
 
+  def self.recaptcha_enterprise?
+    IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
+      IdentityConfig.store.recaptcha_enterprise_project_id.present?
+  end
+
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones

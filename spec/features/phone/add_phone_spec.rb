@@ -228,11 +228,10 @@ describe 'Add a new phone number' do
       'reCAPTCHA verify result received',
       hash_including(
         recaptcha_result: {
-          'success' => true,
-          'score' => 0.5,
-          'error-codes' => [],
-          'challenge_ts' => kind_of(String),
-          'hostname' => anything,
+          success: true,
+          score: 0.5,
+          errors: [],
+          reasons: [],
         },
         evaluated_as_valid: false,
         score_threshold: 0.6,
