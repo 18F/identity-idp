@@ -9,9 +9,6 @@
   align-items: start;
   justify-content: center;
 
-  // Pending upstream Login Design System revision:
-  background: rgba(color('base-darker'), 50%);
-
   @include at-media('tablet') {
     align-items: center;
   }
