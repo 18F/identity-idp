@@ -14,6 +14,7 @@ module Idv
 
         def call
           pii_from_user = flow_session[:pii_from_user]
+          initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
@@ -30,8 +31,8 @@ module Idv
           end
 
           if capture_secondary_id_enabled?
-            if pii_from_user[:same_address_as_id] == 'false' &&
-               (pii_from_user[:address1] === pii_from_user[:identity_doc_address1])
+            if (initial_state_of_same_address_as_id === 'true' &&
+              pii_from_user[:same_address_as_id] === 'false')
               pii_from_user.delete(:address1)
               pii_from_user.delete(:address2)
               pii_from_user.delete(:city)
