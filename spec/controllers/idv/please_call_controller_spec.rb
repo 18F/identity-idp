@@ -24,7 +24,7 @@ describe Idv::PleaseCallController do
 
   render_views
 
-  it 'asks user to call 2 weeks from  date' do
+  it 'asks user to call 2 weeks from fraud_review_pending_date' do
     get :show
 
     call_by_date = fraud_review_pending_date + 14.days
