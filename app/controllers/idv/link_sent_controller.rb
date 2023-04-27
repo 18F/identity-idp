@@ -35,7 +35,7 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session[:phone_for_mobile_flow] }
+      { phone: flow_session[:phone_for_mobile_flow] }
     end
 
     private

@@ -7,6 +7,7 @@ describe Idv::LinkSentController do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'hybrid',
+      :phone_for_mobile_flow => '201-555-1212',
       'Idv::Steps::UploadStep' => true }
   end
 

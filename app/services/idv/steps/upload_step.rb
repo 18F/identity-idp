@@ -63,6 +63,7 @@ module Idv
         throttle.increment!
         return throttled_failure if throttle.throttled?
         idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
+        flow_session[:phone_for_mobile_flow] = idv_session[:phone_for_mobile_flow]
         telephony_result = send_link
         failure_reason = nil
         if !telephony_result.success?
