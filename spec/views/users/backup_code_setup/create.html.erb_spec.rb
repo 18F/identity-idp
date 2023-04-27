@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'users/backup_code_setup/create.html.erb' do
-  let(:user) { build(:user, :signed_up) }
+  let(:user) { build(:user, :fully_registered) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)

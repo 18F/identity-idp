@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::PhoneForm do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
   let(:params) { { phone: phone } }
   let(:previous_params) { nil }
@@ -47,7 +47,7 @@ describe Idv::PhoneForm do
 
     context 'with user phone number' do
       let(:phone) { '7035551234' }
-      let(:user) { build_stubbed(:user, :signed_up, with: { phone: phone }) }
+      let(:user) { build_stubbed(:user, :fully_registered, with: { phone: phone }) }
 
       it 'uses the formatted phone number as the initial phone value' do
         expect(subject.phone).to eq('+1 703-555-1234')
@@ -101,7 +101,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with previously submitted value' do
-      let(:user) { build_stubbed(:user, :signed_up, with: { phone: '7035551234' }) }
+      let(:user) { build_stubbed(:user, :fully_registered, with: { phone: '7035551234' }) }
       let(:previous_params) { { phone: '2255555000' } }
 
       it 'uses the previously submitted value as the initial phone value' do

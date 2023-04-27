@@ -20,7 +20,7 @@ describe 'webauthn hide' do
   end
 
   context 'on sign in' do
-    let(:user) { create(:user, :signed_up, :with_webauthn) }
+    let(:user) { create(:user, :fully_registered, :with_webauthn) }
 
     context 'with javascript enabled', :js do
       it 'displays the security key option' do

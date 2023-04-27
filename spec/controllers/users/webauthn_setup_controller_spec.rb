@@ -34,7 +34,7 @@ describe Users::WebauthnSetupController do
   end
 
   describe 'when signed in and not account creation' do
-    let(:user) { create(:user, :signed_up, :with_authentication_app) }
+    let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
     before do
       stub_analytics

@@ -21,6 +21,7 @@ describe PhoneRecaptchaValidator do
         score_threshold: score_threshold_config,
         analytics:,
         recaptcha_version:,
+        recaptcha_action: described_class::RECAPTCHA_ACTION,
         extra_analytics_properties: {
           phone_country_code: parsed_phone.country,
         },

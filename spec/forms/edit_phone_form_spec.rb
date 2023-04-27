@@ -3,7 +3,7 @@ require 'rails_helper'
 describe EditPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:phone_configuration) { user.phone_configurations.first }
   let(:params) do
     {
@@ -110,7 +110,7 @@ describe EditPhoneForm do
 
   describe '#one_phone_configured?' do
     context 'when editing a form with only one number set up' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       let(:phone_configuration) { user.phone_configurations.first }
 
       it 'recognizes it as the only method set up' do

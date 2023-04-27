@@ -1,6 +1,4 @@
 class CaptchaSubmitButtonComponent < BaseComponent
-  RECAPTCHA_SCRIPT_SRC = 'https://www.google.com/recaptcha/api.js'.freeze
-
   attr_reader :form, :action, :tag_options
 
   alias_method :f, :form
@@ -21,10 +19,16 @@ class CaptchaSubmitButtonComponent < BaseComponent
     @recaptcha_script_src = begin
       if IdentityConfig.store.recaptcha_site_key_v3.present?
         UriService.add_params(
-          RECAPTCHA_SCRIPT_SRC,
+          recaptcha_enterprise? ?
+            'https://www.google.com/recaptcha/enterprise.js' :
+            'https://www.google.com/recaptcha/api.js',
           render: IdentityConfig.store.recaptcha_site_key_v3,
         )
       end
     end
+  end
+
+  def recaptcha_enterprise?
+    FeatureManagement.recaptcha_enterprise?
   end
 end

@@ -22,7 +22,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
     context 'when fully authenticated and MFA enabled' do
       it 'loads the account page' do
-        user = build(:user, :signed_up)
+        user = build(:user, :fully_registered)
         stub_sign_in(user)
 
         get :index
@@ -43,7 +43,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
     context 'already two factor enabled but not fully authenticated' do
       it 'prompts for 2FA' do
-        user = build(:user, :signed_up)
+        user = build(:user, :fully_registered)
         stub_sign_in_before_2fa(user)
 
         get :index

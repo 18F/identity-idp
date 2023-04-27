@@ -59,8 +59,19 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     end
 
     it 'renders script tag for recaptcha' do
-      src = "#{CaptchaSubmitButtonComponent::RECAPTCHA_SCRIPT_SRC}?render=#{recaptcha_site_key}"
+      src = "https://www.google.com/recaptcha/api.js?render=#{recaptcha_site_key}"
       expect(rendered).to have_css("script[src='#{src}']", visible: :all)
+    end
+
+    context 'with recaptcha enterprise' do
+      before do
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+      end
+
+      it 'renders script tag for recaptcha' do
+        src = "https://www.google.com/recaptcha/enterprise.js?render=#{recaptcha_site_key}"
+        expect(rendered).to have_css("script[src='#{src}']", visible: :all)
+      end
     end
   end
 
@@ -94,6 +105,22 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
       it 'renders mock score field' do
         expect(rendered).to have_field(t('components.captcha_submit_button.mock_score_label'))
       end
+    end
+  end
+
+  describe '[recaptcha-enterprise] attribute' do
+    subject(:enterprise_attribute) do
+      rendered.at_css('lg-captcha-submit-button').attr('recaptcha-enterprise')
+    end
+
+    it { expect(enterprise_attribute).to eq('false') }
+
+    context 'with recaptcha enterprise' do
+      before do
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+      end
+
+      it { expect(enterprise_attribute).to eq('true') }
     end
   end
 end

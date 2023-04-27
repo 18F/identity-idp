@@ -12,7 +12,7 @@ end
 describe '2FA options when signing in' do
   context 'when the user only has SMS configured' do
     it 'only displays SMS and Voice' do
-      user = create(:user, :signed_up, otp_delivery_preference: 'sms')
+      user = create(:user, :fully_registered, otp_delivery_preference: 'sms')
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -52,7 +52,7 @@ describe '2FA options when signing in' do
 
   context 'when the user only has Voice configured' do
     it 'only displays SMS, Voice and Personal key' do
-      user = create(:user, :signed_up, otp_delivery_preference: 'voice')
+      user = create(:user, :fully_registered, otp_delivery_preference: 'voice')
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -73,7 +73,7 @@ describe '2FA options when signing in' do
   context 'when the user only has SMS configured with a number that we cannot call' do
     it 'only displays SMS and Personal key' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'sms', with: { phone: '+12423270143' }
       )
       sign_in_user(user)
@@ -96,7 +96,7 @@ describe '2FA options when signing in' do
   context "the user's otp_delivery_preference is voice but number is unsupported" do
     it 'only displays SMS and Personal key' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: '+12423270143' }
       )
       sign_in_user(user)
@@ -158,7 +158,7 @@ describe '2FA options when signing in' do
 
   context 'when the user only has SMS and TOTP configured' do
     it 'only displays SMS, Voice, TOTP and Personal key' do
-      user = create(:user, :signed_up, :with_authentication_app)
+      user = create(:user, :fully_registered, :with_authentication_app)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -178,7 +178,7 @@ describe '2FA options when signing in' do
 
   context 'when the user only has SMS and PIV/CAC configured' do
     it 'only displays SMS, Voice, PIV/CAC and Personal key' do
-      user = create(:user, :signed_up, :with_piv_or_cac)
+      user = create(:user, :fully_registered, :with_piv_or_cac)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -218,7 +218,7 @@ describe '2FA options when signing in' do
 
   context 'when the user has SMS, TOTP and PIV/CAC configured' do
     it 'only displays SMS, Voice, PIV/CAC, TOTP, and Personal key' do
-      user = create(:user, :signed_up, :with_authentication_app, :with_piv_or_cac)
+      user = create(:user, :fully_registered, :with_authentication_app, :with_piv_or_cac)
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -238,7 +238,7 @@ describe '2FA options when signing in' do
 
   context 'when the user has multiple webauthn keys configured' do
     it 'only displays the webauthn option once' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       create(:webauthn_configuration, user: user)
       create(:webauthn_configuration, user: user)
       sign_in_user(user)
@@ -261,7 +261,7 @@ describe '2FA options when signing in' do
 
   context 'when the user has multiple phones configured' do
     it 'displays sms and voice options for each MFA-enabled phone, and only shows last 4 digits' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       create(:phone_configuration, user: user, phone: '+1 202-555-1213')
       phone_ids = user.reload.phone_configurations.pluck(:id)
       first_id = phone_ids[0]
