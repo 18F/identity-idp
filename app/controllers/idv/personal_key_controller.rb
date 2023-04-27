@@ -94,7 +94,7 @@ module Idv
 
     def blocked_by_device_profiling?
       !profile.active &&
-        profile.fraud_review_pending? || profile.fraud_rejection
+        profile.fraud_review_pending? || profile.fraud_rejection?
     end
   end
 end
