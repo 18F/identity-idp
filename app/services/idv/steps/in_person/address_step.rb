@@ -21,7 +21,7 @@ module Idv
         def call
           Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
             if capture_secondary_id_enabled? && updating_address? && attr == :same_address_as_id
-              flow_session[:pii_from_user][:same_address_as_id ] = 'false'
+              flow_session[:pii_from_user][:same_address_as_id] = 'false'
             else
               flow_session[:pii_from_user][attr] = flow_params[attr]
             end
