@@ -15,7 +15,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:back_image_upload_url) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:acuant_version) { '11.8.1' }
+  let(:acuant_version) { '11.8.2' }
   let(:in_person_cta_variant_testing_enabled) { false }
   let(:in_person_cta_variant_active) { '' }
 
