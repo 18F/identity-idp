@@ -20,7 +20,11 @@ describe Idv::LinkSentController do
     )
   end
 
+  let(:feature_flag_enabled) { true }
+
   before do
+    allow(IdentityConfig.store).to receive(:doc_auth_link_sent_controller_enabled).
+      and_return(feature_flag_enabled)
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
@@ -92,6 +96,14 @@ describe Idv::LinkSentController do
 
         expect(response).to redirect_to(idv_ssn_url)
       end
+    end
+  end
+
+  context 'feature flag disabled' do
+    let(:feature_flag_enabled) { false }
+    it 'returns a 404' do
+      get :show
+      expect(response.status).to eql(404)
     end
   end
 end
