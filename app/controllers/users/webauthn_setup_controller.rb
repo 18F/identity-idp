@@ -26,7 +26,8 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.webauthn_setup_visit(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.webauthn_setup_visit(**properties)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
 
