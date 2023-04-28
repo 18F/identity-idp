@@ -1,11 +1,7 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     before_action :store_sp_metadata_in_session, only: [:edit]
-<<<<<<< HEAD
     before_action :store_token_in_session, only: [:edit]
-=======
-    before_action :store_token_in_session, only: [:edit], if: :clean_edit_url_toggle_on?
->>>>>>> origin/main
 
     def new
       analytics.password_reset_visit
@@ -26,11 +22,7 @@ module Users
     end
 
     def edit
-<<<<<<< HEAD
       if params[:reset_password_token]
-=======
-      if params[:reset_password_token] && clean_edit_url_toggle_on?
->>>>>>> origin/main
         redirect_to edit_user_password_url
       else
         result = PasswordResetTokenValidator.new(token_user).submit
@@ -109,13 +101,6 @@ module Users
       session[:reset_password_token] = params[:reset_password_token]
     end
 
-<<<<<<< HEAD
-=======
-    def clean_edit_url_toggle_on?
-      FeatureManagement.redirect_to_clean_edit_password_url?
-    end
-
->>>>>>> origin/main
     def create_account_if_email_not_found
       user, result = RequestPasswordReset.new(
         email: email,
@@ -176,11 +161,7 @@ module Users
     def handle_unsuccessful_password_reset(result)
       reset_password_token_errors = result.errors[:reset_password_token]
       if reset_password_token_errors.present?
-<<<<<<< HEAD
         session.delete(:reset_password_token)
-=======
-        session.delete(:reset_password_token) if session[:reset_password_token]
->>>>>>> origin/main
         flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return
