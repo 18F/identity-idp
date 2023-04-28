@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Steps::InPerson::AddressStep do
+  include InPersonHelper
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }
   let(:params) { ActionController::Parameters.new({ in_person_address: submitted_values }) }
@@ -144,8 +145,7 @@ describe Idv::Steps::InPerson::AddressStep do
   end
 
   describe '#updating_address effects on extra_view_variables.updating_address' do
-    let(:address1) { '123 Fourth St' }
-    let(:uuid) { '0000' }
+    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
     let(:params) { ActionController::Parameters.new }
 
     it 'returns true when flow_session has key address1' do
