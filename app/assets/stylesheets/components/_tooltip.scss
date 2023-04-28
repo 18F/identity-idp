@@ -1,0 +1,5 @@
+// Workaround for tooltip styles affecting icon button appearance.
+// See: https://github.com/uswds/uswds/pull/5263
+.usa-tooltip__trigger > svg {
+  display: inline;
+}
