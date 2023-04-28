@@ -84,7 +84,7 @@ feature 'OIDC Authorization Confirmation' do
   end
 
   context 'first time registration' do
-    it 'takes user to agency handoff page when sign up flow complete does not go through authorization_confirmation page' do
+    it 'redirects user to sp and does not go through authorization_confirmation page' do
       email = 'test@test.com'
 
       perform_in_browser(:one) do
