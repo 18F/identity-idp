@@ -712,7 +712,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # click update state id address
       click_button t('idv.buttons.change_state_id_label')
 
-      # check that the "No, I live at a different address" is checked"
+      # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
         t('in_person_proofing.form.state_id.same_address_as_id_no'),
         visible: false,
