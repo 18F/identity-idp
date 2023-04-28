@@ -211,7 +211,6 @@ describe Idv::VerifyInfoController do
           expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
         end
 
-
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
