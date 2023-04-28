@@ -40,6 +40,11 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
+
+      # Confirm app disallows jumping ahead to CaptureComplete page
+      visit idv_hybrid_mobile_capture_complete_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
