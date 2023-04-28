@@ -4,7 +4,7 @@ RSpec::Matchers.define :have_valid_idrefs do
   match do |page|
     ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
       page.all(:css, "[#{idref_attribute}]").each do |element|
-        page.find_by_id(element[idref_attribute]) # rubocop:disable Rails/DynamicFindBy
+        page.find_by_id(element[idref_attribute], visible: :all)
       rescue Capybara::ElementNotFound
         invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
       end
