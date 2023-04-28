@@ -305,7 +305,8 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:state] = state
         pii_from_user[:zipcode] = zipcode
 
-        # On Verify, user changes response from "Yes,..." to "No, I live at a different address"
+        # On Verify, user changes response from "Yes,..." to
+        # "No, I live at a different address", see submitted_values above
         step.call
 
         # marks address step as incomplete
@@ -321,7 +322,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           identity_doc_zipcode:,
         )
 
-        # removes address values (non identity_doc_ attributes) in flow session
+        # removes address attributes (non identity_doc_ attributes) in flow session
         expect(flow.flow_session[:pii_from_user]).not_to include(
           address1:,
           address2:,
