@@ -112,14 +112,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ? []
       : ([
           {
-            name: 'location',
-            form: InPersonLocationPostOfficeSearchStep,
-            title: t('in_person_proofing.headings.po_search.location'),
-          },
-          {
             name: 'prepare',
             form: InPersonPrepareStep,
             title: t('in_person_proofing.headings.prepare'),
+          },
+          {
+            name: 'location',
+            form: InPersonLocationPostOfficeSearchStep,
+            title: t('in_person_proofing.headings.po_search.location'),
           },
           flowPath === 'hybrid' && {
             name: 'switch_back',

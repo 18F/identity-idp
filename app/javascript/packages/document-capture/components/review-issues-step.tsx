@@ -187,7 +187,7 @@ function ReviewIssuesStep({
           actionOnClick={onWarningPageDismissed}
           altActionText={t('in_person_proofing.body.cta.button_variant')}
           altActionOnClick={onInPersonSelected}
-          altHref="#location"
+          altHref="#prepare"
           location="doc_auth_review_issues"
           remainingAttempts={remainingAttempts}
           troubleshootingOptions={
