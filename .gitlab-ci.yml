@@ -7,7 +7,7 @@ variables:
   GITLAB_CI: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:f5bbf6917b20e559176962ddf499cf320a873b0099711ef4dae4fd7b5cb7f3eb'
+  IDP_CI_SHA: 'sha256:e846ed99aa3c8f9083731105b8ef25536c7ab3ed5e9f2b781b63431badcb091b'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -68,8 +68,25 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
 
-check_changelog:
+install:
   stage: build
+  variables:
+    RAILS_ENV: test
+  cache:
+    - <<: *ruby_cache
+      policy: pull-push
+    - <<: *yarn_cache
+      policy: pull-push
+    - <<: *assets_cache
+      policy: push
+
+  script:
+    - *bundle_install
+    - *yarn_install
+    - bundle exec rake assets:precompile
+
+check_changelog:
+  stage: test
   variables:
     GIT_DEPTH: 100
   script:
@@ -87,22 +104,6 @@ check_changelog:
         echo "Skipping because this is not a PR or is not targeting main"
         exit 0
       fi
-install:
-  stage: build
-  variables:
-    RAILS_ENV: test
-  cache:
-    - <<: *ruby_cache
-      policy: pull-push
-    - <<: *yarn_cache
-      policy: pull-push
-    - <<: *assets_cache
-      policy: push
-
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bundle exec rake assets:precompile
 
 specs:
   stage: test
@@ -207,6 +208,22 @@ pinpoint-check:
     - *yarn_install
     - make lint_country_dialing_codes
 
+prepare_deploy:
+  # Runs in parallel with tests so we can deploy more quickly after passing
+  stage: test
+  tags:
+    - build-pool
+  variables:
+    NODE_ENV: 'production'
+    RAILS_ENV: 'production'
+  script:
+    - cp config/application.yml.default.ci config/application.yml
+    - ./deploy/build
+    - ./deploy/build-post-config
+    - bundle exec rails zeitwerk:check
+    - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
+
 coverage:
   stage: after_test
   cache:
@@ -228,21 +245,6 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
-
-prepare_deploy:
-  stage: after_test
-  tags:
-    - build-pool
-  variables:
-    NODE_ENV: 'production'
-    RAILS_ENV: 'production'
-  script:
-    - cp config/application.yml.default.ci config/application.yml
-    - ./deploy/build
-    - ./deploy/build-post-config
-    - bundle exec rails zeitwerk:check
-    - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
-    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
 
 # Triggers devops CD to deploy to dev
 trigger_devops:

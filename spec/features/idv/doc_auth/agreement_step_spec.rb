@@ -66,7 +66,7 @@ feature 'doc auth welcome step' do
     end
 
     it 'progresses to document capture' do
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_document_capture_url)
     end
 
     it 'logs analytics for upload step' do
@@ -90,27 +90,25 @@ feature 'doc auth welcome step' do
   end
 
   context 'during the acuant maintenance window' do
-    context 'during the acuant maintenance window' do
-      let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
-      let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
-      let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
+    let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
+    let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
+    let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
 
-      before do
-        allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
-        allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
+    before do
+      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
+      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
 
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_welcome_step
-      end
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
+    end
 
-      around do |ex|
-        travel_to(now) { ex.run }
-      end
+    around do |ex|
+      travel_to(now) { ex.run }
+    end
 
-      it 'renders the warning banner but no other content' do
-        expect(page).to have_content('We are currently under maintenance')
-        expect(page).to_not have_content(t('doc_auth.headings.welcome'))
-      end
+    it 'renders the warning banner but no other content' do
+      expect(page).to have_content('We are currently under maintenance')
+      expect(page).to_not have_content(t('doc_auth.headings.welcome'))
     end
   end
 end

@@ -2,6 +2,7 @@ class User < ApplicationRecord
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
+  include ActionView::Helpers::DateHelper
 
   devise(
     :database_authenticatable,
@@ -18,6 +19,9 @@ class User < ApplicationRecord
   include UserEncryptedAttributeOverrides
   include DeprecatedUserAttributes
   include UserOtpMethods
+
+  MAX_RECENT_EVENTS = 5
+  MAX_RECENT_DEVICES = 5
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
@@ -62,8 +66,8 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
 
-  def need_two_factor_authentication?(_request)
-    MfaPolicy.new(self).two_factor_enabled?
+  def fully_registered?
+    !!registration_log&.registered_at
   end
 
   def confirmed?
@@ -103,8 +107,7 @@ class User < ApplicationRecord
   end
 
   def fraud_review_eligible?
-    return false if !fraud_review_pending?
-    fraud_review_pending_profile.verified_at&.after?(30.days.ago)
+    fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
   end
 
   def fraud_review_pending?
@@ -117,12 +120,12 @@ class User < ApplicationRecord
 
   def fraud_review_pending_profile
     @fraud_review_pending_profile ||=
-      profiles.where(fraud_review_pending: true).order(created_at: :desc).first
+      profiles.where.not(fraud_review_pending_at: nil).order(created_at: :desc).first
   end
 
   def fraud_rejection_profile
     @fraud_rejection_profile ||=
-      profiles.where(fraud_rejection: true).order(created_at: :desc).first
+      profiles.where.not(fraud_rejection_at: nil).order(created_at: :desc).first
   end
 
   def personal_key_generated_at
@@ -216,9 +219,128 @@ class User < ApplicationRecord
     devise_mailer.send(notification, self, *args).deliver_now_or_later
   end
 
-  def decorate
-    UserDecorator.new(self)
+  #
+  # Decoration methods
+  #
+  def email_language_preference_description
+    if I18n.locale_available?(email_language)
+      # i18n-tasks-use t('account.email_language.name.en')
+      # i18n-tasks-use t('account.email_language.name.es')
+      # i18n-tasks-use t('account.email_language.name.fr')
+      I18n.t("account.email_language.name.#{email_language}")
+    else
+      I18n.t('account.email_language.name.en')
+    end
   end
+
+  def visible_email_addresses
+    email_addresses.filter do |email_address|
+      email_address.confirmed? || !email_address.confirmation_period_expired?
+    end
+  end
+
+  def lockout_time_expiration
+    second_factor_locked_at + lockout_period
+  end
+
+  def active_identity_for(service_provider)
+    active_identities.find_by(service_provider: service_provider.issuer)
+  end
+
+  def active_or_pending_profile
+    active_profile || pending_profile
+  end
+
+  def pending_profile_requires_verification?
+    return false if pending_profile.blank?
+    return true if identity_not_verified?
+    return false if active_profile_newer_than_pending_profile?
+    true
+  end
+
+  def identity_not_verified?
+    !identity_verified?
+  end
+
+  def identity_verified?(service_provider: nil)
+    active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+  end
+
+  def reproof_for_irs?(service_provider:)
+    return false unless service_provider&.irs_attempts_api_enabled
+    return false unless active_profile.present?
+    !active_profile.initiating_service_provider&.irs_attempts_api_enabled
+  end
+
+  def active_profile_newer_than_pending_profile?
+    active_profile.activated_at >= pending_profile.created_at
+  end
+
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile
+    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    profile if profile&.password_reset?
+  end
+
+  def qrcode(otp_secret_key)
+    options = {
+      issuer: APP_NAME,
+      otp_secret_key: otp_secret_key,
+      digits: TwoFactorAuthenticatable::OTP_LENGTH,
+      interval: IdentityConfig.store.totp_code_interval,
+    }
+    url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(
+      EmailContext.new(self).last_sign_in_email_address.email,
+    )
+    qrcode = RQRCode::QRCode.new(url)
+    qrcode.as_png(size: 240).to_data_url
+  end
+
+  def locked_out?
+    second_factor_locked_at.present? && !lockout_period_expired?
+  end
+
+  def no_longer_locked_out?
+    second_factor_locked_at.present? && lockout_period_expired?
+  end
+
+  def recent_events
+    events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
+      map(&:decorate)
+    (events + identity_events).sort_by(&:happened_at).reverse
+  end
+
+  def identity_events
+    identities.includes(:service_provider_record).order('last_authenticated_at DESC')
+  end
+
+  def recent_devices
+    @recent_devices ||= devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
+      map(&:decorate)
+  end
+
+  def has_devices?
+    !recent_devices.empty?
+  end
+
+  def second_last_signed_in_at
+    events.where(event_type: 'sign_in_after_2fa').
+      order(created_at: :desc).limit(2).pluck(:created_at).second
+  end
+
+  def connected_apps
+    identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
+  end
+
+  def delete_account_bullet_key
+    if identity_verified?
+      I18n.t('users.delete.bullet_2_verified', app_name: APP_NAME)
+    else
+      I18n.t('users.delete.bullet_2_basic', app_name: APP_NAME)
+    end
+  end
+  # End moved from UserDecorator
 
   # Devise automatically downcases and strips any attribute defined in
   # config.case_insensitive_keys and config.strip_whitespace_keys via
@@ -256,4 +378,14 @@ class User < ApplicationRecord
   end
 
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+
+  private
+
+  def lockout_period
+    IdentityConfig.store.lockout_period_in_minutes.minutes
+  end
+
+  def lockout_period_expired?
+    lockout_time_expiration < Time.zone.now
+  end
 end

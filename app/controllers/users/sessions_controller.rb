@@ -24,6 +24,7 @@ module Users
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
+      @is_on_home_page = true
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
@@ -129,7 +130,7 @@ module Users
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
         'generic_login_attempts',
-        current_user.decorate,
+        current_user,
       )
       sign_out
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
@@ -189,7 +190,7 @@ module Users
     end
 
     def user_locked_out?(user)
-      UserDecorator.new(user).locked_out?
+      user.locked_out?
     end
 
     def store_sp_metadata_in_session

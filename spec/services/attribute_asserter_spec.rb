@@ -3,7 +3,7 @@ require 'rails_helper'
 describe AttributeAsserter do
   include SamlAuthHelper
 
-  let(:ial1_user) { create(:user, :signed_up) }
+  let(:ial1_user) { create(:user, :fully_registered) }
   let(:user) { create(:profile, :active, :verified).user }
   let(:user_session) { {} }
   let(:identity) do

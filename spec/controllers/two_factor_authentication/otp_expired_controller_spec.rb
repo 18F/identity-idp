@@ -10,9 +10,11 @@ describe TwoFactorAuthentication::OtpExpiredController do
   describe '#show' do
     it 'global otp_delivery_preference variable properly defined' do
       user = create(
-        :user, :signed_up, otp_delivery_preference: delivery_preference,
-                           direct_otp_sent_at: direct_otp_sent_at,
-                           with: { phone: '+1 (703) 555-0000' }
+        :user,
+        :fully_registered,
+        otp_delivery_preference: delivery_preference,
+        direct_otp_sent_at: direct_otp_sent_at,
+        with: { phone: '+1 (703) 555-0000' },
       )
       stub_sign_in_before_2fa(user)
 
@@ -23,9 +25,11 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
     it 'renders template' do
       user = create(
-        :user, :signed_up, otp_delivery_preference: delivery_preference,
-                           direct_otp_sent_at: direct_otp_sent_at,
-                           with: { phone: '+1 (703) 555-0000' }
+        :user,
+        :fully_registered,
+        otp_delivery_preference: delivery_preference,
+        direct_otp_sent_at: direct_otp_sent_at,
+        with: { phone: '+1 (703) 555-0000' },
       )
       stub_sign_in_before_2fa(user)
 
@@ -36,9 +40,11 @@ describe TwoFactorAuthentication::OtpExpiredController do
 
     it 'tracks user otp expired navigation analytics' do
       user = create(
-        :user, :signed_up, otp_delivery_preference: delivery_preference,
-                           direct_otp_sent_at: direct_otp_sent_at,
-                           with: { phone: '+1 (703) 555-0000' }
+        :user,
+        :fully_registered,
+        otp_delivery_preference: delivery_preference,
+        direct_otp_sent_at: direct_otp_sent_at,
+        with: { phone: '+1 (703) 555-0000' },
       )
       stub_analytics
       otp_expiration = direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS

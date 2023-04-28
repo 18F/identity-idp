@@ -5,7 +5,7 @@ describe 'multiple saml endpoints' do
   include IdvHelper
 
   let(:endpoint_suffix) { '2023' }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   let(:endpoint_saml_settings) do
     settings = saml_settings
@@ -51,7 +51,7 @@ describe 'multiple saml endpoints' do
       click_agree_and_continue
 
       service_provider = ServiceProvider.find_by(issuer: endpoint_saml_settings.issuer)
-      uuid = user.decorate.active_identity_for(service_provider).uuid
+      uuid = user.active_identity_for(service_provider).uuid
       endpoint_saml_settings = saml_settings
       endpoint_saml_settings.name_identifier_value = uuid
 

@@ -20,8 +20,10 @@ class SamlIdpController < ApplicationController
   before_action :require_path_year
   before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
-  before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
-  before_action :bump_auth_count, only: [:auth]
+  before_action :bump_auth_count, only: :auth
+  before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
+  before_action :confirm_two_factor_authenticated, only: :auth
+  before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
 
   def auth
     capture_analytics
@@ -60,8 +62,9 @@ class SamlIdpController < ApplicationController
     return head(:bad_request) if raw_saml_request.nil?
 
     decode_request(raw_saml_request)
+    issuer = saml_request&.issuer
 
-    track_remote_logout_event
+    track_remote_logout_event(issuer)
 
     return head(:bad_request) unless valid_saml_request?
 
@@ -69,7 +72,7 @@ class SamlIdpController < ApplicationController
 
     return head(:bad_request) unless user_id.present?
 
-    handle_valid_sp_remote_logout_request(user_id)
+    handle_valid_sp_remote_logout_request(user_id: user_id, issuer: issuer)
   end
 
   def external_saml_request?
@@ -84,12 +87,12 @@ class SamlIdpController < ApplicationController
 
   private
 
-  def confirm_user_is_authenticated_with_fresh_mfa
-    bump_auth_count unless user_fully_authenticated?
-    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                               service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
-    redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
+  def redirect_to_sign_in
+    redirect_to new_user_session_url
+  end
+
+  def redirect_to_reauthenticate
+    redirect_to user_two_factor_authentication_url
   end
 
   def saml_metadata
@@ -112,7 +115,7 @@ class SamlIdpController < ApplicationController
   end
 
   def identity_needs_decryption?
-    UserDecorator.new(current_user).identity_verified? &&
+    current_user.identity_verified? &&
       !Pii::Cacher.new(current_user, user_session).exists_in_session?
   end
 

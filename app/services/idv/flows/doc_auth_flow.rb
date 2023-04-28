@@ -6,7 +6,6 @@ module Idv
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
         link_sent: Idv::Steps::LinkSentStep,
-        document_capture: Idv::Steps::DocumentCaptureStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [

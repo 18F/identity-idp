@@ -26,16 +26,20 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   def fraud_review_pending?
-    !!(fraud_review_pending || fraud_review_pending_at)
+    fraud_review_pending_at.present?
   end
 
   def fraud_rejection?
-    !!(fraud_rejection || fraud_rejection_at)
+    fraud_rejection_at.present?
+  end
+
+  def gpo_verification_pending?
+    gpo_verification_pending_at.present?
   end
 
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if fraud_review_pending? || fraud_rejection?
+    return if has_deactivation_reason?
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
@@ -44,14 +48,22 @@ class Profile < ApplicationRecord
         active: true,
         activated_at: now,
         deactivation_reason: nil,
+        gpo_verification_pending_at: nil,
         fraud_review_pending: false,
         fraud_rejection: false,
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
         verified_at: now,
       )
     end
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def activate_after_gpo_verification
+    update!(gpo_verification_pending_at: nil)
+    activate
+  end
 
   def activate_after_passing_review
     update!(
@@ -66,6 +78,14 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  def has_deactivation_reason?
+    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+  end
+
+  def deactivate_for_gpo_verification
+    update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
   def deactivate_for_fraud_review

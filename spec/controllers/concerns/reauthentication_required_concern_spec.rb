@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ReauthenticationRequiredConcern, type: :controller do
-  let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
   describe '#confirm_recently_authenticated' do
     controller ApplicationController do

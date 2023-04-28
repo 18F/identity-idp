@@ -5,7 +5,6 @@ fr:
       masked_ssn: Texte sécurisé, commençant par %{first_number} et finissant par
         %{last_number}
     buttons:
-      cancel: Annuler et retourner à votre profil
       change_address_label: Mettre à jour votre adresse actuelle
       change_label: Mettre à jour
       change_ssn_label: Mettre à jour votre numéro de Sécurité Sociale
@@ -206,20 +205,13 @@ fr:
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.
       phone:
-        alert_html: '<strong>Ce numéro de téléphone:</strong>'
+        alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
-        final_note_html: '<strong>Si vous configurez un téléphone pour
-          l’authentification multifactorielle</strong>, il peut s’agir d’un
-          numéro différent.'
         phone_of_record: numéro de téléphone enregistré
         rules:
-          - Ne doit pas être un téléphone virtuel (tel que Google Voice ou
-            Skype) ou un numéro surtaxé (péage)
-          - Doit être un numéro américain (ce qui inclut les territoires
-            américains)
-          - Doit être votre numéro principal ou le numéro que vous utilisez le
-            plus souvent
+          - Basé aux Etats-Unis (y compris les territoires américains)
+          - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
@@ -253,7 +245,6 @@ fr:
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        phone: Entrez votre numéro de téléphone
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:

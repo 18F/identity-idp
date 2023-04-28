@@ -17,7 +17,7 @@ describe Users::TotpSetupController, devise: true do
     context 'user is setting up authenticator app after account creation' do
       before do
         stub_analytics
-        user = create(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
+        user = create(:user, :fully_registered, :with_phone, with: { phone: '703-555-1212' })
         stub_sign_in(user)
         allow(@analytics).to receive(:track_event)
         get :new
@@ -31,9 +31,9 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.user_session[:new_totp_secret]).not_to be_nil
       end
 
-      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+      it 'can be used to generate a qrcode with User#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
+          subject.current_user.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 
@@ -66,9 +66,9 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.user_session[:new_totp_secret]).not_to be_nil
       end
 
-      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+      it 'can be used to generate a qrcode with User#qrcode' do
         expect(
-          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret]),
+          subject.current_user.qrcode(subject.user_session[:new_totp_secret]),
         ).not_to be_nil
       end
 
@@ -128,7 +128,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -165,7 +165,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents nil code' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -203,7 +203,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user omits name' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -382,7 +382,7 @@ describe Users::TotpSetupController, devise: true do
   describe '#disable' do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
-        user = create(:user, :signed_up, :with_phone)
+        user = create(:user, :fully_registered, :with_phone)
         totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
         user.save
         stub_sign_in(user)
@@ -403,7 +403,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'revokes remember device cookies' do
-        user = create(:user, :signed_up, :with_phone)
+        user = create(:user, :fully_registered, :with_phone)
         totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
         user.save
         stub_sign_in(user)

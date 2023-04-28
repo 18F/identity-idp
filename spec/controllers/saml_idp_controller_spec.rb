@@ -144,8 +144,8 @@ describe SamlIdpController do
     let(:other_sp) { create(:service_provider, active: true, agency_id: agency.id) }
 
     let(:session_id) { 'abc123' }
-    let(:user) { create(:user, :signed_up) }
-    let(:other_user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
+    let(:other_user) { create(:user, :fully_registered) }
 
     let!(:identity) do
       ServiceProviderIdentity.create(
@@ -622,7 +622,7 @@ describe SamlIdpController do
 
     context 'with IAL1' do
       it 'does not redirect the user to the IdV URL' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         generate_saml_response(user, saml_settings)
 
         expect(response).to_not be_redirect
@@ -775,7 +775,7 @@ describe SamlIdpController do
     end
 
     context 'authn_context scenarios' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       context 'authn_context is missing' do
         let(:auth_settings) { saml_settings(overrides: { authn_context: nil }) }
@@ -891,15 +891,15 @@ describe SamlIdpController do
     end
 
     context 'with ForceAuthn' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       it 'signs user out if a session is active and sp_session[:final_auth_request] is falsey' do
         sign_in(user)
         generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
         # would be 200 if the user's session persists
         expect(response.status).to eq(302)
-        # implicit test of request storage since request_id would be missing otherwise
-        expect(response.location).to match(%r{#{root_url}\?request_id=.+})
+        expect(response.location).to eq(root_url)
+        expect(controller.session[:sp][:request_id]).to be_present
       end
 
       it 'skips signing out the user when sp_session[:final_auth_request] is true' do
@@ -921,7 +921,7 @@ describe SamlIdpController do
 
     context 'service provider is inactive' do
       it 'responds with an error page' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         generate_saml_response(
           user,
@@ -936,7 +936,7 @@ describe SamlIdpController do
 
     context 'service provider is invalid' do
       it 'responds with an error page' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -965,7 +965,7 @@ describe SamlIdpController do
 
     context 'both service provider and authn_context are invalid' do
       it 'responds with an error page' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -1033,7 +1033,7 @@ describe SamlIdpController do
       end
 
       it 'encrypts the response to the right key' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         generate_saml_response(user, second_cert_settings)
 
         expect(response).to_not be_redirect
@@ -1055,7 +1055,7 @@ describe SamlIdpController do
       end
 
       it 'deoes not blow up' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         expect { generate_saml_response(user, second_cert_settings) }.to_not raise_error
       end
@@ -1063,7 +1063,7 @@ describe SamlIdpController do
 
     context 'POST to auth correctly stores SP in session' do
       before do
-        @user = create(:user, :signed_up)
+        @user = create(:user, :fully_registered)
         @saml_request = saml_request(saml_settings)
         @post_request = saml_post_auth(@saml_request)
         @stored_request_url = @post_request.request.original_url +
@@ -1097,7 +1097,7 @@ describe SamlIdpController do
 
     context 'service provider is valid' do
       before do
-        @user = create(:user, :signed_up)
+        @user = create(:user, :fully_registered)
         @saml_request = saml_get_auth(saml_settings)
       end
 
@@ -1158,7 +1158,7 @@ describe SamlIdpController do
     end
 
     context 'service provider uses email NameID format and is allowed to use email' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         settings = saml_settings(
@@ -1204,7 +1204,7 @@ describe SamlIdpController do
     end
 
     context 'no matching cert from the SAML request' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         stub_analytics
@@ -1254,7 +1254,7 @@ describe SamlIdpController do
     end
 
     context 'no IAL explicitly requested' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         stub_analytics
@@ -1295,7 +1295,7 @@ describe SamlIdpController do
     end
 
     context 'nameid_format is missing' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         stub_analytics
@@ -1397,7 +1397,7 @@ describe SamlIdpController do
     end
 
     context 'service provider sends unsupported NameID format' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
       let(:subject) { xmldoc.subject_nodeset[0] }
       let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
@@ -1528,10 +1528,11 @@ describe SamlIdpController do
     end
 
     context 'when user is not logged in' do
-      it 'redirects the user to the SP landing page with the request_id in the params' do
+      it 'redirects the user to the SP landing page with the request_id in the session' do
         saml_get_auth(saml_settings)
         sp_request_id = ServiceProviderRequestProxy.last.uuid
-        expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_path
+        expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
       it 'logs SAML Auth Request but does not log SAML Auth' do
@@ -1548,7 +1549,7 @@ describe SamlIdpController do
 
     context 'after signing in' do
       it 'does not call IdentityLinker' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         linker = instance_double(IdentityLinker)
 
         expect(IdentityLinker).to_not receive(:new)
@@ -1562,7 +1563,7 @@ describe SamlIdpController do
       let(:issuer) { xmldoc.issuer_nodeset[0] }
       let(:status) { xmldoc.status[0] }
       let(:status_code) { xmldoc.status_code[0] }
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         generate_saml_response(user, saml_settings)
@@ -1950,18 +1951,10 @@ describe SamlIdpController do
       end
     end
 
-    def stub_auth
-      allow(controller).to receive(:validate_saml_request_and_authn_context).and_return(true)
-      allow(controller).to receive(:user_fully_authenticated?).and_return(true)
-      allow(controller).to receive(:link_identity_from_session_data).and_return(true)
-      allow(controller).to receive(:current_user).and_return(build(:user))
-      allow(controller).to receive(:user_session).and_return({})
-    end
-
     context 'user requires ID verification' do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
-        stub_auth
+        stub_sign_in
         allow(controller).to receive(:remember_device_expired_for_sp?).and_return(false)
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
@@ -2012,7 +2005,7 @@ describe SamlIdpController do
 
     context 'user is not redirected to IdV' do
       it 'tracks the authentication without IdV redirection event' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         stub_analytics
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
@@ -2047,7 +2040,7 @@ describe SamlIdpController do
 
     context 'user has not finished verifying profile' do
       it 'tracks the authentication with finish_profile==true' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         stub_analytics
         allow(controller).to receive(:identity_needs_verification?).and_return(false)

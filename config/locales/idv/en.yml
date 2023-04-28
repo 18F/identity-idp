@@ -4,7 +4,6 @@ en:
     accessible_labels:
       masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
-      cancel: Cancel and return to your profile
       change_address_label: Update address
       change_label: Update
       change_ssn_label: Update Social Security number
@@ -184,17 +183,13 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       phone:
-        alert_html: '<strong>This phone number:</strong>'
+        alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
-        final_note_html: '<strong>If you set up a phone for multi-factor
-          authentication</strong>, this can be a different number.'
         phone_of_record: Phone of record
         rules:
-          - Must not be a virtual phone (such as Google Voice or Skype) or a
-            premium rate (toll) number
-          - Must be a U.S. number (which includes U.S. territories)
-          - Should be your primary number or the number that you use most often
+          - Based in the United States (including U.S. territories)
+          - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
@@ -224,7 +219,6 @@ en:
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        phone: Enter your phone number
         review: Re-enter your %{app_name} password to protect your data
       unavailable: 'We are working to resolve an error'
     troubleshooting:

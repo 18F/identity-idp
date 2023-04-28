@@ -1,13 +1,13 @@
 module ControllerHelper
   VALID_PASSWORD = 'salted peanuts are best'.freeze
 
-  def sign_in_as_user(user = create(:user, :signed_up, password: VALID_PASSWORD))
+  def sign_in_as_user(user = create(:user, :fully_registered, password: VALID_PASSWORD))
     @request.env['devise.mapping'] = Devise.mappings[:user]
     sign_in user
     user
   end
 
-  def sign_in_before_2fa(user = create(:user, :signed_up))
+  def sign_in_before_2fa(user = create(:user, :fully_registered))
     sign_in_as_user(user)
     controller.current_user.create_direct_otp
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
@@ -87,14 +87,12 @@ module ControllerHelper
     allow(subject).to receive(:user_session).and_return(user_session)
   end
 
-  def stub_decorated_user_with_pending_profile(user)
-    decorated_user = instance_double(UserDecorator)
-    allow(user).to receive(:decorate).and_return(decorated_user)
+  def stub_user_with_pending_profile(user)
     allow(user).to receive(:pending_profile).and_return(pending_profile)
-    allow(decorated_user).to receive(:pending_profile_requires_verification?).
+    allow(user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
     allow(user).to receive(:fraud_review_pending?).and_return(false)
-    decorated_user
+    user
   end
 
   def stub_identity(user, params)

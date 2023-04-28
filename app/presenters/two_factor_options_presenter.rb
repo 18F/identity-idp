@@ -16,6 +16,9 @@ class TwoFactorOptionsPresenter
     if priority_bucket == :authentication_app_priority
       totp_option + webauthn_platform_option + webauthn_option + piv_cac_option +
         phone_options + backup_code_option
+    elsif priority_bucket == :usability_priority
+      phone_options + totp_option + backup_code_option + webauthn_platform_option +
+        webauthn_option + piv_cac_option
     else
       webauthn_platform_option + webauthn_option + piv_cac_option + totp_option +
         phone_options + backup_code_option

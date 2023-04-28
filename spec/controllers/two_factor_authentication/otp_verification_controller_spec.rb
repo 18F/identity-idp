@@ -173,7 +173,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the event' do
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           second_factor_attempts_count:
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
@@ -219,10 +219,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        form = OtpVerificationForm.new(subject.current_user, nil)
-        result = FormResponse.new(success: true, serialize_error_details_only: {})
-        expect(form).to receive(:submit).and_return(result)
-        expect(subject).to receive(:otp_verification_form).and_return(form)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -288,6 +284,17 @@ describe TwoFactorAuthentication::OtpVerificationController do
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
         }
+      end
+
+      context "with a leading '#' sign" do
+        it 'redirects to the profile' do
+          post :create, params: {
+            code: "##{subject.current_user.reload.direct_otp}",
+            otp_delivery_preference: 'sms',
+          }
+
+          expect(response).to redirect_to account_path
+        end
       end
 
       context 'with remember_device in the params' do
@@ -375,7 +382,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     end
 
     context 'phone confirmation' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       before do
         sign_in_as_user(user)
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'

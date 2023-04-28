@@ -49,6 +49,10 @@ class FeatureManagement
     IdentityConfig.store.use_kms
   end
 
+  def self.redirect_to_clean_edit_password_url?
+    IdentityConfig.store.use_clean_edit_password_url
+  end
+
   def self.kms_multi_region_enabled?
     IdentityConfig.store.aws_kms_multi_region_enabled
   end
@@ -118,11 +122,19 @@ class FeatureManagement
   end
 
   def self.phone_recaptcha_enabled?
-    IdentityConfig.store.recaptcha_site_key_v2.present? &&
-      IdentityConfig.store.recaptcha_site_key_v3.present? &&
+    return false if IdentityConfig.store.recaptcha_site_key_v2.blank? ||
+                    IdentityConfig.store.recaptcha_site_key_v3.blank? ||
+                    !IdentityConfig.store.phone_recaptcha_score_threshold.positive?
+
+    recaptcha_enterprise? || (
       IdentityConfig.store.recaptcha_secret_key_v2.present? &&
-      IdentityConfig.store.recaptcha_secret_key_v3.present? &&
-      IdentityConfig.store.phone_recaptcha_score_threshold.positive?
+      IdentityConfig.store.recaptcha_secret_key_v3.present?
+    )
+  end
+
+  def self.recaptcha_enterprise?
+    IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
+      IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests

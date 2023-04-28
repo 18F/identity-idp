@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'View personal key', js: true do
+feature 'View personal key' do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   context 'after sign up' do
     context 'regenerating personal key' do

@@ -5,7 +5,7 @@ feature 'sp active users report' do
   include IdvHelper
 
   it 'reports a user as ial1 active for an ial1 sign in' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     visit_idp_from_sp_with_ial1(:oidc)
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp

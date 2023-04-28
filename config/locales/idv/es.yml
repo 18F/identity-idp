@@ -5,7 +5,6 @@ es:
       masked_ssn: texto seguro, comenzando con %{first_number} y terminando con
         %{last_number}
     buttons:
-      cancel: Cancele y regrese a su perfil
       change_address_label: Actualizar su dirección actual
       change_label: Actualizar
       change_ssn_label: Actualizar su número de la Seguridad Social
@@ -196,19 +195,13 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: '<strong>Este número de teléfono:</strong>'
+        alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        final_note_html: '<strong>Si configura un teléfono para la autenticación
-          multifactor</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-          - No debe ser un teléfono virtual (como Google Voice o Skype) ni un
-            número de tarifa premium (de pago)
-          - Debe ser un número de Estados Unidos (incluidos los territorios de
-            Estados Unidos)
-          - Debe ser su número principal o el número que utilice con más
-            frecuencia
+          - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
+          - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
@@ -239,7 +232,6 @@ es:
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        phone: Introduzca su número de teléfono
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:

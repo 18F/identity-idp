@@ -118,6 +118,9 @@ es:
             sistema: %{char_list}. Inténtelo nuevamente usando los caracteres de
             su documento de identidad.'
         first_name: Nombre
+        identity_doc_address_state: Estado emisor
+        identity_doc_address_state_hint: Este es el estado que emitió su identificación
+        identity_doc_address_state_prompt: '- Seleccione -'
         last_name: Apellido
         memorable_date:
           errors:
@@ -134,9 +137,6 @@ es:
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint: Puede incluir letras y números
-        state_id_state: Estado emisor
-        state_id_state_hint: Este es el estado que emitió su identificación
-        state_id_state_prompt: '- Seleccione -'
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual

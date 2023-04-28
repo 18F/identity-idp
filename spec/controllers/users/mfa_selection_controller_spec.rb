@@ -5,7 +5,7 @@ describe Users::MfaSelectionController do
 
   describe '#index' do
     before do
-      user = build(:user, :signed_up)
+      user = build(:user, :fully_registered)
       stub_sign_in(user)
     end
 
@@ -148,7 +148,7 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the form is empty' do
-      let(:user) { build(:user, :signed_up) }
+      let(:user) { build(:user, :fully_registered) }
 
       before do
         stub_sign_in(user)

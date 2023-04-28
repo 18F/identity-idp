@@ -134,7 +134,7 @@ describe Idv::CaptureDocController do
       end
 
       it 'tracks expected events for irs reproofing' do
-        allow_any_instance_of(UserDecorator).to receive(:reproof_for_irs?).and_return(true)
+        allow_any_instance_of(User).to receive(:reproof_for_irs?).and_return(true)
         mock_next_step(:capture_complete)
         result = {
           step: 'capture_complete',

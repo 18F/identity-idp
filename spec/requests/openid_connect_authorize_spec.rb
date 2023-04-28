@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'user signs in partially and visits openid_connect/authorize' do
-  let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1213' }) }
+  let(:user) { create(:user, :fully_registered, with: { phone: '+1 (202) 555-1213' }) }
 
   it 'prompts the user to 2FA' do
     openid_test('select_account')
@@ -13,7 +13,8 @@ describe 'user signs in partially and visits openid_connect/authorize' do
   it 'prompts the user to 2FA if prompt is login' do
     openid_test('login')
     sp_request_id = ServiceProviderRequestProxy.last.uuid
-    expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+    expect(response).to redirect_to new_user_session_path
+    expect(controller.session[:sp]['request_id']).to eq(sp_request_id)
   end
 
   it 'prompts the user to 2FA if prompt is not given' do

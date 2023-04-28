@@ -36,7 +36,7 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       request_url = saml_authn_request_url
 
       visit request_url
@@ -73,7 +73,7 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'after session timeout, signing in takes user back to SP' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       request_url = saml_authn_request_url
 
       visit request_url
@@ -92,7 +92,7 @@ feature 'IAL1 Single Sign On' do
   end
 
   context 'fully signed up user authenticates new sp' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:saml_authn_request) { saml_authn_request_url }
 
     before do
@@ -138,7 +138,7 @@ feature 'IAL1 Single Sign On' do
 
   context 'fully signed up user is signed in with email and password only' do
     it 'prompts to enter OTP' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_user(user)
 
       visit saml_authn_request_url
@@ -158,14 +158,15 @@ feature 'IAL1 Single Sign On' do
   end
 
   context 'visiting IdP via SP, then using the language selector' do
-    it 'preserves the request_id in the url' do
+    it 'displays the branded page' do
       visit saml_authn_request_url
 
       within(first('.language-picker', visible: false)) do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to match(%r{http://www.example.com/es/\?request_id=.+})
+      expect(current_url).to eq root_url(locale: :es, trailing_slash: true)
+      expect_branded_experience
     end
   end
 
@@ -174,17 +175,19 @@ feature 'IAL1 Single Sign On' do
       request_url = saml_authn_request_url
       visit request_url
 
-      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
+      expect(current_url).to eq root_url
+      expect_branded_experience
 
       visit request_url
 
-      expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
+      expect(current_url).to eq root_url
+      expect_branded_experience
     end
   end
 
   context 'canceling sign in after email and password' do
     it 'returns to the branded landing page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit saml_authn_request_url
       fill_in_credentials_and_submit(user.email, user.password)
@@ -199,7 +202,7 @@ feature 'IAL1 Single Sign On' do
 
   context 'requesting verified_at for an IAL1 account' do
     it 'shows verified_at as a requested attribute, even if blank' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       saml_authn_request = saml_authn_request_url(
         overrides: {
           issuer: sp1_issuer,

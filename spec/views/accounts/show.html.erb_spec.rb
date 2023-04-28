@@ -1,16 +1,14 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
-  let(:decorated_user) { user.decorate }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
-    allow(user).to receive(:decorate).and_return(decorated_user)
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :presenter,
       AccountShowPresenter.new(
-        decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+        decrypted_pii: nil, personal_key: nil, user: user,
         sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false
       ),
@@ -25,7 +23,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when current user has password_reset_profile' do
     before do
-      allow(decorated_user).to receive(:password_reset_profile).and_return(true)
+      allow(user).to receive(:password_reset_profile).and_return(true)
     end
 
     it 'displays an alert with instructions to reactivate their profile' do
@@ -46,7 +44,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when the user does not have pending_profile' do
     before do
-      allow(decorated_user).to receive(:pending_profile).and_return(false)
+      allow(user).to receive(:pending_profile).and_return(false)
     end
 
     it 'lacks a pending profile section' do
@@ -60,7 +58,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when current user has pending_profile' do
     before do
-      allow(decorated_user).to receive(:pending_profile).and_return(build(:profile))
+      allow(user).to receive(:pending_profile).and_return(build(:profile))
     end
 
     it 'contains a link to activate profile' do
@@ -74,7 +72,7 @@ describe 'accounts/show.html.erb' do
   context 'phone listing and adding' do
     context 'user has no phone' do
       let(:user) do
-        record = create(:user, :signed_up, :with_piv_or_cac)
+        record = create(:user, :fully_registered, :with_piv_or_cac)
         record.phone_configurations = []
         record
       end
@@ -104,7 +102,7 @@ describe 'accounts/show.html.erb' do
 
   context 'auth app listing and adding' do
     context 'user has no auth app' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
       it 'does not render auth app' do
         expect(view).to_not render_template(partial: '_auth_apps')
@@ -112,7 +110,7 @@ describe 'accounts/show.html.erb' do
     end
 
     context 'user has an auth app' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
       it 'renders the auth app section' do
         render
 
@@ -123,7 +121,7 @@ describe 'accounts/show.html.erb' do
 
   context 'PIV/CAC listing and adding' do
     context 'user has no piv/cac' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
       it 'does not render piv/cac' do
         expect(view).to_not render_template(partial: '_piv_cac')
@@ -131,7 +129,7 @@ describe 'accounts/show.html.erb' do
     end
 
     context 'user has a piv/cac' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
       it 'renders the piv/cac section' do
         render
 
@@ -169,7 +167,7 @@ describe 'accounts/show.html.erb' do
       assign(
         :presenter,
         AccountShowPresenter.new(
-          decrypted_pii: nil, personal_key: 'abc123', decorated_user: decorated_user,
+          decrypted_pii: nil, personal_key: 'abc123', user: user,
           sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
           locked_for_session: false
         ),
