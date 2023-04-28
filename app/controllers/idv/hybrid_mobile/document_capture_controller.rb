@@ -7,6 +7,11 @@ module Idv
       before_action :override_csp_to_allow_acuant
 
       def show
+        if document_capture_session&.load_result&.success?
+          redirect_to idv_hybrid_mobile_capture_complete_url
+          return
+        end
+
         analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
