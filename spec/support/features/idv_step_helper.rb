@@ -68,8 +68,12 @@ module IdvStepHelper
     click_sp_link
   end
 
+  def sp_friendly_name
+    'Test SP'
+  end
+
   def link_text
-    'return to Test SP'
+    t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: sp_friendly_name)
   end
 
   def click_sp_link
