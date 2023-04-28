@@ -28,7 +28,11 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
 
-      redirect_to idv_ssn_url
+      if result.success?
+        redirect_to idv_ssn_url
+      else
+        redirect_to idv_document_capture_url
+      end
     end
 
     def extra_view_variables
