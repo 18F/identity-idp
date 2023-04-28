@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Account history' do
-  let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
+  let(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
   let(:account_created_event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
   let(:gpo_mail_sent_event) do
     create(:event, user: user, event_type: :gpo_mail_sent, created_at: Time.zone.now - 90.days)

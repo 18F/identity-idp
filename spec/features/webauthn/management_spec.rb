@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'webauthn management' do
   include WebAuthnHelper
 
-  let(:user) { create(:user, :signed_up, with: { phone: '+1 202-555-1212' }) }
+  let(:user) { create(:user, :fully_registered, with: { phone: '+1 202-555-1212' }) }
   let(:view) { ActionController::Base.new.view_context }
 
   it_behaves_like 'webauthn setup'

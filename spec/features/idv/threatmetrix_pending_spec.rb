@@ -27,7 +27,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
   scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     start_idv_from_sp
     sign_in_and_2fa_user(user)
@@ -88,7 +88,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
   scenario 'users pending threatmetrix No Result, it results in an error', :js do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
         irs_attempts_api_session_id: 'test-session-id',

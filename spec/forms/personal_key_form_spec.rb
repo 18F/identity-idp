@@ -22,7 +22,7 @@ describe PersonalKeyForm do
 
     context 'when the form is invalid' do
       it 'returns FormResponse with success: false' do
-        user = create(:user, :signed_up, personal_key: 'code')
+        user = create(:user, :fully_registered, personal_key: 'code')
         errors = { personal_key: ['Incorrect personal key'] }
 
         form = PersonalKeyForm.new(user, 'foo')

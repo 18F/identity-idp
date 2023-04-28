@@ -44,4 +44,30 @@ describe 'users/phone_setup/spam_protection.html.erb' do
       )
     end
   end
+
+  context 'with configured recaptcha site key' do
+    before do
+      allow(IdentityConfig.store).to receive(:recaptcha_site_key_v2).and_return('key')
+    end
+
+    it 'renders recaptcha script' do
+      expect(rendered).to have_css(
+        'script[src="https://www.google.com/recaptcha/api.js"]',
+        visible: :all,
+      )
+    end
+
+    context 'with recaptcha enterprise' do
+      before do
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+      end
+
+      it 'renders recaptcha script' do
+        expect(rendered).to have_css(
+          'script[src="https://www.google.com/recaptcha/enterprise.js"]',
+          visible: :all,
+        )
+      end
+    end
+  end
 end

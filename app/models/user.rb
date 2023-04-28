@@ -66,8 +66,8 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
 
-  def need_two_factor_authentication?(_request)
-    MfaPolicy.new(self).two_factor_enabled?
+  def fully_registered?
+    !!registration_log&.registered_at
   end
 
   def confirmed?
@@ -320,7 +320,7 @@ class User < ApplicationRecord
       map(&:decorate)
   end
 
-  def recent_devices?
+  def has_devices?
     !recent_devices.empty?
   end
 

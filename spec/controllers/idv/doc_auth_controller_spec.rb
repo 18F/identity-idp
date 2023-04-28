@@ -213,7 +213,7 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:document_capture_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
 
   def mock_document_capture_step

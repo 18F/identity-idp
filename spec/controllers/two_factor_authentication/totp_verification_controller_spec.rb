@@ -80,7 +80,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
       it 'tracks the event' do
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           second_factor_attempts_count:
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
@@ -117,7 +117,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         lockout_period = IdentityConfig.store.lockout_period_in_minutes.minutes
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
           second_factor_attempts_count: 3,
         )

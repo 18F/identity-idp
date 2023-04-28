@@ -10,24 +10,22 @@ fr:
       barcode:
         cancel_link_text: Annulez votre code-barres
         close_window: Vous pouvez maintenant fermer cette fenêtre
-        deadline: Visitez le bureau de poste d’ici %{deadline}
+        deadline: Vous devez vous rendre dans un bureau de poste participant avant le
+          %{deadline}
         deadline_restart: Si vous partez après la date limite, vos informations ne
           seront pas sauvegardées et vous devrez recommencer le processus.
         email_sent: Nous avons envoyé ces informations à l’adresse électronique que vous
           avez utilisée pour vous connecter.
-        items_to_bring: 'Présentez les éléments suivants à n’importe quel collaborateur
-          d’un bureau de Poste:'
         learn_more: En savoir davantage sur ce qu’il faut apporter.
         location_details: Détails de l’emplacement
         questions: Des questions?
         retail_hours: Heures d’ouverture
         retail_hours_closed: Fermé
-        return_to_partner_html: Vous pouvez maintenant fermer cette fenêtre ou %{link}
-          afin d’effectuer toutes les étapes suivantes auxquelles vous pouvez
-          accéder jusqu’à ce que votre identité ait été confitmée.
-        return_to_partner_link: retourner à %{sp_name}
-        speak_to_associate: Vous pouvez voir n’importe quel associé au guichet de vente
-          au détail pour vérifier votre identité. Aucun rendez-vous n’est exigé.
+        return_to_partner_html: Vous pouvez %{link} afin d’effectuer toutes les étapes
+          suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité
+          ait été confitmée.
+        return_to_partner_link: maintenant vous déconnecter et retourner à %{sp_name}
+        what_to_expect: À quoi s’attendre au bureau de poste
       cta:
         button: Vérifiez votre identité en personne
         button_variant: Essayer en personne
@@ -36,10 +34,18 @@ fr:
         prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce
           d’identité en ligne, vous pourrez peut-être essayer de le faire en
           personne dans certains bureaux de poste.
+      expect:
+        heading: Que faire après votre visite
+        info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous
+          enverrons un courrier électronique pour vous indiquer si votre
+          vérification d’identité a réussi ou échoué.
       location:
         distance:
           one: 'à %{count} mile'
           other: 'à %{count} miles'
+        heading: Informations sur les bureaux de poste
+        info: Aucun rendez-vous n’est nécessaire pour vérifier votre identité. Vous
+          pouvez vous rendre dans n’importe quel bureau de poste participant.
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         po_search:
@@ -62,10 +68,11 @@ fr:
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
           search_button: Rechercher
-        retail_hours_heading: Heures d’ouverture
+        retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'
         retail_hours_weekday: 'Lundi à Vendredi:'
+        selection: 'Il s’agit du bureau que vous avez sélectionné:'
       prepare:
         alert_selected_post_office: Vous avez sélectionné le bureau de poste à %{full_address}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
@@ -141,7 +148,8 @@ fr:
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle
-      barcode: Vous êtes prêt à vérifier votre identité en personne avec %{app_name}
+      barcode: Présentez ce code-barres et votre pièce d’identité délivrée par l’État
+        à un bureau de poste pour terminer la vérification de votre identité
       cta: Vous avez des difficultés à vérifier votre identité en ligne?
       cta_variant: Essayez de vérifier votre identité en personne
       id_address: Adresse sur votre pièce d’identité
@@ -157,29 +165,16 @@ fr:
     process:
       barcode:
         caption_label: Code d’inscription
-        heading: Une copie de votre code-barres
-        info: Imprimez ou numérisez depuis votre appareil mobile.
-      proof_of_address:
-        acceptable_proof:
-          - Bail, hypothèque ou acte de fiducie
-          - Inscription sur les listes électorales
-          - Carte d’immatriculation du véhicule
-          - Police d’assurance habitation ou véhicule
-        heading: Preuve de votre adresse actuelle
-        info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
-          est différente de l’adresse figurant sur votre document d’identité.
-          Les justificatifs d’adresse acceptés sont les suivants:'
-        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
-          copie numérique du document. Vous ne pouvez pas montrer une photo ou
-          une capture d’écran du document.
+        heading: Montrez votre code-barres %{app_name}
+        info: Le vendeur doit scanner votre code-barres en haut de cette page. Vous
+          pouvez imprimer cette page ou la montrer sur votre appareil mobile.
       state_id:
-        acceptable_documents:
-          - Permis de conduire d’État
-          - Document d’identité de non-conducteur d’État
-        heading: Votre permis de conduire ou votre permis d’État Carte d’identité de
-          non-conducteur
-        info: 'Votre pièce d’identité ne doit pas être expirée. Les formes
-          d’identification acceptables sont:'
-        no_other_documents: Nous n’acceptons actuellement aucune autre forme
-          d’identification, comme les passeports et les documents d’identité
-          militaires.
+        heading: Présentez votre permis de conduire de l’État ou votre carte d’identité
+          de non-conducteur de l’État
+        info: Ce document ne doit pas avoir expiré. Nous n’acceptons actuellement aucune
+          autre forme d’identification, comme les passeports et les cartes
+          d’identité militaires.
+      what_to_do:
+        heading: Faites la queue
+        info: Dites à l’employé du bureau de poste que vous êtes ici pour vérifier votre
+          identité avec %{app_name}.

@@ -2410,11 +2410,13 @@ module AnalyticsEvents
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
+    validator_class:,
     exception_class:,
     **extra
   )
@@ -2423,6 +2425,7 @@ module AnalyticsEvents
       recaptcha_result:,
       score_threshold:,
       evaluated_as_valid:,
+      validator_class:,
       exception_class:,
       **extra,
     )

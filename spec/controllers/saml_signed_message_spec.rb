@@ -14,7 +14,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     context "SP's can have signed_response_message_requested set" do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       let(:saml_response_encoded) do
         Nokogiri::HTML(response.body).css('#SAMLResponse').first.attributes['value'].to_s
       end

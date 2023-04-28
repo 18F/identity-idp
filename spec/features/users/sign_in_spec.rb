@@ -298,7 +298,7 @@ feature 'Sign in' do
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
@@ -436,7 +436,7 @@ feature 'Sign in' do
         email = 'test@example.com'
         password = 'salty pickles'
 
-        create(:user, :signed_up, email: email, password: password)
+        create(:user, :fully_registered, email: email, password: password)
 
         user = User.find_with_email(email)
         encrypted_email = user.confirmed_email_addresses.first.encrypted_email
@@ -456,7 +456,7 @@ feature 'Sign in' do
         email = 'test@example.com'
         password = 'salty pickles'
 
-        create(:user, :signed_up, email: email, password: password)
+        create(:user, :fully_registered, email: email, password: password)
 
         user = User.find_with_email(email)
         encrypted_email = user.confirmed_email_addresses.first.encrypted_email
@@ -490,7 +490,7 @@ feature 'Sign in' do
 
   context 'invalid request_id' do
     it 'allows the user to sign in and does not try to redirect to any SP' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit new_user_session_path(request_id: 'invalid')
       fill_in_credentials_and_submit(user.email, user.password)
@@ -502,7 +502,7 @@ feature 'Sign in' do
     context 'with email and password' do
       it 'allows the user to sign in and does not try to redirect to any SP' do
         allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         visit new_user_session_path(request_id: 'invalid')
         fill_in_credentials_and_submit(user.email, user.password)
@@ -514,7 +514,7 @@ feature 'Sign in' do
 
     context 'with piv/cac' do
       it 'allows the user to sign in and does not try to redirect to any SP' do
-        user = create(:user, :signed_up, :with_piv_or_cac)
+        user = create(:user, :fully_registered, :with_piv_or_cac)
 
         visit new_user_session_path(request_id: 'invalid')
         signin_with_piv(user)
@@ -526,7 +526,7 @@ feature 'Sign in' do
 
   context 'CSRF error' do
     it 'redirects to sign in page with flash message' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit new_user_session_path(request_id: '123')
       allow_any_instance_of(Users::SessionsController).
         to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
@@ -553,7 +553,7 @@ feature 'Sign in' do
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
     it 'falls back to SMS with an error message if SMS is supported' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: '+61 02 1234 5678' }
       )
       signin(user.email, user.password)
@@ -571,7 +571,7 @@ feature 'Sign in' do
 
     it 'shows error message if SMS and Voice are not supported' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: '+213 09 1234 5678' }
       )
       signin(user.email, user.password)
@@ -595,7 +595,7 @@ feature 'Sign in' do
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
@@ -616,7 +616,7 @@ feature 'Sign in' do
   context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
@@ -639,7 +639,7 @@ feature 'Sign in' do
   context 'user with voice delivery preference visits /otp/send' do
     it 'displays an error message but does not send another SMS' do
       user = create(
-        :user, :signed_up,
+        :user, :fully_registered,
         otp_delivery_preference: 'voice', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
@@ -677,7 +677,7 @@ feature 'Sign in' do
 
   context 'user signs in and chooses another authentication method' do
     it 'signs out the user if they choose to cancel' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       signin(user.email, user.password)
       accept_rules_of_use_and_continue_if_displayed
       click_link t('two_factor_authentication.login_options_link_text')
@@ -690,7 +690,7 @@ feature 'Sign in' do
 
   context 'user signs in when accepted_terms_at is out of date', js: true do
     it 'validates terms checkbox and signs in successfully' do
-      user = create(:user, :signed_up, accepted_terms_at: nil)
+      user = create(:user, :fully_registered, accepted_terms_at: nil)
       signin(user.email, user.password)
 
       click_button t('forms.buttons.continue')
@@ -706,7 +706,7 @@ feature 'Sign in' do
   context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'does not redirect to the personal key page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       old_personal_key = PersonalKeyGenerator.new(user).create
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
@@ -719,7 +719,7 @@ feature 'Sign in' do
 
   context 'user attempts sign in with bad personal key' do
     it 'remains on the login with personal key page' do
-      user = create(:user, :signed_up, :with_personal_key)
+      user = create(:user, :fully_registered, :with_personal_key)
       signin(user.email, user.password)
       choose_another_security_option('personal_key')
       enter_personal_key(personal_key: 'foo')
@@ -762,7 +762,7 @@ feature 'Sign in' do
 
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:saml)
       visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
@@ -778,7 +778,7 @@ feature 'Sign in' do
 
   context 'a prompt login sp redirects back to auth url immediately after we redirect to them' do
     it 'logs an SP bounce and displays the bounced error screen' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_oidc_sp_with_loa1_prompt_login
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -792,7 +792,7 @@ feature 'Sign in' do
 
   context 'multiple piv cacs' do
     it 'allows you to sign in with either' do
-      user = create(:user, :signed_up, :with_piv_or_cac)
+      user = create(:user, :fully_registered, :with_piv_or_cac)
       user_id = user.id
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
@@ -815,7 +815,7 @@ feature 'Sign in' do
 
   context 'multiple auth apps' do
     it 'allows you to sign in with either' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       Db::AuthAppConfiguration.create(user, 'foo', nil, 'foo')
       Db::AuthAppConfiguration.create(user, 'bar', nil, 'bar')
 
@@ -839,7 +839,7 @@ feature 'Sign in' do
 
   context 'oidc sp requests ialmax' do
     it 'returns ial1 info for a non-verified user' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_oidc_sp_with_ialmax
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -874,7 +874,7 @@ feature 'Sign in' do
 
   context 'saml sp requests ialmax' do
     it 'returns ial1 info for a non-verified user' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_saml_authn_request_url(
         overrides: {
           issuer: sp1_issuer,
@@ -932,7 +932,7 @@ feature 'Sign in' do
     end
 
     it 'forces user to add a piv/cac if they do not have one' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -953,7 +953,7 @@ feature 'Sign in' do
 
   context 'double clicking on "Agree and Continue"' do
     it 'should not blow up' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -974,7 +974,7 @@ feature 'Sign in' do
   end
 
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
-    user = create(:user, :signed_up, :with_phone)
+    user = create(:user, :fully_registered, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
     click_on t('account.login.piv_cac')
     allow(FeatureManagement).to receive(:development_and_identity_pki_disabled?).and_return(false)

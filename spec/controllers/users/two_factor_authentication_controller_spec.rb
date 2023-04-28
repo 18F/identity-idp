@@ -4,7 +4,7 @@ describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
 
   let(:otp_preference_sms) { { otp_delivery_preference: 'sms' } }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
@@ -446,7 +446,7 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when selecting voice OTP delivery' do
       before do
-        user = create(:user, :signed_up, otp_delivery_preference: 'voice')
+        user = create(:user, :fully_registered, otp_delivery_preference: 'voice')
         sign_in_before_2fa(user)
         @old_otp = subject.current_user.direct_otp
         allow(Telephony).to receive(:send_authentication_otp).and_call_original
@@ -517,7 +517,7 @@ describe Users::TwoFactorAuthenticationController do
 
       context 'when selecting specific phone configuration' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           sign_in_before_2fa(user)
         end
       end
