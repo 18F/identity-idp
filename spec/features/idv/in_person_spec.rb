@@ -604,7 +604,6 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step(user)
     end
     it 'successfully proceeds through the flow' do
-
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
 
       complete_address_step(user, double_address_verification: true)
