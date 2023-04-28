@@ -15,6 +15,10 @@ describe('Acuant SDK Loading Tests', async () => {
     VERSION_REGEX.test(dir),
   );
 
+  if (!sdks.length) {
+    throw new Error('Expected to find at least one SDK version, but found none');
+  }
+
   sdks.forEach((version) => {
     describe(version, () => {
       const TEST_URL = `file://${__dirname}/index.html`;
