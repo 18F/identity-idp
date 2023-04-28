@@ -13,19 +13,13 @@ function onStateSelectionChange() {
   showOrHidePuertoRicoExtras(stateSelector?.value);
 }
 
-function onIdentityDocStateSelectionChange() {
-  const identityDocStateSelector: HTMLInputElement = <HTMLInputElement>(
-    document.getElementById('state_id_identity_doc_address_state')
-  );
-  showOrHidePuertoRicoExtras(identityDocStateSelector?.value);
-}
-
-function onAddressStateSelectionChange() {
-  const addressStateSelector: HTMLInputElement = <HTMLInputElement>(
-    document.getElementById('in_person_address_state')
-  );
-  showOrHidePuertoRicoExtras(addressStateSelector?.value);
-}
+const stateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
+stateSelectors.forEach((stateSelector) => {
+  if (!stateSelector.id.includes('jurisdiction')) {
+    stateSelector.addEventListener('change', () => showOrHidePuertoRicoExtras(stateSelector.value));
+    showOrHidePuertoRicoExtras(stateSelector.value);
+  }
+});
 
 function onUpdateIdentityDoc() {
   const updateIdentityDocStateSelector: HTMLInputElement = <HTMLInputElement>(
@@ -53,16 +47,8 @@ function onUpdate() {
 }
 
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
-document
-  .getElementById('state_id_identity_doc_address_state')
-  ?.addEventListener('change', onIdentityDocStateSelectionChange);
-document
-  .getElementById('in_person_address_state')
-  ?.addEventListener('change', onAddressStateSelectionChange);
 
 // set initial visibility
 onStateSelectionChange();
-onIdentityDocStateSelectionChange();
-onAddressStateSelectionChange();
 
 onUpdate();
