@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Steps::InPerson::StateIdStep do
+  include InPersonHelper
   let(:submitted_values) { {} }
   let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
   let(:user) { build(:user) }
@@ -244,20 +245,20 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:pii_from_user) { flow.flow_session[:pii_from_user] }
     let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
     let(:capture_secondary_id_enabled) { true }
-    let(:dob) { '1972-02-23' }
+    let(:dob) { InPersonHelper::GOOD_DOB }
     let(:same_address_as_id) { 'false' } # value on submission
     # residential
-    let(:address1) { '123 Sesame Street' }
-    let(:address2) { 'Apt. #C' }
-    let(:city) { 'Twin Peaks' }
-    let(:state) { 'Nevada' }
-    let(:zipcode) { '90001' }
+    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
+    let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
+    let(:city) { InPersonHelper::GOOD_CITY }
+    let(:state) { InPersonHelper::GOOD_STATE }
+    let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
     # identity_doc_
-    let(:identity_doc_address1) { '123 Sesame Street' }
-    let(:identity_doc_address2) { 'Apt. #C' }
-    let(:identity_doc_city) { 'Twin Peaks' }
-    let(:identity_doc_address_state) { 'Nevada' }
-    let(:identity_doc_zipcode) { '90001' }
+    let(:identity_doc_address1) { InPersonHelper::GOOD_ADDRESS1 }
+    let(:identity_doc_address2) { InPersonHelper::GOOD_ADDRESS2 }
+    let(:identity_doc_city) { InPersonHelper::GOOD_CITY }
+    let(:identity_doc_address_state) { InPersonHelper::GOOD_STATE }
+    let(:identity_doc_zipcode) { InPersonHelper::GOOD_ZIPCODE }
 
     let(:submitted_values) do
       {
@@ -283,19 +284,15 @@ describe Idv::Steps::InPerson::StateIdStep do
         and_return(enrollment)
     end
 
-    # User picks "Yes, I live at the address on my state-issued ID"
-    #   which sets same_address_as_id = 'true'
-    # On verify/in_person/verify, user clicks Update for state-issued ID.
-    # On verify/in_person/redo_state_id, the user changes response from "Yes,..."
-    #   to "No, I live at a different address" which sets same_address_as_id = 'false'
-    context 'when capture secondary id is enabled,
-    same_address_as_id changed from "true" to "false' do
+    context 'when capture secondary id is enabled, and
+      same_address_as_id changed from "true" to "false"' do
       it 'marks address step as incomplete, retains identity_doc_ attrs/value but removes addr
       attr in flow session' do
         Idv::StateIdForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
 
+        # User picks "Yes, I live at the address on my state-issued ID" on state ID
         pii_from_user[:same_address_as_id] = 'true' # on form before submission
         pii_from_user[:identity_doc_address1] = identity_doc_address1
         pii_from_user[:identity_doc_address2] = identity_doc_address2
@@ -308,6 +305,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         pii_from_user[:state] = state
         pii_from_user[:zipcode] = zipcode
 
+        # On Verify, user changes response from "Yes,..." to "No, I live at a different address"
         step.call
 
         # marks address step as incomplete
