@@ -21,34 +21,14 @@ stateSelectors.forEach((stateSelector) => {
   }
 });
 
-function onUpdateIdentityDoc() {
-  const updateIdentityDocStateSelector: HTMLInputElement = <HTMLInputElement>(
-    document.getElementById('state_id_identity_doc_address_state')
-  );
-  showOrHidePuertoRicoExtras(updateIdentityDocStateSelector?.value);
-}
-
-function onUpdateAddress() {
-  const updateAddressStateSelector: HTMLInputElement = <HTMLInputElement>(
-    document.getElementById('in_person_address_state')
-  );
-  showOrHidePuertoRicoExtras(updateAddressStateSelector?.value);
-}
-
-function onUpdate() {
-  const { pathname } = window.location;
-
-  if (pathname === '/verify/in_person/state_id') {
-    onUpdateIdentityDoc();
+const updateStateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
+updateStateSelectors.forEach((updatedStateSelector) => {
+  if (!updatedStateSelector.id.includes('jurisdiction')) {
+    showOrHidePuertoRicoExtras(updatedStateSelector.value);
   }
-  if (pathname === '/verify/in_person/address') {
-    onUpdateAddress();
-  }
-}
+});
 
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
 // set initial visibility
 onStateSelectionChange();
-
-onUpdate();
