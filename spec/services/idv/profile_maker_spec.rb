@@ -62,7 +62,7 @@ describe Idv::ProfileMaker do
         )
 
         expect(profile.active).to eq false
-        expect(profile.fraud_review_pending?)
+        expect(profile.fraud_review_pending?).to be_true
       end
     end
 

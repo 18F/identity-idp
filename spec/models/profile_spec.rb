@@ -404,8 +404,8 @@ describe Profile do
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending?)
-      expect(profile.fraud_rejection?)
+      expect(profile.fraud_review_pending?).to be_true
+      expect(profile.fraud_rejection?).to be_true
     end
   end
 
