@@ -1,6 +1,7 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     before_action :store_sp_metadata_in_session, only: [:edit]
+    before_action :store_token_in_session, only: [:edit], if: :clean_edit_url_toggle_on?
 
     def new
       analytics.password_reset_visit
@@ -21,19 +22,22 @@ module Users
     end
 
     def edit
-      result = PasswordResetTokenValidator.new(token_user).submit
-
-      analytics.password_reset_token(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_email_confirmed(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
-
-      if result.success?
-        @reset_password_form = ResetPasswordForm.new(build_user)
-        @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+      if params[:reset_password_token] && clean_edit_url_toggle_on?
+        redirect_to edit_user_password_url
       else
-        handle_invalid_or_expired_token(result)
+        result = PasswordResetTokenValidator.new(token_user).submit
+
+        analytics.password_reset_token(**result.to_h)
+        irs_attempts_api_tracker.forgot_password_email_confirmed(
+          success: result.success?,
+          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+        )
+        if result.success?
+          @reset_password_form = ResetPasswordForm.new(build_user)
+          @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
+        else
+          handle_invalid_or_expired_token(result)
+        end
       end
     end
 
@@ -51,6 +55,7 @@ module Users
       )
 
       if result.success?
+        session.delete(:reset_password_token) if session[:reset_password_token]
         handle_successful_password_reset
       else
         handle_unsuccessful_password_reset(result)
@@ -91,6 +96,15 @@ module Users
       redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
+    def store_token_in_session
+      return if session[:reset_password_token]
+      session[:reset_password_token] = params[:reset_password_token]
+    end
+
+    def clean_edit_url_toggle_on?
+      FeatureManagement.redirect_to_clean_edit_password_url?
+    end
+
     def create_account_if_email_not_found
       user, result = RequestPasswordReset.new(
         email: email,
@@ -112,6 +126,7 @@ module Users
 
     def handle_invalid_or_expired_token(result)
       flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
+      session.delete(:reset_password_token)
       redirect_to new_user_password_url
     end
 
@@ -123,12 +138,16 @@ module Users
       user
     end
 
+    def password_token
+      session[:reset_password_token] || params[:reset_password_token]
+    end
+
     def token_user
-      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(password_token)
     end
 
     def build_user
-      User.new(reset_password_token: params[:reset_password_token])
+      User.new(reset_password_token: password_token)
     end
 
     def handle_successful_password_reset
@@ -146,6 +165,7 @@ module Users
     def handle_unsuccessful_password_reset(result)
       reset_password_token_errors = result.errors[:reset_password_token]
       if reset_password_token_errors.present?
+        session.delete(:reset_password_token) if session[:reset_password_token]
         flash[:error] = t("devise.passwords.#{reset_password_token_errors.first}")
         redirect_to new_user_password_url
         return

@@ -85,7 +85,7 @@ describe 'Unchecking remember device' do
 
   describe '2fa verification' do
     context 'when the 2fa is totp' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
       before do
         sign_in_user(user)
@@ -105,7 +105,7 @@ describe 'Unchecking remember device' do
     context 'when the 2fa is webauthn' do
       include WebAuthnHelper
 
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       before do
         create(

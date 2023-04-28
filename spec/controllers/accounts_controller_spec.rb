@@ -14,7 +14,7 @@ describe AccountsController do
     context 'when user has an active identity' do
       it 'renders the profile and does not redirect out of the app' do
         stub_analytics
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         user.identities << ServiceProviderIdentity.create(
           service_provider: 'http://localhost:3000',
           last_authenticated_at: Time.zone.now,
@@ -34,7 +34,7 @@ describe AccountsController do
       it 'renders the profile and shows a deactivation banner' do
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
         )
         user.active_profile.deactivate(:password_reset)
@@ -62,7 +62,7 @@ describe AccountsController do
       it 'renders the pending profile banner' do
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           profiles: [build(:profile, deactivation_reason: :gpo_verification_pending)],
         )
 
@@ -79,7 +79,7 @@ describe AccountsController do
         it 'renders a locked profile' do
           user = create(
             :user,
-            :signed_up,
+            :fully_registered,
             profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
           )
 

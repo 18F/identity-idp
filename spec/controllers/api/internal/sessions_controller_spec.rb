@@ -19,7 +19,7 @@ RSpec.describe Api::Internal::SessionsController do
     end
 
     context 'signed in' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       it 'responds with live and timeout properties' do
         expect(response).to eq(live: true, timeout: User.timeout_in.from_now.as_json)

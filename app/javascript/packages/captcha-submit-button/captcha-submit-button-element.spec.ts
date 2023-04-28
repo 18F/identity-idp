@@ -73,6 +73,7 @@ describe('CaptchaSubmitButtonElement', () => {
             <lg-captcha-submit-button
               recaptcha-site-key="${RECAPTCHA_SITE_KEY}"
               recaptcha-action="${RECAPTCHA_ACTION_NAME}"
+              recaptcha-enterprise="false"
             >
               <input type="hidden" name="recaptcha_token">
               <button>Submit</button>
@@ -85,6 +86,10 @@ describe('CaptchaSubmitButtonElement', () => {
           value: {
             ready: sandbox.stub().callsArg(0),
             execute: sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE),
+            enterprise: {
+              ready: sandbox.stub().callsArg(0),
+              execute: sandbox.stub().resolves(RECAPTCHA_TOKEN_VALUE),
+            },
           },
         });
       });
@@ -127,6 +132,31 @@ describe('CaptchaSubmitButtonElement', () => {
           await waitFor(() => expect(didSubmit).to.be.true());
 
           expect(grecaptcha.ready).not.to.have.been.called();
+        });
+      });
+
+      context('with recaptcha enterprise', () => {
+        beforeEach(() => {
+          const element = document.querySelector('lg-captcha-submit-button')!;
+          element.setAttribute('recaptcha-enterprise', 'true');
+        });
+
+        it('invokes recaptcha challenge and submits form', async () => {
+          const button = screen.getByRole('button', { name: 'Submit' });
+          const form = document.querySelector('form')!;
+
+          sandbox.stub(form, 'submit');
+
+          await userEvent.click(button);
+          await waitFor(() => expect((form.submit as SinonStub).called).to.be.true());
+
+          expect(grecaptcha.enterprise.ready).to.have.been.called();
+          expect(grecaptcha.enterprise.execute).to.have.been.calledWith(RECAPTCHA_SITE_KEY, {
+            action: RECAPTCHA_ACTION_NAME,
+          });
+          expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+            recaptcha_token: RECAPTCHA_TOKEN_VALUE,
+          });
         });
       });
     });

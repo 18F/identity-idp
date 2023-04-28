@@ -25,15 +25,15 @@ describe RecaptchaMockValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'success' => true,
-            'challenge_ts' => Time.zone.now.iso8601,
-            'hostname' => Identity::Hostdata.domain,
-            'error-codes' => [],
-            'score' => score,
+            success: true,
+            score:,
+            errors: [],
+            reasons: [],
           },
           evaluated_as_valid: false,
           score_threshold: score_threshold,
           recaptcha_version: 3,
+          validator_class: 'RecaptchaMockValidator',
           exception_class: nil,
         )
       end
@@ -51,15 +51,15 @@ describe RecaptchaMockValidator do
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
           recaptcha_result: {
-            'success' => true,
-            'challenge_ts' => Time.zone.now.iso8601,
-            'hostname' => Identity::Hostdata.domain,
-            'error-codes' => [],
-            'score' => score,
+            success: true,
+            score:,
+            errors: [],
+            reasons: [],
           },
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           recaptcha_version: 3,
+          validator_class: 'RecaptchaMockValidator',
           exception_class: nil,
         )
       end

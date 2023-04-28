@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'disavowing an action' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   scenario 'disavowing a password reset' do
     perform_disavowable_password_reset
