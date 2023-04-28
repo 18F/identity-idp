@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::ResolutionResultAdjudicator do
+RSpec.describe Proofing::Resolution::ResultAdjudicator do
   let(:resolution_success) { true }
   let(:can_pass_with_additional_verification) { false }
   let(:attributes_requiring_additional_verification) { [] }
   let(:resolution_result) do
-    Proofing::ResolutionResult.new(
+    Proofing::Resolution::Result.new(
       success: resolution_success,
       errors: {},
       exception: nil,
@@ -28,6 +28,7 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
+  let(:double_address_verification) { false }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
@@ -46,6 +47,7 @@ RSpec.describe Proofing::ResolutionResultAdjudicator do
       resolution_result: resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
+      double_address_verification: double_address_verification,
       device_profiling_result: device_profiling_result,
     )
   end

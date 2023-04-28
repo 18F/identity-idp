@@ -266,6 +266,7 @@ feature 'doc auth verify_info step', :js do
         trace_id: anything,
         threatmetrix_session_id: anything,
         request_ip: kind_of(String),
+        double_address_verification: false,
       }
     end
 
@@ -274,7 +275,7 @@ feature 'doc auth verify_info step', :js do
         allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
           mock_state_id_jurisdiction,
         )
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(
@@ -299,7 +300,7 @@ feature 'doc auth verify_info step', :js do
           IdentityConfig.store.aamva_supported_jurisdictions -
             mock_state_id_jurisdiction,
         )
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(
@@ -322,7 +323,7 @@ feature 'doc auth verify_info step', :js do
       it 'does not perform the state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
           and_return('["urn:gov:gsa:openidconnect:sp:server"]')
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
           with(

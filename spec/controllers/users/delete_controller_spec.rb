@@ -96,7 +96,7 @@ describe Users::DeleteController do
   def stub_signed_in_user
     user = create(
       :user,
-      :signed_up,
+      :fully_registered,
       email: 'old_email@example.com',
       password: ControllerHelper::VALID_PASSWORD,
     )

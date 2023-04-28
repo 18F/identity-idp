@@ -24,6 +24,7 @@ module Users
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
+      @is_on_home_page = true
       @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],

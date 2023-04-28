@@ -125,7 +125,7 @@ describe 'throttling requests' do
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         post(
           new_user_session_path,

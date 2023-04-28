@@ -8,7 +8,7 @@ feature 'Password Recovery' do
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
       allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       visit root_path
       click_link t('links.passwords.forgot')
@@ -116,7 +116,7 @@ feature 'Password Recovery' do
 
   context 'user with 2FA confirmation resets password', email: true do
     before do
-      @user = create(:user, :signed_up)
+      @user = create(:user, :fully_registered)
       trigger_reset_password_and_click_email_link(@user.email)
     end
 
@@ -141,7 +141,7 @@ feature 'Password Recovery' do
 
   context 'user can reset their password' do
     before do
-      @user = create(:user, :signed_up)
+      @user = create(:user, :fully_registered)
 
       perform_in_browser(:one) do
         visit_idp_from_sp_with_ial1(:oidc)
@@ -243,7 +243,7 @@ feature 'Password Recovery' do
   end
 
   scenario 'user takes too long to click the reset password link' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     visit new_user_password_path
     fill_in t('account.index.email'), with: user.email
@@ -265,7 +265,7 @@ feature 'Password Recovery' do
   end
 
   it 'throttles reset passwords requests' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     email = user.email
 
     max_attempts = IdentityConfig.store.reset_password_email_max_attempts

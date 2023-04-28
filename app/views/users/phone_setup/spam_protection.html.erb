@@ -23,8 +23,13 @@
       class="g-recaptcha"
       data-sitekey="<%= IdentityConfig.store.recaptcha_site_key_v2 %>"
       data-callback="onCaptchaResponse"
+      data-action="<%= PhoneRecaptchaValidator::RECAPTCHA_ACTION %>"
     ></div>
-    <script src="https://www.google.com/recaptcha/api.js" async></script>
+    <% if FeatureManagement.recaptcha_enterprise? %>
+      <script src="https://www.google.com/recaptcha/enterprise.js" async></script>
+    <% else %>
+      <script src="https://www.google.com/recaptcha/api.js" async></script>
+    <% end %>
   <% elsif IdentityConfig.store.phone_recaptcha_mock_validator %>
     <%= f.input :recaptcha_mock_score, as: :hidden, input_html: { value: 1.0 } %>
     <%= render ButtonComponent.new(id: :submit_button, type: :button, big: true, wide: true, class: 'display-block margin-y-5') do %>

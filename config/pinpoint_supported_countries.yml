@@ -94,8 +94,8 @@ BH:
   name: Bahrain
   supports_sms: true
   supports_voice: true
-BL:
-  country_code: '590'
+BI:
+  country_code: '257'
   name: Burundi
   supports_sms: true
   supports_voice: false
