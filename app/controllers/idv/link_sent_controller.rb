@@ -36,7 +36,9 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: flow_session[:phone_for_mobile_flow] }
+      { phone: flow_session[:phone_for_mobile_flow],
+        flow_session: flow_session,
+      }
     end
 
     private
@@ -62,7 +64,6 @@ module Idv
 
     def analytics_arguments
       {
-        flow_path: flow_path,
         step: 'link_sent',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
@@ -73,7 +74,7 @@ module Idv
       save_proofing_components
       extract_pii_from_doc(get_results_response, store_in_session: true)
       mark_upload_step_complete
-      flow_session[:flow_path] = @flow.flow_path
+      #flow_session[:flow_path] = @flow.flow_path
     end
 
     def render_document_capture_cancelled
