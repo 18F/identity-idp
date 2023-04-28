@@ -57,7 +57,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
-        in_multi_mfa_selection_flow: false,
+        in_multi_mfa_selection_flow: true,
+        sign_up_mfa_priority_bucket: :default,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -128,7 +129,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -190,7 +192,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -252,7 +255,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -427,7 +431,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: false,
+              in_multi_mfa_selection_flow: true,
+              sign_up_mfa_priority_bucket: :default,
             }
 
             expect(@analytics).to receive(:track_event).
@@ -512,7 +517,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: false,
+              in_multi_mfa_selection_flow: true,
+              sign_up_mfa_priority_bucket: :default,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -595,7 +601,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
-              in_multi_mfa_selection_flow: false,
+              in_multi_mfa_selection_flow: true,
+              sign_up_mfa_priority_bucket: :default,
             }
 
             expect(@analytics).to have_received(:track_event).

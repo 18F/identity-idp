@@ -5,7 +5,6 @@ describe Users::PhoneSetupController do
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
     allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
-    allow(subject).to receive(:in_multi_mfa_selection_flow?).and_return(false)
   end
 
   describe 'GET index' do
