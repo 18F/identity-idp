@@ -1,5 +1,6 @@
 module Idv
   class DocumentCaptureController < ApplicationController
+    include AcuantConcern
     include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
@@ -39,7 +40,7 @@ module Idv
       url_builder = ImageUploadPresignedUrlGenerator.new
 
       {
-        flow_session: flow_session,
+        document_capture_session_uuid: flow_session[:document_capture_session_uuid],
         flow_path: 'standard',
         sp_name: decorated_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
@@ -75,16 +76,6 @@ module Idv
       redirect_to idv_ssn_url
     end
 
-    # This is copied from DocumentCaptureConcern, without the step check
-    def override_csp_to_allow_acuant
-      policy = current_content_security_policy
-      policy.connect_src(*policy.connect_src, 'us.acas.acuant.net')
-      policy.script_src(*policy.script_src, :unsafe_eval)
-      policy.style_src(*policy.style_src, :unsafe_inline)
-      policy.img_src(*policy.img_src, 'blob:')
-      request.content_security_policy = policy
-    end
-
     def analytics_arguments
       {
         flow_path: flow_path,
@@ -92,23 +83,6 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
-    end
-
-    def acuant_sdk_upgrade_a_b_testing_variables
-      bucket = AbTests::ACUANT_SDK.bucket(flow_session[:document_capture_session_uuid])
-      testing_enabled = IdentityConfig.store.idv_acuant_sdk_upgrade_a_b_testing_enabled
-      use_alternate_sdk = (bucket == :use_alternate_sdk)
-      if use_alternate_sdk
-        acuant_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
-      else
-        acuant_version = IdentityConfig.store.idv_acuant_sdk_version_default
-      end
-      {
-        acuant_sdk_upgrade_a_b_testing_enabled:
-            testing_enabled,
-        use_alternate_sdk: use_alternate_sdk,
-        acuant_version: acuant_version,
-      }
     end
 
     def in_person_cta_variant_testing_variables
@@ -125,6 +99,7 @@ module Idv
       if stored_result&.success?
         save_proofing_components
         extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else
         extra = { stored_result_present: stored_result.present? }
@@ -141,7 +116,7 @@ module Idv
       return unless current_user
 
       doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: flow_session[document_capture_session_uuid_key],
+        discriminator: document_capture_session_uuid,
         analytics: analytics,
       )
 

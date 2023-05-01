@@ -6,7 +6,7 @@ describe 'idv/gpo/index.html.erb' do
   let(:go_back_path) { nil }
   let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
   let(:presenter) do
-    user = build_stubbed(:user, :signed_up)
+    user = build_stubbed(:user, :fully_registered)
     Idv::GpoPresenter.new(user, {})
   end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'User edit' do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'editing password' do
     before do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ConfirmDeleteEmailPresenter do
-  let(:user) { create(:user, :signed_up, email: 'email@example.com') }
+  let(:user) { create(:user, :fully_registered, email: 'email@example.com') }
   let(:email_address) { user.email_addresses.first }
   let(:presenter) { described_class.new(user, email_address) }
 

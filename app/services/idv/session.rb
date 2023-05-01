@@ -15,6 +15,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      threatmetrix_review_status
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
@@ -51,6 +52,7 @@ module Idv
         active: deactivation_reason.nil?,
         deactivation_reason: deactivation_reason,
         fraud_review_needed: threatmetrix_failed_and_needs_review?,
+        gpo_verification_needed: gpo_verification_needed?,
       )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -72,11 +74,15 @@ module Idv
     end
 
     def deactivation_reason
-      if !phone_confirmed? || address_verification_mechanism == 'gpo'
+      if gpo_verification_needed?
         :gpo_verification_pending
       elsif in_person_enrollment?
         :in_person_verification_pending
       end
+    end
+
+    def gpo_verification_needed?
+      !phone_confirmed? || address_verification_mechanism == 'gpo'
     end
 
     def cache_encrypted_pii(password)

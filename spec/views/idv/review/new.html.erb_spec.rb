@@ -7,7 +7,7 @@ describe 'idv/review/new.html.erb' do
     let(:dob) { '1972-03-29' }
 
     before do
-      user = build_stubbed(:user, :signed_up)
+      user = build_stubbed(:user, :fully_registered)
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:step_indicator_steps).
         and_return(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)

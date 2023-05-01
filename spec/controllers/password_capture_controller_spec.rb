@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe PasswordCaptureController do
   describe '#update' do
-    let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
+    let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
 
     context 'form returns success' do
       let(:pii) { { first_name: 'Jane', ssn: '111-11-1111' } }

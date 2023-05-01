@@ -178,7 +178,7 @@ describe Users::SessionsController, devise: true do
     include AccountResetHelper
 
     it 'tracks the successful authentication for existing user' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       subject.session['user_return_to'] = mock_valid_site
 
       stub_analytics
@@ -203,7 +203,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       stub_analytics
       analytics_hash = {
@@ -259,7 +259,7 @@ describe Users::SessionsController, devise: true do
     it 'tracks unsuccessful authentication for locked out user' do
       user = create(
         :user,
-        :signed_up,
+        :fully_registered,
         second_factor_locked_at: Time.zone.now,
       )
 
@@ -283,7 +283,7 @@ describe Users::SessionsController, devise: true do
     it 'tracks count of multiple unsuccessful authentication attempts' do
       user = create(
         :user,
-        :signed_up,
+        :fully_registered,
       )
 
       stub_analytics
@@ -325,7 +325,7 @@ describe Users::SessionsController, devise: true do
 
     context 'IAL1 user' do
       it 'computes one SCrypt hash for the user password' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
@@ -339,7 +339,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'computes one SCrypt hash for the user password and one for the PII' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
         expect(SCrypt::Engine).to receive(:hash_secret).twice.and_call_original
@@ -348,7 +348,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'caches unverified PII pending confirmation' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(
           :profile,
           deactivation_reason: :gpo_verification_pending,
@@ -361,7 +361,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'caches PII in the user session' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
@@ -370,7 +370,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'deactivates profile if not de-cryptable' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
         profile.update!(
           encrypted_pii: { encrypted_data: Base64.strict_encode64('nonsense') }.to_json,
@@ -404,7 +404,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'tracks CSRF errors' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       stub_analytics
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
@@ -419,7 +419,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'redirects back to home page if CSRF error and referer is invalid' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       stub_analytics
       analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
@@ -442,7 +442,7 @@ describe Users::SessionsController, devise: true do
 
     context 'with remember_device cookie present and valid' do
       it 'tracks the cookie validity in analytics' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
@@ -469,7 +469,7 @@ describe Users::SessionsController, devise: true do
 
     context 'with remember_device cookie present but expired' do
       it 'only tracks the cookie presence in analytics' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
 
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: 2.days.ago).to_json,
@@ -496,7 +496,7 @@ describe Users::SessionsController, devise: true do
     context 'with user that is up to date with rules of use' do
       let(:rules_of_use_updated_at) { 1.day.ago }
       let(:accepted_terms_at) { 12.hours.ago }
-      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
@@ -512,7 +512,7 @@ describe Users::SessionsController, devise: true do
     context 'with user that is not up to date with rules of use' do
       let(:rules_of_use_updated_at) { 1.day.ago }
       let(:accepted_terms_at) { 2.days.ago }
-      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
@@ -529,7 +529,7 @@ describe Users::SessionsController, devise: true do
       let(:rules_of_use_horizon_years) { 6 }
       let(:rules_of_use_updated_at) { 7.years.ago }
       let(:accepted_terms_at) { 6.years.ago - 1.day }
-      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+      let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
 
       before do
         allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
@@ -545,13 +545,13 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'redirects to 2FA if there are no pending account reset requests' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to user_two_factor_authentication_url
     end
 
     it 'redirects to the reset pending page if there are pending account reset requests' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       create_account_reset_request_for(user)
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url

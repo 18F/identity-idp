@@ -5,7 +5,7 @@ feature 'Banning users for an SP' do
 
   context 'a user is banned from all SPs' do
     it 'does not let the user sign in to any SP' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       SignInRestriction.create(user: user)
 
@@ -24,7 +24,7 @@ feature 'Banning users for an SP' do
 
   context 'a user is banned for a SAML SP' do
     it 'bans the user from signing in to the banned SP but allows other sign ins' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       SignInRestriction.create(user: user, service_provider: 'http://localhost:3000')
 
@@ -43,7 +43,7 @@ feature 'Banning users for an SP' do
 
   context 'a user is banner for an OIDC SP' do
     it 'bans the user from signing in to the banned SP but allows other sign ins' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
 
       SignInRestriction.create(user: user, service_provider: 'urn:gov:gsa:openidconnect:sp:server')
 

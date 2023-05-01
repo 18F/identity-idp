@@ -50,7 +50,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
       complete_verify_step(user)
 
       # phone page
@@ -95,7 +95,7 @@ RSpec.describe 'In Person Proofing', js: true do
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
-      expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+      expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -132,13 +132,17 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.verify_info'),
     )
-    expect(page).to have_content(t('in_person_proofing.headings.state_id_milestone_2'))
+    expect(page).to have_content(
+      t(
+        'in_person_proofing.headings.state_id_milestone_2',
+      ).tr(' ', ' '),
+    )
     complete_state_id_step(user)
 
     # address page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('in_person_proofing.headings.address'))
-    expect(page).to have_content(t('in_person_proofing.form.address.same_address'))
+    expect(page).to have_content(t('in_person_proofing.form.address.same_address').tr(' ', ' '))
     complete_address_step(user)
 
     # ssn page
@@ -157,7 +161,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-    expect(page).to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
     click_button t('idv.buttons.change_state_id_label')
@@ -222,7 +226,7 @@ RSpec.describe 'In Person Proofing', js: true do
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
     expect(page).to have_css("img[alt='#{APP_NAME}']")
-    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+    expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
@@ -420,7 +424,7 @@ RSpec.describe 'In Person Proofing', js: true do
         and_return(true)
     end
 
-    context 'with double address validation' do
+    context 'with double address verification' do
       let(:capture_secondary_id_enabled) { true }
       let(:double_address_verification) { true }
       let(:user) { user_with_2fa }
@@ -433,7 +437,7 @@ RSpec.describe 'In Person Proofing', js: true do
           and_return(enrollment)
       end
 
-      it 'shows validation errors when double address validation is true',
+      it 'shows validation errors when double address verification is true',
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
@@ -568,8 +572,8 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    context 'without double address validation' do
-      it 'shows validation errors when double address validation is false',
+    context 'without double address verification' do
+      it 'shows validation errors when double address verification is false',
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing

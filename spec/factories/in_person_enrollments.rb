@@ -4,7 +4,7 @@ FactoryBot.define do
     profile { association :profile, user: user }
     selected_location_details { { name: 'BALTIMORE' } }
     unique_id { InPersonEnrollment.generate_unique_id }
-    user { association :user, :signed_up }
+    user { association :user, :fully_registered }
 
     trait :establishing do
       status { :establishing }

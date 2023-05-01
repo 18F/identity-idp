@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'SAML logout' do
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do
@@ -150,6 +150,9 @@ feature 'SAML logout' do
     let(:agency) { sp.agency }
 
     it "terminates the user's session remotely" do
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
       # set up SP identity and agency identity
       user = sign_in_live_with_2fa
       visit_saml_authn_request_url
@@ -166,6 +169,13 @@ feature 'SAML logout' do
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
       expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq false
+
+      expect(fake_analytics.events['Remote Logout initiated']).to eq(
+        [{ service_provider: sp.issuer, saml_request_valid: true }],
+      )
+      expect(fake_analytics.events['Remote Logout completed']).to eq(
+        [{ service_provider: sp.issuer, user_id: user.uuid }],
+      )
 
       # should be logged out...
       visit account_path

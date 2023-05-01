@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::PhoneConfirmationOtpVerificationForm do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:phone) { '+1 (225) 555-5000' }
   let(:phone_confirmation_otp_sent_at) { Time.zone.now }
   let(:phone_confirmation_otp_code) { '123456' }

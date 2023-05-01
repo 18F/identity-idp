@@ -13,7 +13,11 @@ describe Idv::PersonalKeyController do
       user: user,
       user_password: password,
     )
-    profile = profile_maker.save_profile(active: false, fraud_review_needed: false)
+    profile = profile_maker.save_profile(
+      active: false,
+      fraud_review_needed: false,
+      gpo_verification_needed: false,
+    )
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
@@ -24,7 +28,7 @@ describe Idv::PersonalKeyController do
   end
 
   let(:password) { 'sekrit phrase' }
-  let(:user) { create(:user, :signed_up, password: password) }
+  let(:user) { create(:user, :fully_registered, password: password) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
   let(:idv_session) do

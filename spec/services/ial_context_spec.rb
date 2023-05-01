@@ -98,7 +98,7 @@ RSpec.describe IalContext do
     end
 
     context 'when the user has not proofed' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       it { expect(ial_context.user_ial2_verified?).to eq(false) }
     end
 
@@ -106,7 +106,7 @@ RSpec.describe IalContext do
       let(:user) do
         create(
           :user,
-          :signed_up,
+          :fully_registered,
           profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
         )
       end
@@ -171,7 +171,7 @@ RSpec.describe IalContext do
 
     context 'when ial max and the user has not proofed' do
       let(:ial) { Idp::Constants::IAL_MAX }
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
     end
 
@@ -180,7 +180,7 @@ RSpec.describe IalContext do
       let(:user) do
         create(
           :user,
-          :signed_up,
+          :fully_registered,
           profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
         )
       end
@@ -243,7 +243,7 @@ RSpec.describe IalContext do
 
     context 'when ialmax is requested with a user with no profile' do
       let(:ial) { Idp::Constants::IAL_MAX }
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       it { expect(ial_context.ial2_requested?).to eq(false) }
     end
 

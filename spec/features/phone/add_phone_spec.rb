@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'Add a new phone number' do
   scenario 'Adding and confirming a new phone number allows the phone number to be used for MFA' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
@@ -22,7 +22,7 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a new phone number sends the user an email with a disavowal link' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
@@ -42,7 +42,7 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a new phone number validates number', :js do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
@@ -127,7 +127,7 @@ describe 'Add a new phone number' do
 
   scenario 'Displays an error message when max phone numbers are reached' do
     allow(IdentityConfig.store).to receive(:max_phone_numbers_per_account).and_return(1)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
     expect(page).to_not have_link(t('account.index.phone_add'), normalize_ws: true, exact: true)
     within('.sidenav') do
@@ -140,7 +140,7 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a phone that is already on the user account shows error message', :js do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     # Regression handling: Previously, non-U.S. "+1" numbers were not correctly disambiguated, and
     # would fail to check uniqueness.
     user.phone_configurations.create(phone: '+1 3065550100')
@@ -172,7 +172,7 @@ describe 'Add a new phone number' do
     allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
 
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     sign_in_and_2fa_user(user)
     within('.sidenav') do
@@ -184,7 +184,7 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a phone in a different country', :js do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     sign_in_and_2fa_user(user)
     within('.sidenav') do
@@ -205,7 +205,7 @@ describe 'Add a new phone number' do
   end
 
   scenario 'adding a phone with a reCAPTCHA challenge', :js do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
     allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
@@ -228,11 +228,10 @@ describe 'Add a new phone number' do
       'reCAPTCHA verify result received',
       hash_including(
         recaptcha_result: {
-          'success' => true,
-          'score' => 0.5,
-          'error-codes' => [],
-          'challenge_ts' => kind_of(String),
-          'hostname' => anything,
+          success: true,
+          score: 0.5,
+          errors: [],
+          reasons: [],
         },
         evaluated_as_valid: false,
         score_threshold: 0.6,

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe 'Devices' do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   before do
-    user = create(:user, :signed_up, otp_delivery_preference: 'sms')
+    user = create(:user, :fully_registered, otp_delivery_preference: 'sms')
     sign_in_and_2fa_user(user)
     create(
       :device,

@@ -22,4 +22,11 @@ RSpec.describe 'secure cookies' do
       expect(response.headers['Set-Cookie'].scan('; SameSite=Lax').size).to eq(cookie_count)
     end
   end
+
+  it 'does not set an expiration on the session cookie' do
+    get root_url
+    cookies = response.headers['Set-Cookie'].split("\n")
+    session_cookie = cookies.find { |x| x.include?(APPLICATION_SESSION_COOKIE_KEY) }
+    expect(session_cookie).to_not include('expires=')
+  end
 end

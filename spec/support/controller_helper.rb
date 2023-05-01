@@ -1,13 +1,13 @@
 module ControllerHelper
   VALID_PASSWORD = 'salted peanuts are best'.freeze
 
-  def sign_in_as_user(user = create(:user, :signed_up, password: VALID_PASSWORD))
+  def sign_in_as_user(user = create(:user, :fully_registered, password: VALID_PASSWORD))
     @request.env['devise.mapping'] = Devise.mappings[:user]
     sign_in user
     user
   end
 
-  def sign_in_before_2fa(user = create(:user, :signed_up))
+  def sign_in_before_2fa(user = create(:user, :fully_registered))
     sign_in_as_user(user)
     controller.current_user.create_direct_otp
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)

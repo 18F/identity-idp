@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::ProfileMaker do
   describe '#save_profile' do
     let(:applicant) { { first_name: 'Some', last_name: 'One' } }
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:user_password) { user.password }
     let(:initiating_service_provider) { nil }
 
@@ -18,7 +18,11 @@ describe Idv::ProfileMaker do
 
     it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
-      profile = subject.save_profile(active: false, fraud_review_needed: false)
+      profile = subject.save_profile(
+        active: false,
+        fraud_review_needed: false,
+        gpo_verification_needed: false,
+      )
       pii = subject.pii_attributes
 
       expect(profile).to be_a Profile
@@ -39,11 +43,12 @@ describe Idv::ProfileMaker do
         profile = subject.save_profile(
           active: false,
           fraud_review_needed: false,
-          deactivation_reason: :gpo_verification_pending,
+          gpo_verification_needed: false,
+          deactivation_reason: :encryption_error,
         )
 
         expect(profile.active).to eq false
-        expect(profile.deactivation_reason).to eq 'gpo_verification_pending'
+        expect(profile.deactivation_reason).to eq 'encryption_error'
       end
     end
 
@@ -52,6 +57,7 @@ describe Idv::ProfileMaker do
         profile = subject.save_profile(
           active: false,
           fraud_review_needed: true,
+          gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
@@ -60,11 +66,26 @@ describe Idv::ProfileMaker do
       end
     end
 
+    context 'with gpo_verification_needed' do
+      it 'deactivates a profile for gpo verification' do
+        profile = subject.save_profile(
+          active: false,
+          fraud_review_needed: false,
+          gpo_verification_needed: true,
+          deactivation_reason: nil,
+        )
+
+        expect(profile.active).to eq false
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+      end
+    end
+
     context 'as active' do
       it 'creates an active profile' do
         profile = subject.save_profile(
           active: true,
           fraud_review_needed: false,
+          gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
@@ -80,6 +101,7 @@ describe Idv::ProfileMaker do
         profile = subject.save_profile(
           active: true,
           fraud_review_needed: false,
+          gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
