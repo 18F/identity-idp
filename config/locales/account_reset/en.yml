@@ -3,6 +3,7 @@ en:
   account_reset:
     cancel_request:
       are_you_sure: Are you sure you want to cancel your delete account request?
+      cancel: Exit
       cancel_button: Cancel delete account
       title: Cancel delete account
     confirm_delete_account:
