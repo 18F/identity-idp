@@ -27,6 +27,12 @@ describe 'users/webauthn_setup/new.html.erb' do
       assign(:presenter, presenter)
     end
 
+    it 'has a localized title' do
+      expect(view).to receive(:title).with(presenter.page_title)
+
+      render
+    end
+
     it 'displays warning alert' do
       render
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -99,12 +99,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.integer "welcome_view_count", default: 0
     t.datetime "upload_view_at", precision: nil
     t.integer "upload_view_count", default: 0
-    t.datetime "send_link_view_at", precision: nil
-    t.integer "send_link_view_count", default: 0
     t.datetime "link_sent_view_at", precision: nil
     t.integer "link_sent_view_count", default: 0
-    t.datetime "email_sent_view_at", precision: nil
-    t.integer "email_sent_view_count", default: 0
     t.datetime "front_image_view_at", precision: nil
     t.integer "front_image_view_count", default: 0
     t.integer "front_image_submit_count", default: 0
