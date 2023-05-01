@@ -86,6 +86,7 @@ es:
         verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de
           identificación emitido por el estado, dirección y número de la
           Seguridad Social.
+        verify_step_post_office: Encuentre una Oficina de Correos participantes cercana a usted.
       state_id:
         alert_message: 'Su identificación emitida por el estado no debe estar vencida.
           Se aceptan las siguientes formas de identificación:'

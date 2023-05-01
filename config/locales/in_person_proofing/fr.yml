@@ -57,9 +57,8 @@ fr:
           none_found_tip: Vous pouvez effectuer une recherche en utilisant une autre
             adresse, ou ajouter des photos de votre pièce d’identité pour
             essayer de vérifier à nouveau votre identité en ligne.
-          po_search_about: Si vous avez des difficultés à ajouter votre pièce d’identité,
-            vous pouvez vérifier votre identité en personne dans un bureau de
-            poste américain proche.
+          po_search_about: Vous pouvez vérifier votre identité en personne dans un bureau
+            de poste américain local participant.
           results_description:
             one: Il y a 1 bureau de poste participant dans un rayon de 50 miles autour de
               %{address}.
@@ -87,6 +86,8 @@ fr:
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
+        po_search_about: Vous pouvez vérifier votre identité en personne dans un bureau
+          de poste américain local participant.
       state_id:
         alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
           périmée. Les pièces d’identité acceptées sont:'
