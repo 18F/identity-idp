@@ -13,22 +13,30 @@ function onStateSelectionChange() {
   showOrHidePuertoRicoExtras(stateSelector?.value);
 }
 
-const stateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
-stateSelectors.forEach((stateSelector) => {
-  if (!stateSelector.id.includes('jurisdiction')) {
-    stateSelector.addEventListener('change', () => showOrHidePuertoRicoExtras(stateSelector.value));
-    showOrHidePuertoRicoExtras(stateSelector.value);
-  }
-});
+function onIdentityDocStateSelection() {
+  const stateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
+  stateSelectors.forEach((stateSelector) => {
+    if (!stateSelector.id.includes('jurisdiction')) {
+      stateSelector.addEventListener('change', () =>
+        showOrHidePuertoRicoExtras(stateSelector.value),
+      );
+      showOrHidePuertoRicoExtras(stateSelector.value);
+    }
+  });
+}
 
-const updateStateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
-updateStateSelectors.forEach((updatedStateSelector) => {
-  if (!updatedStateSelector.id.includes('jurisdiction')) {
-    showOrHidePuertoRicoExtras(updatedStateSelector.value);
-  }
-});
+function onUpdate() {
+  const updateStateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
+  updateStateSelectors.forEach((updatedStateSelector) => {
+    if (!updatedStateSelector.id.includes('jurisdiction')) {
+      showOrHidePuertoRicoExtras(updatedStateSelector.value);
+    }
+  });
+}
 
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
 // set initial visibility
 onStateSelectionChange();
+onUpdate();
+onIdentityDocStateSelection();
