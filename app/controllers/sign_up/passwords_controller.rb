@@ -49,7 +49,10 @@ module SignUp
     end
 
     def permitted_params
-      params.require(:password_form).permit(:confirmation_token, :password, :password_confirmation)
+      params.require(:password_form).permit(
+        :confirmation_token, :password, :password_confirmation,
+        :confirmation_enabled
+      )
     end
 
     def process_successful_password_creation
@@ -65,8 +68,7 @@ module SignUp
     end
 
     def password_form
-      validate_confirmation = IdentityConfig.store.password_confirmation_enabled
-      @password_form ||= PasswordForm.new(@user, validate_confirmation: validate_confirmation)
+      @password_form ||= PasswordForm.new(@user, validate_confirmation: true)
     end
 
     def process_unsuccessful_password_creation

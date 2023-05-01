@@ -21,6 +21,7 @@ describe PasswordForm, type: :model do
       {
         password: password,
         password_confirmation: password_confirmation,
+        confirmation_enabled: true,
       }
     end
 
@@ -68,10 +69,6 @@ describe PasswordForm, type: :model do
 
       context 'with password confirmation' do
         subject(:form) { described_class.new(user, validate_confirmation) }
-
-        before do
-          allow(IdentityConfig.store).to receive(:password_confirmation_enabled).and_return(true)
-        end
 
         let(:validate_confirmation) do
           { validate_confirmation: true }

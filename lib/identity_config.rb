@@ -303,7 +303,6 @@ class IdentityConfig
     config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)
     config.add(:participate_in_dap, type: :boolean)
-    config.add(:password_confirmation_enabled, type: :boolean)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)

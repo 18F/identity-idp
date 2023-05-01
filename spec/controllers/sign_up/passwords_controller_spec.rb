@@ -10,6 +10,7 @@ describe SignUp::PasswordsController do
         password_form: {
           password: password,
           password_confirmation: password_confirmation,
+          confirmation_enabled: true,
         },
         confirmation_token: token,
       }
@@ -76,12 +77,12 @@ describe SignUp::PasswordsController do
         stub_attempts_tracker
       end
 
-      context 'with feature flag password_confirmation_enabled on' do
+      context 'with temporary param confirmation_enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:password_confirmation_enabled).
-            and_return(true)
+          params.merge(confirmation_enabled: true)
         end
 
+        # modify this test
         context 'with a password that is too short' do
           let(:password) { 'NewVal' }
           let(:password_confirmation) { 'NewVal' }
