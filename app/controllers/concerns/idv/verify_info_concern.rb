@@ -8,7 +8,8 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :update, true)
 
-      modify_pii_for_update
+      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
+      set_state_id_type
 
       ssn_throttle.increment!
       if ssn_throttle.throttled?

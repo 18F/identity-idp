@@ -34,9 +34,8 @@ module Idv
 
     private
 
-    def modify_pii_for_update
-      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-    end
+    # state ID type isn't manually set for Idv::VerifyInfoController
+    def set_state_id_type; end
 
     def after_update_url
       idv_verify_info_url
