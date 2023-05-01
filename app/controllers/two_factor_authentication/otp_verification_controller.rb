@@ -89,7 +89,7 @@ module TwoFactorAuthentication
     end
 
     def sanitized_otp_code
-      form_params[:code].to_s.strip
+      form_params[:code].to_s.strip.sub(/^#/, '')
     end
 
     def form_params
@@ -119,6 +119,11 @@ module TwoFactorAuthentication
       end
     end
 
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
@@ -132,6 +137,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        sign_up_mfa_priority_bucket: sign_up_mfa_selection_order_bucket,
       }
     end
 

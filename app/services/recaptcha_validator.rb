@@ -1,12 +1,25 @@
 class RecaptchaValidator
   VERIFICATION_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify'.freeze
-  EXEMPT_ERROR_CODES = ['missing-input-secret', 'invalid-input-secret']
+  RESULT_ERRORS = ['missing-input-secret', 'invalid-input-secret']
   VALID_RECAPTCHA_VERSIONS = [2, 3]
 
-  attr_reader :recaptcha_version, :score_threshold, :analytics, :extra_analytics_properties
+  attr_reader :recaptcha_version,
+              :recaptcha_action,
+              :score_threshold,
+              :analytics,
+              :extra_analytics_properties
+
+  RecaptchaResult = Struct.new(:success, :score, :errors, :reasons, keyword_init: true) do
+    alias_method :success?, :success
+
+    def initialize(success:, score: nil, errors: [], reasons: [])
+      super
+    end
+  end
 
   def initialize(
     recaptcha_version: 3,
+    recaptcha_action: nil,
     score_threshold: 0.0,
     analytics: nil,
     extra_analytics_properties: {}
@@ -19,6 +32,7 @@ class RecaptchaValidator
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_version = recaptcha_version
+    @recaptcha_action = recaptcha_action
     @extra_analytics_properties = extra_analytics_properties
   end
 
@@ -29,9 +43,9 @@ class RecaptchaValidator
   def valid?(recaptcha_token)
     return true if exempt?
     return false if recaptcha_token.blank?
-    response = recaptcha_response(recaptcha_token)
-    log_analytics(recaptcha_result: response&.body)
-    recaptcha_result_valid?(response.body)
+    result = recaptcha_result(recaptcha_token)
+    log_analytics(result:)
+    recaptcha_result_valid?(result)
   rescue Faraday::Error => error
     log_analytics(error:)
     true
@@ -39,13 +53,17 @@ class RecaptchaValidator
 
   private
 
-  def recaptcha_response(recaptcha_token)
-    faraday.post(
+  def recaptcha_result(recaptcha_token)
+    response = faraday.post(
       VERIFICATION_ENDPOINT,
       URI.encode_www_form(secret: recaptcha_secret_key, response: recaptcha_token),
     ) do |request|
       request.options.context = { service_name: 'recaptcha' }
     end
+
+    success, score, error_codes = response.body.values_at('success', 'score', 'error-codes')
+    errors, reasons = error_codes.to_a.partition { |error_code| is_result_error?(error_code) }
+    RecaptchaResult.new(success:, score:, errors:, reasons:)
   end
 
   def faraday
@@ -55,14 +73,13 @@ class RecaptchaValidator
     end
   end
 
-  def recaptcha_result_valid?(recaptcha_result)
-    return true if recaptcha_result.blank?
+  def recaptcha_result_valid?(result)
+    return true if result.blank?
 
-    success, score, error_codes = recaptcha_result.values_at('success', 'score', 'error-codes')
-    if success
-      recaptcha_score_meets_threshold?(score)
+    if result.success?
+      recaptcha_score_meets_threshold?(result.score)
     else
-      recaptcha_errors_exempt?(error_codes)
+      result.errors.present?
     end
   end
 
@@ -75,17 +92,18 @@ class RecaptchaValidator
     end
   end
 
-  def recaptcha_errors_exempt?(error_codes)
-    (error_codes - EXEMPT_ERROR_CODES).blank?
+  def is_result_error?(error_code)
+    RESULT_ERRORS.include?(error_code)
   end
 
-  def log_analytics(recaptcha_result: nil, error: nil)
+  def log_analytics(result: nil, error: nil)
     analytics&.recaptcha_verify_result_received(
-      recaptcha_result:,
+      recaptcha_result: result.to_h.presence,
       score_threshold:,
       recaptcha_version:,
-      evaluated_as_valid: recaptcha_result_valid?(recaptcha_result),
+      evaluated_as_valid: recaptcha_result_valid?(result),
       exception_class: error&.class&.name,
+      validator_class: self.class.name,
       **extra_analytics_properties,
     )
   end

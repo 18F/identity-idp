@@ -15,9 +15,11 @@ module OpenidConnect
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
-    before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
+    before_action :bump_auth_count, only: :index
+    before_action :redirect_to_sign_in, only: :index, unless: :user_signed_in?
+    before_action :confirm_two_factor_authenticated, only: :index
+    before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
-    before_action :bump_auth_count, only: [:index]
 
     def index
       return redirect_to_fraud_review if fraud_review_pending_for_ial2_request?
@@ -51,19 +53,12 @@ module OpenidConnect
       true
     end
 
-    def confirm_user_is_authenticated_with_fresh_mfa
-      bump_auth_count unless user_fully_authenticated?
-
-      unless user_fully_authenticated? && service_provider_mfa_policy.
-          auth_method_confirms_to_sp_request?
-        return confirm_two_factor_authenticated(request_id)
-      end
-
-      redirect_to user_two_factor_authentication_url if device_not_remembered?
+    def redirect_to_sign_in
+      redirect_to new_user_session_url
     end
 
-    def device_not_remembered?
-      remember_device_expired_for_sp?
+    def redirect_to_reauthenticate
+      redirect_to user_two_factor_authentication_url
     end
 
     def link_identity_to_service_provider

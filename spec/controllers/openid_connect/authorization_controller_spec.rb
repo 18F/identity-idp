@@ -28,7 +28,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
     subject(:action) { get :index, params: params }
 
     context 'user is signed in' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       before do
         stub_sign_in user
       end
@@ -145,7 +145,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'user is under fraud review' do
-              let(:user) { create(:profile, fraud_review_pending: true).user }
+              let(:user) { create(:profile, :fraud_review_pending).user }
 
               it 'redirects to fraud review page if fraud review is pending' do
                 action
@@ -154,7 +154,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'user is rejected due to fraud' do
-              let(:user) { create(:profile, fraud_rejection: true).user }
+              let(:user) { create(:profile, :fraud_rejection).user }
 
               it 'redirects to fraud rejection page if user is fraud rejected ' do
                 action
@@ -443,7 +443,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-        expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
+        expect(response).to redirect_to new_user_session_url
+        expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
       end
 
       it 'sets sp information in the session and does not transmit ial2 attrs for ial1' do

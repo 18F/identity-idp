@@ -35,7 +35,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-    expect(page).to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
     click_button t('idv.buttons.change_state_id_label')
@@ -61,7 +61,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     fill_out_ssn_form_fail
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     complete_verify_step(user)
 

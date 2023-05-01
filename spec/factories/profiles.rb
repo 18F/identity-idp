@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :profile do
-    association :user, factory: %i[user signed_up]
+    association :user, factory: %i[user fully_registered]
 
     transient do
       pii { false }
@@ -22,8 +22,12 @@ FactoryBot.define do
     end
 
     trait :fraud_review_pending do
-      fraud_review_pending { true }
+      fraud_review_pending_at { 15.days.ago }
       proofing_components { { threatmetrix_review_status: 'review' } }
+    end
+
+    trait :fraud_rejection do
+      fraud_rejection_at { 15.days.ago }
     end
 
     trait :verification_cancelled do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'cancel IdV', :js do
+describe 'cancel IdV' do
   include IdvStepHelper
   include DocAuthHelper
   include InteractionHelper
@@ -56,7 +56,7 @@ describe 'cancel IdV', :js do
     )
   end
 
-  it 'shows a cancellation message with option to cancel and reset idv' do
+  it 'shows a cancellation message with option to cancel and reset idv', :js do
     click_link t('links.cancel')
 
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
@@ -86,7 +86,7 @@ describe 'cancel IdV', :js do
       complete_document_capture_step
     end
 
-    it 'includes proofing components in events' do
+    it 'includes proofing components in events', :js do
       click_link t('links.cancel')
 
       expect(fake_analytics).to have_logged_event(
@@ -130,7 +130,7 @@ describe 'cancel IdV', :js do
   context 'with an sp' do
     let(:sp) { :oidc }
 
-    it 'shows the user a cancellation message with the option to cancel and reset idv' do
+    it 'shows the user a cancellation message with the option to cancel and reset idv', :js do
       sp_name = 'Test SP'
       allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).
         and_return(sp_name)

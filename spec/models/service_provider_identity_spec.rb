@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ServiceProviderIdentity do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:identity) do
     ServiceProviderIdentity.create(
       user_id: user.id,

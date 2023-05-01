@@ -199,7 +199,6 @@ module Features
 
     def sign_in_with_warden(user, auth_method: nil)
       login_as(user, scope: :user, run_callbacks: false)
-      allow(user).to receive(:need_two_factor_authentication?).and_return(false)
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
@@ -215,7 +214,7 @@ module Features
     end
 
     def user_with_2fa
-      create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
+      create(:user, :fully_registered, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
     def user_verified
@@ -227,16 +226,16 @@ module Features
     end
 
     def user_with_totp_2fa
-      create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
+      create(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
     end
 
     def user_with_phishing_resistant_2fa
-      create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
+      create(:user, :fully_registered, :with_webauthn, password: VALID_PASSWORD)
     end
 
     def user_with_piv_cac
       create(
-        :user, :signed_up, :with_piv_or_cac,
+        :user, :fully_registered, :with_piv_or_cac,
         with: { phone: '+1 (703) 555-0000' },
         password: VALID_PASSWORD
       )
@@ -328,7 +327,7 @@ module Features
     end
 
     def sign_in_with_totp_enabled_user
-      user = build(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
+      user = build(:user, :fully_registered, :with_authentication_app, password: VALID_PASSWORD)
       sign_in_user(user)
       fill_in 'code', with: generate_totp_code(@secret)
       click_submit_default
@@ -389,7 +388,8 @@ module Features
     def sign_up_user_from_sp_without_confirming_email(email)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(current_url).to eq new_user_session_url
+      expect_branded_experience
 
       click_sign_in_from_landing_page_then_click_create_account
 

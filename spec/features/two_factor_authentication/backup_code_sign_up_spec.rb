@@ -33,7 +33,7 @@ feature 'sign up with backup code' do
   end
 
   it 'works for each code and refreshes the codes on the last one' do
-    user = create(:user, :signed_up, :with_authentication_app)
+    user = create(:user, :fully_registered, :with_authentication_app)
 
     codes = BackupCodeGenerator.new(user).create
 
@@ -77,7 +77,7 @@ feature 'sign up with backup code' do
   end
 
   context 'when the user needs a backup code reminder' do
-    let!(:user) { create(:user, :signed_up, :with_authentication_app, :with_backup_code) }
+    let!(:user) { create(:user, :fully_registered, :with_authentication_app, :with_backup_code) }
     let!(:event) do
       create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
     end

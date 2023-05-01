@@ -2,7 +2,7 @@ module RequestHelper
   VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
   def user_with_2fa
-    create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
+    create(:user, :fully_registered, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
   end
 
   def sign_in_user(user = user_with_2fa)

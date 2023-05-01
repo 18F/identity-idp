@@ -12,7 +12,6 @@ module Idv
     def show
       @step_indicator_steps = step_indicator_steps
 
-      increment_step_counts
       analytics.idv_doc_auth_verify_visited(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :view, true)
@@ -75,6 +74,8 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: flow_session[:threatmetrix_session_id],
         request_ip: request.remote_ip,
+        double_address_verification: current_user.establishing_in_person_enrollment&.
+        capture_secondary_id_enabled || false,
       )
 
       redirect_to idv_verify_info_url
@@ -90,7 +91,6 @@ module Idv
       {
         flow_path: flow_path,
         step: 'verify',
-        step_count: current_flow_step_counts['verify'],
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
@@ -110,16 +110,6 @@ module Idv
     def confirm_ssn_step_complete
       return if pii.present? && pii[:ssn].present?
       redirect_to prev_url
-    end
-
-    def current_flow_step_counts
-      user_session['idv/doc_auth_flow_step_counts'] ||= {}
-      user_session['idv/doc_auth_flow_step_counts'].default = 0
-      user_session['idv/doc_auth_flow_step_counts']
-    end
-
-    def increment_step_counts
-      current_flow_step_counts['verify'] += 1
     end
   end
 end

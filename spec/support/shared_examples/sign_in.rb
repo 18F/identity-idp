@@ -2,7 +2,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     visit_idp_from_sp_with_ial1(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     continue_as(user.email)
@@ -26,6 +26,14 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end
+  end
+end
+
+shared_examples 'signing in from service provider' do |sp|
+  it 'does not display session timeout alert on sign in page' do
+    visit_idp_from_sp_with_ial1(sp)
+
+    expect(page).to_not have_content t('devise.failure.timeout')
   end
 end
 
@@ -172,7 +180,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
     it 'links to forgot password page with locale and request_id' do
       Capybara.current_session.driver.header('Accept-Language', 'es')
 
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(sp)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
       fill_in_credentials_and_submit(user.email, 'password')

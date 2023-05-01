@@ -81,7 +81,7 @@ module DocAuthHelper
   end
 
   def complete_welcome_step
-    click_spinner_button_and_wait t('doc_auth.buttons.continue')
+    click_on t('doc_auth.buttons.continue')
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
@@ -116,7 +116,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
     complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.current_path == idv_doc_auth_document_capture_step
+    return if page.current_path == idv_document_capture_path
     complete_upload_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
@@ -302,7 +302,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_all_idv_steps_with(threatmetrix:)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     visit_idp_from_ial1_oidc_sp(
       client_id: service_provider.issuer,
       irs_attempts_api_session_id: 'test-session-id',

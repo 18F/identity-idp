@@ -18,7 +18,7 @@ describe 'phone rate limitting' do
   end
 
   context 'on add phone' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it_behaves_like 'phone rate limitting', :sms
     it_behaves_like 'phone rate limitting', :voice

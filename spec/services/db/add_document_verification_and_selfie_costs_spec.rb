@@ -39,7 +39,6 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
     expect(costing_for(:acuant_front_image)).to be_present
     expect(costing_for(:acuant_back_image)).to be_present
     expect(costing_for(:acuant_result)).to be_present
-    expect(costing_for(:acuant_selfie)).to be_nil
   end
 
   it 'has costing for front, back, but not result when not billed' do
@@ -48,7 +47,6 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
     expect(costing_for(:acuant_front_image)).to be_present
     expect(costing_for(:acuant_back_image)).to be_present
     expect(costing_for(:acuant_result)).to be_nil
-    expect(costing_for(:acuant_selfie)).to be_nil
   end
 
   def costing_for(cost_type)

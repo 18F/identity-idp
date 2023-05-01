@@ -1,4 +1,6 @@
 class PhoneRecaptchaValidator
+  RECAPTCHA_ACTION = 'phone_setup'.freeze
+
   attr_reader :parsed_phone, :validator_class, :validator_args
 
   delegate :valid?, :exempt?, to: :validator
@@ -26,6 +28,7 @@ class PhoneRecaptchaValidator
   def validator
     @validator ||= validator_class.new(
       score_threshold:,
+      recaptcha_action: RECAPTCHA_ACTION,
       extra_analytics_properties: {
         phone_country_code: parsed_phone.country,
       },

@@ -4,7 +4,7 @@ feature 'saml api' do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
 
   context 'when assertion consumer service url is defined' do
@@ -217,7 +217,7 @@ feature 'saml api' do
 
   context 'visiting /api/saml/logout' do
     context 'session timed out' do
-      let(:logout_user) { create(:user, :signed_up) }
+      let(:logout_user) { create(:user, :fully_registered) }
 
       before do
         sign_in_and_2fa_user(logout_user)

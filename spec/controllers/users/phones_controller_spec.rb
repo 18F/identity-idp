@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Users::PhonesController do
-  let(:user) { create(:user, :signed_up, with: { phone: '+1 (202) 555-1234' }) }
+  let(:user) { create(:user, :fully_registered, with: { phone: '+1 (202) 555-1234' }) }
   before do
     stub_sign_in(user)
 

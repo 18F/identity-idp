@@ -32,7 +32,7 @@ describe MfaPolicy do
     end
 
     context 'with phishable configuration' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
 
       it { expect(subject.unphishable?).to eq false }
     end

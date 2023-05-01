@@ -227,7 +227,7 @@ feature 'Two Factor Authentication' do
 
   describe 'When the user has already set up 2FA' do
     it 'automatically sends the OTP to the preferred delivery method' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -250,7 +250,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user can return to the 2fa options screen' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
@@ -258,14 +258,14 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user does not have to focus on OTP field', js: true do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
     end
 
     scenario 'user enters incorrect OTP', js: true do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
@@ -275,7 +275,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'the user changes delivery method' do
-      user = create(:user, :signed_up, otp_delivery_preference: :sms)
+      user = create(:user, :fully_registered, otp_delivery_preference: :sms)
       sign_in_before_2fa(user)
 
       choose_another_security_option('voice')
@@ -304,7 +304,7 @@ feature 'Two Factor Authentication' do
     end
 
     it 'allows totp fallback when configured' do
-      user = create(:user, :signed_up, :with_piv_or_cac, :with_authentication_app)
+      user = create(:user, :fully_registered, :with_piv_or_cac, :with_authentication_app)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq login_two_factor_piv_cac_path
@@ -315,7 +315,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user can cancel PIV/CAC process' do
-      user = create(:user, :signed_up, :with_piv_or_cac)
+      user = create(:user, :fully_registered, :with_piv_or_cac)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq login_two_factor_piv_cac_path
@@ -362,7 +362,7 @@ feature 'Two Factor Authentication' do
     context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
         create(
-          :user, :signed_up,
+          :user, :fully_registered,
           otp_delivery_preference: 'voice',
           with: { phone: '+12255551000', delivery_preference: 'voice' }
         )
@@ -390,7 +390,7 @@ feature 'Two Factor Authentication' do
 
   describe 'when the user is not piv/cac enabled' do
     it 'has no link to piv/cac during login' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
@@ -414,7 +414,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user can cancel TOTP process' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.cancel')
 
@@ -423,7 +423,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
-      user = create(:user, :signed_up, :with_authentication_app)
+      user = create(:user, :fully_registered, :with_authentication_app)
       Db::AuthAppConfiguration.create(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
@@ -466,7 +466,7 @@ feature 'Two Factor Authentication' do
 
   describe 'clicking the logo image during 2fa process' do
     it 'returns them to the home page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
       expect(current_path).to eq root_path
@@ -475,7 +475,7 @@ feature 'Two Factor Authentication' do
 
   describe 'clicking footer links during 2FA' do
     it 'renders the requested pages' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
       click_link t('links.help'), match: :first
 
@@ -572,7 +572,7 @@ feature 'Two Factor Authentication' do
 
   describe 'rate limiting' do
     let(:max_attempts) { 2 }
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     before do
       allow(IdentityConfig.store).to receive(:login_otp_confirmation_max_attempts).
         and_return(max_attempts)

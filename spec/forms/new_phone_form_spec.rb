@@ -3,7 +3,7 @@ require 'rails_helper'
 describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
-  let(:user) { build(:user, :signed_up) }
+  let(:user) { build(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
   let(:international_code) { 'US' }
   let(:params) { { phone:, international_code:, otp_delivery_preference: 'sms' } }
@@ -454,6 +454,25 @@ describe NewPhoneForm do
 
               expect(form.recaptcha_version).to eq(3)
             end
+          end
+        end
+
+        context 'with recaptcha enterprise' do
+          let(:validator) do
+            PhoneRecaptchaValidator.new(
+              recaptcha_version: 3,
+              validator_class: RecaptchaEnterpriseValidator,
+              parsed_phone: nil,
+            )
+          end
+
+          before do
+            allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+          end
+
+          it 'is valid' do
+            expect(result.success?).to eq(true)
+            expect(result.errors).to be_blank
           end
         end
       end
