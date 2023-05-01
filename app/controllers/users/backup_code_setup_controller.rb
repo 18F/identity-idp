@@ -24,7 +24,11 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics.backup_code_setup_visit(**result.to_h)
+      analytics_properties = result.to_h.merge(
+        sign_up_mfa_selection_order_bucket:
+                  sign_up_mfa_selection_order_bucket,
+      )
+      analytics.backup_code_setup_visit(**analytics_properties)
       irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
 
       save_backup_codes
@@ -75,6 +79,7 @@ module Users
     def track_backup_codes_confirmation_setup_visit
       analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
@@ -86,6 +91,11 @@ module Users
       revoke_remember_device(current_user)
       @codes = generator.generate
       user_session[:backup_codes] = @codes
+    end
+
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
     end
 
     def set_backup_code_setup_presenter

@@ -20,7 +20,10 @@ feature 'doc auth redo document capture action', js: true do
 
       expect(page).to have_css(
         '[role="status"]',
-        text: t('doc_auth.headings.capture_scan_warning_html', link: warning_link_text),
+        text: t(
+          'doc_auth.headings.capture_scan_warning_html',
+          link: warning_link_text,
+        ).tr(' ', ' '),
       )
       click_link warning_link_text
 
@@ -57,7 +60,10 @@ feature 'doc auth redo document capture action', js: true do
 
         expect(page).to have_css(
           '[role="status"]',
-          text: t('doc_auth.headings.capture_scan_warning_html', link: warning_link_text),
+          text: t(
+            'doc_auth.headings.capture_scan_warning_html',
+            link: warning_link_text,
+          ).tr(' ', ' '),
         )
         click_link warning_link_text
 

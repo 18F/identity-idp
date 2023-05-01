@@ -134,6 +134,7 @@ module Idv
       delete_async
 
       if form_response.success?
+        save_threatmetrix_status(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
@@ -148,6 +149,11 @@ module Idv
     def next_step_url
       return idv_gpo_url if FeatureManagement.idv_gpo_only?
       idv_phone_url
+    end
+
+    def save_threatmetrix_status(form_response)
+      review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
+      idv_session.threatmetrix_review_status = review_status
     end
 
     def summarize_result_and_throttle_failures(summary_result)
