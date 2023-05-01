@@ -85,3 +85,4 @@ es:
     verify_profile: Active su cuenta
     visitors:
       index: Bienvenido/a
+    webauthn_setup: Añade tu clave de seguridad
