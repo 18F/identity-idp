@@ -246,40 +246,42 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       context 'residential address is different' do
         let(:application_pii) { Idp::Constants::MOCK_IDV_APPLICANT_ADDRESSES_DIFFER }
+        let(:residential_resolution_result) do
+          instance_double(Proofing::Resolution::Result)
+        end
 
         context 'Instant Verify fails for residential address' do
           let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
 
           before do
             allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
-          end
-  
-          before do
             allow(instance).to receive(:proof_resolution).
-              and_return(resolution_result_that_passed_instant_verify)
+              and_return(residential_resolution_result)
             allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
-              and_return(resolution_result_that_passed_instant_verify)
+              and_return(residential_resolution_result)
             allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(resolution_result_that_passed_instant_verify).
+              with(residential_resolution_result).
               and_return(true)
-            allow(resolution_result_that_passed_instant_verify).to receive(:success?).
+            allow(residential_resolution_result).to receive(:success?).
               and_return(true)
           end
 
           it 'fails adjudication logic' do
-            expect(subject.adjudicated_result.success?) # aamva proof does not receive proof
-            expect() # instant verify does not receive proof with identity doc address
-            expect() # fail adjudication logic # state_id_result.success? is false
+            expect(aamva_proofer).to_not receive(:proof)
+            expect(instant_verify_proofer).to_not receive(:proof).with(hash_including(state_id_address))
+            expect(subject.adjudicated_result.success?).to be(false) # fail adjudication logic is false
+            # expect() # instant verify does not receive proof with identity doc address
+            # expect() # aamva proof does not receive proof
           end
         end
 
-        context 'Instant Verify passes for residential address' do
-          it 'passes adjudication logic' do
-            expect() # aamva proof does not receive proof
-            expect() # instant verify does not receive proof with identity doc address
-            expect() # fail adjudication logic # state_id_result.success? is false
-          end
-        end
+        # context 'Instant Verify passes for residential address' do
+        #   it 'passes adjudication logic' do
+        #     expect() # aamva proof does not receive proof
+        #     expect() # instant verify does not receive proof with identity doc address
+        #     expect() # fail adjudication logic # state_id_result.success? is false
+        #   end
+        # end
         
       end
     end

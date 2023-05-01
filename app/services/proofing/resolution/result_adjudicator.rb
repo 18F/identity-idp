@@ -5,8 +5,9 @@ module Proofing
                   :double_address_verification
 
       def initialize(
-        resolution_result:,
-        state_id_result:,
+        resolution_result:, # IV
+        state_id_result:, # AAMVA
+        residential_resolution_result:, # IV Current/residential
         should_proof_state_id:,
         double_address_verification:,
         device_profiling_result:
@@ -16,6 +17,7 @@ module Proofing
         @should_proof_state_id = should_proof_state_id
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
+        @residential_resolution_result = residential_resolution_result
       end
 
       def adjudicated_result
@@ -78,6 +80,9 @@ module Proofing
       end
 
       def resolution_result_and_reason
+        # if double_address_verification 
+        # asdf
+
         if resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
         elsif !state_id_result.success?
