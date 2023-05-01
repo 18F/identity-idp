@@ -1,10 +1,4 @@
 class ServiceProviderMfaPolicy
-  PHISHING_RESISTANT_METHODS = [
-    TwoFactorAuthenticatable::AUTH_METHOD_WEBAUTHN,
-    TwoFactorAuthenticatable::AUTH_METHOD_WEBAUTHN_PLATFORM,
-    TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC,
-  ].freeze
-
   attr_reader :mfa_context, :auth_method, :service_provider
 
   def initialize(
@@ -30,9 +24,9 @@ class ServiceProviderMfaPolicy
     return false if user_needs_sp_auth_method_setup?
 
     if piv_cac_required?
-      auth_method.to_s != TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC
+      auth_method.to_s != TwoFactorAuthenticatable::AuthMethod::PIV_CAC
     elsif phishing_resistant_required?
-      !PHISHING_RESISTANT_METHODS.include?(auth_method.to_s)
+      !TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
     else
       false
     end

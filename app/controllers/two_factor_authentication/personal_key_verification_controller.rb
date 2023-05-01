@@ -90,7 +90,7 @@ module TwoFactorAuthentication
 
     def handle_valid_otp
       handle_valid_otp_for_authentication_context(
-        auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PERSONAL_KEY,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
       )
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url

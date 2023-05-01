@@ -62,7 +62,7 @@ module TwoFactorAuthentication
     def handle_result(result)
       if result.success?
         handle_valid_otp_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AUTH_METHOD_BACKUP_CODE,
+          auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
         )
         return handle_last_code if all_codes_used?
         handle_valid_backup_code

@@ -73,9 +73,9 @@ module TwoFactorAuthenticatableMethods
   def check_sp_required_mfa_bypass(auth_method:)
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     return if service_provider_mfa_policy.phishing_resistant_required? &&
-              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
+              TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
     if service_provider_mfa_policy.piv_cac_required? &&
-       auth_method == TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC
+       auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
       return
     end
     prompt_to_verify_sp_required_mfa

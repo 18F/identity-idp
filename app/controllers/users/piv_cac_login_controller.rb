@@ -76,7 +76,7 @@ module Users
 
       handle_valid_otp(
         next_url: next_step,
-        auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
     end
 

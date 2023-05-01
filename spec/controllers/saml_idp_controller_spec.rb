@@ -828,7 +828,7 @@ describe SamlIdpController do
 
         it 'returns AAL3 authn_context when AAL3 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC },
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -845,7 +845,7 @@ describe SamlIdpController do
 
         it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC },
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -862,7 +862,7 @@ describe SamlIdpController do
 
         it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC },
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
           )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
@@ -879,7 +879,7 @@ describe SamlIdpController do
 
         it 'returns AAL2-phishing-resistant authn_context when AAL2-phishing-resistant requested' do
           allow(controller).to receive(:user_session).and_return(
-            { auth_method: TwoFactorAuthenticatable::AUTH_METHOD_WEBAUTHN },
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN },
           )
           user = create(:user, :with_webauthn)
           auth_settings = saml_settings(

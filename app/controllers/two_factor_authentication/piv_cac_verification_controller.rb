@@ -51,7 +51,7 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context(
-        auth_method: TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
