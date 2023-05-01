@@ -1,5 +1,9 @@
 class ServiceProviderMfaPolicy
-  PHISHING_RESISTANT_METHODS = %w[webauthn webauthn_platform piv_cac].freeze
+  PHISHING_RESISTANT_METHODS = [
+    TwoFactorAuthenticatable::AUTH_METHOD_WEBAUTHN,
+    TwoFactorAuthenticatable::AUTH_METHOD_WEBAUTHN_PLATFORM,
+    TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC,
+  ].freeze
 
   attr_reader :mfa_context, :auth_method, :service_provider
 
@@ -26,7 +30,7 @@ class ServiceProviderMfaPolicy
     return false if user_needs_sp_auth_method_setup?
 
     if piv_cac_required?
-      auth_method.to_s != 'piv_cac'
+      auth_method.to_s != TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC
     elsif phishing_resistant_required?
       !PHISHING_RESISTANT_METHODS.include?(auth_method.to_s)
     else

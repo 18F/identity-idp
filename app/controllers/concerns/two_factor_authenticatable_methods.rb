@@ -74,7 +74,10 @@ module TwoFactorAuthenticatableMethods
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     return if service_provider_mfa_policy.phishing_resistant_required? &&
               ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
-    return if service_provider_mfa_policy.piv_cac_required? && auth_method == 'piv_cac'
+    if service_provider_mfa_policy.piv_cac_required? &&
+       auth_method == TwoFactorAuthenticatable::AUTH_METHOD_PIV_CAC
+      return
+    end
     prompt_to_verify_sp_required_mfa
   end
 

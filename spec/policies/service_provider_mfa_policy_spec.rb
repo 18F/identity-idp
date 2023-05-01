@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ServiceProviderMfaPolicy do
   let(:user) { create(:user) }
   let(:service_provider) { create(:service_provider) }
-  let(:auth_method) { 'phone' }
+  let(:auth_method) { TwoFactorAuthenticatable::AUTH_METHOD_SMS }
   let(:aal_level_requested) { 1 }
   let(:piv_cac_requested) { false }
   let(:phishing_resistant_requested) { nil }
@@ -83,7 +83,7 @@ describe ServiceProviderMfaPolicy do
       end
 
       context 'the user did not use an AAL3 method' do
-        let(:auth_method) { 'phone' }
+        let(:auth_method) { TwoFactorAuthenticatable::AUTH_METHOD_SMS }
 
         before do
           setup_user_phone
@@ -124,7 +124,7 @@ describe ServiceProviderMfaPolicy do
       end
 
       context 'the user did not use an AAL3 method' do
-        let(:auth_method) { 'phone' }
+        let(:auth_method) { TwoFactorAuthenticatable::AUTH_METHOD_SMS }
 
         before do
           setup_user_phone
