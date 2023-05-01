@@ -157,7 +157,9 @@ module Features
     def sign_up_and_set_password
       user = sign_up
       fill_in t('forms.password'), with: VALID_PASSWORD
-      fill_in t('components.password_confirmation.confirm_label'), with: VALID_PASSWORD
+      if IdentityConfig.store.password_confirmation_enabled
+        fill_in t('components.password_confirmation.confirm_label'), with: VALID_PASSWORD
+      end
       click_button t('forms.buttons.continue')
       user
     end
@@ -512,7 +514,10 @@ module Features
 
     def submit_form_with_valid_password_confirmation(password = VALID_PASSWORD)
       fill_in t('forms.password'), with: password
-      fill_in t('components.password_confirmation.confirm_label'), with: password
+
+      if IdentityConfig.store.password_confirmation_enabled
+        fill_in t('components.password_confirmation.confirm_label'), with: password
+      end
       click_button t('forms.buttons.continue')
     end
 

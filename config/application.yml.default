@@ -218,6 +218,7 @@ outbound_connection_check_retry_count: 2
 outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
+password_confirmation_enabled: false
 password_max_attempts: 3
 personal_key_retired: true
 phone_carrier_registration_blocklist: ''
@@ -392,6 +393,7 @@ development:
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 5
+  password_confirmation_enabled: false
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   rails_mailer_previews_enabled: true
@@ -466,6 +468,7 @@ production:
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
+  password_confirmation_enabled: false
   password_pepper:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:

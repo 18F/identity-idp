@@ -65,7 +65,8 @@ module SignUp
     end
 
     def password_form
-      @password_form ||= PasswordForm.new(@user, validate_confirmation: true)
+      validate_confirmation = IdentityConfig.store.password_confirmation_enabled
+      @password_form ||= PasswordForm.new(@user, validate_confirmation: validate_confirmation)
     end
 
     def process_unsuccessful_password_creation

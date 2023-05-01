@@ -11,7 +11,7 @@ module FormPasswordValidator
     validates :password_confirmation,
               presence: true,
               length: { in: Devise.password_length },
-              if: -> { validate_confirmation }
+              if: -> { IdentityConfig.store.password_confirmation_enabled && validate_confirmation }
 
     validate :password_graphemes_length, :strong_password, :not_pwned, :passwords_match
   end
