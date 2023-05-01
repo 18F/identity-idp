@@ -32,10 +32,9 @@ module SignUp
     end
 
     def store_sp_metadata_in_session
-      if request_id.present?
-        StoreSpMetadataInSession.new(session:, request_id:).call
-        bump_auth_count
-      end
+      return if request_id.blank?
+      StoreSpMetadataInSession.new(session:, request_id:).call
+      bump_auth_count
     end
 
     def request_id
