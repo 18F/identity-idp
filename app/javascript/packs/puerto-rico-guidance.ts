@@ -2,7 +2,11 @@ function showOrHidePuertoRicoExtras(forStateCode) {
   const isPuertoRico = forStateCode === 'PR';
 
   document.querySelectorAll('.puerto-rico-extras').forEach((element) => {
-    element.classList.toggle('display-none', !isPuertoRico);
+    if (isPuertoRico) {
+      element.classList.remove('display-none');
+    } else {
+      element.classList.add('display-none');
+    }
   });
 }
 
