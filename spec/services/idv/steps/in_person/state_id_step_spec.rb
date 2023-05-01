@@ -278,8 +278,6 @@ describe Idv::Steps::InPerson::StateIdStep do
     end
 
     before(:each) do
-      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(true)
       allow(user).to receive(:establishing_in_person_enrollment).
         and_return(enrollment)
     end
