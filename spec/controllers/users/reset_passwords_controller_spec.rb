@@ -85,7 +85,11 @@ describe Users::ResetPasswordsController, devise: true do
           }
         end
 
-        get :edit
+        it 'redirects to page where user enters email for password reset token' do
+          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+            success: false,
+            failure_reason: user_blank_error,
+          )
 
           get :edit, params: { reset_password_token: 'foo' }
 
