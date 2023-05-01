@@ -61,7 +61,7 @@ module Idv
     def prepare_for_personal_key
       event, _disavowal_token = create_user_event(:account_verified)
 
-      if !threatmetrix_check_failed?
+      if !fraud_check_failed?
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
@@ -107,7 +107,7 @@ module Idv
       redirect_to account_url
     end
 
-    def threatmetrix_check_failed?
+    def fraud_check_failed?
       threatmetrix_enabled? && (current_user.fraud_review_pending? || current_user.fraud_rejection?)
     end
 
