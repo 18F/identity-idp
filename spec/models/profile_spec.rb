@@ -264,6 +264,12 @@ describe Profile do
     end
 
     context 'activation guards against deactivation reasons' do
+      before do
+        allow(FeatureManagement).to receive(
+          :proofing_device_profiling_decisioning_enabled?,
+        ).and_return(true)
+      end
+
       it 'does not activate a profile with gpo verification pending' do
         profile.update(gpo_verification_pending_at: 1.day.ago)
         profile.activate

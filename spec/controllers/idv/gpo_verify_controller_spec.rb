@@ -253,7 +253,7 @@ RSpec.describe Idv::GpoVerifyController do
               fraud_review_pending_at: 1.day.ago,
             )
           end
-          
+
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',
