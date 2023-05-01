@@ -75,6 +75,11 @@ module Idv
           failure_reason: failure_reason,
         )
 
+        if IdentityConfig.store.doc_auth_link_sent_controller_enabled
+          flow_session[:flow_path] = @flow.flow_path
+          redirect_to idv_link_sent_url
+        end
+
         build_telephony_form_response(telephony_result)
       end
 

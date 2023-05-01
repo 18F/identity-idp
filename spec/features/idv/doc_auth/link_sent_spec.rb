@@ -19,7 +19,6 @@ feature 'doc auth link sent step' do
     complete_doc_auth_steps_before_upload_step
     clear_and_fill_in(:doc_auth_phone, phone_number)
     click_send_link
-    visit(idv_link_sent_url)
   end
 
   it 'Correctly renders the link sent step page' do
@@ -31,10 +30,8 @@ feature 'doc auth link sent step' do
   context 'when link sent polling is enabled' do
     let(:doc_capture_polling_enabled) { true }
 
-    # Currently get a javascript error when explicitly visiting the new url
-    # Try this again once upload redirects here.
-    xit 'Does not show continue button', :js do
-      expect(page).not_to have_content('Continue') # doc_auth.buttons.continue
+    it 'Does not show continue button', :js do
+      expect(page).not_to have_content(I18n.t('doc_auth.buttons.continue'))
     end
   end
 end
