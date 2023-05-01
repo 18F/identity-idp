@@ -86,7 +86,8 @@ module InPersonHelper
   end
 
   def search_for_post_office
-    expect(page).to have_content(t('in_person_proofing.body.location.po_search.po_search_about'))
+    expect(page).to(have_content(t('in_person_proofing.headings.po_search.location')))
+    expect(page).to(have_content(t('in_person_proofing.body.location.po_search.po_search_about')))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
             with: GOOD_ADDRESS1
