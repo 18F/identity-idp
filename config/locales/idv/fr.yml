@@ -85,8 +85,7 @@ fr:
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
-        without_sp: Quittez la vérification d’identité et accédez à la page de votre
-          compte
+        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       phone:
         heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
           d’autres enregistrements
