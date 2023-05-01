@@ -24,7 +24,7 @@ feature 'doc auth link sent step' do
     end
 
     it 'Correctly renders the link sent step page' do
-      expect(page).to have_current_path(idv_link_sent_step)
+      expect(page).to have_current_path(idv_link_sent_url)
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
       expect(page).to have_content(phone_number)
     end
