@@ -43,7 +43,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
-      flowPath !== 'hybrid' ? e.preventDefault() : null;
+      if (flowPath !== 'hybrid') {
+        e.preventDefault();
+      }
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
