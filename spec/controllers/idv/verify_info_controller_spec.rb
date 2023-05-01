@@ -289,6 +289,23 @@ describe Idv::VerifyInfoController do
       )
     end
 
+    it 'redirects to the expected page' do
+      put :update
+
+      expect(response).to redirect_to idv_verify_info_url
+    end
+
+    it 'modifies pii as expected' do
+      app_id = 'hello-world'
+      sp = create(:service_provider, app_id: app_id)
+      sp_session = { issuer: sp.issuer }
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+
+      put :update
+
+      expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
+    end
+
     it 'updates DocAuthLog verify_submit_count' do
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
