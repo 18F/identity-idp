@@ -396,7 +396,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
         sign_in_as_user(user)
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
-        subject.user_session[:mfa_selections] = ['sms']
 
         @previous_phone_confirmed_at =
           MfaContext.new(subject.current_user).phone_configurations.first&.confirmed_at
@@ -524,8 +523,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: true,
-              sign_up_mfa_priority_bucket: :default,
+              in_multi_mfa_selection_flow: false,
+              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -608,8 +607,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
-              in_multi_mfa_selection_flow: true,
-              sign_up_mfa_priority_bucket: :default,
+              in_multi_mfa_selection_flow: false,
+              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).
