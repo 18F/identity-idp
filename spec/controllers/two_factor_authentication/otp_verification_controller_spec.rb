@@ -176,7 +176,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
     context 'when the user has reached the max number of OTP attempts' do
       it 'tracks the event' do
-        
         user = create(
           :user,
           :fully_registered,
