@@ -41,6 +41,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         instance_double(Proofing::Resolution::Result)
       end
       let(:double_address_verification) { true }
+      let(:residential_address) do
+        {
+          address1: applicant_pii[:address1],
+          address2: applicant_pii[:address2],
+          city: applicant_pii[:city],
+          state: applicant_pii[:state],
+          state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+          zipcode: applicant_pii[:zipcode],
+        }
+      end
       let(:state_id_address) do
         {
           address1: applicant_pii[:identity_doc_address1],
@@ -52,6 +62,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         }
       end
       it 'makes a request to the Instant Verify proofer' do
+        expect(instant_verify_proofer).to receive(:proof).with(hash_including(residential_address))
         expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
         allow(resolution_result).to receive(:success?).and_return(true)
         allow(instance).to receive(:proof_state_id_if_needed)
@@ -227,7 +238,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           before do
             allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
           end
-  
+
           before do
             allow(instance).to receive(:proof_resolution).
               and_return(result_that_failed_instant_verify)
@@ -282,7 +293,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         #     expect() # fail adjudication logic # state_id_result.success? is false
         #   end
         # end
-        
       end
     end
   end

@@ -33,6 +33,11 @@ module Proofing
           user_email: user_email,
         )
 
+        resident_address_if_needed = proof_residential_address_if_needed(
+          applicant_pii: applicant_pii,
+          timer: timer,
+          double_address_verification: double_address_verification,
+        )
         # todo(LG-8693): Begin verifying both the user's residential address and identity document
         # address
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
@@ -48,19 +53,13 @@ module Proofing
           should_proof_state_id: should_proof_state_id,
         )
 
-        resident_address_if_needed = proof_residential_address_if_needed(
-          applicant_pii: applicant_pii,
-          timer: timer,
-          double_address_verification: double_address_verification,
-        )
-
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           double_address_verification: double_address_verification,
           resolution_result: resolution_result, # IV State ID
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result, # AAMVA
-          residential_resolution_result: resident_address_if_needed # IV Residential ID
+          residential_resolution_result: resident_address_if_needed, # IV Residential ID
         )
       end
 
@@ -101,7 +100,7 @@ module Proofing
         return residential_address_unnecessary_result unless double_address_verification
 
         timer.time('residential address') do
-          resolution_proofer.proofer(applicant_pii)
+          resolution_proofer.proof(applicant_pii)
         end
       end
 
