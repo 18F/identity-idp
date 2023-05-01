@@ -116,7 +116,7 @@ describe Idv::Steps::InPerson::AddressStep do
     let(:params) { ActionController::Parameters.new }
 
     context 'address1 is set' do
-      it 'returns extra view variables' do
+      it 'returns extra view variables and updating_address is true' do
         pii_from_user[:address1] = address1
 
         expect(step.extra_view_variables).to include(
@@ -124,6 +124,18 @@ describe Idv::Steps::InPerson::AddressStep do
             address1:,
           ),
           updating_address: true,
+        )
+      end
+    end
+
+    context 'address1 is not set' do
+      it 'does not return extra view variables and updating_address is false' do
+        expect(step.extra_view_variables[:pii]).not_to include(
+          address1:,
+        )
+
+        expect(step.extra_view_variables).to include(
+          updating_address: false,
         )
       end
     end
@@ -141,24 +153,6 @@ describe Idv::Steps::InPerson::AddressStep do
           capture_secondary_id_enabled: true,
         )
       end
-    end
-  end
-
-  describe '#updating_address effects on extra_view_variables.updating_address' do
-    let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
-    let(:params) { ActionController::Parameters.new }
-
-    it 'returns true when flow_session has key address1' do
-      pii_from_user[:address1] = address1
-      expect(step.extra_view_variables).to include(
-        updating_address: true,
-      )
-    end
-
-    it 'returns false when flow_session does not have key address1' do
-      expect(step.extra_view_variables).to include(
-        updating_address: false,
-      )
     end
   end
 end
