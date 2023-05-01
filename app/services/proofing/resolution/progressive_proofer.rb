@@ -33,33 +33,35 @@ module Proofing
           user_email: user_email,
         )
 
-        resident_address_if_needed = proof_residential_address_if_needed(
+        residential_instant_verify_proof = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
           double_address_verification: double_address_verification,
         )
+
         # todo(LG-8693): Begin verifying both the user's residential address and identity document
         # address
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
 
-        resolution_result = proof_resolution(
+        id_instant_verify_proof = proof_id_address_with_lexis_nexis_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
+          residential_instant_verify_proof: residential_instant_verify_proof,
         )
-        state_id_result = proof_state_id_if_needed(
+        state_id_result = proof_id_with_aamva_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
-          resolution_result: resolution_result,
+          residential_instant_verify_proof: residential_instant_verify_proof,
+          id_instant_verify_proof: id_instant_verify_proof,
           should_proof_state_id: should_proof_state_id,
         )
-
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           double_address_verification: double_address_verification,
-          resolution_result: resolution_result, # IV State ID
+          resolution_result: id_instant_verify_proof, # IV State ID
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result, # AAMVA
-          residential_resolution_result: resident_address_if_needed, # IV Residential ID
+          residential_resolution_result: residential_instant_verify_proof, # IV Residential ID
         )
       end
 
@@ -116,18 +118,22 @@ module Proofing
         )
       end
 
-      def proof_resolution(applicant_pii:, timer:)
+      def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
+                                                      residential_instant_verify_proof:)
+        return resolution_unnecessary_result unless residential_instant_verify_proof.success?
         timer.time('resolution') do
           resolution_proofer.proof(applicant_pii)
         end
       end
 
-      def proof_state_id_if_needed(
+      def proof_id_with_aamva_if_needed(
         applicant_pii:, timer:,
-        resolution_result:,
+        residential_instant_verify_proof:,
+        id_instant_verify_proof:,
         should_proof_state_id:
       )
-        unless should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
+        unless should_proof_state_id && residential_instant_verify_proof.success? &&
+               user_can_pass_after_state_id_check?(id_instant_verify_proof)
           return out_of_aamva_jurisdiction_result
         end
 
