@@ -26,8 +26,3 @@
 @forward 'usa-verification-badge';
 @forward 'uswds-form-controls';
 @forward 'uswds-utilities';
-
-// TODO: Move this to uswds-global:
-html {
-  background-color: color('primary-darker');
-}
