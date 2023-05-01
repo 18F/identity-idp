@@ -58,12 +58,15 @@ module Reporting
           progress = progress_v
         end
 
-        opts.on('--slice SLICE', '(optional) query slice size duration, defaults to 1w') do |slice_v|
+        opts.on(
+          '--slice SLICE',
+          '(optional) query slice size duration, defaults to 1w',
+        ) do |slice_v|
           slice = CloudwatchQueryTimeSlice.parse_duration(slice_v)
         end
 
         opts.on('--threads THREADS', '(optional) number of threads, defaults to 5') do |threads_v|
-          threads = threads_v.to_i if threads_v.to_i.between?(1,30)
+          threads = threads_v.to_i if threads_v.to_i.between?(1, 30)
         end
 
         opts.on('-h', '--help') do
@@ -85,7 +88,7 @@ module Reporting
           verbose: verbose,
           progress: progress,
           slice: slice,
-          threads: threads
+          threads: threads,
         }
       end
     end

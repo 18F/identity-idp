@@ -30,7 +30,8 @@ module Reporting
 
     # @param [String] isssuer
     # @param [Range<Time>] time_range
-    def initialize(issuer:, time_range:, verbose: false, progress: false, slice: 3.hours, threads: 5)
+    def initialize(issuer:, time_range:, verbose: false, progress: false, slice: 3.hours,
+                   threads: 5)
       @issuer = issuer
       @time_range = time_range
       @verbose = verbose

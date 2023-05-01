@@ -49,7 +49,7 @@ RSpec.describe Reporting::CommandLineOptions do
           verbose: false,
           progress: true,
           slice: 3.hours,
-          threads: 5
+          threads: 5,
         )
       end
     end
