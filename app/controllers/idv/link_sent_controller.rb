@@ -37,8 +37,7 @@ module Idv
 
     def extra_view_variables
       { phone: flow_session[:phone_for_mobile_flow],
-        flow_session: flow_session,
-      }
+        flow_session: flow_session }
     end
 
     private
@@ -66,6 +65,7 @@ module Idv
       {
         step: 'link_sent',
         analytics_id: 'Doc Auth',
+        flow_path: 'hybrid',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
@@ -74,7 +74,7 @@ module Idv
       save_proofing_components
       extract_pii_from_doc(get_results_response, store_in_session: true)
       mark_upload_step_complete
-      #flow_session[:flow_path] = @flow.flow_path
+      flow_session[:flow_path] = 'hybrid'
     end
 
     def render_document_capture_cancelled

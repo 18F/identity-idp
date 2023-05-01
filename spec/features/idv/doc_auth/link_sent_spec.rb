@@ -33,7 +33,7 @@ feature 'doc auth link sent step' do
       let(:doc_capture_polling_enabled) { true }
 
       it 'Does not show continue button' do
-        expect(page).not_to have_content('Continue') #doc_auth.buttons.continue
+        expect(page).not_to have_content('Continue') # doc_auth.buttons.continue
       end
     end
   end
