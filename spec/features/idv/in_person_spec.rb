@@ -704,8 +704,8 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_prepare_step(user)
       end
 
-      it 'but does not update their previous selection of "Yes,
-      I live at the address on my state-issued ID")' do
+      it 'does not update their previous selection of "Yes,
+      I live at the address on my state-issued ID"' do
         complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
         # skip address step
         complete_ssn_step(user)
@@ -737,7 +737,7 @@ RSpec.describe 'In Person Proofing', js: true do
         )
       end
 
-      it 'but does not update their previous selection of "No, I live at a different address"' do
+      it 'does not update their previous selection of "No, I live at a different address"' do
         complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
@@ -771,7 +771,7 @@ RSpec.describe 'In Person Proofing', js: true do
         )
       end
 
-      it 'and updates their previous selection from "Yes" TO "No, I live at a different address"' do
+      it 'updates their previous selection from "Yes" TO "No, I live at a different address"' do
         complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
         # skip address step
         complete_ssn_step(user)
@@ -805,7 +805,7 @@ RSpec.describe 'In Person Proofing', js: true do
         )
       end
 
-      it 'and updates their previous selection from "No" TO "Yes,
+      it 'updates their previous selection from "No" TO "Yes,
       I live at the address on my state-issued ID"' do
         complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
         # expect to be on address page
