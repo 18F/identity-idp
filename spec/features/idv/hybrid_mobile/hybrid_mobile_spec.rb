@@ -36,12 +36,21 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:mobile) do
       visit @sms_link
+
+      # Confirm app disallows jumping ahead to CaptureComplete page
+      visit idv_hybrid_mobile_capture_complete_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+      # Confirm app disallows jumping back to DocumentCapture page
+      visit idv_hybrid_mobile_document_capture_url
+      expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
     end
 
     perform_in_browser(:desktop) do

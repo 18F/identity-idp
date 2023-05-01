@@ -77,8 +77,7 @@ describe 'review_profile' do
     it 'deactivates the users profile with reason threatmetrix_review_rejected' do
       invoke_task
       expect(user.reload.profiles.first.active).to eq(false)
-      expect(user.reload.profiles.first.fraud_rejection).to eq(true)
-      expect(user.reload.profiles.first.fraud_rejection_at).to_not be_nil
+      expect(user.reload.profiles.first.fraud_rejection?).to eq(true)
     end
 
     it 'sends the user an email about their account deactivation' do

@@ -74,7 +74,10 @@ module Users
         presented: true,
       )
 
-      handle_valid_otp(next_url: next_step, auth_method: 'piv_cac')
+      handle_valid_otp(
+        next_url: next_step,
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
     end
 
     def next_step

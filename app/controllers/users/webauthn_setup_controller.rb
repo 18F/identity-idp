@@ -26,7 +26,8 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.webauthn_setup_visit(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.webauthn_setup_visit(**properties)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
 
@@ -102,6 +103,11 @@ module Users
       )
     end
 
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
     def user_opted_remember_device_cookie
       cookies.encrypted[:user_opted_remember_device_preference]
     end
@@ -172,6 +178,7 @@ module Users
     def analytics_properties
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       }
     end
 
