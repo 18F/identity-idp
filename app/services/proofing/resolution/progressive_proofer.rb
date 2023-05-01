@@ -48,12 +48,19 @@ module Proofing
           should_proof_state_id: should_proof_state_id,
         )
 
+        resident_address_if_needed = proof_residential_address_if_needed(
+          applicant_pii: applicant_pii,
+          timer: timer,
+          should_proof_state_id: should_proof_state_id, 
+        )
+
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           double_address_verification: double_address_verification,
-          resolution_result: resolution_result,
+          resolution_result: resolution_result, # IV
           should_proof_state_id: should_proof_state_id,
-          state_id_result: state_id_result,
+          state_id_result: state_id_result, # AAMVA
+          residential_resolution_result: resident_address_if_needed
         )
       end
 
