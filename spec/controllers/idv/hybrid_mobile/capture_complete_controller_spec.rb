@@ -25,6 +25,8 @@ describe Idv::HybridMobile::CaptureCompleteController do
   before do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+    allow(subject).to receive(:confirm_document_capture_session_complete).
+      and_return(true)
   end
 
   describe 'before_actions' do
@@ -32,6 +34,13 @@ describe Idv::HybridMobile::CaptureCompleteController do
       expect(subject).to have_actions(
         :before,
         :check_valid_document_capture_session,
+      )
+    end
+
+    it 'includes document capture session complete before action' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_document_capture_session_complete,
       )
     end
   end

@@ -556,23 +556,11 @@ describe UserMailer, type: :mailer do
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
 
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
       end
     end
 
@@ -589,23 +577,11 @@ describe UserMailer, type: :mailer do
       it_behaves_like 'a system email'
       it_behaves_like 'an email that respects user email locale preference'
 
-      context 'double address verification is not enabled' do
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
-      end
-
-      context 'double address verification is enabled' do
-        let(:capture_secondary_id_enabled) { true }
-        it 'renders the body' do
-          expect(mail.html_part.body).
-            to_not have_content(
-              t('in_person_proofing.process.proof_of_address.heading'),
-            )
-        end
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
       end
     end
 
