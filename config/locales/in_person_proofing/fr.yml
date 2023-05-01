@@ -86,8 +86,7 @@ fr:
         verify_step_enter_pii: Saisissez votre nom, votre date de naissance, votre
           document d’identité délivré par l’État, votre adresse et votre numéro
           de sécurité sociale.
-        po_search_about: Vous pouvez vérifier votre identité en personne dans un bureau
-          de poste américain local participant.
+        verify_step_post_office: Trouver un bureau de poste participant.
       state_id:
         alert_message: 'Votre carte d’identité délivrée par l’État ne doit pas être
           périmée. Les pièces d’identité acceptées sont:'
