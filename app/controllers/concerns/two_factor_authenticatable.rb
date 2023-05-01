@@ -21,11 +21,12 @@ module TwoFactorAuthenticatable
     VOICE = 'voice'
     WEBAUTHN = 'webauthn'
     WEBAUTHN_PLATFORM = 'webauthn_platform'
+
     PHISHING_RESISTANT_METHODS = [
       WEBAUTHN,
       WEBAUTHN_PLATFORM,
       PIV_CAC,
-    ].freeze
+    ].to_set.freeze
 
     def self.phishing_resistant?(auth_method)
       PHISHING_RESISTANT_METHODS.include?(auth_method)
