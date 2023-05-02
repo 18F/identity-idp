@@ -16,7 +16,7 @@ feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 

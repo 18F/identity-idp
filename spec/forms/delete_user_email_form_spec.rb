@@ -27,7 +27,7 @@ describe DeleteUserEmailForm do
     end
 
     context 'with multiple email addresses' do
-      let(:user) { create(:user, :signed_up, :with_multiple_emails) }
+      let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
 
@@ -63,8 +63,8 @@ describe DeleteUserEmailForm do
     end
 
     context 'with a email of a different user' do
-      let(:user) { create(:user, :signed_up, :with_multiple_emails) }
-      let(:other_user) { create(:user, :signed_up, :with_multiple_emails) }
+      let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
+      let(:other_user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { other_user.email_addresses.first }
       let(:form) { described_class.new(user, email_address) }
 

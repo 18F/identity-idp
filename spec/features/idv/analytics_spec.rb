@@ -202,7 +202,10 @@ feature 'Analytics Regression', js: true do
       allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled).
         and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
-      ServiceProvider.find_by(issuer: sp1_issuer).update(return_to_sp_url: return_sp_url)
+      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
+        to receive(:service_provider_homepage_url).and_return(return_sp_url)
+      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).
+        to receive(:sp_name).and_return(sp_friendly_name)
 
       start_idv_from_sp(:saml)
       sign_in_and_2fa_user(user)

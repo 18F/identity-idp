@@ -161,7 +161,7 @@ es:
       only_add_sp_services_html: Está tratando de acceder a los servicios
         <strong>%{service_provider_name}</strong>
     info:
-      address_guidance_puerto_rico_html: Residentes de Puerto Rico:<br><br>Edite su
+      address_guidance_puerto_rico_html: Residentes en Puerto Rico:<br><br>Edite su
         dirección para que figure su urbanización o condominio en la línea de
         dirección 2.
       capture_status_big_document: Demasiado cerca

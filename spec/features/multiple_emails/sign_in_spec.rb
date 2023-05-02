@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'sign in with any email address' do
   scenario 'signing in with any email address' do
-    user = create(:user, :signed_up, :with_multiple_emails)
+    user = create(:user, :fully_registered, :with_multiple_emails)
 
     email1, email2 = user.reload.email_addresses.map(&:email)
 
@@ -23,7 +23,7 @@ feature 'sign in with any email address' do
   end
 
   scenario 'signing in with an unconfirmed email results in an error' do
-    user = create(:user, :signed_up, :with_multiple_emails)
+    user = create(:user, :fully_registered, :with_multiple_emails)
 
     email_address = user.email_addresses.first
     email_address.update!(confirmed_at: nil)
@@ -37,7 +37,7 @@ feature 'sign in with any email address' do
   end
 
   scenario 'it shows the email address used to sign in on the account page' do
-    user = create(:user, :signed_up, :with_multiple_emails)
+    user = create(:user, :fully_registered, :with_multiple_emails)
 
     email1, email2 = user.reload.email_addresses.map(&:email)
 

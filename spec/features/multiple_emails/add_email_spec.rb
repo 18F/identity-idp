@@ -4,7 +4,7 @@ feature 'adding email address' do
   let(:email) { 'test@test.com' }
 
   it 'allows the user to add an email and confirm with an active session' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     original_email = user.email_addresses.first.email
     sign_in_user_and_add_email(user)
     unconfirmed_email_text = "#{email}  #{t('email_addresses.unconfirmed')}"
@@ -36,7 +36,7 @@ feature 'adding email address' do
   end
 
   it 'allows the user to add an email and confirm without an active session' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     original_email = user.email_addresses.first.email
     sign_in_user_and_add_email(user)
 
@@ -64,7 +64,7 @@ feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed without an active session' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
     Capybara.reset_session!
@@ -85,7 +85,7 @@ feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed with an active session' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
     email_to_click_on = last_email_sent
@@ -103,11 +103,11 @@ feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed on another account after clicking on link' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
     email_to_click_on = last_email_sent
-    create(:user, :signed_up, email: email)
+    create(:user, :fully_registered, email: email)
     click_on_link_in_confirmation_email(email_to_click_on)
 
     expect(page).to have_current_path(account_path)
@@ -123,9 +123,9 @@ feature 'adding email address' do
   end
 
   it 'notifies user they are already confirmed on another account via email' do
-    initial_user = create(:user, :signed_up, email: email)
+    initial_user = create(:user, :fully_registered, email: email)
 
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user, false)
 
     expect(last_email_sent.default_part_body.to_s).to have_content(
@@ -167,7 +167,7 @@ feature 'adding email address' do
 
   it 'does not allow the user to add an email when max emails is reached' do
     allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(1)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
 
     expect(page).to_not have_link(t('account.index.email_add'))
@@ -177,7 +177,7 @@ feature 'adding email address' do
   end
 
   it 'stays on form with bad email' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
     visit account_path
     within('.sidenav') do
@@ -193,7 +193,7 @@ feature 'adding email address' do
   end
 
   it 'stays on form and gives an error message when adding an email already on the account' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
     visit account_path
     within('.sidenav') do
@@ -210,7 +210,7 @@ feature 'adding email address' do
   end
 
   it 'does not show verify screen without an email in session from add email' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
     visit add_email_verify_email_path
 
@@ -218,7 +218,7 @@ feature 'adding email address' do
   end
 
   it 'allows user to resend add email link' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
     click_button t('links.resend')
@@ -237,7 +237,7 @@ feature 'adding email address' do
   end
 
   it 'invalidates the confirmation email/token after 24 hours' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user_and_add_email(user)
 
     Capybara.reset_session!
@@ -256,7 +256,7 @@ feature 'adding email address' do
   end
 
   it 'does not raise a 500 if user submits in rapid succession violating a db constraint' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
 
     visit account_path

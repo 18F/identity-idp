@@ -11,6 +11,28 @@ module TwoFactorAuthenticatable
   DIRECT_OTP_VALID_FOR_SECONDS = DIRECT_OTP_VALID_FOR_MINUTES * 60
   REMEMBER_2FA_COOKIE = 'remember_tfa'.freeze
 
+  class AuthMethod
+    BACKUP_CODE = 'backup_code'
+    PERSONAL_KEY = 'personal_key'
+    PIV_CAC = 'piv_cac'
+    REMEMBER_DEVICE = 'remember_device'
+    SMS = 'sms'
+    TOTP = 'totp'
+    VOICE = 'voice'
+    WEBAUTHN = 'webauthn'
+    WEBAUTHN_PLATFORM = 'webauthn_platform'
+
+    PHISHING_RESISTANT_METHODS = [
+      WEBAUTHN,
+      WEBAUTHN_PLATFORM,
+      PIV_CAC,
+    ].to_set.freeze
+
+    def self.phishing_resistant?(auth_method)
+      PHISHING_RESISTANT_METHODS.include?(auth_method)
+    end
+  end
+
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :authenticate_user

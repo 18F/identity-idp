@@ -31,7 +31,7 @@
   <% end %>
   <%= render CaptchaSubmitButtonComponent.new(
         form: f,
-        action: 'phone_setup',
+        action: PhoneRecaptchaValidator::RECAPTCHA_ACTION,
       ).with_content(t('forms.buttons.continue')) %>
 <% end %>
 

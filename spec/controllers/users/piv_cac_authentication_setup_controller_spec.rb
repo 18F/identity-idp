@@ -43,7 +43,7 @@ describe Users::PivCacAuthenticationSetupController do
   describe 'when signing in' do
     before(:each) { stub_sign_in_before_2fa(user) }
     let(:user) do
-      create(:user, :signed_up, :with_piv_or_cac, with: { phone: '+1 (703) 555-0000' })
+      create(:user, :fully_registered, :with_piv_or_cac, with: { phone: '+1 (703) 555-0000' })
     end
 
     describe 'GET index' do
@@ -66,7 +66,7 @@ describe Users::PivCacAuthenticationSetupController do
 
     context 'without associated piv/cac' do
       let(:user) do
-        create(:user, :signed_up, with: { phone: '+1 (703) 555-0000' })
+        create(:user, :fully_registered, with: { phone: '+1 (703) 555-0000' })
       end
       let(:nickname) { 'Card 1' }
 
@@ -76,7 +76,7 @@ describe Users::PivCacAuthenticationSetupController do
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
         subject.user_session[:authn_at] = Time.zone.now
-        subject.user_session[:auth_method] = 'phone'
+        subject.user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::SMS
       end
 
       let(:nonce) { 'nonce' }
@@ -226,7 +226,7 @@ describe Users::PivCacAuthenticationSetupController do
     end
 
     context 'with associated piv/cac' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
       describe 'GET index' do
         it 'does not redirect to account page because we allow multiple PIV/CACs' do

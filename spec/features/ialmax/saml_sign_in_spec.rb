@@ -25,7 +25,7 @@ feature 'SAML IALMAX sign in' do
       end
 
       scenario 'password sign in' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         visit_idp_from_saml_sp_with_ialmax
         sign_in_live_with_2fa(user)
         click_submit_default
