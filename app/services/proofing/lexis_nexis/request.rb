@@ -66,31 +66,11 @@ module Proofing
 
       # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
       def hmac_authorization
-        hmac = OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, body)
-        ts = Time.zone.now.strftime('%s%L')
-        nonce = SecureRandom.uuid
-        host = base_url.gsub('https://', '')
-        signature = build_signature(ts, nonce, host, url_request_path, hmac)
-        %W[
-          HMAC-SHA256
-          keyid=#{config.hmac_key_id},
-          ts=#{ts},
-          nonce=#{nonce},
-          bodyHash=#{hmac},
-          signature=#{signature}
-        ].join(' ')
-      end
-
-      # Signature definition from RDP_REST_V3_DecisioningGuide_March22.pdf, page 20
-      def build_signature(ts, nonce, host, path, body_hash)
-        message = [
-          ts,
-          nonce,
-          host,
-          path,
-          body_hash,
-        ].join("\n")
-        OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, message)
+        Proofing::LexisNexis::RequestSigner.new(
+          config: config,
+          message_body: body,
+          path: url_request_path,
+        ).hmac_authorization
       end
 
       def build_request_body
