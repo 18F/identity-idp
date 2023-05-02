@@ -39,11 +39,14 @@ module Reporting
         end
 
         opts.on('--month=DATE', <<~STR.squish) do |date_v|
-          run the report for the month that includes the date in YYYY-MM-DD format. recommended
-          to include `--threads 10` and `--slice 1h` to reduce likelihood of timeout
+          run the report for the month that includes the date in YYYY-MM-DD format.
+          changes defaults to `--threads 10` and `--slice 1 hour` to reduce likelihood of timeout
         STR
           date = Date.parse(date_v)
           period = :month
+
+          slice = 1.hour if slice == 3.hours
+          threads = 10 if threads == 5
         end
 
         opts.on('--issuer=ISSUER') do |issuer_v|
@@ -60,13 +63,22 @@ module Reporting
 
         opts.on(
           '--slice SLICE',
-          '(optional) query slice size duration, defaults to 1w',
+          '(optional) query slice size duration, defaults to 3h',
         ) do |slice_v|
           slice = CloudwatchQueryTimeSlice.parse_duration(slice_v)
         end
 
-        opts.on('--threads THREADS', '(optional) number of threads, defaults to 5') do |threads_v|
-          threads = threads_v.to_i if threads_v.to_i.between?(1, 30)
+        opts.on(
+          '--threads THREADS',
+          '(optional) number of threads between 1 and 30 inclusive, defaults to 5. ',
+        ) do |threads_v|
+          if !threads_v.to_i.between?(1, 30)
+            raise StandardError.new(
+              'Number of threads must be between 1 and 30 inclusive',
+            )
+          end
+
+          threads = threads_v.to_i
         end
 
         opts.on('-h', '--help') do

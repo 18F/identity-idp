@@ -76,6 +76,14 @@ RSpec.describe Reporting::CommandLineOptions do
 
         expect(parse![:time_range]).to eq(jan_1.beginning_of_day..jan_last.end_of_day)
       end
+
+      it 'updates slice to 1.hr if slice is not passed in' do
+        expect(parse![:slice]).to eq 1.hour
+      end
+
+      it 'updates threads to 10 if threads is not passed in' do
+        expect(parse![:threads]).to eq 10
+      end
     end
 
     context 'with --slice' do
@@ -88,10 +96,10 @@ RSpec.describe Reporting::CommandLineOptions do
       end
 
       context 'with --slice in hours' do
-        let(:argv) { %W[--slice 3h --month 2023-1-1 --issuer #{issuer}] }
+        let(:argv) { %W[--slice 2h --month 2023-1-1 --issuer #{issuer}] }
 
-        it 'slice is 3 hours' do
-          expect(parse![:slice]).to eq 3.hours
+        it 'slice is 2 hours' do
+          expect(parse![:slice]).to eq 2.hours
         end
       end
 
@@ -141,23 +149,23 @@ RSpec.describe Reporting::CommandLineOptions do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads abcd ] }
 
         it 'thread is the default of 5' do
-          expect(parse![:threads]).to eq 5
+          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
         end
       end
 
       context 'if threads is below 0' do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads -3 ] }
 
-        it 'thread is the default of 5' do
-          expect(parse![:threads]).to eq 5
+        it 'throws an error' do
+          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
         end
       end
 
       context 'if threads is above 31' do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads 31 ] }
 
-        it 'thread is the default of 5' do
-          expect(parse![:threads]).to eq 5
+        it 'throws an error' do
+          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
         end
       end
     end
