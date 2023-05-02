@@ -49,7 +49,7 @@
   <%= render ValidatedFieldComponent.new(
         form: f,
         hint: t('in_person_proofing.form.state_id.address2_hint'),
-        hint_html: { class: ['display-none', 'puerto-rico-extras' ] },
+        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
         input_html: { value: pii[:address2] },
         label: capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
         label_html: { class: 'usa-label' },
