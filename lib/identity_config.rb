@@ -245,6 +245,7 @@ class IdentityConfig
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_username, type: :string)
     config.add(:lexisnexis_password, type: :string)
+    config.add(:lexisnexis_hmac_auth_enabled, type: :boolean)
     config.add(:lexisnexis_phone_finder_timeout, type: :float)
     config.add(:lexisnexis_phone_finder_workflow, type: :string)
     config.add(:lexisnexis_instant_verify_timeout, type: :float)

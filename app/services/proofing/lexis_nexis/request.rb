@@ -16,7 +16,9 @@ module Proofing
       def send
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
-          f.request :authorization, :basic, config.username, config.password
+          unless hmac_auth_enabled?
+            f.request :authorization, :basic, config.username, config.password
+          end
           f.options.timeout = timeout
           f.options.read_timeout = timeout
           f.options.open_timeout = timeout
@@ -51,9 +53,44 @@ module Proofing
       end
 
       def build_request_headers
-        {
+        headers = {
           'Content-Type' => 'application/json',
         }
+        headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+        headers
+      end
+
+      def hmac_auth_enabled?
+        IdentityConfig.store.lexisnexis_hmac_auth_enabled
+      end
+
+      # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
+      def hmac_authorization
+        hmac = OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, body)
+        ts = Time.zone.now.strftime('%s%L')
+        nonce = SecureRandom.uuid
+        host = base_url.gsub('https://', '')
+        signature = build_signature(ts, nonce, host, url_request_path, hmac)
+        %W[
+          HMAC-SHA256
+          keyid=#{config.hmac_key_id},
+          ts=#{ts},
+          nonce=#{nonce},
+          bodyHash=#{hmac},
+          signature=#{signature}
+        ].join(' ')
+      end
+
+      # Signature definition from RDP_REST_V3_DecisioningGuide_March22.pdf, page 20
+      def build_signature(ts, nonce, host, path, body_hash)
+        message = [
+          ts,
+          nonce,
+          host,
+          path,
+          body_hash,
+        ].join("\n")
+        OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, message)
       end
 
       def build_request_body
