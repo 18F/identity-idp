@@ -94,6 +94,8 @@ feature 'SAML Authorization Confirmation' do
   end
 
   context 'first time registration' do
+    let(:request_url) { saml_authn_request_url }
+    
     it 'redirects user to sp and does not go through authorization_confirmation page' do
       email = 'test@test.com'
 
