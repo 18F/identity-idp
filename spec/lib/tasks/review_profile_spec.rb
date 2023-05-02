@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_threatmetrix_profile) }
+  let(:user) { create(:user, :deactivated_fraud_profile) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
@@ -53,22 +53,6 @@ describe 'review_profile' do
         expect(stdout.string).to include('Error: Could not find user with that UUID')
       end
     end
-
-    context 'when the user profile has a nil verified_at' do
-      let(:user) do
-        create(
-          :user,
-          :with_pending_in_person_enrollment,
-          proofing_component: build(:proofing_component),
-        )
-      end
-
-      it 'prints an error' do
-        invoke_task
-
-        expect(stdout.string).to include('Error: User does not have a pending fraud review')
-      end
-    end
   end
 
   describe 'users:review:reject' do
@@ -96,7 +80,7 @@ describe 'review_profile' do
       end
     end
 
-    context 'when the user profile has a nil verified_at' do
+    context 'when the user profile has a nil fraud_review_pending_at' do
       let(:user) do
         create(
           :user,

@@ -133,7 +133,7 @@ en:
         - If you forgot your password, you’ll need to reset it and fill out the
           form again.
         - You’ll have to re-enter your personal information, like your name,
-          state-issued ID, etc.
+          state‑issued ID, etc.
     form:
       address1: Address line 1
       address2: Address line 2
@@ -154,8 +154,8 @@ en:
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
-          state-issued ID</strong>.
-        state_issue: State-issued ID
+          state‑issued ID</strong>.
+        state_issue: State‑issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
@@ -227,15 +227,16 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
-        add_new_photos: Add new photos of your state-issued ID
+        add_new_photos: Add new photos of your state‑issued ID
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         learn_more_verify_by_phone: Learn more about what phone number to use
+        learn_more_verify_by_phone_in_person: Learn more about verifying your phone number
         learn_more_verify_in_person: Learn more about verifying in person
-        supported_documents: See a list of accepted state-issued IDs
+        supported_documents: See a list of accepted state‑issued IDs
         verify_by_mail: Verify your address by mail instead
     unavailable:
       exit_button: 'Exit %{app_name}'

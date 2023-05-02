@@ -3,7 +3,7 @@ require 'rails_helper'
 describe AccountReset::CancelController do
   include AccountResetHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   describe '#create' do
     it 'tracks IRS attempts event account_reset_cancel_request' do

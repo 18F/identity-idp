@@ -33,7 +33,7 @@ feature 'doc capture document capture step', js: true do
     attach_and_submit_images
 
     expect(page).to have_current_path(next_step)
-    expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+    expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
   end
 
   it 'offers the user the option to cancel and return to desktop' do
@@ -95,7 +95,11 @@ feature 'doc capture document capture step', js: true do
       Capybara.using_session('mobile') do
         visit request_uri
         attach_and_submit_images
-        expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+        expect(page).to have_content(
+          t(
+            'doc_auth.errors.barcode_attention.confirm_info',
+          ).tr(' ', ' '),
+        )
         click_button t('forms.buttons.continue')
       end
 
@@ -153,7 +157,11 @@ feature 'doc capture document capture step', js: true do
         Capybara.using_session('mobile') do
           visit request_uri
           attach_and_submit_images
-          expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+          expect(page).to have_content(
+            t(
+              'doc_auth.errors.barcode_attention.confirm_info',
+            ).tr(' ', ' '),
+          )
           click_button t('forms.buttons.continue')
         end
 

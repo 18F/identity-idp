@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'users/webauthn_setup/new.html.erb' do
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'webauthn platform' do
     let(:platform_authenticator) { true }
@@ -25,6 +25,12 @@ describe 'users/webauthn_setup/new.html.erb' do
       assign(:platform_authenticator, platform_authenticator)
       assign(:user_session, user_session)
       assign(:presenter, presenter)
+    end
+
+    it 'has a localized title' do
+      expect(view).to receive(:title).with(presenter.page_title)
+
+      render
     end
 
     it 'displays warning alert' do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'two_factor_authentication/totp_verification/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_authentication_app) }
+  let(:user) { create(:user, :fully_registered, :with_authentication_app) }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(
       two_factor_authentication_method: 'authenticator',

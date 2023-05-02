@@ -113,32 +113,31 @@ RSpec.describe User do
     end
   end
 
-  context '#need_two_factor_authentication?' do
-    let(:request) { ActionController::TestRequest.new }
+  describe '#fully_registered?' do
+    let(:user) { create(:user) }
+    subject(:fully_registered?) { user.fully_registered? }
 
-    it 'is true when two_factor_enabled' do
-      user = build_stubbed(:user)
+    context 'with unconfirmed user' do
+      let(:user) { create(:user, :unconfirmed) }
 
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return true
-      allow(MfaPolicy).to receive(:new).with(user).and_return mock_mfa
-
-      expect(user.need_two_factor_authentication?(nil)).to be_truthy
+      it { expect(fully_registered?).to eq(false) }
     end
 
-    it 'is false when not two_factor_enabled' do
-      user = build_stubbed(:user)
+    context 'with confirmed user' do
+      let(:user) { create(:user) }
 
-      mock_mfa = MfaPolicy.new(user)
-      allow(mock_mfa).to receive(:two_factor_enabled?).and_return false
-      allow(MfaPolicy).to receive(:new).with(user).and_return(mock_mfa)
+      it { expect(fully_registered?).to eq(false) }
+    end
 
-      expect(user.need_two_factor_authentication?(nil)).to be_falsey
+    context 'with mfa-enabled user' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it { expect(fully_registered?).to eq(true) }
     end
   end
 
   context 'when identities are present' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:active_identity) do
       ServiceProviderIdentity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
     end
@@ -156,7 +155,7 @@ RSpec.describe User do
   end
 
   context 'when user has multiple identities' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     before do
       user.identities << ServiceProviderIdentity.create(
@@ -181,7 +180,7 @@ RSpec.describe User do
   context 'when user has multiple profiles' do
     describe '#active_profile' do
       it 'returns the only active profile' do
-        user = create(:user, :signed_up)
+        user = create(:user, :fully_registered)
         profile1 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
         _profile2 = create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
 
@@ -191,7 +190,7 @@ RSpec.describe User do
   end
 
   context 'when user has IPP enrollments' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     let(:failed_enrollment_profile) do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
@@ -308,7 +307,7 @@ RSpec.describe User do
 
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       user.identities << ServiceProviderIdentity.create(
         service_provider: 'entity_id', session_uuid: SecureRandom.uuid,
       )
@@ -385,7 +384,7 @@ RSpec.describe User do
     let(:rules_of_use_horizon_years) { 6 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
-    let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+    let(:user) { create(:user, :fully_registered, accepted_terms_at: accepted_terms_at) }
     before do
       allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
         and_return(rules_of_use_horizon_years)
@@ -503,14 +502,13 @@ RSpec.describe User do
   end
 
   describe '#fraud_review_eligible?' do
-    context 'when verified_at is nil' do
+    context 'when fraud_review_pending_at is nil' do
       it 'returns false' do
-        verified_at = nil
+        fraud_review_pending_at = nil
 
         user = create(:user)
         user.profiles.create(
-          verified_at: verified_at,
-          fraud_state: 'fraud_reviewing',
+          fraud_review_pending_at: fraud_review_pending_at,
         )
 
         expect(user.fraud_review_eligible?).to be_falsey
@@ -519,12 +517,11 @@ RSpec.describe User do
 
     context 'when verified_at is within 30 days' do
       it 'returns true' do
-        verified_at = 15.days.ago
+        fraud_review_pending_at = 15.days.ago
 
         user = create(:user)
         user.profiles.create(
-          verified_at: verified_at,
-          fraud_state: 'fraud_reviewing',
+          fraud_review_pending_at: fraud_review_pending_at,
         )
 
         expect(user.fraud_review_eligible?).to eq true
@@ -533,12 +530,11 @@ RSpec.describe User do
 
     context 'when verified_at is older than 30 days' do
       it 'returns false' do
-        verified_at = 45.days.ago
+        fraud_review_pending_at = 45.days.ago
 
         user = create(:user)
         user.profiles.create(
-          verified_at: verified_at,
-          fraud_state: 'fraud_reviewing',
+          fraud_review_pending_at: fraud_review_pending_at,
         )
 
         expect(user.fraud_review_eligible?).to eq false
@@ -552,6 +548,7 @@ RSpec.describe User do
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_reviewing',
+        fraud_review_pending_at: 15.days.ago,
       )
 
       expect(user.fraud_review_pending?).to eq true
@@ -559,11 +556,12 @@ RSpec.describe User do
   end
 
   describe '#fraud_rejection?' do
-    it 'returns true if fraud rejection is pending' do
+    it 'returns true if fraud rejection' do
       user = create(:user)
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_rejected',
+        fraud_rejection_at: 15.days.ago,
       )
 
       expect(user.fraud_rejection?).to eq true
@@ -577,6 +575,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_reviewing',
+          fraud_review_pending_at: 15.days.ago,
         )
 
         expect(user.fraud_review_pending_profile).to eq(profile)
@@ -596,6 +595,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_rejected',
+          fraud_rejection_at: 15.days.ago,
         )
 
         expect(user.fraud_rejection_profile).to eq(profile)
@@ -1115,7 +1115,7 @@ RSpec.describe User do
   end
 
   describe '#recent_events' do
-    let!(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
+    let!(:user) { create(:user, :fully_registered, created_at: Time.zone.now - 100.days) }
 
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
     let!(:identity) do
@@ -1133,6 +1133,23 @@ RSpec.describe User do
     it 'interleaves identities and events, decorates events, and sorts them in descending order' do
       expect(user.recent_events).
         to eq [another_event.decorate, identity, event.decorate]
+    end
+  end
+
+  describe '#has_devices?' do
+    let(:user) { create(:user) }
+    subject(:has_devices?) { user.has_devices? }
+
+    context 'with no devices' do
+      it { expect(has_devices?).to eq(false) }
+    end
+
+    context 'with a device' do
+      before do
+        create(:device, user:)
+      end
+
+      it { expect(has_devices?).to eq(true) }
     end
   end
 

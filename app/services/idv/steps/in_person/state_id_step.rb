@@ -14,19 +14,25 @@ module Idv
 
         def call
           pii_from_user = flow_session[:pii_from_user]
+          initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
-          if capture_secondary_id_enabled? && pii_from_user[:same_address_as_id] == 'true'
-            pii_from_user[:address1] = flow_params[:identity_doc_address1]
-            pii_from_user[:address2] = flow_params[:identity_doc_address2]
-            pii_from_user[:city] = flow_params[:identity_doc_city]
-            pii_from_user[:state] = flow_params[:identity_doc_address_state]
-            pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
-            mark_step_complete(:address)
+
+          if capture_secondary_id_enabled?
+            if pii_from_user[:same_address_as_id] == 'true'
+              copy_state_id_address_to_residential_address(pii_from_user)
+              mark_step_complete(:address)
+            end
+
+            if initial_state_of_same_address_as_id == 'true' &&
+               pii_from_user[:same_address_as_id] == 'false'
+              clear_residential_address(pii_from_user)
+              mark_step_incomplete(:address)
+           end
           end
         end
 
@@ -44,6 +50,22 @@ module Idv
 
         def capture_secondary_id_enabled?
           current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
+        end
+
+        def clear_residential_address(pii_from_user)
+          pii_from_user.delete(:address1)
+          pii_from_user.delete(:address2)
+          pii_from_user.delete(:city)
+          pii_from_user.delete(:state)
+          pii_from_user.delete(:zipcode)
+        end
+
+        def copy_state_id_address_to_residential_address(pii_from_user)
+          pii_from_user[:address1] = flow_params[:identity_doc_address1]
+          pii_from_user[:address2] = flow_params[:identity_doc_address2]
+          pii_from_user[:city] = flow_params[:identity_doc_city]
+          pii_from_user[:state] = flow_params[:identity_doc_address_state]
+          pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
         end
 
         def updating_state_id

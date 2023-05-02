@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
@@ -72,7 +72,7 @@ describe 'accounts/show.html.erb' do
   context 'phone listing and adding' do
     context 'user has no phone' do
       let(:user) do
-        record = create(:user, :signed_up, :with_piv_or_cac)
+        record = create(:user, :fully_registered, :with_piv_or_cac)
         record.phone_configurations = []
         record
       end
@@ -102,7 +102,7 @@ describe 'accounts/show.html.erb' do
 
   context 'auth app listing and adding' do
     context 'user has no auth app' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
       it 'does not render auth app' do
         expect(view).to_not render_template(partial: '_auth_apps')
@@ -110,7 +110,7 @@ describe 'accounts/show.html.erb' do
     end
 
     context 'user has an auth app' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
       it 'renders the auth app section' do
         render
 
@@ -121,7 +121,7 @@ describe 'accounts/show.html.erb' do
 
   context 'PIV/CAC listing and adding' do
     context 'user has no piv/cac' do
-      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
       it 'does not render piv/cac' do
         expect(view).to_not render_template(partial: '_piv_cac')
@@ -129,7 +129,7 @@ describe 'accounts/show.html.erb' do
     end
 
     context 'user has a piv/cac' do
-      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
       it 'renders the piv/cac section' do
         render
 
