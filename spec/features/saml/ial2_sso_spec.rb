@@ -89,7 +89,7 @@ feature 'IAL2 Single Sign On' do
 
       context 'provides an option to send another letter' do
         it 'without signing out' do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
 
           perform_id_verification_with_gpo_without_confirming_code(user)
 
@@ -112,7 +112,7 @@ feature 'IAL2 Single Sign On' do
         end
 
         it 'after signing out' do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
 
           perform_id_verification_with_gpo_without_confirming_code(user)
           visit account_path

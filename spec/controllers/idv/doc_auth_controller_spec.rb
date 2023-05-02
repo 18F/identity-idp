@@ -6,7 +6,7 @@ describe Idv::DocAuthController do
   let(:user) { build(:user) }
 
   describe 'before_actions' do
-    it 'includes corrects before_actions' do
+    it 'includes correct before_actions' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
@@ -68,23 +68,21 @@ describe Idv::DocAuthController do
       expect(subject).to receive(:render).with(
         template: 'layouts/flow_step',
         locals: hash_including(
-          :back_image_upload_url,
-          :front_image_upload_url,
           :flow_session,
-          step_template: 'idv/doc_auth/document_capture',
+          step_template: 'idv/doc_auth/agreement',
           flow_namespace: 'idv',
         ),
       ).and_call_original
 
-      mock_next_step(:document_capture)
-      get :show, params: { step: 'document_capture' }
+      mock_next_step(:agreement)
+      get :show, params: { step: 'agreement' }
     end
 
     it 'redirects to the right step' do
-      mock_next_step(:document_capture)
-      get :show, params: { step: 'ssn' }
+      mock_next_step(:agreement)
+      get :show, params: { step: 'welcome' }
 
-      expect(response).to redirect_to idv_doc_auth_step_url(:document_capture)
+      expect(response).to redirect_to idv_doc_auth_step_url(:agreement)
     end
 
     it 'renders a 404 with a non existent step' do
@@ -142,7 +140,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
@@ -192,32 +190,6 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'redirects from welcome to no camera error' do
-      result = {
-        success: false,
-        errors: {
-          message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
-        },
-        step: 'welcome',
-        flow_path: 'standard',
-        irs_reproofing: false,
-        step_count: 1,
-        analytics_id: 'Doc Auth',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
-
-      put :update, params: {
-        step: 'welcome',
-        ial2_consent_given: true,
-        no_camera: true,
-      }
-
-      expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth welcome submitted', result
-      )
-    end
-
     context 'with an existing applicant' do
       before do
         idv_session = Idv::Session.new(
@@ -232,7 +204,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_ssn_url
+        expect(response).to redirect_to idv_document_capture_url
       end
     end
   end
@@ -445,7 +417,7 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:document_capture_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
 
   def mock_document_capture_step

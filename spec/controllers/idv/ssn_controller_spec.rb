@@ -44,7 +44,6 @@ describe Idv::SsnController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'ssn',
-        step_count: 1,
       }
     end
 
@@ -56,14 +55,6 @@ describe Idv::SsnController do
 
     it 'sends analytics_visited event' do
       get :show
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-    end
-
-    it 'sends correct step count to analytics' do
-      get :show
-      get :show
-      analytics_args[:step_count] = 2
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
@@ -98,7 +89,6 @@ describe Idv::SsnController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'ssn',
-          step_count: 1,
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
@@ -117,13 +107,6 @@ describe Idv::SsnController do
         put :update, params: params
 
         expect(response).to redirect_to(idv_address_url)
-      end
-
-      it 'sends analytics_submitted event with correct step count' do
-        get :show
-        put :update, params: params
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end
 
       it 'logs attempts api event' do
@@ -168,7 +151,6 @@ describe Idv::SsnController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'ssn',
-          step_count: 0,
           success: false,
           errors: {
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
@@ -190,38 +172,25 @@ describe Idv::SsnController do
     end
 
     context 'when pii_from_doc is not present' do
-      it 'marks previous step as incomplete' do
+      before do
+        flow_session[:flow_path] = 'standard'
         flow_session.delete('pii_from_doc')
         flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      end
+
+      it 'redirects to DocumentCaptureController on standard flow' do
         put :update
-        expect(flow_session['Idv::Steps::DocumentCaptureStep']).to eq nil
+        expect(response.status).to eq 302
+        expect(response).to redirect_to idv_document_capture_url
+      end
+
+      it 'redirects to FSM DocumentCaptureStep on hybrid flow' do
+        flow_session[:flow_path] = 'hybrid'
+        put :update
+        expect(flow_session['Idv::Steps::DocumentCaptureStep']).to be_nil
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_doc_auth_url
       end
-    end
-  end
-
-  describe 'doc_auth_document_capture_controller_enabled flag is true' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_document_capture_controller_enabled).
-        and_return(true)
-    end
-
-    it 'redirects to document_capture_controller when pii_from_doc is not present' do
-      flow_session.delete('pii_from_doc')
-      flow_session['Idv::Steps::DocumentCaptureStep'] = true
-      put :update
-      expect(response.status).to eq 302
-      expect(response).to redirect_to idv_document_capture_url
-    end
-
-    it 'in hybrid flow it does not redirect to document_capture_controller' do
-      flow_session.delete('pii_from_doc')
-      flow_session['Idv::Steps::DocumentCaptureStep'] = true
-      flow_session[:flow_path] = 'hybrid'
-      put :update
-      expect(response.status).to eq 302
-      expect(response).to redirect_to idv_doc_auth_url
     end
   end
 end

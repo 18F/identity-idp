@@ -14,7 +14,6 @@ module Idv
       def show
         @step_indicator_steps = step_indicator_steps
 
-        increment_step_counts
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :view, true) # specify in_person?
@@ -34,55 +33,23 @@ module Idv
         process_async_state(load_async_state)
       end
 
-      def update
-        return if idv_session.verify_info_step_document_capture_session_uuid
-        analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('verify', :update, true)
+      private
 
-        pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-        pii[:state_id_type] = 'drivers_license' unless pii.blank?
-
-        ssn_throttle.increment!
-        if ssn_throttle.throttled?
-          idv_failure_log_throttled(:proof_ssn)
-          analytics.throttler_rate_limit_triggered(
-            throttle_type: :proof_ssn,
-            step_name: 'verify_info',
-          )
-          redirect_to idv_session_errors_ssn_failure_url
-          return
-        end
-
-        if resolution_throttle.throttled?
-          idv_failure_log_throttled(:idv_resolution)
-          redirect_to throttled_url
-          return
-        end
-
-        document_capture_session = DocumentCaptureSession.create(
-          user_id: current_user.id,
-          issuer: sp_session[:issuer],
-        )
-        document_capture_session.requested_at = Time.zone.now
-
-        idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
-        idv_session.vendor_phone_confirmation = false
-        idv_session.user_phone_confirmation = false
-
-        Idv::Agent.new(pii).proof_resolution(
-          document_capture_session,
-          should_proof_state_id: should_use_aamva?(pii),
-          trace_id: amzn_trace_id,
-          user_id: current_user.id,
-          threatmetrix_session_id: flow_session[:threatmetrix_session_id],
-          request_ip: request.remote_ip,
-        )
-
-        redirect_to idv_in_person_verify_info_url
+      # state_id_type is hard-coded here because it's required for proofing against
+      # AAMVA. We're sticking with driver's license because most states don't discern
+      # between various ID types and driver's license is the most common one that will
+      # be supported. See also LG-3852 and related findings document.
+      def set_state_id_type
+        pii[:state_id_type] = 'drivers_license' unless invalid_state?
       end
 
-      private
+      def invalid_state?
+        pii.blank?
+      end
+
+      def after_update_url
+        idv_in_person_verify_info_url
+      end
 
       def prev_url
         idv_in_person_url
@@ -114,16 +81,6 @@ module Idv
         flow_session.delete(:pii_from_user)
       end
 
-      def current_flow_step_counts
-        user_session['idv/in_person_flow_step_counts'] ||= {}
-        user_session['idv/in_person_flow_step_counts'].default = 0
-        user_session['idv/in_person_flow_step_counts']
-      end
-
-      def increment_step_counts
-        current_flow_step_counts['verify'] += 1
-      end
-
       # override StepUtilitiesConcern
       def flow_session
         user_session.fetch('idv/in_person', {})
@@ -133,7 +90,6 @@ module Idv
         {
           flow_path: flow_path,
           step: 'verify',
-          step_count: current_flow_step_counts['verify'],
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args)

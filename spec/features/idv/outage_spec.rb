@@ -16,7 +16,7 @@ feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
@@ -89,10 +89,10 @@ feature 'IdV Outage Spec' do
     Rails.application.reload_routes!
   end
 
-  context 'vendor_status_lexisnexis_phone_finder set to full_outage', js: true do
+  context 'vendor_status_lexisnexis_phone_finder set to full_outage' do
     let(:vendor_status_lexisnexis_phone_finder) { :full_outage }
 
-    it 'takes the user through the mail only flow, allowing hybrid' do
+    it 'takes the user through the mail only flow, allowing hybrid', js: true do
       sign_in_with_idv_required(user: user)
 
       expect(current_path).to eq idv_mail_only_warning_path
@@ -116,10 +116,10 @@ feature 'IdV Outage Spec' do
     end
   end
 
-  context 'GPO only enabled, but user starts over', js: true do
+  context 'GPO only enabled, but user starts over' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
-    it 'shows mail only warning page before idv welcome page' do
+    it 'shows mail only warning page before idv welcome page', js: true do
       sign_in_with_idv_required(user: user)
 
       expect(current_path).to eq idv_mail_only_warning_path
@@ -132,7 +132,7 @@ feature 'IdV Outage Spec' do
     end
   end
 
-  context 'force GPO only without phone outages', js: true do
+  context 'force GPO only without phone outages' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
 
     it 'shows mail only warning page before idv welcome page' do
@@ -146,7 +146,7 @@ feature 'IdV Outage Spec' do
     end
   end
 
-  context 'force GPO only, but GPO not enabled', js: true do
+  context 'force GPO only, but GPO not enabled' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
     let(:enable_usps_verification) { false }
 
@@ -157,7 +157,7 @@ feature 'IdV Outage Spec' do
     end
   end
 
-  context 'phone outage', js: true do
+  context 'phone outage' do
     let(:user) { user_with_totp_2fa }
 
     %i[vendor_status_sms vendor_status_voice].each do |flag|
@@ -174,7 +174,7 @@ feature 'IdV Outage Spec' do
           expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
         end
 
-        it 'returns to the correct page when clicking to exit', js: true do
+        it 'returns to the correct page when clicking to exit' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
 
           click_on t('links.exit_login', app_name: APP_NAME)
@@ -188,17 +188,17 @@ feature 'IdV Outage Spec' do
           click_idv_continue
           complete_agreement_step
 
-          expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+          expect(current_path).to eq idv_document_capture_path
         end
       end
     end
   end
 
-  context 'feature_idv_force_gpo_verification_enabled set to true', js: true do
+  context 'feature_idv_force_gpo_verification_enabled set to true' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
     let(:user) { user_with_2fa }
 
-    it 'shows mail only warning page before idv welcome page', js: true do
+    it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
       expect(current_path).to eq idv_mail_only_warning_path
@@ -218,7 +218,7 @@ feature 'IdV Outage Spec' do
     end
   end
 
-  context 'feature_idv_hybrid_flow_enabled set to false', js: true do
+  context 'feature_idv_hybrid_flow_enabled set to false' do
     let(:user) { user_with_2fa }
     let(:feature_idv_hybrid_flow_enabled) { false }
 
@@ -234,12 +234,12 @@ feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :document_capture)
+      expect(current_path).to eq idv_document_capture_path
     end
   end
 
   %w[acuant lexisnexis_instant_verify lexisnexis_trueid].each do |service|
-    context "vendor_status_#{service} set to full_outage" do
+    context "vendor_status_#{service} set to full_outage", js: true do
       let(:user) { user_with_2fa }
       let("vendor_status_#{service}".to_sym) { :full_outage }
 
@@ -251,7 +251,7 @@ feature 'IdV Outage Spec' do
       end
 
       it 'prevents a user who reset their password from reactivating profile with no personal key',
-         email: true, js: true do
+         email: true do
         personal_key_from_pii(user, pii)
         trigger_reset_password_and_click_email_link(user.email)
         reset_password(user, new_password)

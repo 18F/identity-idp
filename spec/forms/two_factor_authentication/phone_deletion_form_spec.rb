@@ -30,7 +30,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     end
 
     context 'with multiple mfa methods available' do
-      let(:user) { create(:user, :signed_up, :with_phone, :with_piv_or_cac) }
+      let(:user) { create(:user, :fully_registered, :with_phone, :with_piv_or_cac) }
 
       it 'returns success' do
         expect(result.success?).to eq true
@@ -81,7 +81,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
     context 'with a phone of a different user' do
       let(:user) { create(:user, :with_phone, :with_piv_or_cac) }
       let(:configuration) { other_user.phone_configurations.first }
-      let(:other_user) { create(:user, :signed_up) }
+      let(:other_user) { create(:user, :fully_registered) }
 
       it 'returns failure' do
         expect(result.success?).to eq false

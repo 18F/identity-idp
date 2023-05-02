@@ -5,7 +5,7 @@ describe 'Remembering a TOTP device' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end
 
-  let(:user) { create(:user, :signed_up, :with_authentication_app) }
+  let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
   context 'sign in' do
     def remember_device_and_sign_out_user

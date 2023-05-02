@@ -52,7 +52,6 @@ describe Idv::VerifyInfoController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'verify',
-        step_count: 1,
       }
     end
 
@@ -71,14 +70,6 @@ describe Idv::VerifyInfoController do
 
     it 'sends analytics_visited event' do
       get :show
-
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-    end
-
-    it 'sends correct step count to analytics' do
-      get :show
-      get :show
-      analytics_args[:step_count] = 2
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
@@ -191,6 +182,7 @@ describe Idv::VerifyInfoController do
           errors: {},
           exception: nil,
           success: true,
+          threatmetrix_review_status: review_status,
         }
       end
 
@@ -214,6 +206,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Pass' do
         let(:review_status) { 'pass' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
@@ -224,7 +221,12 @@ describe Idv::VerifyInfoController do
       end
 
       context 'when threatmetrix response is No Result' do
-        let(:review_status) { 'no_result' }
+        let(:review_status) { nil }
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
 
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
@@ -238,6 +240,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Reject' do
         let(:review_status) { 'reject' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
@@ -249,6 +256,11 @@ describe Idv::VerifyInfoController do
 
       context 'when threatmetrix response is Review' do
         let(:review_status) { 'review' }
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
 
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
@@ -273,11 +285,25 @@ describe Idv::VerifyInfoController do
 
       expect(@analytics).to have_logged_event(
         'IdV: doc auth verify submitted',
-        {
-          **analytics_hash,
-          step_count: 0,
-        },
+        **analytics_hash,
       )
+    end
+
+    it 'redirects to the expected page' do
+      put :update
+
+      expect(response).to redirect_to idv_verify_info_url
+    end
+
+    it 'modifies pii as expected' do
+      app_id = 'hello-world'
+      sp = create(:service_provider, app_id: app_id)
+      sp_session = { issuer: sp.issuer }
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+
+      put :update
+
+      expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
     end
 
     it 'updates DocAuthLog verify_submit_count' do

@@ -4,6 +4,16 @@ describe Idv::HybridMobile::CaptureCompleteController do
   include IdvHelper
 
   let(:user) { create(:user) }
+
+  let!(:document_capture_session) do
+    DocumentCaptureSession.create!(
+      user: user,
+      requested_at: Time.zone.now,
+    )
+  end
+
+  let(:document_capture_session_uuid) { document_capture_session&.uuid }
+
   let(:service_provider) do
     create(
       :service_provider,
@@ -13,26 +23,29 @@ describe Idv::HybridMobile::CaptureCompleteController do
   end
 
   before do
-    stub_sign_in(user)
+    session[:doc_capture_user_id] = user&.id
+    session[:document_capture_session_uuid] = document_capture_session_uuid
+    allow(subject).to receive(:confirm_document_capture_session_complete).
+      and_return(true)
   end
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
         :before,
-        :confirm_two_factor_authenticated,
+        :check_valid_document_capture_session,
       )
     end
 
-    it 'checks that feature flag is enabled' do
+    it 'includes document capture session complete before action' do
       expect(subject).to have_actions(
         :before,
-        :render_404_if_hybrid_mobile_controllers_disabled,
+        :confirm_document_capture_session_complete,
       )
     end
   end
 
-  context 'when doc_auth_document_capture_controller_enabled' do
+  context 'when doc_auth_hybrid_mobile_controllers_enabled' do
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
         and_return(true)
@@ -44,11 +57,11 @@ describe Idv::HybridMobile::CaptureCompleteController do
       let(:analytics_name) { 'IdV: doc auth capture_complete visited' }
       let(:analytics_args) do
         {
+          acuant_sdk_upgrade_ab_test_bucket: :default,
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'capture_complete',
-          step_count: 1,
         }
       end
 
@@ -60,14 +73,6 @@ describe Idv::HybridMobile::CaptureCompleteController do
 
       it 'sends analytics_visited event' do
         get :show
-
-        expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
-      end
-
-      it 'sends correct step count to analytics' do
-        get :show
-        get :show
-        analytics_args[:step_count] = 2
 
         expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
       end

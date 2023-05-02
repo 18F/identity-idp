@@ -533,138 +533,172 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#in_person_ready_to_verify' do
+  context 'in person emails' do
+    let(:capture_secondary_id_enabled) { false }
+    let(:current_address_matches_id) { false }
     let!(:enrollment) do
       create(
         :in_person_enrollment,
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
+        capture_secondary_id_enabled: capture_secondary_id_enabled,
+        current_address_matches_id: current_address_matches_id,
       )
     end
-
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-        enrollment: enrollment,
-      )
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_ready_to_verify_reminder' do
-    let!(:enrollment) do
-      create(
-        :in_person_enrollment,
-        :pending,
-        selected_location_details: { name: 'FRIENDSHIP' },
-        status_updated_at: Time.zone.now - 2.hours,
-      )
-    end
-
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify_reminder(
-        enrollment: enrollment,
-      )
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_verified' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment,
-        selected_location_details: { name: 'FRIENDSHIP' },
-        status_updated_at: Time.zone.now - 2.hours,
-      )
-    end
-
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_verified(
-        enrollment: enrollment,
-      )
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_failed' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment,
-        selected_location_details: { name: 'FRIENDSHIP' },
-        status_updated_at: Time.zone.now - 2.hours,
-      )
-    end
-
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_failed(
-        enrollment: enrollment,
-      )
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_failed_fraud' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment,
-        selected_location_details: { name: 'FRIENDSHIP' },
-        status_updated_at: Time.zone.now - 2.hours,
-      )
-    end
-
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
-        enrollment: enrollment,
-      )
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_completion_survey' do
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t(
-        'user_mailer.in_person_completion_survey.subject',
-        app_name: APP_NAME,
-      )
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
-          t(
-            'user_mailer.in_person_completion_survey.body.thanks',
-            app_name: APP_NAME,
-          ),
+    describe '#in_person_ready_to_verify' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+          enrollment: enrollment,
         )
-      expect(mail.html_part.body).
-        to have_selector(
-          "a[href='#{MarketingSite.security_and_privacy_practices_url}']",
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
+      end
+    end
+
+    describe '#in_person_ready_to_verify_reminder' do
+      let(:mail) do
+        UserMailer.with(
+          user: user,
+          email_address: email_address,
+        ).in_person_ready_to_verify_reminder(
+          enrollment: enrollment,
         )
-      expect(mail.html_part.body).
-        to have_selector(
-          "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
+      end
+    end
+
+    describe '#in_person_verified' do
+      let(:enrollment) do
+        create(
+          :in_person_enrollment,
+          selected_location_details: { name: 'FRIENDSHIP' },
+          status_updated_at: Time.zone.now - 2.hours,
         )
+      end
+
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_verified(
+          enrollment: enrollment,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+    end
+
+    describe '#in_person_failed' do
+      let!(:enrollment) do
+        create(
+          :in_person_enrollment,
+          selected_location_details: { name: 'FRIENDSHIP' },
+          status_updated_at: Time.zone.now - 2.hours,
+          current_address_matches_id: current_address_matches_id,
+          capture_secondary_id_enabled: capture_secondary_id_enabled,
+        )
+      end
+
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_failed(
+          enrollment: enrollment,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      context 'double address verification is not enabled' do
+        it 'renders the body' do
+          expect(mail.html_part.body).
+            to have_content(
+              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
+            )
+        end
+      end
+
+      context 'double address verification is enabled' do
+        let(:capture_secondary_id_enabled) { true }
+        it 'renders the body' do
+          expect(mail.html_part.body).
+            to_not have_content(
+              t('user_mailer.in_person_failed.verifying_step_proof_of_address'),
+            )
+        end
+      end
+    end
+
+    describe '#in_person_failed_fraud' do
+      let(:enrollment) do
+        create(
+          :in_person_enrollment,
+          selected_location_details: { name: 'FRIENDSHIP' },
+          status_updated_at: Time.zone.now - 2.hours,
+        )
+      end
+
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+          enrollment: enrollment,
+        )
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+    end
+
+    describe '#in_person_completion_survey' do
+      let(:mail) do
+        UserMailer.with(user: user, email_address: email_address).in_person_completion_survey
+      end
+
+      it_behaves_like 'a system email'
+      it_behaves_like 'an email that respects user email locale preference'
+
+      it 'sends to the current email' do
+        expect(mail.to).to eq [email_address.email]
+      end
+
+      it 'renders the subject' do
+        expect(mail.subject).to eq t(
+          'user_mailer.in_person_completion_survey.subject',
+          app_name: APP_NAME,
+        )
+      end
+
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t(
+              'user_mailer.in_person_completion_survey.body.thanks',
+              app_name: APP_NAME,
+            ),
+          )
+        expect(mail.html_part.body).
+          to have_selector(
+            "a[href='#{MarketingSite.security_and_privacy_practices_url}']",
+          )
+        expect(mail.html_part.body).
+          to have_selector(
+            "a[href='#{IdentityConfig.store.in_person_completion_survey_url}']",
+          )
+      end
     end
   end
 

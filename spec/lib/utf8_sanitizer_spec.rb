@@ -53,4 +53,12 @@ RSpec.describe Utf8Sanitizer do
       expect(last_response).to be_bad_request
     end
   end
+
+  context 'with request params that overlap types' do
+    it '400s' do
+      get '/test?platform=1&platform[key]=2'
+
+      expect(last_response).to be_bad_request
+    end
+  end
 end

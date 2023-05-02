@@ -1,7 +1,5 @@
 <% title t('doc_auth.headings.welcome') %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], only_if_all: true, context: :idv)) %>
-
 <%= render 'shared/maintenance_window_alert' do %>
   <%= render JavascriptRequiredComponent.new(
         header: t('idv.welcome.no_js_header'),
@@ -54,13 +52,7 @@
                         url: url_for,
                         method: 'put',
                         html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
-      <%= render(
-            SpinnerButtonComponent.new(
-              type: :submit,
-              big: true,
-              wide: true,
-            ).with_content(t('doc_auth.buttons.continue')),
-          ) %>
+      <%= f.submit t('doc_auth.buttons.continue') %>
     <% end %>
 
     <%= render(

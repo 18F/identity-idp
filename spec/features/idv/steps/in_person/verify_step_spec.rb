@@ -40,7 +40,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
       expect_good_address
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       # click update state ID button
       click_button t('idv.buttons.change_state_id_label')
@@ -66,7 +66,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       fill_out_ssn_form_fail
       click_doc_auth_back_link
       expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       complete_verify_step(user)
 
@@ -106,7 +106,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       # verify page
       expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
       expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_content(t('headings.state_id'))
+      expect(page).to have_content(t('headings.state_id').tr(' ', ' '))
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -119,7 +119,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_content(t('headings.residential_address'))
       expect_good_address
       expect(page).to have_content(t('headings.ssn'))
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       complete_verify_step(user)
     end
@@ -155,7 +155,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       # verify page
       expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
       expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_content(t('headings.state_id'))
+      expect(page).to have_content(t('headings.state_id').tr(' ', ' '))
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -164,18 +164,18 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
         MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION}",
       )
       expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS1).twice
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ADDRESS2).twice
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_CITY).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
       expect(page).to have_text(
         Idp::Constants::
-                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:state_id_state],
+                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address_state],
       ).twice
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]).once
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_ZIPCODE).twice
+      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_content(t('headings.residential_address'))
       expect(page).to have_content(t('headings.ssn'))
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
       complete_verify_step(user)
     end

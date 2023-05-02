@@ -29,14 +29,26 @@ class CaptchaSubmitButtonElement extends HTMLElement {
     return this.getAttribute('recaptcha-action')!;
   }
 
+  get isRecaptchaEnterprise(): boolean {
+    return this.getAttribute('recaptcha-enterprise') === 'true';
+  }
+
+  get recaptchaClient(): ReCaptchaV2.ReCaptcha {
+    if (this.isRecaptchaEnterprise) {
+      return grecaptcha.enterprise;
+    }
+
+    return grecaptcha;
+  }
+
   submit() {
     this.form?.submit();
   }
 
   invokeChallenge() {
-    grecaptcha.ready(async () => {
+    this.recaptchaClient.ready(async () => {
       const { recaptchaSiteKey: siteKey, recaptchaAction: action } = this;
-      const token = await grecaptcha.execute(siteKey!, { action });
+      const token = await this.recaptchaClient.execute(siteKey!, { action });
       this.tokenInput.value = token;
       this.submit();
     });

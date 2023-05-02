@@ -5,7 +5,7 @@ describe 'Account Reset Request: Delete Account', email: true do
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
 

@@ -17,20 +17,6 @@ describe Idv::Steps::WelcomeStep do
   subject(:step) { Idv::Steps::WelcomeStep.new(flow) }
 
   describe '#call' do
-    context 'without camera' do
-      let(:params) { { no_camera: true } }
-
-      it 'redirects to no camera error page' do
-        result = step.call
-
-        expect(redirect).to eq(idv_doc_auth_errors_no_camera_url)
-        expect(result.success?).to eq(false)
-        expect(result.errors).to eq(
-          message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
-        )
-      end
-    end
-
     context 'with previous establishing in-person enrollments' do
       let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 

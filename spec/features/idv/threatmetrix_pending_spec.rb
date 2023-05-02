@@ -27,7 +27,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
   scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
 
     start_idv_from_sp
     sign_in_and_2fa_user(user)
@@ -67,20 +67,20 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     expect(current_path).to eq('/auth/result')
   end
 
-  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event' do
     freeze_time do
       complete_all_idv_steps_with(threatmetrix: 'Pass')
       expect_irs_event(expected_success: true, expected_failure_reason: nil)
     end
   end
 
-  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Reject')
     end
   end
 
-  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event', :js do
+  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Review')
     end
@@ -88,7 +88,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
 
   scenario 'users pending threatmetrix No Result, it results in an error', :js do
     freeze_time do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
         irs_attempts_api_session_id: 'test-session-id',

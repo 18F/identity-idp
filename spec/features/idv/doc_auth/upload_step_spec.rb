@@ -42,7 +42,7 @@ feature 'doc auth upload step' do
 
       click_upload_from_computer
 
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_document_capture_url)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :document_capture),
@@ -110,7 +110,7 @@ feature 'doc auth upload step' do
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     end
 
-    it 'does not proceed if Telephony raises an error', js: true do
+    it 'does not proceed if Telephony raises an error' do
       expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
         success: false,
         phone_number: '+1 225-555-1000',
@@ -146,7 +146,7 @@ feature 'doc auth upload step' do
       expect(page.find(':focus')).to match_css('.phone-input__number')
     end
 
-    it 'throttles sending the link', js: true do
+    it 'throttles sending the link' do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_upload_step

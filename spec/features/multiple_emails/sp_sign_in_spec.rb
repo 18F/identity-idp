@@ -5,7 +5,7 @@ feature 'signing into an SP with multiple emails enabled' do
 
   context 'with the email scope' do
     scenario 'signing in with OIDC sends the email address used to sign in' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
 
       expect(emails.count).to eq(2)
@@ -26,7 +26,7 @@ feature 'signing into an SP with multiple emails enabled' do
     end
 
     scenario 'signing in with SAML sends the email address used to sign in' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
 
       expect(emails.count).to eq(2)
@@ -51,7 +51,7 @@ feature 'signing into an SP with multiple emails enabled' do
 
   context 'with the all_emails scope' do
     scenario 'signing in with OIDC sends all emails' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
 
       expect(emails.count).to eq(2)
@@ -67,7 +67,7 @@ feature 'signing into an SP with multiple emails enabled' do
     end
 
     scenario 'signing in with SAML sends all emails' do
-      user = create(:user, :signed_up, :with_multiple_emails)
+      user = create(:user, :fully_registered, :with_multiple_emails)
       emails = user.reload.email_addresses.map(&:email)
 
       expect(emails.count).to eq(2)

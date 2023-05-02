@@ -110,12 +110,6 @@ fr:
           Veuillez prendre de nouvelles photos de votre pièce d’identité et
           réessayer. La profondeur de pixel de l’image prise en charge est de 24
           bits RGB.
-      no_camera:
-        explanation: Pour continuer, connectez-vous à votre compte %{app_name} sur tout
-          appareil équipé d’une caméra, comme un téléphone portable, une
-          tablette ou un ordinateur avec une webcam.
-        heading: Vous avez besoin d’une caméra pour vérifier votre identité
-        title: Appareil photo nécessaire
       not_a_file: La sélection n’était pas un fichier valide.
       pii:
         birth_date_min_age: Votre anniversaire ne correspond pas à l’âge minimum requis.
@@ -172,9 +166,9 @@ fr:
       only_add_sp_services_html: Vous essayez d’accéder aux services de
         <strong>%{service_provider_name}</strong>
     info:
-      address_guidance_puerto_rico_html: Pour les résidents de Porto
-        Rico:<br><br>Veuillez indiquer l’urbanisation ou la copropriété à la
-        ligne 2 de votre adresse.
+      address_guidance_puerto_rico_html: Résidents de Porto Rico:<br><br>Modifiez
+        votre adresse pour indiquer votre lotissement ou votre condominium à la
+        ligne 2.
       capture_status_big_document: Trop près
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez

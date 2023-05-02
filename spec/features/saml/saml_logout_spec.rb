@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'SAML logout' do
   include SamlAuthHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do
@@ -150,21 +150,32 @@ feature 'SAML logout' do
     let(:agency) { sp.agency }
 
     it "terminates the user's session remotely" do
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
       # set up SP identity and agency identity
       user = sign_in_live_with_2fa
       visit_saml_authn_request_url
       click_continue
       click_agree_and_continue
-
-      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
-
-      # simulate a remote request
-      send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
+      click_button(t('forms.buttons.submit.default'))
 
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
-      session_id = identity.rails_session_id
-      expect(OutOfBandSessionAccessor.new(session_id).load_pii).to be_nil
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq true
+
+      # simulate a remote request
+      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
+      send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
+
+      expect(OutOfBandSessionAccessor.new(identity.rails_session_id).exists?).to eq false
+
+      expect(fake_analytics.events['Remote Logout initiated']).to eq(
+        [{ service_provider: sp.issuer, saml_request_valid: true }],
+      )
+      expect(fake_analytics.events['Remote Logout completed']).to eq(
+        [{ service_provider: sp.issuer, user_id: user.uuid }],
+      )
 
       # should be logged out...
       visit account_path

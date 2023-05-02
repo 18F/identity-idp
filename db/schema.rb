@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_11_160948) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -99,12 +99,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_160948) do
     t.integer "welcome_view_count", default: 0
     t.datetime "upload_view_at", precision: nil
     t.integer "upload_view_count", default: 0
-    t.datetime "send_link_view_at", precision: nil
-    t.integer "send_link_view_count", default: 0
     t.datetime "link_sent_view_at", precision: nil
     t.integer "link_sent_view_count", default: 0
-    t.datetime "email_sent_view_at", precision: nil
-    t.integer "email_sent_view_count", default: 0
     t.datetime "front_image_view_at", precision: nil
     t.integer "front_image_view_count", default: 0
     t.integer "front_image_submit_count", default: 0
@@ -448,9 +444,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_11_160948) do
     t.boolean "fraud_rejection", default: false
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
+    t.datetime "gpo_verification_pending_at"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
+    t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"

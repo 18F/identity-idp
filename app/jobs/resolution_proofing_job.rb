@@ -18,6 +18,7 @@ class ResolutionProofingJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     should_proof_state_id:,
+    double_address_verification: false,
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil
@@ -42,6 +43,7 @@ class ResolutionProofingJob < ApplicationJob
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
       should_proof_state_id: should_proof_state_id,
+      double_address_verification: double_address_verification,
     )
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -66,82 +68,27 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii:,
     threatmetrix_session_id:,
     request_ip:,
-    should_proof_state_id:
+    should_proof_state_id:,
+    double_address_verification:
   )
-    device_profiling_result = proof_with_threatmetrix_if_needed(
+    result = resolution_proofer.proof(
       applicant_pii: applicant_pii,
-      user: user,
+      user_email: user&.confirmed_email_addresses&.first&.email,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
+      should_proof_state_id: should_proof_state_id,
+      double_address_verification: double_address_verification,
       timer: timer,
     )
 
-    add_threatmetrix_proofing_component(user.id, device_profiling_result) if user.present?
-
-    resolution_result = timer.time('resolution') do
-      resolution_proofer.proof(applicant_pii)
-    end
-
-    state_id_result = Proofing::StateIdResult.new(
-      success: true, errors: {}, exception: nil, vendor_name: 'UnsupportedJurisdiction',
-    )
-    if should_proof_state_id && user_can_pass_after_state_id_check?(resolution_result)
-      timer.time('state_id') do
-        state_id_result = state_id_proofer.proof(applicant_pii)
-      end
-    end
-
-    result = Proofing::ResolutionResultAdjudicator.new(
-      resolution_result: resolution_result,
-      state_id_result: state_id_result,
-      should_proof_state_id: should_proof_state_id,
-      device_profiling_result: device_profiling_result,
-    ).adjudicated_result.to_h
+    log_threatmetrix_info(result.device_profiling_result, user)
+    add_threatmetrix_proofing_component(user.id, result.device_profiling_result) if user.present?
 
     CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_result.success?,
-      state_id_success: state_id_result.success?,
-      device_profiling_success: device_profiling_result.success?,
-    )
-  end
-
-  def proof_with_threatmetrix_if_needed(
-    applicant_pii:,
-    user:,
-    threatmetrix_session_id:,
-    request_ip:,
-    timer:
-  )
-    if !FeatureManagement.proofing_device_profiling_collecting_enabled?
-      return threatmetrix_disabled_result
-    end
-
-    # The API call will fail without a session ID, so do not attempt to make
-    # it to avoid leaking data when not required.
-    return threatmetrix_disabled_result if threatmetrix_session_id.blank?
-
-    return threatmetrix_disabled_result unless applicant_pii
-
-    ddp_pii = applicant_pii.dup
-    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:request_ip] = request_ip
-
-    result = timer.time('threatmetrix') do
-      lexisnexis_ddp_proofer.proof(ddp_pii)
-    end
-
-    log_threatmetrix_info(result, user)
-
-    result
-  end
-
-  def threatmetrix_disabled_result
-    Proofing::DdpResult.new(
-      success: true,
-      client: 'tmx_disabled',
-      review_status: 'pass',
+      device_profiling_success: result.device_profiling_result.success?,
+      resolution_success: result.resolution_result.success?,
+      result: result.adjudicated_result.to_h,
+      state_id_success: result.state_id_result.success?,
     )
   end
 
@@ -158,64 +105,8 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def user_can_pass_after_state_id_check?(resolution_result)
-    return true if resolution_result.success?
-    # For failed IV results, this method validates that the user is eligible to pass if the
-    # failed attributes are covered by the same attributes in a successful AAMVA response
-    # aka the Get-to-Yes w/ AAMVA feature.
-    return false unless resolution_result.failed_result_can_pass_with_additional_verification?
-
-    attributes_aamva_can_pass = [:address, :dob, :state_id_number]
-    results_that_cannot_pass_aamva =
-      resolution_result.attributes_requiring_additional_verification - attributes_aamva_can_pass
-
-    results_that_cannot_pass_aamva.blank?
-  end
-
   def resolution_proofer
-    @resolution_proofer ||=
-      if IdentityConfig.store.proofer_mock_fallback
-        Proofing::Mock::ResolutionMockClient.new
-      else
-        Proofing::LexisNexis::InstantVerify::Proofer.new(
-          instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-          account_id: IdentityConfig.store.lexisnexis_account_id,
-          base_url: IdentityConfig.store.lexisnexis_base_url,
-          username: IdentityConfig.store.lexisnexis_username,
-          password: IdentityConfig.store.lexisnexis_password,
-          request_mode: IdentityConfig.store.lexisnexis_request_mode,
-        )
-      end
-  end
-
-  def lexisnexis_ddp_proofer
-    @lexisnexis_ddp_proofer ||=
-      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-        Proofing::Mock::DdpMockClient.new
-      else
-        Proofing::LexisNexis::Ddp::Proofer.new(
-          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-        )
-      end
-  end
-
-  def state_id_proofer
-    @state_id_proofer ||=
-      if IdentityConfig.store.proofer_mock_fallback
-        Proofing::Mock::StateIdMockClient.new
-      else
-        Proofing::Aamva::Proofer.new(
-          auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
-          auth_url: IdentityConfig.store.aamva_auth_url,
-          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-          private_key: IdentityConfig.store.aamva_private_key,
-          public_key: IdentityConfig.store.aamva_public_key,
-          verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
-          verification_url: IdentityConfig.store.aamva_verification_url,
-        )
-      end
+    @resolution_proofer ||= Proofing::Resolution::ProgressiveProofer.new
   end
 
   def add_threatmetrix_proofing_component(user_id, threatmetrix_result)

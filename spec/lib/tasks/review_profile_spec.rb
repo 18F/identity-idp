@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_threatmetrix_profile) }
+  let(:user) { create(:user, :deactivated_fraud_profile) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
@@ -77,8 +77,7 @@ describe 'review_profile' do
     it 'deactivates the users profile with reason threatmetrix_review_rejected' do
       invoke_task
       expect(user.reload.profiles.first.active).to eq(false)
-      expect(user.reload.profiles.first.fraud_rejection).to eq(true)
-      expect(user.reload.profiles.first.fraud_rejection_at).to_not be_nil
+      expect(user.reload.profiles.first.fraud_rejection?).to eq(true)
     end
 
     it 'sends the user an email about their account deactivation' do
@@ -96,7 +95,7 @@ describe 'review_profile' do
       end
     end
 
-    context 'when the user profile has a nil verified_at' do
+    context 'when the user profile has a nil fraud_review_pending_at' do
       let(:user) do
         create(
           :user,
