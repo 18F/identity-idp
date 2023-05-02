@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-7.0.0.tgz#ea57464f6407eb74122dcd3d3deaaa923f565032"
-  integrity sha512-rLw1oTK7qzGw+A2B7gYLjEOqX49MOkbe/yyK3M8e+DXpqFOxU1/GjxVzVOr/RuyzhsOeoIT+//xaqPr4dxZA5Q==
+"@18f/identity-design-system@^7.0.1-beta.1":
+  version "7.0.1-beta.1"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-7.0.1-beta.1.tgz#58647efedf11a16bd4fa8f0d28715d5182641346"
+  integrity sha512-blJhBPG7QXZH3B8CaMR95DWDfRDy9KLYKUkJzgzUkN+w5NVUovJmdv1B/SaEw6Vvr8cBV1/Ovo1h/jLq50+mPA==
   dependencies:
     "@uswds/uswds" "^3.4.1"
 
