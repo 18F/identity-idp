@@ -208,7 +208,7 @@ pinpoint-check:
     - *yarn_install
     - make lint_country_dialing_codes
 
-brakeman-check
+bundler-audit
   stage: nightly_jobs
   cache:
     - <<: *ruby_cache
@@ -216,7 +216,7 @@ brakeman-check
   script:
     - *bundle_install
     - *yarn_install
-    - make brakeman
+    - make bundler_audit
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing

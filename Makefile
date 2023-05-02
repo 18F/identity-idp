@@ -14,6 +14,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	analytics_events \
 	brakeman \
 	build_artifact \
+	bundler_audit \
 	check \
 	docker_setup \
 	download_acuant_sdk \
@@ -71,8 +72,8 @@ endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events
-	@echo "--- bundler-audit ---"
-	bundle exec bundler-audit check --update
+	@echo "--- brakeman ---"
+	bundle exec brakeman
 	# JavaScript
 	@echo "--- yarn audit ---"
 	yarn audit --groups dependencies; test $$? -le 7
@@ -93,6 +94,10 @@ endif
 	yarn lint:css
 	@echo "--- README.md ---"
 	make lint_readme
+
+bundler_audit: ## Checks for outdated/vulnerable gems
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
