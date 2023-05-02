@@ -149,7 +149,9 @@ RSpec.describe Reporting::CommandLineOptions do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads abcd ] }
 
         it 'thread is the default of 5' do
-          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
         end
       end
 
@@ -157,7 +159,9 @@ RSpec.describe Reporting::CommandLineOptions do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads -3 ] }
 
         it 'throws an error' do
-          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
         end
       end
 
@@ -165,7 +169,9 @@ RSpec.describe Reporting::CommandLineOptions do
         let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads 31 ] }
 
         it 'throws an error' do
-          expect { parse! }.to raise_error(StandardError, 'Number of threads must be between 1 and 30 inclusive')
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
         end
       end
     end
