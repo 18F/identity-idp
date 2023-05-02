@@ -112,6 +112,8 @@ module Proofing
         )
       end
 
+      # TK: create a new method that returns an address result with success: false for instant verify of id address when id address and residential address are the same and residential address fails resolution
+
       def resolution_unnecessary_result
         Proofing::AddressResult.new(
           success: true, errors: {}, exception: nil, vendor_name: 'ResolutionUnnecessary',
