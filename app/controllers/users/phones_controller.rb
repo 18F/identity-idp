@@ -20,7 +20,6 @@ module Users
       result = @new_phone_form.submit(user_params)
       if result.success?
         confirm_phone
-        bypass_sign_in current_user
       elsif recoverable_recaptcha_error?(result)
         render 'users/phone_setup/spam_protection'
       else
