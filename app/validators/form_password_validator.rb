@@ -54,10 +54,13 @@ module FormPasswordValidator
   end
 
   def passwords_match
-    return unless validate_confirmation
+    return unless confirmation_enabled && validate_confirmation
 
     if password != password_confirmation
-      errors.add(:password_confirmation, :confirmation, type: :mismatch)
+      errors.add(
+        :password_confirmation, I18n.t('errors.messages.password_mismatch'),
+        type: :mismatch
+      )
     end
   end
 

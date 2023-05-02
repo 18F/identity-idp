@@ -74,6 +74,7 @@ fr:
       otp_format: Saisissez l’intégralité de votre code à usage unique sans espaces ni
         caractères spéciaux
       password_incorrect: Mot de passe incorrect
+      password_mismatch: Vos mots de passe ne correspondent pas
       personal_key_incorrect: Clé personnelle incorrecte
       phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet
         opérateur téléphonique pour le moment. Veuillez sélectionner un autre

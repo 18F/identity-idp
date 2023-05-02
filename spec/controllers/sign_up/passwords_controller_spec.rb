@@ -130,12 +130,12 @@ describe SignUp::PasswordsController do
           let(:errors) do
             {
               password_confirmation:
-                ["doesn't match Password confirmation"],
+                [t('errors.messages.password_mismatch')],
             }
           end
           let(:error_details) do
             {
-              password_confirmation: [:confirmation],
+              password_confirmation: [t('errors.messages.password_mismatch')],
             }
           end
 
