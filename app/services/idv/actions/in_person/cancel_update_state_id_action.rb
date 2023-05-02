@@ -3,6 +3,7 @@ module Idv
     module InPerson
       class CancelUpdateStateIdAction < Idv::Steps::DocAuthBaseStep
         include Idv::Steps::TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_submitted_event
           :idv_in_person_proofing_cancel_update_state_id
         end

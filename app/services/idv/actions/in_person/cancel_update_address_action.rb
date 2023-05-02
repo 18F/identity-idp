@@ -3,6 +3,7 @@ module Idv
     module InPerson
       class CancelUpdateAddressAction < Idv::Steps::DocAuthBaseStep
         include Idv::Steps::TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_submitted_event
           :idv_in_person_proofing_cancel_update_address
         end

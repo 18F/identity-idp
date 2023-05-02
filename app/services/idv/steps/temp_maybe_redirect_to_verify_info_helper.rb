@@ -1,3 +1,7 @@
+# This module and calls to it can be removed when the in_person_verify_info_controller_enabled
+# flag is removed.
+#
+
 module Idv
   module Steps
     module TempMaybeRedirectToVerifyInfoHelper

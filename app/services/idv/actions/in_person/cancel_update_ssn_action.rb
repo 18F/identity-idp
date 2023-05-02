@@ -3,6 +3,7 @@ module Idv
     module InPerson
       class CancelUpdateSsnAction < Idv::Steps::DocAuthBaseStep
         include Idv::Steps::TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_submitted_event
           :idv_doc_auth_cancel_update_ssn_submitted
         end
