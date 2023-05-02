@@ -50,6 +50,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           zipcode: applicant_pii[:zipcode],
         }
       end
+
       let(:state_id_address) do
         {
           address1: applicant_pii[:identity_doc_address1],
@@ -101,7 +102,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
           allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
-
           allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).and_return(resolution_result)
           allow(resolution_result).to receive(:success?).and_return(true)
           allow(instant_verify_proofer).to receive(:proof)

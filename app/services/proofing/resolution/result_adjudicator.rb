@@ -82,7 +82,7 @@ module Proofing
       def resolution_result_and_reason
         if !residential_resolution_result.success? && !resolution_result.success?
           [false, :fail_resolution_skip_state_id]
-        if resolution_result.success? && state_id_result.success?
+        elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
         elsif !state_id_result.success?
           [false, :fail_state_id]
