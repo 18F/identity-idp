@@ -547,12 +547,8 @@ describe Idv::ReviewController do
 
           before(:each) do
             stub_request_token
-            ProofingComponent.create(
-              user: user,
-              threatmetrix: true,
-              threatmetrix_review_status: 'review',
-            )
             allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+            idv_session.threatmetrix_review_status = 'review'
           end
 
           it 'creates a disabled profile' do
