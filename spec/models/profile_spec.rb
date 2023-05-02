@@ -264,6 +264,12 @@ describe Profile do
     end
 
     context 'activation guards against deactivation reasons' do
+      before do
+        allow(FeatureManagement).to receive(
+          :proofing_device_profiling_decisioning_enabled?,
+        ).and_return(true)
+      end
+
       it 'does not activate a profile with gpo verification pending' do
         profile.update(gpo_verification_pending_at: 1.day.ago)
         profile.activate
@@ -417,10 +423,8 @@ describe Profile do
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_review_pending_at).to_not be_nil # to be replaced
-      expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejection_at).to be_nil # to be replaced
+      expect(profile.fraud_review_pending?).to eq(true)
+      expect(profile.fraud_rejection?).to eq(false)
     end
   end
 

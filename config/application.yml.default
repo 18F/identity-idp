@@ -124,8 +124,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.1'
-idv_acuant_sdk_version_alternate: '11.8.0'
+idv_acuant_sdk_version_default: '11.8.2'
+idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -265,10 +265,6 @@ redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
-redis_session_read_public_id: false
-redis_session_write_public_id: false
-redis_session_read_private_id: true
-redis_session_write_private_id: true
 redis_throttle_pool_size: 5
 redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
@@ -481,10 +477,6 @@ production:
   reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
-  redis_session_read_public_id: true
-  redis_session_write_public_id: true
-  redis_session_read_private_id: false
-  redis_session_write_private_id: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000

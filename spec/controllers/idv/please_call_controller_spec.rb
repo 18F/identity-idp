@@ -6,7 +6,7 @@ describe Idv::PleaseCallController do
 
   before do
     user.profiles.create(
-      fraud_review_pending: true,
+      fraud_review_pending_at: 1.day.ago,
       verified_at: verify_date,
     )
 
