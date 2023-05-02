@@ -39,6 +39,15 @@ function InPersonTroubleshootingOptions({
             text: t('idv.troubleshooting.options.learn_more_verify_in_person'),
             isExternal: true,
           },
+          {
+            url: getHelpCenterURL({
+              category: 'verify-your-identity',
+              article: 'phone-number',
+              location,
+            }),
+            text: t('idv.troubleshooting.options.learn_more_verify_by_phone_in_person'),
+            isExternal: true,
+          },
           spName && {
             url: getFailureToProofURL(location),
             text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
