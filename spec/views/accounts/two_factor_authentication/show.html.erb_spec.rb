@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'accounts/two_factor_authentication/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
@@ -25,7 +25,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
   end
 
   context 'when user is TOTP enabled' do
-    let(:user) { create(:user, :signed_up, :with_authentication_app) }
+    let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 
     before do
       assign(

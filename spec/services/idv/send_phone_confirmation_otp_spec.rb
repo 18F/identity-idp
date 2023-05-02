@@ -17,7 +17,7 @@ describe Idv::SendPhoneConfirmationOtp do
     Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
   end
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
 
   let(:exceeded_otp_send_limit) { false }
   let(:otp_rate_limiter) { OtpRateLimiter.new(user: user, phone: phone, phone_confirmed: true) }

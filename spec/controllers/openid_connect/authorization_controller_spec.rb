@@ -28,7 +28,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
     subject(:action) { get :index, params: params }
 
     context 'user is signed in' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       before do
         stub_sign_in user
       end

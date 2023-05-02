@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Signing in via one-time use personal key' do
   it 'destroys old key, does not offer new one' do
     user = create(
-      :user, :signed_up, :with_phone, :with_personal_key,
+      :user, :fully_registered, :with_phone, :with_personal_key,
       with: { phone: '+1 (202) 345-6789' }
     )
     raw_key = PersonalKeyGenerator.new(user).create
@@ -30,7 +30,7 @@ feature 'Signing in via one-time use personal key' do
     it 'locks user out when max login attempts has been reached' do
       user = create(
         :user,
-        :signed_up,
+        :fully_registered,
         second_factor_attempts_count: IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
       )
       sign_in_before_2fa(user)

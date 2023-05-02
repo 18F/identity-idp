@@ -1,6 +1,6 @@
 require 'rails_helper'
 describe 'accounts/connected_accounts/show.html.erb' do
-  let(:user) { create(:user, :signed_up, :with_personal_key) }
+  let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)

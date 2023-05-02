@@ -5,7 +5,7 @@ describe 'Remember device checkbox' do
 
   context 'when the user signs in and arrives at the 2FA page' do
     it "has a checked 'remember device' box" do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_user(user)
 
       expect(page).
@@ -20,7 +20,7 @@ describe 'Remember device checkbox' do
     end
 
     it 'does not have remember device checked' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       expect(page).to_not have_checked_field t('forms.messages.remember_device')
@@ -29,7 +29,7 @@ describe 'Remember device checkbox' do
 
   context 'when signing in from an SP that has not opted out of remember device' do
     it 'does have remember device checked' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1(:oidc)
       fill_in_credentials_and_submit(user.email, user.password)
       expect(page).to have_checked_field t('forms.messages.remember_device')

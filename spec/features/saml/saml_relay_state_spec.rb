@@ -4,7 +4,7 @@ feature 'SAML RelayState' do
   include SamlAuthHelper
 
   context 'when RelayState is passed in authn request' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
     let(:relay_state_value) { '8431d690-2ed1-11eb-adc1-0242ac120002' }
     let(:params) { { RelayState: relay_state_value } }
 
@@ -41,7 +41,7 @@ feature 'SAML RelayState' do
   end
 
   context 'when RelayState is NOT passed in authn request' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'does not return RelayState on GET authn request' do
       visit_saml_authn_request_url(

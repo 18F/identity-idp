@@ -14,7 +14,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'creates backup codes and logs expected events' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     stub_sign_in(user)
     analytics = stub_analytics
     stub_attempts_tracker
@@ -30,6 +30,7 @@ describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
+        sign_up_mfa_selection_order_bucket: nil,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {
@@ -45,7 +46,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'creating backup codes revokes remember device cookies' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     stub_sign_in(user)
     expect(user.remember_device_revoked_at).to eq nil
 
@@ -56,7 +57,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deletes backup codes' do
-    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
+    user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
     expect(user.backup_code_configurations.length).to eq 10
 
@@ -67,7 +68,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deleting backup codes revokes remember device cookies' do
-    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
+    user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
     expect(user.remember_device_revoked_at).to eq nil
 
@@ -118,7 +119,7 @@ describe Users::BackupCodeSetupController do
 
   context 'with multiple MFA selection turned off' do
     it 'redirects to account page' do
-      user = build(:user, :signed_up)
+      user = build(:user, :fully_registered)
       stub_sign_in(user)
       codes = BackupCodeGenerator.new(user).create
       controller.user_session[:backup_codes] = codes
@@ -131,7 +132,7 @@ describe Users::BackupCodeSetupController do
     render_views
 
     it 'does not 500 when codes have not been generated' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       stub_sign_in(user)
       get :refreshed
 

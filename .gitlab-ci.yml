@@ -208,6 +208,22 @@ pinpoint-check:
     - *yarn_install
     - make lint_country_dialing_codes
 
+prepare_deploy:
+  # Runs in parallel with tests so we can deploy more quickly after passing
+  stage: test
+  tags:
+    - build-pool
+  variables:
+    NODE_ENV: 'production'
+    RAILS_ENV: 'production'
+  script:
+    - cp config/application.yml.default.ci config/application.yml
+    - ./deploy/build
+    - ./deploy/build-post-config
+    - bundle exec rails zeitwerk:check
+    - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
+
 coverage:
   stage: after_test
   cache:
@@ -229,21 +245,6 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - coverage/coverage.xml
-
-prepare_deploy:
-  stage: after_test
-  tags:
-    - build-pool
-  variables:
-    NODE_ENV: 'production'
-    RAILS_ENV: 'production'
-  script:
-    - cp config/application.yml.default.ci config/application.yml
-    - ./deploy/build
-    - ./deploy/build-post-config
-    - bundle exec rails zeitwerk:check
-    - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
-    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
 
 # Triggers devops CD to deploy to dev
 trigger_devops:

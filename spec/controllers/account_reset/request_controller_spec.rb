@@ -53,7 +53,7 @@ describe AccountReset::RequestController do
     end
 
     it 'logs sms user in the analytics' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       stub_sign_in_before_2fa(user)
 
       stub_analytics

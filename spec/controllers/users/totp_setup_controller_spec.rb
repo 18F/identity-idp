@@ -17,7 +17,7 @@ describe Users::TotpSetupController, devise: true do
     context 'user is setting up authenticator app after account creation' do
       before do
         stub_analytics
-        user = create(:user, :signed_up, :with_phone, with: { phone: '703-555-1212' })
+        user = create(:user, :fully_registered, :with_phone, with: { phone: '703-555-1212' })
         stub_sign_in(user)
         allow(@analytics).to receive(:track_event)
         get :new
@@ -42,6 +42,7 @@ describe Users::TotpSetupController, devise: true do
           user_signed_up: true,
           totp_secret_present: true,
           enabled_mfa_methods_count: 1,
+          sign_up_mfa_selection_order_bucket: nil,
         }
 
         expect(@analytics).
@@ -77,6 +78,7 @@ describe Users::TotpSetupController, devise: true do
           user_signed_up: false,
           totp_secret_present: true,
           enabled_mfa_methods_count: 0,
+          sign_up_mfa_selection_order_bucket: nil,
         }
 
         expect(@analytics).
@@ -115,6 +117,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -128,7 +131,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -152,6 +155,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: next_auth_app_id,
             enabled_mfa_methods_count: 2,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -165,7 +169,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents nil code' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -190,6 +194,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -203,7 +208,7 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user omits name' do
         before do
-          user = create(:user, :signed_up)
+          user = create(:user, :fully_registered)
           secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           stub_analytics
@@ -229,6 +234,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -267,6 +273,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
           expect(@analytics).to have_received(:track_event).
@@ -305,6 +312,7 @@ describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -330,6 +338,7 @@ describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -366,6 +375,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -382,7 +392,7 @@ describe Users::TotpSetupController, devise: true do
   describe '#disable' do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
-        user = create(:user, :signed_up, :with_phone)
+        user = create(:user, :fully_registered, :with_phone)
         totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
         user.save
         stub_sign_in(user)
@@ -403,7 +413,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'revokes remember device cookies' do
-        user = create(:user, :signed_up, :with_phone)
+        user = create(:user, :fully_registered, :with_phone)
         totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
         user.save
         stub_sign_in(user)

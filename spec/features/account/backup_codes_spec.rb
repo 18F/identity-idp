@@ -7,7 +7,7 @@ feature 'Backup codes' do
   end
 
   context 'with backup codes' do
-    let(:user) { create(:user, :signed_up, :with_piv_or_cac, :with_backup_code) }
+    let(:user) { create(:user, :fully_registered, :with_piv_or_cac, :with_backup_code) }
 
     it 'backup code generated and can be regenerated' do
       expect(page).to have_content(t('account.index.backup_codes_exist'))
