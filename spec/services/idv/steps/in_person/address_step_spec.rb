@@ -60,11 +60,10 @@ describe Idv::Steps::InPerson::AddressStep do
         Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
-
-        step.call
       end
 
       it 'sets values in flow session' do
+        step.call
         expect(flow.flow_session[:pii_from_user]).to include(
           address1:,
           address2:,
@@ -77,15 +76,36 @@ describe Idv::Steps::InPerson::AddressStep do
 
       context 'with secondary capture enabled' do
         let(:capture_secondary_id_enabled) { true }
+
         it 'sets the values in flow session' do
+          step.call
+
           expect(flow.flow_session[:pii_from_user]).to include(
             address1:,
             address2:,
             city:,
             zipcode:,
             state:,
-            same_address_as_id:,
           )
+        end
+
+        context 'when initially entering the residential address' do
+          it 'leaves the "same_address_as_id" attr as false' do
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            step.call
+
+            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          end
+        end
+
+        context 'when updating the residential address' do
+          it 'sets the "same_address_as_id" in the flow session to false' do
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+            flow.flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+
+            step.call
+            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          end
         end
       end
     end
