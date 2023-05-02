@@ -199,7 +199,7 @@ js_tests:
     - yarn test
 
 pinpoint-check:
-  stage: test
+  stage: nightly_jobs
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -207,6 +207,16 @@ pinpoint-check:
     - *bundle_install
     - *yarn_install
     - make lint_country_dialing_codes
+
+brakeman-check
+  stage: nightly_jobs
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make brakeman
 
 prepare_deploy:
   # Runs in parallel with tests so we can deploy more quickly after passing

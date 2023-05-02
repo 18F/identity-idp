@@ -71,8 +71,6 @@ endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events
-	@echo "--- brakeman ---"
-	bundle exec brakeman
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript
