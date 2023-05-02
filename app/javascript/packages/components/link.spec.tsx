@@ -102,7 +102,7 @@ describe('Link', () => {
         </Link>,
       );
 
-      const link = getByRole('link', { name: 'Example links.new_window' }) as HTMLAnchorElement;
+      const link = getByRole('link', { name: 'Example links.new_tab' }) as HTMLAnchorElement;
 
       expect(link).to.exist();
     });

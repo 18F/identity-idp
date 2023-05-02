@@ -62,11 +62,11 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
 
     expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_window' }),
+      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
     ).to.exist();
     expect(
       getByRole('link', {
-        name: 'idv.troubleshooting.options.supported_documents links.new_window',
+        name: 'idv.troubleshooting.options.supported_documents links.new_tab',
       }),
     ).to.exist();
   });
@@ -191,7 +191,7 @@ describe('document-capture/components/review-issues-step', () => {
       getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
     ).to.be.ok();
     expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' })
         .href,
     ).to.equal(
       'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
