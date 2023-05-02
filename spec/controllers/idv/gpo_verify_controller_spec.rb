@@ -5,6 +5,7 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
+  let(:user) { create(:user) }
   let(:pending_profile) do
     create(
       :profile,
@@ -14,7 +15,6 @@ RSpec.describe Idv::GpoVerifyController do
     )
   end
   let(:proofing_components) { nil }
-  let(:user) { create(:user) }
   let(:threatmetrix_enabled) { false }
 
   before do
@@ -172,10 +172,12 @@ RSpec.describe Idv::GpoVerifyController do
 
       context 'threatmetrix disabled' do
         context 'with threatmetrix status of "reject"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'reject'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
 
@@ -206,10 +208,12 @@ RSpec.describe Idv::GpoVerifyController do
         let(:threatmetrix_enabled) { true }
 
         context 'with threatmetrix status of "reject"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'reject'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
 
@@ -241,12 +245,15 @@ RSpec.describe Idv::GpoVerifyController do
         end
 
         context 'with threatmetrix status of "review"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'review'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
+
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',

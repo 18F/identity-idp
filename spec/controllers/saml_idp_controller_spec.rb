@@ -827,7 +827,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL3 authn_context when AAL3 is requested' do
-          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          allow(controller).to receive(:user_session).and_return(
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+          )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
             overrides: { authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF },
@@ -842,7 +844,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL3-HSPD12 authn_context when AAL3-HSPD12 is requested' do
-          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          allow(controller).to receive(:user_session).and_return(
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+          )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
             overrides: { authn_context: Saml::Idp::Constants::AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF },
@@ -857,7 +861,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL2-HSPD12 authn_context when AAL2-HSPD12 is requested' do
-          allow(controller).to receive(:user_session).and_return({ auth_method: 'piv_cac' })
+          allow(controller).to receive(:user_session).and_return(
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC },
+          )
           user = create(:user, :with_piv_or_cac)
           auth_settings = saml_settings(
             overrides: { authn_context: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF },
@@ -872,7 +878,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL2-phishing-resistant authn_context when AAL2-phishing-resistant requested' do
-          allow(controller).to receive(:user_session).and_return({ auth_method: 'webauthn' })
+          allow(controller).to receive(:user_session).and_return(
+            { auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN },
+          )
           user = create(:user, :with_webauthn)
           auth_settings = saml_settings(
             overrides: {
