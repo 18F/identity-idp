@@ -36,7 +36,7 @@ describe 'idv/session_errors/throttled.html.erb' do
       )
       expect(rendered).to have_link(
         t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'throttled'),
+        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'throttled'),
       )
     end
   end
