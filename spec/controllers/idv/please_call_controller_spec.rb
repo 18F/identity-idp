@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Idv::PleaseCallController do
   let(:user) { create(:user) }
   let(:fraud_review_pending_date) { 5.days.ago }
+  let(:verify_date) { 20.days.ago }
 
   before do
     user.profiles.create(
