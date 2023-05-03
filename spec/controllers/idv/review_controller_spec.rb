@@ -539,9 +539,9 @@ describe Idv::ReviewController do
 
         context 'threatmetrix review status is set in profile' do
           %i[enabled disabled].each do |proofing_device_profiling_state|
-            context "when threatmetrix #{proofing_device_profiling_state}" do
+            context "when proofing_device_profiling is #{proofing_device_profiling_state}" do
               [nil, 'pass', 'other'].each do |review_status|
-                context "review status is #{review_status.nil? ? 'not present' : review_status}" do
+                context "when review status is #{review_status.nil? ? 'not present' : review_status}" do
                   let(:fraud_review_pending?) do
                     proofing_device_profiling_state == :enabled && !review_status.nil? && review_status != 'pass'
                   end
