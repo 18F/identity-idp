@@ -2,7 +2,6 @@ require 'reporting/cloudwatch_query_time_slice'
 
 module Reporting
   class CommandLineOptions
-    include Reporting::CloudwatchQueryTimeSlice
     # rubocop:disable Rails/Exit
     # @return [Hash]
     def parse!(argv, out: STDOUT)
@@ -11,8 +10,8 @@ module Reporting
       verbose = false
       progress = true
       period = nil
-      slice = 3.hours
-      threads = 5
+      slice = nil
+      threads = nil
 
       program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
 
@@ -45,8 +44,8 @@ module Reporting
           date = Date.parse(date_v)
           period = :month
 
-          slice = 1.hour if slice == 3.hours
-          threads = 10 if threads == 5
+          slice ||= 1.hour
+          threads ||= 10
         end
 
         opts.on('--issuer=ISSUER') do |issuer_v|
@@ -99,8 +98,8 @@ module Reporting
           issuer: issuer,
           verbose: verbose,
           progress: progress,
-          slice: slice,
-          threads: threads,
+          slice: slice || 3.hours,
+          threads: threads || 5,
         }
       end
     end
