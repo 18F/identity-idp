@@ -11,14 +11,14 @@ class CompareYaml
         serialized = run_serializer('serialized')
         reset_db
         production = run_serializer('config')
-        binding.pry
-        serialized == production
         # each_with_object 
         # 1. restructure objects so that it is a hash with each issuer being the top-level key 
         # 2. loop through serialized and find the matching provider in production 
         # 3. compare them 
         # 4. if there are no differences, go on to the next one 
         # 5. if there are differences, put the issuer in an array that was can track
+
+        
     end
 
     def run_serializer(path)
@@ -33,13 +33,21 @@ class CompareYaml
         objects
     end
 
-
     def objects
+        #this would work except that it can't always find an integration with an issuer that matches?? 
+        # error: 'no method attributes' 
+        sp = ServiceProvider.all.each_with_object({}) do |hash, item|
+            binding.pry
+            item[hash[:issuer].to_sym] = {
+                service_provider: hash.attributes.except("issuer", "id", "created_at", "updated_at"),
+                integration: Agreements::Integration.find_by(issuer: hash[:issuer].to_s).attributes.except("issuer"),
+            }
+        end
         {
-            service_providers: ServiceProvider.all.map {|sp|  sp.attributes.except("id", "created_at", "updated_at") },
-            integrations: Agreements::Integration.all.map {|int| int.attributes.except("id", "created_at", "updated_at") },
-            iaa_gtcs: Agreements::IaaOrder.all.map {|order| order.attributes.except("id", "created_at", "updated_at") },
+            service_provider: sp,
+            iaa_orders: Agreements::IaaOrder.all,
         }
+    
     end
 
     def reset_db
