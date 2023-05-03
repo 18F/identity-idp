@@ -168,6 +168,8 @@ lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
 lexisnexis_hmac_auth_enabled: false
+lexisnexis_hmac_key_id: pf_iv_hmac_key_id
+lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
@@ -176,6 +178,8 @@ lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
+lexisnexis_trueid_hmac_key_id: trueid_hmac_key_id
+lexisnexis_trueid_hmac_secret_key: trueid_hmac_secret_key
 lexisnexis_trueid_timeout: 60.0
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow
 lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa2.trueid.workflow
