@@ -22,9 +22,10 @@
       </p>
       <p>
         <strong>
-          <% exit_msg = decorated_session.sp_name.present? ? 'idv.failure.exit.with_sp' : 'idv.failure.exit.without_sp' %>
+          <% exit_text =  'idv.failure.exit.without_sp' %>
+          <% exit_text = 'idv.failure.exit.with_sp' if decorated_session.sp_name.present? %>
           <%= link_to(
-                t(exit_msg, app_name: APP_NAME, sp_name: decorated_session.sp_name),
+                t(exit_text, app_name: APP_NAME, sp_name: decorated_session.sp_name),
                 return_to_sp_failure_to_proof_path(
                   step: 'verify_id',
                   location: request.params[:action],
