@@ -79,7 +79,12 @@ class Profile < ApplicationRecord
   end
 
   def has_deactivation_reason?
-    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+    has_fraud_deactivation_reason? || gpo_verification_pending?
+  end
+
+  def has_fraud_deactivation_reason?
+    return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    fraud_review_pending? || fraud_rejection?
   end
 
   def deactivate_for_gpo_verification

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Steps::InPerson::AddressStep do
+  include InPersonHelper
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }
   let(:params) { ActionController::Parameters.new({ in_person_address: submitted_values }) }
@@ -115,7 +116,7 @@ describe Idv::Steps::InPerson::AddressStep do
     let(:params) { ActionController::Parameters.new }
 
     context 'address1 is set' do
-      it 'returns extra view variables' do
+      it 'returns extra view variables and updating_address is true' do
         pii_from_user[:address1] = address1
 
         expect(step.extra_view_variables).to include(
@@ -123,6 +124,18 @@ describe Idv::Steps::InPerson::AddressStep do
             address1:,
           ),
           updating_address: true,
+        )
+      end
+    end
+
+    context 'address1 is not set' do
+      it 'does not return extra view variables and updating_address is false' do
+        expect(step.extra_view_variables[:pii]).not_to include(
+          address1:,
+        )
+
+        expect(step.extra_view_variables).to include(
+          updating_address: false,
         )
       end
     end

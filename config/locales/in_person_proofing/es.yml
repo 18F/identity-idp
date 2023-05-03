@@ -56,9 +56,8 @@ es:
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
-          po_search_about: Si tiene problemas para añadir su documento de identidad, es
-            posible que pueda verificar su identidad en persona en una oficina
-            de correos local de los Estados Unidos.
+          po_search_about: Puede verificar su identidad en persona en una oficina de
+            correos local de los Estados Unidos.
           results_description:
             one: Hay 1 oficina de correos participante en un radio de 50 millas de la
               %{address}.
