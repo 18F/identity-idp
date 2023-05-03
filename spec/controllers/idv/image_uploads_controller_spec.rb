@@ -210,7 +210,7 @@ describe Idv::ImageUploadsController do
         expect(json).to eq(
           {
             success: false,
-            errors: [{ field: 'limit', message: 'We could not verify your ID' }],
+            errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
             result_failed: false,
@@ -258,7 +258,7 @@ describe Idv::ImageUploadsController do
             document_issued: nil,
             document_number: nil,
             document_state: nil,
-            failure_reason: { limit: ['We could not verify your ID'] },
+            failure_reason: { limit: ['We couldn’t verify your ID'] },
             first_name: nil,
             last_name: nil,
             success: false },

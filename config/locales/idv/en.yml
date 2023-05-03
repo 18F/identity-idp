@@ -74,6 +74,9 @@ en:
           Try searching for a Post Office again. If this issue continues, come
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.

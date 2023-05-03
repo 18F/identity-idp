@@ -9,7 +9,7 @@
 <% unless capture_secondary_id_enabled %>
   <p>
     <%= t('in_person_proofing.body.address.info') %>
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('in_person_proofing.body.address.learn_more'),
           MarketingSite.help_center_article_url(
             category: 'verify-your-identity',
