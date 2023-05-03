@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { Button } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
-import useHistoryParam from '@18f/identity-form-steps/use-history-param';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 
@@ -16,7 +15,6 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
   const { inPersonCtaVariantActive } = useContext(InPersonContext);
-  const [, setStepName] = useHistoryParam(undefined);
 
   return (
     <section
