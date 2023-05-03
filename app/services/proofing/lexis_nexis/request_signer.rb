@@ -14,7 +14,6 @@ module Proofing
       # HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
       def hmac_authorization(timestamp: Time.zone.now.strftime('%s%L'), nonce: SecureRandom.uuid)
         hmac = OpenSSL::HMAC.base64digest('SHA256', config.hmac_secret_key, message_body)
-        host = config.base_url.gsub('https://', '')
         signature = build_signature(
           timestamp: timestamp,
           nonce: nonce,
