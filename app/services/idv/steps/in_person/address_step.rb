@@ -44,10 +44,6 @@ module Idv
 
         private
 
-        def capture_secondary_id_enabled?
-          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
-        end
-
         def updating_address?
           flow_session[:pii_from_user].has_key?(:address1)
         end
