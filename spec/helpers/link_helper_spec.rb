@@ -3,19 +3,19 @@ require 'rails_helper'
 RSpec.describe LinkHelper do
   include LinkHelper
 
-  describe '#new_window_link_to' do
+  describe '#new_tab_link_to' do
     let(:name) { 'Link' }
     let(:html_options) { {} }
 
-    subject(:link) { new_window_link_to(name, '', **html_options) }
+    subject(:link) { new_tab_link_to(name, '', **html_options) }
 
     it 'opens in a new tab' do
       expect(link).to have_css('[target=_blank]')
     end
 
     it 'includes an accessibility hint about opening in a new tab' do
-      expect(link).to have_content("#{name}#{t('links.new_window')}")
-      expect(link).to have_css('.usa-sr-only', text: t('links.new_window'))
+      expect(link).to have_content("#{name}#{t('links.new_tab')}")
+      expect(link).to have_css('.usa-sr-only', text: t('links.new_tab'))
     end
 
     it 'adds design system external link class' do
@@ -33,7 +33,7 @@ RSpec.describe LinkHelper do
 
     context 'with whitespace in the link text' do
       subject(:link) do
-        new_window_link_to('', {}) do
+        new_tab_link_to('', {}) do
           concat content_tag(:span, name)
           concat ' '
         end
@@ -42,7 +42,7 @@ RSpec.describe LinkHelper do
       it 'trims whitespace between link text and the accessible label' do
         # Regression: Safari's handling of the trailing whitespace would cause the external link
         # icon to be shown on a new line.
-        expect(link).to have_content("#{name}#{t('links.new_window')}")
+        expect(link).to have_content("#{name}#{t('links.new_tab')}")
       end
     end
 
@@ -63,12 +63,12 @@ RSpec.describe LinkHelper do
     end
 
     context 'content given as block' do
-      subject(:link) { new_window_link_to('/url', **html_options) { name } }
+      subject(:link) { new_tab_link_to('/url', **html_options) { name } }
 
       it 'renders a link with the expected attributes' do
         expect(link).to have_css(
           '.usa-link--external[href="/url"][target=_blank]',
-          text: "#{name}#{t('links.new_window')}",
+          text: "#{name}#{t('links.new_tab')}",
         )
       end
 

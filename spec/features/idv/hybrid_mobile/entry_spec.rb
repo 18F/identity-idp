@@ -33,6 +33,25 @@ feature 'mobile hybrid flow entry', js: true do
     end
   end
 
+  context 'old link' do
+    let(:link_to_visit) do
+      # Edit in the old link, which should redirect to the new controller
+      uri = URI.parse(link_sent_via_sms)
+      uri.path = '/verify/capture-doc'
+      uri.to_s
+    end
+
+    it 'puts the user on the new document capture page' do
+      expect(link_to_visit).to be
+
+      Capybara.using_session('mobile') do
+        visit link_to_visit
+        # Should have redirected to the actual doc capture url
+        expect(current_url).to eql(idv_hybrid_mobile_document_capture_url)
+      end
+    end
+  end
+
   context 'invalid link' do
     let(:link_to_visit) do
       # Put an invalid document-capture-session in the URL

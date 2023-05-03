@@ -149,10 +149,12 @@ describe GpoVerifyForm do
       end
 
       context 'ThreatMetrix rejection' do
-        let(:proofing_components) do
-          ProofingComponent.create(
-            user: user, threatmetrix: true,
-            threatmetrix_review_status: threatmetrix_review_status
+        let(:pending_profile) do
+          create(
+            :profile,
+            user: user,
+            deactivation_reason: :gpo_verification_pending,
+            fraud_review_pending_at: 1.day.ago,
           )
         end
 

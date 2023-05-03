@@ -17,7 +17,7 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.privacy_disclaimer')).to.exist();
     expect(
       queryByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }),
     ).not.to.exist();
   });
@@ -91,7 +91,7 @@ describe('InPersonPrepareStep', () => {
       const { getByRole } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />, { wrapper });
 
       const link = getByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }) as HTMLAnchorElement;
 
       expect(link.href).to.equal(securityAndPrivacyHowItWorksURL);
