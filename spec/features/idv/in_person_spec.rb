@@ -697,6 +697,7 @@ RSpec.describe 'In Person Proofing', js: true do
     it 'allows user to update their residential address as different from their state id' do
       complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
       complete_ssn_step(user)
+
       # click "update residential address"
       click_button t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
@@ -708,6 +709,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # back to verify page
       expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_text('new address different from state address1').once
 
       # click update state id address
       click_button t('idv.buttons.change_state_id_label')
