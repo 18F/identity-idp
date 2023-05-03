@@ -31,6 +31,10 @@ feature 'doc auth link sent step' do
     let(:doc_capture_polling_enabled) { true }
 
     it 'Does not show continue button', :js do
+      # Prevent errors caused by "Do you want to leave this page?" alert
+      page.evaluate_script('window.onbeforeunload = null;')
+      page.evaluate_script('window.onunload = null;')
+
       expect(page).not_to have_content(I18n.t('doc_auth.buttons.continue'))
     end
   end
