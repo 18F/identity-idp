@@ -99,12 +99,30 @@ describe Idv::Steps::InPerson::AddressStep do
         end
 
         context 'when updating the residential address' do
-          it 'sets the "same_address_as_id" in the flow session to false' do
-            flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+          before(:each) do
             flow.flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+          end
 
-            step.call
-            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          context 'user previously selected that the residential address matched state ID' do
+            before(:each) do
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+            end
+
+            it 'sets the "same_address_as_id" in the flow session to false' do
+              step.call
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            end
+          end
+
+          context 'user previously selected that the residential address did not match state ID' do
+            before(:each) do
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            end
+
+            it 'leaves the "same_address_as_id" in the flow session as false' do
+              step.call
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            end
           end
         end
       end
