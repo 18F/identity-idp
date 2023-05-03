@@ -174,6 +174,20 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     });
   });
 
+  context('with sp option turned off', () => {
+    it('does not display the SP troubleshooting option', () => {
+      const { queryByRole } = render(
+        <DocumentCaptureTroubleshootingOptions showSPOption={false} />,
+      );
+
+      expect(
+        queryByRole('link', {
+          name: 'idv.troubleshooting.options.get_help_at_sp links.new_window',
+        }),
+      ).to.not.exist();
+    });
+  });
+
   context('with document tips hidden', () => {
     it('renders nothing', () => {
       const { container } = render(

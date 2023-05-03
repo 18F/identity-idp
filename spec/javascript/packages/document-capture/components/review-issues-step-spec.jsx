@@ -4,6 +4,7 @@ import {
   ServiceProviderContextProvider,
   UploadContextProvider,
   AnalyticsContext,
+  InPersonContext,
 } from '@18f/identity-document-capture';
 import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
@@ -192,6 +193,47 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.be.ok();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
+    ).to.equal(
+      'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
+    );
+  });
+
+  it('does not render sp help troubleshooting option for errored review', () => {
+    const { queryByRole } = render(
+      <InPersonContext.Provider value={{ inPersonURL: null }}>
+        <ServiceProviderContextProvider
+          value={{
+            name: 'Example App',
+            failureToProofURL: 'https://example.com/?step=document_capture',
+          }}
+        >
+          <ReviewIssuesStep {...DEFAULT_PROPS} />
+        </ServiceProviderContextProvider>
+      </InPersonContext.Provider>,
+    );
+
+    expect(
+      queryByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' }),
+    ).to.not.exist();
+  });
+
+  it('does render sp help troubleshooting option for errored review if in person url present', () => {
+    const { getByRole } = render(
+      <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
+        <ServiceProviderContextProvider
+          value={{
+            name: 'Example App',
+            failureToProofURL: 'https://example.com/?step=document_capture',
+          }}
+        >
+          <ReviewIssuesStep {...DEFAULT_PROPS} />
+        </ServiceProviderContextProvider>
+      </InPersonContext.Provider>,
+    );
+
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
+        .href,
     ).to.equal(
       'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
     );
