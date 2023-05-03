@@ -502,13 +502,14 @@ RSpec.describe User do
   end
 
   describe '#fraud_review_eligible?' do
-    context 'when fraud_review_pending_at is nil' do
+    context 'when fraud_reviewing_at is nil' do
       it 'returns false' do
-        fraud_review_pending_at = nil
+        fraud_reviewing_at = nil
 
         user = create(:user)
         user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
+          fraud_state: 'fraud_reviewing',
+          fraud_reviewing_at: fraud_reviewing_at,
         )
 
         expect(user.fraud_review_eligible?).to be_falsey
@@ -517,11 +518,12 @@ RSpec.describe User do
 
     context 'when verified_at is within 30 days' do
       it 'returns true' do
-        fraud_review_pending_at = 15.days.ago
+        fraud_reviewing_at = 15.days.ago
 
         user = create(:user)
         user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
+          fraud_state: 'fraud_reviewing',
+          fraud_reviewing_at: fraud_reviewing_at,
         )
 
         expect(user.fraud_review_eligible?).to eq true
@@ -530,11 +532,12 @@ RSpec.describe User do
 
     context 'when verified_at is older than 30 days' do
       it 'returns false' do
-        fraud_review_pending_at = 45.days.ago
+        fraud_reviewing_at = 45.days.ago
 
         user = create(:user)
         user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
+          fraud_state: 'fraud_reviewing',
+          fraud_reviewing_at: fraud_reviewing_at,
         )
 
         expect(user.fraud_review_eligible?).to eq false
@@ -548,7 +551,7 @@ RSpec.describe User do
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_reviewing',
-        fraud_review_pending_at: 15.days.ago,
+        fraud_reviewing_at: 15.days.ago,
       )
 
       expect(user.fraud_review_pending?).to eq true
@@ -561,7 +564,7 @@ RSpec.describe User do
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_rejected',
-        fraud_rejection_at: 15.days.ago,
+        fraud_rejected_at: 15.days.ago,
       )
 
       expect(user.fraud_rejection?).to eq true
@@ -575,7 +578,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_reviewing',
-          fraud_review_pending_at: 15.days.ago,
+          fraud_reviewing_at: 15.days.ago,
         )
 
         expect(user.fraud_review_pending_profile).to eq(profile)
@@ -595,7 +598,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_rejected',
-          fraud_rejection_at: 15.days.ago,
+          fraud_rejected_at: 15.days.ago,
         )
 
         expect(user.fraud_rejection_profile).to eq(profile)
