@@ -187,7 +187,6 @@ module TwoFactorAuthenticatableMethods
   def handle_valid_otp_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
-    bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
     reset_second_factor_attempts_count
