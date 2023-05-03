@@ -79,6 +79,9 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
