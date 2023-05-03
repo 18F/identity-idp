@@ -199,7 +199,7 @@ describe('document-capture/components/review-issues-step', () => {
     );
   });
 
-  it('does not render sp help troubleshooting option for errored review', async () => {
+  it('does not render sp help troubleshooting option for errored review', () => {
     const { queryByRole } = render(
       <InPersonContext.Provider value={{ inPersonURL: null }}>
         <ServiceProviderContextProvider
@@ -218,7 +218,7 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.not.exist();
   });
 
-  it('does render sp help troubleshooting option for errored review if in person url present', async () => {
+  it('does render sp help troubleshooting option for errored review if in person url present', () => {
     const { getByRole } = render(
       <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
         <ServiceProviderContextProvider
