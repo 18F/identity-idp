@@ -90,6 +90,7 @@ saml_*.key
 /public/assets
 /public/packs
 /app/assets/builds/*
+/serialized
 !/app/assets/builds/.keep
 **/node_modules
 yarn-debug.log*
