@@ -177,7 +177,8 @@ RSpec.describe Idv::GpoVerifyController do
               :profile,
               :with_pii,
               user: user,
-              fraud_review_pending_at: 1.day.ago,
+              fraud_state: 'fraud_reviewing',
+              fraud_reviewing_at: 1.day.ago,
             )
           end
 
@@ -213,7 +214,8 @@ RSpec.describe Idv::GpoVerifyController do
               :profile,
               :with_pii,
               user: user,
-              fraud_review_pending_at: 1.day.ago,
+              fraud_state: 'fraud_reviewing',
+              fraud_reviewing_at: 1.day.ago,
             )
           end
 
@@ -250,7 +252,8 @@ RSpec.describe Idv::GpoVerifyController do
               :profile,
               :with_pii,
               user: user,
-              fraud_review_pending_at: 1.day.ago,
+              fraud_state: 'fraud_reviewing',
+              fraud_reviewing_at: 1.day.ago,
             )
           end
 
