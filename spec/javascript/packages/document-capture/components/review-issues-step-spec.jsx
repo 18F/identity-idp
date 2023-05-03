@@ -218,6 +218,28 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.not.exist();
   });
 
+  it('does render sp help troubleshooting option for errored review if in person url present', async () => {
+    const { getByRole } = render(
+      <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
+        <ServiceProviderContextProvider
+          value={{
+            name: 'Example App',
+            failureToProofURL: 'https://example.com/?step=document_capture',
+          }}
+        >
+          <ReviewIssuesStep {...DEFAULT_PROPS} />
+        </ServiceProviderContextProvider>
+      </InPersonContext.Provider>,
+    );
+
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
+        .href,
+    ).to.equal(
+      'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
+    );
+  });
+
   context('service provider context', () => {
     context('ial2', () => {
       it('renders with front and back inputs', async () => {
