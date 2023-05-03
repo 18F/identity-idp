@@ -401,6 +401,9 @@ function FormSteps({
       stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
     if (isComplete) {
       onComplete(values);
+    } else {
+      const { name: nextStepName } = steps[nextStepIndex];
+      setStepName(nextStepName);
     }
     // unset stepCanComplete so the next step that needs to can set it
     setStepCanComplete(undefined);

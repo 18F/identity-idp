@@ -69,8 +69,8 @@ describe('InPersonPrepareStep', () => {
 
         await waitFor(() => window.location.hash === inPersonURL);
 
-        expect(didFollowLinkOnFirstClick).to.be.false();
-        expect(didFollowLinkOnSecondClick).to.be.false();
+        expect(didFollowLinkOnFirstClick).to.be.true();
+        expect(didFollowLinkOnSecondClick).to.be.true();
         expect(trackEvent).to.have.been.calledOnceWith('IdV: prepare submitted');
       });
     });

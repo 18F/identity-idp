@@ -6,7 +6,6 @@ import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { SpinnerButton } from '@18f/identity-spinner-button';
-import useHistoryParam from '@18f/identity-form-steps/use-history-param';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
@@ -20,18 +19,14 @@ function InPersonPrepareStep({ toPreviousStep }) {
   const { flowPath } = useContext(UploadContext);
   const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const [, setStepName] = useHistoryParam(undefined);
   const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
 
-  const onContinue: MouseEventHandler = (event) => {
-    event.preventDefault();
-
+  const onContinue: MouseEventHandler = () => {
     if (!isSubmitting) {
       setIsSubmitting(true);
       removeUnloadProtection();
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
       trackEvent('IdV: prepare submitted');
-      setStepName('location');
     }
   };
 
@@ -58,7 +53,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <SpinnerButton onClick={onContinue} isBig isWide>
+          <SpinnerButton type="submit" onClick={onContinue} isBig isWide>
             {t('forms.buttons.continue')}
           </SpinnerButton>
         </div>

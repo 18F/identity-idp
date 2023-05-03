@@ -29,12 +29,12 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
       </h2>
       <p>{altPrompt || t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
+        type="submit"
         isBig
         isOutline
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          setStepName('prepare');
           trackEvent('IdV: verify in person troubleshooting option clicked', {
             in_person_cta_variant: inPersonCtaVariantActive,
           });
