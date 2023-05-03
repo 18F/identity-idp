@@ -541,9 +541,10 @@ describe Idv::ReviewController do
           %i[enabled disabled].each do |proofing_device_profiling_state|
             context "when proofing_device_profiling is #{proofing_device_profiling_state}" do
               [nil, 'pass', 'other'].each do |review_status|
-                context "when review status is #{review_status.nil? ? 'not present' : review_status}" do
+                context "when review status is #{review_status.nil? ? 'nil' : review_status}" do
                   let(:fraud_review_pending?) do
-                    proofing_device_profiling_state == :enabled && !review_status.nil? && review_status != 'pass'
+                    proofing_device_profiling_state == :enabled &&
+                      !review_status.nil? && review_status != 'pass'
                   end
                   let(:review_status) { review_status }
                   let(:proofing_device_profiling_state) { proofing_device_profiling_state }
@@ -555,7 +556,8 @@ describe Idv::ReviewController do
                   end
 
                   before do
-                    allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(proofing_device_profiling_state)
+                    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+                      and_return(proofing_device_profiling_state)
                     idv_session.threatmetrix_review_status = review_status
                   end
 
@@ -563,7 +565,7 @@ describe Idv::ReviewController do
                     stub_request_token
                   end
 
-                  it "creates a profile with fraud_review_pending defined" do
+                  it 'creates a profile with fraud_review_pending defined' do
                     put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
                     expect(user.profiles.last.fraud_review_pending?).to eq(fraud_review_pending?)
