@@ -63,6 +63,8 @@ class SessionEncryptor
 
   def dump(value)
     return LegacySessionEncryptor.new.dump(value) if should_use_legacy_encryptor_for_write?
+
+    raise 'uh oh' unless value.keys.grep(/^devise\./).empty?
     value.deep_stringify_keys!
 
     kms_encrypt_pii!(value)
