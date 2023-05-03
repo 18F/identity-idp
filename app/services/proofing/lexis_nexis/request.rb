@@ -64,7 +64,6 @@ module Proofing
         IdentityConfig.store.lexisnexis_hmac_auth_enabled
       end
 
-      # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
       def hmac_authorization
         Proofing::LexisNexis::RequestSigner.new(
           config: config,

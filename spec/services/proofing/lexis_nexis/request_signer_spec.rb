@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Proofing::LexisNexis::RequestSigner do
   let(:message_body) { 'APPLICANT_DATA' }
   let(:path) { '/request/path' }
-  let(:ts) { Time.zone.now.strftime('%s%L') }
+  let(:timestamp) { Time.zone.now.strftime('%s%L') }
   let(:nonce) { SecureRandom.uuid }
   let(:config) do
     OpenStruct.new(
@@ -23,14 +23,14 @@ describe Proofing::LexisNexis::RequestSigner do
 
   describe 'generating a valid hmac authorization' do
     it 'succeeds' do
-      authorization = subject.hmac_authorization(ts: ts, nonce: nonce)
+      authorization = subject.hmac_authorization(timestamp: timestamp, nonce: nonce)
       regex = %r{
         HMAC-SHA256\s
         keyid=#{config.hmac_key_id},\s
-        ts=#{ts},\s
+        ts=#{timestamp},\s
         nonce=#{nonce},\s
-        bodyHash=(?<hmac>.*),\s
-        signature=(.*)
+        bodyHash=(?<hmac>\S+),\s
+        signature=(\S+)
       }x
 
       expect(authorization).to match(regex)
