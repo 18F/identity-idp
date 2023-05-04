@@ -65,7 +65,7 @@ module Idv
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def updating_ssn
+    def updating_ssn?
       @ssn_form.updating_ssn?
     end
   end

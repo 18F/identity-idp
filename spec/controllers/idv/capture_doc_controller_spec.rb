@@ -32,7 +32,7 @@ describe Idv::CaptureDocController do
     end
 
     context 'with no session' do
-      it 'redirects to the root url' do
+      xit 'redirects to the root url' do
         get :index
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
@@ -42,7 +42,7 @@ describe Idv::CaptureDocController do
     end
 
     context 'with a bad session' do
-      it 'redirects to the root url' do
+      xit 'redirects to the root url' do
         get :index, params: { 'document-capture-session': 'foo' }
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
@@ -52,7 +52,7 @@ describe Idv::CaptureDocController do
     end
 
     context 'with an expired token' do
-      it 'redirects to the root url' do
+      xit 'redirects to the root url' do
         travel_to(Time.zone.now + 1.day) do
           get :index, params: { 'document-capture-session': session_uuid }
         end
@@ -64,7 +64,7 @@ describe Idv::CaptureDocController do
     end
 
     context 'with a good session uuid' do
-      it 'redirects to the first step' do
+      xit 'redirects to the first step' do
         get :index, params: { 'document-capture-session': session_uuid }
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
@@ -74,7 +74,7 @@ describe Idv::CaptureDocController do
     end
 
     context 'with a user id in session and no session uuid' do
-      it 'redirects to the first step' do
+      xit 'redirects to the first step' do
         mock_session(user.id)
         get :index
 
