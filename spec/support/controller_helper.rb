@@ -91,7 +91,6 @@ module ControllerHelper
     allow(user).to receive(:pending_profile).and_return(pending_profile)
     allow(user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
-    allow(user).to receive(:fraud_review_pending?).and_return(false)
     user
   end
 
