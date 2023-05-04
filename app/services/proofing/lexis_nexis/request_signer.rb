@@ -3,7 +3,7 @@ module Proofing
     class RequestSigner
       attr_accessor :config, :message_body, :path, :host
 
-      # @param config must respond to base_url, hmac_key_id, and hmac_secret_key
+      # @param [#base_url,#hmac_key_id,#hmac_secret_key] config
       def initialize(config:, message_body:, path:)
         @config = config
         @message_body = message_body
