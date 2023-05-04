@@ -516,6 +516,87 @@ production:
   usps_upload_sftp_password: ''
   usps_upload_sftp_username: ''
 
+review-app:
+  aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
+  aamva_private_key: ''
+  aamva_public_key: ''
+  aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
+  attribute_encryption_key: 'change-this-immediately-with-rake-secret-2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
+  attribute_encryption_key_queue: '[]'
+  aws_kms_regions: '["us-west-2"]'
+  aws_logo_bucket: ''
+  asset_host: http://localhost:3000
+  dashboard_api_token: ''
+  dashboard_url: https://dashboard.demo.login.gov
+  database_host: 'postgres'
+  database_name: 'idp'
+  database_password: 'postgres'
+  database_read_replica_host: 'postgres'
+  database_readonly_password: 'postgres'
+  database_readonly_username: 'postgres'
+  database_username: 'postgres'
+  database_worker_jobs_name: 'idp-worker-jobs'
+  database_worker_jobs_username: 'postgres'
+  database_worker_jobs_host: 'postgres-worker'
+  database_worker_jobs_password: 'postgres'
+  disable_email_sending: false
+  disallow_all_web_crawlers: false
+  doc_auth_vendor: 'acuant'
+  doc_auth_vendor_randomize: false
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
+  domain_name: localhost
+  email_registrations_per_ip_track_only_mode: true
+  enable_test_routes: false
+  enable_usps_verification: false
+  encrypted_document_storage_enabled: false
+  encrypted_document_storage_s3_bucket: ''
+  hmac_fingerprinter_key: 'X5fRg1j2QwH8eL6oUr9aBc4xDn0mZvYt'
+  hmac_fingerprinter_key_queue: '[]'
+  idv_sp_required: true
+  irs_attempt_api_public_key: change-me-pls
+  irs_attempt_api_public_key_id: key1
+  lexisnexis_threatmetrix_mock_enabled: false
+  logins_per_ip_limit: 20
+  logins_per_ip_period: 20
+  logins_per_ip_track_only_mode: true
+  newrelic_browser_app_id: ''
+  newrelic_browser_key: ''
+  newrelic_license_key: ''
+  new_sign_up_cancellation_url_enabled: false
+  nonessential_email_banlist: '[]'
+  otp_delivery_blocklist_findtime: 5
+  participate_in_dap: true
+  password_pepper: 'X5fRg1j2QwH8eL6oUr9aBc4xDn0mZvYt'
+  phone_recaptcha_mock_validator: false
+  piv_cac_verify_token_secret: 'X5fRg1j2QwH8eL6oUr9aBc4xDn0mZvYt'
+  platform_auth_set_up_enabled: false
+  session_encryptor_alert_enabled: true
+  reauthentication_for_second_factor_management_enabled: false
+  recurring_jobs_disabled_names: "[]"
+  redis_irs_attempt_api_url: redis://redis:6379/2
+  redis_throttle_url: redis://redis:6379/1
+  redis_url: redis://redis:6379
+  report_timeout: 1_000_000
+  ruby_workers_idv_enabled: false
+  s3_report_bucket_prefix: login-gov.reports
+  s3_report_public_bucket_prefix: login-gov-pubdata
+  s3_reports_enabled: true
+  saml_endpoint_configs: '[]'
+  scrypt_cost: 10000$8$1$
+  secret_key_base: 'X5fRg1j2QwH8eL6oUr9aBc4xDn0mZvYt'
+  seed_agreements_data: false
+  session_encryption_key: 'X5fRg1j2QwH8eL6oUr9aBc4xDn0mZvYt'
+  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
+  state_tracking_enabled: false
+  telephony_adapter: pinpoint
+  use_kms: true
+  usps_confirmation_max_days: 30
+  usps_upload_sftp_directory: ''
+  usps_upload_sftp_host: ''
+  usps_upload_sftp_password: ''
+  usps_upload_sftp_username: ''
+
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
