@@ -36,7 +36,7 @@ describe Idv::SsnFormatForm do
     end
   end
 
-  describe '#updating_ssn' do
+  describe '#updating_ssn?' do
     context 'when no flow_session value is provided' do
       subject { Idv::SsnFormatForm.new(user) }
 

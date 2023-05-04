@@ -37,7 +37,7 @@ module Idv
            end
           end
 
-          maybe_redirect_to_verify_info if updating_state_id
+          maybe_redirect_to_verify_info if updating_state_id?
         end
 
         def extra_view_variables
@@ -46,7 +46,7 @@ module Idv
             form:,
             pii:,
             parsed_dob:,
-            updating_state_id:,
+            updating_state_id: updating_state_id?,
           }
         end
 
@@ -72,7 +72,7 @@ module Idv
           pii_from_user[:zipcode] = flow_params[:identity_doc_zipcode]
         end
 
-        def updating_state_id
+        def updating_state_id?
           flow_session[:pii_from_user].has_key?(:first_name)
         end
 

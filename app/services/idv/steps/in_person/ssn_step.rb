@@ -29,7 +29,7 @@ module Idv
 
         def extra_view_variables
           {
-            updating_ssn: updating_ssn,
+            updating_ssn: updating_ssn?,
             **threatmetrix_view_variables,
           }
         end
@@ -44,7 +44,7 @@ module Idv
           flow_params[:ssn]
         end
 
-        def updating_ssn
+        def updating_ssn?
           flow_session.dig(:pii_from_user, :ssn).present?
         end
       end
