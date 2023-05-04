@@ -18,6 +18,8 @@ module IrsAttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
+      return if ignore_idv_event?(event_type)
+
       if metadata.has_key?(:failure_reason) &&
          (metadata[:failure_reason].blank? ||
           metadata[:success].present?)
@@ -41,23 +43,21 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      if enabled?
-        if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
-          analytics.irs_attempts_api_event_metadata(
-            event_type: event_type,
-            unencrypted_payload_num_bytes: event.payload_json.bytesize,
-            recorded: true,
-          )
-        end
-
-        redis_client.write_event(
-          event_key: event.event_key,
-          jwe: event.to_jwe,
-          timestamp: event.occurred_at,
+      if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
+        analytics.irs_attempts_api_event_metadata(
+          event_type: event_type,
+          unencrypted_payload_num_bytes: event.payload_json.bytesize,
+          recorded: true,
         )
-
-        event
       end
+
+      redis_client.write_event(
+        event_key: event.event_key,
+        jwe: event.to_jwe,
+        timestamp: event.occurred_at,
+      )
+
+      event
     end
 
     def parse_failure_reason(result)
@@ -80,6 +80,11 @@ module IrsAttemptsApi
 
     def enabled?
       IdentityConfig.store.irs_attempt_api_enabled && @enabled_for_session
+    end
+
+    def ignore_idv_event?(event_type)
+      !IdentityConfig.store.irs_attempt_api_idv_events_enabled &&
+        (event_type.to_s.starts_with? 'idv_')
     end
 
     def redis_client
