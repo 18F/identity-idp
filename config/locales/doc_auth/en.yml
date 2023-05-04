@@ -102,7 +102,7 @@ en:
     headings:
       address: Update your mailing address
       back: Back
-      capture_complete: We have verified your state‑issued ID
+      capture_complete: We verified your ID
       capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
         information below is incorrect, please %{link} of your state‑issued ID.
       capture_scan_warning_link: upload new photos
