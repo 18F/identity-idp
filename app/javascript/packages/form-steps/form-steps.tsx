@@ -396,6 +396,7 @@ function FormSteps({
     }
 
     onStepSubmit(step?.name);
+
     const nextStepIndex = stepIndex + 1;
     const isComplete =
       stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
