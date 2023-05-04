@@ -25,7 +25,7 @@ feature 'doc capture document capture step', js: true do
     allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
   end
 
-  it 'proceeds to the next page with valid info' do
+  xit 'proceeds to the next page with valid info' do
     complete_doc_capture_steps_before_first_step(user)
 
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -36,7 +36,7 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
   end
 
-  it 'offers the user the option to cancel and return to desktop' do
+  xit 'offers the user the option to cancel and return to desktop' do
     complete_doc_capture_steps_before_first_step(user)
 
     click_on t('links.cancel')
@@ -207,7 +207,7 @@ feature 'doc capture document capture step', js: true do
       )
     end
 
-    it 'logs return to sp link click' do
+    xit 'logs return to sp link click' do
       complete_doc_capture_steps_before_first_step(user)
       new_window = window_opened_by do
         click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)

@@ -48,6 +48,10 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
 
       <ProcessList className="margin-bottom-4">
         <ProcessListItem
+          heading={t('in_person_proofing.body.prepare.verify_step_post_office')}
+          headingUnstyled
+        />
+        <ProcessListItem
           heading={t('in_person_proofing.body.prepare.verify_step_enter_pii')}
           headingUnstyled
         />

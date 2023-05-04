@@ -367,8 +367,8 @@ Rails.application.routes.draw do
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
-      get '/capture_doc' => 'capture_doc#index'
-      get '/capture-doc' => 'capture_doc#index',
+      get '/capture_doc' => 'hybrid_mobile/entry#show'
+      get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
       get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'

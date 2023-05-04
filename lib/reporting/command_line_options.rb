@@ -1,3 +1,5 @@
+require 'reporting/cloudwatch_query_time_slice'
+
 module Reporting
   class CommandLineOptions
     # rubocop:disable Rails/Exit
@@ -8,6 +10,8 @@ module Reporting
       verbose = false
       progress = true
       period = nil
+      slice = nil
+      threads = nil
 
       program_name = Pathname.new($PROGRAM_NAME).relative_path_from(__dir__)
 
@@ -27,10 +31,21 @@ module Reporting
         end
 
         opts.on('--week=DATE', <<~STR.squish) do |date_v|
-          run the report for the week (Sun-Sat) that includes the date in YYYY-MM-DD format'
+          run the report for the week (Sun-Sat) that includes the date in YYYY-MM-DD format
         STR
           date = Date.parse(date_v)
           period = :week
+        end
+
+        opts.on('--month=DATE', <<~STR.squish) do |date_v|
+          run the report for the month that includes the date in YYYY-MM-DD format.
+          changes defaults to `--threads 10` and `--slice 1 hour` to reduce likelihood of timeout
+        STR
+          date = Date.parse(date_v)
+          period = :month
+
+          slice ||= 1.hour
+          threads ||= 10
         end
 
         opts.on('--issuer=ISSUER') do |issuer_v|
@@ -43,6 +58,26 @@ module Reporting
 
         opts.on('--[no-]progress', 'shows a progress bar or hides it, defaults on') do |progress_v|
           progress = progress_v
+        end
+
+        opts.on(
+          '--slice SLICE',
+          '(optional) query slice size duration, defaults to 3h',
+        ) do |slice_v|
+          slice = CloudwatchQueryTimeSlice.parse_duration(slice_v)
+        end
+
+        opts.on(
+          '--threads THREADS',
+          '(optional) number of threads between 1 and 30 inclusive, defaults to 5. ',
+        ) do |threads_v|
+          if !threads_v.to_i.between?(1, 30)
+            raise StandardError.new(
+              'Number of threads must be between 1 and 30 inclusive',
+            )
+          end
+
+          threads = threads_v.to_i
         end
 
         opts.on('-h', '--help') do
@@ -63,6 +98,8 @@ module Reporting
           issuer: issuer,
           verbose: verbose,
           progress: progress,
+          slice: slice || 3.hours,
+          threads: threads || 5,
         }
       end
     end
@@ -81,6 +118,8 @@ module Reporting
         utc.all_day
       when :week
         utc.all_week
+      when :month
+        utc.all_month
       else
         raise "unknown period=#{period}"
       end

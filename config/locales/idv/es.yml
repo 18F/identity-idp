@@ -79,6 +79,9 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
@@ -248,6 +251,7 @@ es:
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
           dirección por correo
         learn_more_verify_by_phone: Más información sobre qué número de teléfono usar
+        learn_more_verify_by_phone_in_person: Más información sobre cómo verificar su número de teléfono
         learn_more_verify_in_person: Más información sobre la verificación en persona
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
