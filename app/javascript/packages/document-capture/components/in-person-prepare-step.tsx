@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
@@ -12,19 +12,13 @@ import { InPersonContext } from '../context';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
-  const isMounted = useRef(true);
   const { flowPath } = useContext(UploadContext);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
 
   useEffect(() => {
-    if (isMounted.current) {
-      setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
-    }
-    return () => {
-      isMounted.current = false;
-    };
+    setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
   }, []);
 
   return (
