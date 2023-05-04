@@ -127,7 +127,7 @@ fr:
       change_file: Changer de fichier
       choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez un
         dossier</lg-underline>
-      doc_success: Nous avons vérifié vos informations personnelles
+      doc_success: Nous avons vérifié vos informations
       selected_file: Fichier sélectionné
     headings:
       address: Mettre à jour votre adresse postale
