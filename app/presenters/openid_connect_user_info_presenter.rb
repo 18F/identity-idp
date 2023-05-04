@@ -127,7 +127,7 @@ class OpenidConnectUserInfoPresenter
 
   def ialmax_session?
     identity.ial == Idp::Constants::IAL_MAX
- end
+  end
 
   def x509_data
     @x509_data ||= begin
