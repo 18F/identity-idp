@@ -136,6 +136,8 @@ class SamlIdpController < ApplicationController
 
     analytics.saml_auth_request(
       requested_ial: requested_ial,
+      requested_aal_authn_context: saml_request&.requested_aal_authn_context,
+      force_authn: saml_request&.force_authn?,
       service_provider: saml_request&.issuer,
     )
   end
