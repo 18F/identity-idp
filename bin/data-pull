@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require_relative '../config/environment.rb'
+require 'data_pull'
+DataPull.new(argv: ARGV.dup, stdout: STDOUT, stderr: STDERR).run
