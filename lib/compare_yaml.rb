@@ -11,17 +11,54 @@ class CompareYaml
         serialized = run_serializer('serialized')
         reset_db
         production = run_serializer('config')
-        # each_with_object 
+        # black box end-to-end test spitting out the results and checking for regressions
+        # trying to replicate as close as possible the production database
         # 1. restructure objects so that it is a hash with each issuer being the top-level key 
         # 2. loop through serialized and find the matching provider in production 
         # 3. compare them 
         # 4. if there are no differences, go on to the next one 
-        # 5. if there are differences, put the issuer in an array that was can track
-
-        
+        # 5. if there are differences, put the issuer in an array that we can track
+        diff = {
+            service_providers: []
+            integrations: []
+            orders: []
+        }
+        serialized[:service_providers].each do |key, value|
+            prod = production[:service_providers][key]
+            if prod.nil?
+                diff[:service_providers] << key
+            else
+                if value != prod
+                    diff[:service_provider] << key
+                end
+            end 
+        end
+        serialized[:integrations].each do |key, value|
+            prod = production[:integrations][key]
+            if prod.nil?
+                diff[:integrations] << key
+            else
+                if value != prod
+                    diff[:integrations] << key
+                end
+            end
+        end
+        serialized[:iaa_orders].each do |key, value|
+            prod = production[:iaa_orders][key]
+            if prod.nil?
+                diff[:orders] << key
+            else
+                if value != prod
+                    diff[:orders] << key
+                end
+            end
+        end
     end
 
     def run_serializer(path)
+        # seeder depends on data validations to work
+        # idp seeder is not what changed but the yaml files so are we sure we need to use the seeders in identity-idp? 
+        # if there is a way to just test within identity-idp-config instead it might be worth looking into?
         ServiceProviderSeeder.new(rails_env: 'production', deploy_env: 'prod', yaml_path: path).run
         AgencySeeder.new(rails_env: 'production').run
         Agreements::PartnerAccountStatusSeeder.new(rails_env: 'production').run
@@ -34,20 +71,17 @@ class CompareYaml
     end
 
     def objects
-        #this would work except that it can't always find an integration with an issuer that matches?? 
-        # error: 'no method attributes' 
-        sp = ServiceProvider.all.each_with_object({}) do |hash, item|
-            binding.pry
-            item[hash[:issuer].to_sym] = {
-                service_provider: hash.attributes.except("issuer", "id", "created_at", "updated_at"),
-                integration: Agreements::Integration.find_by(issuer: hash[:issuer].to_s).attributes.except("issuer"),
-            }
-        end
         {
-            service_provider: sp,
-            iaa_orders: Agreements::IaaOrder.all,
-        }
-    
+            service_providers: ServiceProvider.all.each_with_object({}) do |sp, object|
+                object[sp[:issuer].to_s] = sp.attributes.except( "id", "created_at", "updated_at") 
+            end,
+            integrations: Agreements::Integration.all.each_with_object({}) do |int, object|
+                object[int[:issuer].to_s] = int.attributes.except("id")
+            end,
+            iaa_orders: Agreements::IaaOrder.all.each_with_object({}) do |order, object|
+                object[order[:iaa_gtc_id].to_s] = order.attributes.except("id")
+            end,
+        }.with_indifferent_access
     end
 
     def reset_db
