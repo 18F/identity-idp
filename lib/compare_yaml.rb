@@ -2,63 +2,49 @@ require 'pry'
 require_relative '../app/services/service_provider_seeder'
 
 class CompareYaml
-    # before you can run this script you must have identity-idp-config repo set up and run serialized.rb script
-    # serialized.rb script will create a 'serialized' folder which needs to be copied to this repo
-    # it will also create a config folder and all files inside should be copied into the identity-idp config folder and replace matching existing yml files
+    # This is a black box end-to-end test spitting out the results and checking for regressions trying to replicate as close as possible the production database
+    # Before you can run this script you must have identity-idp-config repo set up and run serialized.rb script
+    # Serialized.rb script will create a 'serialized' folder which needs to be copied to this repo
+    # It will also create a config folder and all files inside should be copied into the identity-idp config folder replacubg the existing yml files which only have test data
 
+    def initialize
+        @diff = {
+            service_providers: [],
+            integrations: [],
+            iaa_orders: [],
+        }
+    end
 
     def run
         serialized = run_serializer('serialized')
         reset_db
         production = run_serializer('config')
-        # black box end-to-end test spitting out the results and checking for regressions
-        # trying to replicate as close as possible the production database
-        # 1. restructure objects so that it is a hash with each issuer being the top-level key 
-        # 2. loop through serialized and find the matching provider in production 
-        # 3. compare them 
-        # 4. if there are no differences, go on to the next one 
-        # 5. if there are differences, put the issuer in an array that we can track
-        diff = {
-            service_providers: []
-            integrations: []
-            orders: []
-        }
+        # loop through serialized and find the matching provider in production 
         serialized[:service_providers].each do |key, value|
-            prod = production[:service_providers][key]
-            if prod.nil?
-                diff[:service_providers] << key
-            else
-                if value != prod
-                    diff[:service_provider] << key
-                end
-            end 
+            add_to_diff(:service_providers, key, value, production)
         end
         serialized[:integrations].each do |key, value|
-            prod = production[:integrations][key]
-            if prod.nil?
-                diff[:integrations] << key
-            else
-                if value != prod
-                    diff[:integrations] << key
-                end
-            end
+            add_to_diff(:integrations, key, value, production)
         end
         serialized[:iaa_orders].each do |key, value|
-            prod = production[:iaa_orders][key]
-            if prod.nil?
-                diff[:orders] << key
-            else
-                if value != prod
-                    diff[:orders] << key
-                end
+            add_to_diff(:iaa_orders, key, value, production)
+        end
+        @diff
+    end
+
+    # put the issuers with data that doesn't match in the diff hash
+    def add_to_diff(symbol, key, value, production)
+        prod = production[symbol][key]
+        if prod.nil?
+            @diff[symbol] << key
+        else
+            if value != prod
+                @diff[symbol] << key
             end
         end
     end
 
     def run_serializer(path)
-        # seeder depends on data validations to work
-        # idp seeder is not what changed but the yaml files so are we sure we need to use the seeders in identity-idp? 
-        # if there is a way to just test within identity-idp-config instead it might be worth looking into?
         ServiceProviderSeeder.new(rails_env: 'production', deploy_env: 'prod', yaml_path: path).run
         AgencySeeder.new(rails_env: 'production').run
         Agreements::PartnerAccountStatusSeeder.new(rails_env: 'production').run
@@ -70,6 +56,7 @@ class CompareYaml
         objects
     end
 
+    # restructure objects for a hash with a top-level key 
     def objects
         {
             service_providers: ServiceProvider.all.each_with_object({}) do |sp, object|
