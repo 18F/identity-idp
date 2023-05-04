@@ -76,7 +76,7 @@ module Idv
         )
 
         if IdentityConfig.store.doc_auth_link_sent_controller_enabled
-          flow_session[:flow_path] = @flow.flow_path
+          flow_session[:flow_path] = 'hybrid'
           redirect_to idv_link_sent_url
         end
 

@@ -25,6 +25,10 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_link_sent_url)
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
     expect(page).to have_content(phone_number)
+
+    # does not allow skipping ahead to ssn step
+    visit(idv_ssn_url)
+    expect(page).to have_current_path(idv_link_sent_url)
   end
 
   context 'when link sent polling is enabled' do
