@@ -83,7 +83,8 @@ module IrsAttemptsApi
     end
 
     def ignore_idv_event?(event_type)
-      !IdentityConfig.store.irs_attempt_api_idv_events_enabled && (event_type.to_s.starts_with? 'idv_')
+      !IdentityConfig.store.irs_attempt_api_idv_events_enabled &&
+        (event_type.to_s.starts_with? 'idv_')
     end
 
     def redis_client
