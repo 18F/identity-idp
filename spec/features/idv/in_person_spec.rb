@@ -42,6 +42,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # verify page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -153,6 +154,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # verify page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -168,6 +170,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update address button
     click_button t('idv.buttons.change_address_label')
@@ -175,6 +178,7 @@ RSpec.describe 'In Person Proofing', js: true do
     choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update ssn button
     click_button t('idv.buttons.change_ssn_label')
@@ -182,6 +186,7 @@ RSpec.describe 'In Person Proofing', js: true do
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     complete_verify_step(user)
 
     # phone page
@@ -668,6 +673,34 @@ RSpec.describe 'In Person Proofing', js: true do
       fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+    end
+
+    it 'allows user to update their residential address as different from their state id' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_ssn_step(user)
+
+      # click "update residential address"
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      # change something in the address
+      fill_in t('idv.form.address1'), with: 'new address different from state address1'
+      # click update
+      click_button t('forms.buttons.submit.update')
+
+      # back to verify page
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+      expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_text('new address different from state address1').once
+
+      # click update state id address
+      click_button t('idv.buttons.change_state_id_label')
+
+      # check that the "No, I live at a different address" is checked
+      expect(page).to have_checked_field(
+        t('in_person_proofing.form.state_id.same_address_as_id_no'),
+        visible: false,
+      )
     end
   end
 

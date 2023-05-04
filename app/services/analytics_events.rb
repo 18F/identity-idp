@@ -2690,10 +2690,14 @@ module AnalyticsEvents
   end
 
   # @param [Integer] requested_ial
+  # @param [String,nil] requested_aal_authn_context
+  # @param [Boolean,nil] force_authn
   # @param [String] service_provider
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
+    requested_aal_authn_context:,
+    force_authn:,
     service_provider:,
     **extra
   )
@@ -2701,6 +2705,8 @@ module AnalyticsEvents
       'SAML Auth Request',
       {
         requested_ial: requested_ial,
+        requested_aal_authn_context: requested_aal_authn_context,
+        force_authn: force_authn,
         service_provider: service_provider,
         **extra,
       }.compact,

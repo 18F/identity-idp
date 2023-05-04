@@ -76,4 +76,75 @@ RSpec.describe Reporting::IdentityVerificationReport do
       )
     end
   end
+
+  describe '#cloudwatch_client' do
+    let(:opts) { {} }
+    let(:subject) { described_class.new(issuer:, time_range:, **opts) }
+    let(:default_args) do
+      {
+        num_threads: 5,
+        ensure_complete_logs: true,
+        slice_interval: 3.hours,
+        progress: false,
+        logger: nil,
+      }
+    end
+
+    describe 'when all args are default' do
+      it 'creates a client with the default options' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when verbose is passed in' do
+      let(:opts) { { verbose: true } }
+      let(:logger) { double Logger }
+
+      before do
+        expect(Logger).to receive(:new).with(STDERR).and_return logger
+        default_args[:logger] = logger
+      end
+
+      it 'creates a client with the expected logger' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when progress is passed in as true' do
+      let(:opts) { { progress: true } }
+      before { default_args[:progress] = true }
+
+      it 'creates a client with progress as true' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when threads is passed in' do
+      let(:opts) { { threads: 17 } }
+      before { default_args[:num_threads] = 17 }
+
+      it 'creates a client with the expected thread count' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+
+    describe 'when slice is passed in' do
+      let(:opts) { { slice: 2.weeks } }
+      before { default_args[:slice_interval] = 2.weeks }
+
+      it 'creates a client with expected time slice' do
+        expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
+
+        subject.cloudwatch_client
+      end
+    end
+  end
 end

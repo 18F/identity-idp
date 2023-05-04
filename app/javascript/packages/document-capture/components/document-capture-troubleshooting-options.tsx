@@ -28,6 +28,12 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    */
   showAlternativeProofingOptions?: boolean;
 
+  /**
+   * Whether or not to display option for getting
+   * help at SP
+   */
+  showSPOption?: boolean;
+
   altInPersonCta?: string;
   altInPersonPrompt?: string;
   altInPersonCtaButtonText?: string;
@@ -38,6 +44,7 @@ function DocumentCaptureTroubleshootingOptions({
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
   showAlternativeProofingOptions,
+  showSPOption = true,
   altInPersonCta,
   altInPersonPrompt,
   altInPersonCtaButtonText,
@@ -78,11 +85,12 @@ function DocumentCaptureTroubleshootingOptions({
               text: t('idv.troubleshooting.options.supported_documents'),
               isExternal: true,
             },
-            spName && {
-              url: getFailureToProofURL(location),
-              text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
-              isExternal: true,
-            },
+            spName &&
+              showSPOption && {
+                url: getFailureToProofURL(location),
+                text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
+                isExternal: true,
+              },
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
