@@ -20,6 +20,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       zipcode: applicant_pii[:identity_doc_zipcode],
     }
   end
+  let(:residential_address) do
+    {
+      address1: applicant_pii[:address1],
+      address2: applicant_pii[:address2],
+      city: applicant_pii[:city],
+      state: applicant_pii[:state],
+      state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+      zipcode: applicant_pii[:zipcode],
+    }
+  end
 
   describe '#proof' do
     before do
@@ -46,6 +56,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     context 'when double address verification is enabled' do
+      let(:double_address_verification) { true }
       let(:resolution_result) do
         instance_double(Proofing::Resolution::Result)
       end
@@ -109,8 +120,32 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'residential address and id address are the same' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
         let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+        let(:residential_instant_verify_proof) do
+          instance_double(Proofing::Resolution::Result)
+        end
         before do
           allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+          allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+          allow(instant_verify_proofer).to receive(:proof).
+            and_return(residential_instant_verify_proof)
+          allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
+        end
+
+        it 'only makes one request to LexisNexis InstantVerify' do
+          expect(instant_verify_proofer).to receive(:proof).exactly(:once)
+          expect(aamva_proofer).to receive(:proof)
+
+          subject
+        end
+
+        it 'produces a result adjudicator with correct information' do
+          expect(aamva_proofer).to receive(:proof)
+
+          result = subject
+
+          expect(result.same_address_as_id).to eq('true')
+          expect(result.double_address_verification).to eq(true)
+          expect(result.resolution_result).to eq(result.residential_resolution_result)
         end
 
         context 'LexisNexis InstantVerify fails' do
@@ -154,7 +189,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               let(:successful_aamva_proof) { instance_double(Proofing::StateIdResult) }
               before do
                 allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
-                allow(successful_aamva_proof).to receive(:verified_attributes).and_return([:address])
+                allow(successful_aamva_proof).to receive(:verified_attributes).
+                  and_return([:address])
                 allow(successful_aamva_proof).to receive(:success?).and_return(true)
               end
               it 'indicates aamva did pass' do
@@ -180,7 +216,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 and_return(residential_resolution_that_passed_instant_verify)
               allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
                 and_return(id_resolution_that_passed_instant_verify)
-              allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+              allow(instant_verify_proofer).to receive(:proof).
+                with(hash_including(state_id_address)).
                 and_return(id_resolution_that_passed_instant_verify)
               allow(instance).to receive(:user_can_pass_after_state_id_check?).
                 with(id_resolution_that_passed_instant_verify).
@@ -221,26 +258,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       context 'residential address and id address are different' do
         let(:residential_address_proof) do
           instance_double(Proofing::Resolution::Result)
-        end
-        let(:residential_address) do
-          {
-            address1: applicant_pii[:address1],
-            address2: applicant_pii[:address2],
-            city: applicant_pii[:city],
-            state: applicant_pii[:state],
-            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-            zipcode: applicant_pii[:zipcode],
-          }
-        end
-        let(:state_id_address) do
-          {
-            address1: applicant_pii[:identity_doc_address1],
-            address2: applicant_pii[:identity_doc_address2],
-            city: applicant_pii[:identity_doc_city],
-            state: applicant_pii[:identity_doc_address_state],
-            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-            zipcode: applicant_pii[:identity_doc_zipcode],
-          }
         end
         let(:resolution_result) do
           instance_double(Proofing::Resolution::Result)
@@ -286,7 +303,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
           end
         end
-        # return here
         context 'LexisNexis InstantVerify fails for residential address' do
           let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
 
@@ -314,16 +330,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'LexisNexis InstantVerify fails for id address & passes for residential address' do
-          let(:state_id_address) do
-            {
-              address1: applicant_pii[:identity_doc_address1],
-              address2: applicant_pii[:identity_doc_address2],
-              city: applicant_pii[:identity_doc_city],
-              state: applicant_pii[:identity_doc_address_state],
-              state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-              zipcode: applicant_pii[:identity_doc_zipcode],
-            }
-          end
           let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
           let(:result_that_failed_instant_verify) do
             instance_double(Proofing::Resolution::Result)

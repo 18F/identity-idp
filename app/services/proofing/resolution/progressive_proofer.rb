@@ -39,8 +39,6 @@ module Proofing
           double_address_verification: double_address_verification,
         )
 
-        # todo(LG-8693): Begin verifying both the user's residential address and identity document
-        # address
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
 
         instant_verify_proof = proof_id_address_with_lexis_nexis_if_needed(
@@ -48,6 +46,7 @@ module Proofing
           timer: timer,
           residential_instant_verify_proof: residential_instant_verify_proof,
         )
+
         state_id_result = proof_id_with_aamva_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
@@ -59,11 +58,11 @@ module Proofing
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           double_address_verification: double_address_verification,
-          resolution_result: instant_verify_proof, # IV State ID address IF DAV, IV address if not DAV
+          resolution_result: instant_verify_proof,
           should_proof_state_id: should_proof_state_id,
           state_id_result: state_id_result, # AAMVA
-          residential_resolution_result: residential_instant_verify_proof, # IV Residential ID
-          same_address_as_id: applicant_pii[:same_address_as_id], # note: this is a string, "true" or "false"
+          residential_resolution_result: residential_instant_verify_proof,
+          same_address_as_id: applicant_pii[:same_address_as_id], # a string, "true" or "false"
         )
       end
 
@@ -114,8 +113,6 @@ module Proofing
         )
       end
 
-      # TK: create a new method that returns an address result with success: false for instant verify of id address when id address and residential address are the same and residential address fails resolution
-
       def resolution_unnecessary_result
         Proofing::AddressResult.new(
           success: true, errors: {}, exception: nil, vendor_name: 'ResolutionUnnecessary',
@@ -131,6 +128,7 @@ module Proofing
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_proof:)
+        return residential_instant_verify_proof if applicant_pii[:same_address_as_id] == 'true'
         return resolution_cannot_pass unless residential_instant_verify_proof.success?
 
         timer.time('resolution') do
@@ -144,9 +142,15 @@ module Proofing
         instant_verify_proof:,
         should_proof_state_id:
       )
-        unless should_proof_state_id && residential_instant_verify_proof.success? &&
-               user_can_pass_after_state_id_check?(instant_verify_proof)
-          return out_of_aamva_jurisdiction_result
+        if applicant_pii[:same_address_as_id] == 'false'
+          unless should_proof_state_id && residential_instant_verify_proof.success? &&
+                 user_can_pass_after_state_id_check?(instant_verify_proof)
+            return out_of_aamva_jurisdiction_result
+          end
+        else
+          unless should_proof_state_id && user_can_pass_after_state_id_check?(instant_verify_proof)
+            return out_of_aamva_jurisdiction_result
+          end
         end
 
         timer.time('state_id') do
