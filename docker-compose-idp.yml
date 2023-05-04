@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  identity_idp:
+    build: .
+    container_name: identity-idp
+    depends_on:
+      - postgres
+      - postgres-worker
+      - redis
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    # environment:
+    #   GIT_SHA: "sha"
+    #   GIT_TAG: "tag"
+    #   GIT_BRANCH: "branch"
+    #   HTTPS: "off"
+    #   redis_url: "redis://redis:6379"
+    #   #redis_url: redis
+    #   #redis_url: redis://${REDIS_USER}@redis:6379/0
+    #   DATABASE_URL: "postgres://${POSTGRES_USER}@${POSTGRES_DB}"
+    #   DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL: 'true'
+    #   # Set database timeouts to 30 seconds
+    #   database_timeout: '30000'
+    #   database_statement_timeout: '30000'
+    #   RACK_TIMEOUT_SERVICE_TIMEOUT: '30000'
+    #   DOCKER_DB_HOST: 'db'
+    #   DOCKER_DB_USER: 'postgres'
+    #   # '' == 1 thread for tests; performs better in a container
+    #   TEST_ENV_NUMBER: ''
+    #   NODE_ENV: 'production'
+    #   LOG_LEVEL: 'debug'
+    #   POSTGRES_DB: ${POSTGRES_DB}
+    #   POSTGRES_USER: ${POSTGRES_USER}
+    #   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    #   REDIS_URL: "redis://redis:6379"
+    #   REDIS_USER: ${REDIS_USER}
+    #   REDIS_PASSWORD: ${REDIS_PASSWORD}
+    #   database_host: postgres
+    #   database_name: ${POSTGRES_DB}
+    #   database_password: ${POSTGRES_PASSWORD}
+    #   database_read_replica_host: postgres-worker
+    #   database_readonly_password: ${POSTGRES_PASSWORD}
+    #   database_readonly_username: ${POSTGRES_USER}
+    #   database_username: ${POSTGRES_USER}
+    #   database_worker_jobs_host: postgres-worker
+    #   database_worker_jobs_name: ${POSTGRES_DB}
+    #   database_worker_jobs_username: ${POSTGRES_USER}
+    #   database_worker_jobs_password: ${POSTGRES_PASSWORD}
+    #   #redis_irs_attempt_api_url: redis://${REDIS_USER}:${REDIS_PASSWORD}@redis:6379/2
+    #   redis_irs_attempt_api_url: "redis://redis:6379"
+    #   redis_throttle_url: "redis://redis:6379"
+
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  postgres-worker:
+    image: postgres:14
+    container_name: postgres-worker
+    environment:
+      POSTGRES_DB: idp-worker-jobs
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  redis:
+    image: redis:7
+    container_name: redis
+    #command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    #environment:
+      #REDIS_USER: ${REDIS_USER}
+      #REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+# volumes:
+#   postgres-data:
