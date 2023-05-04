@@ -124,8 +124,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.1'
-idv_acuant_sdk_version_alternate: '11.8.0'
+idv_acuant_sdk_version_default: '11.8.2'
+idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -167,6 +167,9 @@ lexisnexis_request_mode: testing
 lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
+lexisnexis_hmac_auth_enabled: false
+lexisnexis_hmac_key_id: pf_iv_hmac_key_id
+lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
@@ -175,6 +178,8 @@ lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
+lexisnexis_trueid_hmac_key_id: trueid_hmac_key_id
+lexisnexis_trueid_hmac_secret_key: trueid_hmac_secret_key
 lexisnexis_trueid_timeout: 60.0
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow
 lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa2.trueid.workflow

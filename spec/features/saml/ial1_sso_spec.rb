@@ -28,8 +28,6 @@ feature 'IAL1 Single Sign On' do
 
         click_agree_and_continue
 
-        continue_as(email)
-
         expect(current_url).to eq complete_saml_url
         expect(page.get_rack_session.keys).to include('sp')
       end

@@ -9,6 +9,8 @@ module DocAuth
       :trueid_noliveness_nocropping_workflow,
       :trueid_password,
       :trueid_username,
+      :hmac_key_id,
+      :hmac_secret_key,
       :warn_notifier, # optional
       :locale,
       :dpi_threshold,

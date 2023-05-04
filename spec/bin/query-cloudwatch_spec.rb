@@ -170,36 +170,6 @@ RSpec.describe QueryCloudwatch do
     end
   end
 
-  describe '.parse_duration' do
-    it 'parses min as minutes' do
-      expect(QueryCloudwatch.parse_duration('1111min')).to eq(1111.minutes)
-    end
-
-    it 'parses h as hours' do
-      expect(QueryCloudwatch.parse_duration('2h')).to eq(2.hours)
-    end
-
-    it 'parses d as days' do
-      expect(QueryCloudwatch.parse_duration('3d')).to eq(3.days)
-    end
-
-    it 'parses w as weeks' do
-      expect(QueryCloudwatch.parse_duration('4w')).to eq(4.weeks)
-    end
-
-    it 'parses mon as months' do
-      expect(QueryCloudwatch.parse_duration('5mon')).to eq(5.months)
-    end
-
-    it 'parses y as years' do
-      expect(QueryCloudwatch.parse_duration('6y')).to eq(6.years)
-    end
-
-    it 'is nil for unknown' do
-      expect(QueryCloudwatch.parse_duration('7x')).to be_nil
-    end
-  end
-
   describe '#run' do
     let(:format) { :csv }
     let(:config) do
