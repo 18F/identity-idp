@@ -1,4 +1,4 @@
-function showOrHidePuertoRicoExtras(forStateCode) {
+export function showOrHidePuertoRicoExtras(forStateCode) {
   const isPuertoRico = forStateCode === 'PR';
 
   document.querySelectorAll('.puerto-rico-extras').forEach((element) => {
