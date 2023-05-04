@@ -73,6 +73,16 @@ RSpec.describe IrsAttemptsApi::Tracker do
       end
     end
 
+    it 'records an idv event in redis' do
+      freeze_time do
+        subject.track_event(:idv_test_event, foo: :bar)
+
+        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
+
+        expect(events.values.length).to eq(1)
+      end
+    end
+
     it 'does not store events in plaintext in redis' do
       freeze_time do
         subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
@@ -89,7 +99,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
       it 'does not log or track anything about the event' do
         expect(analytics).to_not receive(:irs_attempts_api_event_metadata).with(
-          event_type: :test_event,
+          event_type: :idv_test_event,
           unencrypted_payload_num_bytes: kind_of(Integer),
           recorded: true,
         )
