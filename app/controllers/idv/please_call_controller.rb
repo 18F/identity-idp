@@ -6,8 +6,9 @@ module Idv
 
     def show
       analytics.idv_please_call_visited
-      verified_at = current_user.profiles.last.verified_at || Time.zone.today
-      @call_by_date = verified_at + FRAUD_REVIEW_CONTACT_WITHIN_DAYS
+      pending_at = current_user.fraud_review_pending_profile.fraud_review_pending_at ||
+                   Time.zone.today
+      @call_by_date = pending_at + FRAUD_REVIEW_CONTACT_WITHIN_DAYS
     end
   end
 end
