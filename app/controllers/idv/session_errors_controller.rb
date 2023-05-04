@@ -1,6 +1,5 @@
 module Idv
   class SessionErrorsController < ApplicationController
-    include StepIndicatorConcern
     include IdvSession
     include EffectiveUser
 
