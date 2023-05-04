@@ -164,6 +164,9 @@ GEM
     aws-sdk-sns (1.49.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.53.0)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.3.2)
@@ -726,6 +729,7 @@ DEPENDENCIES
   aws-sdk-pinpointsmsvoice
   aws-sdk-ses (~> 1.6)
   aws-sdk-sns
+  aws-sdk-sqs
   axe-core-rspec (~> 4.2)
   barby (~> 0.6.8)
   base32-crockford
