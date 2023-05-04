@@ -74,11 +74,13 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           setAutoSubmit(true);
           setImmediate(() => {
             e.target.disabled = false;
-            trackEvent('IdV: location submitted', {
-              selected_location: selectedLocationAddress,
-              in_person_cta_variant: inPersonCtaVariantActive,
-            });
-            forceRedirect(inPersonURL!);
+            if (flowPath !== 'hybrid') {
+              trackEvent('IdV: location submitted', {
+                selected_location: selectedLocationAddress,
+                in_person_cta_variant: inPersonCtaVariantActive,
+              });
+              forceRedirect(inPersonURL!);
+            }
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });

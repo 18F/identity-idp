@@ -642,9 +642,15 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, in_person_cta_variant:, **extra)
+    track_event(
+      'IdV: in person proofing prepare submitted',
+      flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
+      **extra,
+    )
   end
 
   def idv_in_person_proofing_residential_address_submitted(**extra)

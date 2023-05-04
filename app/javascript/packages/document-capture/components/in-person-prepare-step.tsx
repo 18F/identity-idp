@@ -1,11 +1,8 @@
-import { useContext, useState } from 'react';
-import type { MouseEventHandler } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
-import { removeUnloadProtection } from '@18f/identity-url';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
-import { SpinnerButton } from '@18f/identity-spinner-button';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
@@ -15,20 +12,20 @@ import { InPersonContext } from '../context';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isMounted = useRef(true);
   const { flowPath } = useContext(UploadContext);
-  const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
 
-  const onContinue: MouseEventHandler = () => {
-    if (!isSubmitting) {
-      setIsSubmitting(true);
-      removeUnloadProtection();
+  useEffect(() => {
+    if (isMounted.current) {
       setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
-      trackEvent('IdV: prepare submitted');
     }
-  };
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <>
@@ -50,13 +47,10 @@ function InPersonPrepareStep({ toPreviousStep }) {
           headingUnstyled
         />
       </ProcessList>
-      {flowPath === 'hybrid' && <FormStepsButton.Continue />}
-      {inPersonURL && flowPath === 'standard' && (
-        <div className="margin-y-5">
-          <SpinnerButton type="submit" onClick={onContinue} isBig isWide>
-            {t('forms.buttons.continue')}
-          </SpinnerButton>
-        </div>
+      {inPersonURL && flowPath === 'standard' ? (
+        <FormStepsButton.Continue className="margin-y-5" />
+      ) : (
+        <FormStepsButton.Continue />
       )}
       <p>
         {t('in_person_proofing.body.prepare.privacy_disclaimer', {
