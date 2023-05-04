@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  identity_idp:
+    build: .
+    container_name: identity-idp
+    depends_on:
+      - postgres
+      - postgres-worker
+      - redis
+    ports:
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    environment:
+      POSTGRES_SSLMODE: 'prefer'
+      POSTGRES_NAME: idp
+      POSTGRES_HOST: postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_WORKER_SSLMODE: 'prefer'
+      POSTGRES_WORKER_NAME: idp-worker-jobs
+      POSTGRES_WORKER_HOST: postgres-worker
+      POSTGRES_WORKER_USERNAME: postgres
+      POSTGRES_WORKER_PASSWORD: postgres
+      LOGIN_ENV: dev
+      RAILS_OFFLINE: 'true'
+
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    environment:
+      POSTGRES_DB: idp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  postgres-worker:
+    image: postgres:14
+    container_name: postgres-worker
+    environment:
+      POSTGRES_DB: idp-worker-jobs
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  redis:
+    image: redis:7
+    container_name: redis
+    #command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    #environment:
+      #REDIS_USER: ${REDIS_USER}
+      #REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+# volumes:
+#   postgres-data:
