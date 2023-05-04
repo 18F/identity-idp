@@ -10,6 +10,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user) { create(:user, :signed_up) }
   let(:instant_verify_proofer) { instance_double(Proofing::LexisNexis::InstantVerify::Proofer) }
   let(:instance) { described_class.new }
+  let(:state_id_address) do
+    {
+      address1: applicant_pii[:identity_doc_address1],
+      address2: applicant_pii[:identity_doc_address2],
+      city: applicant_pii[:identity_doc_city],
+      state: applicant_pii[:identity_doc_address_state],
+      state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+      zipcode: applicant_pii[:identity_doc_zipcode],
+    }
+  end
 
   describe '#proof' do
     before do
@@ -29,70 +39,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     it 'returns a ResultAdjudicator' do
-      expect(proof).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+      proofing_result = proof
+
+      expect(proofing_result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+      expect(proofing_result.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
     end
 
     context 'when double address verification is enabled' do
-      let(:successful_residential_address_proof) do
-        instance_double(Proofing::Resolution::Result)
-      end
       let(:resolution_result) do
         instance_double(Proofing::Resolution::Result)
       end
-      let(:double_address_verification) { true }
-      let(:residential_address) do
-        {
-          address1: applicant_pii[:address1],
-          address2: applicant_pii[:address2],
-          city: applicant_pii[:city],
-          state: applicant_pii[:state],
-          state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-          zipcode: applicant_pii[:zipcode],
-        }
-      end
-
-      let(:state_id_address) do
-        {
-          address1: applicant_pii[:identity_doc_address1],
-          address2: applicant_pii[:identity_doc_address2],
-          city: applicant_pii[:identity_doc_city],
-          state: applicant_pii[:identity_doc_address_state],
-          state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-          zipcode: applicant_pii[:identity_doc_zipcode],
-        }
-      end
-
-      # TKTK: fix this test, have a rubber duck thread up
-      it 'makes two requests to the Instant Verify Proofer' do
-        allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-        expect(instant_verify_proofer).to receive(:proof).with(hash_including(residential_address))
-        expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
-        # allow(resolution_result).to receive(:success?).and_return(true)
-        # allow(instance).to receive(:proof_state_id_if_needed)
-
-        subject
-      end
-
-      # failed attempt at test below
-      # it 'makes a request to the Instant Verify proofer' do
-      #   allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-      #   allow(instance).to receive(:proof_residential_address_if_needed).and_return(successful_residential_address_proof)
-      #   allow(successful_residential_address_proof).to receive(:success?).and_return(true)
-      #   allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).and_return(resolution_result)
-      #   allow(resolution_result).to receive(:success?).and_return(true)
-      #   # allow(instant_verify_proofer).to receive(:proof).with(hash_including(residential_address)).
-      #   #   and_return(successful_residential_address_proof)
-      #   # allow(successful_residential_address_proof).to receive(:success?).and_return(true)
-
-      #   expect(instant_verify_proofer).to receive(:proof).with(hash_including(residential_address))
-      #   expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
-      #   # expect(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address))
-      #   # allow(resolution_result).to receive(:success?).and_return(true)
-      #   # allow(instance).to receive(:proof_id_with_aamva_if_needed)
-
-      #   subject
-      # end
-
       context 'ThreatMetrix is enabled' do
         let(:threatmetrix_proofer) { instance_double(Proofing::LexisNexis::Ddp::Proofer) }
 
@@ -102,7 +58,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled).
             and_return(false)
           allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(threatmetrix_proofer)
-          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).and_return(resolution_result)
+
+          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
+            and_return(resolution_result)
           allow(resolution_result).to receive(:success?).and_return(true)
           allow(instant_verify_proofer).to receive(:proof)
         end
@@ -132,7 +90,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?).
             and_return(false)
 
-          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).and_return(resolution_result)
+          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
+            and_return(resolution_result)
           allow(resolution_result).to receive(:success?).and_return(true)
           allow(instant_verify_proofer).to receive(:proof)
         end
@@ -147,128 +106,17 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      context 'Instant Verify passes for residential address and id address' do
-        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-        before do
-          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
-        end
-
-        context 'should proof with AAMVA' do
-          let(:id_resolution_that_passed_instant_verify) do
-            instance_double(Proofing::Resolution::Result)
-          end
-          let(:residential_resolution_that_passed_instant_verify) do
-            instance_double(Proofing::Resolution::Result)
-          end
-
-          before do
-            allow(instance).to receive(:proof_residential_address_if_needed).
-              and_return(residential_resolution_that_passed_instant_verify)
-            allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-              and_return(id_resolution_that_passed_instant_verify)
-            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
-              and_return(id_resolution_that_passed_instant_verify)
-            allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(id_resolution_that_passed_instant_verify).
-              and_return(true)
-            allow(id_resolution_that_passed_instant_verify).to receive(:success?).
-              and_return(true)
-            allow(residential_resolution_that_passed_instant_verify).to receive(:success?).
-              and_return(true)
-          end
-
-          it 'makes a request to the AAMVA proofer' do
-            expect(aamva_proofer).to receive(:proof)
-
-            subject
-          end
-
-          context 'AAMVA proofing fails' do
-            let(:aamva_client) { instance_double(Proofing::Aamva::VerificationClient) }
-            let(:failed_aamva_proof) do
-              instance_double(Proofing::StateIdResult)
-            end
-            before do
-              allow(Proofing::Aamva::VerificationClient).to receive(:new).and_return(aamva_client)
-              allow(failed_aamva_proof).to receive(:success?).and_return(false)
-            end
-            it 'returns a result adjudicator that indicates the aamva proofing failed' do
-              allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
-
-              result = subject
-
-              expect(result.state_id_result.success?).to eq(false)
-              # TKTK: feels weird to test result.adjudicated_result.success here because result is what is returned by proof
-            end
-          end
-        end
-      end
-
-      context 'Instant Verify fails' do
-        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-        let(:result_that_failed_instant_verify) do
-          instance_double(Proofing::Resolution::Result)
-        end
-
-        before do
-          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
-          allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
-            and_return(result_that_failed_instant_verify)
-          allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
-            and_return(result_that_failed_instant_verify)
-        end
-
-        context 'the failure can be covered by AAMVA' do
-          before do
-            allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(result_that_failed_instant_verify).
-              and_return(true)
-            allow(result_that_failed_instant_verify).
-              to receive(:attributes_requiring_additional_verification).
-              and_return([:address])
-          end
-
-          context 'it is not covered by AAMVA' do
-            let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
-            before do
-              allow(instance).to receive(:proof_id_with_aamva_if_needed).and_return(failed_aamva_proof)
-              allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
-              allow(failed_aamva_proof).to receive(:verified_attributes).and_return([])
-              allow(failed_aamva_proof).to receive(:success?).and_return(false)
-            end
-            it 'returns a failed proofing result' do
-              result = subject
-
-              expect(result.state_id_result.success?).to eq(false)
-            end
-          end
-
-          context 'it is covered by AAMVA' do
-            let(:successful_aamva_proof) { instance_double(Proofing::StateIdResult) }
-            before do
-              allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
-              allow(successful_aamva_proof).to receive(:verified_attributes).and_return([:address])
-              allow(successful_aamva_proof).to receive(:success?).and_return(true)
-            end
-            it 'returns a successful proofing result' do
-              result = subject
-
-              expect(result.state_id_result.success?).to eq(true)
-            end
-          end
-        end
-      end
-
-      context 'residential address is the same' do
+      context 'residential address and id address are the same' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+        let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+        before do
+          allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+        end
 
-        context 'Instant Verify fails for residential address' do
-          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
-
-          before do
-            allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+        context 'LexisNexis InstantVerify fails' do
+          let(:result_that_failed_instant_verify) do
+            instance_double(Proofing::Resolution::Result)
           end
-
           before do
             allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
               and_return(result_that_failed_instant_verify)
@@ -280,14 +128,98 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             allow(result_that_failed_instant_verify).to receive(:success?).
               and_return(false)
           end
+
+          context 'the failure can be covered by AAMVA' do
+            before do
+              allow(result_that_failed_instant_verify).
+                to receive(:attributes_requiring_additional_verification).
+                and_return([:address])
+            end
+
+            context 'it is not covered by AAMVA' do
+              let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
+              before do
+                allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+                allow(failed_aamva_proof).to receive(:verified_attributes).and_return([])
+                allow(failed_aamva_proof).to receive(:success?).and_return(false)
+              end
+              it 'indicates the aamva check did not pass' do
+                result = subject
+
+                expect(result.state_id_result.success?).to eq(false)
+              end
+            end
+
+            context 'it is covered by AAMVA' do
+              let(:successful_aamva_proof) { instance_double(Proofing::StateIdResult) }
+              before do
+                allow(aamva_proofer).to receive(:proof).and_return(successful_aamva_proof)
+                allow(successful_aamva_proof).to receive(:verified_attributes).and_return([:address])
+                allow(successful_aamva_proof).to receive(:success?).and_return(true)
+              end
+              it 'indicates aamva did pass' do
+                result = subject
+
+                expect(result.state_id_result.success?).to eq(true)
+              end
+            end
+          end
         end
-        context 'Instant Verify passes for residential address' do
+
+        context 'LexisNexis InstantVerify passes for residential address and id address' do
+          context 'should proof with AAMVA' do
+            let(:id_resolution_that_passed_instant_verify) do
+              instance_double(Proofing::Resolution::Result)
+            end
+            let(:residential_resolution_that_passed_instant_verify) do
+              instance_double(Proofing::Resolution::Result)
+            end
+
+            before do
+              allow(instance).to receive(:proof_residential_address_if_needed).
+                and_return(residential_resolution_that_passed_instant_verify)
+              allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
+                and_return(id_resolution_that_passed_instant_verify)
+              allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+                and_return(id_resolution_that_passed_instant_verify)
+              allow(instance).to receive(:user_can_pass_after_state_id_check?).
+                with(id_resolution_that_passed_instant_verify).
+                and_return(true)
+              allow(id_resolution_that_passed_instant_verify).to receive(:success?).
+                and_return(true)
+              allow(residential_resolution_that_passed_instant_verify).to receive(:success?).
+                and_return(true)
+            end
+
+            it 'makes a request to the AAMVA proofer' do
+              expect(aamva_proofer).to receive(:proof)
+
+              subject
+            end
+
+            context 'AAMVA proofing fails' do
+              let(:aamva_client) { instance_double(Proofing::Aamva::VerificationClient) }
+              let(:failed_aamva_proof) do
+                instance_double(Proofing::StateIdResult)
+              end
+              before do
+                allow(Proofing::Aamva::VerificationClient).to receive(:new).and_return(aamva_client)
+                allow(failed_aamva_proof).to receive(:success?).and_return(false)
+              end
+              it 'returns a result adjudicator that indicates the aamva proofing failed' do
+                allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+
+                result = subject
+
+                expect(result.state_id_result.success?).to eq(false)
+              end
+            end
+          end
         end
       end
 
-      context 'residential address is different' do
-        let(:application_pii) { Idp::Constants::MOCK_IDV_APPLICANT_ADDRESSES_DIFFER }
-        let(:residential_resolution_result) do
+      context 'residential address and id address are different' do
+        let(:residential_address_proof) do
           instance_double(Proofing::Resolution::Result)
         end
         let(:residential_address) do
@@ -300,40 +232,134 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             zipcode: applicant_pii[:zipcode],
           }
         end
+        let(:state_id_address) do
+          {
+            address1: applicant_pii[:identity_doc_address1],
+            address2: applicant_pii[:identity_doc_address2],
+            city: applicant_pii[:identity_doc_city],
+            state: applicant_pii[:identity_doc_address_state],
+            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+            zipcode: applicant_pii[:identity_doc_zipcode],
+          }
+        end
+        let(:resolution_result) do
+          instance_double(Proofing::Resolution::Result)
+        end
+        let(:double_address_verification) { true }
 
-        context 'Instant Verify fails for residential address' do
+        context 'LexisNexis InstantVerify passes for residential address' do
+          before do
+            allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+            allow(instant_verify_proofer).to receive(:proof).and_return(residential_address_proof)
+            allow(residential_address_proof).to receive(:success?).and_return(true)
+          end
+          context 'LexisNexis InstantVerify passes for id address' do
+            it 'makes two requests to the InstantVerify Proofer' do
+              expect(instant_verify_proofer).to receive(:proof).
+                with(hash_including(residential_address)).
+                ordered
+              expect(instant_verify_proofer).to receive(:proof).
+                with(hash_including(state_id_address)).
+                ordered
+
+              subject
+            end
+
+            context 'AAMVA fails' do
+              let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
+              let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+              before do
+                allow(instance).to receive(:proof_id_with_aamva_if_needed).
+                  and_return(failed_aamva_proof)
+                allow(aamva_proofer).to receive(:proof).and_return(failed_aamva_proof)
+                allow(failed_aamva_proof).to receive(:success?).and_return(false)
+                allow(resolution_result).to receive(:errors)
+              end
+
+              it 'returns the correct resolution results' do
+                result_adjudicator = subject
+
+                expect(result_adjudicator.residential_resolution_result.success?).to be(true)
+                expect(result_adjudicator.resolution_result.success?).to be(true)
+                expect(result_adjudicator.state_id_result.success?).to be(false)
+              end
+            end
+          end
+        end
+        # return here
+        context 'LexisNexis InstantVerify fails for residential address' do
           let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
 
           before do
             allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
             allow(instance).to receive(:proof_residential_address_if_needed).
-              and_return(residential_resolution_result)
-            allow(instant_verify_proofer).to receive(:proof).with(hash_including(residential_address)).
-              and_return(residential_resolution_result)
+              and_return(residential_address_proof)
+            allow(instant_verify_proofer).to receive(:proof).
+              with(hash_including(residential_address)).
+              and_return(residential_address_proof)
             allow(instance).to receive(:user_can_pass_after_state_id_check?).
-              with(residential_resolution_result).
+              with(residential_address_proof).
               and_return(false)
-            allow(residential_resolution_result).to receive(:success?).
+            allow(residential_address_proof).to receive(:success?).
               and_return(false)
           end
 
-          it 'fails adjudication logic' do
+          it 'does not make unnecessary calls' do
             expect(aamva_proofer).to_not receive(:proof)
-            expect(instant_verify_proofer).to_not receive(:proof).with(hash_including(state_id_address))
-            result = subject
-            expect(result.adjudicated_result.success?).to be(false) # fail adjudication logic is false
-            # expect() # instant verify does not receive proof with identity doc address
-            # expect() # aamva proof does not receive proof
+            expect(instant_verify_proofer).to_not receive(:proof).
+              with(hash_including(state_id_address))
+
+            subject
           end
         end
 
-        # context 'Instant Verify passes for residential address' do
-        #   it 'passes adjudication logic' do
-        #     expect() # aamva proof does not receive proof
-        #     expect() # instant verify does not receive proof with identity doc address
-        #     expect() # fail adjudication logic # state_id_result.success? is false
-        #   end
-        # end
+        context 'LexisNexis InstantVerify fails for id address & passes for residential address' do
+          let(:state_id_address) do
+            {
+              address1: applicant_pii[:identity_doc_address1],
+              address2: applicant_pii[:identity_doc_address2],
+              city: applicant_pii[:identity_doc_city],
+              state: applicant_pii[:identity_doc_address_state],
+              state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+              zipcode: applicant_pii[:identity_doc_zipcode],
+            }
+          end
+          let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+          let(:result_that_failed_instant_verify) do
+            instance_double(Proofing::Resolution::Result)
+          end
+
+          before do
+            allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+            allow(instance).to receive(:proof_id_address_with_lexis_nexis_if_needed).
+              and_return(result_that_failed_instant_verify)
+            allow(instant_verify_proofer).to receive(:proof).with(hash_including(state_id_address)).
+              and_return(result_that_failed_instant_verify)
+          end
+
+          context 'the failure can be covered by AAMVA' do
+            let(:failed_aamva_proof) { instance_double(Proofing::StateIdResult) }
+            let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer) }
+            before do
+              allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+              allow(instant_verify_proofer).to receive(:proof).and_return(residential_address_proof)
+              allow(residential_address_proof).to receive(:success?).and_return(true)
+
+              allow(instance).to receive(:user_can_pass_after_state_id_check?).
+                with(result_that_failed_instant_verify).
+                and_return(true)
+              allow(result_that_failed_instant_verify).
+                to receive(:attributes_requiring_additional_verification).
+                and_return([:address])
+              allow(instance).to receive(:state_id_proofer).and_return(aamva_proofer)
+            end
+            it 'calls AAMVA' do
+              expect(aamva_proofer).to receive(:proof)
+
+              subject
+            end
+          end
+        end
       end
     end
   end

@@ -14,6 +14,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       attributes_requiring_additional_verification: attributes_requiring_additional_verification,
     )
   end
+  let(:residential_resolution_result) { resolution_result }
 
   let(:state_id_success) { true }
   let(:state_id_verified_attributes) { [] }
@@ -29,6 +30,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
   let(:should_proof_state_id) { true }
   let(:double_address_verification) { false }
+  let(:same_address_as_id) { true }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
@@ -45,10 +47,12 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   subject do
     described_class.new(
       resolution_result: resolution_result,
+      residential_resolution_result: residential_resolution_result,
       state_id_result: state_id_result,
       should_proof_state_id: should_proof_state_id,
       double_address_verification: double_address_verification,
       device_profiling_result: device_profiling_result,
+      same_address_as_id: same_address_as_id,
     )
   end
 
@@ -60,7 +64,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
         expect(result.success?).to eq(true)
       end
     end
-
     context 'LexisNexis fails with attributes covered by AAMVA response' do
       let(:resolution_success) { false }
       let(:can_pass_with_additional_verification) { true }

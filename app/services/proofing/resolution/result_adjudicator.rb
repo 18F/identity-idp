@@ -2,7 +2,7 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :double_address_verification
+                  :double_address_verification, :residential_resolution_result, :same_address_as_id
 
       def initialize(
         resolution_result:, # IV
@@ -10,7 +10,8 @@ module Proofing
         residential_resolution_result:, # IV Current/residential
         should_proof_state_id:,
         double_address_verification:,
-        device_profiling_result:
+        device_profiling_result:,
+        same_address_as_id:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
@@ -18,6 +19,7 @@ module Proofing
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
+        @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
       end
 
       def adjudicated_result
@@ -80,7 +82,7 @@ module Proofing
       end
 
       def resolution_result_and_reason
-        if !residential_resolution_result.success? && !resolution_result.success?
+        if !residential_resolution_result.success? && !resolution_result.success? && same_address_as_id == 'false'
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
