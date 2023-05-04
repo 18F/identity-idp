@@ -84,6 +84,8 @@ feature 'Visitor sets password during signup' do
 
     scenario 'visitor gets password help message' do
       fill_in t('forms.password'), with: '1234567891011'
+      fill_in t('components.password_confirmation.confirm_label'),
+              with: '1234567891011'
 
       click_button t('forms.buttons.continue')
 

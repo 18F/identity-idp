@@ -26,7 +26,7 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-export function getFeedback(z, { minimumLength }) {
+export function getFeedback(z, minPasswordLength) {
   if (!z || !z.password) {
     return '&nbsp;';
   }
@@ -34,8 +34,8 @@ export function getFeedback(z, { minimumLength }) {
   const { warning, suggestions } = z.feedback;
 
   if (!warning && !suggestions.length) {
-    if (z.password.length < minimumLength) {
-      return t('errors.attributes.password.too_short.other', { count: minimumLength });
+    if (z.password.length < minPasswordLength) {
+      return t('errors.attributes.password.too_short.other', { count: minPasswordLength });
     }
 
     return '&nbsp;';
@@ -94,41 +94,46 @@ export function getForbiddenPasswords(element) {
   }
 }
 
-function analyzePw() {
-  const input = document.querySelector('.password-toggle__input');
+function updatePasswordFeedback(cls, strength, feedback) {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
+
+  pwCntnr.className = cls;
+  pwStrength.innerHTML = strength;
+  pwFeedback.innerHTML = feedback;
+}
+
+function validatePasswordField(score, input) {
+  if (score < 3) {
+    input.setCustomValidity(t('errors.messages.stronger_password'));
+  } else {
+    input.setCustomValidity('');
+  }
+}
+
+function checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input) {
+  const z = zxcvbn(password, forbiddenPasswords);
+  const [cls, strength] = getStrength(z);
+  const feedback = getFeedback(z, minPasswordLength);
+
+  validatePasswordField(z.score, input);
+  updatePasswordFeedback(cls, strength, feedback);
+}
+
+function analyzePw() {
+  const input =
+    document.querySelector('.password-toggle__input') ||
+    document.querySelector('.password-confirmation__input');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
-  const minPasswordLength = +pwCntnr.getAttribute('data-pw-min-length');
-
-  function updatePasswordFeedback(cls, strength, feedback) {
-    pwCntnr.className = cls;
-    pwStrength.innerHTML = strength;
-    pwFeedback.innerHTML = feedback;
-  }
-
-  function validatePasswordField(score) {
-    if (score < 3) {
-      input.setCustomValidity(t('errors.messages.stronger_password'));
-    } else {
-      input.setCustomValidity('');
-    }
-  }
-
-  function checkPasswordStrength(password) {
-    const z = zxcvbn(password, forbiddenPasswords);
-
-    const [cls, strength] = getStrength(z);
-    const feedback = getFeedback(z, { minimumLength: minPasswordLength });
-
-    validatePasswordField(z.score);
-    updatePasswordFeedback(cls, strength, feedback);
-  }
+  const minPasswordLength = document
+    .getElementById('pw-strength-cntnr')
+    .getAttribute('data-pw-min-length');
 
   input.addEventListener('input', (e) => {
-    checkPasswordStrength(e.target.value);
+    const password = e.target.value;
+    checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input);
   });
 }
 
