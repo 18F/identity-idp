@@ -529,7 +529,7 @@ RSpec.describe 'In Person Proofing', js: true do
                from: t('in_person_proofing.form.state_id.identity_doc_address_state')
         click_idv_continue
 
-        expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address))
 
         # address form
         select 'Puerto Rico',
@@ -548,17 +548,17 @@ RSpec.describe 'In Person Proofing', js: true do
         click_idv_continue
 
         # ssn page
-        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
         complete_ssn_step
 
         # verify page
-        expect(page).to have_current_path(idv_in_person_step_path(step: :verify), wait: 10)
+        expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
         expect(page).to have_text('PR').twice
 
         # update state ID
         click_button t('idv.buttons.change_state_id_label')
 
-        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'), wait: 10)
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
         click_button t('forms.buttons.submit.update')
@@ -566,7 +566,7 @@ RSpec.describe 'In Person Proofing', js: true do
         # update address
         click_button t('idv.buttons.change_address_label')
 
-        expect(page).to have_content(t('in_person_proofing.headings.update_address'), wait: 10)
+        expect(page).to have_content(t('in_person_proofing.headings.update_address'))
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
         expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
       end

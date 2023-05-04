@@ -29,18 +29,9 @@ function onIdentityDocStateSelection() {
   });
 }
 
-function onUpdate() {
-  const updateStateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
-  updateStateSelectors.forEach((updatedStateSelector) => {
-    if (!updatedStateSelector.id.includes('jurisdiction')) {
-      showOrHidePuertoRicoExtras(updatedStateSelector.value);
-    }
-  });
-}
-
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
-// set initial visibility
-onStateSelectionChange();
-onUpdate();
-onIdentityDocStateSelection();
+document.addEventListener('DOMContentLoaded', () => {
+  onStateSelectionChange();
+  onIdentityDocStateSelection();
+});
