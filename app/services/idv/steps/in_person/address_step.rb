@@ -30,7 +30,7 @@ module Idv
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
 
-          maybe_redirect_to_verify_info if updating_address
+          maybe_redirect_to_verify_info if updating_address?
         end
 
         def extra_view_variables
