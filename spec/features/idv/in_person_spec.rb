@@ -506,8 +506,8 @@ RSpec.describe 'In Person Proofing', js: true do
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
-        complete_location_step
         complete_prepare_step
+        complete_location_step
         expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
         # state id page
