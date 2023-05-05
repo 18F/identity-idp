@@ -1,4 +1,6 @@
 class Profile < ApplicationRecord
+  self.ignored_columns += %w[fraud_review_pending fraud_rejection]
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -49,8 +51,6 @@ class Profile < ApplicationRecord
         activated_at: now,
         deactivation_reason: nil,
         gpo_verification_pending_at: nil,
-        fraud_review_pending: false,
-        fraud_rejection: false,
         fraud_review_pending_at: nil,
         fraud_rejection_at: nil,
         verified_at: now,
@@ -67,8 +67,6 @@ class Profile < ApplicationRecord
 
   def activate_after_passing_review
     update!(
-      fraud_review_pending: false,
-      fraud_rejection: false,
       fraud_review_pending_at: nil,
       fraud_rejection_at: nil,
     )
@@ -81,7 +79,12 @@ class Profile < ApplicationRecord
   end
 
   def has_deactivation_reason?
-    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+    has_fraud_deactivation_reason? || gpo_verification_pending?
+  end
+
+  def has_fraud_deactivation_reason?
+    return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    fraud_review_pending? || fraud_rejection?
   end
 
   def deactivate_for_gpo_verification
@@ -91,8 +94,6 @@ class Profile < ApplicationRecord
   def deactivate_for_fraud_review
     update!(
       active: false,
-      fraud_review_pending: true,
-      fraud_rejection: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )
@@ -101,8 +102,6 @@ class Profile < ApplicationRecord
   def reject_for_fraud(notify_user:)
     update!(
       active: false,
-      fraud_review_pending: false,
-      fraud_rejection: true,
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
     )

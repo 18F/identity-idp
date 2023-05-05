@@ -53,7 +53,7 @@ shared_examples_for 'an idv session errors controller action' do
 
   context 'the user is not authenticated and in doc capture flow' do
     before do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       controller.session[:doc_capture_user_id] = user.id
     end
     it 'renders the error' do
@@ -96,6 +96,20 @@ shared_examples_for 'an idv session errors controller action' do
         hash_including(type: action.to_s),
       )
       get action
+    end
+  end
+
+  context 'the user is in the hybrid flow' do
+    render_views
+    let(:effective_user) { create(:user) }
+
+    before do
+      session[:doc_capture_user_id] = effective_user.id
+    end
+
+    it 'renders the error template' do
+      get action
+      expect(response).to render_template(template)
     end
   end
 end

@@ -31,11 +31,20 @@ module Reporting
 
     # @param [String] isssuer
     # @param [Range<Time>] date
-    def initialize(issuer:, time_range:, verbose: false, progress: false)
+    def initialize(
+      issuer:,
+      time_range:,
+      verbose: false,
+      progress: false,
+      slice: 3.hours,
+      threads: 5
+    )
       @issuer = issuer
       @time_range = time_range
       @verbose = verbose
       @progress = progress
+      @slice = slice
+      @threads = threads
     end
 
     def verbose?
@@ -156,8 +165,9 @@ module Reporting
 
     def cloudwatch_client
       @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+        num_threads: @threads,
         ensure_complete_logs: true,
-        slice_interval: 3.hours,
+        slice_interval: @slice,
         progress: progress?,
         logger: verbose? ? Logger.new(STDERR) : nil,
       )

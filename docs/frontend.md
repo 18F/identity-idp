@@ -4,7 +4,7 @@
 
 ### At a Glance
 
-- Leverages components and utilities from the [Login.gov Design System](https://github.com/18f/identity-style-guide),
+- Leverages components and utilities from the [Login.gov Design System](https://github.com/18f/identity-design-system),
   which is based on the [U.S. Web Design System](https://designsystem.digital.gov/).
 - Uses [Sass](https://sass-lang.com/) as the CSS preprocessor and [Stylelint](https://stylelint.io/)
   to keep files tidy.

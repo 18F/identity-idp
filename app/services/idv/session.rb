@@ -15,6 +15,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      threatmetrix_review_status
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
@@ -227,11 +228,9 @@ module Idv
         return ok_no_review_needed
       end
 
-      component = ProofingComponent.find_by(user: @current_user)
+      return ok_no_review_needed if threatmetrix_review_status.nil?
 
-      return ok_no_review_needed if !component.threatmetrix
-
-      return ok_no_review_needed if component.threatmetrix_review_status == 'pass'
+      return ok_no_review_needed if threatmetrix_review_status == 'pass'
 
       return failed_and_needs_review
     end

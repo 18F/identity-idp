@@ -18,7 +18,7 @@ class OpenidConnectUserInfoPresenter
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
-    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
+    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested? && ial2_data.present?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
@@ -126,7 +126,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ialmax_session?
-    identity.ial&.zero?
+    identity.ial == Idp::Constants::IAL_MAX
   end
 
   def x509_data

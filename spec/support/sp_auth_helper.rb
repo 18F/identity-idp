@@ -5,14 +5,14 @@ module SpAuthHelper
     click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
-    submit_form_with_valid_password
+    submit_form_with_valid_password_confirmation
     set_up_2fa_with_valid_phone
     visit sign_out_url
     User.find_with_email(email)
   end
 
   def create_ial2_account_go_back_to_sp_and_sign_out(sp)
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp

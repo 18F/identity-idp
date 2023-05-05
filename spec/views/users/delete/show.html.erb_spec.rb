@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'users/delete/show.html.erb' do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user, :fully_registered) }
 
   before do
     allow(view).to receive(:current_user).and_return(user)

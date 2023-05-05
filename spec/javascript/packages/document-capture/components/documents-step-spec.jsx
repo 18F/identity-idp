@@ -112,8 +112,7 @@ describe('document-capture/components/documents-step', () => {
       getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
     ).to.be.ok();
     expect(
-      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
-        .href,
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
     ).to.equal(
       'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
     );

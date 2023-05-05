@@ -130,6 +130,7 @@ class PinpointSupportedCountries
       'BDE' => 'BD',
       'DN' => 'DM',
       'H' => 'HT',
+      'KV' => 'XK',
       'TX' => 'TZ',
     }.fetch(iso_code, iso_code)
   end

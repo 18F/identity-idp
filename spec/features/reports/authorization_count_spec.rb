@@ -46,7 +46,7 @@ describe 'authorization count' do
   let(:issuer_2) { 'https://rp3.serviceprovider.com/auth/saml/metadata' }
 
   context 'an IAL1 user with an active session' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user, :fully_registered) }
 
     before do
       reset_monthly_auth_count_and_login(user)

@@ -39,6 +39,6 @@ Warden::Manager.after_authentication do |user, auth, options|
 
   unless bypass_by_cookie
     auth.session(options[:scope])[TwoFactorAuthenticatable::NEED_AUTHENTICATION] =
-      user.need_two_factor_authentication?(auth.request)
+      MfaPolicy.new(user).two_factor_enabled?
   end
 end

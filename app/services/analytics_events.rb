@@ -163,14 +163,12 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
-  # @param [Date] rejection_date Date of the rejection
-  # @param [Date] verified_at Date when profile was verified
+  # @param [DateTime] fraud_rejection_at Date when profile was rejected
   # Tracks when a profile is automatically rejected due to being under review for 30 days
-  def automatic_fraud_rejection(rejection_date:, verified_at:, **extra)
+  def automatic_fraud_rejection(fraud_rejection_at:, **extra)
     track_event(
       'Fraud: Automatic Fraud Rejection',
-      rejection_date: rejection_date,
-      verified_at: verified_at,
+      fraud_rejection_at: fraud_rejection_at,
       **extra,
     )
   end
@@ -2416,11 +2414,13 @@ module AnalyticsEvents
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
+  # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
+    validator_class:,
     exception_class:,
     **extra
   )
@@ -2429,6 +2429,7 @@ module AnalyticsEvents
       recaptcha_result:,
       score_threshold:,
       evaluated_as_valid:,
+      validator_class:,
       exception_class:,
       **extra,
     )
@@ -2683,10 +2684,14 @@ module AnalyticsEvents
   end
 
   # @param [Integer] requested_ial
+  # @param [String,nil] requested_aal_authn_context
+  # @param [Boolean,nil] force_authn
   # @param [String] service_provider
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
+    requested_aal_authn_context:,
+    force_authn:,
     service_provider:,
     **extra
   )
@@ -2694,6 +2699,8 @@ module AnalyticsEvents
       'SAML Auth Request',
       {
         requested_ial: requested_ial,
+        requested_aal_authn_context: requested_aal_authn_context,
+        force_authn: force_authn,
         service_provider: service_provider,
         **extra,
       }.compact,

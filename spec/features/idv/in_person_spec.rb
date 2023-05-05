@@ -42,6 +42,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # verify page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -50,7 +51,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_CITY)
       expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-      expect(page).to have_text('9**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
       complete_verify_step(user)
 
       # phone page
@@ -95,7 +96,7 @@ RSpec.describe 'In Person Proofing', js: true do
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
-      expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+      expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
@@ -132,13 +133,17 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.verify_info'),
     )
-    expect(page).to have_content(t('in_person_proofing.headings.state_id_milestone_2'))
+    expect(page).to have_content(
+      t(
+        'in_person_proofing.headings.state_id_milestone_2',
+      ).tr(' ', ' '),
+    )
     complete_state_id_step(user)
 
     # address page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('in_person_proofing.headings.address'))
-    expect(page).to have_content(t('in_person_proofing.form.address.same_address'))
+    expect(page).to have_content(t('in_person_proofing.form.address.same_address').tr(' ', ' '))
     complete_address_step(user)
 
     # ssn page
@@ -149,6 +154,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # verify page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -157,13 +163,14 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-    expect(page).to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
 
     # click update state ID button
     click_button t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update address button
     click_button t('idv.buttons.change_address_label')
@@ -171,6 +178,7 @@ RSpec.describe 'In Person Proofing', js: true do
     choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update ssn button
     click_button t('idv.buttons.change_ssn_label')
@@ -178,6 +186,7 @@ RSpec.describe 'In Person Proofing', js: true do
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     complete_verify_step(user)
 
     # phone page
@@ -222,7 +231,7 @@ RSpec.describe 'In Person Proofing', js: true do
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
     expect(page).to have_css("img[alt='#{APP_NAME}']")
-    expect(page).to have_content(t('in_person_proofing.headings.barcode', app_name: APP_NAME))
+    expect(page).to have_content(t('in_person_proofing.headings.barcode').tr(' ', ' '))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
@@ -499,6 +508,73 @@ RSpec.describe 'In Person Proofing', js: true do
 
         expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
       end
+
+      it 'shows hints when user selects Puerto Rico as state',
+         allow_browser_log: true do
+        sign_in_and_2fa_user
+        begin_in_person_proofing
+        complete_location_step
+        complete_prepare_step
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        # state id page
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change state selection
+        fill_out_state_id_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address))
+
+        # address form
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change selection
+        fill_out_address_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        click_idv_continue
+
+        # ssn page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+        complete_ssn_step
+
+        # verify page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+        expect(page).to have_text('PR').twice
+
+        # update state ID
+        click_button t('idv.buttons.change_state_id_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+        click_button t('forms.buttons.submit.update')
+
+        # update address
+        click_button t('idv.buttons.change_address_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+      end
     end
 
     context 'without double address verification' do
@@ -682,6 +758,188 @@ RSpec.describe 'In Person Proofing', js: true do
       fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+    end
+
+    it 'allows user to update their residential address as different from their state id' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_ssn_step(user)
+
+      # click "update residential address"
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      # change something in the address
+      fill_in t('idv.form.address1'), with: 'new address different from state address1'
+      # click update
+      click_button t('forms.buttons.submit.update')
+
+      # back to verify page
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+      expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_text('new address different from state address1').once
+
+      # click update state id address
+      click_button t('idv.buttons.change_state_id_label')
+
+      # check that the "No, I live at a different address" is checked
+      expect(page).to have_checked_field(
+        t('in_person_proofing.form.state_id.same_address_as_id_no'),
+        visible: false,
+      )
+    end
+  end
+
+  context 'in_person_capture_secondary_id_enabled feature flag enabled and' do
+    context 'when updates are made on state ID page starting from Verify Your Information',
+            allow_browser_log: true do
+      let(:user) { user_with_2fa }
+
+      before(:each) do
+        allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
+          and_return(true)
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_location_step(user)
+        complete_prepare_step(user)
+      end
+
+      it 'does not update their previous selection of "Yes,
+      I live at the address on my state-issued ID"' do
+        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+        # skip address step
+        complete_ssn_step(user)
+        # expect to be on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        # click update state ID button on the verify page
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # change address
+        fill_in t('in_person_proofing.form.state_id.address1'), with: ''
+        fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
+        click_button t('forms.buttons.submit.update')
+        # expect to be back on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        expect(page).to have_content(t('headings.verify'))
+        # expect to see state ID address update on verify twice
+        expect(page).to have_text('test update address').twice # for state id addr and addr update
+        # click update state id address
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # expect "Yes, I live at a different address" is checked"
+        expect(page).to have_checked_field(
+          t('in_person_proofing.form.state_id.same_address_as_id_yes'),
+          visible: false,
+        )
+      end
+
+      it 'does not update their previous selection of "No, I live at a different address"' do
+        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+        # expect to be on address page
+        expect(page).to have_content(t('in_person_proofing.headings.address'))
+        # complete address step
+        complete_address_step(user, double_address_verification: true)
+        complete_ssn_step(user)
+        # expect to be back on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        # click update state ID button on the verify page
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # change address
+        fill_in t('in_person_proofing.form.state_id.address1'), with: ''
+        fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
+        click_button t('forms.buttons.submit.update')
+        # expect to be back on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        expect(page).to have_content(t('headings.verify'))
+        # expect to see state ID address update on verify
+        expect(page).to have_text('test update address').once # only state id address update
+        # click update state id address
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        expect(page).to have_checked_field(
+          t('in_person_proofing.form.state_id.same_address_as_id_no'),
+          visible: false,
+        )
+      end
+
+      it 'updates their previous selection from "Yes" TO "No, I live at a different address"' do
+        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+        # skip address step
+        complete_ssn_step(user)
+        # click update state ID button on the verify page
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # change address
+        fill_in t('in_person_proofing.form.state_id.address1'), with: ''
+        fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
+        # change response to No
+        choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+        click_button t('forms.buttons.submit.update')
+        # expect to be on address page
+        expect(page).to have_content(t('in_person_proofing.headings.address'))
+        # complete address step
+        complete_address_step(user, double_address_verification: true)
+        # expect to be on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        # expect to see state ID address update on verify
+        expect(page).to have_text('test update address').once # only state id address update
+        # click update state id address
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # check that the "No, I live at a different address" is checked"
+        expect(page).to have_checked_field(
+          t('in_person_proofing.form.state_id.same_address_as_id_no'),
+          visible: false,
+        )
+      end
+
+      it 'updates their previous selection from "No" TO "Yes,
+      I live at the address on my state-issued ID"' do
+        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+        # expect to be on address page
+        expect(page).to have_content(t('in_person_proofing.headings.address'))
+        # complete address step
+        complete_address_step(user, double_address_verification: true)
+        complete_ssn_step(user)
+        # expect to be on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        # click update state ID button on the verify page
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        # change address
+        fill_in t('in_person_proofing.form.state_id.address1'), with: ''
+        fill_in t('in_person_proofing.form.state_id.address1'), with: 'test update address'
+        # change response to Yes
+        choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+        click_button t('forms.buttons.submit.update')
+        # expect to be back on verify page
+        expect(page).to have_content(t('headings.verify'))
+        expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+        # expect to see state ID address update on verify twice
+        expect(page).to have_text('test update address').twice # for state id addr and addr update
+        # click update state ID button on the verify page
+        click_button t('idv.buttons.change_state_id_label')
+        # expect to be on the state ID page
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        expect(page).to have_checked_field(
+          t('in_person_proofing.form.state_id.same_address_as_id_yes'),
+          visible: false,
+        )
+      end
     end
   end
 end

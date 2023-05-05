@@ -10,7 +10,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
   let(:should_proof_state_id) { true }
   let(:trace_id) { SecureRandom.uuid }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:proofing_device_profiling) { :enabled }

@@ -25,6 +25,8 @@ describe Idv::HybridMobile::CaptureCompleteController do
   before do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+    allow(subject).to receive(:confirm_document_capture_session_complete).
+      and_return(true)
   end
 
   describe 'before_actions' do
@@ -35,10 +37,10 @@ describe Idv::HybridMobile::CaptureCompleteController do
       )
     end
 
-    it 'checks that feature flag is enabled' do
+    it 'includes document capture session complete before action' do
       expect(subject).to have_actions(
         :before,
-        :render_404_if_hybrid_mobile_controllers_disabled,
+        :confirm_document_capture_session_complete,
       )
     end
   end

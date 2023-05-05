@@ -109,7 +109,7 @@ describe 'redirect_uri validation' do
 
   context 'when the user is already signed in via an SP' do
     it 'displays error instead of redirecting' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -141,7 +141,7 @@ describe 'redirect_uri validation' do
 
   context 'when the SP has multiple registered redirect_uris and the second one is requested' do
     it 'considers the request valid and redirects to the one requested' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_with_ial1_with_second_valid_redirect_uri
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -158,7 +158,7 @@ describe 'redirect_uri validation' do
 
   context 'when the SP does not have any registered redirect_uris' do
     it 'considers the request invalid and does not redirect if the user signs in' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       visit_idp_from_sp_that_does_not_have_redirect_uris
       current_host = URI.parse(page.current_url).host
 

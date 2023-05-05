@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Profile do
-  let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
-  let(:another_user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
+  let(:another_user) { create(:user, :fully_registered) }
   let(:profile) { user.profiles.create }
 
   let(:dob) { '1920-01-01' }
@@ -264,6 +264,12 @@ describe Profile do
     end
 
     context 'activation guards against deactivation reasons' do
+      before do
+        allow(FeatureManagement).to receive(
+          :proofing_device_profiling_decisioning_enabled?,
+        ).and_return(true)
+      end
+
       it 'does not activate a profile with gpo verification pending' do
         profile.update(gpo_verification_pending_at: 1.day.ago)
         profile.activate
@@ -404,10 +410,8 @@ describe Profile do
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_review_pending_at).to_not be_nil
-      expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejection_at).to be_nil
+      expect(profile.fraud_review_pending?).to eq(true)
+      expect(profile.fraud_rejection?).to eq(false)
     end
   end
 

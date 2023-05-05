@@ -46,6 +46,13 @@ feature 'Accessibility on pages that require authentication', :js do
 
       expect(current_path).to eq(authentication_methods_setup_path)
       expect_page_to_have_no_accessibility_violations(page)
+      phone_checkbox = page.find_field('two_factor_options_form_selection_phone', visible: :all)
+      expect(phone_checkbox).to have_name(
+        t('two_factor_authentication.two_factor_choice_options.phone'),
+      )
+      expect(phone_checkbox).to have_description(
+        t('two_factor_authentication.two_factor_choice_options.phone_info'),
+      )
     end
 
     scenario 'phone setup page' do
@@ -58,7 +65,7 @@ feature 'Accessibility on pages that require authentication', :js do
     end
 
     scenario 'two factor auth page' do
-      user = create(:user, :signed_up)
+      user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))

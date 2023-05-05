@@ -9,7 +9,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(false)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
@@ -38,7 +38,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:mobile) do
       visit @sms_link
       attach_and_submit_images
-      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+      expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
     end

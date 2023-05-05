@@ -4,7 +4,7 @@ feature 'saml api' do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :fully_registered) }
   let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
 
   context 'when assertion consumer service url is defined' do
@@ -217,7 +217,7 @@ feature 'saml api' do
 
   context 'visiting /api/saml/logout' do
     context 'session timed out' do
-      let(:logout_user) { create(:user, :signed_up) }
+      let(:logout_user) { create(:user, :fully_registered) }
 
       before do
         sign_in_and_2fa_user(logout_user)
@@ -407,7 +407,9 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-           service_provider: 'http://localhost:3000' }],
+           service_provider: 'http://localhost:3000',
+           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -439,7 +441,8 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
-           service_provider: 'saml_sp_ial2' }],
+           service_provider: 'saml_sp_ial2',
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -463,7 +466,9 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-           service_provider: 'http://localhost:3000' }],
+           service_provider: 'http://localhost:3000',
+           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 

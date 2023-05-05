@@ -110,6 +110,7 @@ feature 'Sign Up' do
 
   scenario 'rate limits sign-up phone confirmation attempts' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+    allow(IdentityConfig.store).to receive(:phone_confirmation_max_attempts).and_return(1)
 
     sign_up_and_set_password
 
@@ -194,7 +195,7 @@ feature 'Sign Up' do
 
   context 'user accesses password screen with already confirmed token', email: true do
     it 'returns them to the home page' do
-      create(:user, :signed_up, confirmation_token: 'foo')
+      create(:user, :fully_registered, confirmation_token: 'foo')
 
       visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
 
@@ -219,7 +220,7 @@ feature 'Sign Up' do
 
   context "user A is signed in and accesses password creation page with User B's token" do
     it "redirects to User A's account page" do
-      create(:user, :signed_up, email: 'userb@test.com', confirmation_token: 'foo')
+      create(:user, :fully_registered, email: 'userb@test.com', confirmation_token: 'foo')
       sign_in_and_2fa_user
       visit sign_up_enter_password_path(confirmation_token: 'foo')
 
@@ -245,6 +246,18 @@ feature 'Sign Up' do
     expect(page).to have_current_path account_path
   end
 
+  it 'allows a user to sign up with PIV/CAC and only verifying once when HSPD12 is requested' do
+    visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
+    sign_up_and_set_password
+    set_up_2fa_with_piv_cac
+    skip_second_mfa_prompt
+    click_agree_and_continue
+
+    redirect_uri = URI(current_url)
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+  end
+
   it 'does not allow PIV/CAC during setup on mobile' do
     allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
@@ -255,7 +268,7 @@ feature 'Sign Up' do
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
-    user = create(:user, :signed_up)
+    user = create(:user, :fully_registered)
     sign_in_user(user)
     visit authenticator_setup_path
 
@@ -264,7 +277,7 @@ feature 'Sign Up' do
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
-    create(:user, :signed_up)
+    create(:user, :fully_registered)
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path
@@ -311,7 +324,7 @@ feature 'Sign Up' do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
         click_confirmation_link_in_email(email)
-        submit_form_with_valid_password
+        submit_form_with_valid_password_confirmation
 
         expect(page).to have_current_path(authentication_methods_setup_path)
       end
@@ -362,5 +375,15 @@ feature 'Sign Up' do
 
     select_2fa_option('piv_cac')
     expect(page).to_not have_content(t('two_factor_authentication.piv_cac_fallback.question'))
+  end
+
+  it 'allows a user to sign up with backup codes and add methods after without reauthentication' do
+    sign_in_user
+    set_up_2fa_with_backup_codes
+    skip_second_mfa_prompt
+
+    expect(page).to have_current_path account_path
+    visit add_phone_path
+    expect(page).to have_current_path add_phone_path
   end
 end

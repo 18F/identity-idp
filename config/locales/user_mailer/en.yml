@@ -126,7 +126,7 @@ en:
         %{date}.
       subject: Your identity could not be verified in person
       verifying_identity: 'When verifying your identity:'
-      verifying_step_not_expired: Your state-issued ID or driver’s license must not be
+      verifying_step_not_expired: Your state‑issued ID or driver’s license must not be
         expired. We do not currently accept any other forms of identification,
         such as passports and military IDs.
       verifying_step_proof_of_address: If you try to verify your identity in person
@@ -143,9 +143,6 @@ en:
       greeting: Hello,
       subject: Your identity could not be verified in person
     in_person_ready_to_verify:
-      greeting: Hello,
-      intro: Here are the details to verify your identity in person at a United States
-        Post Office near you.
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:
       greeting: Hello,

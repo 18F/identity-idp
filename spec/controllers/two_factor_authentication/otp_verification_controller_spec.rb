@@ -5,6 +5,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when resource is not fully authenticated yet' do
       before do
         sign_in_before_2fa
+        subject.user_session[:mfa_selections] = ['sms']
       end
 
       context 'when FeatureManagement.prefill_otp_codes? is true' do
@@ -34,7 +35,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'when the user has an invalid phone number in the session' do
         it 'redirects to homepage' do
-          controller.user_session[:phone_id] = 0
+          subject.user_session[:phone_id] = 0
 
           get :show, params: { otp_delivery_preference: 'sms' }
           expect(response).to redirect_to new_user_session_path
@@ -46,6 +47,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       user = build_stubbed(:user, :with_phone, with: { phone: '+1 (703) 555-0100' })
       stub_sign_in_before_2fa(user)
       parsed_phone = Phonelib.parse(subject.current_user.default_phone_configuration.phone)
+      subject.user_session[:mfa_selections] = ['sms']
 
       stub_analytics
       analytics_hash = {
@@ -57,7 +59,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
-        in_multi_mfa_selection_flow: false,
+        in_multi_mfa_selection_flow: true,
+        sign_up_mfa_priority_bucket: :default,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -74,6 +77,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         controller.user_session[:unconfirmed_phone] = '+1 (703) 555-0100'
         controller.user_session[:context] = 'confirmation'
         controller.user_session[:phone_type] = 'landline'
+        controller.user_session[:mfa_selections] = ['sms']
 
         get :show, params: { otp_delivery_preference: 'sms' }
 
@@ -114,7 +118,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters an invalid OTP during authentication context' do
       before do
         sign_in_before_2fa
-
+        subject.user_session[:mfa_selections] = ['sms']
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         properties = {
@@ -128,7 +132,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -173,12 +178,12 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the event' do
         user = create(
           :user,
-          :signed_up,
+          :fully_registered,
           second_factor_attempts_count:
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
         sign_in_before_2fa(user)
-
+        subject.user_session[:mfa_selections] = ['sms']
         properties = {
           success: false,
           error_details: { code: [:incorrect_length, :incorrect] },
@@ -190,7 +195,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -219,6 +225,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
+        subject.user_session[:mfa_selections] = ['sms']
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -252,7 +259,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: false,
+          in_multi_mfa_selection_flow: true,
+          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -382,7 +390,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     end
 
     context 'phone confirmation' do
-      let(:user) { create(:user, :signed_up) }
+      let(:user) { create(:user, :fully_registered) }
       before do
         sign_in_as_user(user)
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
@@ -412,6 +420,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
+            subject.user_session[:mfa_selections] = ['sms']
             phone_configuration = MfaContext.new(subject.current_user).phone_configurations.last
             phone_id = phone_configuration.id
             parsed_phone = Phonelib.parse(phone_configuration.phone)
@@ -427,7 +436,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: false,
+              in_multi_mfa_selection_flow: true,
+              sign_up_mfa_priority_bucket: :default,
             }
 
             expect(@analytics).to receive(:track_event).
@@ -513,6 +523,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: false,
+              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -596,6 +607,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
               in_multi_mfa_selection_flow: false,
+              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).
