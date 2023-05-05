@@ -80,6 +80,7 @@
     "msw": "^1.2.1",
     "postcss": "^8.4.22",
     "prettier": "^2.7.1",
+    "quibble": "^0.6.17",
     "react-test-renderer": "^17.0.2",
     "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",

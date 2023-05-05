@@ -15,6 +15,7 @@
   "files": [
     "index.js",
     "cli.js",
+    "get-default-load-paths.js",
     "get-error-sass-stack-paths.js"
   ],
   "license": "CC0-1.0",
@@ -23,6 +24,7 @@
   },
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
+    "@aduth/is-dependency": "^1.0.0",
     "browserslist": "^4.21.5",
     "chokidar": "^3.5.3",
     "lightningcss": "^1.16.1",
