@@ -214,16 +214,9 @@ describe Idv::PhoneErrorsController do
 
     context 'while throttled' do
       let(:user) { create(:user) }
-      let(:attempted_at) do
-        d = DateTime.now # microsecond precision failing on CI
-        Time.zone.parse(d.to_s)
-      end
-
-      before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
-      end
 
       it 'assigns expiration time' do
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
@@ -231,6 +224,8 @@ describe Idv::PhoneErrorsController do
 
       it 'logs an event' do
         freeze_time do
+          attempted_at = Time.zone.now.utc
+          Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
           throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
 
           get action
