@@ -197,15 +197,17 @@ class DataPull
       users = User.includes(:email_addresses).where(uuid: uuids)
 
       table = []
-      table << %w[uuid email]
+      table << %w[uuid email confirmed_at]
 
       users.each do |user|
-        table << [user.uuid, *user.email_addresses.map(&:email)]
+        user.email_addresses.each do |email_address|
+          table << [user.uuid, email_address.email, email_address.confirmed_at]
+        end
       end
 
       if include_missing
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[NOT FOUND]']
+          table << [missing_uuid, '[NOT FOUND]', nil]
         end
       end
 
