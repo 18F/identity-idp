@@ -136,11 +136,11 @@ RSpec.describe DataPull do
   describe DataPull::UuidConvert do
     subject(:subtask) { DataPull::UuidConvert.new }
 
-    let(:agency_identities) { create_list(:agency_identity, 2).sort_by(&:uuid) }
-
     describe '#run' do
-      let(:include_missing) { true }
+      let(:agency_identities) { create_list(:agency_identity, 2).sort_by(&:uuid) }
+
       let(:args) { [*agency_identities.map(&:uuid), 'does-not-exist'] }
+      let(:include_missing) { true }
       subject(:result) { subtask.run(args:, include_missing:) }
 
       it 'converts the agency agency identities to internal UUIDs' do
@@ -159,8 +159,23 @@ RSpec.describe DataPull do
     subject(:subtask) { DataPull::EmailLookup.new }
 
     describe '#run' do
+      let(:user) { create(:user, :with_multiple_emails) }
+
+      let(:args) { [user.uuid, 'does-not-exist'] }
       let(:include_missing) { true }
       subject(:result) { subtask.run(args:, include_missing:) }
+
+      it 'loads email addresses for the user' do
+        expect(result.table).to eq(
+          [
+            ['uuid', 'email', 'confirmed_at'],
+            *user.email_addresses.sort_by(&:id).map do |e|
+              [e.user.uuid, e.email, e.confirmed_at]
+            end,
+            ['does-not-exist', '[NOT FOUND]', nil],
+          ],
+        )
+      end
     end
   end
 end

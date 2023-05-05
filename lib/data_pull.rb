@@ -198,13 +198,13 @@ class DataPull
     def run(args:, include_missing:)
       uuids = args
 
-      users = User.includes(:email_addresses).where(uuid: uuids)
+      users = User.includes(:email_addresses).where(uuid: uuids).order(:uuid)
 
       table = []
       table << %w[uuid email confirmed_at]
 
       users.each do |user|
-        user.email_addresses.each do |email_address|
+        user.email_addresses.sort_by(&:id).each do |email_address|
           table << [user.uuid, email_address.email, email_address.confirmed_at]
         end
       end
