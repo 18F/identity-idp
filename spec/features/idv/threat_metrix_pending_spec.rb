@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'Users pending threatmetrix review', :js do
+RSpec.feature 'Users pending ThreatMetrix review', :js do
   include IdvStepHelper
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper
@@ -11,6 +11,8 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
+      and_return(true)
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_idv_events_enabled).
       and_return(true)
     mock_irs_attempts_api_encryption_key
   end
@@ -25,7 +27,7 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     )
   end
 
-  scenario 'users pending threatmetrix see sad face screen and cannot perform idv' do
+  scenario 'users pending ThreatMetrix see sad face screen and cannot perform idv' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
     user = create(:user, :fully_registered)
 
@@ -67,26 +69,26 @@ RSpec.feature 'Users pending threatmetrix review', :js do
     expect(current_path).to eq('/auth/result')
   end
 
-  scenario 'users threatmetrix Pass, it logs idv_tmx_fraud_check event' do
+  scenario 'users ThreatMetrix Pass, it logs idv_tmx_fraud_check event' do
     freeze_time do
       complete_all_idv_steps_with(threatmetrix: 'Pass')
       expect_irs_event(expected_success: true, expected_failure_reason: nil)
     end
   end
 
-  scenario 'users pending threatmetrix Reject, it logs idv_tmx_fraud_check event' do
+  scenario 'users pending ThreatMetrix Reject, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Reject')
     end
   end
 
-  scenario 'users pending threatmetrix Review, it logs idv_tmx_fraud_check event' do
+  scenario 'users pending ThreatMetrix Review, it logs idv_tmx_fraud_check event' do
     freeze_time do
       expect_pending_failure_reason(threatmetrix: 'Review')
     end
   end
 
-  scenario 'users pending threatmetrix No Result, it results in an error', :js do
+  scenario 'users pending ThreatMetrix No Result, it results in an error', :js do
     freeze_time do
       user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
