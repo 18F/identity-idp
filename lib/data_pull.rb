@@ -12,7 +12,7 @@ class DataPull
   Result = Struct.new(
     :table, # tabular output, rendered as an ASCII table or as CSV
     :log_message, # summary message used for audit logging, DO NOT PUT PII HERE
-    keyword_init: true
+    keyword_init: true,
   )
 
   Config = Struct.new(
@@ -205,7 +205,7 @@ class DataPull
   end
 
   class ProfileStatus
-    def run(args:, include_missing:)
+    def run(*)
       Result.new
     end
   end

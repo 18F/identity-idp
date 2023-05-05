@@ -24,7 +24,6 @@ RSpec.describe DataPull do
     end
   end
 
-
   describe DataPull::UuidLookup do
     subject(:subtask) { DataPull::UuidLookup.new }
 
