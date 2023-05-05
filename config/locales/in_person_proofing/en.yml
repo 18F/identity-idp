@@ -66,7 +66,6 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
         selection: 'This is the location you selected:'
       prepare:
-        alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
