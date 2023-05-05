@@ -192,13 +192,11 @@ RSpec::Matchers.define :have_name do |name|
   end
 
   def computed_name(element)
-    Enumerator.new do |yielder|
-      yielder << hidden_name(element)
-      yielder << aria_labelledby_name(element)
-      yielder << aria_label_name(element)
-      yielder << referenced_label_name(element)
-      yielder << ancestor_label_text_name(element)
-    end.lazy.compact.first
+    hidden_name(element) ||
+      aria_labelledby_name(element) ||
+      aria_label_name(element) ||
+      referenced_label_name(element) ||
+      ancestor_label_text_name(element)
   end
 
   match { |element| computed_name(element) == name }
