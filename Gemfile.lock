@@ -773,6 +773,7 @@ DEPENDENCIES
   lograge (>= 0.11.2)
   lookbook (~> 1.5.3)
   lru_redux
+  mail
   maxminddb
   msgpack (~> 1.6)
   multiset

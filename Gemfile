@@ -36,6 +36,7 @@ gem 'jwt'
 gem 'lograge', '>= 0.11.2'
 gem 'lookbook', '~> 1.5.3', require: false
 gem 'lru_redux'
+gem 'mail'
 gem 'msgpack', '~> 1.6'
 gem 'maxminddb'
 gem 'multiset'
