@@ -63,11 +63,6 @@ module Idv
         @pii = flow_session[:pii_from_user]
       end
 
-      def delete_pii
-        flow_session.delete(:pii_from_doc)
-        flow_session.delete(:pii_from_user)
-      end
-
       # override StepUtilitiesConcern
       def flow_session
         user_session.fetch('idv/in_person', {})
