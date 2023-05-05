@@ -9,6 +9,11 @@
   dependencies:
     "@uswds/uswds" "^3.4.1"
 
+"@aduth/is-dependency@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aduth/is-dependency/-/is-dependency-1.0.0.tgz#1e2efebae56fd8c1a29bdcd8141e63c185c3bb67"
+  integrity sha512-1CJwTd6B6XDb6HETcHMwjRmQLQi2FgjM1rYUO6wf1yizKVPC9V66vmvVCtgePMzWmhsLqdhOPLWt+fNvG46FoA==
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
