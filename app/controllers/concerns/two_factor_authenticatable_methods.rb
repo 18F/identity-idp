@@ -82,15 +82,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless current_user.no_longer_locked_out?
-
-    UpdateUser.new(
-      user: current_user,
-      attributes: {
-        second_factor_attempts_count: 0,
-        second_factor_locked_at: nil,
-      },
-    ).call
+    current_user.reset_attempt_count_if_no_longer_locked_out!
   end
 
   def handle_valid_otp(next_url:, auth_method: nil)

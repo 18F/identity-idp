@@ -313,6 +313,32 @@ class User < ApplicationRecord
     second_factor_locked_at.present? && lockout_period_expired?
   end
 
+  def reset_attempt_count_if_no_longer_locked_out
+    User.transaction do
+      sql = <<~SQL
+        UPDATE users
+        SET
+          second_factor_attempts_count = 0,
+          updated_at = NOW(),
+          second_factor_locked_at = NULL
+        WHERE id = ? AND second_factor_locked_at IS NOT NULL AND
+          second_factor_locked_at + interval '? minutes' >= NOW()
+        RETURNING second_factor_attempts_count, second_factor_locked_at;
+      SQL
+      query = User.sanitize_sql_array(
+        [sql, self.id, IdentityConfig.store.lockout_period_in_minutes],
+      )
+      result = User.connection.execute(query).first
+      if result
+        self.second_factor_attempts_count = result.fetch('second_factor_attempts_count')
+        self.second_factor_locked_at = result.fetch('second_factor_locked_at')
+        self.clear_attribute_changes([:second_factor_attempts_count, :second_factor_locked_at])
+      end
+    end
+
+    nil
+  end
+
   def recent_events
     events = Event.where(user_id: id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
       map(&:decorate)

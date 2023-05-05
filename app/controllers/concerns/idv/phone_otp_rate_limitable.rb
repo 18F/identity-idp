@@ -8,23 +8,11 @@ module Idv
     end
 
     def handle_locked_out_user
-      reset_attempt_count_if_user_no_longer_locked_out
+      current_user.reset_attempt_count_if_no_longer_locked_out!
       return unless current_user.locked_out?
       analytics.idv_phone_confirmation_otp_rate_limit_locked_out
       handle_too_many_otp_attempts
       false
-    end
-
-    def reset_attempt_count_if_user_no_longer_locked_out
-      return unless current_user.no_longer_locked_out?
-
-      UpdateUser.new(
-        user: current_user,
-        attributes: {
-          second_factor_attempts_count: 0,
-          second_factor_locked_at: nil,
-        },
-      ).call
     end
 
     def handle_too_many_otp_sends
