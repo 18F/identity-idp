@@ -53,6 +53,7 @@ module Proofing
           residential_instant_verify_proof: residential_instant_verify_proof,
           instant_verify_proof: instant_verify_proof,
           should_proof_state_id: should_proof_state_id,
+          double_address_verification: double_address_verification,
         )
 
         ResultAdjudicator.new(
@@ -136,22 +137,39 @@ module Proofing
         end
       end
 
+      def aamva_irrelevant?(double_address_verification:, same_address_as_id:,
+                            should_proof_state_id:, instant_verify_proof:,
+                            residential_instant_verify_proof:)
+        return true unless should_proof_state_id
+        if double_address_verification == false &&
+           !user_can_pass_after_state_id_check?(instant_verify_proof)
+          return true
+        end
+        if double_address_verification == true && same_address_as_id == 'false' &&
+           !residential_instant_verify_proof.success?
+          return true
+        end
+        if double_address_verification == true && same_address_as_id == 'true' &&
+           !user_can_pass_after_state_id_check?(instant_verify_proof)
+          return true
+        end
+      end
+
       def proof_id_with_aamva_if_needed(
         applicant_pii:, timer:,
         residential_instant_verify_proof:,
         instant_verify_proof:,
-        should_proof_state_id:
+        should_proof_state_id:,
+        double_address_verification:
       )
-        if applicant_pii[:same_address_as_id] == 'false'
-          unless should_proof_state_id && residential_instant_verify_proof.success? &&
-                 user_can_pass_after_state_id_check?(instant_verify_proof)
-            return out_of_aamva_jurisdiction_result
-          end
-        else
-          unless should_proof_state_id && user_can_pass_after_state_id_check?(instant_verify_proof)
-            return out_of_aamva_jurisdiction_result
-          end
-        end
+        same_address_as_id = applicant_pii[:same_address_as_id]
+        return out_of_aamva_jurisdiction_result if aamva_irrelevant?(
+          double_address_verification:,
+          same_address_as_id:,
+          should_proof_state_id:,
+          instant_verify_proof:,
+          residential_instant_verify_proof:,
+        )
 
         timer.time('state_id') do
           state_id_proofer.proof(applicant_pii)

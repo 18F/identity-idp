@@ -335,7 +335,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         )
       end
 
-      it 'verifies the state ID address with AAMVA and LexisNexis and the residential address with LexisNexis' do
+      it 'verifies ID address with AAMVA & LexisNexis & residential address with LexisNexis' do
         stub_vendor_requests
 
         expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
