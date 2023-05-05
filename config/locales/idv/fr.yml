@@ -295,8 +295,8 @@ fr:
         other_variant_b_html: Essayez de prendre de nouvelles photos. Pour des raisons
           de sécurité, il vous reste <strong>%{count} tentatives</strong>.
       sessions:
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
