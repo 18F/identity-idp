@@ -927,10 +927,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth upload visited', **extra)
   end
 
-  def idv_doc_auth_verify_document_status_submitted(**extra)
-    track_event('IdV: doc auth verify_document_status submitted', **extra)
-  end
-
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted
   def idv_doc_auth_verify_submitted(**extra)
     track_event('IdV: doc auth verify submitted', **extra)
