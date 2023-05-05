@@ -6,7 +6,7 @@ Rails.application.config.assets.version = '1.0'
 # Add additional assets to the asset load path
 Rails.application.config.assets.paths.push(
   'node_modules',
-  'node_modules/identity-style-guide/dist/assets/fonts',
+  'node_modules/@18f/identity-design-system/dist/assets/fonts',
 )
 
 # Fix sassc sometimes segfaulting
