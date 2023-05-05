@@ -59,13 +59,6 @@ module Idv
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
-      def confirm_verify_info_step_needed
-        # todo: should this instead be like so?
-        # return unless idv_session.resolution_successful == true
-        return unless idv_session.verify_info_step_complete?
-        redirect_to idv_phone_url
-      end
-
       def pii
         @pii = flow_session[:pii_from_user]
       end
