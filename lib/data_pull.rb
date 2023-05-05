@@ -19,7 +19,6 @@ class DataPull
     :include_missing,
     :format,
     :show_help,
-    :reason,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
@@ -38,14 +37,14 @@ class DataPull
     option_parser.parse!(argv)
     subtask_class = subtask(argv.shift)
 
-    if config.reason.blank? || config.show_help? || !subtask_class
+    if config.show_help? || !subtask_class
       stdout.puts option_parser
       return
     end
 
     result = subtask_class.new.run(args: argv, include_missing: config.include_missing?)
 
-    stderr.puts [result.log_message, "reason: #{config.reason}"].join("\n")
+    stderr.puts result.log_message
 
     render_output(result.table)
   end
@@ -105,11 +104,11 @@ class DataPull
 
         Example usage:
 
-          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com --reason "support case 123"
+          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com
 
-          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2 --reason "investigation"
+          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2
 
-          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2 --reason "investigation"
+          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2
 
         Options:
       EOS
@@ -134,10 +133,6 @@ class DataPull
         Whether or not to add rows in the output for missing inputs, defaults to off
       STR
         config.include_missing = include_missing
-      end
-
-      opts.on('--reason=REASON', 'reason for this data pull (required, will be logged)') do |reason|
-        config.reason = reason
       end
     end
   end

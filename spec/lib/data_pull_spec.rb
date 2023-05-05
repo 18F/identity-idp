@@ -10,8 +10,7 @@ RSpec.describe DataPull do
   subject(:data_pull) { DataPull.new(argv:, stdout:, stderr:) }
 
   describe 'command line flags' do
-    let(:argv) { ['uuid-lookup', user.email_addresses.first.email, *reason_args] }
-    let(:reason_args) { ['--reason', 'test'] }
+    let(:argv) { ['uuid-lookup', user.email_addresses.first.email] }
     let(:user) { create(:user) }
 
     describe '--help' do
@@ -68,9 +67,7 @@ RSpec.describe DataPull do
     end
 
     describe '--include-missing' do
-      let(:argv) do
-        ['uuid-lookup', 'does_not_exist@example.com', '--include-missing', *reason_args, '--json']
-      end
+      let(:argv) { ['uuid-lookup', 'does_not_exist@example.com', '--include-missing', '--json'] }
       it 'adds rows for missing values' do
         data_pull.run
 
@@ -86,26 +83,11 @@ RSpec.describe DataPull do
     end
 
     describe '--no-include-missing' do
-      let(:argv) do
-        ['uuid-lookup', 'does_not_exist@example.com', '--no-include-missing', *reason_args,
-         '--json']
-      end
+      let(:argv) { ['uuid-lookup', 'does_not_exist@example.com', '--no-include-missing', '--json'] }
       it 'does not add rows for missing values' do
         data_pull.run
 
         expect(JSON.parse(stdout.string)).to be_empty
-      end
-    end
-
-    describe 'missing --reason' do
-      before do
-        reason_args.each { |arg| argv.delete(arg) }
-      end
-
-      it 'prints the help message' do
-        data_pull.run
-
-        expect(stdout.string).to include('Options:')
       end
     end
   end
