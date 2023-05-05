@@ -4,6 +4,7 @@
 
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
+import { parseArgs } from '@pkgjs/parseargs';
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
@@ -12,28 +13,20 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 /** @typedef {import('sass-embedded').Exception} SassException */
 /** @typedef {import('./').BuildOptions} BuildOptions */
 
-/** @typedef {'watch'|'out-dir'|'load-path'} KnownFlag */
-
-/** @type {KnownFlag[]} */
-const KNOWN_FLAGS = ['watch', 'out-dir', 'load-path'];
-
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
 
-const args = process.argv.slice(2);
-const fileArgs = args.filter((arg) => !arg.startsWith('-'));
+const { values: flags, positionals: fileArgs } = parseArgs({
+  allowPositionals: true,
+  options: {
+    watch: { type: 'boolean' },
+    'out-dir': { type: 'string' },
+    'load-path': { type: 'string', multiple: true, default: [] },
+  },
+});
 
-const flags = /** @type {Record<KnownFlag, string[]>} */ (
-  Object.fromEntries(
-    KNOWN_FLAGS.map((flag) => [
-      flag,
-      args.filter((arg) => arg.startsWith(`--${flag}=`)).map((arg) => arg.slice(flag.length + 3)),
-    ]),
-  )
-);
-
-const isWatching = flags.watch.length > 0;
-const outDir = flags['out-dir'][0];
+const isWatching = flags.watch;
+const outDir = flags['out-dir'];
 const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
 
 /** @type {BuildOptions & SyncSassOptions} */
