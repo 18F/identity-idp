@@ -155,13 +155,7 @@ describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t(
-            'idv.messages.review.info_verified_html',
-            phone_message: ActionController::Base.helpers.content_tag(
-              :strong,
-              t('idv.messages.phone.phone_of_record'),
-            ),
-          ),
+          t('idv.messages.review.info_verified'),
         )
       end
 

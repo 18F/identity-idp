@@ -217,8 +217,7 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        info_verified_html: Nous avons trouvé des données qui correspondent à votre
-          %{phone_message}
+        info_verified: Nous avons vérifié votre numéro de téléphone
         intro: Vos informations vérifiées
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne

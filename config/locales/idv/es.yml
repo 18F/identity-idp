@@ -207,7 +207,7 @@ es:
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        info_verified_html: Encontramos registros que coinciden con su %{phone_message}
+        info_verified: Verificamos su número de teléfono
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
