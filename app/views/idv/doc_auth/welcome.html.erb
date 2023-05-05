@@ -97,7 +97,7 @@
     <p>
       <%= new_tab_link_to(
             t('doc_auth.instructions.learn_more'),
-            MarketingSite.security_and_privacy_practices_url,
+            policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
           ) %>
     </p>
 

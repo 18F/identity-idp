@@ -1,22 +1,30 @@
-<div class="mfa-selection">
-  <%= check_box_tag(
-        'two_factor_options_form[selection][]',
-        option.type,
-        false,
-        disabled: option.disabled?,
-        checked: option.disabled?,
-        class: 'usa-checkbox__input usa-checkbox__input--tile',
-        id: "two_factor_options_form_selection_#{option.type}",
-      ) %>
-  <%= label_tag(
-        "two_factor_options_form_selection_#{option.type}",
-        class: 'usa-checkbox__label usa-checkbox__label--illustrated',
-      ) do %>
-    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-    <div class="usa-checkbox__label--text"><%= option.label %> <%= option.mfa_configuration_description %>
-      <span class="usa-checkbox__label-description">
-        <%= option.info %>
-      </span>
-    </div>
-  <% end %>
-</div>
+<%= check_box_tag(
+      'two_factor_options_form[selection][]',
+      option.type,
+      false,
+      disabled: option.disabled?,
+      checked: option.disabled?,
+      class: 'usa-checkbox__input usa-checkbox__input--tile',
+      id: "two_factor_options_form_selection_#{option.type}",
+      aria: {
+        describedby: [
+          "two_factor_options_form_selection_description_#{option.type}",
+          "two_factor_options_form_selection_info_#{option.type}",
+        ],
+      },
+    ) %>
+<%= label_tag(
+      "two_factor_options_form_selection_#{option.type}",
+      class: 'usa-checkbox__label usa-checkbox__label--illustrated',
+    ) do %>
+  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image') %>
+  <div class="usa-checkbox__label--text">
+    <%= option.label %>
+    <span id="two_factor_options_form_selection_description_<%= option.type %>" aria-hidden="true">
+      <%= option.mfa_configuration_description %>
+    </span>
+    <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">
+      <%= option.info %>
+    </span>
+  </div>
+<% end %>

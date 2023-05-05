@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .usa-memorable-date input[type='text'] {
   @include u-padding-x(1);
 }

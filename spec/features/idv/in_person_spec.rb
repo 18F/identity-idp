@@ -501,6 +501,73 @@ RSpec.describe 'In Person Proofing', js: true do
 
         expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
       end
+
+      it 'shows hints when user selects Puerto Rico as state',
+         allow_browser_log: true do
+        sign_in_and_2fa_user
+        begin_in_person_proofing
+        complete_location_step
+        complete_prepare_step
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        # state id page
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change state selection
+        fill_out_state_id_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address))
+
+        # address form
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change selection
+        fill_out_address_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        click_idv_continue
+
+        # ssn page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+        complete_ssn_step
+
+        # verify page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+        expect(page).to have_text('PR').twice
+
+        # update state ID
+        click_button t('idv.buttons.change_state_id_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+        click_button t('forms.buttons.submit.update')
+
+        # update address
+        click_button t('idv.buttons.change_address_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+      end
     end
 
     context 'without double address verification' do
