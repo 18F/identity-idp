@@ -52,17 +52,11 @@ module Idv
       end
 
       def prev_url
-        idv_in_person_url
+        idv_in_person_step_url(step: :ssn)
       end
 
       def renders_404_if_flag_not_set
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
-      end
-
-      # copied from address_controller
-      def confirm_ssn_step_complete
-        return if pii.present? && pii[:ssn].present?
-        redirect_to idv_in_person_url
       end
 
       def confirm_verify_info_step_needed

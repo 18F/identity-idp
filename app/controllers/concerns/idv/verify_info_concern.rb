@@ -54,6 +54,12 @@ module Idv
 
     private
 
+    # copied from address_controller
+    def confirm_ssn_step_complete
+      return if pii.present? && pii[:ssn].present?
+      redirect_to prev_url
+    end
+
     def should_use_aamva?(pii)
       aamva_state?(pii) && !aamva_disallowed_for_service_provider?
     end
