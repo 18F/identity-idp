@@ -47,7 +47,7 @@ module SignUp
         current_sp: current_sp,
         decrypted_pii: pii,
         requested_attributes: decorated_session.requested_attributes.map(&:to_sym),
-        ial2_requested: !!ial2_requested?,
+        ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
       )
     end
@@ -61,7 +61,7 @@ module SignUp
     end
 
     def ial2_requested?
-      ial2? || (ial_max? && current_user.identity_verified?)
+      !!(ial2? || (ial_max? && current_user.identity_verified?))
     end
 
     def return_to_account
