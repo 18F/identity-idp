@@ -187,7 +187,7 @@ feature 'doc auth verify_info step', :js do
       # Check that last attempt shows correct warning text
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_warning_path)
-      expect(page).to have_content(t('idv.failure.attempts.one'))
+      expect(page).to have_content(t('idv.warning.attempts.one'))
       click_try_again
 
       click_idv_continue
