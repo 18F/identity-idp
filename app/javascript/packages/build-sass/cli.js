@@ -12,19 +12,29 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 /** @typedef {import('sass-embedded').Exception} SassException */
 /** @typedef {import('./').BuildOptions} BuildOptions */
 
+/** @typedef {'watch'|'out-dir'|'load-path'} KnownFlag */
+
+/** @type {KnownFlag[]} */
+const KNOWN_FLAGS = ['watch', 'out-dir', 'load-path'];
+
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
 
 const args = process.argv.slice(2);
 const fileArgs = args.filter((arg) => !arg.startsWith('-'));
-const flags = args.filter((arg) => arg.startsWith('-'));
 
-const isWatching = flags.includes('--watch');
-const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
-const loadPaths = [
-  ...getDefaultLoadPaths(),
-  ...flags.filter((flag) => flag.startsWith('--load-path=')).map((flag) => flag.slice(12)),
-];
+const flags = /** @type {Record<KnownFlag, string[]>} */ (
+  Object.fromEntries(
+    KNOWN_FLAGS.map((flag) => [
+      flag,
+      args.filter((arg) => arg.startsWith(`--${flag}=`)).map((arg) => arg.slice(flag.length + 3)),
+    ]),
+  )
+);
+
+const isWatching = flags.watch.length > 0;
+const outDir = flags['out-dir'][0];
+const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };
