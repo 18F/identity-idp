@@ -41,17 +41,17 @@ feature 'doc auth redo document capture action', js: true do
       expect(page).not_to have_css('[role="status"]')
     end
 
-    it 'shows a troubleshooting option to allow the user to return to upload new images' do
+    it 'shows a troubleshooting option to allow the user to cancel and return to SP' do
       click_idv_continue
 
       expect(page).to have_link(
-        t('idv.troubleshooting.options.add_new_photos'),
-        href: idv_doc_auth_step_path(step: :redo_document_capture),
+        t('links.cancel'),
+        href: idv_cancel_path,
       )
 
-      click_link t('idv.troubleshooting.options.add_new_photos')
+      click_link t('links.cancel')
 
-      expect(current_path).to eq(idv_doc_auth_upload_step)
+      expect(current_path).to eq(idv_cancel_path)
     end
 
     context 'on mobile', driver: :headless_chrome_mobile do
