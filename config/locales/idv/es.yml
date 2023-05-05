@@ -271,13 +271,11 @@ es:
     warning:
       attempts:
         one: Por motivos de seguridad, le quedan un intento.
-        one_variant_a_html: Por motivos de seguridad, le quedan <strong>un
-          intento</strong>.
+        one_variant_a_html: Por motivos de seguridad, le quedan <strong>un intento</strong>.
         one_variant_b_html: Intente tomar nuevas fotografías. Por motivos de seguridad,
           le quedan <strong>un intento</strong>.
         other: Por motivos de seguridad, le quedan %{count} intentos.
-        other_variant_a_html: Por motivos de seguridad, le quedan <strong>%{count}
-          intentos</strong>.
+        other_variant_a_html: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
         other_variant_b_html: Intente tomar nuevas fotografías. Por motivos de
           seguridad, le quedan <strong>%{count} intentos</strong>.
       sessions:
