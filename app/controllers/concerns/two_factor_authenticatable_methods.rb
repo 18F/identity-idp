@@ -73,8 +73,11 @@ module TwoFactorAuthenticatableMethods
   def check_sp_required_mfa_bypass(auth_method:)
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     return if service_provider_mfa_policy.phishing_resistant_required? &&
-              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
-    return if service_provider_mfa_policy.piv_cac_required? && auth_method == 'piv_cac'
+              TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
+    if service_provider_mfa_policy.piv_cac_required? &&
+       auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
+      return
+    end
     prompt_to_verify_sp_required_mfa
   end
 
@@ -184,7 +187,6 @@ module TwoFactorAuthenticatableMethods
   def handle_valid_otp_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
-    bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
     reset_second_factor_attempts_count

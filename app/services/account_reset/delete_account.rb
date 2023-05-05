@@ -57,12 +57,14 @@ module AccountReset
       PushNotification::HttpPush.deliver(event)
     end
 
+    # rubocop:disable IdentityIdp/MailLaterLinter
     def notify_user_via_email_of_deletion
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: user, email_address: email_address).
-          account_reset_complete.deliver_now_or_later
+          account_reset_complete.deliver_now
       end
     end
+    # rubocop:enable IdentityIdp/MailLaterLinter
 
     def extra_analytics_attributes
       {

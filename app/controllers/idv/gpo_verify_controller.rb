@@ -31,43 +31,46 @@ module Idv
       throttle.increment!
       if throttle.throttled?
         render_throttled
+        return
+      end
+
+      result = @gpo_verify_form.submit
+      analytics.idv_gpo_verification_submitted(**result.to_h)
+      irs_attempts_api_tracker.idv_gpo_verification_submitted(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
+
+      if !result.success?
+        flash[:error] = @gpo_verify_form.errors.first.message
+        redirect_to idv_gpo_verify_url
+        return
+      end
+
+      if result.extra[:pending_in_person_enrollment]
+        redirect_to idv_in_person_ready_to_verify_url
       else
-        result = @gpo_verify_form.submit
-        analytics.idv_gpo_verification_submitted(**result.to_h)
-        irs_attempts_api_tracker.idv_gpo_verification_submitted(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-        )
+        prepare_for_personal_key
 
-        if result.success?
-          if result.extra[:pending_in_person_enrollment]
-            redirect_to idv_in_person_ready_to_verify_url
-          else
-            event, _disavowal_token = create_user_event(:account_verified)
-
-            if !threatmetrix_check_failed?(result)
-              UserAlerts::AlertUserAboutAccountVerified.call(
-                user: current_user,
-                date_time: event.created_at,
-                sp_name: decorated_session.sp_name,
-              )
-              flash[:success] = t('account.index.verification.success')
-            end
-
-            redirect_to next_step
-          end
-        else
-          flash[:error] = @gpo_verify_form.errors.first.message
-          redirect_to idv_gpo_verify_url
-        end
+        redirect_to idv_personal_key_url
       end
     end
 
     private
 
-    def next_step
+    def prepare_for_personal_key
+      event, _disavowal_token = create_user_event(:account_verified)
+
+      if !fraud_check_failed?
+        UserAlerts::AlertUserAboutAccountVerified.call(
+          user: current_user,
+          date_time: event.created_at,
+          sp_name: decorated_session.sp_name,
+        )
+        flash[:success] = t('account.index.verification.success')
+      end
+
       enable_personal_key_generation
-      idv_personal_key_url
     end
 
     def throttle
@@ -104,8 +107,8 @@ module Idv
       redirect_to account_url
     end
 
-    def threatmetrix_check_failed?(result)
-      result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
+    def fraud_check_failed?
+      threatmetrix_enabled? && (current_user.fraud_review_pending? || current_user.fraud_rejection?)
     end
 
     def threatmetrix_enabled?
