@@ -30,6 +30,9 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
+
+      # Confirm that Continue button is not shown when polling is enabled
+      expect(page).not_to have_content(t('doc_auth.buttons.continue'))
     end
 
     expect(@sms_link).to be_present
