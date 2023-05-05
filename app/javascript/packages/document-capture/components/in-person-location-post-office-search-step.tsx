@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
+import { forceRedirect } from '@18f/identity-url';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import AddressSearch, {
@@ -12,20 +13,22 @@ import AddressSearch, {
 } from './address-search';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
+import UploadContext from '../context/upload';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonCtaVariantActive, inPersonURL } = useContext(InPersonContext);
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
   const [apiError, setApiError] = useState<Error | null>(null);
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
+  const { flowPath } = useContext(UploadContext);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -40,13 +43,12 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
+      if (flowPath !== 'hybrid') {
+        e.preventDefault();
+      }
       const selectedLocation = locationResults![id]!;
       const { streetAddress, formattedCityStateZip } = selectedLocation;
       const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
-      setSubmitEventMetadata({
-        selected_location: selectedLocationAddress,
-        in_person_cta_variant: inPersonCtaVariantActive,
-      });
       onChange({ selectedLocationAddress });
       if (autoSubmit) {
         setDisabledAddressSearch(true);
@@ -57,8 +59,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         }, 250);
         return;
       }
-      // prevent navigation from continuing
-      e.preventDefault();
       if (inProgress) {
         return;
       }
@@ -69,16 +69,24 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
           json: selected,
           method: 'PUT',
         });
+        // In try block set success of request. If the request is successful, fire remaining code?
         if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
-            // continue with navigation
             e.target.disabled = false;
-            e.target.click();
+            if (flowPath !== 'hybrid') {
+              trackEvent('IdV: location submitted', {
+                selected_location: selectedLocationAddress,
+                in_person_cta_variant: inPersonCtaVariantActive,
+              });
+              forceRedirect(inPersonURL!);
+            }
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
         }
+      } catch {
+        setAutoSubmit(false);
       } finally {
         if (mountedRef.current) {
           setInProgress(false);

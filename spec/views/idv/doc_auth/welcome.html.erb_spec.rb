@@ -12,8 +12,12 @@ describe 'idv/doc_auth/welcome.html.erb' do
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
     allow(view).to receive(:flow_session).and_return(flow_session)
     allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
-    allow(view).to receive(:url_for).and_return('https://www.example.com/')
     allow(view).to receive(:user_signing_up?).and_return(false)
+    allow(view).to receive(:url_for).and_wrap_original do |method, *args, &block|
+      method.call(*args, &block)
+    rescue
+      ''
+    end
   end
 
   context 'in doc auth with an authenticated user' do
@@ -101,5 +105,13 @@ describe 'idv/doc_auth/welcome.html.erb' do
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
       )
     end
+  end
+
+  it 'renders a link to the privacy & security page' do
+    render template: 'idv/doc_auth/welcome'
+    expect(rendered).to have_link(
+      t('doc_auth.instructions.learn_more'),
+      href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+    )
   end
 end

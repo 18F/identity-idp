@@ -21,9 +21,7 @@
       endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     api_verify_v2_document_capture_url :
     api_verify_images_url,
-      status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document_status) :
-    nil,
+      status_endpoint: nil,
       glare_threshold: IdentityConfig.store.doc_auth_client_glare_threshold,
       sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
       status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
