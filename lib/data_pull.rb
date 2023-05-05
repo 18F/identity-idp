@@ -71,6 +71,14 @@ class DataPull
           csv << row
         end
       end
+    when :json
+      headers, *body = rows
+
+      objects = body.map do |values|
+        headers.zip(values).to_h
+      end
+
+      stdout.puts JSON.pretty_generate(objects)
     else
       raise "Unknown format=#{config.format}"
     end
@@ -117,6 +125,10 @@ class DataPull
 
       opts.on('--table', 'Output format as an ASCII table (default)') do\
         config.format = :table
+      end
+
+      opts.on('--json') do
+        config.format = :json
       end
 
       opts.on('--[no-]include-missing', <<~STR) do |include_missing|
