@@ -19,6 +19,7 @@ class DataPull
     :include_missing,
     :format,
     :show_help,
+    :reason,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
@@ -37,14 +38,14 @@ class DataPull
     option_parser.parse!(argv)
     subtask_class = subtask(argv.shift)
 
-    if config.show_help? || !subtask_class
+    if config.reason.blank? || config.show_help? || !subtask_class
       stdout.puts option_parser
       return
     end
 
     result = subtask_class.new.run(args: argv, include_missing: config.include_missing?)
 
-    stderr.puts result.log_message
+    stderr.puts [result.log_message, "reason: #{config.reason}"].join("\n")
 
     render_output(result.table)
   end
@@ -93,10 +94,10 @@ class DataPull
       'uuid-lookup' => UuidLookup,
       'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
-      'profile-status' => ProfileStatus,
     }[name]
   end
 
+  # rubocop:disable Metrics/BlockLength
   def option_parser
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = <<~EOS
@@ -104,13 +105,11 @@ class DataPull
 
         Example usage:
 
-          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com
+          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com --reason "support case 123"
 
-          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2
+          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2 --reason "investigation"
 
-          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2...
-
-          * #{$PROGRAM_NAME} profile-status uuid1 uuid2...
+          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2 --reason "investigation"
 
         Options:
       EOS
@@ -123,7 +122,7 @@ class DataPull
         config.format = :csv
       end
 
-      opts.on('--table', 'Output format as an ASCII table (default)') do\
+      opts.on('--table', 'Output format as an ASCII table (default)') do
         config.format = :table
       end
 
@@ -136,8 +135,13 @@ class DataPull
       STR
         config.include_missing = include_missing
       end
+
+      opts.on('--reason=REASON', 'reason for this data pull (required, will be logged)') do |reason|
+        config.reason = reason
+      end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   class UuidLookup
     def run(args:, include_missing:)
@@ -171,7 +175,7 @@ class DataPull
 
       table = []
       table << %w[partner_uuid source internal_uuid]
-      identities = AgencyIdentity.includes(:user, :agency).where(uuid: partner_uuids)
+      identities = AgencyIdentity.includes(:user, :agency).where(uuid: partner_uuids).order(:uuid)
 
       identities.each do |identity|
         table << [identity.uuid, identity.agency.name, identity.user.uuid]
@@ -215,12 +219,6 @@ class DataPull
         log_message: "email-lookup, uuids: #{users.map(&:uuid).join(', ')}",
         table:,
       )
-    end
-  end
-
-  class ProfileStatus
-    def run(*)
-      Result.new
     end
   end
 end

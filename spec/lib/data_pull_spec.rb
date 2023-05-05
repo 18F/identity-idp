@@ -10,7 +10,8 @@ RSpec.describe DataPull do
   subject(:data_pull) { DataPull.new(argv:, stdout:, stderr:) }
 
   describe 'command line flags' do
-    let(:argv) { ['uuid-lookup', user.email_addresses.first.email] }
+    let(:argv) { ['uuid-lookup', user.email_addresses.first.email, *reason_args] }
+    let(:reason_args) { ['--reason', 'test'] }
     let(:user) { create(:user) }
 
     describe '--help' do
@@ -67,7 +68,9 @@ RSpec.describe DataPull do
     end
 
     describe '--include-missing' do
-      let(:argv) { ['uuid-lookup', 'does_not_exist@example.com', '--include-missing', '--json'] }
+      let(:argv) do
+        ['uuid-lookup', 'does_not_exist@example.com', '--include-missing', *reason_args, '--json']
+      end
       it 'adds rows for missing values' do
         data_pull.run
 
@@ -83,11 +86,26 @@ RSpec.describe DataPull do
     end
 
     describe '--no-include-missing' do
-      let(:argv) { ['uuid-lookup', 'does_not_exist@example.com', '--no-include-missing', '--json'] }
+      let(:argv) do
+        ['uuid-lookup', 'does_not_exist@example.com', '--no-include-missing', *reason_args,
+         '--json']
+      end
       it 'does not add rows for missing values' do
         data_pull.run
 
         expect(JSON.parse(stdout.string)).to be_empty
+      end
+    end
+
+    describe 'missing --reason' do
+      before do
+        reason_args.each { |arg| argv.delete(arg) }
+      end
+
+      it 'prints the help message' do
+        data_pull.run
+
+        expect(stdout.string).to include('Options:')
       end
     end
   end
@@ -96,15 +114,44 @@ RSpec.describe DataPull do
     subject(:subtask) { DataPull::UuidLookup.new }
 
     describe '#run' do
+      let(:users) { create_list(:user, 2) }
+
+      let(:args) { [*users.map { |u| u.email_addresses.first.email }, 'missing@example.com'] }
       let(:include_missing) { true }
+
+      subject(:result) { subtask.run(args:, include_missing:) }
+
+      it 'looks up the UUIDs for the given email addresses' do
+        expect(result.table).to eq(
+          [
+            ['email', 'uuid'],
+            *users.map { |u| [u.email_addresses.first.email, u.uuid] },
+            ['missing@example.com', '[NOT FOUND]'],
+          ],
+        )
+      end
     end
   end
 
   describe DataPull::UuidConvert do
     subject(:subtask) { DataPull::UuidConvert.new }
 
+    let(:agency_identities) { create_list(:agency_identity, 2).sort_by(&:uuid) }
+
     describe '#run' do
       let(:include_missing) { true }
+      let(:args) { [*agency_identities.map(&:uuid), 'does-not-exist'] }
+      subject(:result) { subtask.run(args:, include_missing:) }
+
+      it 'converts the agency agency identities to internal UUIDs' do
+        expect(result.table).to eq(
+          [
+            ['partner_uuid', 'source', 'internal_uuid'],
+            *agency_identities.map { |a| [a.uuid, a.agency.name, a.user.uuid] },
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]'],
+          ],
+        )
+      end
     end
   end
 
@@ -113,13 +160,7 @@ RSpec.describe DataPull do
 
     describe '#run' do
       let(:include_missing) { true }
-    end
-  end
-
-  describe DataPull::ProfileStatus do
-    subject(:subtask) { DataPull::ProfileStatus.new }
-
-    describe '#run' do
+      subject(:result) { subtask.run(args:, include_missing:) }
     end
   end
 end
