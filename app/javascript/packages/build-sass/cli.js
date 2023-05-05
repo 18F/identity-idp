@@ -4,7 +4,7 @@
 
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
-import { parseArgs } from '@pkgjs/parseargs';
+import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
 import { buildFile } from './index.js';
 import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
