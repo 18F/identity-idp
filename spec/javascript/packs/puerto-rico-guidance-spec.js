@@ -6,7 +6,7 @@ describe('puerto-rico-guidance', () => {
       document.body.innerHTML = `
         <div class="container">
           <div>
-            <select class="usa-select">Select Dropdown</select>
+            <select class="address-state-selector">Select Dropdown</select>
           </div>
           <div class="puerto-rico-extras display-none"></div>
         </div>

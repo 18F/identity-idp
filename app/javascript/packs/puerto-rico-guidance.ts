@@ -18,9 +18,9 @@ function onStateSelectionChange() {
 }
 
 function onIdentityDocStateSelection() {
-  const stateSelectors = document.querySelectorAll<HTMLSelectElement>('.usa-select');
+  const stateSelectors = document.querySelectorAll('.address-state-selector');
   stateSelectors.forEach((stateSelector) => {
-    if (!stateSelector.id.includes('jurisdiction')) {
+    if (stateSelector instanceof HTMLSelectElement) {
       stateSelector.addEventListener('change', () =>
         showOrHidePuertoRicoExtras(stateSelector.value),
       );
