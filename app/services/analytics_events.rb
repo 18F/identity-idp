@@ -557,6 +557,17 @@ module AnalyticsEvents
     )
   end
 
+  # The user checked or unchecked the "By checking this box..." checkbox on the idv agreement step.
+  # (This is a frontend event.)
+  # @param [Boolean] checked Whether the user checked the checkbox
+  def idv_consent_checkbox_toggled(checked:, **extra)
+    track_event(
+      'IdV: consent checkbox toggled',
+      checked: checked,
+      **extra,
+    )
+  end
+
   # The user visited the "come back later" page shown during the GPO mailing flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   def idv_come_back_later_visit(proofing_components: nil, **extra)
