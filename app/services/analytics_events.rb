@@ -947,6 +947,20 @@ module AnalyticsEvents
     )
   end
 
+  def idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_started(**extra)
+    track_event(
+      'MarkInPersonEnrollmentsReadyForStatusCheckJob: Job started',
+      **extra,
+    )
+  end
+
+  def idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_completed(**extra)
+    track_event(
+      'MarkInPersonEnrollmentsReadyForStatusCheckJob: Job completed',
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)
