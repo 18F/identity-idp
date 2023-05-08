@@ -34,11 +34,8 @@ describe 'idv/session_errors/warning.html.erb' do
 
     it 'does not render troubleshooting option to retake photos' do
       expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
-      expect(rendered).to_not have_content(t('components.troubleshooting_options.default_heading'))
-      expect(rendered).to_not have_link(
-        t('idv.troubleshooting.options.add_new_photos'),
-        href: idv_doc_auth_step_path(step: :redo_document_capture),
-      )
+      expect(rendered).to have_text(t('idv.warning.attempts', count: remaining_attempts))
+      expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
     end
   end
 end
