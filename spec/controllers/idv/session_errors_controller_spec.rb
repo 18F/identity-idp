@@ -122,6 +122,7 @@ describe Idv::SessionErrorsController do
   before do
     allow(idv_session).to receive(:verify_info_step_complete?).
       and_return(verify_info_step_complete)
+    allow(idv_session).to receive(:address_verification_mechanism).and_return(nil)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
     stub_analytics
