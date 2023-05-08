@@ -9,6 +9,11 @@
   dependencies:
     "@uswds/uswds" "^3.4.1"
 
+"@aduth/is-dependency@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aduth/is-dependency/-/is-dependency-1.0.0.tgz#1e2efebae56fd8c1a29bdcd8141e63c185c3bb67"
+  integrity sha512-1CJwTd6B6XDb6HETcHMwjRmQLQi2FgjM1rYUO6wf1yizKVPC9V66vmvVCtgePMzWmhsLqdhOPLWt+fNvG46FoA==
+
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"
@@ -1176,6 +1181,11 @@
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@open-draft/until/-/until-1.0.3.tgz#db9cc719191a62e7d9200f6e7bab21c5b848adca"
   integrity sha512-Aq58f5HiWdyDlFffbbSjAlv596h/cOnt2DO1w3DOC7OJ5EHs0hd/nycJfiu9RJbT6Yk6F1knnRRXNSpxoIVZ9Q==
+
+"@pkgjs/parseargs@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
+  integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
 
 "@sinonjs/commons@^1.6.0", "@sinonjs/commons@^1.7.0", "@sinonjs/commons@^1.8.3":
   version "1.8.3"
@@ -5459,6 +5469,14 @@ queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+quibble@^0.6.17:
+  version "0.6.17"
+  resolved "https://registry.yarnpkg.com/quibble/-/quibble-0.6.17.tgz#1c47d40c4ee670fc1a5a4277ee792ca6eec8f4ca"
+  integrity sha512-uybGnGrx1hAhBCmzmVny+ycKaS5F71+q+iWVzbf8x/HyeEMDGeiQFVjWl1zhi4rwfTHa05+/NIExC4L5YRNPjQ==
+  dependencies:
+    lodash "^4.17.21"
+    resolve "^1.22.1"
 
 quick-lru@^4.0.1:
   version "4.0.1"

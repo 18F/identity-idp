@@ -18,7 +18,7 @@
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
     "build": "webpack && yarn generate-browsers-json",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss --load-path=node_modules/@18f/identity-design-system/packages --out-dir=app/assets/builds"
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@18f/identity-design-system": "^7.0.1",
@@ -80,6 +80,7 @@
     "msw": "^1.2.1",
     "postcss": "^8.4.22",
     "prettier": "^2.7.1",
+    "quibble": "^0.6.17",
     "react-test-renderer": "^17.0.2",
     "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
