@@ -67,6 +67,7 @@ es:
       otp_format: Ingrese su código único por completo sin espacios ni caracteres
         especiales
       password_incorrect: La contraseña es incorrecta
+      password_mismatch: Sus contraseñas no coinciden
       personal_key_incorrect: La clave personal es incorrecta
       phone_carrier: Lo sentimos, no podemos admitir ese operador telefónico en este
         momento. Por favor, seleccione un número diferente e inténtelo de nuevo.

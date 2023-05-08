@@ -110,6 +110,7 @@ feature 'Sign Up' do
 
   scenario 'rate limits sign-up phone confirmation attempts' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+    allow(IdentityConfig.store).to receive(:phone_confirmation_max_attempts).and_return(1)
 
     sign_up_and_set_password
 
@@ -323,7 +324,7 @@ feature 'Sign Up' do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
         click_confirmation_link_in_email(email)
-        submit_form_with_valid_password
+        submit_form_with_valid_password_confirmation
 
         expect(page).to have_current_path(authentication_methods_setup_path)
       end

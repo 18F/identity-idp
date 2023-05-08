@@ -8,11 +8,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
   let(:phone_number) { '415-555-0199' }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(true)
-
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(false)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end

@@ -371,9 +371,6 @@ Rails.application.routes.draw do
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
-      get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
-      get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
-      put '/capture_doc/:step' => 'capture_doc#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',

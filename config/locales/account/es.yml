@@ -84,6 +84,7 @@ es:
       add_phone_number: Agregar el número de teléfono
       add_platform_authenticator: Agregar desbloqueo facial o táctil
       add_security_key: Agregar llave de seguridad
+      close: Cerrar
       connected_accounts: Tus cuentas conectadas
       customer_support: Atención al cliente
       delete_account: Borrar cuenta

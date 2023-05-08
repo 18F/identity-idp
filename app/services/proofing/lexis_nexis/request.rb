@@ -16,7 +16,9 @@ module Proofing
       def send
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
-          f.request :authorization, :basic, config.username, config.password
+          unless hmac_auth_enabled?
+            f.request :authorization, :basic, config.username, config.password
+          end
           f.options.timeout = timeout
           f.options.read_timeout = timeout
           f.options.open_timeout = timeout
@@ -51,9 +53,23 @@ module Proofing
       end
 
       def build_request_headers
-        {
+        headers = {
           'Content-Type' => 'application/json',
         }
+        headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+        headers
+      end
+
+      def hmac_auth_enabled?
+        IdentityConfig.store.lexisnexis_hmac_auth_enabled
+      end
+
+      def hmac_authorization
+        Proofing::LexisNexis::RequestSigner.new(
+          config: config,
+          message_body: body,
+          path: url_request_path,
+        ).hmac_authorization
       end
 
       def build_request_body

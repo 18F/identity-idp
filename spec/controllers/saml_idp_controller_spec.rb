@@ -569,6 +569,7 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: authn_context,
             service_provider: sp1_issuer,
+            force_authn: false,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', {
@@ -710,6 +711,7 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
+            force_authn: false,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', {
@@ -924,6 +926,19 @@ describe SamlIdpController do
         controller.session[:sp] = { final_auth_request: true }
         saml_final_post_auth(saml_request(saml_settings(overrides: { force_authn: true })))
         expect(session[:sp][:final_auth_request]).to be_falsey
+      end
+
+      it 'logs SAML Auth Request' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request', {
+            requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            force_authn: true,
+          })
+
+        saml_get_auth(saml_settings(overrides: { force_authn: true }))
       end
     end
 
@@ -1549,6 +1564,8 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            force_authn: false,
           })
 
         saml_get_auth(saml_settings)
@@ -1992,6 +2009,8 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            force_authn: false,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', analytics_hash)
@@ -2037,6 +2056,8 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            force_authn: false,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
@@ -2073,6 +2094,8 @@ describe SamlIdpController do
           with('SAML Auth Request', {
             requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            force_authn: false,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).

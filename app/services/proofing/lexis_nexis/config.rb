@@ -7,6 +7,8 @@ module Proofing
       :base_url,
       :username,
       :password,
+      :hmac_key_id,
+      :hmac_secret_key,
       :request_mode,
       :request_timeout,
       :org_id,

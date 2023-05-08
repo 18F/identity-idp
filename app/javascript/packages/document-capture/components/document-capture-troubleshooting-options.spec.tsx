@@ -182,7 +182,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
       expect(
         queryByRole('link', {
-          name: 'idv.troubleshooting.options.get_help_at_sp links.new_window',
+          name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab',
         }),
       ).to.not.exist();
     });

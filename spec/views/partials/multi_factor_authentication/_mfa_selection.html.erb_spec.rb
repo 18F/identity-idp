@@ -21,8 +21,12 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
       }
     end
 
-    it 'renders a field with mfa-selection class' do
-      expect(rendered).to have_css('.mfa-selection')
+    it 'renders an unchecked, enabled checkbox field' do
+      expect(rendered).to have_field(
+        'two_factor_options_form[selection][]',
+        checked: false,
+        disabled: false,
+      )
     end
   end
 
