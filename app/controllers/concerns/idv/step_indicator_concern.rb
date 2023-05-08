@@ -31,7 +31,7 @@ module Idv
     def gpo_address_verification?
       # Proofing component values are (currently) never reset between proofing attempts, hence why
       # this refers to the session address verification mechanism and not the proofing component.
-      !!current_user.pending_profile || idv_session.address_verification_mechanism == 'gpo'
+      !!effective_user.pending_profile || idv_session.address_verification_mechanism == 'gpo'
     end
 
     def proofing_components_as_hash
@@ -39,10 +39,10 @@ module Idv
       # are set during identity verification. These values are recorded to the profile at creation,
       # including for a pending profile.
       @proofing_components_as_hash ||= begin
-        if current_user.pending_profile
-          current_user.pending_profile.proofing_components
+        if effective_user.pending_profile
+          effective_user.pending_profile.proofing_components
         else
-          ProofingComponent.find_by(user: current_user).as_json
+          ProofingComponent.find_by(user: effective_user).as_json
         end
       end.to_h
     end
