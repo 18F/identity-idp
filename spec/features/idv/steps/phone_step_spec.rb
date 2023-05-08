@@ -148,7 +148,7 @@ feature 'idv phone step', :js do
       expect(page).to have_content('+1 703-555-5555')
     end
 
-    it 'goes to the cancel page when cancel link is clicked', js: true do
+    it 'goes to the cancel page when cancel link is clicked' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
