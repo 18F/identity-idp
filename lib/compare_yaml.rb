@@ -28,17 +28,9 @@ class CompareYaml
             add_to_diff(:integrations, key, value, production)
         end
         serialized[:iaa_orders].each do |key, value|
-            binding.pry
             add_to_diff(:iaa_orders, key, value, production)
         end
-        @diff[:iaa_orders] = merge_array_of_hashes_by_keys(@diff[:iaa_orders])
         return serialized, production, @diff
-    end
-
-    def merge_array_of_hashes_by_keys(array)
-        array.flat_map(&:entries)
-            .group_by(&:first)
-            .map{|k,v| Hash[k, v.map(&:last)]}
     end
 
     # find the differences with issuer data that doesn't match in the diff hash
@@ -49,14 +41,23 @@ class CompareYaml
         else
             if value != prod
                 #to handle iaa_orders being grouped by partner_account_name (more than one order per account) 
-                if value.instance_of?(Array) && value.length > 1
-                    value.each_with_index do |item, index|
-                        if(prod[index] != item)
-                            @diff[symbol] << Hash[item["partner_account_name"], item.to_a - prod[index].to_a]
-                        end
-                    end
+                if symbol == :iaa_orders && value.length > 1
+                    handle_account_with_multiple_orders(value, prod, symbol)
                 else 
                     @diff[symbol] << Hash[key, value.to_a - prod.to_a]
+                end
+            end
+        end
+    end
+
+    def handle_account_with_multiple_orders(value, prod, symbol)
+        value.each_with_index do |item, index|
+            if(prod[index] != item)
+               account_name_hash = @diff[symbol].find {|h| !h[item["partner_account_name"]].nil?}
+                if account_name_hash.nil?
+                    @diff[symbol] << Hash[item["partner_account_name"], [item.to_a - prod[index].to_a]]
+                else 
+                    account_name_hash[item["partner_account_name"]] << item.to_a - prod[index].to_a
                 end
             end
         end
