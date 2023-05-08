@@ -5,9 +5,9 @@ module Proofing
                   :double_address_verification, :residential_resolution_result, :same_address_as_id
 
       def initialize(
-        resolution_result:, # IV
+        resolution_result:, # InstantVerify
         state_id_result:, # AAMVA
-        residential_resolution_result:, # IV Current/residential
+        residential_resolution_result:, # InstantVerify Residential
         should_proof_state_id:,
         double_address_verification:,
         device_profiling_result:,

@@ -111,14 +111,14 @@ module Proofing
 
       def residential_address_unnecessary_result
         Proofing::AddressResult.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'ResidentialAddressNotRequired',
+          success: true, errors: {}, exception: nil, vendor_name: 'lexisnexis:instant_verify',
         )
       end
 
       # TK: confirm vendor name with Team Ada
       def resolution_cannot_pass
         Proofing::AddressResult.new(
-          success: false, errors: {}, exception: nil, vendor_name: 'ResolutionCannotPass',
+          success: false, errors: {}, exception: nil, vendor_name: 'lexisnexis:instant_verify',
         )
       end
 
@@ -195,7 +195,7 @@ module Proofing
           errors: {},
           exception: nil,
           success: true,
-          vendor_name: 'UnsupportedJurisdiction',
+          vendor_name: 'aamva:state_id',
         )
       end
 
