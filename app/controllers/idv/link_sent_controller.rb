@@ -9,6 +9,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
+    before_action :extend_timeout_using_meta_refresh
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -116,6 +117,19 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
+    end
+
+    def extend_timeout_using_meta_refresh
+      max_10min_refreshes = IdentityConfig.store.doc_auth_extend_timeout_by_minutes / 10
+      return if max_10min_refreshes <= 0
+      meta_refresh_count = flow_session[:meta_refresh_count].to_i
+      return if meta_refresh_count >= max_10min_refreshes
+      do_meta_refresh(meta_refresh_count)
+    end
+
+    def do_meta_refresh(meta_refresh_count)
+      @meta_refresh = 10 * 60
+      flow_session[:meta_refresh_count] = meta_refresh_count + 1
     end
   end
 end
