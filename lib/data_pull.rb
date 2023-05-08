@@ -198,7 +198,7 @@ class DataPull
 
       users.each do |user|
         user.email_addresses.sort_by(&:id).each do |email_address|
-          table << [user.uuid, email_address.email, email_address.confirmed_at]
+          table << [user.uuid, email_address.email, email_address.confirmed_at.round(6)]
         end
       end
 
