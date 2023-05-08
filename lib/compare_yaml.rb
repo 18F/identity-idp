@@ -28,19 +28,36 @@ class CompareYaml
             add_to_diff(:integrations, key, value, production)
         end
         serialized[:iaa_orders].each do |key, value|
+            binding.pry
             add_to_diff(:iaa_orders, key, value, production)
         end
+        @diff[:iaa_orders] = merge_array_of_hashes_by_keys(@diff[:iaa_orders])
         return serialized, production, @diff
     end
 
-    # put the issuers with data that doesn't match in the diff hash
+    def merge_array_of_hashes_by_keys(array)
+        array.flat_map(&:entries)
+            .group_by(&:first)
+            .map{|k,v| Hash[k, v.map(&:last)]}
+    end
+
+    # find the differences with issuer data that doesn't match in the diff hash
     def add_to_diff(symbol, key, value, production)
         prod = production[symbol][key]
         if prod.nil?
-            @diff[symbol] << key
+            @diff[symbol] << Hash[key, "does not exist in prod"]
         else
             if value != prod
-                @diff[symbol] << key
+                #to handle iaa_orders being grouped by partner_account_name (more than one order per account) 
+                if value.instance_of?(Array) && value.length > 1
+                    value.each_with_index do |item, index|
+                        if(prod[index] != item)
+                            @diff[symbol] << Hash[item["partner_account_name"], item.to_a - prod[index].to_a]
+                        end
+                    end
+                else 
+                    @diff[symbol] << Hash[key, value.to_a - prod.to_a]
+                end
             end
         end
     end
@@ -61,13 +78,18 @@ class CompareYaml
     def objects
         {
             service_providers: ServiceProvider.all.each_with_object({}) do |sp, object|
-                object[sp[:issuer].to_s] = sp.attributes.except( "id", "created_at", "updated_at") 
+                object[sp[:issuer].to_s] = sp.attributes.except( "id", "created_at", "updated_at", "irs_attempts_api_enabled") 
             end,
             integrations: Agreements::Integration.all.each_with_object({}) do |int, object|
-                object[int[:issuer].to_s] = int.attributes.except("id")
+                object[int[:issuer].to_s] = int.attributes.except("id", "partner_account_id", "integration_status_id", "service_provider_id")
             end,
-            iaa_orders: Agreements::IaaOrder.all.each_with_object({}) do |order, object|
-                object[order[:iaa_gtc_id].to_s] = order.attributes.except("id")
+            iaa_orders: Agreements::IaaOrder.all.includes(:partner_account).each_with_object({}) do |order, object|
+                #this is necessary because id values are randomly generated and do not match across the two instances
+                partner_name = Hash['partner_account_name', order.partner_account.name]
+                if !object[order.partner_account.name]
+                    object[order.partner_account.name] = []
+                end
+                object[order.partner_account.name] << order.attributes.except("id", "iaa_gtc_id").merge(partner_name)
             end,
         }.with_indifferent_access
     end
