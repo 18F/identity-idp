@@ -16,6 +16,7 @@ class CompareYaml
     end
 
     def run
+        reset_db
         serialized = run_serializer('serialized')
         reset_db
         production = run_serializer('config')
@@ -29,7 +30,7 @@ class CompareYaml
         serialized[:iaa_orders].each do |key, value|
             add_to_diff(:iaa_orders, key, value, production)
         end
-        @diff
+        return serialized, production, @diff
     end
 
     # put the issuers with data that doesn't match in the diff hash
