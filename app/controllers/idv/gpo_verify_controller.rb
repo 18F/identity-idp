@@ -10,9 +10,13 @@ module Idv
     def index
       analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
-      @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
+
+      @user_can_request_another_gpo_code =
+        FeatureManagement.gpo_verification_enabled? &&
+        !gpo_mail.mail_spammed? &&
+        !profile_is_too_old
 
       if throttle.throttled?
         render_throttled
@@ -71,6 +75,12 @@ module Idv
       end
 
       enable_personal_key_generation
+    end
+
+    def profile_is_too_old
+      max_age_in_days = IdentityConfig.store.gpo_max_profile_age_to_send_letter_in_days
+      min_creation_date = Time.zone.now - max_age_in_days.days
+      current_user.pending_profile.created_at < min_creation_date
     end
 
     def throttle
