@@ -33,7 +33,7 @@ module Proofing
           user_email: user_email,
         )
 
-        residential_instant_verify_proof = proof_residential_address_if_needed(
+        residential_instant_verify_result = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
           double_address_verification: double_address_verification,
@@ -41,17 +41,17 @@ module Proofing
 
         applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
 
-        instant_verify_proof = proof_id_address_with_lexis_nexis_if_needed(
+        instant_verify_result = proof_id_address_with_lexis_nexis_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
-          residential_instant_verify_proof: residential_instant_verify_proof,
+          residential_instant_verify_result: residential_instant_verify_result,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
-          residential_instant_verify_proof: residential_instant_verify_proof,
-          instant_verify_proof: instant_verify_proof,
+          residential_instant_verify_result: residential_instant_verify_result,
+          instant_verify_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
           double_address_verification: double_address_verification,
         )
@@ -59,11 +59,11 @@ module Proofing
         ResultAdjudicator.new(
           device_profiling_result: device_profiling_result,
           double_address_verification: double_address_verification,
-          resolution_result: instant_verify_proof,
+          resolution_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
-          state_id_result: state_id_result, # AAMVA
-          residential_resolution_result: residential_instant_verify_proof,
-          same_address_as_id: applicant_pii[:same_address_as_id], # a string, "true" or "false"
+          state_id_result: state_id_result,
+          residential_resolution_result: residential_instant_verify_result,
+          same_address_as_id: applicant_pii[:same_address_as_id],
         )
       end
 
@@ -114,12 +114,6 @@ module Proofing
         )
       end
 
-      def resolution_unnecessary_result
-        Proofing::AddressResult.new(
-          success: true, errors: {}, exception: nil, vendor_name: 'ResolutionUnnecessary',
-        )
-      end
-
       # TK: confirm vendor name with Team Ada
       def resolution_cannot_pass
         Proofing::AddressResult.new(
@@ -128,48 +122,44 @@ module Proofing
       end
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
-                                                      residential_instant_verify_proof:)
-        return residential_instant_verify_proof if applicant_pii[:same_address_as_id] == 'true'
-        return resolution_cannot_pass unless residential_instant_verify_proof.success?
+                                                      residential_instant_verify_result:)
+        if applicant_pii[:same_address_as_id] == 'true' # TK: check DAV
+          return residential_instant_verify_result
+        end
+        return resolution_cannot_pass unless residential_instant_verify_result.success?
 
         timer.time('resolution') do
           resolution_proofer.proof(applicant_pii)
         end
       end
 
-      def aamva_irrelevant?(double_address_verification:, same_address_as_id:,
-                            should_proof_state_id:, instant_verify_proof:,
-                            residential_instant_verify_proof:)
-        return true unless should_proof_state_id
-        if double_address_verification == false &&
-           !user_can_pass_after_state_id_check?(instant_verify_proof)
-          return true
-        end
-        if double_address_verification == true && same_address_as_id == 'false' &&
-           !residential_instant_verify_proof.success?
-          return true
-        end
-        if double_address_verification == true && same_address_as_id == 'true' &&
-           !user_can_pass_after_state_id_check?(instant_verify_proof)
-          return true
+      def should_proof_state_id_with_aamva?(double_address_verification:, same_address_as_id:,
+                                            should_proof_state_id:, instant_verify_result:,
+                                            residential_instant_verify_result:)
+        return false unless should_proof_state_id
+        if double_address_verification == false || same_address_as_id == 'true'
+          user_can_pass_after_state_id_check?(instant_verify_result)
+        else
+          residential_instant_verify_result.success?
         end
       end
 
       def proof_id_with_aamva_if_needed(
         applicant_pii:, timer:,
-        residential_instant_verify_proof:,
-        instant_verify_proof:,
+        residential_instant_verify_result:,
+        instant_verify_result:,
         should_proof_state_id:,
         double_address_verification:
       )
         same_address_as_id = applicant_pii[:same_address_as_id]
-        return out_of_aamva_jurisdiction_result if aamva_irrelevant?(
+        should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
           double_address_verification:,
           same_address_as_id:,
           should_proof_state_id:,
-          instant_verify_proof:,
-          residential_instant_verify_proof:,
+          instant_verify_result:,
+          residential_instant_verify_result:,
         )
+        return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva
 
         timer.time('state_id') do
           state_id_proofer.proof(applicant_pii)
