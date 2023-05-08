@@ -4,7 +4,7 @@ RSpec.describe IdTokenBuilder do
   include Rails.application.routes.url_helpers
 
   let(:code) { SecureRandom.hex }
-
+  let(:user) { create(:user) }
   let(:identity) do
     build(
       :service_provider_identity,
@@ -15,7 +15,7 @@ RSpec.describe IdTokenBuilder do
       # this is a known value from an example developer guide
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-      user: create(:user),
+      user: user,
     )
   end
 
@@ -61,8 +61,37 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
-    it 'sets the acr to the request acr' do
-      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+    context 'it sets the acr' do
+      context 'ial2 request' do
+        it 'sets the acr to the ial2 constant' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
+      context 'ial1 request' do
+        before { identity.ial = 1 }
+        it 'sets the acr to the ial1 constant' do
+          expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+
+      context 'ialmax request' do
+        before { identity.ial = 0 }
+
+        context 'non-verified user' do
+          it 'sets the acr to the ial1 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+
+        context 'verified user' do
+          let(:user) {  create(:user, profiles: [create(:profile, :verified, :active)]) }
+
+          it 'sets the acr to the ial2 constant' do
+            expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+          end
+        end
+      end
     end
 
     it 'sets the jti to something meaningful' do
