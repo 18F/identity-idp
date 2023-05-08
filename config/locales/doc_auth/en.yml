@@ -97,12 +97,12 @@ en:
       captured_image: Captured Image
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
-      doc_success: We have verified your personal information
+      doc_success: We verified your information
       selected_file: Selected file
     headings:
       address: Update your mailing address
       back: Back
-      capture_complete: We have verified your state‑issued ID
+      capture_complete: We verified your ID
       capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
         information below is incorrect, please %{link} of your state‑issued ID.
       capture_scan_warning_link: upload new photos

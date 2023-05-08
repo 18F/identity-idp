@@ -191,7 +191,7 @@ fr:
         à usage unique figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
-      confirm: Vous avez crypté vos données vérifiées
+      confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
