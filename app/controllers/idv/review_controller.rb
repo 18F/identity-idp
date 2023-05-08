@@ -37,7 +37,7 @@ module Idv
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
-      else
+      elsif idv_session.phone_confirmed?
         flash_now[:success] = t('idv.messages.review.info_verified')
       end
     end

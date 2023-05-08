@@ -159,6 +159,17 @@ describe Idv::ReviewController do
         )
       end
 
+      context 'user is in gpo flow' do
+        it 'does not display success message' do
+          idv_session.vendor_phone_confirmation = false
+          idv_session.address_verification_mechanism = 'gpo'
+
+          get :new
+
+          expect(flash.now[:success]).to be_nil
+        end
+      end
+
       it 'updates the doc auth log for the user for the encrypt view event' do
         unstub_analytics
         doc_auth_log = DocAuthLog.create(user_id: user.id)
