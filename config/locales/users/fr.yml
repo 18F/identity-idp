@@ -25,7 +25,6 @@ fr:
       accessible_labels:
         code_example: Un exemple de code personnel à 16 caractères
         preview: Aperçu du code personnel
-      close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.
       generated_on_html: Votre clé personnelle a été générée le %{date}
     phones:
