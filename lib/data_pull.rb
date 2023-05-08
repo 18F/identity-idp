@@ -96,7 +96,6 @@ class DataPull
     }[name]
   end
 
-  # rubocop:disable Metrics/BlockLength
   def option_parser
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = <<~EOS
@@ -136,7 +135,6 @@ class DataPull
       end
     end
   end
-  # rubocop:enable Metrics/BlockLength
 
   class UuidLookup
     def run(args:, include_missing:)
