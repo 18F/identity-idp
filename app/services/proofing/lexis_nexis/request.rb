@@ -14,7 +14,7 @@ module Proofing
         @url = build_request_url
       end
 
-      def send
+      def send_request
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
           if require_auth_headers? && !hmac_auth_enabled?
