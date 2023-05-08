@@ -173,7 +173,7 @@ en:
         /> If you reset your password, the one-time code in your letter will no
         longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
-      confirm: You have encrypted your verified data
+      confirm: We secured your verified information
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
