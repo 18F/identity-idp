@@ -90,8 +90,9 @@ module Users
 
     def ial_context
       @ial_context ||= IalContext.new(
-        ial: sp_session_ial, service_provider: current_sp,
-        user: piv_cac_login_form.user
+        ial: sp_session_ial,
+        service_provider: current_sp,
+        user: piv_cac_login_form.user,
       )
     end
 
