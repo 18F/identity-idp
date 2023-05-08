@@ -155,7 +155,7 @@ describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t('idv.messages.review.info_verified'),
+          t('idv.messages.review.phone_verified'),
         )
       end
 

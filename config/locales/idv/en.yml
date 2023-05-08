@@ -195,7 +195,7 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        info_verified: We verified your phone number
+        phone_verified: We verified your phone number
         intro: Your verified information
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
