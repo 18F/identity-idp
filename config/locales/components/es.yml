@@ -9,6 +9,7 @@ es:
       mock_score_label: 'Puntuación reCAPTCHA: (0.0 - 1.0)'
     clipboard_button:
       label: Copiar
+      tooltip: ¡Copiado!
     countdown_alert:
       time_remaining_html: 'Quedan %{countdown_html}'
     download_button:
