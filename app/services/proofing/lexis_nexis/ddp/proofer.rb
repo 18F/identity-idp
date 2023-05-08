@@ -11,7 +11,11 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send
+          response = VerificationRequest.new(
+            config: config,
+            applicant: applicant,
+            require_auth_headers: false,
+          ).send
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)

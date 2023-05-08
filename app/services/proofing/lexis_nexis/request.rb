@@ -5,9 +5,10 @@ module Proofing
     class Request
       attr_reader :config, :applicant, :url, :headers, :body
 
-      def initialize(config:, applicant:)
+      def initialize(config:, applicant:, require_auth_headers: true)
         @config = config
         @applicant = applicant
+        @require_auth_headers = require_auth_headers
         @body = build_request_body
         @headers = build_request_headers
         @url = build_request_url
@@ -16,7 +17,7 @@ module Proofing
       def send
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
-          unless hmac_auth_enabled?
+          if require_auth_headers? && !hmac_auth_enabled?
             f.request :authorization, :basic, config.username, config.password
           end
           f.options.timeout = timeout
@@ -44,6 +45,10 @@ module Proofing
 
       private
 
+      def require_auth_headers?
+        @require_auth_headers
+      end
+
       def account_number
         config.account_id
       end
@@ -56,7 +61,7 @@ module Proofing
         headers = {
           'Content-Type' => 'application/json',
         }
-        headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+        headers['Authorization'] = hmac_authorization if require_auth_headers? && hmac_auth_enabled?
         headers
       end
 
