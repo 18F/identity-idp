@@ -45,6 +45,7 @@ module Proofing
           applicant_pii: applicant_pii,
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
+          double_address_verification: double_address_verification,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
@@ -122,8 +123,9 @@ module Proofing
       end
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
-                                                      residential_instant_verify_result:)
-        if applicant_pii[:same_address_as_id] == 'true' # TK: check DAV
+                                                      residential_instant_verify_result:,
+                                                      double_address_verification:)
+        if applicant_pii[:same_address_as_id] == 'true' && double_address_verification == true
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
