@@ -21,6 +21,13 @@ module IdvStepConcern
     flow_session[:flow_path]
   end
 
+  private
+
+  def confirm_ssn_step_complete
+    return if pii.present? && pii[:ssn].present?
+    redirect_to prev_url
+  end
+
   def confirm_document_capture_complete
     return if pii_from_doc.present?
 
