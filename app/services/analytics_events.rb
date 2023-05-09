@@ -1116,6 +1116,15 @@ module AnalyticsEvents
     )
   end
 
+  # Multi factor auth add new phone
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] otp_delivery_preference
+  # @param [String] area_code
+  # @param [String] carrier
+  # @param [String] country_code
+  # @param [String] phone_type
+  # @param [Hash] types
   def multi_factor_auth_add_phone_setup(success:,
                                         errors:,
                                         otp_delivery_preference:,
@@ -1127,7 +1136,7 @@ module AnalyticsEvents
                                         **extra)
 
     track_event(
-      'Multi-Factor Authentication: phone setup',
+      'Multi-Factor Authentication: Add new phone setup',
       success: success,
       errors: errors,
       otp_delivery_preference: otp_delivery_preference,
