@@ -187,7 +187,6 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     end
   end
 
-
   context 'with in person verify info controller enabled ' do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
