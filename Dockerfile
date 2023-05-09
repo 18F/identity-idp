@@ -7,8 +7,8 @@ FROM ubuntu:20.04
 
 # Set environment variables
 ENV RAILS_ROOT /app
-ENV RAILS_ENV review-app
-ENV NODE_ENV production
+ENV RAILS_ENV development
+ENV NODE_ENV development
 ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
@@ -58,38 +58,38 @@ WORKDIR $RAILS_ROOT
 COPY --chown=app:app . .
 
 # Copy application.yml.default to application.yml
-COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/application.yml
+# COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/application.yml
 
 # # Setup config files
-# COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
-# COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
-# COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yaml
-# COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yaml
-# COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yaml
-# COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yaml
-# COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yaml
-# COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yaml
-# COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
+COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
+COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
+COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yaml
+COPY --chown=app:app config/iaa_statuses.localdev.yml $RAILS_ROOT/config/iaa_statuses.yaml
+COPY --chown=app:app config/integration_statuses.localdev.yml $RAILS_ROOT/config/integration_statuses.yaml
+COPY --chown=app:app config/integrations.localdev.yml $RAILS_ROOT/config/integrations.yaml
+COPY --chown=app:app config/partner_account_statuses.localdev.yml $RAILS_ROOT/config/partner_account_statuses.yaml
+COPY --chown=app:app config/partner_accounts.localdev.yml $RAILS_ROOT/config/partner_accounts.yaml
+COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yaml
 
 # Setup config files
-COPY --chown=app:app ./identity-idp-config/agencies.yml $RAILS_ROOT/config/agencies.yml
-COPY --chown=app:app ./identity-idp-config/iaa_gtcs.yml $RAILS_ROOT/config/iaa_gtcs.yml
-COPY --chown=app:app ./identity-idp-config/iaa_orders.yml $RAILS_ROOT/config/iaa_orders.yml
+# COPY --chown=app:app ./identity-idp-config/agencies.yml $RAILS_ROOT/config/agencies.yml
+# COPY --chown=app:app ./identity-idp-config/iaa_gtcs.yml $RAILS_ROOT/config/iaa_gtcs.yml
+# COPY --chown=app:app ./identity-idp-config/iaa_orders.yml $RAILS_ROOT/config/iaa_orders.yml
 # Doesn't exist in identity-idp-config
 #COPY --chown=app:app ./identity-idp-config/iaa_statuses.yml $RAILS_ROOT/config/iaa_statuses.yaml
-COPY --chown=app:app ./identity-idp-config/integration_statuses.yml $RAILS_ROOT/config/integration_statuses.yml
-COPY --chown=app:app ./identity-idp-config/integrations.yml $RAILS_ROOT/config/integrations.yml
-COPY --chown=app:app ./identity-idp-config/partner_account_statuses.yml $RAILS_ROOT/config/partner_account_statuses.yml
-COPY --chown=app:app ./identity-idp-config/partner_accounts.yml $RAILS_ROOT/config/partner_accounts.yml
-COPY --chown=app:app ./identity-idp-config/service_providers.yml $RAILS_ROOT/config/service_providers.yml
+# COPY --chown=app:app ./identity-idp-config/integration_statuses.yml $RAILS_ROOT/config/integration_statuses.yml
+# COPY --chown=app:app ./identity-idp-config/integrations.yml $RAILS_ROOT/config/integrations.yml
+# COPY --chown=app:app ./identity-idp-config/partner_account_statuses.yml $RAILS_ROOT/config/partner_account_statuses.yml
+# COPY --chown=app:app ./identity-idp-config/partner_accounts.yml $RAILS_ROOT/config/partner_accounts.yml
+# COPY --chown=app:app ./identity-idp-config/service_providers.yml $RAILS_ROOT/config/service_providers.yml
 
 # Copy service provider public keys
-COPY --chown=app:app ../identity-idp-config/certs/sp $RAILS_ROOT/certs/sp
+# COPY --chown=app:app ../identity-idp-config/certs/sp $RAILS_ROOT/certs/sp
 # COPY --chown=app:app ../identity-idp-config/certs $RAILS_ROOT/certs
 
 # Copy public assets: sp-logos
-COPY --chown=app:app ./identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/app/assets/images/sp-logos
-COPY --chown=app:app ./identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/sp-logos
+# COPY --chown=app:app ./identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/app/assets/images/sp-logos
+# COPY --chown=app:app ./identity-idp-config/public/assets/images/sp-logos $RAILS_ROOT/public/assets/sp-logos
 
 # Copy keys
 COPY --chown=app:app keys.example $RAILS_ROOT/keys
@@ -107,7 +107,7 @@ USER app
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
-RUN bundle config set --local without 'deploy development doc test'
+# RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 RUN bundle binstubs --all

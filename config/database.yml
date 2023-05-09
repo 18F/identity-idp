@@ -24,13 +24,20 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_username %>
+    host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
+    password: <%= IdentityConfig.store.database_password %>
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
     replica: true
   worker_jobs:
     <<: *defaults
-    database: identity_idp_worker_jobs_<%= Rails.env %>
+    database: <%= IdentityConfig.store.database_worker_jobs_name %>
+    username: <%= IdentityConfig.store.database_worker_jobs_username %>
+    host: <%= IdentityConfig.store.database_worker_jobs_host %>
+    password: <%= IdentityConfig.store.database_worker_jobs_password %>
     migrations_paths: db/worker_jobs_migrate
 
 test:
@@ -44,6 +51,10 @@ test:
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *test
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_readonly_username %>
+    host: <%= IdentityConfig.store.database_read_replica_host %>
+    password: <%= IdentityConfig.store.database_readonly_password %>
     replica: true
   worker_jobs:
     <<: *test
@@ -73,29 +84,6 @@ test:
   end
 %>
 
-review-app:
-  primary:
-    <<: *defaults
-    database: <%= IdentityConfig.store.database_name %>
-    username: <%= IdentityConfig.store.database_username %>
-    host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
-    password: <%= IdentityConfig.store.database_password %>
-    pool: <%= primary_pool %>
-    advisory_locks: <%= !IdentityConfig.store.database_socket.present? %>
-    prepared_statements: <%= !IdentityConfig.store.database_socket.present? %>
-    migrations_paths: db/primary_migrate
-  read_replica:
-    <<: *defaults
-    replica: true
-  worker_jobs:
-    <<: *defaults
-    database: <%= IdentityConfig.store.database_worker_jobs_name %>
-    username: <%= IdentityConfig.store.database_worker_jobs_username %>
-    host: <%= IdentityConfig.store.database_worker_jobs_host %>
-    password: <%= IdentityConfig.store.database_worker_jobs_password %>
-    pool: <%= worker_pool %>
-    migrations_paths: db/worker_jobs_migrate
-
 production:
   primary:
     <<: *defaults
@@ -106,7 +94,9 @@ production:
     pool: <%= primary_pool %>
     advisory_locks: <%= !IdentityConfig.store.database_socket.present? %>
     prepared_statements: <%= !IdentityConfig.store.database_socket.present? %>
+    # change
     sslmode: 'verify-full'
+    # change
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
   read_replica:
@@ -116,6 +106,7 @@ production:
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
     pool: <%= primary_pool %>
+    # change
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
@@ -126,6 +117,7 @@ production:
     host: <%= IdentityConfig.store.database_worker_jobs_host %>
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
     pool: <%= worker_pool %>
+    # change
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
