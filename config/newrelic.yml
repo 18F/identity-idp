@@ -7,9 +7,6 @@ common: &default_settings
 development:
   <<: *default_settings
   monitor_mode: false
-review-app:
-  <<: *default_settings
-  monitor_mode: false
 production:
   <<: *default_settings
   agent_enabled: true
