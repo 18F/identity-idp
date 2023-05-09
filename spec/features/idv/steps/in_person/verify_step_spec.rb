@@ -202,7 +202,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     end
 
     it 'displays expected headers & data on /verify_info',
-      allow_browser_log: true do
+       allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_location_step(user)
@@ -262,7 +262,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     end
 
     it 'displays expected headers & data on /verify',
-      allow_browser_log: true do
+       allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_location_step(user)
@@ -276,7 +276,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
 
       # confirm url is /verify
       expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
-      
+
       # verify page
       expect(page).to have_content(t('headings.verify'))
 
@@ -305,5 +305,4 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     end
   end
-  
 end
