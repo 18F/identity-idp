@@ -111,9 +111,8 @@ es:
             how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
           heading: No pudimos asociarlo a este número
           learn_more_link: 'Más información sobre qué número de teléfono usar'
-          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
-            utilice a menudo y desde hace tiempo. Puede ser un número del
-            trabajo o particular.'
+          next_steps_html: 'Pruebe con <strong>otro</strong> número que utilice a menudo y
+            desde hace tiempo.. Puede ser un número del trabajo o particular.'
           try_again_button: 'Intente con otro número'
           you_entered: 'Ud. entregó:'
       sessions:
