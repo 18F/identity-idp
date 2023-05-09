@@ -2,10 +2,6 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
-    def capture_secondary_id_enabled
-      IdentityConfig.store.in_person_capture_secondary_id_enabled
-    end
-
     def update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
