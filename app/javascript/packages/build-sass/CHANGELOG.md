@@ -1,10 +1,18 @@
-## 1.1.0 (2023-04-03)
+## 1.2.0
+
+### Improvements
+
+- Adds default load paths when a supported dependency is installed.
+  - If `@18f/identity-design-system` is installed, `node_modules/@18f/identity-design-system/packages` is added as a load path.
+  - If `@uswds/uswds` is installed, `node_modules/@uswds/uswds/packages` is added as a load path.
+
+## 1.1.0
 
 ### Improvements
 
 - Improves watch mode error recovery to monitor changes to all files in the stack trace of the error.
 - Adds support for `--load-path=` flag to include additional default paths in Sass path resolution.
 
-## 1.0.0 (2022-11-21)
+## 1.0.0
 
 - Initial release

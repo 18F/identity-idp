@@ -111,9 +111,8 @@ es:
             how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
           heading: No pudimos asociarlo a este número
           learn_more_link: 'Más información sobre qué número de teléfono usar'
-          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
-            utilice a menudo y desde hace tiempo. Puede ser un número del
-            trabajo o particular.'
+          next_steps_html: 'Pruebe con <strong>otro</strong> número que utilice a menudo y
+            desde hace tiempo.. Puede ser un número del trabajo o particular.'
           try_again_button: 'Intente con otro número'
           you_entered: 'Ud. entregó:'
       sessions:
@@ -183,7 +182,7 @@ es:
         Si restablece su contraseña, el código único de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
-      confirm: Usted ha encriptado sus datos verificados.
+      confirm: Hemos asegurado su información verificada
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.

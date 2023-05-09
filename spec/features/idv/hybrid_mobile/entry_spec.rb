@@ -3,11 +3,6 @@ require 'rails_helper'
 feature 'mobile hybrid flow entry', js: true do
   include IdvStepHelper
 
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(true)
-  end
-
   let(:link_sent_via_sms) do
     link = nil
 

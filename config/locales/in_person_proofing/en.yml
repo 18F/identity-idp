@@ -66,7 +66,6 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
         selection: 'This is the location you selected:'
       prepare:
-        alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
@@ -100,7 +99,9 @@ en:
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
+        address1_hint: 'Example: 150 Calle A Apt 3'
         address2: Address line 2
+        address2_hint: 'Example: URB Las Gladiolas or COND Miraflor'
         city: City
         date_hint:
           day: 'Example: 28'

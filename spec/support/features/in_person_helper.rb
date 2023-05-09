@@ -86,6 +86,9 @@ module InPersonHelper
   end
 
   def search_for_post_office
+    expect(page).to(have_content(t('in_person_proofing.headings.po_search.location')))
+    expect(page).to(have_content(t('in_person_proofing.body.location.po_search.po_search_about')))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     fill_in t('in_person_proofing.body.location.po_search.address_search_label'),
             with: GOOD_ADDRESS1
     click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
@@ -108,8 +111,10 @@ module InPersonHelper
   end
 
   def complete_prepare_step(_user = nil)
-    expect(page).to have_text(t('forms.buttons.continue'), wait: 10)
-    click_spinner_button_and_wait t('forms.buttons.continue')
+    expect(page).to(have_content(t('in_person_proofing.headings.prepare')))
+    expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    click_on t('forms.buttons.continue')
   end
 
   def complete_state_id_step(_user = nil, same_address_as_id: true,
@@ -142,8 +147,8 @@ module InPersonHelper
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa)
-    complete_location_step(user)
     complete_prepare_step(user)
+    complete_location_step(user)
     complete_state_id_step(user)
     complete_address_step(user)
     complete_ssn_step(user)

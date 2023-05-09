@@ -103,9 +103,8 @@ en:
             how_long_it_takes: This typically takes 3 - 7 business days.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
-          next_steps_html: 'Please try again with <strong>another</strong> number that you
-            use often and have used for a long time. This can be a work or home
-            number.'
+          next_steps_html: 'Try <strong>another</strong> number that you use often and
+            have used for a long time. This can be a work or home number.'
           try_again_button: 'Try another number'
           you_entered: 'You entered:'
       sessions:
@@ -173,7 +172,7 @@ en:
         /> If you reset your password, the one-time code in your letter will no
         longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
-      confirm: You have encrypted your verified data
+      confirm: We secured your verified information
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
