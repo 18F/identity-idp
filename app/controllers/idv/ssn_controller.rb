@@ -5,9 +5,11 @@ module Idv
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
+    include ThreatMetrixConcern
 
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
+    before_action :override_csp_for_threat_metrix_no_fsm
 
     attr_accessor :error_message
 

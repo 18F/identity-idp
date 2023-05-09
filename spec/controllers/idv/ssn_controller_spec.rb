@@ -34,6 +34,13 @@ describe Idv::SsnController do
         :confirm_document_capture_complete,
       )
     end
+
+    it 'overrides CSPs for ThreatMetrix' do
+      expect(subject).to have_actions(
+        :before,
+        :override_csp_for_threat_metrix_no_fsm,
+      )
+    end
   end
 
   describe '#show' do
