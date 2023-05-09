@@ -4,6 +4,7 @@ module InPerson
   # the enrollment is ready, then this job updates a flag on the enrollment so that it
   # will be checked earlier than other enrollments.
   class EnrollmentsReadyForStatusCheckJob < ApplicationJob
+    include InPerson::EnrollmentsReadyForStatusCheck::UsesAnalytics
     include InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline
 
     queue_as :low
@@ -11,7 +12,7 @@ module InPerson
     def perform(_now)
       return true unless IdentityConfig.store.in_person_proofing_enabled
 
-      analytics.idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_started
+      analytics.idv_in_person_proofing_enrollments_ready_for_status_check_job_started
 
       analytics_stats = {
         # total number of items fetched
@@ -31,7 +32,7 @@ module InPerson
         process_batch(messages, analytics_stats)
       end
     ensure
-      analytics.idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_completed(
+      analytics.idv_in_person_proofing_enrollments_ready_for_status_check_job_completed(
         *analytics_stats,
         # number of fetched items that were not processed nor deleted from the queue
         incomplete_items: analytics_stats[:fetched_items] - analytics_stats[:processed_items],
@@ -41,10 +42,6 @@ module InPerson
     end
 
     private
-
-    def analytics(user: AnonymousUser.new)
-      Analytics.new(user: user, request: nil, session: {}, sp: nil)
-    end
 
     def poll
       sqs_client.receive_message(receive_params).messages

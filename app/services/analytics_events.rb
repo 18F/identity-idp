@@ -947,16 +947,23 @@ module AnalyticsEvents
     )
   end
 
-  def idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_started(**extra)
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_started(**extra)
     track_event(
-      'MarkInPersonEnrollmentsReadyForStatusCheckJob: Job started',
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job started',
       **extra,
     )
   end
 
-  def idv_mark_in_person_proofing_enrollments_ready_for_status_check_job_completed(**extra)
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_completed(**extra)
     track_event(
-      'MarkInPersonEnrollmentsReadyForStatusCheckJob: Job completed',
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job completed',
+      **extra,
+    )
+  end
+
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error(**extra)
+    track_event(
+      'InPersonEnrollmentsReadyForStatusCheckJob: Ingestion error',
       **extra,
     )
   end
