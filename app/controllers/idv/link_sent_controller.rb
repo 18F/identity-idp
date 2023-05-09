@@ -21,7 +21,7 @@ module Idv
     end
 
     def update
-      analytics.idv_doc_auth_link_sent_submitted(analytics_arguments)
+      analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('link_sent', :update, true)
