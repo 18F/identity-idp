@@ -412,12 +412,11 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if enrollment.capture_secondary_id_enabled && response['secondaryIdType']
+      if enrollment.capture_secondary_id_enabled && response['secondaryIdType'].present?
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)
       else
-        # Unsupported ID type
         handle_unsupported_id_type(enrollment, response)
       end
     when IPP_STATUS_FAILED
