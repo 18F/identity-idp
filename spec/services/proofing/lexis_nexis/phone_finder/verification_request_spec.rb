@@ -43,4 +43,31 @@ describe Proofing::LexisNexis::PhoneFinder::VerificationRequest do
       )
     end
   end
+
+  describe '#build_request_headers' do
+    context 'HMAC Auth disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_hmac_auth_enabled).and_return(false)
+      end
+
+      it 'does not include a HMAC Authorization header' do
+        expect(subject.send(:build_request_headers)['Authorization']).to be_nil
+      end
+    end
+
+    context 'HMAC Auth enabled' do
+      let(:token) do
+        'HMAC-SHA256 keyid=HMAC-KEY-ID ts=timestamp nonce=nonce bodyHash=base64digest signature=sig'
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:lexisnexis_hmac_auth_enabled).and_return(true)
+        allow(subject).to receive(:hmac_authorization).and_return(token)
+      end
+
+      it 'includes an Authorization header with the HMAC token' do
+        expect(subject.send(:build_request_headers)['Authorization']).to eq(token)
+      end
+    end
+  end
 end

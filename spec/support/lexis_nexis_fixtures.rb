@@ -9,6 +9,8 @@ module LexisNexisFixtures
         account_id: 'test_account',
         username: 'test_username',
         password: 'test_password',
+        hmac_key_id: 'test_hmac_key_id',
+        hmac_secret_key: 'test_hmac_secret_key',
         instant_verify_workflow: 'gsa2.chk32.test.wf',
         phone_finder_workflow: 'customers.gsa2.phonefinder.workflow',
       )
