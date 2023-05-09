@@ -6,6 +6,17 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_no_pending_profile
+    before_action :confirm_no_pending_in_person_enrollment
+  end
+
+  def confirm_no_pending_profile
+    redirect_to idv_gpo_verify_url if current_user.pending_profile_requires_verification?
+  end
+
+  def confirm_no_pending_in_person_enrollment
+    return if !IdentityConfig.store.in_person_proofing_enabled
+    redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
   end
 
   def flow_session
