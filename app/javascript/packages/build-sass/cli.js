@@ -4,7 +4,9 @@
 
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
+import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
 import { buildFile } from './index.js';
+import getDefaultLoadPaths from './get-default-load-paths.js';
 import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 
 /** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
@@ -14,15 +16,18 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
 
-const args = process.argv.slice(2);
-const fileArgs = args.filter((arg) => !arg.startsWith('-'));
-const flags = args.filter((arg) => arg.startsWith('-'));
+const { values: flags, positionals: fileArgs } = parseArgs({
+  allowPositionals: true,
+  options: {
+    watch: { type: 'boolean' },
+    'out-dir': { type: 'string' },
+    'load-path': { type: 'string', multiple: true, default: [] },
+  },
+});
 
-const isWatching = flags.includes('--watch');
-const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
-const loadPaths = flags
-  .filter((flag) => flag.startsWith('--load-path='))
-  .map((flag) => flag.slice(12));
+const isWatching = flags.watch;
+const outDir = flags['out-dir'];
+const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };

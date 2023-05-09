@@ -15,6 +15,9 @@ feature 'Email confirmation during sign up' do
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
     fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: Features::SessionHelper::VALID_PASSWORD
+
     click_button t('forms.buttons.continue')
 
     expect(current_url).to eq authentication_methods_setup_url

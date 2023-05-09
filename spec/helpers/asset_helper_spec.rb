@@ -9,14 +9,14 @@ RSpec.describe AssetHelper do
     subject(:asset_path) { design_system_asset_path(path) }
 
     it 'produces an asset path' do
-      expect(asset_path).to eq('identity-style-guide/dist/assets/img/example.png')
+      expect(asset_path).to eq('@18f/identity-design-system/dist/assets/img/example.png')
     end
 
     context 'with leading slash' do
       let(:path) { '/img/example.png' }
 
       it 'produces an asset path' do
-        expect(asset_path).to eq('identity-style-guide/dist/assets/img/example.png')
+        expect(asset_path).to eq('@18f/identity-design-system/dist/assets/img/example.png')
       end
     end
   end

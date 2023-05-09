@@ -64,6 +64,7 @@ en:
       not_a_number: is not a number
       otp_format: Enter your entire one-time code without spaces or special characters
       password_incorrect: Incorrect password
+      password_mismatch: Your passwords don’t match
       personal_key_incorrect: Incorrect personal key
       phone_carrier: Sorry, we are unable to support that phone carrier at this time.
         Please select a different number and try again.

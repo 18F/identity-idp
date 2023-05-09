@@ -645,6 +645,7 @@ GEM
     strong_migrations (0.8.0)
       activerecord (>= 5.2)
     subprocess (1.5.5)
+    tableparser (1.0.1)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
     thor (1.2.1)
@@ -821,6 +822,8 @@ DEPENDENCIES
   stringex
   strong_migrations (>= 0.4.2)
   subprocess
+  tableparser
+  terminal-table
   uglifier (~> 4.2)
   valid_email (>= 0.1.3)
   view_component (~> 2.82.0)

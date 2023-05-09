@@ -64,7 +64,11 @@
 <body class="site <%= yield(:background_cls) %>">
   <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
-  <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
+  <% if content_for?(:mobile_nav) %>
+    <div class="usa-header">
+      <%= yield(:mobile_nav) %>
+    </div>
+  <% end %>
   <%= render 'shared/banner' %>
   <%= content_tag(
         local_assigns[:user_main_tag] == false ? 'div' : 'main',

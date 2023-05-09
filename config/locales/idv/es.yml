@@ -183,7 +183,7 @@ es:
         Si restablece su contraseña, el código único de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
-      confirm: Usted ha encriptado sus datos verificados.
+      confirm: Hemos asegurado su información verificada
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.

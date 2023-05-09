@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /* stylelint-disable-next-line property-no-vendor-prefix */
@@ -11,7 +13,6 @@ input::-webkit-inner-spin-button {
 
 .usa-form-group--error {
   border-left-style: none;
-  margin-top: units(3); // Remove after: https://github.com/uswds/uswds/issues/4189
   padding-left: 0;
 
   @include at-media('desktop') {

@@ -22,7 +22,6 @@ en:
       accessible_labels:
         code_example: A personal key example with 16 characters
         preview: Personal key preview
-      close: Close
       confirmation_error: You’ve entered an incorrect personal key.
       generated_on_html: Your personal key was generated on %{date}
     phones:
