@@ -4,10 +4,6 @@ module Proofing
       class VerificationRequest < Request
         private
 
-        def initialize(config:, applicant:)
-          super(config: config, applicant: applicant, require_auth_headers: false)
-        end
-
         def build_request_body
           {
             api_key: config.api_key,

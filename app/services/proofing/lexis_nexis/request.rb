@@ -5,10 +5,9 @@ module Proofing
     class Request
       attr_reader :config, :applicant, :url, :headers, :body
 
-      def initialize(config:, applicant:, require_auth_headers: true)
+      def initialize(config:, applicant:)
         @config = config
         @applicant = applicant
-        @require_auth_headers = require_auth_headers
         @body = build_request_body
         @headers = build_request_headers
         @url = build_request_url
@@ -17,9 +16,6 @@ module Proofing
       def send_request
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
-          if require_auth_headers? && !hmac_auth_enabled?
-            f.request :authorization, :basic, config.username, config.password
-          end
           f.options.timeout = timeout
           f.options.read_timeout = timeout
           f.options.open_timeout = timeout
@@ -45,10 +41,6 @@ module Proofing
 
       private
 
-      def require_auth_headers?
-        @require_auth_headers
-      end
-
       def account_number
         config.account_id
       end
@@ -58,23 +50,9 @@ module Proofing
       end
 
       def build_request_headers
-        headers = {
+        {
           'Content-Type' => 'application/json',
         }
-        headers['Authorization'] = hmac_authorization if require_auth_headers? && hmac_auth_enabled?
-        headers
-      end
-
-      def hmac_auth_enabled?
-        IdentityConfig.store.lexisnexis_hmac_auth_enabled
-      end
-
-      def hmac_authorization
-        Proofing::LexisNexis::RequestSigner.new(
-          config: config,
-          message_body: body,
-          path: url_request_path,
-        ).hmac_authorization
       end
 
       def build_request_body
