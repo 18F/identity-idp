@@ -205,8 +205,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
        allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(
         user, same_address_as_id: same_address_as_id,
               double_address_verification: double_address_verification
@@ -215,7 +215,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       complete_ssn_step(user)
 
       # confirm url is /verify_info
-      expect(page).to have_current_path(idv_in_person_step_path(step: :verify_info))
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify_info))
 
       # verify page
       expect(page).to have_content(t('headings.verify'))
@@ -265,8 +265,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
        allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
       complete_state_id_step(
         user, same_address_as_id: same_address_as_id,
               double_address_verification: double_address_verification
@@ -275,7 +275,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       complete_ssn_step(user)
 
       # confirm url is /verify
-      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
 
       # verify page
       expect(page).to have_content(t('headings.verify'))
