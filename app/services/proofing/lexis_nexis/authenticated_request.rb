@@ -17,7 +17,7 @@ module Proofing
           conn.post(url, body, headers) do |req|
             req.options.context = { service_name: metric_name }
           end,
-          )
+        )
       rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
         # NOTE: This is only for when Faraday is using NET::HTTP if the adapter is changed
         # this will have to change to handle timeouts
@@ -45,7 +45,7 @@ module Proofing
           config: config,
           message_body: body,
           path: url_request_path,
-          ).hmac_authorization
+        ).hmac_authorization
       end
     end
   end
