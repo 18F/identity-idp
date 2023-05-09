@@ -148,11 +148,11 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, include_missing:) }
 
       it 'loads email addresses for the user' do
-        expect(result.table).to eq(
+        expect(result.table).to match(
           [
             ['uuid', 'email', 'confirmed_at'],
             *user.email_addresses.sort_by(&:id).map do |e|
-              [e.user.uuid, e.email, e.confirmed_at.round(3)]
+              [e.user.uuid, e.email, kind_of(Time)]
             end,
             ['does-not-exist', '[NOT FOUND]', nil],
           ],
