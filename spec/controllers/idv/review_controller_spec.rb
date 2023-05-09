@@ -155,14 +155,19 @@ describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t(
-            'idv.messages.review.info_verified_html',
-            phone_message: ActionController::Base.helpers.content_tag(
-              :strong,
-              t('idv.messages.phone.phone_of_record'),
-            ),
-          ),
+          t('idv.messages.review.phone_verified'),
         )
+      end
+
+      context 'user is in gpo flow' do
+        it 'does not display success message' do
+          idv_session.vendor_phone_confirmation = false
+          idv_session.address_verification_mechanism = 'gpo'
+
+          get :new
+
+          expect(flash.now[:success]).to be_nil
+        end
       end
 
       it 'updates the doc auth log for the user for the encrypt view event' do
