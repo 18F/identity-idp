@@ -82,8 +82,8 @@ module Proofing
       end
 
       def resolution_result_and_reason
-        if !residential_resolution_result.success? && !resolution_result.success? &&
-           same_address_as_id == 'false'
+        if !residential_resolution_result.success? &&
+           same_address_as_id == 'false' && double_address_verification == true
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
