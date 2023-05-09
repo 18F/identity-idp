@@ -1116,6 +1116,30 @@ module AnalyticsEvents
     )
   end
 
+  def multi_factor_auth_add_phone_setup(success:,
+                                        errors:,
+                                        otp_delivery_preference:,
+                                        area_code:,
+                                        carrier:,
+                                        country_code:,
+                                        phone_type:,
+                                        types:,
+                                        **extra)
+
+    track_event(
+      'Multi-Factor Authentication: phone setup',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      area_code: area_code,
+      carrier: carrier,
+      country_code: country_code,
+      phone_type: phone_type,
+      types: types,
+      **extra,
+    )
+  end
+
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
@@ -2814,6 +2838,14 @@ module AnalyticsEvents
         success: success,
         **extra,
       },
+    )
+  end
+
+  # Tracks When users visit the add phone page
+  def user_registration_add_phone_setup_visit
+    track_event(
+      'User Registration: Add Phone Setup Page visited',
+      **extra,
     )
   end
 

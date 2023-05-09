@@ -13,11 +13,13 @@ module Users
     def add
       user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      track_add_phone_visit
     end
 
     def create
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       result = @new_phone_form.submit(user_params)
+      analytics.multi_factor_auth_add_phone_setup(**result.to_h)
       if result.success?
         confirm_phone
       elsif recoverable_recaptcha_error?(result)
@@ -54,6 +56,10 @@ module Users
         selected_delivery_method: @new_phone_form.otp_delivery_preference,
         selected_default_number: @new_phone_form.otp_make_default_number,
       )
+    end
+
+    def track_add_phone_visit
+      analytics.user_registration_add_phone_setup_visit
     end
 
     def check_max_phone_numbers_per_account
