@@ -376,11 +376,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    send_verified_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
       email_type: 'Success',
     )
-    send_verified_email(enrollment.user, enrollment)
   end
 
   def handle_unsupported_secondary_id(enrollment, response)
@@ -397,11 +397,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
       email_type: 'Failed unsupported secondary ID',
     )
-    send_failed_email(enrollment.user, enrollment)
   end
 
   def process_enrollment_response(enrollment, response)
