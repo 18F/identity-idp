@@ -152,7 +152,7 @@ RSpec.describe DataPull do
           [
             ['uuid', 'email', 'confirmed_at'],
             *user.email_addresses.sort_by(&:id).map do |e|
-              [e.user.uuid, e.email, e.confirmed_at.round(6)]
+              [e.user.uuid, e.email, e.confirmed_at.round(3)]
             end,
             ['does-not-exist', '[NOT FOUND]', nil],
           ],
