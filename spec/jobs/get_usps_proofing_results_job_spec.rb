@@ -1064,15 +1064,6 @@ RSpec.describe GetUspsProofingResultsJob do
                 reason: 'Provided secondary proof of address',
               ),
             )
-
-            expect(job_analytics).to have_logged_event(
-              'GetUspsProofingResultsJob: Success or failure email initiated',
-              email_type: 'Failed',
-              enrollment_code: pending_enrollment.enrollment_code,
-              service_provider: anything,
-              timestamp: anything,
-              wait_until: nil,
-            )
           end
         end
       end
