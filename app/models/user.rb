@@ -103,7 +103,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    profiles.gpo_verification_pending.order(created_at: :desc).first
+    profiles.where.not(gpo_verification_pending_at: nil).order(created_at: :desc).first
   end
 
   def fraud_review_eligible?

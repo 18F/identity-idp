@@ -467,13 +467,13 @@ RSpec.describe User do
         user = User.new
         _old_profile = create(
           :profile,
-          :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          :gpo_verification_pending,
+          gpo_verification_pending_at: Time.zone.now,
           user: user,
         )
 
