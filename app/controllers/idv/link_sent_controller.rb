@@ -78,6 +78,48 @@ module Idv
       flow_session[:flow_path] = 'hybrid'
     end
 
+    def save_proofing_components
+      return unless current_user
+
+      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
+        discriminator: flow_session[:document_capture_session_uuid],
+        analytics: analytics,
+      )
+
+      component_attributes = {
+        document_check: doc_auth_vendor,
+        document_type: 'state_id',
+      }
+      ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
+    end
+
+    # @param [DocAuth::Response,
+    #   DocumentCaptureSessionAsyncResult,
+    #   DocumentCaptureSessionResult] response
+    def extract_pii_from_doc(response, store_in_session: false)
+      pii_from_doc = response.pii_from_doc.merge(
+        uuid: effective_user.uuid,
+        phone: effective_user.phone_configurations.take&.phone,
+        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
+      )
+
+      flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
+      if store_in_session
+        flow_session[:pii_from_doc] ||= {}
+        flow_session[:pii_from_doc].merge!(pii_from_doc)
+        idv_session.clear_applicant!
+      end
+      track_document_state(pii_from_doc[:state])
+    end
+
+    def track_document_state(state)
+      return unless IdentityConfig.store.state_tracking_enabled && state
+      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
+      return unless doc_auth_log
+      doc_auth_log.state = state
+      doc_auth_log.save!
+    end
+
     def render_document_capture_cancelled
       mark_upload_step_incomplete
       redirect_to idv_doc_auth_url # was idv_url, why?
