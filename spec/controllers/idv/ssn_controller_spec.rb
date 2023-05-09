@@ -83,6 +83,27 @@ describe Idv::SsnController do
         expect(response).to redirect_to(idv_doc_auth_url)
       end
     end
+
+    it 'overrides Content Security Policies for ThreatMetrix' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+      get :show
+
+      csp = response.request.content_security_policy
+
+      aggregate_failures do
+        expect(csp.directives['script-src']).to include('h.online-metrix.net')
+        expect(csp.directives['script-src']).to include("'unsafe-eval'")
+
+        expect(csp.directives['style-src']).to include("'unsafe-inline'")
+
+        expect(csp.directives['child-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['connect-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['img-src']).to include('*.online-metrix.net')
+      end
+    end
   end
 
   describe '#update' do
