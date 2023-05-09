@@ -155,7 +155,7 @@ feature 'idv phone step', :js do
       click_idv_send_security_code
       click_on t('links.cancel')
 
-      expect(page).to have_current_path(idv_cancel_path)
+      expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
     end
 
     it 'links to verify by mail, from which user can return back to the warning screen' do
