@@ -371,22 +371,33 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'when double address verification is not enabled' do
       let(:double_address_verification) { false }
-      context 'when residential address and id address are the same' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
-        let(:residential_instant_verify_proof) do
-          instance_double(Proofing::Resolution::Result)
-        end
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: 'true')
+      end
+      let(:residential_instant_verify_proof) do
+        instance_double(Proofing::Resolution::Result)
+      end
 
-        before do
-          allow(instant_verify_proofer).to receive(:proof).
-            and_return(residential_instant_verify_proof)
-          allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
-        end
-        it 'makes one request to LexisNexis InstantVerify' do
-          allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
-          expect(instant_verify_proofer).to receive(:proof).exactly(:once)
-          subject
-        end
+      it 'makes one request to LexisNexis InstantVerify' do
+        allow(instance).to receive(:resolution_proofer).and_return(instant_verify_proofer)
+        allow(instant_verify_proofer).to receive(:proof).
+          and_return(residential_instant_verify_proof)
+        allow(residential_instant_verify_proof).to receive(:success?).and_return(true)
+
+        expect(instant_verify_proofer).to receive(:proof).exactly(:once)
+
+        subject
+      end
+
+      it 'returns distinct objects for the resolution result and residential resolution result' do
+        result = subject
+
+        expect(result.residential_resolution_result).to_not eq(result.resolution_result)
+        expect(
+          result.residential_resolution_result.
+                    vendor_name,
+        ).to eq('ResidentialAddressNotRequired')
+        expect(result.resolution_result.vendor_name).to eq('lexisnexis:instant_verify')
       end
     end
   end
