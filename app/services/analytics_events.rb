@@ -2851,9 +2851,9 @@ module AnalyticsEvents
   end
 
   # Tracks When users visit the add phone page
-  def user_registration_add_phone_setup_visit
+  def add_phone_setup_visit
     track_event(
-      'User Registration: Add Phone Setup Page visited'
+      'Add Phone Setup Page visited'
     )
   end
 
