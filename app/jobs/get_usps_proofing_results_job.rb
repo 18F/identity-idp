@@ -399,7 +399,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
-      email_type: 'Failed',
+      email_type: 'Failed unsupported secondary ID',
     )
     send_failed_email(enrollment.user, enrollment)
   end
