@@ -20,6 +20,13 @@ RSpec.describe DataPull do
 
         expect(stdout.string).to include('Options:')
       end
+
+      it 'prints help to stderr', aggregate_failures: true do
+        data_pull.run
+
+        expect(stderr.string).to include("*Task*: `help`")
+        expect(stderr.string).to include("*UUIDs*: N/A")
+      end
     end
 
     describe '--csv' do
