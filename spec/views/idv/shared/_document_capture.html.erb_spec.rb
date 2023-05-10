@@ -3,7 +3,6 @@ require 'rails_helper'
 describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
-  let(:async_uploads_enabled) { false }
   let(:document_capture_session_uuid) { nil }
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
@@ -28,8 +27,6 @@ describe 'idv/shared/_document_capture.html.erb' do
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
-    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
-      and_return(async_uploads_enabled)
     allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?) do |issuer|
       if issuer.nil?
         in_person_proofing_enabled
@@ -55,35 +52,6 @@ describe 'idv/shared/_document_capture.html.erb' do
       in_person_cta_variant_testing_enabled: in_person_cta_variant_testing_enabled,
       in_person_cta_variant_active: in_person_cta_variant_active,
     }
-  end
-
-  describe 'async upload urls' do
-    context 'when async upload is disabled' do
-      let(:async_uploads_enabled) { false }
-
-      it 'does not modify CSP connect_src headers' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to eq(
-          ["'self'", '*.nr-data.net'],
-        )
-      end
-    end
-
-    context 'when async upload are enabled' do
-      let(:async_uploads_enabled) { true }
-      let(:front_image_upload_url) { 'https://s3.example.com/bucket/a?X-Amz-Security-Token=UAOL2' }
-      let(:back_image_upload_url) { 'https://s3.example.com/bucket/b?X-Amz-Security-Token=UAOL2' }
-
-      it 'does modifies CSP connect_src headers to include upload urls' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to include('https://s3.example.com/bucket/a')
-        expect(connect_src).to include('https://s3.example.com/bucket/b')
-      end
-    end
   end
 
   describe 'in person url' do
