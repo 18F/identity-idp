@@ -1,4 +1,6 @@
-@forward 'required';
+@forward 'required' with (
+  $render-font-face: true
+);
 @forward 'uswds';
 @forward 'design-system-waiting-room';
 @forward 'components/all';
