@@ -103,7 +103,7 @@ RSpec.describe DataPull do
 
       subject(:result) { subtask.run(args:, include_missing:) }
 
-      it 'looks up the UUIDs for the given email addresses' do
+      it 'looks up the UUIDs for the given email addresses', aggregate_failures: true do
         expect(result.table).to eq(
           [
             ['email', 'uuid'],
@@ -111,6 +111,9 @@ RSpec.describe DataPull do
             ['missing@example.com', '[NOT FOUND]'],
           ],
         )
+
+        expect(result.subtask).to eq('uuid-lookup')
+        expect(result.uuids).to match_array(users.map(&:uuid))
       end
     end
   end
@@ -125,7 +128,7 @@ RSpec.describe DataPull do
       let(:include_missing) { true }
       subject(:result) { subtask.run(args:, include_missing:) }
 
-      it 'converts the agency agency identities to internal UUIDs' do
+      it 'converts the agency agency identities to internal UUIDs', aggregate_failures: true do
         expect(result.table).to eq(
           [
             ['partner_uuid', 'source', 'internal_uuid'],
@@ -133,6 +136,9 @@ RSpec.describe DataPull do
             ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]'],
           ],
         )
+
+        expect(result.subtask).to eq('uuid-convert')
+        expect(result.uuids).to match_array(agency_identities.map(&:user).map(&:uuid))
       end
     end
   end
@@ -147,7 +153,7 @@ RSpec.describe DataPull do
       let(:include_missing) { true }
       subject(:result) { subtask.run(args:, include_missing:) }
 
-      it 'loads email addresses for the user' do
+      it 'loads email addresses for the user', aggregate_failures: true do
         expect(result.table).to match(
           [
             ['uuid', 'email', 'confirmed_at'],
@@ -157,6 +163,9 @@ RSpec.describe DataPull do
             ['does-not-exist', '[NOT FOUND]', nil],
           ],
         )
+
+        expect(result.subtask).to eq('email-lookup')
+        expect(result.uuids).to eq([user.uuid])
       end
     end
   end
