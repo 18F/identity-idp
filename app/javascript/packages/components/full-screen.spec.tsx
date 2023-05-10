@@ -49,7 +49,7 @@ describe('FullScreen', () => {
   it('renders with a close button', () => {
     const { getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
-    const button = getByLabelText('users.personal_key.close');
+    const button = getByLabelText('account.navigation.close');
 
     expect(button.nodeName).to.equal('BUTTON');
   });
@@ -62,7 +62,7 @@ describe('FullScreen', () => {
         </FullScreen>,
       );
 
-      const button = queryByLabelText('users.personal_key.close');
+      const button = queryByLabelText('account.navigation.close');
 
       expect(button).to.not.exist();
     });
@@ -131,7 +131,7 @@ describe('FullScreen', () => {
 
     await delay(); // focus-trap delays initial focus by default
     expect(document.activeElement).to.equal(
-      getByRole('button', { name: 'users.personal_key.close' }),
+      getByRole('button', { name: 'account.navigation.close' }),
     );
   });
 
@@ -147,7 +147,7 @@ describe('FullScreen', () => {
       <FullScreen onRequestClose={onRequestClose}>Content</FullScreen>,
     );
 
-    const button = getByLabelText('users.personal_key.close');
+    const button = getByLabelText('account.navigation.close');
     fireEvent.click(button);
 
     expect(onRequestClose.calledOnce).to.be.true();
@@ -177,7 +177,7 @@ describe('FullScreen', () => {
   it('traps focus', (done) => {
     const { baseElement, getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
-    const button = getByLabelText('users.personal_key.close');
+    const button = getByLabelText('account.navigation.close');
 
     const event = new window.KeyboardEvent('keydown', {
       key: 'Tab',
@@ -201,7 +201,7 @@ describe('FullScreen', () => {
     const { getByLabelText, rerender } = render(<FullScreen>Content</FullScreen>);
     rerender(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
 
-    const button = getByLabelText('users.personal_key.close');
+    const button = getByLabelText('account.navigation.close');
 
     const event = new window.KeyboardEvent('keydown', {
       key: 'Escape',

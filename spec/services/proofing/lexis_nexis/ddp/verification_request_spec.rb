@@ -57,4 +57,14 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
       expect(subject.url).to eq('https://example.com/api/session-query')
     end
   end
+
+  describe '#build_request_headers' do
+    before do
+      allow(IdentityConfig.store).to receive(:lexisnexis_hmac_auth_enabled).and_return(true)
+    end
+
+    it 'does not include an Authorization header' do
+      expect(subject.send(:build_request_headers)['Authorization']).to be_nil
+    end
+  end
 end

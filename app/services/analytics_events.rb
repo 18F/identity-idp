@@ -557,6 +557,17 @@ module AnalyticsEvents
     )
   end
 
+  # The user checked or unchecked the "By checking this box..." checkbox on the idv agreement step.
+  # (This is a frontend event.)
+  # @param [Boolean] checked Whether the user checked the checkbox
+  def idv_consent_checkbox_toggled(checked:, **extra)
+    track_event(
+      'IdV: consent checkbox toggled',
+      checked: checked,
+      **extra,
+    )
+  end
+
   # The user visited the "come back later" page shown during the GPO mailing flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   def idv_come_back_later_visit(proofing_components: nil, **extra)
@@ -642,9 +653,15 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
+  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, **extra)
-    track_event('IdV: in person proofing prepare submitted', flow_path: flow_path, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, in_person_cta_variant:, **extra)
+    track_event(
+      'IdV: in person proofing prepare submitted',
+      flow_path: flow_path,
+      in_person_cta_variant: in_person_cta_variant,
+      **extra,
+    )
   end
 
   def idv_in_person_proofing_residential_address_submitted(**extra)
@@ -919,10 +936,6 @@ module AnalyticsEvents
   # Desktop user has reached the above "hybrid handoff" view
   def idv_doc_auth_upload_visited(**extra)
     track_event('IdV: doc auth upload visited', **extra)
-  end
-
-  def idv_doc_auth_verify_document_status_submitted(**extra)
-    track_event('IdV: doc auth verify_document_status submitted', **extra)
   end
 
   # @identity.idp.previous_event_name IdV: in person proofing verify submitted

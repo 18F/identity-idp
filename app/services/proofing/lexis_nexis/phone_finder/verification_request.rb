@@ -1,7 +1,7 @@
 module Proofing
   module LexisNexis
     module PhoneFinder
-      class VerificationRequest < Request
+      class VerificationRequest < AuthenticatedRequest
         private
 
         def build_request_body

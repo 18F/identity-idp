@@ -89,7 +89,11 @@ module Users
     end
 
     def ial_context
-      @ial_context ||= IalContext.new(ial: sp_session_ial, service_provider: current_sp)
+      @ial_context ||= IalContext.new(
+        ial: sp_session_ial,
+        service_provider: current_sp,
+        user: piv_cac_login_form.user,
+      )
     end
 
     def process_invalid_submission
