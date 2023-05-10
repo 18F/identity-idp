@@ -32,7 +32,7 @@ module UspsInPersonProofing
     # @param [ActiveModel::Validations] record
     def validate(record)
       return unless IdentityConfig.store.usps_ipp_transliteration_enabled
-
+      nontransliterable_chars = []
       @fields.each do |field|
         next unless record.respond_to?(field)
 
@@ -42,11 +42,18 @@ module UspsInPersonProofing
         invalid_chars = get_invalid_chars(value)
         next unless invalid_chars.present?
 
+        nontransliterable_chars += invalid_chars
+
         record.errors.add(
           field,
           :nontransliterable_field,
           message: get_error_message(invalid_chars),
         )
+      end
+
+      if nontransliterable_chars.present?
+        nontransliterable_chars = nontransliterable_chars.sort.uniq
+        log_nontransliterable_characters(nontransliterable_chars)
       end
     end
 
@@ -86,6 +93,16 @@ module UspsInPersonProofing
 
       # Create sorted list of unique unsupported characters
       (result.unsupported_chars + additional_chars).sort.uniq
+    end
+
+    def analytics(user: AnonymousUser.new)
+      Analytics.new(user: user, request: nil, session: {}, sp: nil)
+    end
+
+    def log_nontransliterable_characters(result)
+      analytics.idv_in_person_proofing_nontransliterable_characters_submitted(
+        nontransliterable_characters: result,
+      )
     end
   end
 end
