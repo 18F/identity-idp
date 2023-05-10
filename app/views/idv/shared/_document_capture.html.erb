@@ -4,11 +4,6 @@
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
   <%= stylesheet_link_tag 'document-capture' %>
 <% end %>
-<% add_document_capture_image_urls_to_csp(
-     request,
-     [front_image_upload_url, back_image_upload_url],
-   )
-%>
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
       liveness_required: nil,
@@ -33,8 +28,6 @@
       flow_path: flow_path,
       cancel_url: idv_cancel_path,
       failure_to_proof_url: failure_to_proof_url,
-      front_image_upload_url: front_image_upload_url,
-      back_image_upload_url: back_image_upload_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
       in_person_cta_variant_testing_enabled: IdentityConfig.store.in_person_cta_variant_testing_enabled,
