@@ -50,6 +50,13 @@ RSpec.describe DataPull do
       end
     end
 
+    it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
+      data_pull.run
+
+      expect(stderr.string).to include("`uuid-lookup`")
+      expect(stderr.string).to include("`#{user.uuid}`")
+    end
+
     describe '--json' do
       before { argv << '--json' }
       it 'formats output as JSON' do

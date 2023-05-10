@@ -12,7 +12,7 @@ class DataPull
   Result = Struct.new(
     :table, # tabular output, rendered as an ASCII table or as CSV
     :subtask, # name of subtask, used for audit logging
-    :uuids, # Array of UUIDs entered or returned, use for audit logging
+    :uuids, # Array of UUIDs entered or returned, used for audit logging
     keyword_init: true,
   )
 
