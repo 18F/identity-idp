@@ -120,7 +120,7 @@ locals:
         </div>
       <% end %>
       <div>
-        <%= t('idv.form.ssn') %> :
+        <%= t('idv.form.ssn') %>:
         <%= render(
               'shared/masked_text',
               text: SsnFormatter.format(pii[:ssn]),
