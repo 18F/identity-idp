@@ -17,7 +17,7 @@
 
   <%= content_tag(
         'title',
-        content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
+        content_for?(:title) ? raw("#{yield(:title)} | #{APP_NAME}") : APP_NAME,
       ) %>
 
   <%= javascript_tag(nonce: true) do %>
@@ -74,7 +74,7 @@
         local_assigns[:user_main_tag] == false ? 'div' : 'main',
         class: 'site-wrap bg-primary-lighter',
         id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
-      ) do %>  
+      ) do %>
     <% if @is_on_home_page && @sign_in_a_b_test_bucket == :banner %>
       <div class="grid-container padding-y-2 card tablet:margin-bottom-1">
         <%= render 'shared/create_account_banner' %>
