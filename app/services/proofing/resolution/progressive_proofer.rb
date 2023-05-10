@@ -39,17 +39,20 @@ module Proofing
           double_address_verification: double_address_verification,
         )
 
-        applicant_pii = with_state_id_address(applicant_pii) if double_address_verification
+        applicant_pii_transformed = applicant_pii.clone
+        if double_address_verification
+          applicant_pii_transformed = with_state_id_address(applicant_pii_transformed)
+        end
 
         instant_verify_result = proof_id_address_with_lexis_nexis_if_needed(
-          applicant_pii: applicant_pii,
+          applicant_pii: applicant_pii_transformed,
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
           double_address_verification: double_address_verification,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
-          applicant_pii: applicant_pii,
+          applicant_pii: applicant_pii_transformed,
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
           instant_verify_result: instant_verify_result,
