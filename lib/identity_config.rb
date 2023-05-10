@@ -156,7 +156,6 @@ class IdentityConfig
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
     config.add(:doc_auth_client_glare_threshold, type: :integer)
     config.add(:doc_auth_client_sharpness_threshold, type: :integer)
-    config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
     config.add(:doc_auth_error_dpi_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)

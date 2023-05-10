@@ -12,8 +12,6 @@ RSpec.describe 'proofing components' do
     before do
       allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).
         and_return(ruby_workers_idv_enabled)
-      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
-        and_return(doc_auth_enable_presigned_s3_urls)
 
       visit_idp_from_sp_with_ial2(:oidc)
       register_user(email)
@@ -28,7 +26,6 @@ RSpec.describe 'proofing components' do
 
     context 'sync proofing', js: true do
       let(:ruby_workers_idv_enabled) { false }
-      let(:doc_auth_enable_presigned_s3_urls) { false }
 
       it 'records proofing components' do
         proofing_components = user.active_profile.proofing_components
