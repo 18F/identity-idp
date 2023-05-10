@@ -24,8 +24,8 @@ RSpec.describe DataPull do
       it 'prints help to stderr', aggregate_failures: true do
         data_pull.run
 
-        expect(stderr.string).to include("*Task*: `help`")
-        expect(stderr.string).to include("*UUIDs*: N/A")
+        expect(stderr.string).to include('*Task*: `help`')
+        expect(stderr.string).to include('*UUIDs*: N/A')
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe DataPull do
     it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
       data_pull.run
 
-      expect(stderr.string).to include("`uuid-lookup`")
+      expect(stderr.string).to include('`uuid-lookup`')
       expect(stderr.string).to include("`#{user.uuid}`")
     end
 
