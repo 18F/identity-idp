@@ -125,8 +125,8 @@ fr:
         fail_html: 'Pour votre sécurité, nous limitons le nombre de fois où vous pouvez
           tenter de vérifier des informations personnelles en ligne.
           <strong>Réessayer dans %{timeout}.</strong>'
-        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations personnelles
-          téléphoniques.
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles téléphoniques.
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
