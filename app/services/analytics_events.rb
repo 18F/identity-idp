@@ -1116,39 +1116,6 @@ module AnalyticsEvents
     )
   end
 
-  # Multi factor auth add new phone
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] otp_delivery_preference
-  # @param [String] area_code
-  # @param [String] carrier
-  # @param [String] country_code
-  # @param [String] phone_type
-  # @param [Hash] types
-  def multi_factor_auth_add_phone_setup(success:,
-                                        errors:,
-                                        otp_delivery_preference:,
-                                        area_code:,
-                                        carrier:,
-                                        country_code:,
-                                        phone_type:,
-                                        types:,
-                                        **extra)
-
-    track_event(
-      'Multi-Factor Authentication: Add new phone setup',
-      success: success,
-      errors: errors,
-      otp_delivery_preference: otp_delivery_preference,
-      area_code: area_code,
-      carrier: carrier,
-      country_code: country_code,
-      phone_type: phone_type,
-      types: types,
-      **extra,
-    )
-  end
-
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
