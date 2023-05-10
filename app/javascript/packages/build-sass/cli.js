@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 
 import { watch } from 'chokidar';
+import glob from 'fast-glob';
 import { fileURLToPath } from 'url';
 import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
 import { buildFile } from './index.js';
@@ -16,7 +17,7 @@ import getErrorSassStackPaths from './get-error-sass-stack-paths.js';
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
 
-const { values: flags, positionals: fileArgs } = parseArgs({
+const { values: flags, positionals: patternArgs } = parseArgs({
   allowPositionals: true,
   options: {
     watch: { type: 'boolean' },
@@ -28,6 +29,7 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 const isWatching = flags.watch;
 const outDir = flags['out-dir'];
 const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
+const fileArgs = glob.sync(patternArgs);
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };

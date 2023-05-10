@@ -6,7 +6,7 @@ Why use it?
 
 - ⚡️ **It's fast**, since it uses native Dart Sass binary through [`sass-embedded`](http://npmjs.com/package/sass-embedded), and the Rust-based [Lightning CSS](https://www.npmjs.com/package/lightningcss) for autoprefixing and minification.
 - 💻 **It includes a CLI**, so it's easy to integrate with command-based build pipelines like NPM scripts or Makefile.
-- 🚀 **It has relevant defaults**, as as to require as little additional configuration as possible.
+- 🚀 **It has relevant defaults**, so as to require as little additional configuration as possible.
 
 Default behavior includes:
 

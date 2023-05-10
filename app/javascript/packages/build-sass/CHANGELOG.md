@@ -1,3 +1,9 @@
+## Unreleased
+
+### Improvements
+
+- Add support for glob pattern arguments ([see syntax documentation](https://github.com/mrmlnc/fast-glob#pattern-syntax))
+
 ## 1.2.0
 
 ### Improvements
