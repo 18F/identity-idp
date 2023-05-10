@@ -10,8 +10,6 @@ feature 'doc auth document capture step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
 
