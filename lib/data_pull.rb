@@ -11,7 +11,8 @@ class DataPull
 
   Result = Struct.new(
     :table, # tabular output, rendered as an ASCII table or as CSV
-    :log_message, # summary message used for audit logging, DO NOT PUT PII HERE
+    :subtask, # name of subtask, used for audit logging
+    :uuids, # Array of UUIDs entered or returned, used for audit logging
     keyword_init: true,
   )
 
@@ -38,13 +39,17 @@ class DataPull
     subtask_class = subtask(argv.shift)
 
     if config.show_help? || !subtask_class
+      stderr.puts '*Task*: `help`'
+      stderr.puts '*UUIDs*: N/A'
+
       stdout.puts option_parser
       return
     end
 
     result = subtask_class.new.run(args: argv, include_missing: config.include_missing?)
 
-    stderr.puts result.log_message
+    stderr.puts "*Task*: `#{result.subtask}`"
+    stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
 
     render_output(result.table)
   end
@@ -156,8 +161,9 @@ class DataPull
       end
 
       Result.new(
-        log_message: "uuid-lookup, uuids: #{uuids.join(', ')}",
+        subtask: 'uuid-lookup',
         table:,
+        uuids:,
       )
     end
   end
@@ -181,7 +187,8 @@ class DataPull
       end
 
       Result.new(
-        log_message: "uuid-convert, uuids: #{identities.map { |u| u.user.uuid }.join(', ')}",
+        subtask: 'uuid-convert',
+        uuids: identities.map { |u| u.user.uuid },
         table:,
       )
     end
@@ -209,7 +216,8 @@ class DataPull
       end
 
       Result.new(
-        log_message: "email-lookup, uuids: #{users.map(&:uuid).join(', ')}",
+        subtask: 'email-lookup',
+        uuids: users.map(&:uuid),
         table:,
       )
     end
