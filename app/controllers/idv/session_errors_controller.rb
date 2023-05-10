@@ -28,6 +28,7 @@ module Idv
         throttle_type: :idv_resolution,
       )
       @expires_at = throttle.expires_at
+      @sp_name = decorated_session.sp_name
       log_event(based_on_throttle: throttle)
     end
 

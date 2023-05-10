@@ -117,11 +117,10 @@ es:
           you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
-          seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea.'
-        heading: No hemos podido encontrar registros que coincidan con su información
-          personal.
+        fail_html: 'Por su seguridad, limitamos el número de veces que puede intentar
+          verificar la información personal en línea. <strong>Inténtelo de nuevo
+          en %{timeout}.</strong>'
+        heading: No encontramos registros que coincidan con sus datos personales
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
