@@ -34,6 +34,13 @@ describe Idv::SsnController do
         :confirm_document_capture_complete,
       )
     end
+
+    it 'overrides CSPs for ThreatMetrix' do
+      expect(subject).to have_actions(
+        :before,
+        :override_csp_for_threat_metrix_no_fsm,
+      )
+    end
   end
 
   describe '#show' do
@@ -74,6 +81,27 @@ describe Idv::SsnController do
         get :show
 
         expect(response).to redirect_to(idv_doc_auth_url)
+      end
+    end
+
+    it 'overrides Content Security Policies for ThreatMetrix' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+      get :show
+
+      csp = response.request.content_security_policy
+
+      aggregate_failures do
+        expect(csp.directives['script-src']).to include('h.online-metrix.net')
+        expect(csp.directives['script-src']).to include("'unsafe-eval'")
+
+        expect(csp.directives['style-src']).to include("'unsafe-inline'")
+
+        expect(csp.directives['child-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['connect-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['img-src']).to include('*.online-metrix.net')
       end
     end
   end
