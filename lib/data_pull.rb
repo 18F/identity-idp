@@ -39,11 +39,10 @@ class DataPull
     subtask_class = subtask(argv.shift)
 
     if config.show_help? || !subtask_class
-      stdout.puts option_parser
-
       stderr.puts "*Task*: `help`"
       stderr.puts "*UUIDs*: N/A"
 
+      stdout.puts option_parser
       return
     end
 
