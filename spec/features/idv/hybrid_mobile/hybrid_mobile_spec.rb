@@ -9,8 +9,6 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
 
   before do

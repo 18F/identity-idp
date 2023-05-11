@@ -390,11 +390,6 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    namespace :api do
-      post '/verify/v2/document_capture' => 'verify/document_capture#create'
-      delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
-    end
-
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
     if FeatureManagement.gpo_verification_enabled?
