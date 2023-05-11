@@ -10,9 +10,13 @@ module Idv
     def index
       analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
-      @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
+
+      @user_can_request_another_gpo_code =
+        FeatureManagement.gpo_verification_enabled? &&
+        !gpo_mail.mail_spammed? &&
+        !gpo_mail.profile_too_old?
 
       if throttle.throttled?
         render_throttled

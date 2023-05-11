@@ -6,16 +6,19 @@ RSpec.describe Idv::GpoVerifyController do
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
   let(:user) { create(:user) }
+  let(:profile_created_at) { Time.zone.now }
   let(:pending_profile) do
     create(
       :profile,
       :with_pii,
       user: user,
       proofing_components: proofing_components,
+      created_at: profile_created_at,
     )
   end
   let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
+  let(:gpo_enabled) { true }
 
   before do
     stub_analytics
@@ -32,6 +35,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
   end
 
   describe '#index' do
@@ -48,12 +52,25 @@ RSpec.describe Idv::GpoVerifyController do
         expect(response).to render_template('idv/gpo_verify/index')
       end
 
+      it 'sets @user_can_request_another_gpo_code to true' do
+        action
+        expect(assigns(:user_can_request_another_gpo_code)).to eql(true)
+      end
+
       it 'shows throttled page is user is throttled' do
         Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
 
         action
 
         expect(response).to render_template(:throttled)
+      end
+
+      context 'but that profile is > 30 days old' do
+        let(:profile_created_at) { 31.days.ago }
+        it 'sets @user_can_request_another_gpo_code to false' do
+          action
+          expect(assigns(:user_can_request_another_gpo_code)).to eql(false)
+        end
       end
     end
 

@@ -41,7 +41,7 @@
   </div>
 <% end %>
 
-<% if FeatureManagement.gpo_verification_enabled? && !@mail_spammed %>
+<% if @user_can_request_another_gpo_code %>
   <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
 <% end %>
 
