@@ -28,6 +28,11 @@ module Flow
       nil
     end
 
+    def step_is_not_complete?(step = nil)
+      klass = step.nil? ? self.class : steps[step]
+      !flow_session[klass.to_s].present?
+    end
+
     def self.acceptable_response_object?(obj)
       obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
