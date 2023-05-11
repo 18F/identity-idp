@@ -1,6 +1,8 @@
 module FraudReviewConcern
   extend ActiveSupport::Concern
 
+  delegate :fraud_check_failed?, :fraud_review_pending?, :fraud_rejection?, to: :fraud_review_check
+
   def handle_fraud
     handle_pending_fraud_review
     handle_fraud_rejection
@@ -22,13 +24,7 @@ module FraudReviewConcern
     redirect_to idv_not_verified_url
   end
 
-  def fraud_review_pending?
-    return false unless user_fully_authenticated?
-    current_user.fraud_review_pending?
-  end
-
-  def fraud_rejection?
-    return false unless user_fully_authenticated?
-    current_user.fraud_rejection?
+  def fraud_review_check
+    @fraud_review_check ||= FraudReviewCheck.new(current_user)
   end
 end
