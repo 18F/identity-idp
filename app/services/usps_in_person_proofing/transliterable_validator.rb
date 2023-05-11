@@ -32,7 +32,7 @@ module UspsInPersonProofing
     # @param [ActiveModel::Validations] record
     def validate(record)
       return unless IdentityConfig.store.usps_ipp_transliteration_enabled
-      nontransliterable_chars = []
+      nontransliterable_chars = Set.new
       @fields.each do |field|
         next unless record.respond_to?(field)
 
@@ -52,8 +52,10 @@ module UspsInPersonProofing
       end
 
       if nontransliterable_chars.present?
-        nontransliterable_chars = nontransliterable_chars.sort.uniq
-        log_nontransliterable_characters(nontransliterable_chars)
+        nontransliterable_chars = nontransliterable_chars.sort
+        analytics.idv_in_person_proofing_nontransliterable_characters_submitted(
+          nontransliterable_characters: nontransliterable_chars,
+        )
       end
     end
 
@@ -97,12 +99,6 @@ module UspsInPersonProofing
 
     def analytics(user: AnonymousUser.new)
       Analytics.new(user: user, request: nil, session: {}, sp: nil)
-    end
-
-    def log_nontransliterable_characters(result)
-      analytics.idv_in_person_proofing_nontransliterable_characters_submitted(
-        nontransliterable_characters: result,
-      )
     end
   end
 end

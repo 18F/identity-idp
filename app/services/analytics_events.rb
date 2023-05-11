@@ -666,8 +666,10 @@ module AnalyticsEvents
 
   # @param [String] nontransliterable_characters
   # Nontransliterable characters submitted by user
-  def idv_in_person_proofing_nontransliterable_characters_submitted(nontransliterable_characters:,
-                                                                    **extra)
+  def idv_in_person_proofing_nontransliterable_characters_submitted(
+    nontransliterable_characters:,
+    **extra
+  )
     track_event(
       'IdV: in person proofing characters submitted could not be transliterated',
       nontransliterable_characters: nontransliterable_characters,
