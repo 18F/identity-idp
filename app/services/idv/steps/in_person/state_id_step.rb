@@ -37,11 +37,7 @@ module Idv
            end
           end
 
-          if !pii_from_user.key?(:address1)
-            redirect_to_address
-          elsif (updating_state_id?)
-            maybe_redirect_to_verify_info
-          end
+          maybe_redirect_to_verify_info(step_is_not_complete?(:address))
         end
 
         def extra_view_variables
