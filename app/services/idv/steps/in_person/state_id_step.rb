@@ -37,7 +37,11 @@ module Idv
            end
           end
 
-          maybe_redirect_to_verify_info if updating_state_id?
+          if !pii_from_user.key?(:address1)
+            redirect_to_address
+          elsif (updating_state_id?)
+            maybe_redirect_to_verify_info
+          end
         end
 
         def extra_view_variables

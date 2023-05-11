@@ -12,6 +12,10 @@ module Idv
         flow_session[:flow_path] = @flow.flow_path
         redirect_to idv_in_person_verify_info_url
       end
+
+      def redirect_to_address
+        redirect_to idv_address_path
+      end
     end
   end
 end
