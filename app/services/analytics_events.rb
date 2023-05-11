@@ -2830,6 +2830,13 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks When users visit the add phone page
+  def add_phone_setup_visit
+    track_event(
+      'Phone Setup Visited',
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] sign_up_mfa_priority_bucket
