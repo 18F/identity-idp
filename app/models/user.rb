@@ -102,7 +102,15 @@ class User < ApplicationRecord
     pending_profile.present?
   end
 
+  def gpo_verification_pending_profile?
+    gpo_verification_pending_profile.present?
+  end
+
   def pending_profile
+    gpo_verification_pending_profile
+  end
+
+  def gpo_verification_pending_profile
     profiles.where.not(gpo_verification_pending_at: nil).order(created_at: :desc).first
   end
 
