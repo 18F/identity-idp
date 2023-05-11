@@ -6,11 +6,11 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
-    before_action :confirm_no_pending_profile
+    before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
   end
 
-  def confirm_no_pending_profile
+  def confirm_no_pending_gpo_profile
     redirect_to idv_gpo_verify_url if current_user.pending_profile_requires_verification?
   end
 
