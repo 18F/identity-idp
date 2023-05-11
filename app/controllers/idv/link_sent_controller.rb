@@ -5,7 +5,6 @@ module Idv
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :render_404_if_link_sent_controller_disabled
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
@@ -42,10 +41,6 @@ module Idv
     end
 
     private
-
-    def render_404_if_link_sent_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_link_sent_controller_enabled
-    end
 
     def confirm_upload_step_complete
       return if flow_session['Idv::Steps::UploadStep']
