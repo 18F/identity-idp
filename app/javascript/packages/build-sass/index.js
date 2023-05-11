@@ -35,7 +35,7 @@ export async function buildFile(file, options) {
     quietDeps: true,
   });
 
-  let outFile = basename(file, '.scss');
+  let outFile = `${basename(basename(file, '.css.scss'), '.scss')}.css`;
 
   const lightningResult = lightningTransform({
     filename: outFile,
