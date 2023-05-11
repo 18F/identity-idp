@@ -243,6 +243,14 @@ RSpec.describe 'In Person Proofing', js: true do
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_welcome_step
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+    # confirm that user cannot visit other IdV pages before completing in-person proofing
+    visit idv_doc_auth_agreement_step
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    visit idv_ssn_url
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    visit idv_verify_info_url
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
