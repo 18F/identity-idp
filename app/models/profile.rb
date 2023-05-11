@@ -39,7 +39,14 @@ class Profile < ApplicationRecord
     state :fraud_reviewing, :fraud_rejected, :fraud_passed
 
     event :fraud_review do
-      transitions from: :fraud_none, to: :fraud_reviewing
+      transitions(
+        from: [
+          :fraud_none,
+          # TODO: this is actually a newly discovered state
+          :fraud_reviewing,
+        ],
+        to: :fraud_reviewing,
+      )
     end
 
     event :fraud_reject do
