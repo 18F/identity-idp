@@ -26,7 +26,8 @@ feature 'idv gpo step', :js do
     let(:user) { user_with_2fa }
 
     it 'allows the user to resend a letter and redirects to the come back later step' do
-      complete_idv_and_return_to_gpo_step
+      complete_idv
+      return_to_gpo_step
 
       expect { click_on t('idv.buttons.mail.resend') }.
         to change { GpoConfirmation.count }.from(1).to(2)
@@ -65,7 +66,8 @@ feature 'idv gpo step', :js do
     end
 
     it 'allows the user to return to gpo otp confirmation' do
-      complete_idv_and_return_to_gpo_step
+      complete_idv
+      return_to_gpo_step
       click_doc_auth_back_link
 
       expect(page).to have_content(t('forms.verify_profile.title'))
@@ -80,6 +82,9 @@ feature 'idv gpo step', :js do
       fill_in 'Password', with: user_password
       click_continue
       visit root_path
+    end
+
+    def return_to_gpo_step
       click_on t('forms.verify_profile.return_to_profile')
       first(:link, t('links.sign_out')).click
     end
