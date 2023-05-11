@@ -154,7 +154,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
     it 'displays expected headers & data on /verify_info',
        allow_browser_log: true do
-        
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_prepare_step(user)
