@@ -294,6 +294,6 @@ describe 'Add a new phone number' do
     click_continue
     click_link t('two_factor_authentication.phone_verification.troubleshooting.change_number')
 
-    expect(page).to have_current_path(phone_setup_path)
+    expect(page).to have_current_path(add_phone_path)
   end
 end
