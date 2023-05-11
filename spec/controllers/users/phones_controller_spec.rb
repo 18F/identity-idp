@@ -19,7 +19,7 @@ describe Users::PhonesController do
 
     it 'tracks analytics' do
       expect(@analytics).to receive(:track_event).
-        with('Phone Setup visited')
+        with('Phone Setup Visited')
       get :add
     end
   end
