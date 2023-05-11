@@ -1,7 +1,5 @@
-@forward 'required';
-@forward 'usa-tooltip';
-
 @use 'uswds-core' as *;
+@forward 'usa-tooltip';
 
 // Workaround for tooltip styles affecting icon button appearance.
 // See: https://github.com/uswds/uswds/pull/5263

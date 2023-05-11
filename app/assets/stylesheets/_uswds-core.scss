@@ -2,7 +2,7 @@
 // this to ensure that the `@font-face` is defined at least once.
 $render-font-face: false !default;
 
-@forward 'uswds-core' with (
+@forward '@18f/identity-design-system/packages/uswds-core' with (
   $theme-body-font-size: 'sm',
   $theme-font-path: '.',
   $theme-image-path: '@18f/identity-design-system/dist/assets/img',
