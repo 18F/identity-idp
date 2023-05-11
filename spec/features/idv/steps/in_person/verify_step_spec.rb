@@ -221,7 +221,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       expect(page).to have_content(t('headings.verify'))
 
       # confirm headers are on template
-      expect(page).to have_content(t('headings.state_id').tr(' ', ' '))
+      expect(page).to have_content(t('headings.state_id'))
       expect(page).to have_content(t('headings.residential_address'))
       expect(page).to have_content(t('headings.ssn'))
 
