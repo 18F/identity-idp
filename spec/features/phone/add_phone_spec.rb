@@ -280,4 +280,20 @@ describe 'Add a new phone number' do
       expect(user.reload.phone_configurations.count).to eq(0)
     end
   end
+
+  scenario 'troubleshoot adding a phone number' do
+    user = create(:user, :fully_registered)
+    phone = '+1 (225) 278-1234'
+
+    sign_in_and_2fa_user(user)
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
+
+    fill_in :new_phone_form_phone, with: phone
+    click_continue
+    click_link t('two_factor_authentication.phone_verification.troubleshooting.change_number')
+
+    expect(page).to have_current_path(phone_setup_path)
+  end
 end
