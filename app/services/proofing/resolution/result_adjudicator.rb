@@ -40,6 +40,7 @@ module Proofing
               double_address_verification: double_address_verification,
               stages: {
                 resolution: resolution_result.to_h,
+                residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix: device_profiling_result.to_h,
               },
@@ -56,18 +57,22 @@ module Proofing
 
       def errors
         resolution_result.errors.
+          merge(residential_resolution_result.errors).
           merge(state_id_result.errors).
           merge(device_profiling_result.errors || {})
       end
 
       def exception
         resolution_result.exception ||
+          residential_resolution_result.exception ||
           state_id_result.exception ||
           device_profiling_result.exception
       end
 
       def timed_out?
-        resolution_result.timed_out? || state_id_result.timed_out? ||
+        resolution_result.timed_out? ||
+          residential_resolution_result.timed_out? ||
+          state_id_result.timed_out? ||
           device_profiling_result.timed_out?
       end
 
