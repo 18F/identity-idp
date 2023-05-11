@@ -2,20 +2,24 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :double_address_verification
+                  :double_address_verification, :residential_resolution_result, :same_address_as_id
 
       def initialize(
-        resolution_result:,
-        state_id_result:,
+        resolution_result:, # InstantVerify
+        state_id_result:, # AAMVA
+        residential_resolution_result:, # InstantVerify Residential
         should_proof_state_id:,
         double_address_verification:,
-        device_profiling_result:
+        device_profiling_result:,
+        same_address_as_id:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
         @should_proof_state_id = should_proof_state_id
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
+        @residential_resolution_result = residential_resolution_result
+        @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
       end
 
       def adjudicated_result
@@ -36,6 +40,7 @@ module Proofing
               double_address_verification: double_address_verification,
               stages: {
                 resolution: resolution_result.to_h,
+                residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix: device_profiling_result.to_h,
               },
@@ -52,18 +57,22 @@ module Proofing
 
       def errors
         resolution_result.errors.
+          merge(residential_resolution_result.errors).
           merge(state_id_result.errors).
           merge(device_profiling_result.errors || {})
       end
 
       def exception
         resolution_result.exception ||
+          residential_resolution_result.exception ||
           state_id_result.exception ||
           device_profiling_result.exception
       end
 
       def timed_out?
-        resolution_result.timed_out? || state_id_result.timed_out? ||
+        resolution_result.timed_out? ||
+          residential_resolution_result.timed_out? ||
+          state_id_result.timed_out? ||
           device_profiling_result.timed_out?
       end
 
@@ -78,7 +87,10 @@ module Proofing
       end
 
       def resolution_result_and_reason
-        if resolution_result.success? && state_id_result.success?
+        if !residential_resolution_result.success? &&
+           same_address_as_id == 'false' && double_address_verification == true
+          [false, :fail_resolution_skip_state_id]
+        elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
         elsif !state_id_result.success?
           [false, :fail_state_id]

@@ -52,10 +52,6 @@ module Idv
 
         private
 
-        def capture_secondary_id_enabled?
-          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
-        end
-
         def clear_residential_address(pii_from_user)
           pii_from_user.delete(:address1)
           pii_from_user.delete(:address2)

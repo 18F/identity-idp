@@ -65,6 +65,7 @@ gem 'sprockets-rails'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
+gem 'terminal-table', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 2.82.0'
@@ -124,6 +125,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'tableparser', require: false
   gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'

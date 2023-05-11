@@ -22,8 +22,8 @@ describe SignUp::CompletionsController do
       end
 
       context 'IAL1' do
-        it 'tracks page visit' do
-          user = create(:user)
+        let(:user) { create(:user) }
+        before do
           stub_sign_in(user)
           subject.session[:sp] = {
             issuer: current_sp.issuer,
@@ -32,7 +32,9 @@ describe SignUp::CompletionsController do
             request_url: 'http://localhost:3000',
           }
           get :show
+        end
 
+        it 'tracks page visit' do
           expect(@analytics).to have_received(:track_event).with(
             'User registration: agency handoff visited',
             ial2: false,
@@ -43,6 +45,10 @@ describe SignUp::CompletionsController do
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
           )
+        end
+
+        it 'creates a presenter object that is not requesting ial2' do
+          expect(assigns(:presenter).ial2_requested?).to eq false
         end
       end
 
@@ -61,11 +67,10 @@ describe SignUp::CompletionsController do
             request_url: 'http://localhost:3000',
           }
           allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          get :show
         end
 
         it 'tracks page visit' do
-          get :show
-
           expect(@analytics).to have_received(:track_event).with(
             'User registration: agency handoff visited',
             ial2: true,
@@ -76,6 +81,56 @@ describe SignUp::CompletionsController do
             sp_request_requested_attributes: nil,
             sp_session_requested_attributes: [:email],
           )
+        end
+
+        it 'creates a presenter object that is requesting ial2' do
+          expect(assigns(:presenter).ial2_requested?).to eq true
+        end
+      end
+
+      context 'IALMax' do
+        let(:user) do
+          create(:user, profiles: [create(:profile, :verified, :active)])
+        end
+        let(:pii) { { ssn: '123456789' } }
+
+        before do
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            issuer: current_sp.issuer,
+            ial2: false,
+            ialmax: true,
+            requested_attributes: [:email],
+            request_url: 'http://localhost:3000',
+          }
+          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
+          get :show
+        end
+
+        it 'tracks page visit' do
+          expect(@analytics).to have_received(:track_event).with(
+            'User registration: agency handoff visited',
+            ial2: false,
+            ialmax: true,
+            service_provider_name: subject.decorated_session.sp_name,
+            page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
+            sp_request_requested_attributes: nil,
+            sp_session_requested_attributes: [:email],
+          )
+        end
+
+        context 'verified user' do
+          it 'creates a presenter object that is requesting ial2' do
+            expect(assigns(:presenter).ial2_requested?).to eq true
+          end
+        end
+
+        context 'unverified user' do
+          let(:user) { create(:user) }
+          it 'creates a presenter object that is requesting ial2' do
+            expect(assigns(:presenter).ial2_requested?).to eq false
+          end
         end
       end
     end

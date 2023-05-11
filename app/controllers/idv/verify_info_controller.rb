@@ -58,16 +58,5 @@ module Idv
     def pii
       @pii = flow_session[:pii_from_doc]
     end
-
-    def delete_pii
-      flow_session.delete(:pii_from_doc)
-      flow_session.delete(:pii_from_user)
-    end
-
-    # copied from address_controller
-    def confirm_ssn_step_complete
-      return if pii.present? && pii[:ssn].present?
-      redirect_to prev_url
-    end
   end
 end

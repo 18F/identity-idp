@@ -35,6 +35,35 @@ feature 'idv gpo step', :js do
       expect(page).to have_current_path(idv_come_back_later_path)
     end
 
+    context 'too much time has passed' do
+      let(:days_passed) { 31 }
+      let(:max_days_before_resend_disabled) { 30 }
+
+      before do
+        allow(IdentityConfig.store).to receive(:gpo_max_profile_age_to_send_letter_in_days).
+          and_return(max_days_before_resend_disabled)
+      end
+
+      it 'does not present the user the option to to resend' do
+        complete_idv_and_sign_out
+        travel_to(days_passed.days.from_now) do
+          sign_in_live_with_2fa(user)
+          expect(page).to have_current_path(idv_gpo_verify_path)
+          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+        end
+      end
+
+      it 'does not allow the user to go to the resend page manually' do
+        complete_idv_and_sign_out
+        travel_to(days_passed.days.from_now) do
+          sign_in_live_with_2fa(user)
+          visit idv_gpo_path
+          expect(page).to have_current_path(idv_gpo_verify_path)
+          expect(page).not_to have_css('.usa-button', text: t('idv.buttons.mail.resend'))
+        end
+      end
+    end
+
     it 'allows the user to return to gpo otp confirmation' do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
@@ -44,7 +73,7 @@ feature 'idv gpo step', :js do
       expect_user_to_be_unverified(user)
     end
 
-    def complete_idv_and_return_to_gpo_step
+    def complete_idv_and_sign_out
       start_idv_from_sp
       complete_idv_steps_before_gpo_step(user)
       click_on t('idv.buttons.mail.send')
@@ -53,6 +82,10 @@ feature 'idv gpo step', :js do
       visit root_path
       click_on t('forms.verify_profile.return_to_profile')
       first(:link, t('links.sign_out')).click
+    end
+
+    def complete_idv_and_return_to_gpo_step
+      complete_idv_and_sign_out
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
     end

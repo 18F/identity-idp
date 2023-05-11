@@ -12,6 +12,15 @@ module Idv
       max_events? && updated_within_last_month?
     end
 
+    def profile_too_old?
+      return false if !current_user.pending_profile
+
+      min_creation_date = IdentityConfig.store.
+        gpo_max_profile_age_to_send_letter_in_days.days.ago
+
+      current_user.pending_profile.created_at < min_creation_date
+    end
+
     private
 
     attr_reader :current_user

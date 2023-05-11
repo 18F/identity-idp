@@ -7,6 +7,7 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
+    before_action :confirm_profile_not_too_old
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
@@ -37,6 +38,10 @@ module Idv
     end
 
     private
+
+    def confirm_profile_not_too_old
+      redirect_to idv_path if gpo_mail_service.profile_too_old?
+    end
 
     def step_indicator_current_step
       if resend_requested?

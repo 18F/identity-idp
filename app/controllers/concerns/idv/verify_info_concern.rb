@@ -291,6 +291,11 @@ module Idv
       delete_pii
     end
 
+    def delete_pii
+      flow_session.delete(:pii_from_doc)
+      flow_session.delete(:pii_from_user)
+    end
+
     def add_proofing_costs(results)
       results[:context][:stages].each do |stage, hash|
         if stage == :resolution
