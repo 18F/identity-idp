@@ -54,6 +54,8 @@ class AddressProofingJob < ApplicationJob
           base_url: IdentityConfig.store.lexisnexis_base_url,
           username: IdentityConfig.store.lexisnexis_username,
           password: IdentityConfig.store.lexisnexis_password,
+          hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
+          hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
         )
       end
