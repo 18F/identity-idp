@@ -103,9 +103,8 @@ en:
             how_long_it_takes: This typically takes 3 - 7 business days.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
-          next_steps_html: 'Please try again with <strong>another</strong> number that you
-            use often and have used for a long time. This can be a work or home
-            number.'
+          next_steps_html: 'Try <strong>another</strong> number that you use often and
+            have used for a long time. This can be a work or home number.'
           try_again_button: 'Try another number'
           you_entered: 'You entered:'
       sessions:
@@ -195,8 +194,8 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
+        phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will

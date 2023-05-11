@@ -10,6 +10,18 @@ module Idv
 
       return if params[:step] != 'ssn'
 
+      threat_metrix_csp_overrides
+    end
+
+    # Remove this duplication once in_person_controller is no longer in use
+    # for their SSN step
+    def override_csp_for_threat_metrix_no_fsm
+      return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+      threat_metrix_csp_overrides
+    end
+
+    def threat_metrix_csp_overrides
       policy = current_content_security_policy
 
       # ThreatMetrix requires additional Content Security Policy (CSP)

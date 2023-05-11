@@ -115,9 +115,9 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Veuillez réessayer avec <strong>un autre numéro</strong> que
-            vous utilisez souvent et depuis longtemps. Il peut s’agir d’un
-            numéro professionnel ou personnel.'
+          next_steps_html: 'Essayez <strtong>un autre<strong> numéro que vous utilisez
+            souvent et depuis longtemps. Il peut s’agir d’un numéro
+            professionnel ou personnel.'
           try_again_button: 'Essayez un autre numéro'
           you_entered: 'Tu as soumis:'
       sessions:
@@ -217,9 +217,8 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        info_verified_html: Nous avons trouvé des données qui correspondent à votre
-          %{phone_message}
         intro: Vos informations vérifiées
+        phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.

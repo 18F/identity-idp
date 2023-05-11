@@ -300,6 +300,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context "when the user's state ID address does not match their residential address" do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
 
+      let(:residential_address) do
+        {
+          address1: pii[:address1],
+          address2: pii[:address2],
+          city: pii[:city],
+          state: pii[:state],
+          state_id_jurisdiction: pii[:state_id_jurisdiction],
+          zipcode: pii[:zipcode],
+        }
+      end
+
       let(:identity_doc_address) do
         {
           address1: pii[:identity_doc_address1],
@@ -324,11 +335,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
         )
       end
 
-      it 'verifies the state ID address with AAMVA and LexisNexis' do
+      it 'verifies ID address with AAMVA & LexisNexis & residential address with LexisNexis' do
         stub_vendor_requests
 
         expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
+          with(hash_including(residential_address)).and_call_original
+
+        expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof).
           with(hash_including(identity_doc_address)).and_call_original
+
         expect_any_instance_of(Proofing::Aamva::Proofer).to receive(:proof).with(
           hash_including(identity_doc_address),
         ).and_call_original

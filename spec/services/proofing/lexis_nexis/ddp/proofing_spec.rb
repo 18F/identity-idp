@@ -43,7 +43,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
           verification_request.url,
         ).to_timeout
 
-        expect { verification_request.send }.to raise_error(
+        expect { verification_request.send_request }.to raise_error(
           Proofing::TimeoutError,
           'LexisNexis timed out waiting for verification response',
         )
@@ -64,7 +64,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
             status: 200,
           )
 
-        verification_request.send
+        verification_request.send_request
 
         expect(request).to have_been_requested.once
       end
