@@ -9,7 +9,7 @@ feature 'verify profile with OTP' do
   before do
     profile = create(
       :profile,
-      deactivation_reason: :gpo_verification_pending,
+      gpo_verification_pending_at: 1.day.ago,
       pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '+1 703-555-9999' },
       user: user,
     )

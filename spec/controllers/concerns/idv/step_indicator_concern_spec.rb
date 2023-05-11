@@ -49,7 +49,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
       end
 
       context 'with a pending profile' do
-        let(:profile) { create(:profile, deactivation_reason: :gpo_verification_pending) }
+        let(:profile) { create(:profile, gpo_verification_pending_at: 1.day.ago) }
 
         it 'returns doc auth gpo steps' do
           expect(steps).to eq doc_auth_step_indicator_steps_gpo
@@ -90,7 +90,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         let(:profile) do
           create(
             :profile,
-            deactivation_reason: :gpo_verification_pending,
+            gpo_verification_pending_at: 1.day.ago,
             proofing_components: { 'document_check' => Idp::Constants::Vendors::USPS },
           )
         end
