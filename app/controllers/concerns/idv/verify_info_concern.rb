@@ -45,7 +45,7 @@ module Idv
         user_id: current_user.id,
         threatmetrix_session_id: flow_session[:threatmetrix_session_id],
         request_ip: request.remote_ip,
-        double_address_verification: capture_secondary_id_enabled
+        double_address_verification: capture_secondary_id_enabled,
       )
 
       redirect_to after_update_url
