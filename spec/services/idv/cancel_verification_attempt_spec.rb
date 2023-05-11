@@ -57,7 +57,7 @@ describe Idv::CancelVerificationAttempt do
       expect(profiles[0].active).to eq(false)
       expect(profiles[0].reload.deactivation_reason).to eq('verification_cancelled')
       expect(other_profile.active).to eq(false)
-      expect(other_profile.reload.gpo_verification_pending_at).to_not eq(nil)
+      expect(other_profile.reload.gpo_verification_pending?).to eq(true)
     end
   end
 end
