@@ -256,8 +256,6 @@ fr:
           obtenir de l’aide:'
         still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
-        add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
-          par l’État.
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
@@ -281,6 +279,13 @@ fr:
       status_page_link: 'Obtenez des mises à jour sur notre page de statut'
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
+    warning:
+      attempts:
+        one: Pour des raisons de sécurité, il vous reste une tentative.
+        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      sessions:
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
