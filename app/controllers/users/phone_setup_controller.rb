@@ -104,10 +104,4 @@ module Users
       redirect_to account_path
     end
   end
-
-  def confirm_user_in_account_setup
-    return if user_fully_authenticated? && in_multi_mfa_selection_flow?
-    return unless MfaPolicy.new(current_user).two_factor_enabled?
-    redirect_to account_path
-  end
 end
