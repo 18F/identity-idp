@@ -52,9 +52,8 @@ module UspsInPersonProofing
       end
 
       if nontransliterable_chars.present?
-        nontransliterable_chars = nontransliterable_chars.sort
         analytics.idv_in_person_proofing_nontransliterable_characters_submitted(
-          nontransliterable_characters: nontransliterable_chars,
+          nontransliterable_characters: nontransliterable_chars.sort,
         )
       end
     end
