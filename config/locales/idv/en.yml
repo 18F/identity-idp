@@ -109,10 +109,10 @@ en:
           you_entered: 'You entered:'
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify personal
-          information online.'
-        heading: We could not find records matching your personal information.
+        fail_html: 'For your security, we limit the number of times you can attempt to
+          verify personal information online. <strong>Try again in
+          %{timeout}.</strong>'
+        heading: We couldn’t find records matching your personal information
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:

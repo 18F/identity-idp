@@ -33,6 +33,9 @@ module IdvStepConcern
 
     if flow_path == 'standard'
       redirect_to idv_document_capture_url
+    elsif flow_path == 'hybrid' &&
+          IdentityConfig.store.doc_auth_link_sent_controller_enabled
+      redirect_to idv_link_sent_url
     else
       flow_session.delete('Idv::Steps::DocumentCaptureStep')
       redirect_to idv_doc_auth_url

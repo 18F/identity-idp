@@ -333,6 +333,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/link_sent' => 'link_sent#show'
+      put '/link_sent' => 'link_sent#update'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -386,11 +388,6 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
-    end
-
-    namespace :api do
-      post '/verify/v2/document_capture' => 'verify/document_capture#create'
-      delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

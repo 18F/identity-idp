@@ -107,8 +107,10 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
         context 'failing transliteration' do
           let(:invalid_field) { 'def' }
+          let(:analytics) { FakeAnalytics.new }
 
           before do
+            allow(validator).to receive(:analytics).and_return(analytics)
             allow(validator.transliterator).to receive(:transliterate).with('def').
               and_return(
                 UspsInPersonProofing::Transliterator::TransliterationResult.new(
@@ -127,6 +129,15 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
 
             expect(error.type).to eq(:nontransliterable_field)
             expect(error.options[:message]).to eq(message)
+          end
+
+          it 'logs nontransliterable characters' do
+            validator.validate(model)
+
+            expect(analytics).to have_logged_event(
+              'IdV: in person proofing characters submitted could not be transliterated',
+              nontransliterable_characters: ['*', '3', 'C'],
+            )
           end
         end
 
@@ -210,12 +221,26 @@ RSpec.describe UspsInPersonProofing::TransliterableValidator do
         let(:fields) { [:other_invalid_field, :valid_field, :invalid_field] }
         let(:invalid_field) { '123' }
         let(:other_invalid_field) { "\#@$%" }
+        let(:analytics) { FakeAnalytics.new }
+
+        before do
+          allow(validator).to receive(:analytics).and_return(analytics)
+        end
 
         it 'sets multiple validation messages' do
           validator.validate(model)
 
           expect(errors).to include(:invalid_field)
           expect(errors).to include(:other_invalid_field)
+        end
+
+        it 'logs nontransliterable characters' do
+          validator.validate(model)
+
+          expect(analytics).to have_logged_event(
+            'IdV: in person proofing characters submitted could not be transliterated',
+            nontransliterable_characters: ['#', '$', '%', '1', '2', '3', '@'],
+          )
         end
       end
     end
