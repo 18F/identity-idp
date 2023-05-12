@@ -5,14 +5,16 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
-      and_return('/\A\s*(?<enrollment_code>\d{16})\s*\Z/')
+      and_return('\A\s*(?<enrollment_code>\d{16})\s*\Z')
   end
 
   describe '#process_message' do
     let(:sqs_message) { instance_double(Aws::SQS::Types::Message) }
     let(:sqs_message_id) { Random.uuid }
     let(:sns_message_id) { Random.uuid }
-    let(:enrollment_code) { Random.uuid.delete('-').slice(0, 16) }
+    let(:enrollment_code) { 16.times.map { rand(0..9) }.join }
+    let(:user) { create(:user) }
+    let(:user_id) { user.id }
     let(:ses_payload) do
       {
         content: Mail.new do |m|
@@ -27,6 +29,15 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
             messageId: Mail::Utilities.generate_message_id,
           },
         },
+      }
+    end
+    let(:logged_ses_values) do
+      {
+        ses_aws_message_id: ses_payload[:mail][:messageId],
+        ses_mail_source: ses_payload[:mail][:source],
+        ses_mail_timestamp: ses_payload[:mail][:timestamp],
+        ses_rfc_message_id: ses_payload[:mail][:commonHeaders][:messageId],
+        ses_rfc_origination_date: ses_payload[:mail][:commonHeaders][:date],
       }
     end
     let(:sns_payload) do
@@ -156,17 +167,51 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         )
       end
 
-      it 'email body is missing' do
+      it 'email body is missing (single part)' do
+        message = Mail.new
+        expect(message.multipart?).to be(false)
         allow(sqs_message).to receive(:body).and_return(
           {
             MessageId: sns_message_id,
             Message: {
               **ses_payload,
-              content: Mail.new,
+              content: message.to_s,
             }.to_json,
           }.to_json,
         )
-        expect_error('Email body is not a string', sqs_message_id:, sns_message_id:)
+        expect_error(
+          'Failure occurred when attempting to get email body',
+          sqs_message_id:,
+          sns_message_id:,
+          **logged_ses_values,
+        )
+      end
+
+      it 'email body is missing (multipart)' do
+        message = Mail.new do
+          html_part do
+            body nil
+          end
+          text_part do
+            body nil
+          end
+        end
+        expect(message.multipart?).to be(true)
+        allow(sqs_message).to receive(:body).and_return(
+          {
+            MessageId: sns_message_id,
+            Message: {
+              **ses_payload,
+              content: message.to_s,
+            }.to_json,
+          }.to_json,
+        )
+        expect_error(
+          'Failure occurred when attempting to get email body',
+          sqs_message_id:,
+          sns_message_id:,
+          **logged_ses_values,
+        )
       end
 
       it 'email body does not match pattern' do
@@ -183,21 +228,21 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         )
         expect_error(
           'Failed to extract enrollment code using regex, check email body format and regex',
-          sqs_message_id:, sns_message_id:,
-          **{
-            enrollment_code: nil,
-            ses_aws_message_id: ses_payload[:mail][:messageId],
-            ses_mail_source: ses_payload[:source],
-            ses_mail_timestamp: ses_payload[:timestamp],
-            ses_rfc_message_id: ses_payload[:commonHeaders][:messageId],
-            ses_rfc_origination_date: ses_payload[:commonHeaders][:date],
-          }
+          sqs_message_id:,
+          sns_message_id:,
+          **logged_ses_values,
         )
       end
 
       it 'enrollment does not exist' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
-        expect_error(StandardError.new, sqs_message_id:, sns_message_id:, enrollment_code:)
+        expect_error(
+          'Received code for enrollment that does not exist in the database',
+          sqs_message_id:,
+          sns_message_id:,
+          enrollment_code:,
+          **logged_ses_values,
+        )
       end
     end
 
@@ -205,10 +250,21 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
       it 'error thrown trying to fetch enrollment' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
         error = ActiveRecord::ConnectionNotEstablished.new
-        expect(InPersonEnrollment).to receive(:pick).and_raise(error)
+        expect(InPersonEnrollment).to receive_message_chain(
+          :where,
+          :order,
+          :limit,
+          :pick,
+        ).and_raise(error)
 
         expect(enrollment_pipeline).to receive(:report_error).
-          with(error, { sqs_message_id:, sns_message_id:, enrollment_code: })
+          with(
+            error,
+            sqs_message_id:,
+            sns_message_id:,
+            enrollment_code:,
+            **logged_ses_values,
+          )
 
         expect do
           enrollment_pipeline.process_message(sqs_message)
@@ -218,7 +274,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
       it 'error thrown trying to update enrollment' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
 
-        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending)
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
         error = ActiveRecord::ConnectionNotEstablished.new
         expect(InPersonEnrollment).to receive(:update).
@@ -228,7 +284,12 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         expect(enrollment_pipeline).to receive(:report_error).
           with(
             error,
-            { sqs_message_id:, sns_message_id:, enrollment_code:, enrollment_id: enrollment.id },
+            sqs_message_id:,
+            sns_message_id:,
+            enrollment_code:,
+            user_id:,
+            enrollment_id: enrollment.id,
+            **logged_ses_values,
           )
 
         expect do
@@ -241,20 +302,20 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
       it 'marks non-ready record as ready' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
 
-        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending)
+        enrollment = create(:in_person_enrollment, enrollment_code:, status: :pending, user:)
 
         expect(InPersonEnrollment).to receive(:update).
           with(enrollment.id, ready_for_status_check: true).once
 
         expect(enrollment_pipeline).not_to receive(:report_error)
 
-        expect(enrollment_pipeline.process_message(sqs_message)).be(true)
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
       end
       it 'leaves record already marked as ready' do
         allow(sqs_message).to receive(:body).and_return(sns_payload.to_json)
 
         create(
-          :in_person_enrollment, enrollment_code:, status: :pending,
+          :in_person_enrollment, enrollment_code:, status: :pending, user:,
                                  ready_for_status_check: true
         )
 
@@ -262,7 +323,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
 
         expect(enrollment_pipeline).not_to receive(:report_error)
 
-        expect(enrollment_pipeline.process_message(sqs_message)).be(true)
+        expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
       end
     end
   end

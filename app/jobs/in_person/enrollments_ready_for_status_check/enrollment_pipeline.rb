@@ -70,21 +70,20 @@ module InPerson::EnrollmentsReadyForStatusCheck
         if mail.multipart?
           text_body = mail.text_part&.decoded
         else
-          text_body = mail.decoded
+          text_body = mail.body.decoded
         end
       rescue StandardError
         report_error(err, **error_extra)
         return false
       end
 
-      unless text_body.is_a?(String)
-        report_error('Email body is not a string', **error_extra)
+      unless text_body.respond_to?(:to_s) && text_body.to_s.present?
+        report_error('Failure occurred when attempting to get email body', **error_extra)
         return false
       end
 
       # Extract enrollment code from email body
-      enrollment_code = email_body_pattern.match(text_body)&.[](:enrollment_code)
-      error_extra[:enrollment_code] = enrollment_code
+      enrollment_code = email_body_pattern.match(text_body.to_s)&.[](:enrollment_code)
 
       unless enrollment_code.is_a?(String)
         report_error(
@@ -94,13 +93,15 @@ module InPerson::EnrollmentsReadyForStatusCheck
         return false
       end
 
+      error_extra[:enrollment_code] = enrollment_code
+
       # Look up existing enrollment
-      id, ready_for_status_check = InPersonEnrollment.
+      id, user_id, ready_for_status_check = InPersonEnrollment.
         where(enrollment_code:, status: :pending).
         order(created_at: :desc).
         limit(1).
         pick(
-          :id, :ready_for_status_check
+          :id, :user_id, :ready_for_status_check
         )
 
       if id.nil?
@@ -112,11 +113,15 @@ module InPerson::EnrollmentsReadyForStatusCheck
       end
 
       error_extra[:enrollment_id] = id
+      error_extra[:user_id] = user_id
 
       # SQS can deliver the message multiple times, so it's expected that
       # sometimes ready_for_status_check will already be set to true.
       unless ready_for_status_check
-        # Mark enrollment as ready for the USPS status check
+        # Mark enrollment as ready for the USPS status check.
+        #
+        # Note: There is still a chance of duplicate updates at this point,
+        # but the conditional above should catch most cases.
         InPersonEnrollment.update(id, ready_for_status_check: true)
       end
       return true
