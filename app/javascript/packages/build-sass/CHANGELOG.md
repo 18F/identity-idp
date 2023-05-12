@@ -1,3 +1,9 @@
+## Unreleased
+
+### Improvements
+
+- Adds support for ".scss" file extension, as an alternative to the current ".css.scss" support. In both cases, the output files use the basename with a ".css" extension.
+
 ## 1.2.0
 
 ### Improvements
