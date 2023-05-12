@@ -5,7 +5,7 @@ module InPerson
   # will be checked earlier than other enrollments.
   class EnrollmentsReadyForStatusCheckJob < ApplicationJob
     include InPerson::EnrollmentsReadyForStatusCheck::UsesAnalytics
-    include InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline
+    include InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor
 
     queue_as :low
 

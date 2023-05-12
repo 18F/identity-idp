@@ -1,6 +1,7 @@
 module InPerson::EnrollmentsReadyForStatusCheck
   module BatchProcessor
     include UsesSqsClient
+    include EnrollmentPipeline
 
     def process_batch(messages, analytics_stats)
       analytics_stats[:fetched_items] += messages.size
