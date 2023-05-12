@@ -98,12 +98,4 @@ describe Idv::LinkSentController do
       end
     end
   end
-
-  context 'feature flag disabled' do
-    let(:feature_flag_enabled) { false }
-    it 'returns a 404' do
-      get :show
-      expect(response.status).to eql(404)
-    end
-  end
 end
