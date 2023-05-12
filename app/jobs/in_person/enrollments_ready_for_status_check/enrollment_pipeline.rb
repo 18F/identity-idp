@@ -65,7 +65,13 @@ module InPerson::EnrollmentsReadyForStatusCheck
       # Parse email from content of SES message
       begin
         mail = Mail.read_from_string(ses_message[:content])
-        text_body = mail.text_part&.decoded
+        # Depending on how the email is created, we may need to read different
+        # parts of the message
+        if mail.multipart?
+          text_body = mail.text_part&.decoded
+        else
+          text_body = mail.decoded
+        end
       rescue StandardError
         report_error(err, **error_extra)
         return false
@@ -77,7 +83,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
       end
 
       # Extract enrollment code from email body
-      enrollment_code = EMAIL_BODY_PATTERN.match(text_body)&.[](:enrollment_code)
+      enrollment_code = email_body_pattern.match(text_body)&.[](:enrollment_code)
       error_extra[:enrollment_code] = enrollment_code
 
       unless enrollment_code.is_a?(String)
@@ -90,7 +96,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
 
       # Look up existing enrollment
       id, ready_for_status_check = InPersonEnrollment.
-        where(enrollment_code:).
+        where(enrollment_code:, status: :pending).
         order(created_at: :desc).
         limit(1).
         pick(
@@ -124,8 +130,10 @@ module InPerson::EnrollmentsReadyForStatusCheck
 
     # Regex pattern describing the expected email format.
     # This should include an "enrollment_code" capture group.
-    EMAIL_BODY_PATTERN = Regexp.new(
-      IdentityConfig.store.in_person_enrollments_ready_job_email_body_pattern,
-    )
+    def email_body_pattern
+      @email_body_pattern ||= Regexp.new(
+        IdentityConfig.store.in_person_enrollments_ready_job_email_body_pattern,
+      )
+    end
   end
 end
