@@ -18,23 +18,13 @@ module InPerson::EnrollmentsReadyForStatusCheck
         #
         # If we fail to process the message now but could process it later, then
         # we should exclude that message from the deletion batch.
-        deletion_batch.append(
-          {
-            id: sqs_message.message_id,
-            receipt_handle: sqs_message.receipt_handle,
-          },
-        )
+        deletion_batch.append(sqs_message)
         analytics_stats[:processed_items] += 1
       end
     ensure
       begin
         # The messages were processed, so remove them from the queue
-        sqs_client.delete_message_batch(
-          {
-            queue_url:,
-            entries: deletion_batch,
-          },
-        )
+        delete_message_batch(deletion_batch)
         analytics_stats[:deleted_items] += deletion_batch.size
       rescue StandardError => err
         report_error(err)

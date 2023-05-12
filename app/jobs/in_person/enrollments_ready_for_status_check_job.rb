@@ -5,6 +5,7 @@ module InPerson
   # will be checked earlier than other enrollments.
   class EnrollmentsReadyForStatusCheckJob < ApplicationJob
     include InPerson::EnrollmentsReadyForStatusCheck::UsesAnalytics
+    include InPerson::EnrollmentsReadyForStatusCheck::UsesSqsClient
     include InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor
 
     queue_as :low
@@ -39,22 +40,6 @@ module InPerson
         # number of processed items that we failed to delete
         deletion_failed_items: analytics_stats[:processed_items] - analytics_stats[:deleted_items],
       )
-    end
-
-    private
-
-    def poll
-      sqs_client.receive_message(receive_params).messages
-    end
-
-    def receive_params
-      {
-        queue_url:,
-        max_number_of_messages:
-          IdentityConfig.store.in_person_enrollments_ready_job_max_number_of_messages,
-        visibility_timeout: IdentityConfig.store.in_person_enrollments_ready_job_visibility_timeout,
-        wait_time_seconds: IdentityConfig.store.in_person_enrollments_ready_job_wait_time_seconds,
-      }
     end
   end
 end
