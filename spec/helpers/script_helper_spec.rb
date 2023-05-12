@@ -32,7 +32,7 @@ RSpec.describe ScriptHelper do
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
         allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
-          and_return(['clock.svg', '@18f/identity-design-system/dist/assets/img/sprite.svg'])
+          and_return(['clock.svg', 'sprite.svg'])
       end
 
       it 'prints asset paths sources' do
@@ -43,8 +43,7 @@ RSpec.describe ScriptHelper do
           visible: :all,
           text: {
             'clock.svg' => 'http://test.host/clock.svg',
-            '@18f/identity-design-system/dist/assets/img/sprite.svg' =>
-              'http://test.host/@18f/identity-design-system/dist/assets/img/sprite.svg',
+            'sprite.svg' => 'http://test.host/sprite.svg',
           }.to_json,
         )
       end
@@ -66,8 +65,7 @@ RSpec.describe ScriptHelper do
             visible: :all,
             text: {
               'clock.svg' => 'http://assets.example.com/clock.svg',
-              '@18f/identity-design-system/dist/assets/img/sprite.svg' =>
-                'http://example.com/@18f/identity-design-system/dist/assets/img/sprite.svg',
+              'sprite.svg' => 'http://example.com/sprite.svg',
             }.to_json,
           )
         end
