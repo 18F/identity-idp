@@ -37,6 +37,30 @@ describe Users::PhoneSetupController do
         expect(response).to render_template(:index)
       end
     end
+
+    context 'when fully registered and signed in' do
+      it 'redirects to account page' do
+        stub_analytics
+        user = build(:user, :with_phone)
+        stub_sign_in(user)
+
+        get :index
+
+        expect(response).to redirect_to(account_path)
+      end
+    end
+
+    context 'when fully registered and partially signed in' do
+      it 'redirects to 2FA page' do
+        stub_analytics
+        user = build(:user, :with_phone)
+        stub_sign_in_before_2fa(user)
+
+        get :index
+
+        expect(response).to redirect_to(user_two_factor_authentication_path)
+      end
+    end
   end
 
   describe 'PATCH create' do
