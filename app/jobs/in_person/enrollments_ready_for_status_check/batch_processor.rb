@@ -1,5 +1,6 @@
 module InPerson::EnrollmentsReadyForStatusCheck
   module BatchProcessor
+    include UsesReportError
     include UsesSqsClient
     include EnrollmentPipeline
 
@@ -24,8 +25,16 @@ module InPerson::EnrollmentsReadyForStatusCheck
     ensure
       begin
         # The messages were processed, so remove them from the queue
-        delete_message_batch(deletion_batch)
-        analytics_stats[:deleted_items] += deletion_batch.size
+        unless deletion_batch.empty?
+          delete_result = delete_message_batch(deletion_batch)
+          delete_result.failed.each do |error_entry|
+            report_error(
+              'Failed to delete item from queue',
+              sqs_delete_error: error_entry.to_h,
+            )
+          end
+          analytics_stats[:deleted_items] += delete_result.successful.size
+        end
       rescue StandardError => err
         report_error(err)
       end
