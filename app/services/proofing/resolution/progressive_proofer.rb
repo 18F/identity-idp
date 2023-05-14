@@ -33,6 +33,7 @@ module Proofing
           user_email: user_email,
         )
 
+        # it actually check double_address_verification to decide to contact vendor
         residential_instant_verify_result = proof_residential_address_if_needed(
           applicant_pii: applicant_pii,
           timer: timer,
@@ -44,6 +45,9 @@ module Proofing
           applicant_pii_transformed = with_state_id_address(applicant_pii_transformed)
         end
 
+        # If id & residential address are the same, when dva is on, the result from residential
+        # address is used, there is no need to make two external calls with same data.
+        # It also return a failed result if residential address result is not a success.
         instant_verify_result = proof_id_address_with_lexis_nexis_if_needed(
           applicant_pii: applicant_pii_transformed,
           timer: timer,
@@ -108,7 +112,9 @@ module Proofing
         return residential_address_unnecessary_result unless double_address_verification
 
         timer.time('residential address') do
-          resolution_proofer.proof(applicant_pii)
+          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
+            logging_mock_resolution_proofer('residential_address').proof(applicant_pii)
+            : resolution_proofer.proof(applicant_pii)
         end
       end
 
@@ -133,7 +139,9 @@ module Proofing
         return resolution_cannot_pass unless residential_instant_verify_result.success?
 
         timer.time('resolution') do
-          resolution_proofer.proof(applicant_pii)
+          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
+            logging_mock_resolution_proofer('id_address').proof(applicant_pii)
+            : resolution_proofer.proof(applicant_pii)
         end
       end
 
@@ -144,6 +152,7 @@ module Proofing
         if double_address_verification == false || same_address_as_id == 'true'
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
+          # dva = true && same_address_as_id = false
           residential_instant_verify_result.success?
         end
       end
@@ -166,7 +175,9 @@ module Proofing
         return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva
 
         timer.time('state_id') do
-          state_id_proofer.proof(applicant_pii)
+          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
+            logging_mock_state_id_proofer.proof(applicant_pii)
+            : state_id_proofer.proof(applicant_pii)
         end
       end
 
@@ -232,6 +243,23 @@ module Proofing
           end
       end
 
+      # @param [String] address_type: either 'id_address' or 'residential_address'
+      def logging_mock_resolution_proofer(address_type:)
+        Proofing::LexisNexis::InstantVerify::NoopProofer.new(
+          {
+            instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+            account_id: IdentityConfig.store.lexisnexis_account_id,
+            base_url: IdentityConfig.store.lexisnexis_base_url,
+            username: IdentityConfig.store.lexisnexis_username,
+            password: IdentityConfig.store.lexisnexis_password,
+            hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
+            hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
+            request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          },
+          address_type: address_type,
+        )
+      end
+
       def state_id_proofer
         @state_id_proofer ||=
           if IdentityConfig.store.proofer_mock_fallback
@@ -247,6 +275,18 @@ module Proofing
               verification_url: IdentityConfig.store.aamva_verification_url,
             )
           end
+      end
+
+      def logging_mock_state_id_proofer
+        Proofing::Aamva::NoopProofer.new(
+          auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+          auth_url: IdentityConfig.store.aamva_auth_url,
+          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+          private_key: IdentityConfig.store.aamva_private_key,
+          public_key: IdentityConfig.store.aamva_public_key,
+          verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
+          verification_url: IdentityConfig.store.aamva_verification_url,
+          )
       end
 
       # Make a copy of pii with the user's state ID address overwriting the address keys

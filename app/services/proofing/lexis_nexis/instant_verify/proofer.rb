@@ -9,7 +9,7 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          response = send_request(applicant)
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
@@ -18,6 +18,12 @@ module Proofing
             vendor_name: 'lexisnexis:instant_verify',
             vendor_workflow: config.instant_verify_workflow
           )
+        end
+
+        protected
+
+        def send_request(applicant)
+          VerificationRequest.new(config: config, applicant: applicant).send_request
         end
 
         private
