@@ -23,8 +23,6 @@ describe Idv::LinkSentController do
   let(:feature_flag_enabled) { true }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_link_sent_controller_enabled).
-      and_return(feature_flag_enabled)
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
