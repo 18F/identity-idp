@@ -3,8 +3,9 @@ module Users
     include PhoneConfirmation
     include RecaptchaConcern
     include ReauthenticationRequiredConcern
+    include MfaSetupConcern
 
-    before_action :confirm_two_factor_authenticated
+    before_action :confirm_user_authenticated_for_2fa_setup
     before_action :redirect_if_phone_vendor_outage
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
