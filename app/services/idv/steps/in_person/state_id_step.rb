@@ -37,7 +37,7 @@ module Idv
            end
           end
 
-          maybe_redirect_to_verify_info if updating_state_id?
+          maybe_redirect_to_verify_info(flow_session[steps[:address].to_s].blank?)
         end
 
         def extra_view_variables
