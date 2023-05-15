@@ -14,11 +14,10 @@ module Proofing
         def get_proofer(address_type:)
           app_config_store = resolution_context.app_config_store
           user_email = resolution_context.user_email
-          if Pii::Classifier.user_for_test_request_logging?(user_email) &&
-             !app_config_store.proofer_mock_fallback
-            logging_resolution_proofer(address_type: address_type)
-          elsif app_config_store.proofer_mock_fallback
+          if app_config_store.proofer_mock_fallback
             Proofing::Mock::ResolutionMockClient.new
+          elsif Pii::Classifier.user_for_test_request_logging?(user_email)
+            logging_resolution_proofer(address_type: address_type)
           else
             Proofing::LexisNexis::InstantVerify::Proofer.new(
               instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,

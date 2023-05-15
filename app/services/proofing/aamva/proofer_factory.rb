@@ -13,11 +13,10 @@ module Proofing
       def get_proofer
         app_config_store = resolution_context.app_config_store()
         user_email = resolution_context.user_email()
-        if Pii::Classifier.user_for_test_request_logging?(user_email) &&
-           !app_config_store.proofer_mock_fallback
-          logging_state_id_proofer
-        elsif app_config_store.proofer_mock_fallback
+        if app_config_store.proofer_mock_fallback
           Proofing::Mock::StateIdMockClient.new
+        elsif Pii::Classifier.user_for_test_request_logging?(user_email)
+          logging_state_id_proofer
         else
           Proofing::Aamva::Proofer.new(
             auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
@@ -33,7 +32,6 @@ module Proofing
 
       private
 
-      # @param [String] address_type: either 'id_address' or 'residential_address'
       def logging_state_id_proofer
         Proofing::Aamva::LoggingProofer.new(
           auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,

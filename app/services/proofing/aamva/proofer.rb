@@ -1,6 +1,6 @@
 module Proofing
   module Aamva
-    class Proofer
+    class Proofer < Proofing::Proofer
       Config = RedactedStruct.new(
         :auth_request_timeout,
         :auth_url,

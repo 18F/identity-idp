@@ -229,7 +229,6 @@ class IdentityConfig
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_verify_info_controller_enabled, type: :boolean)
-    config.add(:in_person_verify_test_logging_user_email_regex, type: :regex)
     config.add(:in_person_verify_test_logging_enabled, type: :boolean)
     config.add(:in_person_verify_test_logging_user_email_regex, type: :regex)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
