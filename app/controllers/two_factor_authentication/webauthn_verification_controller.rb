@@ -40,7 +40,15 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
-      handle_valid_verification_for_authentication_context(auth_method: 'webauthn')
+      if form.webauthn_configuration.platform_authenticator
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+        )
+      else
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
+      end
       handle_remember_device
       redirect_to after_otp_verification_confirmation_url
     end
