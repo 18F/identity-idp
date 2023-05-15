@@ -6,11 +6,7 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.force_ssl = true
 
-  config.asset_host = proc do |_source, request|
-    # we want precompiled assets to have domain-agnostic URLs
-    # and request is nil during asset precompilation
-    (IdentityConfig.store.asset_host.presence || IdentityConfig.store.domain_name) if request
-  end
+  config.asset_host = IdentityConfig.store.asset_host.presence || IdentityConfig.store.domain_name
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.active_record.dump_schema_after_migration = false
