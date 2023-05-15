@@ -43,6 +43,13 @@ class IdentityConfig
       Time.parse(value)
       # rubocop:enable Rails/TimeZone
     end,
+    regex: proc do |value|
+      begin
+        Regexp.new(value)
+      rescue
+        nil
+      end
+    end,
   }
 
   attr_reader :key_types
@@ -222,6 +229,9 @@ class IdentityConfig
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_verify_info_controller_enabled, type: :boolean)
+    config.add(:in_person_verify_test_logging_user_email_regex, type: :regex)
+    config.add(:in_person_verify_test_logging_enabled, type: :boolean)
+    config.add(:in_person_verify_test_logging_user_email_regex, type: :regex)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)

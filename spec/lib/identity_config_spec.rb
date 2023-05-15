@@ -28,5 +28,14 @@ RSpec.describe IdentityConfig do
           end
       end
     end
+
+    it 'has all _regex keys as regex' do
+      aggregate_failures do
+        IdentityConfig.key_types.select { |key, _type| key.to_s.end_with?('_regex') }.
+          each do |key, type|
+          expect(type).to eq(:regex), "expected #{key} to be a regex"
+        end
+      end
+    end
   end
 end

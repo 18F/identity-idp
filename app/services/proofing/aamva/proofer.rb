@@ -29,17 +29,26 @@ module Proofing
       def proof(applicant)
         aamva_applicant =
           Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
-        response = Aamva::VerificationClient.new(
-          config,
-        ).send_verification_request(
-          applicant: aamva_applicant,
-        )
+        response = make_request(aamva_applicant)
         build_result_from_response(response)
       rescue => exception
         NewRelic::Agent.notice_error(exception)
         Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
           transaction_id: nil, verified_attributes: []
+        )
+      end
+
+      protected
+
+      # @param [Object] aamva_applicant
+      # @return [Proofing::Aamva::Response::VerificationResponse] proofing result
+      def make_request(aamva_applicant)
+        client = Aamva::VerificationClient.new(
+          config,
+        )
+        client.send_verification_request(
+          applicant: aamva_applicant,
         )
       end
 

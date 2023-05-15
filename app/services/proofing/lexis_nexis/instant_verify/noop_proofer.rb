@@ -15,7 +15,6 @@ module Proofing
         def send_request(applicant)
           request = VerificationRequest.new(config: config, applicant: applicant)
           body = JSON.parse(request.body)
-          # To-do: log request body
           log_info_hash(
             {
               url: request.url,
@@ -47,8 +46,9 @@ module Proofing
           end
         end
 
-        # @param [Integer] statusCode
+        # @param [Integer] status_code
         # @param [Object] response_body, the JSON response body
+        # @return [Proofing::LexisNexis::Response]
         def build_raw_response(status_code, response_body)
           headers = { 'Content-Type' => 'application/json' }
           env = {
@@ -83,20 +83,21 @@ module Proofing
             when :failure
               JSON.parse(LexisNexisFixtures.instant_verify_address_fail_response_json)
             when :failure_with_aamva
-              JSON.parse(LexisNexisFixtures.instant_verify_date_of_birth_and_address_fail_response_json)
+              JSON.parse(
+                LexisNexisFixtures.instant_verify_date_of_birth_and_address_fail_response_json,
+              )
             when :failure_without_aamva
               JSON.parse(LexisNexisFixtures.instant_verify_identity_not_found_response_json)
             else
-              nil
+              {}
             end
           end
           data
         end
 
-
         private_class_method def self.scenario_responses
           # only initialize once
-          #noinspection RubyClassVariableUsageInspection
+          # noinspection RubyClassVariableUsageInspection
           @@scenario_responses ||= build_scenario_responses
         end
       end

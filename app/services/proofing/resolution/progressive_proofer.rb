@@ -38,6 +38,7 @@ module Proofing
           applicant_pii: applicant_pii,
           timer: timer,
           double_address_verification: double_address_verification,
+          user_email: user_email,
         )
 
         applicant_pii_transformed = applicant_pii.clone
@@ -53,6 +54,7 @@ module Proofing
           timer: timer,
           residential_instant_verify_result: residential_instant_verify_result,
           double_address_verification: double_address_verification,
+          user_email: user_email,
         )
 
         state_id_result = proof_id_with_aamva_if_needed(
@@ -62,6 +64,7 @@ module Proofing
           instant_verify_result: instant_verify_result,
           should_proof_state_id: should_proof_state_id,
           double_address_verification: double_address_verification,
+          user_email: user_email,
         )
 
         ResultAdjudicator.new(
@@ -107,13 +110,14 @@ module Proofing
       def proof_residential_address_if_needed(
         applicant_pii:,
         timer:,
-        double_address_verification:
+        double_address_verification:,
+          user_email:
       )
         return residential_address_unnecessary_result unless double_address_verification
 
         timer.time('residential address') do
-          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
-            logging_mock_resolution_proofer('residential_address').proof(applicant_pii)
+          Pii::Classifier.user_for_test_request_logging?(user_email) ?
+            logging_resolution_proofer(address_type: 'residential_address').proof(applicant_pii)
             : resolution_proofer.proof(applicant_pii)
         end
       end
@@ -132,15 +136,16 @@ module Proofing
 
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
-                                                      double_address_verification:)
+                                                      double_address_verification:,
+                                                        user_email:)
         if applicant_pii[:same_address_as_id] == 'true' && double_address_verification == true
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
 
         timer.time('resolution') do
-          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
-            logging_mock_resolution_proofer('id_address').proof(applicant_pii)
+          Pii::Classifier.user_for_test_request_logging?(user_email) ?
+            logging_resolution_proofer(address_type: 'id_address').proof(applicant_pii)
             : resolution_proofer.proof(applicant_pii)
         end
       end
@@ -162,7 +167,8 @@ module Proofing
         residential_instant_verify_result:,
         instant_verify_result:,
         should_proof_state_id:,
-        double_address_verification:
+        double_address_verification:,
+        user_email:
       )
         same_address_as_id = applicant_pii[:same_address_as_id]
         should_proof_state_id_with_aamva = should_proof_state_id_with_aamva?(
@@ -175,7 +181,7 @@ module Proofing
         return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva
 
         timer.time('state_id') do
-          Pii::Classifier.pii_for_test_request_logging?(applicant_pii) ?
+          Pii::Classifier.user_for_test_request_logging?(user_email) ?
             logging_mock_state_id_proofer.proof(applicant_pii)
             : state_id_proofer.proof(applicant_pii)
         end
@@ -244,8 +250,8 @@ module Proofing
       end
 
       # @param [String] address_type: either 'id_address' or 'residential_address'
-      def logging_mock_resolution_proofer(address_type:)
-        Proofing::LexisNexis::InstantVerify::NoopProofer.new(
+      def logging_resolution_proofer(address_type:)
+        Proofing::LexisNexis::InstantVerify::LoggingProofer.new(
           {
             instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
             account_id: IdentityConfig.store.lexisnexis_account_id,

@@ -7,11 +7,11 @@ module Proofing
         super(config)
       end
 
-      # @param [Pii::Attributes] applicant
-      # @return [Proofing::StateIdResult]
-      def proof(applicant)
-        aamva_applicant =
-          Aamva::Applicant.from_proofer_applicant(OpenStruct.new(applicant))
+      protected
+
+      # @param [Object] aamva_applicant
+      # @return [Proofing::Aamva::Response::VerificationResponse] proofing result
+      def make_request(aamva_applicant)
         client = Aamva::VerificationClient.new(
           config,
         )
@@ -23,14 +23,7 @@ module Proofing
             headers: request.headers,
           },
         )
-        raw_response = build_raw_response(200, AamvaFixtures.verification_response)
-        build_result_from_response(raw_response)
-      rescue => exception
-        NewRelic::Agent.notice_error(exception)
-        Proofing::StateIdResult.new(
-          success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
-          transaction_id: nil, verified_attributes: []
-        )
+        build_raw_response(200, AamvaFixtures.verification_response)
       end
 
       private
