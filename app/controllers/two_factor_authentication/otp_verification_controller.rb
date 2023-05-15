@@ -21,8 +21,14 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
-        handle_valid_confirmation_otp if UserSessionContext.confirmation_context?(context)
-        handle_valid_otp(next_url: nil, auth_method: params[:otp_delivery_preference])
+        if UserSessionContext.confirmation_context?(context)
+          handle_valid_confirmation_otp
+        else
+          handle_valid_otp_for_authentication_context(auth_method: params[:otp_delivery_preference])
+        end
+
+        handle_remember_device
+        redirect_to after_otp_verification_confirmation_url
       else
         handle_invalid_otp(context: context, type: 'otp')
       end
@@ -34,6 +40,9 @@ module TwoFactorAuthentication
       assign_phone
       track_mfa_added
       @next_mfa_setup_path = next_setup_path
+      handle_valid_verification_for_confirmation_context(
+        auth_method: params[:otp_delivery_preference],
+      )
       flash[:success] = t('notices.phone_confirmed')
     end
 
