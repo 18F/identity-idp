@@ -21,7 +21,7 @@ module Proofing
           session_id: session_id,
           auth_token: auth_token,
           config: config,
-          )
+        )
       end
 
       private

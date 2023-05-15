@@ -111,14 +111,12 @@ module Proofing
         applicant_pii:,
         timer:,
         double_address_verification:,
-          user_email:
+        user_email:
       )
         return residential_address_unnecessary_result unless double_address_verification
 
         timer.time('residential address') do
-          Pii::Classifier.user_for_test_request_logging?(user_email) ?
-            logging_resolution_proofer(address_type: 'residential_address').proof(applicant_pii)
-            : resolution_proofer.proof(applicant_pii)
+          resolution_proofer(applicant_pii, user_email, 'residential_address').proof(applicant_pii)
         end
       end
 
@@ -137,16 +135,14 @@ module Proofing
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
                                                       double_address_verification:,
-                                                        user_email:)
+                                                      user_email:)
         if applicant_pii[:same_address_as_id] == 'true' && double_address_verification == true
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
 
         timer.time('resolution') do
-          Pii::Classifier.user_for_test_request_logging?(user_email) ?
-            logging_resolution_proofer(address_type: 'id_address').proof(applicant_pii)
-            : resolution_proofer.proof(applicant_pii)
+          resolution_proofer(applicant_pii, user_email, 'id_address').proof(applicant_pii)
         end
       end
 
@@ -181,9 +177,7 @@ module Proofing
         return out_of_aamva_jurisdiction_result unless should_proof_state_id_with_aamva
 
         timer.time('state_id') do
-          Pii::Classifier.user_for_test_request_logging?(user_email) ?
-            logging_mock_state_id_proofer.proof(applicant_pii)
-            : state_id_proofer.proof(applicant_pii)
+          state_id_proofer(applicant_pii, user_email).proof(applicant_pii)
         end
       end
 
@@ -231,68 +225,30 @@ module Proofing
           end
       end
 
-      def resolution_proofer
-        @resolution_proofer ||=
-          if IdentityConfig.store.proofer_mock_fallback
-            Proofing::Mock::ResolutionMockClient.new
-          else
-            Proofing::LexisNexis::InstantVerify::Proofer.new(
-              instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-              account_id: IdentityConfig.store.lexisnexis_account_id,
-              base_url: IdentityConfig.store.lexisnexis_base_url,
-              username: IdentityConfig.store.lexisnexis_username,
-              password: IdentityConfig.store.lexisnexis_password,
-              hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-              hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-              request_mode: IdentityConfig.store.lexisnexis_request_mode,
-            )
-          end
-      end
-
-      # @param [String] address_type: either 'id_address' or 'residential_address'
-      def logging_resolution_proofer(address_type:)
-        Proofing::LexisNexis::InstantVerify::LoggingProofer.new(
-          {
-            instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-            account_id: IdentityConfig.store.lexisnexis_account_id,
-            base_url: IdentityConfig.store.lexisnexis_base_url,
-            username: IdentityConfig.store.lexisnexis_username,
-            password: IdentityConfig.store.lexisnexis_password,
-            hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-            hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-            request_mode: IdentityConfig.store.lexisnexis_request_mode,
-          },
-          address_type: address_type,
-        )
-      end
-
-      def state_id_proofer
-        @state_id_proofer ||=
-          if IdentityConfig.store.proofer_mock_fallback
-            Proofing::Mock::StateIdMockClient.new
-          else
-            Proofing::Aamva::Proofer.new(
-              auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
-              auth_url: IdentityConfig.store.aamva_auth_url,
-              cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-              private_key: IdentityConfig.store.aamva_private_key,
-              public_key: IdentityConfig.store.aamva_public_key,
-              verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
-              verification_url: IdentityConfig.store.aamva_verification_url,
-            )
-          end
-      end
-
-      def logging_mock_state_id_proofer
-        Proofing::Aamva::NoopProofer.new(
-          auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
-          auth_url: IdentityConfig.store.aamva_auth_url,
-          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-          private_key: IdentityConfig.store.aamva_private_key,
-          public_key: IdentityConfig.store.aamva_public_key,
-          verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
-          verification_url: IdentityConfig.store.aamva_verification_url,
+      # @param [Pii::Attributes] applicant_pii
+      # @param [String] user_email
+      # @param [String] address_type
+      # @return [Object]
+      #
+      def resolution_proofer(applicant_pii, user_email, address_type)
+        @resolution_proofer ||= begin
+          resolution_context = Proofing::Resolution::ResolutionContext.new(
+            pii: applicant_pii,
+            user_email: user_email,
           )
+          Proofing::LexisNexis::InstantVerify::ProoferFactory.
+            new(resolution_context).get_proofer(address_type: address_type)
+        end
+      end
+
+      def state_id_proofer(applicant_pii, user_email)
+        @state_id_proofer ||= begin
+          resolution_context = Proofing::Resolution::ResolutionContext.new(
+            pii: applicant_pii,
+            user_email: user_email,
+          )
+          Proofing::Aamva::ProoferFactory.new(resolution_context).get_proofer
+        end
       end
 
       # Make a copy of pii with the user's state ID address overwriting the address keys
