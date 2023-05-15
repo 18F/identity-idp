@@ -138,7 +138,7 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_document_capture_url
+        expect(response).to redirect_to idv_link_sent_url
       end
     end
   end
@@ -202,26 +202,12 @@ describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_document_capture_url
+        expect(response).to redirect_to idv_link_sent_url
       end
     end
   end
 
   def mock_next_step(step)
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
-  end
-
-  let(:user) { create(:user, :fully_registered) }
-  let(:document_capture_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
-
-  def mock_document_capture_step
-    stub_sign_in(user)
-    allow_any_instance_of(Flow::BaseFlow).to \
-      receive(:flow_session).and_return(
-        'document_capture_session_uuid' => document_capture_session_uuid,
-        'Idv::Steps::WelcomeStep' => true,
-        'Idv::Steps::LinkSentStep' => true,
-        'Idv::Steps::UploadStep' => true,
-      )
   end
 end
