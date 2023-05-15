@@ -35,6 +35,11 @@ es:
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
         start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
+        gpo:
+          start_over: Si borras tu información y empiezas de nuevo
+          warnings:
+            - El código único de tu mensaje ya no funcionará
+            - Tendrás que volver a verificar tu identidad otra vez
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono

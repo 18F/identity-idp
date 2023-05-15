@@ -34,6 +34,11 @@ en:
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
         start_over: If you start over, you will restart this process from the beginning.
+        gpo:
+          start_over: 'If you clear your information and start over:'
+          warnings:
+            - The one-time code in your letter will no longer work
+            - You will start over verifying your identity from the beginning
       headings:
         confirmation:
           hybrid: You have cancelled uploading photos of your ID on this phone

@@ -35,6 +35,11 @@ fr:
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
+        gpo:
+          start_over: Si vous supprimez vos informations et recommencez
+          warnings:
+            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Vous recommencerez la vérification de votre identité depuis le début
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce

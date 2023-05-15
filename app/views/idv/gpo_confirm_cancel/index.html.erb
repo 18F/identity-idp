@@ -1,6 +1,27 @@
-<form class="button_to" method="post" action="/verify/session?location=clear_and_start_over&amp;step=gpo_verify">
-  <input type="hidden" name="_method" value="delete" autocomplete="off">
-  <button class="usa-button usa-button--unstyled" type="submit">
-    Clear my information and start over
-  </button>
-</form>
+<%= render(
+    'idv/shared/error',
+    type: :warning,
+    heading: t('idv.cancel.headings.prompt.standard'),
+    current_step: :get_a_letter
+) do %>
+  <p>
+    <%= t('idv.cancel.description.gpo.start_over') %>
+  </p>
+  <ul class="usa-list">
+    <% t('idv.cancel.description.gpo.warnings').each do | warning_text | %>
+      <li>
+        <%= warning_text %>
+      </li>
+    <% end %>
+  </ul>
+  <div class="margin-y-5">
+    <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+        button_to(idv_session_path(step: :gpo_verify), **tag_options, &block)
+        end,
+        method: :delete,
+        big: true,
+        wide: true,
+    ).with_content(t('idv.buttons.continue_plain')) %>
+  </div>
+<% end %>
