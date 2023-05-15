@@ -75,7 +75,8 @@ module Idv
           failure_reason: failure_reason,
         )
 
-        if IdentityConfig.store.doc_auth_link_sent_controller_enabled
+        if !failure_reason &&
+           IdentityConfig.store.doc_auth_link_sent_controller_enabled
           flow_session[:flow_path] = 'hybrid'
           redirect_to idv_link_sent_url
         end
@@ -162,8 +163,6 @@ module Idv
       end
 
       def build_telephony_form_response(telephony_result)
-        flow_session[:error_message] = telephony_result.error&.friendly_message
-
         FormResponse.new(
           success: telephony_result.success?,
           errors: { message: telephony_result.error&.friendly_message },
