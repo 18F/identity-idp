@@ -33,6 +33,14 @@ feature 'idv gpo step', :js do
       expect_user_to_be_unverified(user)
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
+
+      # Confirm that user cannot visit other IdV pages while unverified
+      visit idv_doc_auth_agreement_step
+      expect(page).to have_current_path(idv_gpo_verify_path)
+      visit idv_ssn_url
+      expect(page).to have_current_path(idv_gpo_verify_path)
+      visit idv_verify_info_url
+      expect(page).to have_current_path(idv_gpo_verify_path)
     end
 
     context 'too much time has passed' do
