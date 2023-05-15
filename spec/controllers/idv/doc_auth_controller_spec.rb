@@ -27,8 +27,6 @@ describe Idv::DocAuthController do
     stub_sign_in(user) if user
     stub_analytics
     allow(@analytics).to receive(:track_event)
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
   describe 'unauthenticated' do

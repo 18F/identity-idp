@@ -1,6 +1,10 @@
 require 'rails_helper'
 
-RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, response_json:|
+RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
+                                                            email_type:,
+                                                            enrollment_status:,
+                                                            response_json:|
+
   it 'logs a message with common attributes' do
     freeze_time do
       pending_enrollment.update(
@@ -43,17 +47,22 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
     end
   end
 
-  context 'email_analytics_attributes' do
-    before(:each) do
-      stub_request_passed_proofing_results
-    end
-
-    it 'logs message with email analytics attributes' do
-      freeze_time do
-        job.perform(Time.zone.now)
+  it 'logs message with email analytics attributes' do
+    freeze_time do
+      job.perform(Time.zone.now)
+      if email_type == 'deadline passed'
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: deadline passed email initiated',
+          enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          wait_until: anything,
+          service_provider: pending_enrollment.issuer,
+          timestamp: Time.zone.now,
+        )
+      else
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Success or failure email initiated',
-          email_type: anything,
+          email_type: email_type,
           enrollment_code: pending_enrollment.enrollment_code,
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
@@ -75,7 +84,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:, status:, re
       expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_completed_at).to eq(Time.zone.now)
-      expect(pending_enrollment.status).to eq(status)
+      expect(pending_enrollment.status).to eq(enrollment_status)
       expect(pending_enrollment.profile.active).to eq(passed)
     end
   end
@@ -608,7 +617,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: true,
-            status: 'passed',
+            email_type: 'Success',
+            enrollment_status: 'passed',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_results_response,
           )
@@ -643,7 +653,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'failed',
+            email_type: 'Failed',
+            enrollment_status: 'failed',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_proofing_results_response,
           )
@@ -678,7 +689,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'failed',
+            email_type: 'Failed fraud suspected',
+            enrollment_status: 'failed',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_suspected_fraud_proofing_results_response,
           )
@@ -714,7 +726,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'failed',
+            email_type: 'Failed unsupported ID type',
+            enrollment_status: 'failed',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_unsupported_id_results_response,
           )
@@ -750,7 +763,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'expired',
+            email_type: 'deadline passed',
+            enrollment_status: 'expired',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_expired_proofing_results_response,
           )
@@ -778,7 +792,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'expired',
+            email_type: 'deadline passed',
+            enrollment_status: 'expired',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_unexpected_expired_proofing_results_response,
           )
@@ -1048,7 +1063,8 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_with_a_status_update',
             passed: false,
-            status: 'failed',
+            email_type: 'Failed unsupported secondary ID',
+            enrollment_status: 'failed',
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_secondary_id_type_results_response,
           )
@@ -1063,15 +1079,6 @@ RSpec.describe GetUspsProofingResultsJob do
                 passed: false,
                 reason: 'Provided secondary proof of address',
               ),
-            )
-
-            expect(job_analytics).to have_logged_event(
-              'GetUspsProofingResultsJob: Success or failure email initiated',
-              email_type: 'Failed',
-              enrollment_code: pending_enrollment.enrollment_code,
-              service_provider: anything,
-              timestamp: anything,
-              wait_until: nil,
             )
           end
         end

@@ -664,6 +664,19 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] nontransliterable_characters
+  # Nontransliterable characters submitted by user
+  def idv_in_person_proofing_nontransliterable_characters_submitted(
+    nontransliterable_characters:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing characters submitted could not be transliterated',
+      nontransliterable_characters: nontransliterable_characters,
+      **extra,
+    )
+  end
+
   def idv_in_person_proofing_residential_address_submitted(**extra)
     track_event('IdV: in person proofing residential address submitted', **extra)
   end
@@ -2827,6 +2840,13 @@ module AnalyticsEvents
         success: success,
         **extra,
       },
+    )
+  end
+
+  # Tracks When users visit the add phone page
+  def add_phone_setup_visit
+    track_event(
+      'Phone Setup Visited',
     )
   end
 

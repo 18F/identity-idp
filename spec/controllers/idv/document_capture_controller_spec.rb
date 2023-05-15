@@ -117,8 +117,6 @@ describe Idv::DocumentCaptureController do
     end
 
     it 'does not raise an exception when stored_result is nil' do
-      allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
-        and_return(false)
       allow(subject).to receive(:stored_result).and_return(nil)
       put :update
     end

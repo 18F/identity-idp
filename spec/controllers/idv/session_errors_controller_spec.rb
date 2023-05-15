@@ -213,6 +213,14 @@ describe Idv::SessionErrorsController do
         expect(assigns(:expires_at)).to be_kind_of(Time)
       end
 
+      it 'assigns sp_name' do
+        decorated_session = double
+        allow(decorated_session).to receive(:sp_name).and_return('Example SP')
+        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        get action
+        expect(assigns(:sp_name)).to eql('Example SP')
+      end
+
       it 'logs an event with attempts remaining' do
         expect(@analytics).to receive(:track_event).with(
           'IdV: session error visited',

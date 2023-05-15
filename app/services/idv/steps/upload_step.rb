@@ -63,6 +63,7 @@ module Idv
         throttle.increment!
         return throttled_failure if throttle.throttled?
         idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
+        flow_session[:phone_for_mobile_flow] = idv_session[:phone_for_mobile_flow]
         telephony_result = send_link
         failure_reason = nil
         if !telephony_result.success?
@@ -73,6 +74,11 @@ module Idv
           phone_number: formatted_destination_phone,
           failure_reason: failure_reason,
         )
+
+        if IdentityConfig.store.doc_auth_link_sent_controller_enabled
+          flow_session[:flow_path] = 'hybrid'
+          redirect_to idv_link_sent_url
+        end
 
         build_telephony_form_response(telephony_result)
       end

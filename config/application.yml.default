@@ -86,11 +86,11 @@ doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
-doc_auth_enable_presigned_s3_urls: false
 doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
+doc_auth_link_sent_controller_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
@@ -115,6 +115,7 @@ good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
 good_job_queue_select_limit: 5_000
 gpo_designated_receiver_pii: '{}'
+gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false

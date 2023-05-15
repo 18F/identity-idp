@@ -166,18 +166,21 @@ feature 'doc auth verify_info step', :js do
 
   context 'resolution throttling' do
     let(:max_resolution_attempts) { 3 }
-    # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
-    it 'throttles resolution and continues when it expires' do
+    before(:each) do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
-
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'single-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
+    end
+
+    # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
+    it 'throttles resolution and continues when it expires' do
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'single-session' })
+
       (max_resolution_attempts - 2).times do
         click_idv_continue
         expect(page).to have_current_path(idv_session_errors_warning_path)
@@ -187,7 +190,7 @@ feature 'doc auth verify_info step', :js do
       # Check that last attempt shows correct warning text
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_warning_path)
-      expect(page).to have_content(t('idv.failure.attempts.one'))
+      expect(page).to have_content(t('idv.warning.attempts.one'))
       click_try_again
 
       click_idv_continue
@@ -208,6 +211,11 @@ feature 'doc auth verify_info step', :js do
 
         expect(page).to have_current_path(idv_phone_path)
       end
+    end
+
+    it 'allows user to cancel identify verification' do
+      click_link t('links.cancel')
+      expect(page).to have_current_path(idv_cancel_path(step: 'verify'))
     end
   end
 
