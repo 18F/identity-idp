@@ -97,7 +97,6 @@ module TwoFactorAuthenticatableMethods
     handle_valid_otp_for_context(auth_method: auth_method)
     handle_remember_device
     next_url ||= after_otp_verification_confirmation_url
-    reset_otp_session_data
     redirect_to next_url
   end
 
@@ -171,6 +170,7 @@ module TwoFactorAuthenticatableMethods
   def handle_valid_verification_for_confirmation_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa_confirmation)
+    reset_otp_session_data
     reset_second_factor_attempts_count
   end
 
@@ -179,6 +179,7 @@ module TwoFactorAuthenticatableMethods
     mark_user_session_authenticated(:valid_2fa)
     create_user_event(:sign_in_after_2fa)
 
+    reset_otp_session_data
     reset_second_factor_attempts_count
   end
 
