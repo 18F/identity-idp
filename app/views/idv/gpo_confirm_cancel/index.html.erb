@@ -1,9 +1,9 @@
 <%= render(
-    'idv/shared/error',
-    type: :warning,
-    heading: t('idv.cancel.headings.prompt.standard'),
-    current_step: :get_a_letter
-) do %>
+      'idv/shared/error',
+      type: :warning,
+      heading: t('idv.cancel.headings.prompt.standard'),
+      current_step: :get_a_letter,
+    ) do %>
   <p>
     <%= t('idv.cancel.description.gpo.start_over') %>
   </p>
@@ -16,13 +16,13 @@
   </ul>
   <div class="margin-y-5">
     <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-        button_to(idv_session_path(step: :gpo_verify), **tag_options, &block)
-        end,
-        method: :delete,
-        big: true,
-        wide: true,
-    ).with_content(t('idv.buttons.continue_plain')) %>
+          action: ->(**tag_options, &block) do
+            button_to(idv_session_path(step: :gpo_verify), **tag_options, &block)
+          end,
+          method: :delete,
+          big: true,
+          wide: true,
+        ).with_content(t('idv.buttons.continue_plain')) %>
   </div>
 <% end %>
 <%= render('idv/shared/back', path: idv_gpo_verify_path) %>

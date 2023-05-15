@@ -26,16 +26,16 @@
   <div class="grid-row margin-top-neg-2 margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :otp,
-          maxlength: 10,
-          required: true,
-          autofocus: true,
-          input_html: {
+            form: f,
+            name: :otp,
+            maxlength: 10,
+            required: true,
+            autofocus: true,
+            input_html: {
               value: @code,
-          },
-          label: t('forms.verify_profile.name'),
-      ) %>
+            },
+            label: t('forms.verify_profile.name'),
+          ) %>
       <%= f.submit t('forms.verify_profile.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
     </div>
   </div>

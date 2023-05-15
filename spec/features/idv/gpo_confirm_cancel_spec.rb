@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'idv gpo confirm cancel' do
   include IdvStepHelper
   include DocAuthHelper
-  
+
   let(:otp) { 'ABC123' }
   let(:profile) do
     create(
@@ -33,7 +33,7 @@ feature 'idv gpo confirm cancel' do
 
   it 'goes to the confirm screen when cancel is clicked' do
     click_on t('idv.messages.clear_and_start_over')
-    
+
     expect(current_path).to eq idv_gpo_confirm_cancel_path
   end
 
