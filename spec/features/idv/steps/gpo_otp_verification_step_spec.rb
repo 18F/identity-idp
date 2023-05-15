@@ -7,7 +7,7 @@ feature 'idv gpo otp verification step' do
   let(:profile) do
     create(
       :profile,
-      deactivation_reason: :gpo_verification_pending,
+      gpo_verification_pending_at: 2.days.ago,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
       fraud_review_pending_at: fraud_review_pending_timestamp,
       fraud_rejection_at: fraud_rejection_timestamp,
