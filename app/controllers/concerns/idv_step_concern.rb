@@ -46,8 +46,7 @@ module IdvStepConcern
       redirect_to idv_document_capture_url
     elsif flow_path == 'hybrid'
       redirect_to idv_link_sent_url
-    else
-      flow_session.delete('Idv::Steps::DocumentCaptureStep')
+    else # no flow_path, go to UploadStep via FSM
       redirect_to idv_doc_auth_url
     end
   end
