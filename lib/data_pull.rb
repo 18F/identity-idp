@@ -21,7 +21,7 @@ class DataPull
     :include_missing,
     :format,
     :show_help,
-    :requesting_issuers, # Array of issuers
+    :requesting_issuers,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
