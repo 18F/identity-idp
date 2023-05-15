@@ -162,6 +162,8 @@ module Idv
       end
 
       def build_telephony_form_response(telephony_result)
+        flow_session[:error_message] = telephony_result.error&.friendly_message
+
         FormResponse.new(
           success: telephony_result.success?,
           errors: { message: telephony_result.error&.friendly_message },
