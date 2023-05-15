@@ -4,6 +4,19 @@ module InPerson::EnrollmentsReadyForStatusCheck
     include UsesSqsClient
     include EnrollmentPipeline
 
+    # Process a batch of incoming messages corresponding to in-person
+    # enrollments that are ready to have their status checked.
+    #
+    # Note: Stats are accepted as param to increment and facilitate logging even
+    # if this method raises an error.
+    #
+    # @param [Array<Aws::SQS::Types::Message>] messages In-person enrollment SQS messages
+    # @param [Hash] analytics_stats Counters for aggregating info about how items were processed
+    # @option analytics_stats [Integer] :fetched_items Items received from SQS
+    # @option analytics_stats [Integer] :valid_items Items matching the expected format/data
+    # @option analytics_stats [Integer] :invalid_items Items not matching the expected format/data
+    # @option analytics_stats [Integer] :processed_items Items processed without errors
+    # @option analytics_stats [Integer] :deleted_items Items successfully deleted from queue
     def process_batch(messages, analytics_stats)
       analytics_stats[:fetched_items] += messages.size
       # Keep messages to delete in an array for a batch call

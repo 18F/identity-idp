@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
   let(:messages) { [] }
   let(:analytics_stats) do
-      {
-        fetched_items: 0,
-        processed_items: 0,
-        deleted_items: 0,
-        valid_items: 0,
-        invalid_items: 0,
-      }
+    {
+      fetched_items: 0,
+      processed_items: 0,
+      deleted_items: 0,
+      valid_items: 0,
+      invalid_items: 0,
+    }
   end
 
   subject(:batch_processor) { Class.new.include(described_class).new }
@@ -78,9 +78,11 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
         expect(batch_processor).to receive(:delete_message_batch).
           with(messages).and_return(delete_result).once
         expect(delete_result).to receive(:failed).and_return([])
-        expect(delete_result).to receive(:successful).and_return([
-          successful_delete
-        ])
+        expect(delete_result).to receive(:successful).and_return(
+          [
+            successful_delete,
+          ],
+        )
         expect(batch_processor).not_to receive(:report_error)
         expected_analytics_stats = {
           **analytics_stats,
@@ -99,9 +101,11 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
         expect(batch_processor).to receive(:delete_message_batch).
           with(messages).and_return(delete_result).once
         error_entry = failed_delete
-        expect(delete_result).to receive(:failed).and_return([
-          error_entry,
-        ])
+        expect(delete_result).to receive(:failed).and_return(
+          [
+            error_entry,
+          ],
+        )
         error_entry_hash = {
           id: 123,
         }
@@ -167,10 +171,12 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
 
         error_entry = failed_delete
         error_entry2 = failed_delete
-        expect(delete_result).to receive(:failed).and_return([
-          error_entry,
-          error_entry2,
-        ])
+        expect(delete_result).to receive(:failed).and_return(
+          [
+            error_entry,
+            error_entry2,
+          ],
+        )
         error_entry_hash = {
           id: 123,
         }
@@ -179,11 +185,13 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
         }
         expect(error_entry).to receive(:to_h).and_return(error_entry_hash)
         expect(error_entry2).to receive(:to_h).and_return(error_entry_hash2)
-        expect(delete_result).to receive(:successful).and_return([
-          successful_delete,
-          successful_delete,
-          successful_delete,
-        ])
+        expect(delete_result).to receive(:successful).and_return(
+          [
+            successful_delete,
+            successful_delete,
+            successful_delete,
+          ],
+        )
         expect(batch_processor).to receive(:report_error).with(
           'Failed to delete item from queue',
           sqs_delete_error: error_entry_hash,
