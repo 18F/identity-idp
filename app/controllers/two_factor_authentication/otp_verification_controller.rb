@@ -24,7 +24,9 @@ module TwoFactorAuthentication
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
         else
-          handle_valid_otp_for_authentication_context(auth_method: params[:otp_delivery_preference])
+          handle_valid_verification_for_authentication_context(
+            auth_method: params[:otp_delivery_preference],
+          )
         end
 
         handle_remember_device
