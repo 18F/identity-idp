@@ -96,8 +96,6 @@ module Idv
       end
 
       def bypass_send_link_steps
-        mark_step_complete(:link_sent)
-
         flow_session[:flow_path] = @flow.flow_path
         redirect_to idv_document_capture_url
 
