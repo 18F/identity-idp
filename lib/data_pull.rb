@@ -11,6 +11,7 @@ class DataPull
 
   Result = Struct.new(
     :table, # tabular output, rendered as an ASCII table or as CSV
+    :json, # output that should only be formatted as JSON
     :subtask, # name of subtask, used for audit logging
     :uuids, # Array of UUIDs entered or returned, used for audit logging
     keyword_init: true,
@@ -20,6 +21,7 @@ class DataPull
     :include_missing,
     :format,
     :show_help,
+    :requesting_issuers, # Array of issuers
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
@@ -31,6 +33,7 @@ class DataPull
       include_missing: true,
       format: :table,
       show_help: false,
+      requesting_issuers: [],
     )
   end
 
@@ -46,12 +49,20 @@ class DataPull
       return
     end
 
-    result = subtask_class.new.run(args: argv, include_missing: config.include_missing?)
+    result = subtask_class.new.run(
+      args: argv,
+      include_missing: config.include_missing?,
+      requesting_issuers: config.requesting_issuers,
+    )
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
 
-    render_output(result.table)
+    if result.json
+      stdout.puts result.json.to_json
+    else
+      render_output(result.table)
+    end
   end
 
   # @param [Array<Array<String>>] rows
@@ -91,31 +102,40 @@ class DataPull
 
   # @api private
   # A subtask is a class that has a run method, the type signature should look like:
-  # +#run(args: Array<String>, include_missing: Boolean) -> Result+
+  # +#run(args: Array<String>, include_missing: Boolean, **extra) -> Result+
   # @return [Class,nil]
   def subtask(name)
     {
       'uuid-lookup' => UuidLookup,
       'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
+      'ig-request' => InspectorGeneralRequest,
     }[name]
   end
 
   def option_parser
+    basename = File.basename($PROGRAM_NAME)
+
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = <<~EOS
-        #{$PROGRAM_NAME} [subcommand] [arguments] [options]
+        #{basename} [subcommand] [arguments] [options]
 
         Example usage:
 
-          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com
+          * #{basename} uuid-lookup email1@example.com email2@example.com
 
-          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2
+          * #{basename} uuid-convert partner-uuid1 partner-uuid2
 
-          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2
+          * #{basename} email-lookup uuid1 uuid2
+
+          * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
 
         Options:
       EOS
+
+      opts.on('-r=ISSUER', '--requesting-issuer=ISSUER', 'requesting issuer (used for ig-request task)') do |issuer|
+        config.requesting_issuers << issuer
+      end
 
       opts.on('--help') do
         config.show_help = true
@@ -142,7 +162,7 @@ class DataPull
   end
 
   class UuidLookup
-    def run(args:, include_missing:)
+    def run(args:, include_missing:, **extra)
       emails = args
 
       table = []
@@ -169,7 +189,7 @@ class DataPull
   end
 
   class UuidConvert
-    def run(args:, include_missing:)
+    def run(args:, include_missing:, **extra)
       partner_uuids = args
 
       table = []
@@ -195,7 +215,7 @@ class DataPull
   end
 
   class EmailLookup
-    def run(args:, include_missing:)
+    def run(args:, include_missing:, **extra)
       uuids = args
 
       users = User.includes(:email_addresses).where(uuid: uuids).order(:uuid)
@@ -219,6 +239,27 @@ class DataPull
         subtask: 'email-lookup',
         uuids: users.map(&:uuid),
         table:,
+      )
+    end
+  end
+
+  class InspectorGeneralRequest
+    def run(args:, requesting_issuers:, **extra)
+      require 'data_requests/deployed'
+      ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
+      uuids = args
+
+      users = uuids.map { |uuid| DataRequests::Deployed::LookupUserByUuid.new(uuid).call }.compact
+      shared_device_users = DataRequests::Deployed::LookupSharedDeviceUsers.new(users).call
+
+      output = shared_device_users.map do |user|
+        DataRequests::Deployed::CreateUserReport.new(user, requesting_issuers).call
+      end
+
+      Result.new(
+        subtask: 'ig-request',
+        uuids: users.map(&:uuid),
+        json: output,
       )
     end
   end
