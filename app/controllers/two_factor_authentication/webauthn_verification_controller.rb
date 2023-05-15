@@ -43,7 +43,6 @@ module TwoFactorAuthentication
       handle_valid_verification_for_authentication_context(auth_method: 'webauthn')
       handle_remember_device
       redirect_to after_otp_verification_confirmation_url
-      reset_otp_session_data
     end
 
     def handle_invalid_webauthn
