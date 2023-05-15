@@ -1,5 +1,6 @@
 module Idv
   class LinkSentController < ApplicationController
+    include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
@@ -72,21 +73,6 @@ module Idv
       extract_pii_from_doc(get_results_response, store_in_session: true)
       mark_upload_step_complete
       flow_session[:flow_path] = 'hybrid'
-    end
-
-    def save_proofing_components
-      return unless current_user
-
-      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: flow_session[:document_capture_session_uuid],
-        analytics: analytics,
-      )
-
-      component_attributes = {
-        document_check: doc_auth_vendor,
-        document_type: 'state_id',
-      }
-      ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
     end
 
     # @param [DocAuth::Response,
