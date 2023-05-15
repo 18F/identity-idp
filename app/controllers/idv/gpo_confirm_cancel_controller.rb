@@ -8,9 +8,8 @@ module Idv
     before_action :confirm_idv_needed
 
     def index
-      # TODO: New analytics event?
-      # analytics.idv_cancellation_visited(step: params[:step], **properties)
       @go_back_path = idv_session.go_back_path || idv_path
+      analytics.idv_gpo_confirm_cancel_visited
     end
   end
 end

@@ -22,8 +22,10 @@ feature 'idv gpo confirm cancel' do
     )
   end
   let(:user) { profile.user }
+  let(:fake_analytics) { FakeAnalytics.new(user: user) }
 
   before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_live_with_2fa(user)
   end
 
@@ -42,5 +44,18 @@ feature 'idv gpo confirm cancel' do
     click_idv_continue
 
     expect(current_path).to eq idv_doc_auth_welcome_step
+  end
+
+  it 'logs the correct analytics event' do
+    click_on t('idv.messages.clear_and_start_over')
+
+    expect(fake_analytics).to have_logged_event('IdV: gpo confirm cancel visited')
+  end
+
+  it 'returns to the gpo verify screen if the back button is clicked' do
+    click_on t('idv.messages.clear_and_start_over')
+    click_on t('forms.buttons.back')
+
+    expect(current_path).to eq idv_gpo_verify_path
   end
 end
