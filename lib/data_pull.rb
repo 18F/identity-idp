@@ -49,11 +49,7 @@ class DataPull
       return
     end
 
-    result = subtask_class.new.run(
-      args: argv,
-      include_missing: config.include_missing?,
-      requesting_issuers: config.requesting_issuers,
-    )
+    result = subtask_class.new.run(args: argv, config:)
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
@@ -102,7 +98,7 @@ class DataPull
 
   # @api private
   # A subtask is a class that has a run method, the type signature should look like:
-  # +#run(args: Array<String>, include_missing: Boolean, **extra) -> Result+
+  # +#run(args: Array<String>, config: Config) -> Result+
   # @return [Class,nil]
   def subtask(name)
     {
@@ -113,6 +109,7 @@ class DataPull
     }[name]
   end
 
+  # rubocop:disable Metrics/BlockLength
   def option_parser
     basename = File.basename($PROGRAM_NAME)
 
@@ -133,7 +130,9 @@ class DataPull
         Options:
       EOS
 
-      opts.on('-r=ISSUER', '--requesting-issuer=ISSUER', 'requesting issuer (used for ig-request task)') do |issuer|
+      opts.on('-r=ISSUER', '--requesting-issuer=ISSUER', <<-MSG) do |issuer|
+        requesting issuer (used for ig-request task)
+      MSG
         config.requesting_issuers << issuer
       end
 
@@ -160,9 +159,10 @@ class DataPull
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   class UuidLookup
-    def run(args:, include_missing:, **extra)
+    def run(args:, config:)
       emails = args
 
       table = []
@@ -175,7 +175,7 @@ class DataPull
         if user
           table << [email, user.uuid]
           uuids << user.uuid
-        elsif include_missing
+        elsif config.include_missing?
           table << [email, '[NOT FOUND]']
         end
       end
@@ -189,7 +189,7 @@ class DataPull
   end
 
   class UuidConvert
-    def run(args:, include_missing:, **extra)
+    def run(args:, config:)
       partner_uuids = args
 
       table = []
@@ -200,7 +200,7 @@ class DataPull
         table << [identity.uuid, identity.agency.name, identity.user.uuid]
       end
 
-      if include_missing
+      if config.include_missing?
         (partner_uuids - identities.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, '[NOT FOUND]', '[NOT FOUND]']
         end
@@ -215,7 +215,7 @@ class DataPull
   end
 
   class EmailLookup
-    def run(args:, include_missing:, **extra)
+    def run(args:, config:)
       uuids = args
 
       users = User.includes(:email_addresses).where(uuid: uuids).order(:uuid)
@@ -229,7 +229,7 @@ class DataPull
         end
       end
 
-      if include_missing
+      if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, '[NOT FOUND]', nil]
         end
@@ -244,7 +244,7 @@ class DataPull
   end
 
   class InspectorGeneralRequest
-    def run(args:, requesting_issuers:, **extra)
+    def run(args:, config:)
       require 'data_requests/deployed'
       ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
       uuids = args
@@ -253,7 +253,7 @@ class DataPull
       shared_device_users = DataRequests::Deployed::LookupSharedDeviceUsers.new(users).call
 
       output = shared_device_users.map do |user|
-        DataRequests::Deployed::CreateUserReport.new(user, requesting_issuers).call
+        DataRequests::Deployed::CreateUserReport.new(user, config.requesting_issuers).call
       end
 
       Result.new(
