@@ -1,0 +1,6 @@
+@use '../variables/app' as *;
+
+.styled-as-h4 {
+  font-size: $h4;
+  display: inline;
+}
