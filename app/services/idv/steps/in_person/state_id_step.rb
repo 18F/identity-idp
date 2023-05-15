@@ -37,7 +37,7 @@ module Idv
            end
           end
 
-          maybe_redirect_to_verify_info(step_is_not_complete?(:address))
+          maybe_redirect_to_verify_info(flow_session[steps[:address].to_s].blank?)
         end
 
         def extra_view_variables
