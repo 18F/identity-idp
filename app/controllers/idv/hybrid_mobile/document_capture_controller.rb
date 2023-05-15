@@ -1,6 +1,7 @@
 module Idv
   module HybridMobile
     class DocumentCaptureController < ApplicationController
+      include DocumentCaptureConcern
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
@@ -104,24 +105,6 @@ module Idv
           acuant_sdk_upgrade_ab_test_bucket:
             AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
         }
-      end
-
-      def save_proofing_components
-        return unless document_capture_user
-
-        doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-          discriminator: document_capture_session_uuid,
-          analytics: analytics,
-        )
-
-        component_attributes = {
-          document_check: doc_auth_vendor,
-          document_type: 'state_id',
-        }
-
-        ProofingComponent.
-          create_or_find_by(user: document_capture_user).
-          update(component_attributes)
       end
 
       def stored_result

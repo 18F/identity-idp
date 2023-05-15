@@ -1,6 +1,7 @@
 module Idv
   class DocumentCaptureController < ApplicationController
     include AcuantConcern
+    include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
@@ -85,7 +86,7 @@ module Idv
 
     def handle_stored_result
       if stored_result&.success?
-        save_proofing_components
+        save_proofing_components # not tested in current controller spec
         extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -98,21 +99,6 @@ module Idv
     def stored_result
       return @stored_result if defined?(@stored_result)
       @stored_result = document_capture_session&.load_result
-    end
-
-    def save_proofing_components
-      return unless current_user
-
-      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: document_capture_session_uuid,
-        analytics: analytics,
-      )
-
-      component_attributes = {
-        document_check: doc_auth_vendor,
-        document_type: 'state_id',
-      }
-      ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
     end
 
     def hybrid_flow_mobile?
@@ -128,6 +114,7 @@ module Idv
     #   DocumentCaptureSessionAsyncResult,
     #   DocumentCaptureSessionResult] response
     def extract_pii_from_doc(response, store_in_session: false)
+      # controller test is not hitting this ... perhaps in feature test
       pii_from_doc = response.pii_from_doc.merge(
         uuid: effective_user.uuid,
         phone: effective_user.phone_configurations.take&.phone,
