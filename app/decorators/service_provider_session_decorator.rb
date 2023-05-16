@@ -43,7 +43,7 @@ class ServiceProviderSessionDecorator
     logo = sp_logo
     ActionController::Base.helpers.image_path("sp-logos/#{logo}")
   rescue Propshaft::MissingAssetError
-    nil
+    ''
   end
 
   def new_session_heading
