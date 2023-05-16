@@ -7,8 +7,8 @@ FROM ubuntu:20.04
 
 # Set environment variables
 ENV RAILS_ROOT /app
-ENV RAILS_ENV development
-ENV NODE_ENV development
+ENV RAILS_ENV production
+ENV NODE_ENV production
 ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
@@ -58,9 +58,9 @@ WORKDIR $RAILS_ROOT
 COPY --chown=app:app . .
 
 # Copy application.yml.default to application.yml
-# COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/application.yml
+COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 
-# # Setup config files
+# Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
 COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
 COPY --chown=app:app config/iaa_orders.localdev.yml $RAILS_ROOT/config/iaa_orders.yaml
@@ -107,7 +107,7 @@ USER app
 RUN bundle config build.nokogiri --use-system-libraries
 RUN bundle config set --local deployment 'true'
 RUN bundle config set --local path $BUNDLE_PATH
-# RUN bundle config set --local without 'deploy development doc test'
+RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
 RUN bundle binstubs --all
