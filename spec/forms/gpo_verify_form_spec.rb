@@ -154,7 +154,8 @@ describe GpoVerifyForm do
             :profile,
             user: user,
             deactivation_reason: :gpo_verification_pending,
-            fraud_review_pending_at: 1.day.ago,
+            fraud_state: 'fraud_reviewing',
+            fraud_reviewing_at: 1.day.ago,
           )
         end
 
