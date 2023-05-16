@@ -9,6 +9,7 @@ feature 'idv gpo otp verification step' do
       :profile,
       deactivation_reason: :gpo_verification_pending,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
+      fraud_state: fraud_review_pending_timestamp.present? ? 'fraud_reviewing' : 'fraud_rejected',
       fraud_reviewing_at: fraud_review_pending_timestamp,
       fraud_rejected_at: fraud_rejection_timestamp,
     )
