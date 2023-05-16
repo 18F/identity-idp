@@ -29,33 +29,24 @@ feature 'idv gpo confirm cancel', js: true do
     sign_in_live_with_2fa(user)
   end
 
-  it 'begins on the gpo code entry page' do
+  it 'can cancel from confirmation screen' do
     expect(current_path).to eq idv_gpo_verify_path
-  end
 
-  it 'goes to the confirm screen when cancel is clicked' do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(current_path).to eq idv_gpo_confirm_cancel_path
-  end
+    expect(fake_analytics).to have_logged_event('IdV: gpo confirm cancel visited')
 
-  it 'clears user data and returns to welcome screen after confirming' do
-    click_on t('idv.messages.clear_and_start_over')
     click_idv_continue
 
     expect(current_path).to eq idv_doc_auth_welcome_step
   end
 
-  it 'logs the correct analytics event' do
-    click_on t('idv.messages.clear_and_start_over')
-
-    expect(fake_analytics).to have_logged_event('IdV: gpo confirm cancel visited')
-  end
-
-  it 'returns to the gpo verify screen if the back button is clicked' do
+  it 'can return back to verify screen from confirm screen' do
     click_on t('idv.messages.clear_and_start_over')
     click_on t('forms.buttons.back')
 
+    expect(fake_analytics).to have_logged_event('IdV: gpo confirm cancel visited')
     expect(current_path).to eq idv_gpo_verify_path
   end
 end
