@@ -1,5 +1,14 @@
 <% title t('titles.doc_auth.upload') %>
 
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+      current_step: :verify_id,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+  ) %>
+<% end %>
+
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <%= render PageHeadingComponent.new do %>
