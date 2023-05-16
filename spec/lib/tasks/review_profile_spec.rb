@@ -28,9 +28,7 @@ describe 'review_profile' do
     let(:task_name) { 'users:review:pass' }
 
     it 'activates the users profile' do
-      binding.pry
       invoke_task
-      binding.pry
       expect(user.reload.profiles.first.active).to eq(true)
     end
 
