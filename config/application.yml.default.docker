@@ -13,6 +13,7 @@ development:
   redis_throttle_url: redis://redis:6379/1
   redis_url: redis://redis:6379
 production:
+  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   asset_host: http://localhost:3000
   database_host: 'postgres'
   database_name: 'idp'
@@ -22,6 +23,11 @@ production:
   database_worker_jobs_username: 'postgres'
   database_worker_jobs_host: 'postgres-worker'
   database_worker_jobs_password: 'postgres'
+  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   redis_irs_attempt_api_url: redis://redis:6379/2
   redis_throttle_url: redis://redis:6379/1
   redis_url: redis://redis:6379
+  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  secret_key_base: development_secret_key_base

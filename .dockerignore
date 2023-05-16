@@ -7,3 +7,6 @@ db/*.sqlite3
 .git*
 vendor/bundle
 postgres-data
+/public/assets
+/public/packs
+coverage/
