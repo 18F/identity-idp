@@ -86,11 +86,6 @@ module Idv
       end
     end
 
-    def stored_result
-      return @stored_result if defined?(@stored_result)
-      @stored_result = document_capture_session&.load_result
-    end
-
     def hybrid_flow_mobile?
       user_id_from_token.present?
     end
