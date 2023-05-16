@@ -78,7 +78,7 @@ describe Idv::LinkSentController do
       )
     end
 
-    context 'upload step is not complete' do
+    context '#confirm_upload_step_complete' do
       context 'no flow_path' do
         it 'redirects to idv_doc_auth_url' do
           flow_session[:flow_path] = nil
