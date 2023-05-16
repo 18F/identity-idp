@@ -1,4 +1,4 @@
-class FraudReviewCheck
+class FraudReviewChecker
   class NullFraudReviewUser
     def fraud_review_pending_profile; end
 

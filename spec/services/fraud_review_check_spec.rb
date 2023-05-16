@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FraudReviewCheck do
+RSpec.describe FraudReviewChecker do
   subject { described_class.new(user) }
 
   describe '#fraud_check_failed?' do
