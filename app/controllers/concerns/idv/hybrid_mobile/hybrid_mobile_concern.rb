@@ -4,7 +4,7 @@ module Idv
       extend ActiveSupport::Concern
 
       include AcuantConcern
-      # should we be using effective user here
+
       def check_valid_document_capture_session
         if !document_capture_user
           # The user has not "logged in" to document capture via the EntryController
