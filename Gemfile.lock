@@ -442,12 +442,13 @@ GEM
       google-protobuf (>= 3.19.2)
     phonelib (0.6.54)
     pkcs11 (0.3.4)
-    premailer (1.15.0)
+    premailer (1.21.0)
       addressable
-      css_parser (>= 1.6.0)
+      css_parser (>= 1.12.0)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.11.1)
+    premailer-rails (1.12.0)
       actionmailer (>= 3)
+      net-smtp
       premailer (~> 1.7, >= 1.7.9)
     profanity_filter (0.1.1)
     propshaft (0.7.0)
@@ -777,7 +778,7 @@ DEPENDENCIES
   pg
   pg_query
   phonelib
-  premailer-rails (>= 1.11.1)
+  premailer-rails (>= 1.12.0)
   profanity_filter
   propshaft
   pry-byebug
