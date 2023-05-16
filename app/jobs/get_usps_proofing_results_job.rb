@@ -27,7 +27,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.needs_usps_status_check(
+    enrollments = InPersonEnrollment.usps_status_check_on_waiting_enrollments(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
