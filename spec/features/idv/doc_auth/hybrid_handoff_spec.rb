@@ -16,7 +16,8 @@ feature 'doc auth upload step' do
 
   before do
     sign_in_and_2fa_user
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).and_return(new_controller_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
+      and_return(new_controller_enabled)
     allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
     complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -28,7 +29,7 @@ feature 'doc auth upload step' do
     before do
       allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(false)
     end
-    
+
     it 'displays with the expected content' do
       expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
       expect(page).to have_content(t('doc_auth.info.upload_from_computer'))

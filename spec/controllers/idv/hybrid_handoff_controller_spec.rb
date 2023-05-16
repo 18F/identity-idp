@@ -17,7 +17,8 @@ describe Idv::HybridHandoffController do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
+      and_return(true)
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
