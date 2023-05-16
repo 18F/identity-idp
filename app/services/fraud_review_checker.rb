@@ -1,14 +1,8 @@
 class FraudReviewChecker
-  class NullFraudReviewUser
-    def fraud_review_pending_profile; end
-
-    def fraud_rejection_profile; end
-  end
-
   attr_reader :user
 
   def initialize(user)
-    @user = user || NullFraudReviewUser.new
+    @user = user
   end
 
   def fraud_check_failed?
@@ -16,14 +10,14 @@ class FraudReviewChecker
   end
 
   def fraud_review_pending?
-    user.fraud_review_pending_profile.present?
+    user&.fraud_review_pending_profile.present?
   end
 
   def fraud_rejection?
-    user.fraud_rejection_profile.present?
+    user&.fraud_rejection_profile.present?
   end
 
   def fraud_review_eligible?
-    !!user.fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
+    !!user&.fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
   end
 end
