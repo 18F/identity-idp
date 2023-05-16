@@ -5,7 +5,6 @@ require 'action_controller/railtie'
 require 'action_view/railtie'
 require 'action_mailer/railtie'
 require 'rails/test_unit/railtie'
-require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
 require_relative '../lib/asset_sources'
@@ -56,8 +55,6 @@ module Identity
     config.load_defaults '7.0'
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
-    config.assets.unknown_asset_fallback = true
-    config.assets.resolve_assets_in_css_urls = true
     config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))
