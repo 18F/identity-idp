@@ -7,8 +7,7 @@ describe Idv::LinkSentController do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'hybrid',
-      :phone_for_mobile_flow => '201-555-1212',
-      'Idv::Steps::UploadStep' => true }
+      :phone_for_mobile_flow => '201-555-1212' }
   end
 
   let(:user) { create(:user) }
@@ -80,12 +79,24 @@ describe Idv::LinkSentController do
     end
 
     context 'upload step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
-        flow_session['Idv::Steps::UploadStep'] = nil
+      context 'no flow_path' do
+        it 'redirects to idv_doc_auth_url' do
+          flow_session[:flow_path] = nil
 
-        get :show
+          get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_doc_auth_url)
+        end
+      end
+
+      context 'flow_path is standard' do
+        it 'redirects to idv_document_capture_url' do
+          flow_session[:flow_path] = 'standard'
+
+          get :show
+
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
       end
     end
 
