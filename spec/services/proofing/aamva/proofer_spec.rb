@@ -129,5 +129,36 @@ describe Proofing::Aamva::Proofer do
         )
       end
     end
+
+    context 'when AAMVA throws an exception' do
+      let(:exception) { RuntimeError.new }
+
+      before do
+        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest).
+          to receive(:send).and_raise(exception)
+      end
+
+      it 'logs to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        result = subject.proof(state_id_data)
+
+        expect(result.success?).to eq(false)
+        expect(result.exception).to eq(exception)
+      end
+
+      context 'the exception is a timeout error' do
+        let(:exception) { Proofing::TimeoutError.new }
+
+        it 'does not log to NewRelic' do
+          expect(NewRelic::Agent).not_to receive(:notice_error)
+
+          result = subject.proof(state_id_data)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to eq(exception)
+        end
+      end
+    end
   end
 end
