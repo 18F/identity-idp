@@ -26,7 +26,7 @@ namespace :users do
         next
       end
 
-      if FraudReviewCheccker.new(user).fraud_review_eligible?
+      if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
         profile.activate_after_passing_review
 
@@ -73,7 +73,7 @@ namespace :users do
         next
       end
 
-      if FraudReviewCheccker.new(user).fraud_review_eligible?
+      if FraudReviewChecker.new(user).fraud_review_eligible?
         profile = user.fraud_review_pending_profile
 
         profile.reject_for_fraud(notify_user: true)
