@@ -158,7 +158,6 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor do
       end
 
       it 'handles combined valid, invalid, and non-deleted messages' do
-        idx = 0
         expect(batch_processor).to receive(:process_message).and_return(
           true,
           false,
