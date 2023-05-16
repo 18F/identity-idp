@@ -16,8 +16,9 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       job.perform(Time.zone.now)
 
       response = JSON.parse(response_json)
+      # Think: Does it matter if the enrollment status is updated during the ready proofing job?
       expect(job_analytics).to have_logged_event(
-        'GetUspsReadyProofingResultsJob: Enrollment status updated',
+        'GetUspsProofingResultsJob: Enrollment status updated',
         assurance_level: response['assuranceLevel'],
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
@@ -46,6 +47,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
     end
   end
 
+  # Does it make sense to include a new analytics method?
+  # It might for debugging and figuring out which job triggered a response.
   it 'logs message with email analytics attributes' do
     freeze_time do
       job.perform(Time.zone.now)
@@ -100,6 +103,9 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
 
     expect(pending_enrollment.pending?).to eq(true)
     expect(pending_enrollment.profile.active).to eq(false)
+    expect(pending_enrollment.ready_for_status_check).to eq(true)
+    # Might want to create another analytics method?
+    # Should we log whether something is marked ready for status check?
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
@@ -148,6 +154,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
     expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
     job.perform(Time.zone.now)
 
+    # Write another analytics event?
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       hash_including(
@@ -318,7 +325,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Job started',
+            'GetUspsReadyProofingResultsJob: Job started',
             enrollments_count: 5,
             reprocess_delay_minutes: 2.0,
           )
@@ -377,7 +384,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           )
 
           expect(
-            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
               first[:duration_seconds],
           ).to be >= 0.0
         end
@@ -393,7 +400,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Job completed',
+            'GetUspsReadyProofingResultsJob: Job completed',
             duration_seconds: anything,
             enrollments_checked: 0,
             enrollments_errored: 0,
@@ -405,7 +412,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           )
 
           expect(
-            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
               first[:duration_seconds],
           ).to be >= 0.0
         end
@@ -557,6 +564,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 ).at(wait_until).on_queue(:intentionally_delayed)
               end
 
+              # New analytics method?
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Success or failure email initiated',
                 email_type: 'Success',
@@ -582,6 +590,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 ).at(wait_until).on_queue(:intentionally_delayed)
               end
 
+              # Another custom analytics event?
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Success or failure email initiated',
                 email_type: 'Failed',
@@ -631,6 +640,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -638,6 +648,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 passed: true,
               ),
             )
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Success',
@@ -667,6 +678,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -674,6 +686,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 reason: 'Failed status',
               ),
             )
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Failed',
@@ -703,6 +716,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -711,6 +725,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 reason: 'Failed status',
               ),
             )
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Failed fraud suspected',
@@ -740,6 +755,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform Time.zone.now
 
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -747,7 +763,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 reason: 'Unsupported ID type',
               ),
             )
-
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Success or failure email initiated',
               email_type: 'Failed unsupported ID type',
@@ -777,6 +793,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(pending_enrollment.proofed_at).to eq(nil)
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -807,7 +824,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               receive(:in_person_enrollment_validity_in_days).and_return(30),
             )
             job.perform(Time.zone.now)
-
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
               hash_including(
@@ -815,7 +832,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 reason: 'Enrollment has expired',
               ),
             )
-
+            # Analytics?
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
               hash_including(reason: 'Unexpected number of days before enrollment expired'),
