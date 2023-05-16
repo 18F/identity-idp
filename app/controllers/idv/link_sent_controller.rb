@@ -69,7 +69,6 @@ module Idv
     end
 
     def handle_document_verification_success(get_results_response)
-      # not tested in current controller spec
       save_proofing_components
       extract_pii_from_doc(get_results_response, store_in_session: true)
       mark_upload_step_complete
