@@ -411,6 +411,7 @@ RSpec.describe 'In Person Proofing', js: true do
       click_idv_continue
       click_on t('account.index.verification.reactivate_button')
       click_on t('idv.messages.clear_and_start_over')
+      click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
