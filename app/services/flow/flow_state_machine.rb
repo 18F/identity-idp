@@ -167,7 +167,11 @@ module Flow
 
     def redirect_to_step(step)
       flow_finish and return unless next_step
-      redirect_to send(@step_url, step: step)
+      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled && step == 'upload'
+        redirect_to idv_hybrid_handoff_path
+      else
+        redirect_to send(@step_url, step: step)
+      end
     end
 
     def analytics_properties
