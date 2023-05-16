@@ -7,6 +7,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :render_404_if_hybrid_handoff_controller_disabled
+    before_action :confirm_agreement_step_complete
 
     def show
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
@@ -36,6 +37,12 @@ module Idv
 
     def render_404_if_hybrid_handoff_controller_disabled
       render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+    end
+
+    def confirm_agreement_step_complete
+      return if flow_session['Idv::Steps::AgreementStep']
+
+      redirect_to idv_doc_auth_url
     end
 
     def analytics_arguments
