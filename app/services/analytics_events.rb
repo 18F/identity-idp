@@ -681,32 +681,224 @@ module AnalyticsEvents
     track_event('IdV: in person proofing residential address submitted', **extra)
   end
 
-  def idv_in_person_proofing_address_submitted(**extra)
-    track_event('IdV: in person proofing address submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # address submitted by user
+  def idv_in_person_proofing_address_submitted(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    success:,
+    errors:,
+    same_address_as_id:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing address submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_address_visited(**extra)
-    track_event('IdV: in person proofing address visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # address page visited
+  def idv_in_person_proofing_address_visited(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing address visited',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_cancel_update_address(**extra)
-    track_event('IdV: in person proofing cancel_update_address submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] same_address_as_id
+  # User clicked cancel on update address page
+  def idv_in_person_proofing_cancel_update_address(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    success:,
+    errors:,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing cancel_update_address submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_cancel_update_state_id(**extra)
-    track_event('IdV: in person proofing cancel_update_state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # User clicked cancel on update state id page
+  def idv_in_person_proofing_cancel_update_state_id(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    success:,
+    errors:,
+    same_address_as_id:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing cancel_update_state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_redo_state_id_submitted(**extra)
-    track_event('IdV: in person proofing redo_state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # User submitted state id on redo state id page
+  def idv_in_person_proofing_redo_state_id_submitted(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    success:,
+    errors:,
+    same_address_as_id:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing redo_state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_state_id_submitted(**extra)
-    track_event('IdV: in person proofing state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] same_address_as_id
+  # User submitted state id
+  def idv_in_person_proofing_state_id_submitted(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    success:,
+    errors:,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_state_id_visited(**extra)
-    track_event('IdV: in person proofing state_id visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # State id page visited
+  def idv_in_person_proofing_state_id_visited(
+    flow_path:,
+    step:,
+    step_count:,
+    analytics_id:,
+    irs_reproofing:,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing state_id visited',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      **extra,
+    )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
