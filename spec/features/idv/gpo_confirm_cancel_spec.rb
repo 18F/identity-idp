@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv gpo confirm cancel' do
+feature 'idv gpo confirm cancel', js: true do
   include IdvStepHelper
   include DocAuthHelper
 

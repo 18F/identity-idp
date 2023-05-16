@@ -8,7 +8,6 @@ module Idv
     before_action :confirm_idv_needed
 
     def index
-      @go_back_path = idv_session.go_back_path || idv_path
       analytics.idv_gpo_confirm_cancel_visited
     end
   end
