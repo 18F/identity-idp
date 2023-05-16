@@ -56,17 +56,9 @@ services:
   postgres:
     image: postgres:14
     container_name: postgres
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
   postgres-worker:
     image: postgres:14
     container_name: postgres-worker
-    environment:
-      POSTGRES_DB: idp-worker-jobs
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   redis:
     image: redis:7
