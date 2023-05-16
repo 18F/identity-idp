@@ -76,7 +76,7 @@ module Idv
 
     def handle_stored_result
       if stored_result&.success?
-        save_proofing_components # not tested in current controller spec
+        save_proofing_components
         extract_pii_from_doc(stored_result, store_in_session: true)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
