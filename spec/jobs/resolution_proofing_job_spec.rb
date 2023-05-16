@@ -360,6 +360,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context = result[:context]
         result_context_stages = result_context[:stages]
         result_context_stages_resolution = result_context_stages[:resolution]
+        result_context_residential_address = result_context_stages[:residential_address]
         result_context_stages_state_id = result_context_stages[:state_id]
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
@@ -383,6 +384,19 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_resolution[:can_pass_with_additional_verification]).
           to eq(false)
         expect(result_context_stages_resolution[:attributes_requiring_additional_verification]).
+          to eq([])
+
+        # result[:context][:stages][:residential_address]
+        expect(result_context_residential_address[:vendor_name]).to eq('lexisnexis:instant_verify')
+        expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
+        expect(result_context_residential_address[:exception]).to eq(nil)
+        expect(result_context_residential_address[:success]).to eq(true)
+        expect(result_context_residential_address[:timed_out]).to eq(false)
+        expect(result_context_residential_address[:transaction_id]).to eq('123456')
+        expect(result_context_residential_address[:reference]).to eq('Reference1')
+        expect(result_context_residential_address[:can_pass_with_additional_verification]).
+          to eq(false)
+        expect(result_context_residential_address[:attributes_requiring_additional_verification]).
           to eq([])
 
         # result[:context][:stages][:state_id]

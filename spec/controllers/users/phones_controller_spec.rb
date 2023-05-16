@@ -16,6 +16,12 @@ describe Users::PhonesController do
       expect(response).to render_template(:add)
       expect(response.request.flash[:alert]).to be_nil
     end
+
+    it 'tracks analytics' do
+      expect(@analytics).to receive(:track_event).
+        with('Phone Setup Visited')
+      get :add
+    end
   end
 
   context 'user exceeds phone number limit' do
@@ -102,6 +108,133 @@ describe Users::PhonesController do
         post :create, params: { new_phone_form: { international_code: 'CA' } }
 
         expect(response).to render_template('users/phone_setup/spam_protection')
+      end
+    end
+
+    context 'invalid number' do
+      it 'tracks an event when the number is invalid' do
+        sign_in(user)
+
+        stub_analytics
+        result = {
+          success: false,
+          errors: {
+            phone: [
+              t('errors.messages.improbable_phone'),
+              t(
+                'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+                location: '',
+              ),
+            ],
+          },
+          error_details: {
+            phone: [
+              :improbable_phone,
+              t(
+                'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+                location: '',
+              ),
+            ],
+          },
+          otp_delivery_preference: 'sms',
+          area_code: nil,
+          carrier: 'Test Mobile Carrier',
+          country_code: nil,
+          phone_type: :mobile,
+          types: [],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with('Multi-Factor Authentication: phone setup', result)
+
+        post :create, params: {
+          new_phone_form: {
+            phone: '703-555-010',
+            international_code: 'US',
+          },
+        }
+
+        expect(response).to render_template(:add)
+      end
+    end
+
+    context 'with SMS' do
+      it 'prompts to confirm the number' do
+        sign_in(user)
+
+        stub_analytics
+
+        result = {
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with('Multi-Factor Authentication: phone setup', result)
+
+        post(
+          :create,
+          params: {
+            new_phone_form: { phone: '703-555-0100',
+                              international_code: 'US' },
+          },
+        )
+
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: false },
+          ),
+        )
+
+        expect(subject.user_session[:context]).to eq 'confirmation'
+      end
+    end
+
+    context 'without selection' do
+      it 'prompts to confirm via SMS by default' do
+        sign_in(user)
+
+        stub_analytics
+        result = {
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with('Multi-Factor Authentication: phone setup', result)
+
+        patch(
+          :create,
+          params: {
+            new_phone_form: { phone: '703-555-0100',
+                              international_code: 'US' },
+          },
+        )
+
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
+                                           otp_make_default_number: false },
+          ),
+        )
+
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
   end

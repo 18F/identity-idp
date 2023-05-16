@@ -23,7 +23,7 @@ Default behavior includes:
 Invoke the included `build-sass` executable with the source files and any relevant command flags.
 
 ```
-npx build-sass path/to/sass/*.css.scss --out-dir=build
+npx build-sass path/to/sass/*.scss --out-dir=build
 ```
 
 Flags:

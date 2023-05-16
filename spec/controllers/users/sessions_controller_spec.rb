@@ -351,7 +351,7 @@ describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
         create(
           :profile,
-          deactivation_reason: :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           user: user, pii: { ssn: '1234' }
         )
 
@@ -623,7 +623,7 @@ describe Users::SessionsController, devise: true do
       it 'redirects to the verify profile page' do
         profile = create(
           :profile,
-          deactivation_reason: :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           pii: { ssn: '6666', dob: '1920-01-01' },
         )
         user = profile.user

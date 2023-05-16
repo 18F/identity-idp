@@ -57,26 +57,5 @@ module Idv
         AddressProofingJob.perform_now(**job_arguments)
       end
     end
-
-    def proof_document(
-      document_capture_session,
-      trace_id:,
-      image_metadata:,
-      analytics_data:,
-      flow_path: 'standard'
-    )
-      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
-        @applicant.to_json,
-      )
-
-      DocumentProofingJob.perform_later(
-        encrypted_arguments: encrypted_arguments,
-        result_id: document_capture_session.result_id,
-        trace_id: trace_id,
-        image_metadata: image_metadata,
-        analytics_data: analytics_data,
-        flow_path: flow_path,
-      )
-    end
   end
 end

@@ -7,14 +7,9 @@ feature 'doc auth document capture step', :js do
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
-  let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
-      and_return(doc_auth_enable_presigned_s3_urls)
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
 

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::CancelVerificationAttempt do
   let(:user) { create(:user, profiles: profiles) }
-  let(:profiles) { [create(:profile, deactivation_reason: :gpo_verification_pending)] }
+  let(:profiles) { [create(:profile, gpo_verification_pending_at: 1.day.ago)] }
 
   subject { described_class.new(user: user) }
 
@@ -18,7 +18,7 @@ describe Idv::CancelVerificationAttempt do
 
   context 'the user has multiple pending profiles' do
     let(:profiles) do
-      super().push(create(:profile, deactivation_reason: :gpo_verification_pending))
+      super().push(create(:profile, gpo_verification_pending_at: 2.days.ago))
     end
 
     it 'deactivates both profiles' do
@@ -50,14 +50,14 @@ describe Idv::CancelVerificationAttempt do
 
   context 'when there are pending profiles for other users' do
     it 'only updates profiles for the specificed user' do
-      other_profile = create(:profile, deactivation_reason: :gpo_verification_pending)
+      other_profile = create(:profile, gpo_verification_pending_at: 1.day.ago)
 
       subject.call
 
       expect(profiles[0].active).to eq(false)
       expect(profiles[0].reload.deactivation_reason).to eq('verification_cancelled')
       expect(other_profile.active).to eq(false)
-      expect(other_profile.reload.deactivation_reason).to eq('gpo_verification_pending')
+      expect(other_profile.reload.gpo_verification_pending?).to eq(true)
     end
   end
 end
