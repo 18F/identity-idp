@@ -1,7 +1,10 @@
 module FraudReviewConcern
   extend ActiveSupport::Concern
 
-  delegate :fraud_check_failed?, :fraud_review_pending?, :fraud_rejection?, to: :fraud_review_checker
+  delegate :fraud_check_failed?,
+           :fraud_review_pending?,
+           :fraud_rejection?,
+           to: :fraud_review_checker
 
   def handle_fraud
     handle_pending_fraud_review
