@@ -77,21 +77,13 @@ module Idv
     def handle_stored_result
       if stored_result&.success?
         save_proofing_components # not tested in current controller spec
-        extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
+        extract_pii_from_doc(stored_result, store_in_session: true)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else
         extra = { stored_result_present: stored_result.present? }
         failure(I18n.t('doc_auth.errors.general.network_error'), extra)
       end
-    end
-
-    def hybrid_flow_mobile?
-      user_id_from_token.present?
-    end
-
-    def user_id_from_token
-      flow_session[:doc_capture_user_id]
     end
   end
 end
