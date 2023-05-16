@@ -33,7 +33,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::UsesSqsClient do
           :in_person_enrollments_ready_job_max_number_of_messages,
         ).and_return(max_number_of_messages)
         allow(IdentityConfig.store).to receive(
-          :in_person_enrollments_ready_job_visibility_timeout,
+          :in_person_enrollments_ready_job_visibility_timeout_seconds,
         ).and_return(visibility_timeout)
         allow(IdentityConfig.store).to receive(
           :in_person_enrollments_ready_job_wait_time_seconds,

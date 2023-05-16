@@ -9,10 +9,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
   describe '#perform' do
     before(:each) do
       allow(job).to receive(:analytics).and_return(analytics)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
-        .and_return(in_person_proofing_enabled)
-      allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled)
-        .and_return(in_person_enrollments_ready_job_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+        and_return(in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).
+        and_return(in_person_enrollments_ready_job_enabled)
     end
 
     def process_batch_result
@@ -33,10 +33,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       let(:in_person_proofing_enabled) { false }
       it 'returns true without doing anything' do
         expect(analytics).not_to receive(
-          :idv_in_person_proofing_enrollments_ready_for_status_check_job_started
+          :idv_in_person_proofing_enrollments_ready_for_status_check_job_started,
         )
         expect(analytics).not_to receive(
-          :idv_in_person_proofing_enrollments_ready_for_status_check_job_completed
+          :idv_in_person_proofing_enrollments_ready_for_status_check_job_completed,
         )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
@@ -48,10 +48,10 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       let(:in_person_enrollments_ready_job_enabled) { false }
       it 'returns true without doing anything' do
         expect(analytics).not_to receive(
-          :idv_in_person_proofing_enrollments_ready_for_status_check_job_started
+          :idv_in_person_proofing_enrollments_ready_for_status_check_job_started,
         )
         expect(analytics).not_to receive(
-          :idv_in_person_proofing_enrollments_ready_for_status_check_job_completed
+          :idv_in_person_proofing_enrollments_ready_for_status_check_job_completed,
         )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
@@ -90,14 +90,14 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
           :idv_in_person_proofing_enrollments_ready_for_status_check_job_started,
         )
         expect(job).to receive(:process_batch).with(
-         batch, 
-         {
-          fetched_items: 0,
-          processed_items: 0,
-          deleted_items: 0,
-          valid_items: 0,
-          invalid_items: 0,
-         },
+          batch,
+          {
+            fetched_items: 0,
+            processed_items: 0,
+            deleted_items: 0,
+            valid_items: 0,
+            invalid_items: 0,
+          },
         ) do |_batch, analytics_stats|
           analytics_stats.merge!(process_batch_result)
         end.once
@@ -123,8 +123,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
         )
         error = RuntimeError.new('test error')
         expect(job).to receive(:process_batch).with(
-         batch, 
-         an_instance_of(Hash),
+          batch,
+          an_instance_of(Hash),
         ) do |_batch, analytics_stats|
           analytics_stats.merge!(process_batch_result)
           raise error
@@ -232,7 +232,6 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
         )
         expect { job.perform(Time.zone.now) }.to raise_error(error)
       end
-
     end
   end
 end

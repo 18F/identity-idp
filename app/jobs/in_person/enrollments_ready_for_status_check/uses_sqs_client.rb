@@ -38,8 +38,10 @@ module InPerson::EnrollmentsReadyForStatusCheck
         queue_url:,
         max_number_of_messages:
           IdentityConfig.store.in_person_enrollments_ready_job_max_number_of_messages,
-        visibility_timeout: IdentityConfig.store.in_person_enrollments_ready_job_visibility_timeout,
-        wait_time_seconds: IdentityConfig.store.in_person_enrollments_ready_job_wait_time_seconds,
+        visibility_timeout:
+          IdentityConfig.store.in_person_enrollments_ready_job_visibility_timeout_seconds,
+        wait_time_seconds:
+          IdentityConfig.store.in_person_enrollments_ready_job_wait_time_seconds,
       }
     end
   end
