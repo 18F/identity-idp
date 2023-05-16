@@ -76,10 +76,6 @@ module Idv
             AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
         }
       end
-
-      def stored_result
-        @stored_result ||= document_capture_session.load_result
-      end
     end
   end
 end

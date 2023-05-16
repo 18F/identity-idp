@@ -69,5 +69,10 @@ module Idv
         in_person_cta_variant_active: bucket,
       }
     end
+
+    def stored_result
+      return @stored_result if defined?(@stored_result)
+      @stored_result = document_capture_session&.load_result
+    end
   end
 end
