@@ -74,16 +74,6 @@ module Idv
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def in_person_cta_variant_testing_variables
-      bucket = AbTests::IN_PERSON_CTA.bucket(flow_session[:document_capture_session_uuid])
-      session[:in_person_cta_variant] = bucket
-      {
-        in_person_cta_variant_testing_enabled:
-        IdentityConfig.store.in_person_cta_variant_testing_enabled,
-        in_person_cta_variant_active: bucket,
-      }
-    end
-
     def handle_stored_result
       if stored_result&.success?
         save_proofing_components # not tested in current controller spec
@@ -107,47 +97,6 @@ module Idv
 
     def user_id_from_token
       flow_session[:doc_capture_user_id]
-    end
-
-    # copied from doc_auth_base_step.rb
-    # @param [DocAuth::Response,
-    #   DocumentCaptureSessionAsyncResult,
-    #   DocumentCaptureSessionResult] response
-    def extract_pii_from_doc(response, store_in_session: false)
-      # controller test is not hitting this ... perhaps in feature test
-      pii_from_doc = response.pii_from_doc.merge(
-        uuid: effective_user.uuid,
-        phone: effective_user.phone_configurations.take&.phone,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-      )
-
-      flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-      if store_in_session
-        flow_session[:pii_from_doc] ||= {}
-        flow_session[:pii_from_doc].merge!(pii_from_doc)
-        idv_session.clear_applicant!
-      end
-      track_document_state(pii_from_doc[:state])
-    end
-
-    def track_document_state(state)
-      return unless IdentityConfig.store.state_tracking_enabled && state
-      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
-      return unless doc_auth_log
-      doc_auth_log.state = state
-      doc_auth_log.save!
-    end
-
-    def successful_response
-      FormResponse.new(success: true)
-    end
-
-    # copied from Flow::Failure module
-    def failure(message, extra = nil)
-      flow_session[:error_message] = message
-      form_response_params = { success: false, errors: { message: message } }
-      form_response_params[:extra] = extra unless extra.nil?
-      FormResponse.new(**form_response_params)
     end
   end
 end

@@ -59,26 +59,6 @@ module Idv
         }.merge(**acuant_sdk_ab_test_analytics_args)
       end
 
-      # @param [DocAuth::Response,
-      #   DocumentCaptureSessionAsyncResult,
-      #   DocumentCaptureSessionResult] response
-      def extract_pii_from_doc(response)
-        pii_from_doc = response.pii_from_doc.merge(
-          uuid: effective_user.uuid,
-          phone: effective_user.phone_configurations.take&.phone,
-          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        )
-
-        track_document_state(pii_from_doc[:state])
-      end
-
-      # copied from Flow::Failure module
-      def failure(message, extra = nil)
-        form_response_params = { success: false, errors: { message: message } }
-        form_response_params[:extra] = extra unless extra.nil?
-        FormResponse.new(**form_response_params)
-      end
-
       def handle_stored_result
         if stored_result&.success?
           save_proofing_components
@@ -90,16 +70,6 @@ module Idv
         end
       end
 
-      def in_person_cta_variant_testing_variables
-        bucket = AbTests::IN_PERSON_CTA.bucket(document_capture_session_uuid)
-        session[:in_person_cta_variant] = bucket
-        {
-          in_person_cta_variant_testing_enabled:
-          IdentityConfig.store.in_person_cta_variant_testing_enabled,
-          in_person_cta_variant_active: bucket,
-        }
-      end
-
       def native_camera_ab_testing_variables
         {
           acuant_sdk_upgrade_ab_test_bucket:
@@ -109,18 +79,6 @@ module Idv
 
       def stored_result
         @stored_result ||= document_capture_session.load_result
-      end
-
-      def successful_response
-        FormResponse.new(success: true)
-      end
-
-      def track_document_state(state)
-        return unless IdentityConfig.store.state_tracking_enabled && state
-        doc_auth_log = DocAuthLog.find_by(user_id: document_capture_user.id)
-        return unless doc_auth_log
-        doc_auth_log.state = state
-        doc_auth_log.save!
       end
     end
   end
