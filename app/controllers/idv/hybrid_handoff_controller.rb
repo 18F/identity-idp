@@ -9,7 +9,6 @@ module Idv
     before_action :render_404_if_hybrid_handoff_controller_disabled
 
     def show
-      binding.pry
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -17,15 +16,25 @@ module Idv
         true
       )
 
-      render :show
+      render :show, locals: extra_view_variables
     end
 
-    def form_submit
-      FormResponse.new(success: true)
+    def extra_view_variables
+      {
+        flow_session: flow_session,
+        idv_phone_form: build_form
+      }
+    end
+
+    def build_form
+      Idv::PhoneForm.new(
+        previous_params: {},
+        user: current_user,
+        delivery_methods: [:sms],
+      )
     end
 
     def render_404_if_hybrid_handoff_controller_disabled
-      binding.pry
       render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
     end
 
