@@ -4,7 +4,13 @@ Rails.application.configure do
   config.eager_load = true
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
-  config.force_ssl = true
+
+  if IdentityConfig.store.force_ssl
+    config.force_ssl = true
+    routes.default_url_options[:protocol] = :https
+  else
+    config.force_ssl = false
+  end
 
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
@@ -27,8 +33,6 @@ Rails.application.configure do
     config.action_mailer.show_previews = true
     config.action_mailer.preview_path = Rails.root.join('spec/mailers/previews')
   end
-
-  routes.default_url_options[:protocol] = :https
 
   # turn off IP spoofing protection since the network configuration in the production environment
   # creates false positive results.
