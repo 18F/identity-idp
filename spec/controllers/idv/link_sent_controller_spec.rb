@@ -136,6 +136,10 @@ describe Idv::LinkSentController do
       put :update
 
       expect(response).to redirect_to(idv_ssn_url)
+
+      pc = ProofingComponent.find_by(user_id: user.id)
+      expect(pc.document_check).to eq('mock')
+      expect(pc.document_type).to eq('state_id')
     end
 
     context 'document capture session has been canceled' do
