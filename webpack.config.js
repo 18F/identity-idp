@@ -12,7 +12,7 @@ const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
-const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
+const hashSuffix = isProductionEnv ? '-[chunkhash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 

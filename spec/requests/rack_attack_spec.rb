@@ -38,18 +38,9 @@ describe 'throttling requests' do
     end
 
     context 'when the request is for an asset' do
-      let(:asset_url) { '/assets/application.css' }
-      let(:asset_path) { Rails.root.join('public', asset_url.sub(/^\//, '')) }
-
-      before do
-        asset_dirname = File.dirname(asset_path)
-        FileUtils.mkdir_p(asset_dirname) unless File.directory?(asset_dirname)
-        File.write(asset_path, '') unless File.exist?(asset_path)
-      end
-
       it 'does not throttle' do
         (requests_per_ip_limit + 1).times do
-          get asset_url, headers: { REMOTE_ADDR: '1.2.3.4' }
+          get '/assets/application.css', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(200)
@@ -57,16 +48,8 @@ describe 'throttling requests' do
     end
 
     context 'when the request is for a pack' do
-      let(:pack_url) { '/packs/js/application.js' }
-      let(:pack_path) { Rails.root.join('public', pack_url.sub(/^\//, '')) }
-
-      before do
-        pack_dirname = File.dirname(pack_path)
-        FileUtils.mkdir_p(pack_dirname) unless File.directory?(pack_dirname)
-        File.write(pack_path, '') unless File.exist?(pack_path)
-      end
-
       it 'does not throttle' do
+        pack_url = Dir['public/packs/js/*'].first.gsub(/^public/, '')
         (requests_per_ip_limit + 1).times do
           get pack_url, headers: { REMOTE_ADDR: '1.2.3.4' }
         end
