@@ -123,7 +123,6 @@ module Idv
     end
 
     def take_photo_with_phone_successful?
-      byebug
       document_capture_session_result.present? && document_capture_session_result.success?
     end
 
