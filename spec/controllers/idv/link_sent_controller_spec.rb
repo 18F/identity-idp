@@ -98,4 +98,22 @@ describe Idv::LinkSentController do
       end
     end
   end
+
+  describe '#update' do
+    let(:analytics_name) { 'IdV: doc auth link_sent submitted' }
+    let(:analytics_args) do
+      {
+        analytics_id: 'Doc Auth',
+        flow_path: 'hybrid',
+        irs_reproofing: false,
+        step: 'link_sent',
+      }
+    end
+
+    it 'sends analytics_submitted event' do
+      put :update
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+  end
 end
