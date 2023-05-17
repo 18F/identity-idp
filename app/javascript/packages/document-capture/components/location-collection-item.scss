@@ -12,9 +12,9 @@
   margin-top: 1rem;
   padding-bottom: 1rem;
   border-color: color('primary-light');
-}
 
-.location-collection-item:last-child {
-  border-bottom-style: none;
-  padding-bottom: 0;
+  &:last-child {
+    border-bottom-style: none;
+    padding-bottom: 0;
+  }
 }
