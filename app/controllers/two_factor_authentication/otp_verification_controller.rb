@@ -29,7 +29,7 @@ module TwoFactorAuthentication
           handle_valid_verification_for_authentication_context(
             auth_method: params[:otp_delivery_preference],
           )
-          redirect_to after_otp_verification_confirmation_url
+          redirect_to after_sign_in_path_for(current_user)
         end
 
         reset_otp_session_data
@@ -211,9 +211,7 @@ module TwoFactorAuthentication
     end
 
     def assign_phone
-      @updating_existing_number = user_session[:phone_id].present?
-
-      if @updating_existing_number
+      if user_session[:phone_id].present?
         phone_changed
       else
         phone_confirmed
