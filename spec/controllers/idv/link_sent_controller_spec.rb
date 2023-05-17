@@ -20,8 +20,6 @@ describe Idv::LinkSentController do
     )
   end
 
-  let(:feature_flag_enabled) { true }
-
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)

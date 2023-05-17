@@ -4,12 +4,8 @@ feature 'doc auth redo document capture action', js: true do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:new_controller_enabled) { false }
-
   context 'when barcode scan returns a warning', allow_browser_log: true do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_link_sent_controller_enabled).
-        and_return(new_controller_enabled)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_document_capture_step
       mock_doc_auth_attention_with_barcode
@@ -82,26 +78,6 @@ feature 'doc auth redo document capture action', js: true do
         check t('forms.ssn.show')
         expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
         expect(page).not_to have_css('[role="status"]')
-      end
-    end
-
-    context 'with doc_auth_link_sent_controller_enabled flag enabled',
-            driver: :headless_chrome_mobile do
-      let(:new_controller_enabled) { true }
-
-      it 'goes to document capture' do
-        warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
-
-        expect(page).to have_css(
-          '[role="status"]',
-          text: t(
-            'doc_auth.headings.capture_scan_warning_html',
-            link: warning_link_text,
-          ).tr(' ', ' '),
-        )
-        click_link warning_link_text
-
-        expect(current_path).to eq(idv_document_capture_path)
       end
     end
   end
