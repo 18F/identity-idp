@@ -54,11 +54,48 @@ COPY --from=node /usr/local /usr/local
 RUN mkdir -p $RAILS_ROOT
 WORKDIR $RAILS_ROOT
 
+# Set user
+USER app
+
+COPY .ruby-version $RAILS_ROOT/.ruby-version
+COPY Gemfile $RAILS_ROOT/Gemfile
+COPY Gemfile.lock $RAILS_ROOT/Gemfile.lock
+
+RUN bundle config build.nokogiri --use-system-libraries
+RUN bundle config set --local deployment 'true'
+RUN bundle config set --local path $BUNDLE_PATH
+RUN bundle config set --local without 'deploy development doc test'
+RUN bundle install --jobs $(nproc)
+RUN bundle binstubs --all
+
+COPY package.json $RAILS_ROOT/package.json
+COPY yarn.lock $RAILS_ROOT/yarn.lock
+RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+
 # Add the application code
-COPY --chown=app:app . .
+COPY --chown=app:app ./lib ./lib
+COPY --chown=app:app ./app ./app
+COPY --chown=app:app ./config ./config
+COPY --chown=app:app ./config.ru ./config.ru
+COPY --chown=app:app ./db ./db
+COPY --chown=app:app ./deploy ./deploy
+COPY --chown=app:app ./bin ./bin
+COPY --chown=app:app ./public ./public
+COPY --chown=app:app ./scripts ./scripts
+COPY --chown=app:app ./spec ./spec
+COPY --chown=app:app ./vendor ./vendor
+COPY --chown=app:app ./Rakefile ./Rakefile
+COPY --chown=app:app ./Makefile ./Makefile
+COPY --chown=app:app ./babel.config.js ./babel.config.js
+COPY --chown=app:app ./webpack.config.js ./webpack.config.js
+COPY --chown=app:app ./browsers.json ./browsers.json
+COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
 # Copy application.yml.default to application.yml
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
+
+# Precompile assets
+RUN bundle exec rake assets:precompile --trace
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
@@ -100,17 +137,7 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 # Copy robots.txt
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
-# Set user
-USER app
-
 # Precompile assets
-RUN bundle config build.nokogiri --use-system-libraries
-RUN bundle config set --local deployment 'true'
-RUN bundle config set --local path $BUNDLE_PATH
-RUN bundle config set --local without 'deploy development doc test'
-RUN bundle install --jobs $(nproc)
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
-RUN bundle binstubs --all
 RUN bundle exec rake assets:precompile --trace
 
 # Expose the port the app runs on
