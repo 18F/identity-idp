@@ -72,4 +72,21 @@ describe 'shared/_nav_branded.html.erb' do
       expect(rendered).to have_css("img[alt*='No logo no problem']")
     end
   end
+
+  context 'service provider has a poorly configured logo' do
+    before do
+      sp = build_stubbed(:service_provider, logo: 'abc')
+      decorated_session = ServiceProviderSessionDecorator.new(
+        sp:,
+        view_context:,
+        sp_session: {},
+        service_provider_request: nil,
+      )
+      allow(view).to receive(:decorated_session).and_return(decorated_session)
+    end
+
+    it 'does not raise an exception' do
+      expect { render }.not_to raise_exception
+    end
+  end
 end

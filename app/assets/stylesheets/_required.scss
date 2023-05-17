@@ -1,7 +1,7 @@
 @use 'uswds-core' with (
   $theme-body-font-size: 'sm',
-  $theme-font-path: '.',
-  $theme-image-path: '.',
+  $theme-font-path: '',
+  $theme-image-path: '',
   $theme-global-border-box-sizing: true,
   $theme-global-link-styles: true,
   $theme-grid-container-max-width: 'tablet-lg',
