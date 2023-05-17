@@ -79,7 +79,7 @@ RSpec.describe FraudReviewChecker do
     context 'the user is fraud review pending for more than 30 days' do
       let(:user) do
         record = create(:user, :fraud_review_pending)
-        record.fraud_review_pending_profile.update!(fraud_review_pending_at: 31.days.ago)
+        record.fraud_review_pending_profile.update!(fraud_reviewing_at: 31.days.ago)
         record
       end
 
