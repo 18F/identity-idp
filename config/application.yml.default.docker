@@ -18,11 +18,13 @@ production:
   database_host: 'postgres'
   database_name: 'idp'
   database_password: 'postgres'
+  database_sslmode: 'prefer'
   database_username: 'postgres'
   database_worker_jobs_name: 'idp-worker-jobs'
   database_worker_jobs_username: 'postgres'
   database_worker_jobs_host: 'postgres-worker'
   database_worker_jobs_password: 'postgres'
+  database_worker_sslmode: 'prefer'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   redis_irs_attempt_api_url: redis://redis:6379/2
   redis_throttle_url: redis://redis:6379/1
