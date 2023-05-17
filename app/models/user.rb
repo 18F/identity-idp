@@ -114,10 +114,6 @@ class User < ApplicationRecord
     profiles.where.not(gpo_verification_pending_at: nil).order(created_at: :desc).first
   end
 
-  def fraud_review_eligible?
-    fraud_review_pending_profile&.fraud_reviewing_at&.after?(30.days.ago)
-  end
-
   def fraud_review_pending?
     fraud_review_pending_profile.present?
   end
