@@ -65,6 +65,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 

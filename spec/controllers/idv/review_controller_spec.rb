@@ -594,6 +594,7 @@ describe Idv::ReviewController do
                       success: true,
                       fraud_review_pending: fraud_review_pending?,
                       fraud_rejection: false,
+                      gpo_verification_pending: false,
                       proofing_components: nil,
                       deactivation_reason: nil,
                     )
