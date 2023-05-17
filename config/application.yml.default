@@ -74,6 +74,8 @@ database_pool_idp: 5
 database_socket: ''
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_sslmode: ''
+database_worker_jobs_sslmode: ''
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
@@ -441,6 +443,7 @@ production:
   database_host: ''
   database_name: ''
   database_password: ''
+  database_sslmode: 'verify-full'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
@@ -449,6 +452,7 @@ production:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
+  database_worker_jobs_sslmode: 'verify-full'
   disable_email_sending: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
