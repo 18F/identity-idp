@@ -99,7 +99,7 @@ module Idv
       def bypass_send_link_steps
         mark_step_complete(:link_sent)
 
-        flow_session[:flow_path] = @flow.flow_path
+        flow_session[:flow_path] = 'standard'
         redirect_to idv_document_capture_url
 
         form_response(destination: :document_capture)
