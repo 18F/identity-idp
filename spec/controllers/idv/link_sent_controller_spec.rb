@@ -110,6 +110,10 @@ describe Idv::LinkSentController do
       allow(load_result).to receive(:attention_with_barcode?).and_return(false)
     end
 
+    after(:each) do
+      flow_session['Idv::Steps::UploadStep'] = true
+    end
+
     it 'sends analytics_submitted event' do
       allow(load_result).to receive(:success?).and_return(true)
       document_capture_session = DocumentCaptureSession.create!(user: user)
@@ -148,6 +152,7 @@ describe Idv::LinkSentController do
 
         expect(response).to redirect_to(idv_doc_auth_url)
         expect(flow_session[:error_message]).to eq(error_message)
+        expect(flow_session['Idv::Steps::UploadStep']).to be_nil
       end
     end
 
