@@ -85,6 +85,14 @@ Use Control+X to save the file.
 
 Restart your Mac to cause the .plist to take effect. Check the limits again and you should see both `ulimit -n` and `launchctl limit maxfiles` return a limit of 524288.
 
+### Errors related to _sassc_
+
+If you are getting the error:
+```
+LoadError: cannot load such file -- sassc
+```
+Try `make run` for a short time, then use Ctrl+C to kill it
+
 ### Errors relating to OpenSSL versions
 
 If you get this error during test runs:

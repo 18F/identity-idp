@@ -7,6 +7,7 @@
 .generators
 *.pyc
 *.rbc
+*.sassc
 **.orig
 .bundle
 .byebug_history
