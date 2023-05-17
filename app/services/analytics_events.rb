@@ -534,8 +534,8 @@ module AnalyticsEvents
   end
 
   # The user visited the gpo confirm cancellation screen
-  def idv_gpo_confirm_cancel_visited
-    track_event('IdV: gpo confirm cancel visited')
+  def idv_gpo_confirm_start_over_visited
+    track_event('IdV: gpo confirm start over visited')
   end
 
   # @param [String] step the step that the user was on when they clicked cancel

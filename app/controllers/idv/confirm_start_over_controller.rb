@@ -1,5 +1,5 @@
 module Idv
-  class GpoConfirmCancelController < ApplicationController
+  class ConfirmStartOverController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
     include GoBackHelper
@@ -8,7 +8,7 @@ module Idv
     before_action :confirm_idv_needed
 
     def index
-      analytics.idv_gpo_confirm_cancel_visited
+      analytics.idv_gpo_confirm_start_over_visited
     end
   end
 end

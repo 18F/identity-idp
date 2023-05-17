@@ -392,7 +392,7 @@ Rails.application.routes.draw do
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
-    get '/account/gpo_confirm_cancel' => 'idv/gpo_confirm_cancel#index', as: :idv_gpo_confirm_cancel
+    get '/account/confirm_start_over' => 'idv/confirm_start_over#index', as: :idv_confirm_start_over
     if FeatureManagement.gpo_verification_enabled?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo
