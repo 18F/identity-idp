@@ -83,6 +83,9 @@ fr:
           moment. Essayez de chercher à nouveau un bureau de poste. Si le
           problème persiste, revenez plus tard.
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
+      exit:
+        with_sp: Quittez %{app_name} et retournez à %{sp_name}
+        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       phone:
         heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
           d’autres enregistrements
@@ -112,18 +115,18 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Veuillez réessayer avec <strong>un autre numéro</strong> que
-            vous utilisez souvent et depuis longtemps. Il peut s’agir d’un
-            numéro professionnel ou personnel.'
+          next_steps_html: 'Essayez <strtong>un autre<strong> numéro que vous utilisez
+            souvent et depuis longtemps. Il peut s’agir d’un numéro
+            professionnel ou personnel.'
           try_again_button: 'Essayez un autre numéro'
           you_entered: 'Tu as soumis:'
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.
-        fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
-          sécurité, nous limitons le nombre de fois où vous pouvez tenter de
-          vérifier des informations personnelles en ligne.'
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
+        fail_html: 'Pour votre sécurité, nous limitons le nombre de fois où vous pouvez
+          tenter de vérifier des informations personnelles en ligne.
+          <strong>Réessayer dans %{timeout}.</strong>'
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles téléphoniques.
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
@@ -188,7 +191,7 @@ fr:
         à usage unique figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
-      confirm: Vous avez crypté vos données vérifiées
+      confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
@@ -214,9 +217,8 @@ fr:
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        info_verified_html: Nous avons trouvé des données qui correspondent à votre
-          %{phone_message}
         intro: Vos informations vérifiées
+        phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.
@@ -254,8 +256,6 @@ fr:
           obtenir de l’aide:'
         still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
-        add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
-          par l’État.
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
@@ -279,6 +279,13 @@ fr:
       status_page_link: 'Obtenez des mises à jour sur notre page de statut'
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
+    warning:
+      attempts:
+        one: Pour des raisons de sécurité, il vous reste une tentative.
+        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      sessions:
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

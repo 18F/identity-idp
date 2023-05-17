@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .account-header__badges {
   @include at-media-max('tablet') {
     @include u-pin-x;

@@ -95,6 +95,8 @@ endif
 	yarn lint:css
 	@echo "--- README.md ---"
 	make lint_readme
+	@echo "--- lint migrations ---"
+	make lint_migrations
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
@@ -104,6 +106,9 @@ lint_yaml: normalize_yaml ## Lints YAML files
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
+
+lint_migrations:
+	scripts/migration_check
 
 lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check

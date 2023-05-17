@@ -6,6 +6,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
       and_return(irs_attempts_api_enabled)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_payload_size_logging_enabled).
       and_return(irs_attempts_api_payload_size_logging_enabled)
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_idv_events_enabled).
+      and_return(irs_attempts_api_idv_events_enabled)
     allow(request).to receive(:user_agent).and_return('example/1.0')
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
     allow(request).to receive(:headers).and_return(
@@ -15,6 +17,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
   let(:irs_attempts_api_enabled) { true }
   let(:irs_attempts_api_payload_size_logging_enabled) { true }
+  let(:irs_attempts_api_idv_events_enabled) { true }
   let(:session_id) { 'test-session-id' }
   let(:enabled_for_session) { true }
   let(:request) { instance_double(ActionDispatch::Request) }
@@ -70,6 +73,16 @@ RSpec.describe IrsAttemptsApi::Tracker do
       end
     end
 
+    it 'records an idv event in redis' do
+      freeze_time do
+        subject.track_event(:idv_test_event, foo: :bar)
+
+        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
+
+        expect(events.values.length).to eq(1)
+      end
+    end
+
     it 'does not store events in plaintext in redis' do
       freeze_time do
         subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
@@ -78,6 +91,26 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
         expect(events.keys.first).to_not include('first_name')
         expect(events.values.first).to_not include(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+      end
+    end
+
+    context 'with idv events disabled' do
+      let(:irs_attempts_api_idv_events_enabled) { false }
+
+      it 'does not log or track anything about the event' do
+        expect(analytics).to_not receive(:irs_attempts_api_event_metadata).with(
+          event_type: :idv_test_event,
+          unencrypted_payload_num_bytes: kind_of(Integer),
+          recorded: true,
+        )
+
+        freeze_time do
+          subject.track_event(:idv_test_event, foo: :bar)
+
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
+
+          expect(events.values.length).to eq(0)
+        end
       end
     end
 

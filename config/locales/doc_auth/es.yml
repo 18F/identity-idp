@@ -121,12 +121,12 @@ es:
       change_file: Cambiar archivo
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
         carpeta</lg-underline>
-      doc_success: Hemos verificado su información personal
+      doc_success: Verificamos sus datos
       selected_file: Archivo seleccionado
     headings:
       address: Actualice su dirección postal
       back: Parte Trasera
-      capture_complete: Hemos verificado su identificación expedida por el estado
+      capture_complete: Verificamos su identificación
       capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
         información que aparece a continuación es incorrecta, por favor, %{link}
         de su ID emitido por el estado.

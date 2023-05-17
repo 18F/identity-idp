@@ -130,6 +130,7 @@
             name: :identity_doc_address_state,
             collection: us_states_territories,
             form: f,
+            input_html: { class: 'address-state-selector' },
             label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
             label_html: { class: 'usa-label' },
             prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
@@ -139,6 +140,8 @@
       <%= render ValidatedFieldComponent.new(
             name: :identity_doc_address1,
             form: f,
+            hint_html: { class: ['display-none', 'puerto-rico-extras'] },
+            hint: t('in_person_proofing.form.state_id.address1_hint'),
             input_html: { value: pii[:identity_doc_address1] },
             label: t('in_person_proofing.form.state_id.address1'),
             label_html: { class: 'usa-label' },
@@ -149,6 +152,8 @@
       <%= render ValidatedFieldComponent.new(
             name: :identity_doc_address2,
             form: f,
+            hint: t('in_person_proofing.form.state_id.address2_hint'),
+            hint_html: { class: ['display-none', 'puerto-rico-extras'] },
             input_html: { value: pii[:identity_doc_address2] },
             label: t('in_person_proofing.form.state_id.address2'),
             label_html: { class: 'usa-label' },
@@ -223,3 +228,4 @@
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
 <% end %>
+<%= javascript_packs_tag_once('puerto-rico-guidance') %>

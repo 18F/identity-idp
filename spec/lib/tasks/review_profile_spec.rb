@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_fraud_profile) }
+  let(:user) { create(:user, :fraud_review_pending) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 

@@ -23,11 +23,11 @@ RSpec.describe 'In Person Proofing', js: true do
     it 'allows the user to continue down the happy path', allow_browser_log: true do
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      # location page
-      complete_location_step
-
       # prepare page
       complete_prepare_step(user)
+
+      # location page
+      complete_location_step
 
       # state ID page
       complete_state_id_step(user)
@@ -42,6 +42,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # verify page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
       expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
       expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -118,15 +119,15 @@ RSpec.describe 'In Person Proofing', js: true do
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
-    # location page
-    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-    complete_location_step
-
     # prepare page
     expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     complete_prepare_step(user)
+
+    # location page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+    complete_location_step
 
     # state ID page
     expect_in_person_step_indicator_current_step(
@@ -153,6 +154,7 @@ RSpec.describe 'In Person Proofing', js: true do
     # verify page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -168,6 +170,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update address button
     click_button t('idv.buttons.change_address_label')
@@ -175,6 +178,7 @@ RSpec.describe 'In Person Proofing', js: true do
     choose t('in_person_proofing.form.address.same_address_choice_yes')
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
 
     # click update ssn button
     click_button t('idv.buttons.change_ssn_label')
@@ -182,6 +186,7 @@ RSpec.describe 'In Person Proofing', js: true do
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
+    expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     complete_verify_step(user)
 
     # phone page
@@ -238,6 +243,14 @@ RSpec.describe 'In Person Proofing', js: true do
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_welcome_step
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+
+    # confirm that user cannot visit other IdV pages before completing in-person proofing
+    visit idv_doc_auth_agreement_step
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    visit idv_ssn_url
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+    visit idv_verify_info_url
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
@@ -253,22 +266,17 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_all_in_person_proofing_steps
   end
 
-  it 'allows the user to go back to document capture from prepare step', allow_browser_log: true do
+  it 'allows the user to go back to document capture from location step', allow_browser_log: true do
     sign_in_and_2fa_user
     begin_in_person_proofing
-
-    # location page
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-    complete_location_step
-
-    # prepare page
-    expect(page).to have_content(t('in_person_proofing.headings.prepare'), wait: 5)
-    click_button t('forms.buttons.back')
-
-    expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-
+    complete_prepare_step
     search_for_post_office
     expect(page).to have_css('.location-collection-item', wait: 10)
+    # back to prepare page
+    click_button t('forms.buttons.back')
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+
+    # back to doc capture page
     click_button t('forms.buttons.back')
 
     # Note: This is specifically for failed barcodes. Other cases may use
@@ -339,14 +347,12 @@ RSpec.describe 'In Person Proofing', js: true do
 
         # error page
         click_button t('in_person_proofing.body.cta.button')
-
-        # location page
-        expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
-        complete_location_step
-
         # prepare page
         expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
         click_idv_continue
+        # location page
+        expect(page).to have_content(t('in_person_proofing.headings.po_search.location'))
+        complete_location_step
 
         # switch back page
         expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
@@ -441,8 +447,8 @@ RSpec.describe 'In Person Proofing', js: true do
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
-        complete_location_step
         complete_prepare_step
+        complete_location_step
         expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
         fill_out_state_id_form_ok(double_address_verification: double_address_verification)
@@ -503,6 +509,73 @@ RSpec.describe 'In Person Proofing', js: true do
 
         expect(page).to have_current_path(idv_in_person_step_path(step: :address), wait: 10)
       end
+
+      it 'shows hints when user selects Puerto Rico as state',
+         allow_browser_log: true do
+        sign_in_and_2fa_user
+        begin_in_person_proofing
+        complete_prepare_step
+        complete_location_step
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        # state id page
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change state selection
+        fill_out_state_id_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_step_path(step: :address))
+
+        # address form
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # change selection
+        fill_out_address_form_ok(double_address_verification: true)
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+
+        # re-select puerto rico
+        select 'Puerto Rico',
+               from: t('idv.form.state')
+        click_idv_continue
+
+        # ssn page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+        complete_ssn_step
+
+        # verify page
+        expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+        expect(page).to have_text('PR').twice
+
+        # update state ID
+        click_button t('idv.buttons.change_state_id_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+        click_button t('forms.buttons.submit.update')
+
+        # update address
+        click_button t('idv.buttons.change_address_label')
+
+        expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
+        expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
+      end
     end
 
     context 'without double address verification' do
@@ -510,8 +583,8 @@ RSpec.describe 'In Person Proofing', js: true do
          allow_browser_log: true do
         sign_in_and_2fa_user
         begin_in_person_proofing
-        complete_location_step
         complete_prepare_step
+        complete_location_step
         expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
 
         fill_out_state_id_form_ok
@@ -589,18 +662,13 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
+      complete_prepare_step(user)
       complete_location_step(user)
-
-      expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'), wait: 5
-      )
     end
 
     it 'does not capture separate state id address from residential address' do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
         and_return(true)
-      # prepare page
-      complete_prepare_step(user)
       complete_state_id_step(user)
       complete_address_step(user)
       complete_ssn_step(user)
@@ -616,16 +684,10 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
-
-      expect(page).to have_content(
-        t('in_person_proofing.headings.prepare'), wait: 5
-      )
-    end
-    # prepare page
-    it 'successfully proceeds through the flow' do
       complete_prepare_step(user)
-
+      complete_location_step(user)
+    end
+    it 'successfully proceeds through the flow' do
       complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
 
       complete_address_step(user, double_address_verification: true)
@@ -662,8 +724,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
-      complete_location_step(user)
       complete_prepare_step(user)
+      complete_location_step(user)
     end
 
     it 'skips the address page' do
@@ -686,6 +748,34 @@ RSpec.describe 'In Person Proofing', js: true do
       fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
+    end
+
+    it 'allows user to update their residential address as different from their state id' do
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_ssn_step(user)
+
+      # click "update residential address"
+      click_button t('idv.buttons.change_address_label')
+      expect(page).to have_content(t('in_person_proofing.headings.update_address'))
+      # change something in the address
+      fill_in t('idv.form.address1'), with: 'new address different from state address1'
+      # click update
+      click_button t('forms.buttons.submit.update')
+
+      # back to verify page
+      expect(page).to have_current_path(idv_in_person_step_url(step: :verify))
+      expect(page).to have_content(t('headings.verify'))
+      expect(page).to have_text('new address different from state address1').once
+
+      # click update state id address
+      click_button t('idv.buttons.change_state_id_label')
+
+      # check that the "No, I live at a different address" is checked
+      expect(page).to have_checked_field(
+        t('in_person_proofing.form.state_id.same_address_as_id_no'),
+        visible: false,
+      )
     end
   end
 
@@ -700,8 +790,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
         sign_in_and_2fa_user(user)
         begin_in_person_proofing(user)
-        complete_location_step(user)
         complete_prepare_step(user)
+        complete_location_step(user)
       end
 
       it 'does not update their previous selection of "Yes,

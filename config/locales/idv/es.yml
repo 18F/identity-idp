@@ -79,6 +79,9 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
@@ -108,18 +111,16 @@ es:
             how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
           heading: No pudimos asociarlo a este número
           learn_more_link: 'Más información sobre qué número de teléfono usar'
-          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
-            utilice a menudo y desde hace tiempo. Puede ser un número del
-            trabajo o particular.'
+          next_steps_html: 'Pruebe con <strong>otro</strong> número que utilice a menudo y
+            desde hace tiempo.. Puede ser un número del trabajo o particular.'
           try_again_button: 'Intente con otro número'
           you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
-          seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea.'
-        heading: No hemos podido encontrar registros que coincidan con su información
-          personal.
+        fail_html: 'Por su seguridad, limitamos el número de veces que puede intentar
+          verificar la información personal en línea. <strong>Inténtelo de nuevo
+          en %{timeout}.</strong>'
+        heading: No encontramos registros que coincidan con sus datos personales
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
@@ -180,7 +181,7 @@ es:
         Si restablece su contraseña, el código único de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
-      confirm: Usted ha encriptado sus datos verificados.
+      confirm: Hemos asegurado su información verificada
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.
@@ -204,8 +205,8 @@ es:
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
+        phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.
@@ -240,7 +241,6 @@ es:
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
-        add_new_photos: Añada nuevas fotos de su ID emitido por el estado
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
         get_help_at_sp: Obtenga ayuda en %{sp_name}
@@ -265,6 +265,12 @@ es:
       status_page_link: 'Consulte las actualizaciones en nuestra página de estado'
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
         parte, tal vez no podamos verificar su identidad en estos momentos.
+    warning:
+      attempts:
+        one: Por motivos de seguridad, le quedan un intento.
+        other: Por motivos de seguridad, le quedan %{count} intentos.
+      sessions:
+        heading: No encontramos registros que coincidan con sus datos personales
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe

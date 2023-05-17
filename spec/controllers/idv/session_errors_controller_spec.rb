@@ -98,6 +98,20 @@ shared_examples_for 'an idv session errors controller action' do
       get action
     end
   end
+
+  context 'the user is in the hybrid flow' do
+    render_views
+    let(:effective_user) { create(:user) }
+
+    before do
+      session[:doc_capture_user_id] = effective_user.id
+    end
+
+    it 'renders the error template' do
+      get action
+      expect(response).to render_template(template)
+    end
+  end
 end
 
 describe Idv::SessionErrorsController do
@@ -197,6 +211,14 @@ describe Idv::SessionErrorsController do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'assigns sp_name' do
+        decorated_session = double
+        allow(decorated_session).to receive(:sp_name).and_return('Example SP')
+        allow(controller).to receive(:decorated_session).and_return(decorated_session)
+        get action
+        expect(assigns(:sp_name)).to eql('Example SP')
       end
 
       it 'logs an event with attempts remaining' do

@@ -43,7 +43,7 @@ module Idv
     end
 
     def cancel_verification_attempt_if_pending_profile
-      return if current_user.profiles.gpo_verification_pending.blank?
+      return if !current_user.pending_profile?
       Idv::CancelVerificationAttempt.new(user: current_user).call
     end
 

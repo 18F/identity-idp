@@ -4,16 +4,6 @@
       title: t('titles.failure.phone_verification'),
       heading: t('idv.failure.phone.warning.heading'),
       current_step: :verify_phone_or_address,
-      options: [
-        decorated_session.sp_name && {
-          url: return_to_sp_failure_to_proof_path(
-            step: 'phone',
-            location: local_assigns.fetch(:name, 'warning'),
-          ),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-          new_tab: true,
-        },
-      ].select(&:present?),
     ) do %>
 
       <% if @phone %>
@@ -25,7 +15,7 @@
 
       <p>
         <%= t('idv.failure.phone.warning.next_steps_html') %>
-        <%= new_window_link_to(
+        <%= new_tab_link_to(
               t('idv.failure.phone.warning.learn_more_link'),
               help_center_redirect_path(
                 category: 'verify-your-identity',
@@ -68,4 +58,5 @@
               ).with_content(t('idv.failure.phone.warning.gpo.button')) %>
         </div>
       <% end %>
-    <% end %>
+<% end %>
+<%= render('idv/doc_auth/cancel', step: 'phone') %>

@@ -61,7 +61,7 @@ describe('pw-strength', () => {
       const minPasswordLength = 12;
       const z = zxcvbn('_3G%JMyR"');
 
-      expect(getFeedback(z, { minimumLength: minPasswordLength })).to.equal(
+      expect(getFeedback(z, minPasswordLength)).to.equal(
         'errors.attributes.password.too_short.other',
         { count: minPasswordLength },
       );

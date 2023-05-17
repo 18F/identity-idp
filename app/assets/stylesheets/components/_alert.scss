@@ -1,10 +1,12 @@
+@use 'uswds-core' as *;
+
 .usa-alert--info-important {
   @include u-bg('accent-cool-darker');
   color: color('white');
   font-weight: bold;
 
   &::before {
-    background-image: url('alert/info-white.svg');
+    background-image: url('/alert/info-white.svg');
   }
 }
 
@@ -26,4 +28,9 @@
 
 .usa-alert__text > p:last-child {
   margin-bottom: 0;
+}
+
+// Upstream fix: https://github.com/uswds/uswds/pull/5187
+.usa-alert .usa-alert__body::before {
+  height: units(2);
 }

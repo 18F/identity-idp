@@ -5,6 +5,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneConfirmation
+    include FraudReviewConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
@@ -18,8 +19,8 @@ module Idv
 
       analytics.idv_review_complete(
         success: false,
-        fraud_review_pending: current_user.fraud_review_pending?,
-        fraud_rejection: current_user.fraud_rejection?,
+        fraud_review_pending: fraud_review_pending?,
+        fraud_rejection: fraud_rejection?,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
@@ -37,8 +38,8 @@ module Idv
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
-      else
-        flash_now[:success] = flash_message_content
+      elsif idv_session.phone_confirmed?
+        flash_now[:success] = t('idv.messages.review.phone_verified')
       end
     end
 
@@ -74,15 +75,6 @@ module Idv
 
     def address_verification_method
       user_session.dig('idv', 'address_verification_mechanism')
-    end
-
-    def flash_message_content
-      if idv_session.address_verification_mechanism != 'gpo'
-        phone_of_record_msg = ActionController::Base.helpers.content_tag(
-          :strong, t('idv.messages.phone.phone_of_record')
-        )
-        t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
-      end
     end
 
     def init_profile

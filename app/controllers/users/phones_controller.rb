@@ -13,14 +13,15 @@ module Users
     def add
       user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      analytics.add_phone_setup_visit
     end
 
     def create
       @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
       result = @new_phone_form.submit(user_params)
+      analytics.multi_factor_auth_phone_setup(**result.to_h)
       if result.success?
         confirm_phone
-        bypass_sign_in current_user
       elsif recoverable_recaptcha_error?(result)
         render 'users/phone_setup/spam_protection'
       else

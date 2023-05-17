@@ -5,9 +5,11 @@ module Idv
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
+    include ThreatMetrixConcern
 
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
+    before_action :override_csp_for_threat_metrix_no_fsm
 
     attr_accessor :error_message
 
@@ -65,7 +67,7 @@ module Idv
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def updating_ssn
+    def updating_ssn?
       @ssn_form.updating_ssn?
     end
   end

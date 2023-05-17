@@ -13,6 +13,7 @@ module Idv
 
       def show
         @step_indicator_steps = step_indicator_steps
+        @capture_secondary_id_enabled = capture_secondary_id_enabled
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -52,33 +53,15 @@ module Idv
       end
 
       def prev_url
-        idv_in_person_url
+        idv_in_person_step_url(step: :ssn)
       end
 
       def renders_404_if_flag_not_set
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
-      # copied from address_controller
-      def confirm_ssn_step_complete
-        return if pii.present? && pii[:ssn].present?
-        redirect_to idv_in_person_url
-      end
-
-      def confirm_verify_info_step_needed
-        # todo: should this instead be like so?
-        # return unless idv_session.resolution_successful == true
-        return unless idv_session.verify_info_step_complete?
-        redirect_to idv_phone_url
-      end
-
       def pii
         @pii = flow_session[:pii_from_user]
-      end
-
-      def delete_pii
-        flow_session.delete(:pii_from_doc)
-        flow_session.delete(:pii_from_user)
       end
 
       # override StepUtilitiesConcern

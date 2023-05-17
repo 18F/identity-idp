@@ -1,12 +1,7 @@
-import sinon from 'sinon';
-import { fireEvent, render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 import type { ComponentType } from 'react';
-import { useSandbox } from '@18f/identity-test-helpers';
 import { Provider as MarketingSiteContextProvider } from '../context/marketing-site';
-import { AnalyticsContextProvider } from '../context/analytics';
 import InPersonPrepareStep from './in-person-prepare-step';
-import InPersonContext, { InPersonContextProps } from '../context/in-person';
 
 describe('InPersonPrepareStep', () => {
   const DEFAULT_PROPS = { toPreviousStep() {}, value: {} };
@@ -17,63 +12,9 @@ describe('InPersonPrepareStep', () => {
     expect(getByText('in_person_proofing.body.prepare.privacy_disclaimer')).to.exist();
     expect(
       queryByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }),
     ).not.to.exist();
-  });
-
-  context('with in person URL', () => {
-    const inPersonURL = '#in_person';
-    const wrapper: ComponentType = ({ children }) => (
-      <InPersonContext.Provider value={{ inPersonURL } as InPersonContextProps}>
-        {children}
-      </InPersonContext.Provider>
-    );
-
-    it('logs prepare step submission when clicking continue', async () => {
-      const trackEvent = sinon.stub();
-      const { getByRole } = render(
-        <AnalyticsContextProvider trackEvent={trackEvent}>
-          <InPersonPrepareStep {...DEFAULT_PROPS} />
-        </AnalyticsContextProvider>,
-        { wrapper },
-      );
-
-      await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
-      await waitFor(() => window.location.hash === inPersonURL);
-
-      expect(trackEvent).to.have.been.calledWith('IdV: prepare submitted');
-    });
-
-    context('when clicking in quick succession', () => {
-      const { clock } = useSandbox({ useFakeTimers: true });
-
-      it('logs submission only once', async () => {
-        const delay = 1000;
-        const trackEvent = sinon
-          .stub()
-          .callsFake(() => new Promise((resolve) => setTimeout(resolve, delay)));
-        const { getByRole } = render(
-          <AnalyticsContextProvider trackEvent={trackEvent}>
-            <InPersonPrepareStep {...DEFAULT_PROPS} />
-          </AnalyticsContextProvider>,
-          { wrapper },
-        );
-
-        const button = getByRole('button', { name: 'forms.buttons.continue' });
-
-        const didFollowLinkOnFirstClick = fireEvent.click(button);
-        const didFollowLinkOnSecondClick = fireEvent.click(button);
-
-        clock.tick(delay);
-
-        await waitFor(() => window.location.hash === inPersonURL);
-
-        expect(didFollowLinkOnFirstClick).to.be.false();
-        expect(didFollowLinkOnSecondClick).to.be.false();
-        expect(trackEvent).to.have.been.calledOnceWith('IdV: prepare submitted');
-      });
-    });
   });
 
   context('with marketing site context URL', () => {
@@ -91,7 +32,7 @@ describe('InPersonPrepareStep', () => {
       const { getByRole } = render(<InPersonPrepareStep {...DEFAULT_PROPS} />, { wrapper });
 
       const link = getByRole('link', {
-        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_window',
+        name: 'in_person_proofing.body.prepare.privacy_disclaimer_link links.new_tab',
       }) as HTMLAnchorElement;
 
       expect(link.href).to.equal(securityAndPrivacyHowItWorksURL);

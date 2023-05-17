@@ -333,6 +333,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
+      get '/link_sent' => 'link_sent#show'
+      put '/link_sent' => 'link_sent#update'
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -367,13 +369,10 @@ Rails.application.routes.draw do
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
-      get '/capture_doc' => 'capture_doc#index'
-      get '/capture-doc' => 'capture_doc#index',
+      get '/capture_doc' => 'hybrid_mobile/entry#show'
+      get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
-      get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
-      get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
-      put '/capture_doc/:step' => 'capture_doc#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
@@ -389,11 +388,6 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
-    end
-
-    namespace :api do
-      post '/verify/v2/document_capture' => 'verify/document_capture#create'
-      delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

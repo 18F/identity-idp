@@ -462,22 +462,50 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
-    context 'when a profile with a gpo_verification_pending deactivation_reason exists' do
-      it 'returns the most recent profile' do
+    context 'when a pending profile exists' do
+      it 'returns with the most recent profile' do
         user = User.new
         _old_profile = create(
           :profile,
-          :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          :gpo_verification_pending,
+          gpo_verification_pending_at: Time.zone.now,
           user: user,
         )
 
         expect(user.pending_profile).to eq new_profile
+      end
+    end
+
+    context 'when pending profile does not exist' do
+      it 'returns nil' do
+        user = User.new
+        create(
+          :profile,
+          deactivation_reason: :encryption_error,
+          user: user,
+        )
+
+        expect(user.pending_profile).to be_nil
+      end
+    end
+  end
+
+  describe '#gpo_verification_pending_profile' do
+    context 'when a profile with a gpo_verification_pending_at timestamp exists' do
+      it 'returns the profile' do
+        user = User.new
+        profile = create(
+          :profile,
+          gpo_verification_pending_at: Time.zone.now,
+          user: user,
+        )
+
+        expect(user.gpo_verification_pending_profile).to eq profile
       end
     end
 
@@ -496,7 +524,7 @@ RSpec.describe User do
           user: user,
         )
 
-        expect(user.pending_profile).to be_nil
+        expect(user.gpo_verification_pending_profile).to be_nil
       end
     end
   end

@@ -4,7 +4,7 @@ React components for common UI interactions. These components are intended to be
 reusable, whereas domain-specific React components should be found in the package corresponding to
 the specific page or feature.
 
-Many of these components are React implementations for components of the [Login.gov Design System](https://github.com/18f/identity-style-guide).
+Many of these components are React implementations for components of the [Login.gov Design System](https://github.com/18f/identity-design-system).
 
 ## Example
 

@@ -126,9 +126,9 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.4
+    - name: postgres:13.9
       alias: db-postgres
-    - name: redis
+    - name: redis:7.0
       alias: db-redis
   artifacts:
     expire_in: 31d

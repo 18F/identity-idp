@@ -35,17 +35,10 @@ module Idv
       end
 
       def link_for_send_link(session_uuid)
-        if IdentityConfig.store.doc_auth_hybrid_mobile_controllers_enabled
-          idv_hybrid_mobile_entry_url(
-            'document-capture-session': session_uuid,
-            request_id: sp_session[:request_id],
-          )
-        else
-          idv_capture_doc_dashes_url(
-            'document-capture-session': session_uuid,
-            request_id: sp_session[:request_id],
-          )
-        end
+        idv_hybrid_mobile_entry_url(
+          'document-capture-session': session_uuid,
+          request_id: sp_session[:request_id],
+        )
       end
 
       private
@@ -70,6 +63,7 @@ module Idv
         throttle.increment!
         return throttled_failure if throttle.throttled?
         idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
+        flow_session[:phone_for_mobile_flow] = idv_session[:phone_for_mobile_flow]
         telephony_result = send_link
         failure_reason = nil
         if !telephony_result.success?
@@ -80,6 +74,12 @@ module Idv
           phone_number: formatted_destination_phone,
           failure_reason: failure_reason,
         )
+
+        if !failure_reason &&
+           IdentityConfig.store.doc_auth_link_sent_controller_enabled
+          flow_session[:flow_path] = 'hybrid'
+          redirect_to idv_link_sent_url
+        end
 
         build_telephony_form_response(telephony_result)
       end

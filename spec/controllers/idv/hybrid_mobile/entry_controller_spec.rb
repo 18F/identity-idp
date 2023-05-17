@@ -4,8 +4,6 @@ describe Idv::HybridMobile::EntryController do
   include IdvHelper
 
   describe '#show' do
-    let(:feature_flag_enabled) { true }
-
     let(:user) { create(:user) }
 
     let!(:document_capture_session) do
@@ -20,9 +18,6 @@ describe Idv::HybridMobile::EntryController do
     before do
       stub_analytics
       stub_attempts_tracker
-
-      allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-        and_return(feature_flag_enabled)
     end
 
     context 'with no session' do

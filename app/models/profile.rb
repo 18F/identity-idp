@@ -2,8 +2,6 @@ class Profile < ApplicationRecord
   include AASM
 
   self.ignored_columns += %w[
-    fraud_review_pending
-    fraud_rejection
     fraud_review_pending_at
     fraud_rejection_at
   ]
@@ -90,9 +88,8 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def activate_after_gpo_verification
+  def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
-    activate
   end
 
   def activate_after_passing_review

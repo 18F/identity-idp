@@ -73,7 +73,6 @@ fr:
         retail_hours_weekday: 'Lundi à Vendredi:'
         selection: 'Il s’agit du bureau que vous avez sélectionné:'
       prepare:
-        alert_selected_post_office: Vous avez sélectionné le bureau de poste à %{full_address}.
         privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
           service postal américain utilisons vos données pour vérifier votre
           identité.'
@@ -112,7 +111,9 @@ fr:
         state_prompt: '- Sélectionnez -'
       state_id:
         address1: Adresse ligne 1
+        address1_hint: 'Exemple: 150 Calle A Apt 3'
         address2: Adresse ligne 2
+        address2_hint: 'Exemple: URB Las Gladiolas ou COND Miraflor'
         city: Ville
         date_hint:
           day: 'Exemple: 28'
@@ -168,6 +169,19 @@ fr:
         heading: Montrez votre code-barres %{app_name}
         info: Le vendeur doit scanner votre code-barres en haut de cette page. Vous
           pouvez imprimer cette page ou la montrer sur votre appareil mobile.
+      proof_of_address:
+        acceptable_proof:
+          - Bail, hypothèque ou acte de fiducie
+          - Inscription sur les listes électorales
+          - Carte d’immatriculation du véhicule
+          - Police d’assurance habitation ou véhicule
+        heading: Preuve de votre adresse actuelle
+        info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
+          est différente de l’adresse figurant sur votre document d’identité.
+          Les justificatifs d’adresse acceptés sont les suivants:'
+        physical_or_digital_copy: Vous pouvez apporter une copie physique ou montrer une
+          copie numérique du document. Vous ne pouvez pas montrer une photo ou
+          une capture d’écran du document.
       state_id:
         heading: Présentez votre permis de conduire de l’État ou votre carte d’identité
           de non-conducteur de l’État

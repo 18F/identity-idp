@@ -8,8 +8,14 @@ RSpec.describe ClipboardButtonComponent, type: :component do
     render_inline ClipboardButtonComponent.new(clipboard_text:, **tag_options)
   end
 
-  it 'renders with clipboard text as data-attribute' do
-    expect(rendered).to have_css("lg-clipboard-button[data-clipboard-text='#{clipboard_text}']")
+  it 'renders with clipboard text as attribute' do
+    expect(rendered).to have_css("lg-clipboard-button[clipboard-text='#{clipboard_text}']")
+  end
+
+  it 'renders with tootip text as attribute' do
+    expect(rendered).to have_css(
+      "lg-clipboard-button[tooltip-text='#{t('components.clipboard_button.tooltip')}']",
+    )
   end
 
   context 'with tag options' do

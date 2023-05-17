@@ -43,8 +43,9 @@ gem 'net-sftp'
 gem 'newrelic_rpm', '~> 8.0'
 gem 'pg'
 gem 'phonelib'
-gem 'premailer-rails', '>= 1.11.1'
+gem 'premailer-rails', '>= 1.12.0'
 gem 'profanity_filter'
+gem 'propshaft'
 gem 'rack', '>= 2.2.3.1'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
@@ -62,10 +63,10 @@ gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
-gem 'sprockets-rails'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
+gem 'terminal-table', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 2.82.0'
@@ -85,6 +86,7 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
+  gem 'listen'
   gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
@@ -125,6 +127,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'tableparser', require: false
   gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'

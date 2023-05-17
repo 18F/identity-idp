@@ -407,7 +407,9 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-           service_provider: 'http://localhost:3000' }],
+           service_provider: 'http://localhost:3000',
+           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -439,7 +441,8 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
-           service_provider: 'saml_sp_ial2' }],
+           service_provider: 'saml_sp_ial2',
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -463,7 +466,9 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-           service_provider: 'http://localhost:3000' }],
+           service_provider: 'http://localhost:3000',
+           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 

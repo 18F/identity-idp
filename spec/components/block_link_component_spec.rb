@@ -25,7 +25,7 @@ RSpec.describe BlockLinkComponent, type: :component do
       rendered = render_inline BlockLinkComponent.new(url: '/', new_tab: true)
 
       expect(rendered).to have_css('.block-link.usa-link.usa-link--external[target=_blank]')
-      expect(rendered).to have_content(t('links.new_window'))
+      expect(rendered).to have_content(t('links.new_tab'))
     end
   end
 

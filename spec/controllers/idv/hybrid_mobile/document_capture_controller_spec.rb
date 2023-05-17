@@ -16,14 +16,9 @@ describe Idv::HybridMobile::DocumentCaptureController do
 
   let(:document_capture_session_requested_at) { Time.zone.now }
 
-  let(:feature_flag_enabled) { true }
-
   before do
     stub_analytics
     stub_attempts_tracker
-
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(feature_flag_enabled)
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
@@ -151,9 +146,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
       end
 
       it 'does not raise an exception when stored_result is nil' do
-        allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
-          and_return(false)
-
         allow(subject).to receive(:stored_result).and_return(nil)
 
         put :update

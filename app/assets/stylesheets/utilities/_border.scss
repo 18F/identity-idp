@@ -1,3 +1,5 @@
+@use '../variables/app' as *;
+
 .rounded-xl {
   border-radius: $border-radius-xl;
 }

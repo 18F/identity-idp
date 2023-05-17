@@ -36,27 +36,11 @@ module Idv
     end
 
     def extra_view_variables
-      # Used to call :verify_document_status in idv/shared/_document_capture.html.erb
-      # That code can be updated after the hybrid flow is out of the FSM, and then
-      # this can be removed.
-      @step_url = :idv_doc_auth_step_url
-
-      url_builder = ImageUploadPresignedUrlGenerator.new
-
       {
         document_capture_session_uuid: flow_session[:document_capture_session_uuid],
         flow_path: 'standard',
         sp_name: decorated_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-
-        front_image_upload_url: url_builder.presigned_image_upload_url(
-          image_type: 'front',
-          transaction_id: flow_session[:document_capture_session_uuid],
-        ),
-        back_image_upload_url: url_builder.presigned_image_upload_url(
-          image_type: 'back',
-          transaction_id: flow_session[:document_capture_session_uuid],
-        ),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
         in_person_cta_variant_testing_variables,

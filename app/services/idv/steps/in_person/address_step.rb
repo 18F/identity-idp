@@ -4,6 +4,8 @@ module Idv
       class AddressStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
+        include TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_visited_event
           :idv_in_person_proofing_address_visited
         end
@@ -17,10 +19,18 @@ module Idv
         end
 
         def call
-          Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
-            next if attr == :same_address_as_id && capture_secondary_id_enabled?
+          attrs = Idv::InPerson::AddressForm::ATTRIBUTES
+
+          if capture_secondary_id_enabled?
+            attrs = attrs.difference([:same_address_as_id])
+            flow_session[:pii_from_user][:same_address_as_id] = 'false' if updating_address?
+          end
+
+          attrs.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
+
+          maybe_redirect_to_verify_info if updating_address?
         end
 
         def extra_view_variables
@@ -28,17 +38,13 @@ module Idv
             capture_secondary_id_enabled: capture_secondary_id_enabled?,
             form:,
             pii:,
-            updating_address:,
+            updating_address: updating_address?,
           }
         end
 
         private
 
-        def capture_secondary_id_enabled?
-          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
-        end
-
-        def updating_address
+        def updating_address?
           flow_session[:pii_from_user].has_key?(:address1)
         end
 

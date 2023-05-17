@@ -9,7 +9,7 @@
 <% unless capture_secondary_id_enabled %>
   <p>
     <%= t('in_person_proofing.body.address.info') %>
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('in_person_proofing.body.address.learn_more'),
           MarketingSite.help_center_article_url(
             category: 'verify-your-identity',
@@ -27,6 +27,7 @@
       <%= render ValidatedFieldComponent.new(
             collection: us_states_territories,
             form: f,
+            input_html: { class: 'address-state-selector' },
             label: t('idv.form.state'),
             label_html: { class: 'usa-label' },
             name: :state,
@@ -37,6 +38,8 @@
     <% end %>
   <%= render ValidatedFieldComponent.new(
         form: f,
+        hint: t('in_person_proofing.form.state_id.address1_hint'),
+        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
         input_html: { value: pii[:address1] },
         label: t('idv.form.address1'),
         label_html: { class: 'usa-label' },
@@ -46,6 +49,8 @@
       ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
+        hint: t('in_person_proofing.form.state_id.address2_hint'),
+        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
         input_html: { value: pii[:address2] },
         label: capture_secondary_id_enabled ? t('idv.form.address2') : t('idv.form.address2_optional'),
         label_html: { class: 'usa-label' },
@@ -122,4 +127,4 @@
   <%= render 'idv/doc_auth/cancel', step: 'address' %>
 <% end %>
 
-<%= javascript_packs_tag_once('formatted-fields') %>
+<%= javascript_packs_tag_once('formatted-fields', 'puerto-rico-guidance') %>

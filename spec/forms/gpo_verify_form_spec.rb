@@ -14,7 +14,7 @@ describe GpoVerifyForm do
     create(
       :profile,
       user: user,
-      deactivation_reason: :gpo_verification_pending,
+      gpo_verification_pending_at: 1.day.ago,
       proofing_components: proofing_components,
     )
   end
@@ -153,9 +153,9 @@ describe GpoVerifyForm do
           create(
             :profile,
             user: user,
-            deactivation_reason: :gpo_verification_pending,
             fraud_state: 'fraud_reviewing',
             fraud_reviewing_at: 1.day.ago,
+            gpo_verification_pending_at: 1.day.ago,
           )
         end
 

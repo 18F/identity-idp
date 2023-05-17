@@ -74,6 +74,9 @@ en:
           Try searching for a Post Office again. If this issue continues, come
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
@@ -100,17 +103,16 @@ en:
             how_long_it_takes: This typically takes 3 - 7 business days.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
-          next_steps_html: 'Please try again with <strong>another</strong> number that you
-            use often and have used for a long time. This can be a work or home
-            number.'
+          next_steps_html: 'Try <strong>another</strong> number that you use often and
+            have used for a long time. This can be a work or home number.'
           try_again_button: 'Try another number'
           you_entered: 'You entered:'
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify personal
-          information online.'
-        heading: We could not find records matching your personal information.
+        fail_html: 'For your security, we limit the number of times you can attempt to
+          verify personal information online. <strong>Try again in
+          %{timeout}.</strong>'
+        heading: We couldn’t find records matching your personal information
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
@@ -170,7 +172,7 @@ en:
         /> If you reset your password, the one-time code in your letter will no
         longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
-      confirm: You have encrypted your verified data
+      confirm: We secured your verified information
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
@@ -192,8 +194,8 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
+        phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will
@@ -227,7 +229,6 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
-        add_new_photos: Add new photos of your state‑issued ID
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
@@ -249,6 +250,12 @@ en:
       status_page_link: 'Get updates on our status page'
       technical_difficulties: Unfortunately, we are having technical difficulties and
         cannot verify your identity at this time.
+    warning:
+      attempts:
+        one: For security reasons, you have one attempt remaining.
+        other: For security reasons, you have %{count} attempts remaining.
+      sessions:
+        heading: We couldn’t find records matching your personal information
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

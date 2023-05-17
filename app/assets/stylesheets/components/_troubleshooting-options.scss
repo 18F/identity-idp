@@ -1,3 +1,6 @@
+@use 'uswds-core' as *;
+@use '../utilities/typography' as *;
+
 .troubleshooting-options {
   @include u-margin-y(4);
 

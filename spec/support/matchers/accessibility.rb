@@ -4,7 +4,7 @@ RSpec::Matchers.define :have_valid_idrefs do
   match do |page|
     ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
       page.all(:css, "[#{idref_attribute}]").each do |element|
-        page.find_by_id(element[idref_attribute]) # rubocop:disable Rails/DynamicFindBy
+        page.find_by_id(element[idref_attribute], visible: :all)
       rescue Capybara::ElementNotFound
         invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
       end
@@ -105,6 +105,106 @@ RSpec::Matchers.define :have_description do |description|
     <<-STR.squish
       Expected element would have `aria-describedby` description "#{description}".
       Found #{descriptors(element)}.
+    STR
+  end
+end
+
+RSpec::Matchers.define :have_name do |name|
+  # Implements a best effort approximation of W3C Accessible Name and Description Computation 1.2
+  # See: https://www.w3.org/TR/accname-1.2/#mapping_additional_nd_te
+  #
+  # In the future, consider implementing using Chrome DevTools Accessibility features. At time of
+  # writing, these are experimental and return a `nil` value in local testing.
+  #
+  # See: https://chromedevtools.github.io/devtools-protocol/tot/Accessibility/
+  #
+  # We can use the Capybara driver "bridge" to call these commands.
+  #
+  # Example: https://github.com/18F/identity-idp/blob/3c7d3be/spec/support/features/browser_emulation_helper.rb
+
+  def hidden_name(element)
+    # "If the current node is hidden [...] return the empty string."
+    #
+    # Note: This should also check page visibility, but Capybara's Element#visible? considers off-
+    # screen elements as non-visible, which is not the same as how it's considered for names.
+    '' if element['aria-hidden'] == 'true'
+  end
+
+  def aria_labelledby_name(element)
+    # "if computing a name, and the current node has an aria-labelledby attribute that contains at
+    # least one valid IDREF, and the current node is not already part of an aria-labelledby
+    # traversal, process its IDREFs in the order they occur"
+    valid_labels = element['aria-labelledby']&.
+      split(' ')&.
+      map { |label_id| page.find("##{label_id}")&.text }&.
+      compact
+
+    valid_labels.join('') if valid_labels.present?
+  end
+
+  def aria_label_name(element)
+    # "Otherwise, if computing a name, and if the current node has an aria-label attribute whose
+    # value is not the empty string, nor, when trimmed of white space, is not the empty string:"
+    element['aria-label']
+  end
+
+  def referenced_label_name(element)
+    # "Otherwise, if the current node's native markup provides an attribute (e.g. title) or element
+    # (e.g. HTML label) that defines a text alternative, return that alternative in the form of a
+    # flat string as defined by the host language"
+    descendent_name(page.find("label[for='#{element['id']}']"))
+  rescue Capybara::ElementNotFound
+    nil
+  end
+
+  def ancestor_label_text_name(element)
+    # "Otherwise, if the current node is a control embedded within the label"
+    descendent_name(element.find(:xpath, 'ancestor::label'))
+  rescue Capybara::ElementNotFound
+    nil
+  end
+
+  def descendent_name(element)
+    # "Otherwise, if the current node is a descendant of an element whose Accessible Name or
+    # Accessible Description is being computed, and contains descendants, proceed to 2F.i."
+    #
+    # Note: There should probably be some recursion here with the other methods, but Capybara only
+    # allows us to work with elements and not text nodes, which presents a challenge for computing
+    # the descendent name.
+    visible_text_js = <<~JS
+      (function getVisibleChildNodeText(childNodes) {
+          return Array.from(childNodes).flatMap((child) => {
+              switch (child.nodeType) {
+                  case Node.TEXT_NODE:
+                      return child.nodeValue;
+                  case Node.ELEMENT_NODE:
+                      if (child.getAttribute('aria-hidden') !== 'true') {
+                        return child.nodeName === 'IMG' ?
+                          child.getAttribute('alt') :
+                          getVisibleChildNodeText(child.childNodes);
+                      }
+              }
+          });
+      })(arguments[0].childNodes).filter(Boolean).join('').trim();
+    JS
+
+    page.evaluate_script(visible_text_js, element)
+  end
+
+  def computed_name(element)
+    hidden_name(element) ||
+      aria_labelledby_name(element) ||
+      aria_label_name(element) ||
+      referenced_label_name(element) ||
+      ancestor_label_text_name(element)
+  end
+
+  match { |element| computed_name(element) == name }
+
+  failure_message do |element|
+    <<-STR.squish
+      Expected element would have computed name "#{name}".
+      Found #{computed_name(element)}.
     STR
   end
 end

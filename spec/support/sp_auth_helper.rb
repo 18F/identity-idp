@@ -5,7 +5,7 @@ module SpAuthHelper
     click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
-    submit_form_with_valid_password
+    submit_form_with_valid_password_confirmation
     set_up_2fa_with_valid_phone
     visit sign_out_url
     User.find_with_email(email)

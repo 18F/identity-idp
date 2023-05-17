@@ -2,15 +2,16 @@ class PasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
 
-  def initialize(user)
+  def initialize(user, options = {})
     @user = user
+    @validate_confirmation = options.fetch(:validate_confirmation, false)
   end
 
   def submit(params)
-    submitted_password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
     @request_id = params.fetch(:request_id, '')
-
-    self.password = submitted_password
+    @confirmation_enabled = params[:confirmation_enabled].presence
 
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end

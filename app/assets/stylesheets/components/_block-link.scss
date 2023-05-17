@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .block-link {
   @include u-position('relative');
   @include u-display('block');

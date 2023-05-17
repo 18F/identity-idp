@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .usa-button {
   // Temporary: To be backported to design system. Margins should be applied at the button element,
   // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and

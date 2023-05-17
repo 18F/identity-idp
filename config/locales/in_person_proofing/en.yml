@@ -66,7 +66,6 @@ en:
         retail_hours_weekday: 'Monday to Friday:'
         selection: 'This is the location you selected:'
       prepare:
-        alert_selected_post_office: You’ve selected the Post Office at %{full_address}.
         privacy_disclaimer: '%{app_name} is a secure, government website. We and the
           U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
@@ -100,7 +99,9 @@ en:
         state_prompt: '- Select -'
       state_id:
         address1: Address line 1
+        address1_hint: 'Example: 150 Calle A Apt 3'
         address2: Address line 2
+        address2_hint: 'Example: URB Las Gladiolas or COND Miraflor'
         city: City
         date_hint:
           day: 'Example: 28'
@@ -151,6 +152,18 @@ en:
         heading: Show your %{app_name} barcode
         info: The retail associate needs to scan your barcode at the top of this page.
           You can print this page or show it on your mobile device.
+      proof_of_address:
+        acceptable_proof:
+          - Lease, Mortgage, or Deed of Trust
+          - Voter Registration
+          - Vehicle Registration Card
+          - Home or Vehicle Insurance Policy
+        heading: Proof of your current address
+        info: 'You need a proof of address if your current address is different than the
+          address on your ID. Acceptable forms of proof of address are:'
+        physical_or_digital_copy: You can bring a physical copy or show a digital copy
+          of the document. You cannot show a photo or screenshot of the
+          document.
       state_id:
         heading: Show your State Driver’s License or State Non-Driver’s Identification
           Card

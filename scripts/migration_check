@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -d './db/migrate' ]
+then
+	echo "The ./db/migrate folder should not be used for generating migrations"
+	echo "Use the --database option to specify the database to be used. Example:"
+	echo "> rails g migration add_my_database_table --database primary"
+	echo "Then, remove db/migrate"
+	exit 1
+fi

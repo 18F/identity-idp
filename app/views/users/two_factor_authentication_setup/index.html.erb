@@ -25,7 +25,7 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                     locals: { form: f, option: option } %>
+                     locals: { option: option } %>
         </div>
       <% end %>
     </fieldset>

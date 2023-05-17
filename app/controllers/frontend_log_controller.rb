@@ -21,6 +21,7 @@ class FrontendLogController < ApplicationController
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
     'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
+    'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 

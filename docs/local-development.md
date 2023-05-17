@@ -11,7 +11,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 - Ruby ~> 3.2.0
 - [PostgreSQL](http://www.postgresql.org/download/)
-- [Redis 5+](http://redis.io/)
+- [Redis 7+](http://redis.io/)
 - [Node.js v16](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)

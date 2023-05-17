@@ -2,7 +2,6 @@ import { useContext } from 'react';
 import { Button } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
-import useHistoryParam from '@18f/identity-form-steps/use-history-param';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 
@@ -16,7 +15,6 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
   const { inPersonCtaVariantActive } = useContext(InPersonContext);
-  const [, setStepName] = useHistoryParam(undefined);
 
   return (
     <section
@@ -29,12 +27,12 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
       </h2>
       <p>{altPrompt || t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
+        type="submit"
         isBig
         isOutline
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          setStepName('location');
           trackEvent('IdV: verify in person troubleshooting option clicked', {
             in_person_cta_variant: inPersonCtaVariantActive,
           });

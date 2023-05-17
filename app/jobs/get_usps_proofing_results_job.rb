@@ -376,14 +376,14 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    send_verified_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
       email_type: 'Success',
     )
-    send_verified_email(enrollment.user, enrollment)
   end
 
-  def retro_fail_enrollment(enrollment, response)
+  def handle_unsupported_secondary_id(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
@@ -397,11 +397,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
-      email_type: 'Failed',
+      email_type: 'Failed unsupported secondary ID',
     )
-    send_failed_email(enrollment.user, enrollment)
   end
 
   def process_enrollment_response(enrollment, response)
@@ -412,12 +412,11 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if enrollment.capture_secondary_id_enabled && response['secondaryIdType']
-        retro_fail_enrollment(enrollment, response)
+      if enrollment.capture_secondary_id_enabled && response['secondaryIdType'].present?
+        handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)
       else
-        # Unsupported ID type
         handle_unsupported_id_type(enrollment, response)
       end
     when IPP_STATUS_FAILED

@@ -95,25 +95,18 @@ describe Idv::Steps::UploadStep do
       end
     end
 
-    context 'hybrid mobile controllers enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-          and_return(true)
-      end
+    describe '#link_for_send_link' do
+      subject(:link) { step.link_for_send_link document_capture_session_uuid }
+      let(:document_capture_session_uuid) { SecureRandom.uuid }
 
-      describe '#link_for_send_link' do
-        subject(:link) { step.link_for_send_link document_capture_session_uuid }
-        let(:document_capture_session_uuid) { SecureRandom.uuid }
-
-        it 'generates a link to the hybrid mobile doc auth entry controller' do
-          expect(link).to eql(
-            Rails.application.routes.url_helpers.idv_hybrid_mobile_entry_url(
-              params: {
-                'document-capture-session': document_capture_session_uuid,
-              },
-            ),
-          )
-        end
+      it 'generates a link to the hybrid mobile doc auth entry controller' do
+        expect(link).to eql(
+          Rails.application.routes.url_helpers.idv_hybrid_mobile_entry_url(
+            params: {
+              'document-capture-session': document_capture_session_uuid,
+            },
+          ),
+        )
       end
     end
   end

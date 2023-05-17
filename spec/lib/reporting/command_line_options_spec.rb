@@ -48,6 +48,8 @@ RSpec.describe Reporting::CommandLineOptions do
           issuer: issuer,
           verbose: false,
           progress: true,
+          slice: 3.hours,
+          threads: 5,
         )
       end
     end
@@ -62,6 +64,115 @@ RSpec.describe Reporting::CommandLineOptions do
         expect(saturday).to be_saturday
 
         expect(parse![:time_range]).to eq(sunday.beginning_of_day..saturday.end_of_day)
+      end
+    end
+
+    context 'with --month and --issuer' do
+      let(:argv) { %W[--month 2023-1-1 --issuer #{issuer}] }
+
+      it 'uses the whole month given from the first at 12am to the last midnight' do
+        jan_1 = Date.new(2023, 1, 1).in_time_zone('UTC')
+        jan_last = Date.new(2023, 1, 31).in_time_zone('UTC')
+
+        expect(parse![:time_range]).to eq(jan_1.beginning_of_day..jan_last.end_of_day)
+      end
+
+      it 'updates slice to 1.hr if slice is not passed in' do
+        expect(parse![:slice]).to eq 1.hour
+      end
+
+      it 'updates threads to 10 if threads is not passed in' do
+        expect(parse![:threads]).to eq 10
+      end
+    end
+
+    context 'with --slice' do
+      context 'with --slice in minutes' do
+        let(:argv) { %W[--slice 2min --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 2 minutes' do
+          expect(parse![:slice]).to eq 2.minutes
+        end
+      end
+
+      context 'with --slice in hours' do
+        let(:argv) { %W[--slice 2h --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 2 hours' do
+          expect(parse![:slice]).to eq 2.hours
+        end
+      end
+
+      context 'with --slice in days' do
+        let(:argv) { %W[--slice 3d --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 3 days' do
+          expect(parse![:slice]).to eq 3.days
+        end
+      end
+
+      context 'with --slice in weeks' do
+        let(:argv) { %W[--slice 3w --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 3 weeks' do
+          expect(parse![:slice]).to eq 3.weeks
+        end
+      end
+
+      context 'with --slice in months' do
+        let(:argv) { %W[--slice 3mon --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 3 months' do
+          expect(parse![:slice]).to eq 3.months
+        end
+      end
+
+      context 'with --slice in years' do
+        let(:argv) { %W[--slice 3y --month 2023-1-1 --issuer #{issuer}] }
+
+        it 'slice is 3 years' do
+          expect(parse![:slice]).to eq 3.years
+        end
+      end
+    end
+
+    context 'with --threads' do
+      context 'if threads is a string of a num between 1 and 30' do
+        let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads 9 ] }
+
+        it 'thread is that number' do
+          expect(parse![:threads]).to eq 9
+        end
+      end
+
+      context 'if threads is a random string' do
+        let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads abcd ] }
+
+        it 'thread is the default of 5' do
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
+        end
+      end
+
+      context 'if threads is below 0' do
+        let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads -3 ] }
+
+        it 'throws an error' do
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
+        end
+      end
+
+      context 'if threads is above 31' do
+        let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --threads 31 ] }
+
+        it 'throws an error' do
+          expect { parse! }.to raise_error(
+            StandardError, 'Number of threads must be between 1 and 30 inclusive'
+          )
+        end
       end
     end
 

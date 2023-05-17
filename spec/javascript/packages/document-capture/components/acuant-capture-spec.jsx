@@ -951,10 +951,10 @@ describe('document-capture/components/acuant-capture', () => {
 
     const placeholder = getByLabelText('Image');
     await userEvent.click(placeholder);
-    await userEvent.click(getByLabelText('users.personal_key.close'));
+    await userEvent.click(getByLabelText('account.navigation.close'));
     const button = getByText('doc_auth.buttons.take_picture');
     await userEvent.click(button);
-    await userEvent.click(getByLabelText('users.personal_key.close'));
+    await userEvent.click(getByLabelText('account.navigation.close'));
     const upload = getByText('Upload');
     fireEvent.click(upload);
 

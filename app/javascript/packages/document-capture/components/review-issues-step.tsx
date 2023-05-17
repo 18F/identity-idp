@@ -116,31 +116,35 @@ function ReviewIssuesStep({
 
     if (!inPersonURL || isFailedResult) {
       return (
-        <Warning
-          heading={t('errors.doc_auth.throttled_heading')}
-          actionText={t('idv.failure.button.warning')}
-          actionOnClick={onWarningPageDismissed}
-          location="doc_auth_review_issues"
-          remainingAttempts={remainingAttempts}
-          troubleshootingOptions={
-            <DocumentCaptureTroubleshootingOptions
-              location="post_submission_warning"
-              showAlternativeProofingOptions={!isFailedResult}
-              heading={t('components.troubleshooting_options.ipp_heading')}
-            />
-          }
-        >
-          {!!unknownFieldErrors &&
-            unknownFieldErrors
-              .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        <>
+          <Warning
+            heading={t('errors.doc_auth.throttled_heading')}
+            actionText={t('idv.failure.button.warning')}
+            actionOnClick={onWarningPageDismissed}
+            location="doc_auth_review_issues"
+            remainingAttempts={remainingAttempts}
+            troubleshootingOptions={
+              <DocumentCaptureTroubleshootingOptions
+                location="post_submission_warning"
+                showAlternativeProofingOptions={!isFailedResult}
+                showSPOption={false}
+                heading={t('components.troubleshooting_options.ipp_heading')}
+              />
+            }
+          >
+            {!!unknownFieldErrors &&
+              unknownFieldErrors
+                .filter((error) => !['front', 'back'].includes(error.field!))
+                .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-          {remainingAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
-            </p>
-          )}
-        </Warning>
+            {remainingAttempts <= DISPLAY_ATTEMPTS && (
+              <p>
+                <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
+              </p>
+            )}
+          </Warning>
+          <Cancel />
+        </>
       );
     }
     if (inPersonCtaVariantActive === 'in_person_variant_a') {
@@ -187,7 +191,7 @@ function ReviewIssuesStep({
           actionOnClick={onWarningPageDismissed}
           altActionText={t('in_person_proofing.body.cta.button_variant')}
           altActionOnClick={onInPersonSelected}
-          altHref="#location"
+          altHref="#prepare"
           location="doc_auth_review_issues"
           remainingAttempts={remainingAttempts}
           troubleshootingOptions={

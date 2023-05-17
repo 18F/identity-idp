@@ -228,11 +228,9 @@ module Idv
         return ok_no_review_needed
       end
 
-      component = ProofingComponent.find_by(user: @current_user)
+      return ok_no_review_needed if threatmetrix_review_status.nil?
 
-      return ok_no_review_needed if !component.threatmetrix
-
-      return ok_no_review_needed if component.threatmetrix_review_status == 'pass'
+      return ok_no_review_needed if threatmetrix_review_status == 'pass'
 
       return failed_and_needs_review
     end

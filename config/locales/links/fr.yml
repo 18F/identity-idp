@@ -15,7 +15,7 @@ fr:
     exit_login: Quitter %{app_name}
     go_back: Retourner
     help: Aide
-    new_window: '(ouvre une nouvelle fenêtre)'
+    new_tab: '(ouvre un nouvel onglet)'
     next: Suivant
     passwords:
       forgot: Vous avez oublié votre mot de passe?

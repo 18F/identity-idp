@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_02_235856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -440,8 +440,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
     t.string "initiating_service_provider_issuer"
-    t.boolean "fraud_review_pending", default: false
-    t.boolean "fraud_rejection", default: false
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.string "fraud_state"
@@ -450,7 +448,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_164533) do
     t.datetime "fraud_passed_at", precision: nil
     t.datetime "gpo_verification_pending_at"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
-    t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"

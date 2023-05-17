@@ -35,7 +35,7 @@
             <li><%= bullet_item %></li>
           <% end %>
         </ul>
-        <%= new_window_link_to(
+        <%= new_tab_link_to(
               t('idv.troubleshooting.options.learn_more_address_verification_options'),
               help_center_redirect_path(
                 category: 'verify-your-identity',
@@ -95,9 +95,9 @@
       <%= t('doc_auth.info.privacy', app_name: APP_NAME) %>
     </p>
     <p>
-      <%= new_window_link_to(
+      <%= new_tab_link_to(
             t('doc_auth.instructions.learn_more'),
-            MarketingSite.security_and_privacy_practices_url,
+            policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
           ) %>
     </p>
 

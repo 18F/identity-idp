@@ -166,6 +166,8 @@ module DocAuthRouter
           trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
+          hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
+          hmac_secret_key: IdentityConfig.store.lexisnexis_trueid_hmac_secret_key,
           warn_notifier: warn_notifier,
           locale: I18n.locale,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,

@@ -23,16 +23,15 @@ en:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
-      document_verification_timeout: The server took too long to respond. Please try again.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       send_link_throttle: You tried too many times, please try again in %{timeout}.
         You can also go back and choose to use your computer instead.
-      throttled_heading: We could not verify your ID
+      throttled_heading: We couldn’t verify your ID
       throttled_subheading: Try taking new pictures
-      throttled_text_html: '<strong>Please try again in %{timeout}.</strong> For your
-        security, we limit the number of times you can attempt to verify a
-        document online.'
+      throttled_text_html: 'For your security, we limit the number of times you can
+        attempt to verify a document online. <strong>Try again in
+        %{timeout}.</strong>'
     general: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You
@@ -64,6 +63,7 @@ en:
       not_a_number: is not a number
       otp_format: Enter your entire one-time code without spaces or special characters
       password_incorrect: Incorrect password
+      password_mismatch: Your passwords don’t match
       personal_key_incorrect: Incorrect personal key
       phone_carrier: Sorry, we are unable to support that phone carrier at this time.
         Please select a different number and try again.

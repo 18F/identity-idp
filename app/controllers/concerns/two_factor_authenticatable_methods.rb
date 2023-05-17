@@ -110,7 +110,7 @@ module TwoFactorAuthenticatableMethods
     if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
-      handle_valid_otp_for_confirmation_context
+      handle_valid_verification_for_confirmation_context
     end
   end
 
@@ -168,13 +168,11 @@ module TwoFactorAuthenticatableMethods
     current_user.increment_second_factor_attempts_count!
   end
 
-  def handle_valid_otp_for_confirmation_context
+  def handle_valid_verification_for_confirmation_context
     user_session[:authn_at] = Time.zone.now
-    assign_phone
     track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
     reset_second_factor_attempts_count
-    flash[:success] = t('notices.phone_confirmed')
   end
 
   def track_mfa_method_added
@@ -187,57 +185,13 @@ module TwoFactorAuthenticatableMethods
   def handle_valid_otp_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
-    bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
     reset_second_factor_attempts_count
   end
 
-  def assign_phone
-    @updating_existing_number = user_session[:phone_id].present?
-
-    if @updating_existing_number && UserSessionContext.confirmation_context?(context)
-      phone_changed
-    else
-      phone_confirmed
-    end
-
-    update_phone_attributes
-  end
-
   def reset_second_factor_attempts_count
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def phone_changed
-    create_user_event(:phone_changed)
-    send_phone_added_email
-  end
-
-  def phone_confirmed
-    create_user_event(:phone_confirmed)
-    # If the user has MFA configured, then they are not adding a phone during sign up and are
-    # instead adding it outside the sign up flow
-    return unless MfaPolicy.new(current_user).two_factor_enabled?
-    send_phone_added_email
-  end
-
-  def send_phone_added_email
-    _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: current_user, email_address: email_address).
-        phone_added(disavowal_token: disavowal_token).deliver_now_or_later
-    end
-  end
-
-  def update_phone_attributes
-    UpdateUser.new(
-      user: current_user,
-      attributes: { phone_id: user_session[:phone_id],
-                    phone: user_session[:unconfirmed_phone],
-                    phone_confirmed_at: Time.zone.now,
-                    otp_make_default_number: selected_otp_make_default_number },
-    ).call
   end
 
   def reset_otp_session_data
@@ -263,10 +217,6 @@ module TwoFactorAuthenticatableMethods
     )
   end
 
-  def direct_otp_code
-    current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-  end
-
   def otp_expiration
     return if current_user.direct_otp_sent_at.blank?
     current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
@@ -276,33 +226,9 @@ module TwoFactorAuthenticatableMethods
     cookies.encrypted[:user_opted_remember_device_preference]
   end
 
-  def unconfirmed_phone?
-    user_session[:unconfirmed_phone] && UserSessionContext.confirmation_context?(context)
-  end
-
-  def selected_otp_make_default_number
-    params&.dig(:otp_make_default_number)
-  end
-
   def generic_data
     {
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
-  end
-
-  def display_phone_to_deliver_to
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      phone_configuration.masked_phone
-    else
-      user_session[:unconfirmed_phone]
-    end
-  end
-
-  def confirmation_for_add_phone?
-    UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-  end
-
-  def phone_configuration
-    MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
   end
 end
