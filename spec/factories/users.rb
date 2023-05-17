@@ -205,8 +205,7 @@ FactoryBot.define do
 
     trait :with_pending_gpo_profile do
       after :build do |user|
-        profile = create(:profile, :with_pii, user: user)
-        profile.gpo_verification_pending_at = 1.day.ago
+        profile = create(:profile, :with_pii, gpo_verification_pending_at: 1.day.ago, user: user)
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
         device = create(:device, user: user)
