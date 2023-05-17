@@ -43,7 +43,7 @@ class Profile < ApplicationRecord
           # TODO: the following 2 states are actually newly discovered states:
           # this is really the state right after profile creation
           :fraud_reviewing,
-           # `ThreatMetrix says "reject"`, see gpo_otp_verification_step_spec.rb
+          # `ThreatMetrix says "reject"`, see gpo_otp_verification_step_spec.rb
           :fraud_rejected,
         ],
         to: :fraud_reviewing,
