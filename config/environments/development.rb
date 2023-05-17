@@ -4,7 +4,10 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.active_support.deprecation = :log
   config.active_record.migration_error = :page_load
-  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+  config.assets.debug = true
+  config.assets.digest = true
+  config.assets.gzip = false
+  config.assets.raise_runtime_errors = true
   config.i18n.raise_on_missing_translations = true
 
   # Raise exceptions for disallowed deprecations.
