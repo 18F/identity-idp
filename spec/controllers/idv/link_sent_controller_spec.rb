@@ -109,11 +109,18 @@ describe Idv::LinkSentController do
         step: 'link_sent',
       }
     end
+    let(:document_capture_session) { DocumentCaptureSession.create! }
 
     it 'sends analytics_submitted event' do
       put :update
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    it 'redirects to ssn page' do
+      put :update
+
+      expect(response).to redirect_to(idv_ssn_url)
     end
   end
 end
