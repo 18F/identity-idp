@@ -106,6 +106,7 @@ class DataPull
       'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
       'ig-request' => InspectorGeneralRequest,
+      'profile-summary' => ProfileSummary,
     }[name]
   end
 
@@ -126,6 +127,8 @@ class DataPull
           * #{basename} email-lookup uuid1 uuid2
 
           * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
+
+          * #{basename} profile-summary uuid1 uuid2
 
         Options:
       EOS
@@ -263,4 +266,46 @@ class DataPull
       )
     end
   end
+
+  class ProfileSummary
+    def run(args:, config:)
+      uuids = args
+
+      users = User.includes(:profiles).where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid current_status activated_timestamp disabled_reason fraud_review_pending_timestamp fraud_rejection_timestamp]
+
+      users.each do |user|
+        if user.profiles.any?
+          user.profiles.sort_by(&:id).each do |profile|
+            profile_status = profile.active ? 'Active' : 'Inactive'
+            table << [
+              user.uuid,
+              profile_status,
+              profile.activated_at,
+              profile.deactivation_reason,
+              profile.fraud_review_pending_at,
+              profile.fraud_rejection_at,
+            ]
+          end
+        elsif config.include_missing?
+          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil]
+        end
+      end
+
+      if config.include_missing?
+        (uuids - users.map(&:uuid)).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil]
+        end
+      end
+
+      Result.new(
+        subtask: 'profile-summary',
+        uuids: users.map(&:uuid),
+        table:,
+      )
+    end
+  end
+
 end

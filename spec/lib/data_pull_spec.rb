@@ -238,4 +238,36 @@ RSpec.describe DataPull do
       end
     end
   end
+
+  describe DataPull::ProfileSummary do
+    subject(:subtask) { DataPull::ProfileSummary.new }
+
+    describe '#run' do
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:user_without_profile) { create(:user) }
+
+      let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { DataPull::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'loads profile summary for the user', aggregate_failures: true do
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'current_status', 'activated_timestamp', 'disabled_reason', 'fraud_review_pending_timestamp', 'fraud_rejection_timestamp'],
+            *user.profiles.sort_by(&:id).map do |p|
+              profile_status = p.active ? 'Active' : 'Inactive'
+              [user.uuid, profile_status, kind_of(Time), p.deactivation_reason, nil, nil]
+            end,
+            [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil],
+            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil],
+          ],
+        )
+
+        expect(result.subtask).to eq('profile-summary')
+        expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
+      end
+    end
+  end
+
 end
