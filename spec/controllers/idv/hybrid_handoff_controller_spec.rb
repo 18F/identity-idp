@@ -8,13 +8,6 @@ describe Idv::HybridHandoffController do
   end
 
   let(:user) { create(:user) }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      issuer: 'http://sp.example.com',
-      app_id: '123',
-    )
-  end
 
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
