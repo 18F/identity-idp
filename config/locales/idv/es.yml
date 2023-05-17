@@ -35,7 +35,7 @@ es:
         gpo:
           start_over: Si borras tu información y empiezas de nuevo
           warnings:
-            - El código único de tu mensaje ya no funcionará
+            - El código único de tu carta ya no funcionará
             - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
