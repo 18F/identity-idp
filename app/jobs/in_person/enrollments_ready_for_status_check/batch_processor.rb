@@ -36,21 +36,29 @@ module InPerson::EnrollmentsReadyForStatusCheck
         analytics_stats[:processed_items] += 1
       end
     ensure
-      begin
-        # The messages were processed, so remove them from the queue
-        unless deletion_batch.empty?
-          delete_result = delete_message_batch(deletion_batch)
-          delete_result.failed.each do |error_entry|
-            report_error(
-              'Failed to delete item from queue',
-              sqs_delete_error: error_entry.to_h,
-            )
-          end
-          analytics_stats[:deleted_items] += delete_result.successful.size
-        end
-      rescue StandardError => err
-        report_error(err)
+      # The messages were processed, so remove them from the queue
+      analytics_stats[:deleted_items] += process_deletions(deletion_batch)
+    end
+
+    private
+
+    # Delete messages from the queue and report deletion errors
+    # @param [Array<Aws::SQS::Types::Message>] deletion_batch SQS messages to delete
+    # @return [Integer] Number of items deleted
+    def process_deletions(deletion_batch)
+      return 0 if deletion_batch.empty?
+
+      delete_result = delete_message_batch(deletion_batch)
+      delete_result.failed.each do |error_entry|
+        report_error(
+          'Failed to delete item from queue',
+          sqs_delete_error: error_entry.to_h,
+        )
       end
+      delete_result.successful.size
+    rescue StandardError => err
+      report_error(err)
+      0
     end
   end
 end
