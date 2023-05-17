@@ -12,13 +12,6 @@ describe Idv::LinkSentController do
   end
 
   let(:user) { create(:user) }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      issuer: 'http://sp.example.com',
-      app_id: '123',
-    )
-  end
 
   let(:feature_flag_enabled) { true }
 
@@ -109,7 +102,6 @@ describe Idv::LinkSentController do
         step: 'link_sent',
       }
     end
-    let(:document_capture_session) { DocumentCaptureSession.create! }
 
     it 'sends analytics_submitted event' do
       put :update
