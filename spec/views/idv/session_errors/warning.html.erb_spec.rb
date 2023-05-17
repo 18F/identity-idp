@@ -22,35 +22,11 @@ describe 'idv/session_errors/warning.html.erb' do
   end
 
   it 'shows remaining attempts' do
-    expect(rendered).to have_text(t('idv.failure.attempts', count: remaining_attempts))
+    expect(rendered).to have_text(t('idv.warning.attempts', count: remaining_attempts))
   end
 
-  it 'does not display troubleshooting options' do
-    expect(rendered).not_to have_content(t('components.troubleshooting_options.default_heading'))
-  end
-
-  context 'with an associated service provider' do
-    let(:sp_name) { 'Example SP' }
-
-    it 'renders troubleshooting option to get help at service provider' do
-      expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'warning'),
-      )
-    end
-  end
-
-  context 'with a flow session which had a barcode attention document capture result' do
-    let(:user_session) { { 'idv/doc_auth': { had_barcode_read_failure: true } } }
-
-    it 'renders troubleshooting option to retake photos' do
-      expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.add_new_photos'),
-        href: idv_doc_auth_step_path(step: :redo_document_capture),
-      )
-    end
+  it 'shows a cancel link' do
+    expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
   end
 
   context 'with a nil user_session' do
@@ -58,11 +34,8 @@ describe 'idv/session_errors/warning.html.erb' do
 
     it 'does not render troubleshooting option to retake photos' do
       expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
-      expect(rendered).to_not have_content(t('components.troubleshooting_options.default_heading'))
-      expect(rendered).to_not have_link(
-        t('idv.troubleshooting.options.add_new_photos'),
-        href: idv_doc_auth_step_path(step: :redo_document_capture),
-      )
+      expect(rendered).to have_text(t('idv.warning.attempts', count: remaining_attempts))
+      expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
     end
   end
 end

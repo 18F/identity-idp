@@ -229,7 +229,6 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
-        add_new_photos: Add new photos of your state‑issued ID
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
@@ -251,6 +250,12 @@ en:
       status_page_link: 'Get updates on our status page'
       technical_difficulties: Unfortunately, we are having technical difficulties and
         cannot verify your identity at this time.
+    warning:
+      attempts:
+        one: For security reasons, you have one attempt remaining.
+        other: For security reasons, you have %{count} attempts remaining.
+      sessions:
+        heading: We couldn’t find records matching your personal information
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

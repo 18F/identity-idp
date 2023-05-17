@@ -203,6 +203,19 @@ FactoryBot.define do
       end
     end
 
+    trait :with_pending_gpo_profile do
+      after :build do |user|
+        profile = create(:profile, :with_pii, user: user)
+        profile.gpo_verification_pending_at = 1.day.ago
+        # This sets the deactivation_reason to enum value :gpo_verification_pending
+        profile.gpo_verification_pending!
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+      end
+    end
+
     trait :proofed_with_gpo do
       proofed
       after :build do |user|
@@ -214,13 +227,27 @@ FactoryBot.define do
       end
     end
 
-    trait :deactivated_fraud_profile do
+    trait :fraud_review_pending do
       fully_registered
 
       after :build do |user|
         create(
           :profile,
           :fraud_review_pending,
+          :verified,
+          :with_pii,
+          user: user,
+        )
+      end
+    end
+
+    trait :fraud_rejection do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :fraud_rejection,
           :verified,
           :with_pii,
           user: user,

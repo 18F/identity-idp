@@ -23,7 +23,6 @@ en:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
-      document_verification_timeout: The server took too long to respond. Please try again.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       send_link_throttle: You tried too many times, please try again in %{timeout}.

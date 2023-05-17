@@ -129,8 +129,6 @@ feature 'Analytics Regression', js: true do
       fake_analytics.user = controller.analytics_user
       fake_analytics
     end
-    allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
-      and_return(fake_analytics)
     allow(IdentityConfig.store).to receive(:idv_acuant_sdk_upgrade_a_b_testing_enabled).
       and_return(false)
   end

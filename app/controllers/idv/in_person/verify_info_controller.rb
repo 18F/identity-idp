@@ -13,6 +13,7 @@ module Idv
 
       def show
         @step_indicator_steps = step_indicator_steps
+        @capture_secondary_id_enabled = capture_secondary_id_enabled
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).

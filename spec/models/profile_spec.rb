@@ -317,15 +317,15 @@ describe Profile do
     end
   end
 
-  describe '#activate_after_gpo_verification' do
-    it 'activates a profile after gpo verification' do
+  describe '#remove_gpo_deactivation_reason' do
+    it 'removes the gpo_verification_pending_at deactivation reason' do
       profile = create(
         :profile, user: user, active: false,
                   gpo_verification_pending_at: 1.day.ago
       )
-      profile.activate_after_gpo_verification
+      profile.remove_gpo_deactivation_reason
 
-      expect(profile).to be_active
+      expect(profile.gpo_verification_pending?).to be(false)
     end
   end
 

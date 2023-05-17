@@ -26,7 +26,6 @@ fr:
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
-      document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.
