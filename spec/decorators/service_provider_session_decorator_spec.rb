@@ -173,7 +173,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           service_provider_request: ServiceProviderRequestProxy.new,
         )
 
-        expect(subject.sp_logo_url).is_a? String
+        expect(subject.sp_logo_url).to be_kind_of(String)
       end
     end
   end

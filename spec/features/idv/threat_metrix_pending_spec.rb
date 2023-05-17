@@ -69,6 +69,31 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     expect(current_path).to eq('/auth/result')
   end
 
+  scenario 'users rejected from fraud review cannot perform idv' do
+    user = create(:user, :fraud_rejection)
+
+    start_idv_from_sp
+    sign_in_live_with_2fa(user)
+
+    # User is redirected on IdV sign in
+    expect(page).to have_content(t('idv.failure.verify.heading'))
+    expect(page).to have_current_path(idv_not_verified_path)
+
+    visit idv_url
+
+    # User cannot enter IdV flow
+    expect(page).to have_content(t('idv.failure.verify.heading'))
+    expect(page).to have_current_path(idv_not_verified_path)
+
+    # User able to sign for IAL1
+    set_new_browser_session
+    visit_idp_from_sp_with_ial1(:oidc)
+    sign_in_live_with_2fa(user)
+    click_agree_and_continue
+
+    expect(current_path).to eq('/auth/result')
+  end
+
   scenario 'users ThreatMetrix Pass, it logs idv_tmx_fraud_check event' do
     freeze_time do
       complete_all_idv_steps_with(threatmetrix: 'Pass')
