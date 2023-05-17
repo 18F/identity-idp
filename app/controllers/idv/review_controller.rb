@@ -18,6 +18,7 @@ module Idv
 
       analytics.idv_review_complete(
         success: false,
+        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         fraud_review_pending: current_user.fraud_review_pending?,
         fraud_rejection: current_user.fraud_rejection?,
       )

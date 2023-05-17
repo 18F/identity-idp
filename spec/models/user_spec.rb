@@ -196,10 +196,21 @@ RSpec.describe User do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     end
     let(:pending_enrollment_profile) do
-      create(:profile, gpo_verification_pending_at: 1.day.ago, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
+
     let(:establishing_enrollment_profile) do
-      create(:profile, gpo_verification_pending_at: 1.day.ago, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
 
     let!(:failed_enrollment) do
