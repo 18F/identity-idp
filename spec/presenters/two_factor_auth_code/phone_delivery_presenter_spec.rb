@@ -63,7 +63,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       it 'should show an option to change phone number' do
         expect(presenter.troubleshooting_options).to include(
           {
-            url: phone_setup_path,
+            url: add_phone_path,
             text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
           },
         )

@@ -104,6 +104,29 @@ RSpec.describe DataPull do
         expect(JSON.parse(stdout.string)).to be_empty
       end
     end
+
+    describe 'ig-query task' do
+      let(:service_provider) { create(:service_provider) }
+      let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
+
+      let(:argv) do
+        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer]
+      end
+
+      it 'runs the data requests report and prints it as JSON' do
+        data_pull.run
+
+        response = JSON.parse(stdout.string, symbolize_names: true)
+        expect(response.first.keys).to contain_exactly(
+          :user_id,
+          :login_uuid,
+          :requesting_issuer_uuid,
+          :email_addresses,
+          :mfa_configurations,
+          :user_events,
+        )
+      end
+    end
   end
 
   describe DataPull::UuidLookup do
@@ -114,8 +137,9 @@ RSpec.describe DataPull do
 
       let(:args) { [*users.map { |u| u.email_addresses.first.email }, 'missing@example.com'] }
       let(:include_missing) { true }
+      let(:config) { DataPull::Config.new(include_missing:) }
 
-      subject(:result) { subtask.run(args:, include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
 
       it 'looks up the UUIDs for the given email addresses', aggregate_failures: true do
         expect(result.table).to eq(
@@ -140,7 +164,8 @@ RSpec.describe DataPull do
 
       let(:args) { [*agency_identities.map(&:uuid), 'does-not-exist'] }
       let(:include_missing) { true }
-      subject(:result) { subtask.run(args:, include_missing:) }
+      let(:config) { DataPull::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
 
       it 'converts the agency agency identities to internal UUIDs', aggregate_failures: true do
         expect(result.table).to eq(
@@ -165,7 +190,8 @@ RSpec.describe DataPull do
 
       let(:args) { [user.uuid, 'does-not-exist'] }
       let(:include_missing) { true }
-      subject(:result) { subtask.run(args:, include_missing:) }
+      let(:config) { DataPull::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
 
       it 'loads email addresses for the user', aggregate_failures: true do
         expect(result.table).to match(
@@ -179,6 +205,35 @@ RSpec.describe DataPull do
         )
 
         expect(result.subtask).to eq('email-lookup')
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+  end
+
+  describe DataPull::InspectorGeneralRequest do
+    subject(:subtask) { DataPull::InspectorGeneralRequest.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:service_provider) { create(:service_provider) }
+      let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
+      let(:args) { [user.uuid] }
+      let(:config) { DataPull::Config.new(requesting_issuers: [service_provider.issuer]) }
+
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'runs the create users report, has a JSON-only response', aggregate_failures: true do
+        expect(result.table).to be_nil
+        expect(result.json.first.keys).to contain_exactly(
+          :user_id,
+          :login_uuid,
+          :requesting_issuer_uuid,
+          :email_addresses,
+          :mfa_configurations,
+          :user_events,
+        )
+
+        expect(result.subtask).to eq('ig-request')
         expect(result.uuids).to eq([user.uuid])
       end
     end

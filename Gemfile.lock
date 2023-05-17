@@ -442,19 +442,15 @@ GEM
       google-protobuf (>= 3.19.2)
     phonelib (0.6.54)
     pkcs11 (0.3.4)
-    premailer (1.15.0)
+    premailer (1.21.0)
       addressable
-      css_parser (>= 1.6.0)
+      css_parser (>= 1.12.0)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.11.1)
+    premailer-rails (1.12.0)
       actionmailer (>= 3)
+      net-smtp
       premailer (~> 1.7, >= 1.7.9)
     profanity_filter (0.1.1)
-    propshaft (0.7.0)
-      actionpack (>= 7.0.0)
-      activesupport (>= 7.0.0)
-      rack
-      railties (>= 7.0.0)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -639,6 +635,13 @@ GEM
     simpleidn (0.2.1)
       unf (~> 0.1.4)
     smart_properties (1.17.0)
+    sprockets (4.0.2)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    sprockets-rails (3.4.2)
+      actionpack (>= 5.2)
+      activesupport (>= 5.2)
+      sprockets (>= 3.0.0)
     stringex (2.8.5)
     strong_migrations (0.8.0)
       activerecord (>= 5.2)
@@ -763,7 +766,6 @@ DEPENDENCIES
   jwt
   knapsack
   letter_opener (~> 1.8)
-  listen
   lograge (>= 0.11.2)
   lookbook (~> 1.5.3)
   lru_redux
@@ -777,9 +779,8 @@ DEPENDENCIES
   pg
   pg_query
   phonelib
-  premailer-rails (>= 1.11.1)
+  premailer-rails (>= 1.12.0)
   profanity_filter
-  propshaft
   pry-byebug
   pry-doc
   pry-rails
@@ -818,6 +819,7 @@ DEPENDENCIES
   simplecov (~> 0.21.0)
   simplecov-cobertura
   simplecov_json_formatter
+  sprockets-rails
   stringex
   strong_migrations (>= 0.4.2)
   subprocess

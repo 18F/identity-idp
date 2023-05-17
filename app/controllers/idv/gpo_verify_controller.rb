@@ -111,10 +111,6 @@ module Idv
       redirect_to account_url
     end
 
-    def fraud_check_failed?
-      threatmetrix_enabled? && (current_user.fraud_review_pending? || current_user.fraud_rejection?)
-    end
-
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
     end

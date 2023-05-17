@@ -1,4 +1,6 @@
 class IconComponent < BaseComponent
+  include AssetHelper
+
   # See: https://github.com/uswds/uswds/tree/develop/src/img/usa-icons
   ICONS = %i[
     accessibility_new
@@ -254,7 +256,7 @@ class IconComponent < BaseComponent
   end
 
   def icon_path
-    asset_path([asset_path('sprite.svg'), '#', icon].join, host: asset_host)
+    asset_path([design_system_asset_path('img/sprite.svg'), '#', icon].join, host: asset_host)
   end
 
   private
