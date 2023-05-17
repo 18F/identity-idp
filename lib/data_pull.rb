@@ -153,7 +153,7 @@ class DataPull
       end
 
       opts.on('--[no-]include-missing', <<~STR) do |include_missing|
-        Whether or not to add rows in the output for missing inputs, defaults to off
+        Whether or not to add rows in the output for missing inputs, defaults to on
       STR
         config.include_missing = include_missing
       end
