@@ -254,9 +254,10 @@ RSpec.describe DataPull do
       it 'loads profile summary for the user', aggregate_failures: true do
         expect(result.table).to match_array(
           [
-            ['uuid', 'current_status', 'activated_timestamp', 'disabled_reason', 'fraud_review_pending_timestamp', 'fraud_rejection_timestamp'],
+            ['uuid', 'current_status', 'activated_timestamp', 'disabled_reason',
+             'fraud_review_pending_timestamp', 'fraud_rejection_timestamp'],
             *user.profiles.sort_by(&:id).map do |p|
-              profile_status = p.active ? 'Active' : 'Inactive'
+              profile_status = p.active ? 'active' : 'inactive'
               [user.uuid, profile_status, kind_of(Time), p.deactivation_reason, nil, nil]
             end,
             [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil],
@@ -269,5 +270,4 @@ RSpec.describe DataPull do
       end
     end
   end
-
 end
