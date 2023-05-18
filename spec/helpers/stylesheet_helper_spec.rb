@@ -66,5 +66,22 @@ RSpec.describe StylesheetHelper do
         )
       end
     end
+
+    context 'with named stylesheets argument' do
+      before do
+        stylesheet_tag_once('styles-a')
+      end
+
+      it 'enqueues those stylesheets before printing them' do
+        output = render_stylesheet_once_tags('styles-b')
+
+        expect(output).to have_css(
+          'link[rel="stylesheet"][href="/stylesheets/styles-a.css"] ~ ' \
+            'link[rel="stylesheet"][href="/stylesheets/styles-b.css"]',
+          count: 1,
+          visible: :all,
+        )
+      end
+    end
   end
 end
