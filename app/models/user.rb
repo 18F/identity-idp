@@ -107,7 +107,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    profile = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+    pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
       profiles.where.not(gpo_verification_pending_at: nil),
     ).or(
       profiles.where.not(fraud_review_pending_at: nil),
@@ -115,10 +115,10 @@ class User < ApplicationRecord
       profiles.where.not(fraud_rejection_at: nil),
     ).order(created_at: :desc).first
 
-    return unless profile.present?
-    return if active_profile.present? && profile.created_at > active_profile.activated_at
+    return unless pending.present?
+    return if active_profile.present? && active_profile.activated_at > pending.created_at
 
-    profile
+    pending
   end
 
   def gpo_verification_pending_profile

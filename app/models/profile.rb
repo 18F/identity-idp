@@ -56,6 +56,7 @@ class Profile < ApplicationRecord
       update!(
         active: true,
         activated_at: now,
+        verified_at: now,
       )
     end
     send_push_notifications if is_reproof
