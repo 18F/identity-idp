@@ -168,7 +168,7 @@ module AnalyticsEvents
   def automatic_fraud_rejection(fraud_rejection_at:, **extra)
     track_event(
       'Fraud: Automatic Fraud Rejection',
-      fraud_rejection_at: fraud_rejection_at, # preserve legacy key name
+      fraud_rejection_at: fraud_rejection_at,
       **extra,
     )
   end
