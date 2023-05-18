@@ -84,10 +84,6 @@ module TwoFactorAuthentication
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
     def save_challenge_in_session
       credential_creation_options = WebAuthn::Credential.options_for_get
       user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a

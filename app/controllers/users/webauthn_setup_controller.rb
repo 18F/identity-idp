@@ -2,7 +2,6 @@ module Users
   class WebauthnSetupController < ApplicationController
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -107,10 +106,6 @@ module Users
     def sign_up_mfa_selection_order_bucket
       return unless in_multi_mfa_selection_flow?
       @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def flash_error(errors)
