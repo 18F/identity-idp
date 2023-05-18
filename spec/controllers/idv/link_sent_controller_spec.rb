@@ -103,77 +103,75 @@ describe Idv::LinkSentController do
       }
     end
 
-    let(:load_result) {double('load result')}
-
-    before do
-      allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
-      allow(load_result).to receive(:attention_with_barcode?).and_return(false)
-    end
-
-    after(:each) do
-      flow_session['Idv::Steps::UploadStep'] = true
-    end
-
     it 'sends analytics_submitted event' do
-      allow(load_result).to receive(:success?).and_return(true)
-      document_capture_session = DocumentCaptureSession.create!(user: user)
-      flow_session['document_capture_session_uuid'] = document_capture_session.uuid
-      allow(document_capture_session).to receive(:load_result).and_return(load_result)
-      allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
-
       put :update
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
 
-    it 'redirects to ssn page' do
-      allow(load_result).to receive(:success?).and_return(true)
-      document_capture_session = DocumentCaptureSession.create!(user: user)
-      flow_session['document_capture_session_uuid'] = document_capture_session.uuid
-      allow(document_capture_session).to receive(:load_result).and_return(load_result)
-      allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
+    context 'check results' do
+      let(:load_result) { double('load result') }
+      let(:session_canceled_at) { nil }
+      let(:load_result_success) { true }
 
-      put :update
+      before do
+        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
+        allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
-      expect(response).to redirect_to(idv_ssn_url)
+        allow(load_result).to receive(:success?).and_return(load_result_success)
 
-      pc = ProofingComponent.find_by(user_id: user.id)
-      expect(pc.document_check).to eq('mock')
-      expect(pc.document_type).to eq('state_id')
-    end
-
-    context 'document capture session has been canceled' do
-      it 'redirects to doc_auth page' do
-        allow(load_result).to receive(:success?).and_return(true)
-        error_message = t('errors.doc_auth.document_capture_cancelled')
-        document_capture_session = DocumentCaptureSession.create!(user: user, cancelled_at: Time.now)
+        document_capture_session = DocumentCaptureSession.create!(
+          user: user,
+          cancelled_at: session_canceled_at,
+        )
         flow_session['document_capture_session_uuid'] = document_capture_session.uuid
         allow(document_capture_session).to receive(:load_result).and_return(load_result)
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
-        expect(FormResponse).to receive(:new).with({ success: false, errors: { message: error_message } })
-
-        put :update
-
-        expect(response).to redirect_to(idv_doc_auth_url)
-        expect(flow_session[:error_message]).to eq(error_message)
-        expect(flow_session['Idv::Steps::UploadStep']).to be_nil
       end
-    end
 
-    context 'document capture session result fails' do
-      it 'returns an empty response' do
-        allow(load_result).to receive(:success?).and_return(false)
-        error_message = t('errors.doc_auth.phone_step_incomplete')
-        document_capture_session = DocumentCaptureSession.create!(user: user)
-        flow_session['document_capture_session_uuid'] = document_capture_session.uuid
-        allow(document_capture_session).to receive(:load_result).and_return(load_result)
-        allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
-        expect(FormResponse).to receive(:new).with({ success: false, errors: { message: error_message } })
-
+      it 'redirects to ssn page when successful' do
         put :update
 
-        expect(response).to have_http_status(204)
-        expect(flow_session[:error_message]).to eq(error_message)
+        expect(response).to redirect_to(idv_ssn_url)
+
+        pc = ProofingComponent.find_by(user_id: user.id)
+        expect(pc.document_check).to eq('mock')
+        expect(pc.document_type).to eq('state_id')
+      end
+
+      context 'document capture session canceled' do
+        let(:session_canceled_at) { Time.zone.now }
+
+        it 'redirects to doc_auth page' do
+          error_message = t('errors.doc_auth.document_capture_cancelled')
+          expect(FormResponse).to receive(:new).with(
+            { success: false,
+              errors: { message: error_message } },
+          )
+
+          put :update
+
+          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(flow_session[:error_message]).to eq(error_message)
+          expect(flow_session['Idv::Steps::UploadStep']).to be_nil
+        end
+      end
+
+      context 'document capture session result fails' do
+        let(:load_result_success) { false }
+
+        it 'returns an empty response' do
+          error_message = t('errors.doc_auth.phone_step_incomplete')
+          expect(FormResponse).to receive(:new).with(
+            { success: false,
+              errors: { message: error_message } },
+          )
+
+          put :update
+
+          expect(response).to have_http_status(204)
+          expect(flow_session[:error_message]).to eq(error_message)
+        end
       end
     end
   end
