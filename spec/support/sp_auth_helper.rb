@@ -57,7 +57,7 @@ module SpAuthHelper
     # Mark IPP as passed
     enrollment = user.in_person_enrollments.last
     expect(enrollment).to_not be_nil
-    enrollment.profile.activate
+    enrollment.profile.activate_after_passing_in_person
     enrollment.update(status: :passed)
 
     visit_idp_from_sp_with_ial2(sp)

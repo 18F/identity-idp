@@ -71,12 +71,19 @@ class Profile < ApplicationRecord
     activate
   end
 
+  def activate_after_passing_in_person
+    update!(
+      deactivation_reason: nil,
+    )
+    activate
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
   end
 
   def has_deactivation_reason?
-    has_fraud_deactivation_reason? || gpo_verification_pending?
+    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
   end
 
   def has_fraud_deactivation_reason?
