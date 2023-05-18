@@ -1,6 +1,12 @@
 module InPerson::EnrollmentsReadyForStatusCheck
-  module EnrollmentPipeline
-    include UsesReportError
+  class EnrollmentPipeline
+    # @param [InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter] error_reporter
+    # @param [Regexp] email_body_pattern Pattern matching the expected email body
+    # Note: email_body_pattern must include a capture group named "enrollment_code"
+    def initialize(error_reporter:, email_body_pattern:)
+      @error_reporter = error_reporter
+      @email_body_pattern = email_body_pattern
+    end
 
     # Process a message from USPS indicating that an in-person
     # enrollment is ready to have its status checked.
@@ -133,12 +139,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
 
     private
 
-    # Regex pattern describing the expected email format.
-    # This should include an "enrollment_code" capture group.
-    def email_body_pattern
-      @email_body_pattern ||= Regexp.new(
-        IdentityConfig.store.in_person_enrollments_ready_job_email_body_pattern,
-      )
-    end
+    attr_reader :error_reporter, :email_body_pattern
+    delegate :report_error, to: :error_reporter
   end
 end

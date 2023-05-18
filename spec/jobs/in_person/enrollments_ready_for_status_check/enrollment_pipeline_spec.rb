@@ -1,11 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
-  subject(:enrollment_pipeline) { Class.new.include(described_class).new }
+  let(:error_reporter) { instance_double(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter) }
+  let(:email_body_pattern) { /\A\s*(?<enrollment_code>\d{16})\s*\Z/ }
+  subject(:enrollment_pipeline) { described_class.new(error_reporter:, email_body_pattern:) }
 
   before(:each) do
     allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
       and_return('\A\s*(?<enrollment_code>\d{16})\s*\Z')
+
+    allow(error_reporter).to receive(:report_error)
   end
 
   describe '#process_message' do
@@ -50,13 +54,12 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     let(:expected_error_extra) { nil }
 
     before(:each) do
-      allow(enrollment_pipeline).to receive(:report_error)
       allow(sqs_message).to receive(:message_id).
         and_return(sqs_message_id)
     end
 
     def expect_error(error, **extra)
-      expect(enrollment_pipeline).to receive(:report_error) do |err, err_extra|
+      expect(error_reporter).to receive(:report_error) do |err, err_extra|
         expect(err).to eq(error) if error.is_a?(String)
         expect(err.message).to eq(error.message) if error.is_a?(StandardError)
         expect(err.class).to eq(error.class)
@@ -257,7 +260,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           :pick,
         ).and_raise(error)
 
-        expect(enrollment_pipeline).to receive(:report_error).
+        expect(error_reporter).to receive(:report_error).
           with(
             error,
             sqs_message_id:,
@@ -281,7 +284,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           with(enrollment.id, ready_for_status_check: true).
           and_raise(error)
 
-        expect(enrollment_pipeline).to receive(:report_error).
+        expect(error_reporter).to receive(:report_error).
           with(
             error,
             sqs_message_id:,
@@ -307,7 +310,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         expect(InPersonEnrollment).to receive(:update).
           with(enrollment.id, ready_for_status_check: true).once
 
-        expect(enrollment_pipeline).not_to receive(:report_error)
+        expect(error_reporter).not_to receive(:report_error)
 
         expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
       end
@@ -321,7 +324,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
 
         expect(InPersonEnrollment).not_to receive(:update)
 
-        expect(enrollment_pipeline).not_to receive(:report_error)
+        expect(error_reporter).not_to receive(:report_error)
 
         expect(enrollment_pipeline.process_message(sqs_message)).to be(true)
       end

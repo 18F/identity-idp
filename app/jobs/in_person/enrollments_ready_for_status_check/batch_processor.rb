@@ -1,8 +1,13 @@
 module InPerson::EnrollmentsReadyForStatusCheck
-  module BatchProcessor
-    include UsesReportError
-    include UsesSqsClient
-    include EnrollmentPipeline
+  class BatchProcessor
+    # @param [InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter] error_reporter
+    # @param [InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper] sqs_batch_wrapper
+    # @param [InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline] enrollment_pipeline
+    def initialize(error_reporter:, sqs_batch_wrapper:, enrollment_pipeline:)
+      @error_reporter = error_reporter
+      @sqs_batch_wrapper = sqs_batch_wrapper
+      @enrollment_pipeline = enrollment_pipeline
+    end
 
     # Process a batch of incoming messages corresponding to in-person
     # enrollments that are ready to have their status checked.
@@ -41,6 +46,12 @@ module InPerson::EnrollmentsReadyForStatusCheck
     end
 
     private
+
+    attr_reader :error_reporter, :sqs_batch_wrapper, :enrollment_pipeline
+
+    delegate :report_error, to: :error_reporter
+    delegate :delete_message_batch, to: :sqs_batch_wrapper
+    delegate :process_message, to: :enrollment_pipeline
 
     # Delete messages from the queue and report deletion errors
     # @param [Array<Aws::SQS::Types::Message>] deletion_batch SQS messages to delete

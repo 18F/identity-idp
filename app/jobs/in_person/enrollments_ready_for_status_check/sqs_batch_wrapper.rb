@@ -1,5 +1,15 @@
 module InPerson::EnrollmentsReadyForStatusCheck
-  module UsesSqsClient
+  class SqsBatchWrapper
+
+    # @param [Aws::SQS::Client] sqs_client AWS SQS Client
+    # @param [String] queue_url The URL identifying the SQS queue
+    # @param [Hash] receive_params Parameters passed to #receive_message
+    def initialize(sqs_client:, queue_url:, receive_params:)
+      @sqs_client = sqs_client
+      @queue_url = queue_url
+      @receive_params = receive_params
+    end
+
     # Fetch a batch of messages from the SQS queue
     # @return [Array<Aws::SQS::Types::Message>]
     def poll
@@ -24,25 +34,6 @@ module InPerson::EnrollmentsReadyForStatusCheck
     end
 
     private
-
-    def sqs_client
-      @sqs_client ||= Aws::SQS::Client.new
-    end
-
-    def queue_url
-      IdentityConfig.store.in_person_enrollments_ready_job_queue_url
-    end
-
-    def receive_params
-      {
-        queue_url:,
-        max_number_of_messages:
-          IdentityConfig.store.in_person_enrollments_ready_job_max_number_of_messages,
-        visibility_timeout:
-          IdentityConfig.store.in_person_enrollments_ready_job_visibility_timeout_seconds,
-        wait_time_seconds:
-          IdentityConfig.store.in_person_enrollments_ready_job_wait_time_seconds,
-      }
-    end
+    attr_reader :sqs_client, :queue_url, :receive_params
   end
 end

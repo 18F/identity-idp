@@ -4,8 +4,8 @@ module InPerson
   # the enrollment is ready, then this job updates a flag on the enrollment so that it
   # will be checked earlier than other enrollments.
   class EnrollmentsReadyForStatusCheckJob < ApplicationJob
-    include InPerson::EnrollmentsReadyForStatusCheck::UsesAnalytics
-    include InPerson::EnrollmentsReadyForStatusCheck::UsesSqsClient
+    include InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory
+    include InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper
     include InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor
 
     queue_as :low

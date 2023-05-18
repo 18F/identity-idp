@@ -1,6 +1,6 @@
 module InPerson
   module EnrollmentsReadyForStatusCheck
-    module UsesAnalytics
+    class UserAnalyticsFactory
       # Create an analytics instance for logging
       # @param [User] user The user to associate the recorded analytics with.
       def analytics(user: AnonymousUser.new)
