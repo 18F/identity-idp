@@ -9,7 +9,7 @@ Additionally, this module depends on existing backend services from the Login.go
 You can install this module using npm:
 
 ```shell
-npm install @18f/identiy-address-search
+npm install @18f/identity-address-search
 ```
 
 ## Usage
