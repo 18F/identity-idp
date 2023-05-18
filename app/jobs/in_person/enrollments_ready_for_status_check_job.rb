@@ -4,10 +4,6 @@ module InPerson
   # the enrollment is ready, then this job updates a flag on the enrollment so that it
   # will be checked earlier than other enrollments.
   class EnrollmentsReadyForStatusCheckJob < ApplicationJob
-    include InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory
-    include InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper
-    include InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor
-
     queue_as :low
 
     def perform(_now)
@@ -39,6 +35,60 @@ module InPerson
             analytics_stats[:processed_items] - analytics_stats[:deleted_items],
         )
       end
+    end
+
+    private
+
+    delegate :poll, to: :sqs_batch_wrapper
+    delegate :process_batch, to: :batch_processor
+    delegate :analytics, to: :analytics_factory
+
+    def batch_processor
+      @batch_processor ||= begin
+        InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor.new(
+          error_reporter: InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter.new(
+            InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor.name,
+            analytics,
+          ),
+          sqs_batch_wrapper: sqs_batch_wrapper,
+          enrollment_pipeline: InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.new(
+            error_reporter: InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter.new(
+              InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.name,
+              analytics,
+            ),
+            email_body_pattern: Regexp.new(
+              # Regex pattern describing the expected email format.
+              # This should include an "enrollment_code" capture group.
+              IdentityConfig.store.in_person_enrollments_ready_job_email_body_pattern,
+            ),
+          ),
+        )
+      end
+    end
+
+    def sqs_batch_wrapper
+      @sqs_batch_wrapper ||= begin
+        config = IdentityConfig.store
+        queue_url = config.in_person_enrollments_ready_job_queue_url
+        max_number_of_messages = config.in_person_enrollments_ready_job_max_number_of_messages
+        visibility_timeout = config.in_person_enrollments_ready_job_visibility_timeout_seconds
+        wait_time_seconds = config.in_person_enrollments_ready_job_wait_time_seconds
+
+        InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper.new(
+          sqs_client: Aws::SQS::Client.new,
+          queue_url:,
+          receive_params: {
+            queue_url:,
+            max_number_of_messages:,
+            visibility_timeout:,
+            wait_time_seconds:,
+          },
+        )
+      end
+    end
+
+    def analytics_factory
+      @analytics_factory ||= InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory.new
     end
   end
 end

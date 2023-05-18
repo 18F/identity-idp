@@ -22,6 +22,7 @@ module InPerson
       end
 
       private
+
       attr_reader :analytics_factory
       delegate :analytics, to: :analytics_factory
     end

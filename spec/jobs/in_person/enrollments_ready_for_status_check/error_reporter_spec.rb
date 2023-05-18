@@ -7,7 +7,9 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter do
   let(:class_name) { "#{described_class.name.demodulize}#{class_name_suffix}" }
 
   let(:analytics) { instance_double(Analytics) }
-  let(:analytics_factory) { instance_double(InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory) }
+  let(:analytics_factory) do
+    instance_double(InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory)
+  end
   subject(:error_reporter) { described_class.new(class_name, analytics_factory) }
   let(:analytics_extra) { nil }
   let(:expected_error_class) { nil }

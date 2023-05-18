@@ -234,4 +234,151 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
       end
     end
   end
+
+  # Normally we should stick to validating the contract and dependencies,
+  # but making an exception here because the construction of these classes
+  # is relatively complex; so expanding tests to additionally cover delegation
+  # and constructor calls.
+  #
+  # Also doing this b/c the codebase does not use an IoC framework like dry-system
+  # and there's not an established convention for creating factories.
+
+  describe '#poll (private)' do
+    it 'delegates to sqs_batch_wrapper' do
+      sqs_batch_wrapper = instance_double(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper)
+      poll_result = []
+      expect(job).to receive(:sqs_batch_wrapper).and_return(sqs_batch_wrapper)
+      expect(sqs_batch_wrapper).to receive(:poll).and_return(poll_result).once
+      expect(job.send(:poll)).to be(poll_result)
+    end
+  end
+
+  describe '#process_batch (private)' do
+    it 'delegates to batch_processor' do
+      batch_processor = instance_double(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor)
+      expect(job).to receive(:batch_processor).and_return(batch_processor)
+      messages = []
+      analytics_stats = {}
+      expect(batch_processor).to receive(:process_batch).with(messages, analytics_stats).once
+      job.send(:process_batch, messages, analytics_stats)
+    end
+  end
+
+  describe '#analytics (private)' do
+    it 'delegates to analytics_factory (with user)' do
+      analytics_factory = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
+      )
+      analytics = FakeAnalytics.new
+      expect(job).to receive(:analytics_factory).and_return(analytics_factory)
+      user = instance_double(User)
+      expect(analytics_factory).to receive(:analytics).with(user:).and_return(analytics).once
+      expect(job.send(:analytics, user:)).to be(analytics)
+    end
+    it 'delegates to analytics_factory (no user)' do
+      analytics_factory = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
+      )
+      analytics = FakeAnalytics.new
+      expect(job).to receive(:analytics_factory).and_return(analytics_factory)
+      expect(analytics_factory).to receive(:analytics).and_return(analytics).once
+      expect(job.send(:analytics)).to be(analytics)
+    end
+  end
+
+  describe '#analytics_factory (private)' do
+    it 'creates an analytics factory object' do
+      expect(job.send(:analytics_factory)).to be_instance_of(
+        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
+      )
+    end
+  end
+
+  describe '#sqs_batch_wrapper (private)' do
+    it 'creates SQS batch wrapper object with expected params' do
+      sqs_client = instance_double(Aws::SQS::Client)
+      expect(Aws::SQS::Client).to receive(:new).and_return(sqs_client)
+
+      queue_url = 'test/queue/url'
+      max_number_of_messages = 10
+      visibility_timeout_seconds = 30
+      wait_time_seconds = 20
+
+      expect(IdentityConfig.store).to receive_messages(
+        in_person_enrollments_ready_job_queue_url: queue_url,
+        in_person_enrollments_ready_job_max_number_of_messages: max_number_of_messages,
+        in_person_enrollments_ready_job_visibility_timeout_seconds: visibility_timeout_seconds,
+        in_person_enrollments_ready_job_wait_time_seconds: wait_time_seconds,
+      )
+
+      wrapper = instance_double(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper)
+      expect(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper).to receive(:new).
+        with(
+          sqs_client: sqs_client,
+          queue_url:,
+          receive_params: {
+            queue_url:,
+            max_number_of_messages:,
+            visibility_timeout: visibility_timeout_seconds,
+            wait_time_seconds:,
+          },
+        ).and_return(wrapper)
+      expect(job.send(:sqs_batch_wrapper)).to be(wrapper)
+    end
+  end
+
+  describe '#batch_processor (private)' do
+    it 'creates a batch processor with the expected arguments' do
+      analytics_factory = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
+      )
+      analytics = FakeAnalytics.new
+      expect(job).to receive(:analytics_factory).and_return(analytics_factory).exactly(2).times
+      expect(analytics_factory).to receive(:analytics).and_return(analytics).exactly(2).times
+
+      batch_processor_error_reporter = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter,
+      )
+      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new).
+        with(
+          InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor.name,
+          analytics,
+        ).and_return(batch_processor_error_reporter)
+
+      sqs_batch_wrapper = instance_double(InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper)
+      expect(job).to receive(:sqs_batch_wrapper).and_return(sqs_batch_wrapper)
+
+      enrollment_pipeline_error_reporter = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter,
+      )
+      expect(InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter).to receive(:new).
+        with(
+          InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline.name,
+          analytics,
+        ).and_return(enrollment_pipeline_error_reporter)
+
+      email_body_pattern = 'abcd'
+      expect(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_email_body_pattern).
+        and_return(email_body_pattern)
+
+      enrollment_pipeline = instance_double(
+        InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline,
+      )
+      expect(InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline).to receive(:new).
+        with(
+          error_reporter: enrollment_pipeline_error_reporter,
+          email_body_pattern: /abcd/,
+        ).and_return(enrollment_pipeline)
+
+      batch_processor = instance_double(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor)
+      expect(InPerson::EnrollmentsReadyForStatusCheck::BatchProcessor).to receive(:new).
+        with(
+          error_reporter: batch_processor_error_reporter,
+          sqs_batch_wrapper:,
+          enrollment_pipeline:,
+        ).and_return(batch_processor)
+
+      expect(job.send(:batch_processor)).to be(batch_processor)
+    end
+  end
 end

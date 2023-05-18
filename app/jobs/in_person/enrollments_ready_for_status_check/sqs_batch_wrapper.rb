@@ -1,6 +1,5 @@
 module InPerson::EnrollmentsReadyForStatusCheck
   class SqsBatchWrapper
-
     # @param [Aws::SQS::Client] sqs_client AWS SQS Client
     # @param [String] queue_url The URL identifying the SQS queue
     # @param [Hash] receive_params Parameters passed to #receive_message
@@ -34,6 +33,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
     end
 
     private
+
     attr_reader :sqs_client, :queue_url, :receive_params
   end
 end
