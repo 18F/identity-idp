@@ -71,6 +71,13 @@ class Profile < ApplicationRecord
     activate
   end
 
+  def activate_after_passing_in_person
+    update!(
+      deactivation_reason: nil,
+    )
+    activate
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
   end
