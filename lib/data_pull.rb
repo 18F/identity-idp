@@ -274,17 +274,17 @@ class DataPull
       users = User.includes(:profiles).where(uuid: uuids).order(:uuid)
 
       table = []
-      table << %w[uuid current_status activated_timestamp disabled_reason
+      table << %w[uuid profile_id status activated_timestamp disabled_reason
                   gpo_verification_pending_timestamp fraud_review_pending_timestamp
                   fraud_rejection_timestamp]
 
       users.each do |user|
         if user.profiles.any?
           user.profiles.sort_by(&:id).each do |profile|
-            profile_status = "profile_id: #{profile.id} (#{profile.active ? 'active' : 'inactive'})"
             table << [
               user.uuid,
-              profile_status,
+              profile.id,
+              profile.active ? 'active' : 'inactive',
               profile.activated_at,
               profile.deactivation_reason,
               profile.gpo_verification_pending_at,
@@ -293,13 +293,13 @@ class DataPull
             ]
           end
         elsif config.include_missing?
-          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil]
+          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil]
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil, nil]
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil]
         end
       end
 
