@@ -1,5 +1,6 @@
 module Users
   class TotpSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include RememberDeviceConcern
     include MfaSetupConcern
     include RememberDeviceConcern
@@ -97,11 +98,6 @@ module Users
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def create_events

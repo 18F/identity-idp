@@ -1,5 +1,6 @@
 module Users
   class WebauthnSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
     include RememberDeviceConcern
     include SecureHeadersConcern
@@ -179,11 +180,6 @@ module Users
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       }
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def process_invalid_webauthn(form)
