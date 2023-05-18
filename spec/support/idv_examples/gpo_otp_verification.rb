@@ -18,7 +18,7 @@ shared_examples 'gpo otp verification' do
       expect(profile.deactivation_reason).to be(nil)
     else
       expect(profile.active).to be(false)
-      expect(profile.fraud_reviewing?).to eq(fraud_review_pending) if fraud_review_pending
+      expect(profile.fraud_review_pending?).to eq(fraud_review_pending) if fraud_review_pending
       expect(profile.deactivation_reason).to eq(nil) if fraud_review_pending
     end
 

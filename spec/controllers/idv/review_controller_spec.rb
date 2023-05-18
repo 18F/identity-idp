@@ -573,7 +573,7 @@ describe Idv::ReviewController do
                   it 'creates a profile with fraud_review_pending defined' do
                     put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-                    expect(user.profiles.last.fraud_reviewing?).to eq(fraud_review_pending?)
+                    expect(user.profiles.last.fraud_review_pending?).to eq(fraud_review_pending?)
                   end
 
                   it 'logs events' do

@@ -7,8 +7,8 @@ describe Idv::PleaseCallController do
 
   before do
     user.profiles.create(
-      fraud_state: 'fraud_reviewing',
-      fraud_reviewing_at: fraud_review_pending_date,
+      fraud_state: 'fraud_review_pending',
+      fraud_review_pending_at: fraud_review_pending_date,
       verified_at: verify_date,
     )
     stub_sign_in(user)

@@ -1,11 +1,6 @@
 class Profile < ApplicationRecord
   include AASM
 
-  self.ignored_columns += %w[
-    fraud_review_pending_at
-    fraud_rejection_at
-  ]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -34,7 +29,7 @@ class Profile < ApplicationRecord
 
   aasm :fraud, column: :fraud_state, timestamps: true do
     state :fraud_none, initial: true
-    state :fraud_reviewing, :fraud_rejected, :fraud_passed
+    state :fraud_review_pending, :fraud_rejection, :fraud_passed
 
     event :fraud_review do
       transitions(
@@ -42,23 +37,23 @@ class Profile < ApplicationRecord
           :fraud_none,
           # TODO: the following 2 states are actually newly discovered states:
           # this is really the state right after profile creation
-          :fraud_reviewing,
+          :fraud_review_pending,
           # `ThreatMetrix says "reject"`, see gpo_otp_verification_step_spec.rb
-          :fraud_rejected,
+          :fraud_rejection,
         ],
-        to: :fraud_reviewing,
+        to: :fraud_review_pending,
       )
     end
 
     event :fraud_reject do
-      transitions from: :fraud_reviewing, to: :fraud_rejected
+      transitions from: :fraud_review_pending, to: :fraud_rejection
     end
 
     event :fraud_pass do
       transitions(
         from: [
-          :fraud_reviewing,
-          :fraud_rejected,
+          :fraud_review_pending,
+          :fraud_rejection,
         ],
         to: :fraud_passed,
       )
@@ -108,7 +103,7 @@ class Profile < ApplicationRecord
 
   def has_fraud_deactivation_reason?
     return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
-    fraud_reviewing? || fraud_rejected?
+    fraud_review_pending? || fraud_rejection?
   end
 
   def deactivate_for_gpo_verification

@@ -22,14 +22,14 @@ FactoryBot.define do
     end
 
     trait :fraud_review_pending do
-      fraud_state { 'fraud_reviewing' }
-      fraud_reviewing_at { 15.days.ago }
+      fraud_state { 'fraud_review_pending' }
+      fraud_review_pending_at { 15.days.ago }
       proofing_components { { threatmetrix_review_status: 'review' } }
     end
 
     trait :fraud_rejection do
-      fraud_state { 'fraud_rejected' }
-      fraud_rejected_at { 15.days.ago }
+      fraud_state { 'fraud_rejection' }
+      fraud_rejection_at { 15.days.ago }
     end
 
     trait :verification_cancelled do

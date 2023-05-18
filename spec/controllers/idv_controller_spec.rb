@@ -28,7 +28,7 @@ describe IdvController do
     end
 
     it 'redirects to sad face page if fraud review is pending' do
-      profile = create(:profile, fraud_state: 'fraud_reviewing')
+      profile = create(:profile, fraud_state: 'fraud_review_pending')
 
       stub_sign_in(profile.user)
 
@@ -38,7 +38,7 @@ describe IdvController do
     end
 
     it 'redirects to fraud rejection page if profile is rejected' do
-      profile = create(:profile, fraud_state: 'fraud_rejected')
+      profile = create(:profile, fraud_state: 'fraud_rejection')
 
       stub_sign_in(profile.user)
 

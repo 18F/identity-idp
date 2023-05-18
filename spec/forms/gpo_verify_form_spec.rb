@@ -153,8 +153,8 @@ describe GpoVerifyForm do
           create(
             :profile,
             user: user,
-            fraud_state: 'fraud_reviewing',
-            fraud_reviewing_at: 1.day.ago,
+            fraud_state: 'fraud_review_pending',
+            fraud_review_pending_at: 1.day.ago,
             gpo_verification_pending_at: 1.day.ago,
           )
         end
@@ -174,7 +174,7 @@ describe GpoVerifyForm do
           subject.submit
           profile = user.profiles.first
           expect(profile.active).to eq(false)
-          expect(profile.fraud_reviewing?).to eq(true)
+          expect(profile.fraud_review_pending?).to eq(true)
         end
 
         it 'notes that threatmetrix failed' do

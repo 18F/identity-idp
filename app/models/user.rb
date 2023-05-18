@@ -124,12 +124,12 @@ class User < ApplicationRecord
 
   def fraud_review_pending_profile
     @fraud_review_pending_profile ||=
-      profiles.fraud_reviewing.order(created_at: :desc).first
+      profiles.fraud_review_pending.order(created_at: :desc).first
   end
 
   def fraud_rejection_profile
     @fraud_rejection_profile ||=
-      profiles.fraud_rejected.order(created_at: :desc).first
+      profiles.fraud_rejection.order(created_at: :desc).first
   end
 
   def personal_key_generated_at
