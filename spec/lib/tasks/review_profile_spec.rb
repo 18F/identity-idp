@@ -58,7 +58,7 @@ describe 'review_profile' do
       it 'does not activate the profile' do
         user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
 
-        invoke_task
+        expect { invoke_task }.to raise_error(RuntimeError)
 
         expect(user.reload.profiles.first.active).to eq(false)
       end
