@@ -26,11 +26,11 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   def fraud_review_pending?
-    fraud_review_pending_at.present? && !has_deactivation_reason?
+    fraud_review_pending_at.present?
   end
 
   def fraud_rejection?
-    fraud_rejection_at.present? && !has_deactivation_reason?
+    fraud_rejection_at.present?
   end
 
   def gpo_verification_pending?
