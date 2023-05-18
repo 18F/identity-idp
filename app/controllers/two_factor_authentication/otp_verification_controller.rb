@@ -32,6 +32,7 @@ module TwoFactorAuthentication
 
     def handle_valid_confirmation_otp
       assign_phone
+      track_mfa_added
       flash[:success] = t('notices.phone_confirmed')
     end
 
@@ -44,6 +45,13 @@ module TwoFactorAuthentication
 
       flash[:error] = t('errors.messages.phone_required')
       redirect_to new_user_session_path
+    end
+
+    def track_mfa_added
+      mfa_user = MfaContext.new(current_user)
+      mfa_count = mfa_user.enabled_mfa_methods_count
+      analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
+      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
 
     def confirm_multiple_factors_enabled
