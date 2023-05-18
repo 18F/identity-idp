@@ -243,7 +243,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
         render
 
-        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: phone_setup_path)
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: add_phone_path)
       end
     end
 
@@ -258,8 +258,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         render
-
-        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: phone_setup_path)
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: add_phone_path)
       end
     end
 
@@ -341,7 +340,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
           expect(rendered).to have_link(
             t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
-            href: phone_setup_path,
+            href: add_phone_path,
           )
         end
       end

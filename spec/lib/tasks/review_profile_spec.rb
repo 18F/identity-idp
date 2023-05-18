@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_fraud_profile) }
+  let(:user) { create(:user, :fraud_review_pending) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
@@ -51,6 +51,16 @@ describe 'review_profile' do
         invoke_task
 
         expect(stdout.string).to include('Error: Could not find user with that UUID')
+      end
+    end
+
+    context 'when the user has cancelled verification' do
+      it 'does not activate the profile' do
+        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
+
+        invoke_task
+
+        expect(user.reload.profiles.first.active).to eq(false)
       end
     end
   end

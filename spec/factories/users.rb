@@ -227,13 +227,27 @@ FactoryBot.define do
       end
     end
 
-    trait :deactivated_fraud_profile do
+    trait :fraud_review_pending do
       fully_registered
 
       after :build do |user|
         create(
           :profile,
           :fraud_review_pending,
+          :verified,
+          :with_pii,
+          user: user,
+        )
+      end
+    end
+
+    trait :fraud_rejection do
+      fully_registered
+
+      after :build do |user|
+        create(
+          :profile,
+          :fraud_rejection,
           :verified,
           :with_pii,
           user: user,
