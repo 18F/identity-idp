@@ -1,7 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -105,10 +105,6 @@ module Users
         user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
       )
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def mark_user_as_fully_authenticated

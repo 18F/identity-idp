@@ -1,8 +1,7 @@
 module Users
   class TotpSetupController < ApplicationController
-    include RememberDeviceConcern
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -67,10 +66,6 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
     def sign_up_mfa_selection_order_bucket
       return unless in_multi_mfa_selection_flow?
       @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
@@ -97,11 +92,6 @@ module Users
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def create_events

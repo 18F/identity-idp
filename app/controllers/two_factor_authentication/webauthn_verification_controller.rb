@@ -46,11 +46,6 @@ module TwoFactorAuthentication
       reset_otp_session_data
     end
 
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
-    end
-
     def handle_invalid_webauthn
       is_platform_auth = params[:platform].to_s == 'true'
       if is_platform_auth
@@ -87,10 +82,6 @@ module TwoFactorAuthentication
         remember_device_default: remember_device_default,
         platform_authenticator: params[:platform].to_s == 'true',
       )
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def save_challenge_in_session
