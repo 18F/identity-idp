@@ -1,7 +1,7 @@
 module Users
   class WebauthnSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -108,10 +108,6 @@ module Users
       @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
     def flash_error(errors)
       flash.now[:error] = errors.values.first.first
     end
@@ -179,11 +175,6 @@ module Users
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       }
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def process_invalid_webauthn(form)

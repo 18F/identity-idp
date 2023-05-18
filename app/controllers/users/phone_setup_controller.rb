@@ -1,5 +1,6 @@
 module Users
   class PhoneSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include UserAuthenticator
     include PhoneConfirmation
     include MfaSetupConcern
@@ -66,10 +67,6 @@ module Users
 
     def setup_voice_preference?
       params[:otp_delivery_preference].to_s == 'voice'
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def handle_create_success(phone)

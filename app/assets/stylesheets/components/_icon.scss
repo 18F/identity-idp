@@ -28,7 +28,7 @@ $icon-min-padding: 2px;
 
   &-success {
     &::before {
-      background-image: url('/alert/success.svg');
+      background-image: url('alert/success.svg');
       content: '';
       display: block;
       height: $h4;

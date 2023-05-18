@@ -2,7 +2,7 @@
 
 .personal-key-block {
   @include u-padding-y(2);
-  background-image: url('/personal-key/pkey-block.svg');
+  background-image: url('personal-key/pkey-block.svg');
   background-position: center;
   background-repeat: no-repeat;
 
@@ -28,7 +28,7 @@
 
 .bg-personal-key {
   height: 145px;
-  background-image: url('/personal-key/shield.svg');
+  background-image: url('personal-key/shield.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 145px 145px;

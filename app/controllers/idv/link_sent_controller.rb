@@ -43,9 +43,13 @@ module Idv
     private
 
     def confirm_upload_step_complete
-      return if flow_session['Idv::Steps::UploadStep']
+      return if flow_session[:flow_path] == 'hybrid'
 
-      redirect_to idv_doc_auth_url
+      if flow_session[:flow_path] == 'standard'
+        redirect_to idv_document_capture_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_document_capture_needed
