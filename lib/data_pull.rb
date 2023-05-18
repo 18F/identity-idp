@@ -291,13 +291,13 @@ class DataPull
             ]
           end
         elsif config.include_missing?
-          table << [user.uuid, '[HAS NO PROFILE]']
+          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil]
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[UUID NOT FOUND]']
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil]
         end
       end
 
