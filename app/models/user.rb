@@ -122,7 +122,7 @@ class User < ApplicationRecord
   end
 
   def gpo_verification_pending_profile
-    profiles.where.not(gpo_verification_pending_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.gpo_verification_pending?
   end
 
   def fraud_review_pending?
@@ -134,13 +134,11 @@ class User < ApplicationRecord
   end
 
   def fraud_review_pending_profile
-    @fraud_review_pending_profile ||=
-      profiles.where.not(fraud_review_pending_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_review_pending?
   end
 
   def fraud_rejection_profile
-    @fraud_rejection_profile ||=
-      profiles.where.not(fraud_rejection_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_rejection?
   end
 
   def personal_key_generated_at
