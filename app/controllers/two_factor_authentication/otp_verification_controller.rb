@@ -48,9 +48,9 @@ module TwoFactorAuthentication
     end
 
     def track_mfa_added
-      mfa_user = MfaContext.new(current_user)
-      mfa_count = mfa_user.enabled_mfa_methods_count
-      analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
+      analytics.multi_factor_auth_added_phone(
+        enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
+      )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
 
