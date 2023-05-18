@@ -156,9 +156,18 @@ The app will start using that Geolite2 file for geolocation after restart.
 
 ### Testing in a virtual machine
 
-By default, the application binds to `localhost`. To test on a local network device or within a virtual machine, you can bind to `0.0.0.0` instead, using the following instructions:
+By default, the application binds to `localhost`. To test on a local network device or within a virtual machine, you can bind to `0.0.0.0`. Before development, use the following instructions based on your machine's operating system.
 
-1. Determine your computer's network IP address. On macOS, you can find this in the "Network" system settings. From there, select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. On the next screen, click "Details". This often takes the format of `192.168.1.x` or `10.0.0.x`.
+1. From the "Network" tab on:
+
+* macOS Monterey and below
+Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
+
+* macOS Ventura
+Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+
+* IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.
+
 2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
    ```yaml
    development:
