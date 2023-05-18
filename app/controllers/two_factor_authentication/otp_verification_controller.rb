@@ -33,6 +33,7 @@ module TwoFactorAuthentication
     def handle_valid_confirmation_otp
       assign_phone
       track_mfa_added
+      @next_mfa_setup_path = next_setup_path
       flash[:success] = t('notices.phone_confirmed')
     end
 
