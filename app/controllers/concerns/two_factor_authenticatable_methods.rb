@@ -170,16 +170,8 @@ module TwoFactorAuthenticatableMethods
 
   def handle_valid_verification_for_confirmation_context
     user_session[:authn_at] = Time.zone.now
-    track_mfa_method_added
     @next_mfa_setup_path = next_setup_path
     reset_second_factor_attempts_count
-  end
-
-  def track_mfa_method_added
-    mfa_user = MfaContext.new(current_user)
-    mfa_count = mfa_user.enabled_mfa_methods_count
-    analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
-    Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
   end
 
   def handle_valid_otp_for_authentication_context(auth_method:)
