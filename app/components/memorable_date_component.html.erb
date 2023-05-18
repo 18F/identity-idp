@@ -20,7 +20,12 @@
             <%= p.input(
                   :month,
                   pattern: '(1[0-2])|(0?[1-9])',
-                  wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0' },
+                  wrapper_html: {
+                    aria: {
+                      labelledby: [ "memorable-date-month-span-#{unique_id}" ],
+                    },
+                    class: 'usa-form-group usa-form-group--month margin-bottom-0',
+                  },
                   label: t('components.memorable_date.month'),
                   label_html: {
                     class: 'usa-label',
@@ -44,6 +49,9 @@
                   required:,
                 ) %>
           <% end %>
+          <span id=<%= "memorable-date-month-span-#{unique_id}" %> class="display-none">
+            <%= t('in_person_proofing.form.state_id.dob') %>
+          </span>
           <span id=<%= "memorable-date-month-hint-#{unique_id}" %> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.month') %>
           </span>
@@ -53,7 +61,13 @@
           <%= p.input(
                 :day,
                 pattern: '(3[01])|([12][0-9])|(0?[1-9])',
-                wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0' },
+                wrapper_html: {
+                  aria: {
+                    labelledby: [
+                      "memorable-date-day-span-#{unique_id}",
+                    ],
+                  },
+                  class: 'usa-form-group usa-form-group--day margin-bottom-0' },
                 label: t('components.memorable_date.day'),
                 label_html: {
                   class: 'usa-label',
@@ -77,6 +91,9 @@
                 required:,
               ) %>
           <% end %>
+          <span id=<%= "memorable-date-day-span-#{unique_id}" %> class="display-none">
+            <%= t('in_person_proofing.form.state_id.dob') %>
+          </span>
           <span id=<%= "memorable-date-day-hint-#{unique_id}" %> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.day') %>
           </span>
@@ -86,7 +103,12 @@
           <%= p.input(
                 :year,
                 pattern: '\d{4}',
-                wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0' },
+                wrapper_html: {
+                  aria: {
+                    labelledby: [ "memorable-date-year-span-#{unique_id}" ],
+                  },
+                  class: 'usa-form-group usa-form-group--year margin-bottom-0',
+                },
                 label: t('components.memorable_date.year'),
                 label_html: {
                   class: 'usa-label',
@@ -110,6 +132,9 @@
                 required:,
               ) %>
           <% end %>
+          <span id=<%= "memorable-date-year-span-#{unique_id}" %> class="display-none">
+            <%= t('in_person_proofing.form.state_id.dob') %>
+          </span>
           <span id=<%= "memorable-date-year-hint-#{unique_id}" %> class="display-none">
             <%= t('in_person_proofing.form.state_id.date_hint.year') %>
           </span>
