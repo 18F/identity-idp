@@ -19,6 +19,8 @@ module Proofing
         ],
       )
 
+      MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
+
       attr_reader :config
 
       # Instance methods
@@ -36,7 +38,7 @@ module Proofing
         )
         build_result_from_response(response)
       rescue => exception
-        NewRelic::Agent.notice_error(exception) unless exception.is_a? Proofing::TimeoutError
+        send_to_new_relic(exception)
         Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
           transaction_id: nil, verified_attributes: []
@@ -94,6 +96,22 @@ module Proofing
           results[:city] &&
           results[:state] &&
           results[:zipcode]
+      end
+
+      def send_to_new_relic(exception)
+        case exception
+        when Proofing::TimeoutError
+          return # noop
+        when Proofing::Aamva::VerificationError
+          if mva_timeout?(exception.to_s)
+            return # noop
+          end
+        end
+        NewRelic::Agent.notice_error(exception)
+      end
+
+      def mva_timeout?(error_message)
+        error_message.include? MVA_TIMEOUT_EXCEPTION
       end
     end
   end

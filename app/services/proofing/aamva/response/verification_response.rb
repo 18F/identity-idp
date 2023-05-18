@@ -25,8 +25,6 @@ module Proofing
           first_name
         ].freeze
 
-        MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
-
         attr_reader :verification_results, :transaction_locator_id
 
         def initialize(http_response)
@@ -112,10 +110,6 @@ module Proofing
 
         def rexml_document
           return @rexml_document ||= REXML::Document.new(http_response.body)
-        end
-
-        def mva_timeout?(error_message)
-          error_message.include? MVA_TIMEOUT_EXCEPTION
         end
       end
     end
