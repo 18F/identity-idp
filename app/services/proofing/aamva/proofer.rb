@@ -36,7 +36,7 @@ module Proofing
         )
         build_result_from_response(response)
       rescue => exception
-        NewRelic::Agent.notice_error(exception)
+        NewRelic::Agent.notice_error(exception) unless exception.is_a? Proofing::TimeoutError
         Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
           transaction_id: nil, verified_attributes: []

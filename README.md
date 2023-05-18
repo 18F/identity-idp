@@ -22,7 +22,6 @@ Refer to the [_Local Development_ documentation](./docs/local-development.md) to
 - [Front-end Architecture](docs/frontend.md)
 - [Local Development](docs/local-development.md)
 - [Mobile local development](docs/mobile.md)
-- [SAML Profile](docs/SAML_PROFILE.md)
 - [Security](docs/SECURITY.md)
 - [Troubleshooting Local Development](docs/troubleshooting.md)
 - [Upgrade and A/B test Acuant SDK](docs/sdk-upgrade.md)

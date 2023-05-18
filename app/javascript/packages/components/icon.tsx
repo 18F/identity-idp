@@ -1,6 +1,6 @@
 import { getAssetPath } from '@18f/identity-assets';
 
-const SPRITE_URL = getAssetPath('sprite.svg');
+const SPRITE_URL = getAssetPath('@18f/identity-design-system/dist/assets/img/sprite.svg');
 
 export type DesignSystemIcon =
   | 'accessibility_new'
