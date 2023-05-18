@@ -130,7 +130,7 @@ class DataPull
         Options:
       EOS
 
-      opts.on('-r=ISSUER', '--requesting-issuer=ISSUER', <<-MSG) do |issuer|
+      opts.on('-i=ISSUER', '--requesting-issuer=ISSUER', <<-MSG) do |issuer|
         requesting issuer (used for ig-request task)
       MSG
         config.requesting_issuers << issuer
