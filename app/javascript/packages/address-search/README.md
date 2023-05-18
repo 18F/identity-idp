@@ -21,18 +21,18 @@ import AddressSearch from '@18f/identity-address-search';
 
 // Render UI component
 
-return()
-<>
-<AddressSearch
-        registerField={registerFieldCallback}
-        onFoundAddress={setFoundAddressCallback}
-        onFoundLocations={setLocationResultsCallback}
-        onLoadingLocations={setLoadingLocationsCallback}
-        onError={setApiErrorCallback}
-        disabled={disabledAddressSearchCallback}
-      />
-</>
-
+return(
+    <>
+    <AddressSearch
+            registerField={registerFieldCallback}
+            onFoundAddress={setFoundAddressCallback}
+            onFoundLocations={setLocationResultsCallback}
+            onLoadingLocations={setLoadingLocationsCallback}
+            onError={setApiErrorCallback}
+            disabled={disabledAddressSearchCallback}
+          />
+    </>
+);
 ```
 
 ## License
