@@ -1,8 +1,8 @@
 # `@18f/identity-address-search`
 
-This is a npm module that provides a React UI component to search for USPS (United States Postal Service) locations using the ArcGIS API. It allows you to retrieve USPS location information based on user input, such as address or ZIP code.
+This is a npm module that provides a React UI component to search for USPS (United States Postal Service) locations using the ArcGIS API. It allows you to retrieve USPS location information based on a full address.
 
-Additionally, this module depends on existing backend services from the Login.gov project. Make sure to have the required backend services set up and running before using this module.
+Additionally, this module depends on existing backend services from the Login.gov project. Make sure to have the required backend services or mock services set up and running before using this module.
 
 ## Installation
 
@@ -17,12 +17,7 @@ npm install @18f/identiy-address-search
 To use this component, provide callbacks to it for desired behaviors.
 
 ```typescript jsx
-import AddressSearch, {
-  transformKeys,
-  snakeCase,
-  LocationQuery,
-  LOCATIONS_URL,
-} from '@18f/identity-address-search';
+import AddressSearch from '@18f/identity-address-search';
 
 // Render UI component
 
