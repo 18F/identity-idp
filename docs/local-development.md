@@ -131,7 +131,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 ### Translations
 
-  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings, run this for the IdP app:
+  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
 
   ```
   $ make normalize_yaml
@@ -160,13 +160,15 @@ By default, the application binds to `localhost`. To test on a local network dev
 
 1. From the "Network" tab on:
 
-* macOS Monterey and below
-Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
+  * Monterey and below
 
-* macOS Ventura
-Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+    Once on "Network" system settings, your IP address is shown under "Status: Connected" label.
 
-* IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.
+  * Ventura
+
+    Select "Wi-Fi" or "Ethernet". This option will change based on how you are connected to the internet. From there, click "Details".
+
+    **IP addresses often take the format of `192.168.1.x` or `10.0.0.x`.**
 
 2. In `config/application.yml`, add `domain_name` and `mailer_domain_name` keys under `development`, like so:
    ```yaml
