@@ -691,14 +691,14 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # address submitted by user
   def idv_in_person_proofing_address_submitted(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
-    same_address_as_id:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -722,11 +722,11 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # address page visited
   def idv_in_person_proofing_address_visited(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
     **extra
   )
     track_event(
@@ -750,13 +750,13 @@ module AnalyticsEvents
   # @param [Boolean, nil] same_address_as_id
   # User clicked cancel on update address page
   def idv_in_person_proofing_cancel_update_address(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
     same_address_as_id: nil,
     **extra
   )
@@ -784,14 +784,14 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # User clicked cancel on update state id page
   def idv_in_person_proofing_cancel_update_state_id(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
-    same_address_as_id:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -818,14 +818,14 @@ module AnalyticsEvents
   # @param [Boolean] same_address_as_id
   # User submitted state id on redo state id page
   def idv_in_person_proofing_redo_state_id_submitted(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
-    same_address_as_id:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
     **extra
   )
     track_event(
@@ -852,13 +852,13 @@ module AnalyticsEvents
   # @param [Boolean, nil] same_address_as_id
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
-    success:,
-    errors:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
     same_address_as_id: nil,
     **extra
   )
@@ -883,11 +883,11 @@ module AnalyticsEvents
   # @param [Boolean] irs_reproofing
   # State id page visited
   def idv_in_person_proofing_state_id_visited(
-    flow_path:,
-    step:,
-    step_count:,
-    analytics_id:,
-    irs_reproofing:,
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
     **extra
   )
     track_event(
