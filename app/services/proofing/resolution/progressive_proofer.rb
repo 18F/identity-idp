@@ -251,7 +251,7 @@ module Proofing
 
       # Make a copy of pii with the user's state ID address overwriting the address keys
       def with_state_id_address(pii)
-        pii.transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        pii.except(*SECONDARY_ID_ADDRESS_MAP.values).transform_keys(SECONDARY_ID_ADDRESS_MAP)
       end
 
       SECONDARY_ID_ADDRESS_MAP = {
