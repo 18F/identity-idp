@@ -76,7 +76,7 @@ class Profile < ApplicationRecord
   end
 
   def has_deactivation_reason?
-    has_fraud_deactivation_reason? || gpo_verification_pending?
+    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
   end
 
   def has_fraud_deactivation_reason?
