@@ -2,6 +2,7 @@
 
 /* eslint-disable no-console */
 
+import { mkdir } from 'node:fs/promises';
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
@@ -80,6 +81,9 @@ function build(files) {
   );
 }
 
-build(fileArgs).catch(() => {
-  process.exitCode = 1;
-});
+mkdir(outDir, { recursive: true })
+  .then(() => build(fileArgs))
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });

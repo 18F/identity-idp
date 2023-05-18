@@ -1,8 +1,10 @@
-## Unreleased
+## 1.3.0
 
 ### Improvements
 
 - Adds support for ".scss" file extension, as an alternative to the current ".css.scss" support. In both cases, the output files use the basename with a ".css" extension.
+- Creates the `--out-dir` directory if it does not exist already.
+- Outputs any error that occurs during build, not just Sass compilation errors.
 
 ## 1.2.0
 
