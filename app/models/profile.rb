@@ -40,7 +40,7 @@ class Profile < ApplicationRecord
   def pending_reasons
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
-      *(:fraud_check_pending if fraud_review_pending? || fraud_rejection?),
+      *(:fraud_check_pending if has_fraud_deactivation_reason?),
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
