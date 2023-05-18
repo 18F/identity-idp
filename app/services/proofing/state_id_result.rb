@@ -1,5 +1,7 @@
 module Proofing
   class StateIdResult
+    MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
+
     attr_reader :errors,
                 :exception,
                 :success,
@@ -29,6 +31,10 @@ module Proofing
 
     def timed_out?
       exception.is_a?(Proofing::TimeoutError)
+    end
+
+    def mva_timeout?
+      exception&.message&.include? MVA_TIMEOUT_EXCEPTION
     end
 
     def to_h

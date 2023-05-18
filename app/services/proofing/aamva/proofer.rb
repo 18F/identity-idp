@@ -19,8 +19,6 @@ module Proofing
         ],
       )
 
-      MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
-
       attr_reader :config
 
       # Instance methods
@@ -111,7 +109,7 @@ module Proofing
       end
 
       def mva_timeout?(error_message)
-        error_message.include? MVA_TIMEOUT_EXCEPTION
+        error_message.include? Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION
       end
     end
   end

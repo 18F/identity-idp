@@ -145,6 +145,7 @@ describe Proofing::Aamva::Proofer do
 
         expect(result.success?).to eq(false)
         expect(result.exception).to eq(exception)
+        expect(result.mva_timeout?).to eq(false)
       end
 
       context 'the exception is a timeout error' do
@@ -157,13 +158,14 @@ describe Proofing::Aamva::Proofer do
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
+          expect(result.mva_timeout?).to eq(false)
         end
       end
 
       context 'the exception is a verification error due to MVA timeout' do
         let(:exception) do
           Proofing::Aamva::VerificationError.new(
-            "DLDV VSS - ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion",
+            'DLDV VSS - ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
           )
         end
 
@@ -174,6 +176,7 @@ describe Proofing::Aamva::Proofer do
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
+          expect(result.mva_timeout?).to eq(true)
         end
       end
     end
