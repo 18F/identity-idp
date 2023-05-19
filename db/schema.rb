@@ -446,6 +446,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_235856) do
     t.string "fraud_state"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
+    t.index ["fraud_state"], name: "index_profiles_on_fraud_state"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
