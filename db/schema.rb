@@ -442,11 +442,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_235856) do
     t.string "initiating_service_provider_issuer"
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
-    t.string "fraud_state"
-    t.datetime "fraud_reviewing_at", precision: nil
-    t.datetime "fraud_rejected_at", precision: nil
-    t.datetime "fraud_passed_at", precision: nil
     t.datetime "gpo_verification_pending_at"
+    t.string "fraud_state"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
