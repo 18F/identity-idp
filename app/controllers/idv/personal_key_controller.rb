@@ -7,7 +7,7 @@ module Idv
 
     before_action :apply_secure_headers_override
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_vendor_session_started
+    before_action :confirm_phone_or_address_confirmed
     before_action :confirm_profile_has_been_created
     before_action :confirm_user_not_pending_gpo_verificaiton
 

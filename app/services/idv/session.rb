@@ -8,6 +8,7 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
+      gpo_code_verified
       pii
       previous_phone_step_params
       profile_confirmation
@@ -151,6 +152,14 @@ module Idv
 
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
+    def address_confirmed?
+      gpo_code_verified == true
+    end
+
+    def address_confirmed!
+      session[:gpo_code_verified] = true
     end
 
     def invalidate_steps_after_ssn!

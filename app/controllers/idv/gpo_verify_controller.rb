@@ -74,7 +74,7 @@ module Idv
         flash[:success] = t('account.index.verification.success')
       end
 
-      enable_personal_key_generation
+      idv_session.address_confirmed!
     end
 
     def throttle

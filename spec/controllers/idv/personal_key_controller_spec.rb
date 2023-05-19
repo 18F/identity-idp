@@ -7,7 +7,6 @@ describe Idv::PersonalKeyController do
   def stub_idv_session
     stub_sign_in(user)
     idv_session.applicant = applicant
-    idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
@@ -48,7 +47,7 @@ describe Idv::PersonalKeyController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_vendor_session_started,
+        :confirm_phone_or_address_confirmed,
       )
     end
 
