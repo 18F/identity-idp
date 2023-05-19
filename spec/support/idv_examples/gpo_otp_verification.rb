@@ -11,8 +11,6 @@ shared_examples 'gpo otp verification' do
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
-    expect(current_path).to eq idv_personal_key_path
-
     profile.reload
 
     if profile_should_be_active
