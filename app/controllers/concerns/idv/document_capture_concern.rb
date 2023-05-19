@@ -2,8 +2,6 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
-    private
-
     def save_proofing_components
       return unless effective_user
 
@@ -17,14 +15,6 @@ module Idv
         document_type: 'state_id',
       }
       ProofingComponent.create_or_find_by(user: effective_user).update(component_attributes)
-    end
-
-    def track_document_state(state)
-      return unless IdentityConfig.store.state_tracking_enabled && state
-      doc_auth_log = DocAuthLog.find_by(user_id: effective_user.id)
-      return unless doc_auth_log
-      doc_auth_log.state = state
-      doc_auth_log.save!
     end
 
     def successful_response
@@ -57,7 +47,7 @@ module Idv
           idv_session.clear_applicant!
         end
       end
-      track_document_state(pii_from_doc[:state])
+      track_document_issuing_state(pii_from_doc[:state])
     end
 
     def in_person_cta_variant_testing_variables
@@ -73,6 +63,16 @@ module Idv
     def stored_result
       return @stored_result if defined?(@stored_result)
       @stored_result = document_capture_session&.load_result
+    end
+
+    private
+
+    def track_document_issuing_state(state)
+      return unless IdentityConfig.store.state_tracking_enabled && state
+      doc_auth_log = DocAuthLog.find_by(user_id: effective_user.id)
+      return unless doc_auth_log
+      doc_auth_log.state = state
+      doc_auth_log.save!
     end
   end
 end
