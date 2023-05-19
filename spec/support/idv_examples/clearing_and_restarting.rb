@@ -1,6 +1,7 @@
 shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
 
@@ -15,6 +16,7 @@ shared_examples 'clearing and restarting idv' do
 
   it 'allows the user to retry verification with gpo', js: true do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
 
@@ -39,6 +41,7 @@ shared_examples 'clearing and restarting idv' do
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     visit account_path
 

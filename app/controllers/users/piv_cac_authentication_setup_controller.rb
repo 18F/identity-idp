@@ -1,6 +1,6 @@
 module Users
   class PivCacAuthenticationSetupController < ApplicationController
-    include UserAuthenticator
+    include TwoFactorAuthenticatableMethods
     include PivCacConcern
     include MfaSetupConcern
     include RememberDeviceConcern
@@ -118,7 +118,9 @@ module Users
     end
 
     def process_valid_submission
-      mark_user_as_fully_authenticated
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
       flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
@@ -130,13 +132,6 @@ module Users
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       final_path = after_sign_in_path_for(current_user)
       redirect_to next_setup_path || final_path
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::PIV_CAC
-
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
     end
 
     def track_mfa_method_added

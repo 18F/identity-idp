@@ -272,14 +272,14 @@ describe Profile do
 
       it 'does not activate a profile with gpo verification pending' do
         profile.update(gpo_verification_pending_at: 1.day.ago)
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end
 
       it 'does not activate a profile if under fraud review' do
         profile.fraud_review
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end
@@ -287,7 +287,7 @@ describe Profile do
       it 'does not activate a profile if rejected for fraud' do
         profile.fraud_review
         profile.fraud_reject
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end

@@ -32,6 +32,12 @@ fr:
               votre compte, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
+        gpo:
+          start_over: Si vous supprimez vos informations et recommencez
+          warnings:
+            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Vous recommencerez la vérification de votre identité depuis le
+              début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.

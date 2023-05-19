@@ -1,7 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -107,18 +107,10 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
-    end
-
     def save_backup_codes
-      mark_user_as_fully_authenticated
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
       generator.save(user_session[:backup_codes])
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
