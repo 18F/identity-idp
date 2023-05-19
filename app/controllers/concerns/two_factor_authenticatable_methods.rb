@@ -110,7 +110,7 @@ module TwoFactorAuthenticatableMethods
     if UserSessionContext.authentication_or_reauthentication_context?(context)
       handle_valid_otp_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
-      handle_valid_verification_for_confirmation_context
+      handle_valid_verification_for_confirmation_context(auth_method: auth_method)
     end
   end
 
@@ -168,9 +168,9 @@ module TwoFactorAuthenticatableMethods
     current_user.increment_second_factor_attempts_count!
   end
 
-  def handle_valid_verification_for_confirmation_context
-    user_session[:authn_at] = Time.zone.now
-    @next_mfa_setup_path = next_setup_path
+  def handle_valid_verification_for_confirmation_context(auth_method:)
+    user_session[:auth_method] = auth_method
+    mark_user_session_authenticated(:valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
