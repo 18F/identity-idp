@@ -59,7 +59,7 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/SkipsModelValidations
 
   def remove_gpo_deactivation_reason
-    update!(gpo_verification_pending_at: nil)
+    update!(deactivation_reason: nil, gpo_verification_pending_at: nil)
   end
 
   def activate_after_passing_review
