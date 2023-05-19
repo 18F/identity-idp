@@ -35,7 +35,7 @@ class AccountShowPresenter
   end
 
   def show_gpo_partial?
-    user.pending_profile_requires_verification?
+    user.gpo_verification_pending_profile?
   end
 
   def showing_any_partials?

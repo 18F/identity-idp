@@ -107,11 +107,22 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    gpo_verification_pending_profile
+    pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+      profiles.where.not(gpo_verification_pending_at: nil),
+    ).or(
+      profiles.where.not(fraud_review_pending_at: nil),
+    ).or(
+      profiles.where.not(fraud_rejection_at: nil),
+    ).order(created_at: :desc).first
+
+    return unless pending.present?
+    return if active_profile.present? && active_profile.activated_at > pending.created_at
+
+    pending
   end
 
   def gpo_verification_pending_profile
-    profiles.where.not(gpo_verification_pending_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.gpo_verification_pending?
   end
 
   def fraud_review_pending?
@@ -123,13 +134,11 @@ class User < ApplicationRecord
   end
 
   def fraud_review_pending_profile
-    @fraud_review_pending_profile ||=
-      profiles.where.not(fraud_review_pending_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_review_pending?
   end
 
   def fraud_rejection_profile
-    @fraud_rejection_profile ||=
-      profiles.where.not(fraud_rejection_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_rejection?
   end
 
   def personal_key_generated_at
@@ -256,10 +265,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile_requires_verification?
-    return false if pending_profile.blank?
-    return true if identity_not_verified?
-    return false if active_profile_newer_than_pending_profile?
-    true
+    pending_profile.present?
   end
 
   def identity_not_verified?
@@ -274,10 +280,6 @@ class User < ApplicationRecord
     return false unless service_provider&.irs_attempts_api_enabled
     return false unless active_profile.present?
     !active_profile.initiating_service_provider&.irs_attempts_api_enabled
-  end
-
-  def active_profile_newer_than_pending_profile?
-    active_profile.activated_at >= pending_profile.created_at
   end
 
   # This user's most recently activated profile that has also been deactivated
