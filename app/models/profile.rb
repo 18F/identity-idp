@@ -37,9 +37,18 @@ class Profile < ApplicationRecord
     gpo_verification_pending_at.present?
   end
 
+  def pending_reasons
+    [
+      *(:gpo_verification_pending if gpo_verification_pending?),
+      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:in_person_verification_pending if in_person_verification_pending?),
+    ]
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if has_deactivation_reason?
+    confirm_that_profile_can_be_activated!
+
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
@@ -47,16 +56,20 @@ class Profile < ApplicationRecord
       update!(
         active: true,
         activated_at: now,
-        deactivation_reason: nil,
-        gpo_verification_pending_at: nil,
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
         verified_at: now,
       )
     end
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def confirm_that_profile_can_be_activated!
+    if pending_reasons.any?
+      raise "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+    elsif deactivation_reason.present?
+      raise "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+    end
+  end
 
   def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
@@ -87,7 +100,6 @@ class Profile < ApplicationRecord
   end
 
   def has_fraud_deactivation_reason?
-    return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
     fraud_review_pending? || fraud_rejection?
   end
 

@@ -8,10 +8,10 @@ feature 'idv gpo confirm start over', js: true do
   let(:profile) do
     create(
       :profile,
-      deactivation_reason: :gpo_verification_pending,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
       fraud_review_pending_at: nil,
       fraud_rejection_at: nil,
+      gpo_verification_pending_at: 1.day.ago,
     )
   end
   let(:gpo_confirmation_code) do

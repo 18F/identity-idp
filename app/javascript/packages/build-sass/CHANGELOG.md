@@ -1,3 +1,11 @@
+## Unreleased
+
+### Breaking Changes
+
+- Changed priority for how load paths are used when resolving modules. The net effect is that any `--load-path` should take highest priority over those provided as defaults.
+  - Before: (1) `node_modules`, (2) default load paths, (3) custom `--load-path` load paths
+  - After: (1) custom `--load-path` load paths, (2) default load paths, (3) `node_modules`
+
 ## 1.3.0
 
 ### Improvements

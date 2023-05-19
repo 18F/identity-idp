@@ -3,14 +3,14 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import BackButton from './back-button';
-import AnalyticsContext from '../context/analytics';
 import AddressSearch, {
   transformKeys,
   snakeCase,
   LocationQuery,
   LOCATIONS_URL,
-} from './address-search';
+} from '@18f/identity-address-search';
+import BackButton from './back-button';
+import AnalyticsContext from '../context/analytics';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
