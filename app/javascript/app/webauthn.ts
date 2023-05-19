@@ -1,4 +1,6 @@
 interface EnrollResult {
+  response: AuthenticatorAttestationResponse;
+
   webauthnId: string;
 
   webauthnPublicKey: string;
@@ -122,6 +124,7 @@ const enrollWebauthnDevice = async ({
   const response = newCred.response as AuthenticatorAttestationResponse;
 
   return {
+    response,
     webauthnId: arrayBufferToBase64(newCred.rawId),
     webauthnPublicKey: newCred.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
