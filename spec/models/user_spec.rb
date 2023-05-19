@@ -498,6 +498,20 @@ RSpec.describe User do
         expect(user.pending_profile).to be_nil
       end
     end
+
+    context 'verification was cancelled for a pending profile' do
+      it 'return nil' do
+        user = User.new
+        create(
+          :profile,
+          gpo_verification_pending_at: Time.zone.now,
+          deactivation_reason: :verification_cancelled,
+          user: user,
+        )
+
+        expect(user.pending_profile).to be_nil
+      end
+    end
   end
 
   describe '#gpo_verification_pending_profile' do

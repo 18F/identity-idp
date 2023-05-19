@@ -116,6 +116,8 @@ class User < ApplicationRecord
     ).order(created_at: :desc).first
 
     return unless pending.present?
+    return if pending.password_reset?
+    return if pending.encryption_error? || pending.verification_cancelled?
     return if active_profile.present? && active_profile.activated_at > pending.created_at
 
     pending
