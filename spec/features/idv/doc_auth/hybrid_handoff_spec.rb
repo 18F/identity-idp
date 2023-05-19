@@ -36,7 +36,7 @@ feature 'doc auth upload step' do
       expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
     end
 
-    xit 'proceeds to document capture when user chooses to upload from computer' do
+    it 'proceeds to document capture when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
