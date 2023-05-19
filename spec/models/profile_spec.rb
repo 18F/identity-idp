@@ -285,7 +285,7 @@ describe Profile do
       end
 
       it 'does not activate a profile if rejected for fraud' do
-        profile.fraud_review # needed to start in allowed from-state
+        profile.fraud_review
         profile.fraud_reject
         profile.activate
 
@@ -406,13 +406,15 @@ describe Profile do
   end
 
   describe '#deactivate_for_fraud_review' do
-    it 'sets fraud_review_pending to true' do
+    it 'changes fraud state to reviewing' do
       profile = create(:profile, user: user)
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending?).to eq(true)
+      expect(profile.fraud_review_pending_at).to_not be_nil
       expect(profile.fraud_rejection?).to eq(false)
+      expect(profile.fraud_rejection_at).to be_nil
     end
   end
 

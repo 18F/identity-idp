@@ -4,6 +4,7 @@ feature 'idv gpo otp verification step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }
+
   let(:profile) do
     fraud_state = 'fraud_none'
     if fraud_review_pending_timestamp.present?
