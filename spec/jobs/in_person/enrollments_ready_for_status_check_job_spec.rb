@@ -265,32 +265,15 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
   end
 
   describe '#analytics (private)' do
-    it 'delegates to analytics_factory (with user)' do
-      analytics_factory = instance_double(
-        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
-      )
+    it 'creates an analytics object' do
       analytics = FakeAnalytics.new
-      expect(job).to receive(:analytics_factory).and_return(analytics_factory)
-      user = instance_double(User)
-      expect(analytics_factory).to receive(:analytics).with(user:).and_return(analytics).once
-      expect(job.send(:analytics, user:)).to be(analytics)
-    end
-    it 'delegates to analytics_factory (no user)' do
-      analytics_factory = instance_double(
-        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
-      )
-      analytics = FakeAnalytics.new
-      expect(job).to receive(:analytics_factory).and_return(analytics_factory)
-      expect(analytics_factory).to receive(:analytics).and_return(analytics).once
+      expect(Analytics).to receive(:new).with(
+        user: instance_of(AnonymousUser),
+        request: nil,
+        session: {},
+        sp: nil,
+      ).and_return(analytics)
       expect(job.send(:analytics)).to be(analytics)
-    end
-  end
-
-  describe '#analytics_factory (private)' do
-    it 'creates an analytics factory object' do
-      expect(job.send(:analytics_factory)).to be_instance_of(
-        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
-      )
     end
   end
 
@@ -334,12 +317,8 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
 
   describe '#batch_processor (private)' do
     it 'creates a batch processor with the expected arguments' do
-      analytics_factory = instance_double(
-        InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory,
-      )
       analytics = FakeAnalytics.new
-      expect(job).to receive(:analytics_factory).and_return(analytics_factory).exactly(2).times
-      expect(analytics_factory).to receive(:analytics).and_return(analytics).exactly(2).times
+      expect(job).to receive(:analytics).and_return(analytics).exactly(2).times
 
       batch_processor_error_reporter = instance_double(
         InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter,

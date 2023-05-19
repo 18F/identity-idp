@@ -95,8 +95,13 @@ module InPerson
       end
     end
 
-    def analytics_factory
-      @analytics_factory ||= InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory.new
+    def analytics
+      @analytics ||= Analytics.new(
+        user: AnonymousUser.new,
+        request: nil,
+        session: {},
+        sp: nil,
+      )
     end
   end
 end
