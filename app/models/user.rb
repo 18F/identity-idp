@@ -113,6 +113,8 @@ class User < ApplicationRecord
       profiles.where.not(fraud_review_pending_at: nil),
     ).or(
       profiles.where.not(fraud_rejection_at: nil),
+    ).where.not(
+      deactivation_reason: Profile.cancelled_profile_deactivation_reasons,
     ).order(created_at: :desc).first
 
     return unless pending.present?

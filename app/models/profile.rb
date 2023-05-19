@@ -25,6 +25,10 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  def self.cancelled_profile_deactivation_reasons
+    deactivation_reasons.keys - ['gpo_verificaiton_pending', 'in_person_verification_pending']
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end
