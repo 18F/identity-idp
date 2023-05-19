@@ -1,5 +1,9 @@
 # Docker
 
+Currently, Docker is not being widely used and is considered deprecated. [See this note about Docker](./local-development.md#installing-with-docker) for more details.
+
+## Overview
+
 We use [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds) to build different kinds of containers. They utilise two upstream containers run by the DevOps team, `logindotgov/build` and `logindotgov/base`.
 
 1. `development.Dockerfile` installs development and test tools useful for local development.
