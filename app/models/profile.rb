@@ -100,7 +100,6 @@ class Profile < ApplicationRecord
   end
 
   def has_fraud_deactivation_reason?
-    return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
     fraud_review_pending? || fraud_rejection?
   end
 
