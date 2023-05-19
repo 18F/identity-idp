@@ -274,9 +274,16 @@ class DataPull
       users = User.includes(:profiles).where(uuid: uuids).order(:uuid)
 
       table = []
-      table << %w[uuid profile_id status activated_timestamp disabled_reason
-                  gpo_verification_pending_timestamp fraud_review_pending_timestamp
-                  fraud_rejection_timestamp]
+      table << %w[
+        uuid
+        profile_id
+        status
+        activated_timestamp
+        disabled_reason
+        gpo_verification_pending_timestamp
+        fraud_review_pending_timestamp
+        fraud_rejection_timestamp
+      ]
 
       users.each do |user|
         if user.profiles.any?
