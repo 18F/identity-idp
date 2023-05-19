@@ -74,8 +74,16 @@ module InPerson
         visibility_timeout = config.in_person_enrollments_ready_job_visibility_timeout_seconds
         wait_time_seconds = config.in_person_enrollments_ready_job_wait_time_seconds
 
+        # The queue will need to remain connected for at least the duration set
+        # by wait_time_seconds, which may conflict with aws_http_timeout.
+        #
+        # Adding the two together here to create a buffer.
+        http_read_timeout = config.aws_http_timeout + wait_time_seconds
+
         InPerson::EnrollmentsReadyForStatusCheck::SqsBatchWrapper.new(
-          sqs_client: Aws::SQS::Client.new,
+          sqs_client: Aws::SQS::Client.new(
+            http_read_timeout:,
+          ),
           queue_url:,
           receive_params: {
             queue_url:,

@@ -297,14 +297,19 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
   describe '#sqs_batch_wrapper (private)' do
     it 'creates SQS batch wrapper object with expected params' do
       sqs_client = instance_double(Aws::SQS::Client)
-      expect(Aws::SQS::Client).to receive(:new).and_return(sqs_client)
 
       queue_url = 'test/queue/url'
       max_number_of_messages = 10
       visibility_timeout_seconds = 30
       wait_time_seconds = 20
+      aws_http_timeout = 5
+
+      expect(Aws::SQS::Client).to receive(:new).
+        with(http_read_timeout: wait_time_seconds + aws_http_timeout).
+        and_return(sqs_client)
 
       expect(IdentityConfig.store).to receive_messages(
+        aws_http_timeout:,
         in_person_enrollments_ready_job_queue_url: queue_url,
         in_person_enrollments_ready_job_max_number_of_messages: max_number_of_messages,
         in_person_enrollments_ready_job_visibility_timeout_seconds: visibility_timeout_seconds,
