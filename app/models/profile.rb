@@ -49,6 +49,16 @@ class Profile < ApplicationRecord
       transitions from: :fraud_review_pending, to: :fraud_rejection
     end
 
+    event :fraud_reset do
+      transitions(
+        from: [
+          :fraud_review_pending,
+          :fraud_rejection,
+        ],
+        to: :fraud_none,
+      )
+    end
+
     event :fraud_pass do
       transitions(
         from: [

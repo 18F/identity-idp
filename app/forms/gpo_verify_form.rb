@@ -26,7 +26,7 @@ class GpoVerifyForm
         pending_profile&.remove_gpo_deactivation_reason
         deactivate_for_fraud_review
       else
-        pending_profile&.fraud_pass
+        pending_profile&.fraud_reset if pending_profile&.may_fraud_reset?
         activate_profile
       end
     else
