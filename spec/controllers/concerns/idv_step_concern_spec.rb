@@ -235,4 +235,41 @@ describe 'IdvStepConcern' do
       end
     end
   end
+
+  describe '#confirm_not_throttled' do
+    controller Idv::StepController do
+      before_action :confirm_not_throttled
+    end
+
+    before(:each) do
+      sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'user is not throttled' do
+      it 'does not redirect' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_gpo_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'with idv_doc_auth throttle (DocumentCapture)' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'redirects to idv_doc_auth throttled error page' do
+        throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
+        throttle.increment_to_throttled!
+
+        get :show
+
+        expect(response).to redirect_to idv_session_errors_throttled_url
+      end
+    end
+  end
 end

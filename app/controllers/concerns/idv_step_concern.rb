@@ -6,6 +6,7 @@ module IdvStepConcern
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_not_throttled
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
   end
@@ -17,6 +18,17 @@ module IdvStepConcern
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
     redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
+  end
+
+  def confirm_not_throttled
+    document_capture_throttle = Throttle.new(
+      user: current_user,
+      throttle_type: :idv_doc_auth,
+    )
+
+    if document_capture_throttle.throttled?
+      redirect_to idv_session_errors_throttled_url
+    end
   end
 
   def flow_session
