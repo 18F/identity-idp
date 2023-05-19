@@ -145,7 +145,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'user is under fraud review' do
-              let(:user) { create(:profile, fraud_state: 'fraud_review_pending').user }
+              let(:user) do
+                create(
+                  :profile,
+                  fraud_state: 'fraud_review_pending',
+                  fraud_review_pending_at: 1.day.ago,
+                ).user
+              end
 
               it 'redirects to fraud review page if fraud review is pending' do
                 action
@@ -155,6 +161,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             context 'user is rejected due to fraud' do
               let(:user) { create(:profile, fraud_state: 'fraud_rejection').user }
+              let(:user) do
+                create(
+                  :profile,
+                  fraud_state: 'fraud_rejection',
+                  fraud_rejection_at: 1.day.ago,
+                ).user
+              end
 
               it 'redirects to fraud rejection page if user is fraud rejected ' do
                 action
