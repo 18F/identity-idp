@@ -2,10 +2,10 @@ module InPerson
   module EnrollmentsReadyForStatusCheck
     class ErrorReporter
       # @param [String] class_name Class for which to report errors
-      # @param [InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory] analytics_factory
-      def initialize(class_name, analytics_factory)
+      # @param [Analytics] analytics
+      def initialize(class_name, analytics)
         @class_name = class_name
-        @analytics_factory = analytics_factory
+        @analytics = analytics
       end
 
       # Reports an error. A non-StandardError will be converted to
@@ -23,8 +23,7 @@ module InPerson
 
       private
 
-      attr_reader :analytics_factory
-      delegate :analytics, to: :analytics_factory
+      attr_reader :analytics
     end
   end
 end

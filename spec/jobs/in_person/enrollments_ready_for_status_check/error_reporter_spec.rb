@@ -6,17 +6,13 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::ErrorReporter do
   # We need the class name since it's part of what we're logging
   let(:class_name) { "#{described_class.name.demodulize}#{class_name_suffix}" }
 
-  let(:analytics) { instance_double(Analytics) }
-  let(:analytics_factory) do
-    instance_double(InPerson::EnrollmentsReadyForStatusCheck::UserAnalyticsFactory)
-  end
-  subject(:error_reporter) { described_class.new(class_name, analytics_factory) }
+  let(:analytics) { FakeAnalytics.new }
+  subject(:error_reporter) { described_class.new(class_name, analytics) }
   let(:analytics_extra) { nil }
   let(:expected_error_class) { nil }
   let(:expected_message) { nil }
 
   before(:each) do
-    allow(analytics_factory).to receive(:analytics).and_return(analytics)
     allow(analytics).to receive(
       :idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error,
     )
