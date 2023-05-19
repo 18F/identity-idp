@@ -46,11 +46,11 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   # Find enrollments that are ready for a status check via the USPS API
-  def self.ready_for_usps_status_check(check_interval)
+  def self.usps_status_check_on_ready_enrollments(check_interval)
     where(ready_for_status_check: true).
-    and(
-      where(status: :pending)
-    ).
+      and(
+        where(status: :pending),
+      ).
       and(
         where(status_check_attempted_at: check_interval).
         or(where(status_check_attempted_at: nil)),
@@ -59,11 +59,11 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   # Find enrollments that need a status check via the USPS API
-  def self.needs_status_check_on_waiting_enrollments(check_interval)
-    where(ready_for_status_check: true).
-    and(
-      where(status: :pending)
-    ).
+  def self.usps_status_check_on_waiting_enrollments(check_interval)
+    where(ready_for_status_check: false).
+      and(
+        where(status: :pending),
+      ).
       and(
         where(status_check_attempted_at: check_interval).
         or(where(status_check_attempted_at: nil)),
@@ -73,7 +73,7 @@ class InPersonEnrollment < ApplicationRecord
 
   # Does this enrollment need a status check via the USPS API?
   def needs_status_check_on_waiting_enrollments?(check_interval)
-    pending? && (
+    !ready_for_status_check? && pending? && (
       status_check_attempted_at.nil? ||
       check_interval.cover?(status_check_attempted_at)
     )

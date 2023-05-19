@@ -215,30 +215,35 @@ RSpec.describe GetUspsProofingResultsJob do
             create(
               :in_person_enrollment, :pending,
               selected_location_details: { name: 'BALTIMORE' },
-              issuer: 'http://localhost:3000'
+              issuer: 'http://localhost:3000',
+              ready_for_status_check: false
             ),
             create(
               :in_person_enrollment, :pending,
-              selected_location_details: { name: 'FRIENDSHIP' }
+              selected_location_details: { name: 'FRIENDSHIP' },
+              ready_for_status_check: true
             ),
             create(
               :in_person_enrollment, :pending,
-              selected_location_details: { name: 'WASHINGTON' }
+              selected_location_details: { name: 'WASHINGTON' },
+              ready_for_status_check: false
             ),
             create(
               :in_person_enrollment, :pending,
-              selected_location_details: { name: 'ARLINGTON' }
+              selected_location_details: { name: 'ARLINGTON' },
+              ready_for_status_check: false
             ),
             create(
               :in_person_enrollment, :pending,
-              selected_location_details: { name: 'DEANWOOD' }
+              selected_location_details: { name: 'DEANWOOD' },
+              ready_for_status_check: false
             ),
           ]
         end
         let(:pending_enrollment) { pending_enrollments[0] }
 
         before do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
@@ -250,14 +255,14 @@ RSpec.describe GetUspsProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(InPersonEnrollment).to(
-              have_received(:needs_usps_status_check).
+              have_received(:usps_status_check_on_waiting_enrollments).
               with(...reprocess_delay_minutes.minutes.ago),
             )
           end
         end
 
         it 'records the last attempted status check regardless of response code and contents' do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_failed_proofing_results_args,
@@ -302,7 +307,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message when the job starts' do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_failed_proofing_results_args,
@@ -321,7 +326,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
@@ -352,7 +357,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
@@ -380,7 +385,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it 'logs a message with counts of various outcomes when the job completes
         (no enrollments)' do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return([])
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
@@ -433,7 +438,7 @@ RSpec.describe GetUspsProofingResultsJob do
           let(:request_delay_ms) { 750 }
 
           it 'adds a delay between requests to USPS' do
-            allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+            allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
               and_return(pending_enrollments)
             stub_request_passed_proofing_results
             expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
@@ -1050,7 +1055,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          allow(InPersonEnrollment).to receive(:usps_status_check_on_waiting_enrollments).
             and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end

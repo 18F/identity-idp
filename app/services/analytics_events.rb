@@ -3277,39 +3277,27 @@ module AnalyticsEvents
     )
   end
 
-  # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
+  # USPS proofing results job is beginning.
+  # Includes some metadata about what the job will do.
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_started(
-    enrollments_count:,
-    reprocess_delay_minutes:,
+    enrollments_count: nil,
+    reprocess_delay_minutes: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Job started',
+      "#{job_name}: Job started",
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       **extra,
     )
   end
 
-  # GetUspsReadyProofingResultsJob is beginning. Includes some metadata about what the job will do
-  # @param [Integer] enrollments_count number of enrollments eligible for status check
-  # @param [Integer] reprocess_delay_minutes minimum delay since last status check
-  def idv_in_person_usps_ready_proofing_results_job_started(
-    enrollments_count:,
-    reprocess_delay_minutes:,
-    **extra
-  )
-    track_event(
-      'GetUspsReadyProofingResultsJob: Job started',
-      enrollments_count: enrollments_count,
-      reprocess_delay_minutes: reprocess_delay_minutes,
-      **extra,
-    )
-  end
-
-  # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
+  # USPS proofing results job has completed.
+  # Includes counts of various outcomes encountered
   # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
   # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
@@ -3317,18 +3305,20 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_completed(
-    duration_seconds:,
-    enrollments_checked:,
-    enrollments_errored:,
-    enrollments_expired:,
-    enrollments_failed:,
-    enrollments_in_progress:,
-    enrollments_passed:,
+    duration_seconds: nil,
+    enrollments_checked: nil,
+    enrollments_errored: nil,
+    enrollments_expired: nil,
+    enrollments_failed: nil,
+    enrollments_in_progress: nil,
+    enrollments_passed: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Job completed',
+      "#{job_name}: Job completed",
       duration_seconds: duration_seconds,
       enrollments_checked: enrollments_checked,
       enrollments_errored: enrollments_errored,
@@ -3340,38 +3330,7 @@ module AnalyticsEvents
     )
   end
 
-  # GetUspsReadyProofingResultsJob has completed. Includes counts of various outcomes encountered
-  # @param [Float] duration_seconds number of minutes the job was running
-  # @param [Integer] enrollments_checked number of enrollments eligible for status check
-  # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
-  # @param [Integer] enrollments_expired number of enrollments which expired
-  # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
-  # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
-  # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
-  def idv_in_person_usps_ready_proofing_results_job_completed(
-    duration_seconds:,
-    enrollments_checked:,
-    enrollments_errored:,
-    enrollments_expired:,
-    enrollments_failed:,
-    enrollments_in_progress:,
-    enrollments_passed:,
-    **extra
-  )
-    track_event(
-      'GetUspsReadyProofingResultsJob: Job completed',
-      duration_seconds: duration_seconds,
-      enrollments_checked: enrollments_checked,
-      enrollments_errored: enrollments_errored,
-      enrollments_expired: enrollments_expired,
-      enrollments_failed: enrollments_failed,
-      enrollments_in_progress: enrollments_in_progress,
-      enrollments_passed: enrollments_passed,
-      **extra,
-    )
-  end
-
-  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # Tracks exceptions that are raised when running a proofing results job
   # @param [String] reason why was the exception raised?
   # @param [String] enrollment_id
   # @param [String] exception_class
@@ -3395,6 +3354,7 @@ module AnalyticsEvents
   # @param [String] scan_count
   # @param [String] response_message
   # @param [Integer] response_status_code
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_exception(
     reason:,
     enrollment_id:,
@@ -3419,10 +3379,11 @@ module AnalyticsEvents
     scan_count: nil,
     response_message: nil,
     response_status_code: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Exception raised',
+      "#{job_name}: Exception raised",
       reason: reason,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -3450,31 +3411,36 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks deadline email initiated during GetUspsProofingResultsJob
+  # Tracks deadline email initiated during USPS proofing results job
   # @param [String] enrollment_id
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
-    enrollment_id:,
+    enrollment_id: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: deadline passed email initiated',
+      "#{job_name}: deadline passed email initiated",
       enrollment_id: enrollment_id,
       **extra,
     )
   end
 
-  # Tracks exceptions that are raised when initiating deadline email in GetUspsProofingResultsJob
+  # Tracks exceptions that are raised when initiating deadline email in
+  # USPS proofing results job
   # @param [String] enrollment_id
   # @param [String] exception_class
   # @param [String] exception_message
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
-    enrollment_id:,
+    enrollment_id: nil,
     exception_class: nil,
     exception_message: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
+      "#{job_name}: Exception raised when attempting to send deadline passed email",
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
@@ -3487,7 +3453,7 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   def idv_in_person_email_reminder_job_exception(
-    enrollment_id:,
+    enrollment_id: nil,
     exception_class: nil,
     exception_message: nil,
     **extra
@@ -3501,24 +3467,26 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
+  # Tracks individual enrollments that are updated during proofing results job
   # @param [String] enrollment_code
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
-    enrollment_code:,
-    enrollment_id:,
-    minutes_since_established:,
-    fraud_suspected:,
-    passed:,
-    reason:,
+    enrollment_code: nil,
+    enrollment_id: nil,
+    minutes_since_established: nil,
+    fraud_suspected: nil,
+    passed: nil,
+    reason: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Enrollment status updated',
+      "#{job_name}: Enrollment status updated",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -3529,14 +3497,16 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks emails that are initiated during GetUspsProofingResultsJob
+  # Tracks emails that are initiated during USPS proofing results job
   # @param [String] email_type success, failed or failed fraud
+  # @param [String] name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_email_initiated(
-    email_type:,
+    email_type: nil,
+    job_name: nil,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Success or failure email initiated',
+      "#{job_name}: Success or failure email initiated",
       email_type: email_type,
       **extra,
     )
@@ -3568,10 +3538,11 @@ module AnalyticsEvents
     enrollment_id:,
     minutes_since_established:,
     response_message:,
+    job_name:,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Enrollment incomplete',
+      "#{job_name}: Enrollment incomplete",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -3592,10 +3563,11 @@ module AnalyticsEvents
     minutes_since_established:,
     response_message:,
     reason:,
+    job_name:,
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Unexpected response received',
+      "#{job_name}: Unexpected response received",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,

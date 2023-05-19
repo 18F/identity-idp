@@ -142,40 +142,111 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'needs_usps_status_check' do
+  describe 'usps_status_check_on_ready_enrollments' do
     let(:check_interval) { ...1.hour.ago }
-    let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
-    let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
-    let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+    let!(:passed_enrollment) do
+      create(:in_person_enrollment, :passed, ready_for_status_check: true)
+    end
+    let!(:failing_enrollment) do
+      create(:in_person_enrollment, :failed, ready_for_status_check: true)
+    end
+    let!(:expired_enrollment) do
+      create(:in_person_enrollment, :expired, ready_for_status_check: true)
+    end
     let!(:checked_pending_enrollment) do
-      create(:in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now)
+      create(
+        :in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now,
+                                         ready_for_status_check: true
+      )
+    end
+    let!(:ready_enrollments) do
+      [
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+      ]
     end
     let!(:needy_enrollments) do
       [
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
       ]
     end
 
-    it 'returns only pending enrollments' do
-      expect(InPersonEnrollment.count).to eq(8)
-      results = InPersonEnrollment.needs_usps_status_check(check_interval)
+    it 'returns only pending enrollments that are not ready for status check' do
+      expect(InPersonEnrollment.count).to eq(12)
+      results = InPersonEnrollment.usps_status_check_on_ready_enrollments(check_interval)
+      expect(results.length).to eq ready_enrollments.length
+      expect(results.pluck(:id)).to match_array ready_enrollments.pluck(:id)
+      expect(results.pluck(:id)).not_to match_array needy_enrollments.pluck(:id)
+      results.each do |result|
+        expect(result.pending?).to be_truthy
+      end
+    end
+  end
+
+  describe 'usps_status_check_on_waiting_enrollments' do
+    let(:check_interval) { ...1.hour.ago }
+    let!(:passed_enrollment) do
+      create(:in_person_enrollment, :passed, ready_for_status_check: false)
+    end
+    let!(:failing_enrollment) do
+      create(:in_person_enrollment, :failed, ready_for_status_check: false)
+    end
+    let!(:expired_enrollment) do
+      create(:in_person_enrollment, :expired, ready_for_status_check: false)
+    end
+    let!(:checked_pending_enrollment) do
+      create(
+        :in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now,
+                                         ready_for_status_check: false
+      )
+    end
+    let!(:needy_enrollments) do
+      [
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+        create(:in_person_enrollment, :pending, ready_for_status_check: false),
+      ]
+    end
+    let!(:ready_enrollments) do
+      [
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+        create(:in_person_enrollment, :pending, ready_for_status_check: true),
+      ]
+    end
+
+    it 'returns only pending enrollments that are not ready for status check' do
+      expect(InPersonEnrollment.count).to eq(12)
+      results = InPersonEnrollment.usps_status_check_on_waiting_enrollments(check_interval)
       expect(results.length).to eq needy_enrollments.length
       expect(results.pluck(:id)).to match_array needy_enrollments.pluck(:id)
+      expect(results.pluck(:id)).not_to match_array ready_enrollments.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
       end
     end
 
     it 'indicates whether an enrollment needs a status check' do
-      expect(passed_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(failing_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(expired_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(checked_pending_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
+      expect(passed_enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to
+      be_falsey
+      expect(failing_enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to
+      be_falsey
+      expect(expired_enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to
+      be_falsey
+      expect(checked_pending_enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to
+      be_falsey
       needy_enrollments.each do |enrollment|
-        expect(enrollment.needs_usps_status_check?(check_interval)).to be_truthy
+        expect(enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to be_truthy
+      end
+      ready_enrollments.each do |enrollment|
+        expect(enrollment.needs_status_check_on_waiting_enrollments?(check_interval)).to be_falsey
       end
     end
   end

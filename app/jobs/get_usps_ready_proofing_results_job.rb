@@ -4,8 +4,9 @@ class GetUspsReadyProofingResultsJob < GetUspsProofingResultsJob
   queue_as :long_running
 
   def perform(_now)
-    return true unless IdentityConfig.store.in_person_proofing_enabled
-    puts "PERFORM CALLED IN PROOFING RESULTS JOB"
+    unless IdentityConfig.store.in_person_proofing_enabled && IdentityConfig.store.in_person_enrollments_ready_job_enabled
+      return true
+    end
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
@@ -18,14 +19,15 @@ class GetUspsReadyProofingResultsJob < GetUspsProofingResultsJob
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.ready_for_usps_status_check(
+    enrollments = InPersonEnrollment.usps_status_check_on_ready_enrollments(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
     started_at = Time.zone.now
-    analytics.idv_in_person_usps_ready_proofing_results_job_started(
+    analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
+      job_name: self.class.name,
     )
 
     check_enrollments(enrollments)
@@ -38,14 +40,14 @@ class GetUspsReadyProofingResultsJob < GetUspsProofingResultsJob
         ) * 100).round(2)
     end
 
-    analytics.idv_in_person_usps_ready_proofing_results_job_completed(
+    analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
       # Calculate % of errored enrollments
       percent_enrollments_errored:,
+      job_name: self.class.name,
     )
 
     true
-
   end
 end
