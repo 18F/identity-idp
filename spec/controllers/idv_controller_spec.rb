@@ -45,7 +45,7 @@ describe IdvController do
       profile = create(
         :profile,
         fraud_state: 'fraud_rejection',
-        fraud_rejection_at: 1.day.ago,  
+        fraud_rejection_at: 1.day.ago,
       )
 
       stub_sign_in(profile.user)
