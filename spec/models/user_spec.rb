@@ -535,6 +535,7 @@ RSpec.describe User do
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_review_pending',
+        fraud_review_pending_at: 15.days.ago,
       )
 
       expect(user.fraud_review_pending?).to eq true
@@ -547,6 +548,7 @@ RSpec.describe User do
       user.profiles.create(
         active: false,
         fraud_state: 'fraud_rejection',
+        fraud_rejection_at: 15.days.ago,
       )
 
       expect(user.fraud_rejection?).to eq true
@@ -560,6 +562,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_review_pending',
+          fraud_review_pending_at: 15.days.ago,
         )
 
         expect(user.fraud_review_pending_profile).to eq(profile)
@@ -579,6 +582,7 @@ RSpec.describe User do
         profile = user.profiles.create(
           active: false,
           fraud_state: 'fraud_rejection',
+          fraud_rejection_at: 15.days.ago,
         )
 
         expect(user.fraud_rejection_profile).to eq(profile)
