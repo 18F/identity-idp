@@ -62,7 +62,7 @@ module InPerson::EnrollmentsReadyForStatusCheck
 
       # https://datatracker.ietf.org/doc/html/rfc5322#section-3.6.1
       error_extra[:ses_rfc_origination_date] = ses_message.
-        dig(:mail, :commonHeaders, :date)&.tap do |date|
+        dig(:mail, :commonHeaders, :date)&.then do |date|
           DateTime.parse(date).to_s
         end
       # https://datatracker.ietf.org/doc/html/rfc5322#section-3.6.4

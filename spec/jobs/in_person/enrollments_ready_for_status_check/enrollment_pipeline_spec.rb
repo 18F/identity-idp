@@ -19,6 +19,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
     let(:enrollment_code) { 16.times.map { rand(0..9) }.join }
     let(:user) { create(:user) }
     let(:user_id) { user.id }
+    let(:mail_date) { 16.hours.ago.to_datetime }
     let(:ses_payload) do
       {
         content: Mail.new do |m|
@@ -29,7 +30,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           timestamp: DateTime.now.to_s,
           source: 'testsource@example.com',
           commonHeaders: {
-            date: Mail::DateField.new.to_s,
+            date: Mail::DateField.new(mail_date).to_s,
             messageId: Mail::Utilities.generate_message_id,
           },
         },
@@ -41,7 +42,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
         ses_mail_source: ses_payload[:mail][:source],
         ses_mail_timestamp: ses_payload[:mail][:timestamp],
         ses_rfc_message_id: ses_payload[:mail][:commonHeaders][:messageId],
-        ses_rfc_origination_date: ses_payload[:mail][:commonHeaders][:date],
+        ses_rfc_origination_date: mail_date.to_s,
       }
     end
     let(:sns_payload) do
