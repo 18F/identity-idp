@@ -27,6 +27,7 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  # rubocop:disable Metrics/BlockLength
   aasm :fraud, column: :fraud_state, timestamps: true do
     state :fraud_none, initial: true
     state :fraud_review_pending, :fraud_rejection, :fraud_passed
@@ -69,6 +70,7 @@ class Profile < ApplicationRecord
       )
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   def gpo_verification_pending?
     gpo_verification_pending_at.present?
