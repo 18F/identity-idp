@@ -15,6 +15,9 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	brakeman \
 	build_artifact \
 	check \
+	clobber_db \
+	clobber_assets \
+	clobber_logs \
 	docker_setup \
 	download_acuant_sdk \
 	fast_setup \
@@ -34,6 +37,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
+	tidy \
 	update \
 	urn \
 	README.md \
@@ -268,3 +272,25 @@ README.md: docs/ ## Generates README.md based on the contents of the docs direct
 
 download_acuant_sdk: ## Downloads the most recent Acuant SDK release from Github
 	@scripts/download_acuant_sdk.sh
+
+clobber_db:  ## resets the database for make setup
+	bin/rake db:create
+	bin/rake db:environment:set
+	bin/rake db:reset
+	bin/rake db:environment:set
+	bin/rake dev:prime
+
+clobber_assets:  ## removes assets
+	bin/rake assets:clobber
+	RAILS_ENV=test bin/rake assets:clobber
+
+clobber_logs:  ## purges logs
+	rm -f log/*
+	rm -rf tmp/cache/*
+	rm -rf tmp/encrypted_doc_storage
+	rm -rf tmp/letter_opener
+	rm -rf tmp/mails
+
+## Remove assets and logs, and unused gems, but leave DB alone
+tidy: clobber_assets clobber_logs
+	bundle clean
