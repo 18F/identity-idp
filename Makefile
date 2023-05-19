@@ -273,24 +273,23 @@ README.md: docs/ ## Generates README.md based on the contents of the docs direct
 download_acuant_sdk: ## Downloads the most recent Acuant SDK release from Github
 	@scripts/download_acuant_sdk.sh
 
-clobber_db:  ## resets the database for make setup
+clobber_db: ## Resets the database for make setup
 	bin/rake db:create
 	bin/rake db:environment:set
 	bin/rake db:reset
 	bin/rake db:environment:set
 	bin/rake dev:prime
 
-clobber_assets:  ## removes assets
+clobber_assets: ## Removes (clobbers) assets
 	bin/rake assets:clobber
 	RAILS_ENV=test bin/rake assets:clobber
 
-clobber_logs:  ## purges logs
+clobber_logs: ## Purges logs and tmp/
 	rm -f log/*
 	rm -rf tmp/cache/*
 	rm -rf tmp/encrypted_doc_storage
 	rm -rf tmp/letter_opener
 	rm -rf tmp/mails
 
-## Remove assets and logs, and unused gems, but leave DB alone
-tidy: clobber_assets clobber_logs
+tidy: clobber_assets clobber_logs ## Remove assets and logs, and unused gems, but leave DB alone
 	bundle clean
