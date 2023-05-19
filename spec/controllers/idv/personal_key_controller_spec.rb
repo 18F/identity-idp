@@ -140,10 +140,10 @@ describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to the come back later url' do
+      it 'redirects to doc auth url' do
         get :show
 
-        expect(response).to redirect_to idv_come_back_later_url
+        expect(response).to redirect_to idv_doc_auth_url
       end
     end
   end
@@ -201,10 +201,10 @@ describe Idv::PersonalKeyController do
       end
 
       context 'with gpo personal key after verification' do
-        it 'redirects to the come back later url' do
+        it 'redirects to doc auth url' do
           patch :update
 
-          expect(response).to redirect_to idv_come_back_later_url
+          expect(response).to redirect_to idv_doc_auth_url
         end
       end
     end
