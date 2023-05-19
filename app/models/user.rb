@@ -107,26 +107,18 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    return @pending_profile if defined?(@pending_profile)
+    pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+      profiles.where.not(gpo_verification_pending_at: nil),
+    ).or(
+      profiles.where.not(fraud_review_pending_at: nil),
+    ).or(
+      profiles.where.not(fraud_rejection_at: nil),
+    ).order(created_at: :desc).first
 
-    @pending_profile = begin
-      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-        profiles.where.not(gpo_verification_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_review_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_rejection_at: nil),
-      ).order(created_at: :desc).first
+    return unless pending.present?
+    return if active_profile.present? && active_profile.activated_at > pending.created_at
 
-      if pending.nil?
-        nil
-      elsif active_profile.present? && active_profile.activated_at > pending.created_at
-        # Don't return a pending profile if the user's active profile is newer
-        nil
-      else
-        pending
-      end
-    end
+    pending
   end
 
   def gpo_verification_pending_profile
