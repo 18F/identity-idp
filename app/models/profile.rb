@@ -111,13 +111,13 @@ class Profile < ApplicationRecord
   end
 
   def deactivate_for_fraud_review
-    fraud_review
     update!(active: false)
+    fraud_review
   end
 
   def reject_for_fraud(notify_user:)
-    fraud_reject
     update!(active: false)
+    fraud_reject
     track_fraud_review_adjudication(
       decision: notify_user ? 'manual_reject' : 'automatic_reject',
     )

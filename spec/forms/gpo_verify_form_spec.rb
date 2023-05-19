@@ -153,9 +153,9 @@ describe GpoVerifyForm do
           create(
             :profile,
             user: user,
+            gpo_verification_pending_at: 1.day.ago,
             fraud_state: 'fraud_review_pending',
             fraud_review_pending_at: 1.day.ago,
-            gpo_verification_pending_at: 1.day.ago,
           )
         end
 
