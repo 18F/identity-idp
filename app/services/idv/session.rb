@@ -43,10 +43,6 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def proofing_started?
-      applicant.present? && resolution_successful
-    end
-
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
