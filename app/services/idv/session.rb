@@ -71,11 +71,7 @@ module Idv
     end
 
     def deactivation_reason
-      if gpo_verification_needed?
-        :gpo_verification_pending
-      elsif in_person_enrollment?
-        :in_person_verification_pending
-      end
+      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?

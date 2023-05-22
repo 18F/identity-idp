@@ -102,7 +102,7 @@ describe Idv::Session do
 
         expect(subject).not_to have_received(:move_pii_to_user_session)
         expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
+        expect(subject.profile.gpo_verification_pending?).to eq(true)
       end
 
       context 'with establishing in person enrollment' do
@@ -151,7 +151,7 @@ describe Idv::Session do
 
         expect(subject).to have_received(:move_pii_to_user_session)
         expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
+        expect(subject.profile.gpo_verification_pending?).to eq(true)
       end
     end
 
@@ -167,7 +167,7 @@ describe Idv::Session do
 
         expect(subject).not_to have_received(:move_pii_to_user_session)
         expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
+        expect(subject.profile.gpo_verification_pending?).to eq(true)
       end
     end
   end
