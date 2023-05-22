@@ -1,4 +1,4 @@
-<label class="usa-label">
+<label class="usa-label" id="memorable-date-label-<%= unique_id %>">
     <%= label %>
 </label>
 <div id="validated-field-hint-<%= unique_id %>" class="usa-hint">
@@ -20,7 +20,10 @@
             <%= p.input(
                   :month,
                   pattern: '(1[0-2])|(0?[1-9])',
-                  wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0' },
+                  wrapper_html: {
+                    aria: { labelledby: ["memorable-date-label-#{unique_id}"] },
+                    class: 'usa-form-group usa-form-group--month margin-bottom-0',
+                  },
                   label: t('components.memorable_date.month'),
                   label_html: {
                     class: 'usa-label',
@@ -53,7 +56,10 @@
           <%= p.input(
                 :day,
                 pattern: '(3[01])|([12][0-9])|(0?[1-9])',
-                wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0' },
+                wrapper_html: {
+                  aria: { labelledby: ["memorable-date-label-#{unique_id}"] },
+                  class: 'usa-form-group usa-form-group--day margin-bottom-0',
+                },
                 label: t('components.memorable_date.day'),
                 label_html: {
                   class: 'usa-label',
@@ -86,7 +92,10 @@
           <%= p.input(
                 :year,
                 pattern: '\d{4}',
-                wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0' },
+                wrapper_html: {
+                  aria: { labelledby: ["memorable-date-label-#{unique_id}"] },
+                  class: 'usa-form-group usa-form-group--year margin-bottom-0',
+                },
                 label: t('components.memorable_date.year'),
                 label_html: {
                   class: 'usa-label',
