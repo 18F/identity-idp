@@ -63,8 +63,13 @@ RSpec.describe MemorableDateComponent, type: :component do
     expect(rendered).to have_css('input[aria-labelledby*="memorable-date-year-hint"]')
   end
 
+  it 'renders wrapper html with reference to label' do
+    expect(rendered).to have_css('div[aria-labelledby*="memorable-date-label"]', count: 3)
+  end
+
   it 'sets the label' do
     expect(rendered).to have_css('.usa-label', text: label)
+    expect(rendered).to have_css('label[id*="memorable-date-label"]')
   end
 
   it 'sets the hint' do
