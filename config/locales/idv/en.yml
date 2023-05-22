@@ -75,6 +75,8 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
+        post_office_outage_error_body: BODYTK
+        post_office_outage_error_header: HEADER TK
         post_office_search_error: We are having technical difficulties at the moment.
           Try searching for a Post Office again. If this issue continues, come
           back later.

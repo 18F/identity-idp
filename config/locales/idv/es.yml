@@ -80,6 +80,8 @@ es:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.
         link: contáctanos
+        post_office_outage_error_body: BODYTK
+        post_office_outage_error_header: HEADER TK
         post_office_search_error: En este momento, estamos teniendo problemas técnicos.
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.

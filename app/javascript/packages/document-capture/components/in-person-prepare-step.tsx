@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
+import { Alert, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -23,6 +23,11 @@ function InPersonPrepareStep({ toPreviousStep }) {
 
   return (
     <>
+      <Alert type="error" className="margin-bottom-4">
+        <strong>{t('idv.failure.exceptions.post_office_outage_error_header')}</strong>
+        {t('idv.failure.exceptions.post_office_outage_error_body')}
+      </Alert>
+
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
