@@ -1,6 +1,6 @@
 # Docker
 
-Currently, Docker is not being widely used and is considered deprecated. [See this note about Docker](./local-development.md#installing-with-docker) for more details.
+Currently, Docker is not being widely used and this project's Docker configuration is considered deprecated. [See this note about Docker](./local-development.md#installing-with-docker) for more details.
 
 ## Overview
 
