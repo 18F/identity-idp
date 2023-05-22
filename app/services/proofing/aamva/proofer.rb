@@ -36,11 +36,12 @@ module Proofing
         )
         build_result_from_response(response)
       rescue => exception
-        send_to_new_relic(exception)
-        Proofing::StateIdResult.new(
+        failed_result = Proofing::StateIdResult.new(
           success: false, errors: {}, exception: exception, vendor_name: 'aamva:state_id',
           transaction_id: nil, verified_attributes: []
         )
+        send_to_new_relic(failed_result)
+        failed_result
       end
 
       private
@@ -96,20 +97,16 @@ module Proofing
           results[:zipcode]
       end
 
-      def send_to_new_relic(exception)
-        case exception
+      def send_to_new_relic(result)
+        case result.exception
         when Proofing::TimeoutError
           return # noop
         when Proofing::Aamva::VerificationError
-          if mva_timeout?(exception.to_s)
+          if result.mva_timeout?
             return # noop
           end
         end
-        NewRelic::Agent.notice_error(exception)
-      end
-
-      def mva_timeout?(error_message)
-        error_message.include? Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION
+        NewRelic::Agent.notice_error(result.exception)
       end
     end
   end
