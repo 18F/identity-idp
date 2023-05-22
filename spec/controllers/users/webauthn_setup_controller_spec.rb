@@ -94,6 +94,8 @@ describe Users::WebauthnSetupController do
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
+          with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
+        expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication Setup', result)
 
         expect(@analytics).to receive(:track_event).
@@ -210,6 +212,8 @@ describe Users::WebauthnSetupController do
         end
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
             'Multi-Factor Authentication Setup',
             {
@@ -261,6 +265,8 @@ describe Users::WebauthnSetupController do
           }
         end
         it 'should log expected events' do
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
             'User Registration: User Fully Registered',
             { mfa_method: 'webauthn_platform' },

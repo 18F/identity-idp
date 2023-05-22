@@ -2,6 +2,7 @@
 
 /* eslint-disable no-console */
 
+import { mkdir } from 'node:fs/promises';
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { parseArgs } from '@pkgjs/parseargs'; // Note: Use native util.parseArgs after Node v18
@@ -27,7 +28,7 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 
 const isWatching = flags.watch;
 const outDir = flags['out-dir'];
-const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
+const loadPaths = [...flags['load-path'], ...getDefaultLoadPaths()];
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };
@@ -80,6 +81,9 @@ function build(files) {
   );
 }
 
-build(fileArgs).catch(() => {
-  process.exitCode = 1;
-});
+mkdir(outDir, { recursive: true })
+  .then(() => build(fileArgs))
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });

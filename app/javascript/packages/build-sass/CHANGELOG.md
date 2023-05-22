@@ -1,8 +1,18 @@
 ## Unreleased
 
+### Breaking Changes
+
+- Changed priority for how load paths are used when resolving modules. The net effect is that any `--load-path` should take highest priority over those provided as defaults.
+  - Before: (1) `node_modules`, (2) default load paths, (3) custom `--load-path` load paths
+  - After: (1) custom `--load-path` load paths, (2) default load paths, (3) `node_modules`
+
+## 1.3.0
+
 ### Improvements
 
 - Adds support for ".scss" file extension, as an alternative to the current ".css.scss" support. In both cases, the output files use the basename with a ".css" extension.
+- Creates the `--out-dir` directory if it does not exist already.
+- Outputs any error that occurs during build, not just Sass compilation errors.
 
 ## 1.2.0
 

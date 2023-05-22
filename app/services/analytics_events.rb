@@ -533,6 +533,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user visited the gpo confirm cancellation screen
+  def idv_gpo_confirm_start_over_visited
+    track_event('IdV: gpo confirm start over visited')
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -2141,7 +2146,7 @@ module AnalyticsEvents
     )
   end
 
-  # User registration has been hadnded off to agency page
+  # User registration has been handed off to agency page
   # @param [Boolean] ial2
   # @param [Integer] ialmax
   # @param [String] service_provider_name
@@ -2242,7 +2247,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
   # (the user will need to use their personal key to reactivate their profile)
-  # The user changed the password for their account via the paswword reset flow
+  # The user changed the password for their account via the password reset flow
   def password_reset_password(success:, errors:, profile_deactivated:, **extra)
     track_event(
       'Password Reset: Password Submitted',
@@ -2616,7 +2621,7 @@ module AnalyticsEvents
     track_event('SP handoff bounced visited')
   end
 
-  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  # Tracks when a user visits the "This agency no longer uses Login.gov" page.
   def sp_inactive_visit
     track_event('SP inactive visited')
   end

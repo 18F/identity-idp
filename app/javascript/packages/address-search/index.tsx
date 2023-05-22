@@ -7,9 +7,20 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { FormattedLocation } from './in-person-locations';
 
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+
+export interface FormattedLocation {
+  formattedCityStateZip: string;
+  distance: string;
+  id: number;
+  name: string;
+  saturdayHours: string;
+  streetAddress: string;
+  sundayHours: string;
+  weekdayHours: string;
+  isPilot: boolean;
+}
 
 export interface PostOffice {
   address: string;
