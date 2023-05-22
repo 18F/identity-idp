@@ -24,6 +24,14 @@ feature 'idv gpo step', :js do
 
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
+    let(:otp) { 'ABC123' }
+    let(:gpo_confirmation_code) do
+      create(
+        :gpo_confirmation_code,
+        profile: user.pending_profile,
+        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      )
+    end
 
     it 'allows the user to resend a letter and redirects to the come back later step' do
       complete_idv_and_return_to_gpo_step
@@ -41,6 +49,15 @@ feature 'idv gpo step', :js do
       expect(page).to have_current_path(idv_gpo_verify_path)
       visit idv_verify_info_url
       expect(page).to have_current_path(idv_gpo_verify_path)
+
+      # complete verification: end to end gpo test
+      gpo_confirmation_code
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      expect(user.identity_verified?).to be(true)
+
+      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
     end
 
     context 'too much time has passed' do
