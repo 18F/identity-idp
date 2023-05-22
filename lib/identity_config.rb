@@ -10,6 +10,20 @@ class IdentityConfig
   end
 
   CONVERTERS = {
+    # Allows loading a string configuration from a system environment variable
+    # ex: To read DATABASE_HOST from system environment for the database_host key
+    # database_host: ['env', 'DATABASE_HOST']
+    # To use a string value directly, you can specify a string explicitly:
+    # database_host: 'localhost'
+    system_environment_or_string: proc do |value|
+      if value.is_a?(Array) && value.length == 2 && value.first == 'env'
+        ENV.fetch(value[1])
+      elsif value.is_a?(String)
+        value
+      else
+        raise 'invalid system environment configuration value'
+      end
+    end,
     string: proc { |value| value.to_s },
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
