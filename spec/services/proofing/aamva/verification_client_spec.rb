@@ -107,7 +107,7 @@ describe Proofing::Aamva::VerificationClient do
         it 'throws an exception about the MVA timeout' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
           )
         end
 
@@ -133,7 +133,7 @@ describe Proofing::Aamva::VerificationClient do
         it 'throws an exception about the MVA timeout' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
           )
         end
       end
