@@ -1,0 +1,28 @@
+<% title t('titles.failure.information_not_verified') %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.header { t('idv.warning.state_id.heading') } %>
+
+  <p><%= t('idv.warning.state_id.explanation') %></p>
+
+  <p class="margin-bottom-0"><%= t('idv.warning.state_id.next_steps.preamble') %></p>
+  <ul>
+    <% t('idv.warning.state_id.next_steps.items_html', app_name: APP_NAME).each do |item| %>
+      <li><%= item %></li>
+    <% end %>
+  </ul>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) { link_to(@try_again_path, **tag_options, &block) },
+       class: 'margin-bottom-2',
+     ) { t('idv.warning.state_id.try_again_button') } %>
+  
+  <% c.action_button(
+       action: ->(**tag_options, &block) { link_to(idv_cancel_path, **tag_options, &block) },
+       wide: true,
+       outline: true,
+       class: 'margin-bottom-2',
+     ) { t('idv.warning.state_id.cancel_button', app_name: APP_NAME) } %>
+
+<% end %>
+

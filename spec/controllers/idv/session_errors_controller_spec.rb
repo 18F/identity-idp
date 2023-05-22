@@ -194,6 +194,31 @@ describe Idv::SessionErrorsController do
     end
   end
 
+  describe '#state_id_warning' do
+    let(:action) { :state_id_warning }
+    let(:template) { 'idv/session_errors/state_id_warning' }
+    let(:params) { {} }
+    let(:user) { create(:user) }
+
+    subject(:response) { get action, params: params }
+
+    it_behaves_like 'an idv session errors controller action'
+
+    it 'assigns URL to try again' do
+      response
+      expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
+    end
+
+    context 'in in-person proofing flow' do
+      let(:params) { { flow: 'in_person' } }
+
+      it 'assigns URL to try again' do
+        response
+        expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+      end
+    end
+  end
+
   describe '#failure' do
     let(:action) { :failure }
     let(:template) { 'idv/session_errors/failure' }
