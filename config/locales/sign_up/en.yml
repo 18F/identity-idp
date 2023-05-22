@@ -5,6 +5,6 @@ en:
     cancel:
       success: Your account has been deleted. We did not save your information.
       warning_header: 'If you cancel now:'
-    terms: I read and accept the %{app_name}
     completed:
       smiling_image_alt: A smiling person with a green checkmark indicating success
+    terms: I read and accept the %{app_name}
