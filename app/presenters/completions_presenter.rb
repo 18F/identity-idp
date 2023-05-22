@@ -108,6 +108,10 @@ class CompletionsPresenter
     end
   end
 
+  def image_alt
+    I18n.t('sign_up.completed.smiling_image_alt')
+  end
+
   def pii
     displayable_attribute_keys.index_with do |attribute_name|
       displayable_pii[attribute_name]
