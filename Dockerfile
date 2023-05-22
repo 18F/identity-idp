@@ -45,17 +45,6 @@ RUN apt-get update && \
     libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# USER app
-# RUN git clone https://github.com/rbenv/rbenv.git ~/.rbenv && \
-#     git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build && \
-#     PREFIX=~/.rbenv ~/.rbenv/plugins/ruby-build/install.sh && \
-#     ~/.rbenv/bin/rbenv install $RUBY_VERSION && \
-#     ~/.rbenv/bin/rbenv global $RUBY_VERSION && \
-#     chmod u+x ~/.rbenv/shims/* && \
-#     chown -R app:app /home/app/.rbenv
-
-# ENV PATH /home/app/.rbenv/bin:/home/app/.rbenv/plugins/ruby-build/bin:/home/app/.rbenv/shims:$PATH
-
 USER root
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
@@ -109,9 +98,6 @@ COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
 # Copy application.yml.default to application.yml
 COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
-
-# Precompile assets
-RUN bundle exec rake assets:precompile --trace
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
