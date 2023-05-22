@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-xfeature 'idv gpo confirm start over', js: true do
+feature 'idv gpo confirm start over', js: true do
   include IdvStepHelper
   include DocAuthHelper
 
