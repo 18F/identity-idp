@@ -74,7 +74,7 @@ module Idv
         flash[:success] = t('account.index.verification.success')
       end
 
-      enable_personal_key_generation
+      idv_session.address_confirmed!
     end
 
     def throttle
@@ -113,11 +113,6 @@ module Idv
 
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
-    end
-
-    def enable_personal_key_generation
-      idv_session.resolution_successful = 'gpo'
-      idv_session.applicant = pii
     end
   end
 end

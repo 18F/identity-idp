@@ -112,6 +112,8 @@ class Profile < ApplicationRecord
 
   def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
+
+    update!(deactivation_reason: nil) if deactivation_reason == 'gpo_verification_pending'
   end
 
   def activate_after_passing_review
