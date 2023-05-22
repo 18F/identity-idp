@@ -164,6 +164,12 @@ describe CompletionsPresenter do
     end
   end
 
+  describe '#image_alt' do
+    it 'returns image alt test' do
+      expect(presenter.image_alt).to eq(I18n.t('sign_up.completed.smiling_image_alt'))
+    end
+  end
+
   describe '#intro' do
     describe 'ial1' do
       context 'consent has expired since the last sign in' do
