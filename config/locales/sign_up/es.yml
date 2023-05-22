@@ -6,3 +6,5 @@ es:
       success: Su cuenta ha sido eliminada. No guardamos su información.
       warning_header: 'Si cancela ahora:'
     terms: He leído y acepto el %{app_name}
+    completed:
+      smiling_image_alt: Una persona sonriente con una marca de verificación verde de éxito
