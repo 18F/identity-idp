@@ -8,6 +8,7 @@ locals:
       :email_language,
       as: :radio_buttons,
       label: t('forms.registration.labels.email_language'),
+      input_html: { lang: "foo" },
       hint: local_assigns.fetch(
         :hint,
         t(
