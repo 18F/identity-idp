@@ -32,6 +32,11 @@ es:
               su cuenta, no habrá verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
+        gpo:
+          start_over: Si borras tu información y empiezas de nuevo
+          warnings:
+            - El código único de tu carta ya no funcionará
+            - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
         start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
@@ -50,7 +55,7 @@ es:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
-        ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
       attempts:

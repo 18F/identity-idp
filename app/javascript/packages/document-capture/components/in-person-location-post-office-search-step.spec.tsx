@@ -6,8 +6,8 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
+import { ADDRESS_SEARCH_URL, LOCATIONS_URL } from '@18f/identity-address-search';
 import { ComponentType } from 'react';
-import { ADDRESS_SEARCH_URL, LOCATIONS_URL } from './address-search';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 
 const DEFAULT_RESPONSE = [

@@ -18,7 +18,7 @@ class Profile < ApplicationRecord
   enum deactivation_reason: {
     password_reset: 1,
     encryption_error: 2,
-    gpo_verification_pending: 3,
+    gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending: 5,
   }
@@ -37,9 +37,18 @@ class Profile < ApplicationRecord
     gpo_verification_pending_at.present?
   end
 
+  def pending_reasons
+    [
+      *(:gpo_verification_pending if gpo_verification_pending?),
+      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:in_person_verification_pending if in_person_verification_pending?),
+    ]
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
-    return if has_deactivation_reason?
+    confirm_that_profile_can_be_activated!
+
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
@@ -47,10 +56,6 @@ class Profile < ApplicationRecord
       update!(
         active: true,
         activated_at: now,
-        deactivation_reason: nil,
-        gpo_verification_pending_at: nil,
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
         verified_at: now,
       )
     end
@@ -58,8 +63,17 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
+  def confirm_that_profile_can_be_activated!
+    if pending_reasons.any?
+      raise "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+    elsif deactivation_reason.present?
+      raise "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+    end
+  end
+
   def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
+    update!(deactivation_reason: nil) if gpo_verification_pending_NO_LONGER_USED?
   end
 
   def activate_after_passing_review
@@ -87,7 +101,6 @@ class Profile < ApplicationRecord
   end
 
   def has_fraud_deactivation_reason?
-    return false if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
     fraud_review_pending? || fraud_rejection?
   end
 

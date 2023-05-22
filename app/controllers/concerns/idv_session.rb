@@ -19,9 +19,11 @@ module IdvSession
     session[:doc_capture_user_id].present?
   end
 
-  def confirm_idv_vendor_session_started
+  def confirm_phone_or_address_confirmed
     return if flash[:allow_confirmations_continue]
-    redirect_to idv_doc_auth_url unless idv_session.proofing_started?
+    return if idv_session.address_confirmed? || idv_session.phone_confirmed?
+
+    redirect_to idv_doc_auth_url
   end
 
   def idv_session

@@ -19,6 +19,7 @@ module Idv
 
       analytics.idv_review_complete(
         success: false,
+        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
       )
@@ -56,6 +57,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -64,6 +66,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 
