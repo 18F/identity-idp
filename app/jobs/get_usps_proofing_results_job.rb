@@ -163,13 +163,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     if response_message == IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
-      enrollment_outcomes[:enrollments_in_progress] += 1
-      analytics(user: enrollment.user).
-        idv_in_person_usps_proofing_results_job_enrollment_incomplete(
-          **enrollment_analytics_attributes(enrollment, complete: false),
-          response_message: response_message,
-        )
-      enrollment.update(status_check_completed_at: Time.zone.now)
+      handle_incomplete_status_update(enrollment, response_message)
     elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
       handle_expired_status_update(enrollment, err.response, response_message)
     elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
@@ -272,6 +266,16 @@ class GetUspsProofingResultsJob < ApplicationJob
       **email_analytics_attributes(enrollment),
       email_type: 'Failed unsupported ID type',
     )
+  end
+
+  def handle_incomplete_status_update(enrollment, response_message)
+    enrollment_outcomes[:enrollments_in_progress] += 1
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+        **enrollment_analytics_attributes(enrollment, complete: false),
+        response_message: response_message,
+      )
+    enrollment.update(status_check_completed_at: Time.zone.now)
   end
 
   def handle_expired_status_update(enrollment, response, response_message)

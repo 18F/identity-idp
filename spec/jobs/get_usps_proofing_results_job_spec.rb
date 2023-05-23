@@ -1015,6 +1015,13 @@ RSpec.describe GetUspsProofingResultsJob do
             expect(job_analytics).not_to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
             )
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Enrollment incomplete',
+              hash_including(
+                response_message: 'Customer has not been to a post office to complete IPP',
+              ),
+            )
           end
         end
 
