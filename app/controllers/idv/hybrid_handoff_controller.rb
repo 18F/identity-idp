@@ -44,12 +44,14 @@ module Idv
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       telephony_result = send_link
-
-      analytics.idv_doc_auth_upload_submitted(**analytics_arguments)
+      telephony_form_response = build_telephony_form_response(telephony_result)
+      
+      analytics.idv_doc_auth_upload_submitted(**analytics_arguments.merge(form_response(destination: :link_sent).to_h))
       
       failure_reason = nil
       if !telephony_result.success?
         failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
+        failure(telephony_form_response.errors[:message])
       end
       irs_attempts_api_tracker.idv_phone_upload_link_sent(
         success: telephony_result.success?,
@@ -60,9 +62,11 @@ module Idv
       if !failure_reason
         flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
+      else
+        redirect_to idv_hybrid_handoff_url
       end
 
-      build_telephony_form_response(telephony_result)
+      telephony_form_response
     end
 
     def send_link
@@ -112,7 +116,7 @@ module Idv
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
-      response = form_response(destination: :document_capture)
+      response = form_response(destination: :document_capture)      
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(response.to_h),
       )
@@ -124,17 +128,6 @@ module Idv
         flow_session: flow_session,
         idv_phone_form: build_form,
       }
-    end
-
-    def form_response(destination:)
-      FormResponse.new(
-        success: true,
-        errors: {},
-        extra: {
-          destination: destination,
-          skip_upload_step: mobile_device?,
-        },
-      )
     end
 
     def mobile_device?
@@ -156,26 +149,6 @@ module Idv
         user: current_user,
         throttle_type: :idv_send_link,
       )
-    end
-
-    def throttled_failure
-      @flow.analytics.throttler_rate_limit_triggered(
-        throttle_type: :idv_send_link,
-      )
-      message = I18n.t(
-        'errors.doc_auth.send_link_throttle',
-        timeout: distance_of_time_in_words(
-          Time.zone.now,
-          [throttle.expires_at, Time.zone.now].compact.max,
-          except: :seconds,
-        ),
-      )
-
-      @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
-        phone_number: formatted_destination_phone,
-      )
-
-      failure(message)
     end
 
     def render_404_if_hybrid_handoff_controller_disabled
@@ -270,6 +243,14 @@ module Idv
       )
 
       failure(message)
+    end
+
+    # copied from Flow::Failure module
+    def failure(message, extra = nil)
+      flow_session[:error_message] = message
+      form_response_params = { success: false, errors: { message: message } }
+      form_response_params[:extra] = extra unless extra.nil?
+      FormResponse.new(**form_response_params)
     end
 
     def render_404_if_hybrid_handoff_controller_disabled

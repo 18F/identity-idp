@@ -18,7 +18,7 @@ feature 'doc auth upload step' do
     sign_in_and_2fa_user
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
       and_return(new_controller_enabled)
-    allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
+    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
     complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
@@ -57,7 +57,7 @@ feature 'doc auth upload step' do
       expect(field.value).to eq('(202) 555-1212')
     end
 
-    xit 'proceeds to link sent page when user chooses to use phone' do
+    it 'proceeds to link sent page when user chooses to use phone' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'mobile' })
@@ -71,7 +71,7 @@ feature 'doc auth upload step' do
       )
     end
 
-    xit 'proceeds to the next page with valid info' do
+    it 'proceeds to the next page with valid info' do
       expect(fake_attempts_tracker).to receive(
         :idv_phone_upload_link_sent,
       ).with(
@@ -92,14 +92,14 @@ feature 'doc auth upload step' do
       expect(page).to have_current_path(idv_link_sent_path)
     end
 
-    xit 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info' do
       fill_in :doc_auth_phone, with: ''
       click_send_link
 
-      expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
     end
 
-    xit 'sends a link that does not contain any underscores' do
+    it 'sends a link that does not contain any underscores' do
       # because URLs with underscores sometimes get messed up by carriers
       expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         expect(config[:link]).to_not include('_')
@@ -113,16 +113,17 @@ feature 'doc auth upload step' do
       expect(page).to have_current_path(idv_link_sent_path)
     end
 
-    xit 'does not proceed if Telephony raises an error' do
+    it 'does not proceed if Telephony raises an error' do
       expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
         success: false,
         phone_number: '+1 225-555-1000',
         failure_reason: { telephony: ['TelephonyError'] },
       )
       fill_in :doc_auth_phone, with: '225-555-1000'
+      
       click_send_link
 
-      expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+      expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
       expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
     end
 
@@ -180,7 +181,7 @@ feature 'doc auth upload step' do
         fill_in :doc_auth_phone, with: '415-555-0199'
 
         click_send_link
-        expect(page).to have_current_path(idv_doc_auth_upload_step, ignore_query: true)
+        expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         expect(page).to have_content(
           I18n.t(
             'errors.doc_auth.send_link_throttle',
