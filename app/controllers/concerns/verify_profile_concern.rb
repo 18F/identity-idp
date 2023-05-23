@@ -1,15 +1,15 @@
 module VerifyProfileConcern
   private
 
-  def account_or_verify_profile_url
-    return reactivate_account_url if user_needs_to_reactivate_account?
-    return idv_gpo_verify_url if profile_needs_verification?
-    account_url
+  def url_for_pending_profile_reason
+    return idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
+    return idv_in_person_ready_to_verify_url if current_user.in_person_pending_profile?
+    return idv_please_call_url if current_user.fraud_review_pending?
+    idv_not_verified_url if current_user.fraud_rejection?
   end
 
-  def profile_needs_verification?
+  def user_has_pending_profile?
     return false if current_user.blank?
-    current_user.gpo_verification_pending_profile? ||
-      user_needs_to_reactivate_account?
+    current_user.pending_profile?
   end
 end

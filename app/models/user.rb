@@ -143,6 +143,14 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.fraud_rejection?
   end
 
+  def in_person_pending_profile?
+    in_person_pending_profile.present?
+  end
+
+  def in_person_pending_profile
+    pending_profile if pending_profile&.in_person_verification_pending?
+  end
+
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
       active_profile&.verified_at ||
