@@ -46,9 +46,11 @@
   <%= render PasswordToggleComponent.new(
         form: f,
         class: 'margin-bottom-4',
-        field_options: { required: true },
-        input_html: {
-          autocomplete: 'current-password',
+        field_options: {
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
         },
       ) %>
   <%= f.submit t('links.next'), full_width: true, wide: false %>
