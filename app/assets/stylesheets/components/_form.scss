@@ -19,3 +19,10 @@ input::-webkit-inner-spin-button {
     margin-left: 0;
   }
 }
+
+.hint-grid-col-10 {
+  @media (min-width: 1024px) {
+    width: 83.3333%;
+    flex: 0 auto;
+  }
+}
