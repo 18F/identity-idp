@@ -2,14 +2,14 @@ class AccordionComponentPreview < BaseComponentPreview
   # @!group Preview
   def default
     render(AccordionComponent.new) do |c|
-      c.header { 'Header' }
+      c.with_header { 'Header' }
       'Content'
     end
   end
 
   def unbordered
     render(AccordionComponent.new(bordered: false)) do |c|
-      c.header { 'Header' }
+      c.with_header { 'Header' }
       'Content'
     end
   end
@@ -20,7 +20,7 @@ class AccordionComponentPreview < BaseComponentPreview
   # @param bordered toggle
   def workbench(header: 'Header', content: 'Content', bordered: true)
     render(AccordionComponent.new(bordered:)) do |c|
-      c.header { header }
+      c.with_header { header }
       content
     end
   end

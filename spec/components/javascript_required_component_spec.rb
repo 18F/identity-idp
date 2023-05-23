@@ -39,7 +39,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
 
   context 'with session which was previously no-js' do
     before do
-      controller.session[NoJsController::SESSION_KEY] = true
+      vc_test_controller.session[NoJsController::SESSION_KEY] = true
     end
 
     it 'renders alert confirming successful enabling of JS' do

@@ -4,7 +4,7 @@ RSpec.describe StatusPageComponent, type: :component do
   include ActionView::Helpers::TagHelper
 
   it 'renders default icon associated with status' do
-    rendered = render_inline(StatusPageComponent.new(status: :warning)) { |c| c.header { '' } }
+    rendered = render_inline(StatusPageComponent.new(status: :warning)) { |c| c.with_header { '' } }
 
     expect(rendered).to have_css(
       "img[alt='#{t('image_description.warning')}'][src*='warning']",
@@ -13,7 +13,7 @@ RSpec.describe StatusPageComponent, type: :component do
 
   it 'renders icon associated with status' do
     rendered = render_inline(StatusPageComponent.new(status: :error, icon: :lock)) do |c|
-      c.header { '' }
+      c.with_header { '' }
     end
 
     expect(rendered).to have_css(
@@ -22,14 +22,14 @@ RSpec.describe StatusPageComponent, type: :component do
   end
 
   it 'renders page heading' do
-    rendered = render_inline(StatusPageComponent.new) { |c| c.header { 'Heading' } }
+    rendered = render_inline(StatusPageComponent.new) { |c| c.with_header { 'Heading' } }
 
     expect(rendered).to have_css('h1', text: 'Heading')
   end
 
   it 'renders block content' do
     rendered = render_inline(StatusPageComponent.new) do |c|
-      c.header { 'Heading' }
+      c.with_header { 'Heading' }
       content_tag(:p, 'Content')
     end
 
@@ -38,7 +38,7 @@ RSpec.describe StatusPageComponent, type: :component do
 
   it 'renders action buttons' do
     rendered = render_inline(StatusPageComponent.new) do |c|
-      c.action_button(outline: true) { 'Cancel' }
+      c.with_action_button(outline: true) { 'Cancel' }
     end
 
     expect(rendered).to have_css(
@@ -49,9 +49,9 @@ RSpec.describe StatusPageComponent, type: :component do
 
   it 'renders troubleshooting options' do
     rendered = render_inline(StatusPageComponent.new) do |c|
-      c.troubleshooting_options do |tc|
-        tc.header { 'Troubleshooting' }
-        tc.option(url: '/', new_tab: true) { 'Option' }
+      c.with_troubleshooting_options do |tc|
+        tc.with_header { 'Troubleshooting' }
+        tc.with_option(url: '/', new_tab: true) { 'Option' }
       end
     end
 

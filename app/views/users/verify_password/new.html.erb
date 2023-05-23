@@ -26,7 +26,7 @@
 
 <div class='margin-top-6'>
   <%= render AccordionComponent.new do |c| %>
-    <% c.header { t('idv.messages.review.intro') } %>
+    <% c.with_header { t('idv.messages.review.intro') } %>
     <%= render 'shared/pii_review', pii: @decrypted_pii, phone: @decrypted_pii[:phone] %>
   <% end %>
 </div>

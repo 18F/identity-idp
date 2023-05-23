@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe PasswordToggleComponent, type: :component do
   include SimpleForm::ActionViewExtensions::FormHelper
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
   let(:form) { SimpleForm::FormBuilder.new('', {}, view_context, {}) }
   let(:options) { {} }
 
@@ -21,6 +20,17 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
     expect(input_id).to be_present
     expect(rendered).to have_css("[aria-controls='#{input_id}']")
+  end
+
+  describe '#label' do
+    context 'with custom label' do
+      let(:label) { 'Custom Label' }
+      let(:options) { { label: } }
+
+      it 'renders custom field label' do
+        expect(rendered).to have_field(label, type: :password)
+      end
+    end
   end
 
   describe '#toggle_label' do

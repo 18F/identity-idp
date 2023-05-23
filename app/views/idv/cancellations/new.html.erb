@@ -2,17 +2,17 @@
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% if @hybrid_session %>
-    <% c.header { t('idv.cancel.headings.prompt.hybrid') } %>
+    <% c.with_header { t('idv.cancel.headings.prompt.hybrid') } %>
 
     <p><%= t('idv.cancel.description.hybrid') %></p>
 
-    <% c.action_button(
+    <% c.with_action_button(
          action: ->(**tag_options, &block) do
            button_to(idv_cancel_path(step: params[:step], location: 'cancel'), **tag_options, &block)
          end,
          method: :delete,
        ).with_content(t('forms.buttons.cancel')) %>
-    <% c.action_button(
+    <% c.with_action_button(
          action: ->(**tag_options, &block) do
            button_to(idv_cancel_path(step: params[:step]), **tag_options, &block)
          end,
@@ -20,7 +20,7 @@
          outline: true,
        ).with_content(t('links.go_back')) %>
   <% else %>
-    <% c.header { t('idv.cancel.headings.prompt.standard') } %>
+    <% c.with_header { t('idv.cancel.headings.prompt.standard') } %>
 
     <h2 class="margin-top-4 margin-bottom-2"><%= t('idv.cancel.headings.start_over') %></h2>
 
