@@ -1,5 +1,6 @@
 module Idv
   class LinkSentController < ApplicationController
+    include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
@@ -68,52 +69,10 @@ module Idv
     end
 
     def handle_document_verification_success(get_results_response)
-      save_proofing_components
-      extract_pii_from_doc(get_results_response, store_in_session: true)
+      save_proofing_components(current_user)
+      extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
       mark_upload_step_complete
       flow_session[:flow_path] = 'hybrid'
-    end
-
-    def save_proofing_components
-      return unless current_user
-
-      doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-        discriminator: flow_session[:document_capture_session_uuid],
-        analytics: analytics,
-      )
-
-      component_attributes = {
-        document_check: doc_auth_vendor,
-        document_type: 'state_id',
-      }
-      ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
-    end
-
-    # @param [DocAuth::Response,
-    #   DocumentCaptureSessionAsyncResult,
-    #   DocumentCaptureSessionResult] response
-    def extract_pii_from_doc(response, store_in_session: false)
-      pii_from_doc = response.pii_from_doc.merge(
-        uuid: effective_user.uuid,
-        phone: effective_user.phone_configurations.take&.phone,
-        uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-      )
-
-      flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-      if store_in_session
-        flow_session[:pii_from_doc] ||= {}
-        flow_session[:pii_from_doc].merge!(pii_from_doc)
-        idv_session.clear_applicant!
-      end
-      track_document_state(pii_from_doc[:state])
-    end
-
-    def track_document_state(state)
-      return unless IdentityConfig.store.state_tracking_enabled && state
-      doc_auth_log = DocAuthLog.find_by(user_id: current_user.id)
-      return unless doc_auth_log
-      doc_auth_log.state = state
-      doc_auth_log.save!
     end
 
     def render_document_capture_cancelled
@@ -143,18 +102,6 @@ module Idv
 
     def mark_upload_step_incomplete
       flow_session['Idv::Steps::UploadStep'] = nil
-    end
-
-    def successful_response
-      FormResponse.new(success: true)
-    end
-
-    # copied from Flow::Failure module
-    def failure(message, extra = nil)
-      flow_session[:error_message] = message
-      form_response_params = { success: false, errors: { message: message } }
-      form_response_params[:extra] = extra unless extra.nil?
-      FormResponse.new(**form_response_params)
     end
 
     def extend_timeout_using_meta_refresh
