@@ -92,7 +92,7 @@ feature 'Analytics Regression', js: true do
       'IdV: in person proofing prepare visited' => { flow_path: 'standard' },
       'IdV: in person proofing prepare submitted' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
-      'IdV: in person proofing state_id submitted' => { success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {} },
+      'IdV: in person proofing state_id submitted' => { success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: nil },
       'IdV: in person proofing address visited' => { step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
       'IdV: in person proofing address submitted' => { success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: true },
       'IdV: doc auth ssn visited' => { analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: true },
