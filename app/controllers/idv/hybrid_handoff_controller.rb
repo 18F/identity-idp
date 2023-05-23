@@ -44,6 +44,9 @@ module Idv
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       telephony_result = send_link
+
+      analytics.idv_doc_auth_upload_submitted(**analytics_arguments)
+      
       failure_reason = nil
       if !telephony_result.success?
         failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }

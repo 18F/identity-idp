@@ -74,4 +74,21 @@ describe Idv::HybridHandoffController do
       end
     end
   end
+
+  describe '#update' do
+    let(:analytics_name) { 'IdV: doc auth upload submitted' }
+    let(:analytics_args) do
+      {
+        analytics_id: 'Doc Auth',
+        irs_reproofing: false,
+        step: 'upload',
+      }
+    end
+
+    it 'sends analytics_submitted event' do
+      put :update, params: { doc_auth: {phone: '202-555-5555'} }
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+  end
 end
