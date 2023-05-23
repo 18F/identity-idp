@@ -80,6 +80,25 @@ es:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.
         link: contáctanos
+        post_office_outage_error_message:
+          post_cta:
+            body: Mientras tanto, todavía puedes iniciar el proceso de verificación
+              presencial en %{app_name} y luego acudir a una oficina de correos.
+              Si necesitas utilizar cuanto antes los servicios, contacta
+              directamente a tu agencia.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
+          ready_to_verify:
+            body: Todavía puedes acudir a una oficina de correos para completar tu proceso
+              de verificación de identidad. Si necesitas utilizar cuanto antes
+              los servicios, contacta directamente a tu agencia.
+            contact_html: <a href="%{help_url}" target="_blank">Contacta al soporte de
+              %{app_name}</a> si no has recibido un correo electrónico con los
+              resultados de tu verificación para el jueves, June 1.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
         post_office_search_error: En este momento, estamos teniendo problemas técnicos.
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
