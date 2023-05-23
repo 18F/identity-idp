@@ -115,6 +115,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
     inPersonCtaVariantTestingEnabled,
     inPersonCtaVariantActive,
+    inPersonUspsOutageMessageEnabled,
   } = appRoot.dataset as DOMStringMap & AppRootData;
 
   const App = composeComponents(
@@ -127,6 +128,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
           inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
           inPersonCtaVariantActive,
           inPersonURL,
+          inPersonUspsOutageMessageEnabled,
         },
       },
     ],

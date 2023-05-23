@@ -102,4 +102,31 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
       expect(rendered).not_to have_content(t('in_person_proofing.body.barcode.retail_hours'))
     end
   end
+
+  context 'USPS outage message flag' do
+    before(:each) do
+    end
+
+    it 'renders the USPS outage alert when flag is enabled' do
+      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+        and_return(true)
+
+      render
+
+      expect(rendered).to have_content(
+        t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title'),
+      )
+    end
+
+    it 'does not render the USPS outage alert when flag is disabled' do
+      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+        and_return(false)
+
+      render
+
+      expect(rendered).not_to have_content(
+        t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title'),
+      )
+    end
+  end
 end

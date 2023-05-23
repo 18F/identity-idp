@@ -1,3 +1,4 @@
+<% if IdentityConfig.store.in_person_usps_outage_message_enabled %>
 <table class="warning-alert margin-y-4">
   <tr>
     <td width="16">
@@ -16,7 +17,7 @@
     </td>
   </tr>
 </table>
-
+<% end %>
 <div class="text-center">
   <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
   <%= render BarcodeComponent.new(

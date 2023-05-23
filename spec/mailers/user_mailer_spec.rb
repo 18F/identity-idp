@@ -576,6 +576,27 @@ describe UserMailer, type: :mailer do
         end
       end
 
+      context 'USPS outage message' do
+        it 'renders a warning when the flag is enabled' do
+          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+            and_return(true)
+
+          expect(mail.html_part.body).
+            to have_content(
+              t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title'),
+            )
+        end
+        it 'does not renders a warning when the flag is disabled' do
+          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+            and_return(false)
+
+          expect(mail.html_part.body).
+            to_not have_content(
+              t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title'),
+            )
+        end
+      end
+
       it 'renders the body' do
         expect(mail.html_part.body).
           to have_content(
