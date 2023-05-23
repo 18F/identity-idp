@@ -999,22 +999,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#pending_profile_requires_verification?' do
-    it 'returns false when no pending profile exists' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return(nil)
-
-      expect(user.pending_profile_requires_verification?).to eq false
-    end
-
-    it 'returns true when pending profile exists and identity is not verified' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return('profile')
-
-      expect(user.pending_profile_requires_verification?).to eq true
-    end
-  end
-
   describe '#identity_not_verified?' do
     it 'returns true if identity_verified returns false' do
       user = User.new

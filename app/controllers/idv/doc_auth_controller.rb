@@ -1,8 +1,8 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
+    before_action :redirect_if_pending_gpo
     before_action :redirect_if_pending_in_person_enrollment
-    before_action :redirect_if_pending_profile
 
     include IdvSession
     include Flow::FlowStateMachine
@@ -29,8 +29,8 @@ module Idv
       redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
     end
 
-    def redirect_if_pending_profile
-      redirect_to idv_gpo_verify_url if current_user.pending_profile_requires_verification?
+    def redirect_if_pending_gpo
+      redirect_to idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
     end
 
     def redirect_if_flow_completed

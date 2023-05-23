@@ -23,7 +23,7 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.pending_profile_requires_verification? ||
+    current_user.gpo_verification_pending_profile? ||
       user_needs_to_reactivate_account?
   end
 end
