@@ -9,6 +9,12 @@
       ) %>
 <% end %>
 
+<%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
+  <p><strong><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title') %></strong></p>
+  <p><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.body') %></p>
+  <p><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %></p>
+<% end %>
+
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
   <%= t('in_person_proofing.headings.barcode') %>
 <% end %>
@@ -21,11 +27,6 @@
               label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
             ) %>
       </div>
-
-<%= render AlertComponent.new(type: :error, class: 'margin-bottom-4', text_tag: 'div',) do %>
-  <%= t('idv.failure.exceptions.post_office_outage_error_header') %>
-  <%= t('idv.failure.exceptions.post_office_outage_error_body') %>
-<% end %>
 
 <%= render AlertComponent.new(class: 'margin-y-4', text_tag: :div) do %>
   <p class="margin-bottom-1 margin-top-0 h3"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>

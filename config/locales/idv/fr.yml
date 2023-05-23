@@ -84,8 +84,27 @@ fr:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.
         link: contactez-nous
-        post_office_outage_error_body: BODYTK
-        post_office_outage_error_header: HEADER TK
+        post_office_outage_error_message:
+          post_cta:
+            body: En attendant, vous pouvez toujours commencer la procédure de vérification
+              en personne sur %{app_name} et vous pouvez visiter un bureau de
+              poste. Si vous avez un besoin urgent d’accès aux services,
+              veuillez contacter directement votre agence.
+            title: Nous travaillons sur un problème technique. Il se peut que les résultats
+              de votre vérification d’identité ne vous soient pas envoyés par
+              courrier électronique avant le mardi, May 30.
+          ready_to_verify:
+            body: Vous pouvez toujours vous rendre dans un bureau de poste pour finalisation
+              de la vérification de votre identité. Si vous avez un besoin
+              urgent d’accès aux services, veuillez contacter directement votre
+              agence.
+            contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
+              %{app_name}</a> si vous n’avez pas reçu de courrier électronique
+              contenant les résultats de votre vérification avant le jeudi, June
+              1.
+            title: Nous travaillons sur un problème technique. Il se peut que les résultats
+              de votre vérification d’identité ne vous soient pas envoyés par
+              courrier électronique avant le mardi, May 30.
         post_office_search_error: Nous connaissons des difficultés techniques en ce
           moment. Essayez de chercher à nouveau un bureau de poste. Si le
           problème persiste, revenez plus tard.

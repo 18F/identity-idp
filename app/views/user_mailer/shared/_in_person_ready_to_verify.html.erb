@@ -1,3 +1,16 @@
+<table class="warning-alert margin-y-4">
+  <tr>
+    <td width="16">
+      <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
+    </td>
+    <td>
+      <p class="margin-bottom-1"><strong><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title') %></strong></p>
+      <p class="margin-bottom-1"><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.body') %></p>
+      <p class="margin-bottom-1"><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %></p>
+    </td>
+  </tr>
+</table>
+
 <div class="text-center">
   <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
   <%= render BarcodeComponent.new(
@@ -7,18 +20,6 @@
         label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
       ) %>
 </div>
-
-<table class="info-alert margin-y-4">
-  <tr>
-    <td width="16">
-      <%= image_tag('email/error.png', width: 16, height: 16, alt: '') %>
-    </td>
-    <td>
-      <p class="margin-bottom-1"><strong><%= t('idv.failure.exceptions.post_office_outage_error_header') %></strong></p>
-      <p class="margin-bottom-1"><%= t('idv.failure.exceptions.post_office_outage_error_body') %></p>
-    </td>
-  </tr>
-</table>
 
 <table class="info-alert margin-y-4">
   <tr>
