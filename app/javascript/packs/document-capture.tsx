@@ -128,7 +128,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
           inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
           inPersonCtaVariantActive,
           inPersonURL,
-          inPersonUspsOutageMessageEnabled,
+          inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
         },
       },
     ],
