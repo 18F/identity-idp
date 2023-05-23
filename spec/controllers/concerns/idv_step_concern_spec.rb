@@ -250,18 +250,17 @@ describe 'IdvStepConcern' do
     end
 
     context 'user is not throttled' do
+      let(:user) { create(:user, :fully_registered) }
+
       it 'does not redirect' do
         get :show
 
         expect(response.body).to eq 'Hello'
-        expect(response).to_not redirect_to idv_gpo_verify_url
         expect(response.status).to eq 200
       end
     end
 
     context 'with idv_doc_auth throttle (DocumentCapture)' do
-      let(:user) { create(:user, :fully_registered) }
-
       it 'redirects to idv_doc_auth throttled error page' do
         throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
         throttle.increment_to_throttled!
@@ -269,6 +268,28 @@ describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to idv_session_errors_throttled_url
+      end
+    end
+
+    context 'with idv_resolution throttle (VerifyInfo)' do
+      it 'redirects to idv_resolution throttled error page' do
+        throttle = Throttle.new(user: user, throttle_type: :idv_resolution)
+        throttle.increment_to_throttled!
+
+        get :show
+
+        expect(response).to redirect_to idv_session_errors_failure_url
+      end
+    end
+
+    context 'with proof_address throttle (PhoneStep)' do
+      it 'redirects to proof_address throttled error page' do
+        throttle = Throttle.new(user: user, throttle_type: :proof_address)
+        throttle.increment_to_throttled!
+
+        get :show
+
+        expect(response).to redirect_to idv_phone_errors_failure_url
       end
     end
   end

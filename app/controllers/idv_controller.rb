@@ -27,37 +27,6 @@ class IdvController < ApplicationController
 
   private
 
-  def check_throttled_and_redirect
-    rate_limited = false
-    %i[idv_resolution idv_doc_auth proof_address].each do |throttled_type|
-      if idv_attempter_throttled?(throttled_type)
-        track_throttled_event(throttled_type)
-        throttled_redirect(throttled_type)
-        rate_limited = true
-        break
-      end
-    end
-    rate_limited
-  end
-
-  def track_throttled_event(throttled_type)
-    irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
-    analytics.throttler_rate_limit_triggered(
-      throttle_type: throttled_type,
-    )
-  end
-
-  def throttled_redirect(throttled_type)
-    case throttled_type
-    when :idv_resolution
-      redirect_to idv_session_errors_failure_url
-    when :idv_doc_auth
-      redirect_to idv_session_errors_throttled_url
-    when :proof_address
-      redirect_to idv_phone_errors_failure_url
-    end
-  end
-
   def verify_identity
     analytics.idv_intro_visit
     redirect_to idv_doc_auth_url

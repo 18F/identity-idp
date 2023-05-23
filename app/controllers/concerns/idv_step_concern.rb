@@ -21,12 +21,7 @@ module IdvStepConcern
   end
 
   def confirm_not_throttled
-    document_capture_throttle = Throttle.new(
-      user: current_user,
-      throttle_type: :idv_doc_auth,
-    )
-
-    redirect_to idv_session_errors_throttled_url if document_capture_throttle.throttled?
+    check_throttled_and_redirect
   end
 
   def flow_session
