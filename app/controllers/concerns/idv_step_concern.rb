@@ -26,9 +26,7 @@ module IdvStepConcern
       throttle_type: :idv_doc_auth,
     )
 
-    if document_capture_throttle.throttled?
-      redirect_to idv_session_errors_throttled_url
-    end
+    redirect_to idv_session_errors_throttled_url if document_capture_throttle.throttled?
   end
 
   def flow_session

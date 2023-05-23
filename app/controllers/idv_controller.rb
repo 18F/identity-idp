@@ -29,7 +29,7 @@ class IdvController < ApplicationController
 
   def check_throttled_and_redirect
     rate_limited = false
-    %i(idv_resolution idv_doc_auth proof_address).each do |throttled_type|
+    %i[idv_resolution idv_doc_auth proof_address].each do |throttled_type|
       if idv_attempter_throttled?(throttled_type)
         track_throttled_event(throttled_type)
         throttled_redirect(throttled_type)
