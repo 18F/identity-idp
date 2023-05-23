@@ -66,7 +66,6 @@ module Idv
       mark_upload_step_complete
       mark_link_sent_step_complete
 
-      #flow_session[:flow_path] = @flow.flow_path
       redirect_to idv_document_capture_url
 
       response = form_response(destination: :document_capture)
