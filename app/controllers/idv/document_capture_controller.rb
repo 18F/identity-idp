@@ -50,7 +50,7 @@ module Idv
     private
 
     def confirm_upload_step_complete
-      return if flow_session['Idv::Steps::UploadStep']
+      return if flow_session[:flow_path].present?
 
       redirect_to idv_doc_auth_url
     end
