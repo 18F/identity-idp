@@ -165,7 +165,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       # Customer has not been to post office for IPP
       handle_incomplete_status_update(enrollment, response_message)
     elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
-      handle_expired_status_update(enrollment, err.response, response_message)
+      # If we're blocking expirations, treat this enrollment as incomplete
+      if IdentityConfig.store.in_person_stop_expiring_enrollments.blank?
+        handle_expired_status_update(enrollment, err.response, response_message)
+      else
+        handle_incomplete_status_update(enrollment, response_message)
+      end
     elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
       handle_unexpected_response(enrollment, response_message, reason: 'Invalid enrollment code')
     elsif response_message == IPP_INVALID_APPLICANT_MESSAGE % enrollment.unique_id
