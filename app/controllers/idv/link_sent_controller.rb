@@ -22,9 +22,6 @@ module Idv
     def update
       analytics.idv_doc_auth_link_sent_submitted(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('link_sent', :update, true)
-
       return render_document_capture_cancelled if document_capture_session&.cancelled_at
       return render_step_incomplete_error unless take_photo_with_phone_successful?
 

@@ -266,10 +266,6 @@ class User < ApplicationRecord
     active_profile || pending_profile
   end
 
-  def pending_profile_requires_verification?
-    pending_profile.present?
-  end
-
   def identity_not_verified?
     !identity_verified?
   end

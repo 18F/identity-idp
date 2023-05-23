@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe Idv::ComeBackLaterController do
   let(:user) { build_stubbed(:user, :fully_registered) }
-  let(:pending_profile_requires_verification) { true }
+  let(:gpo_verification_pending_profile) { true }
 
   before do
-    allow(user).to receive(:pending_profile_requires_verification?).
-      and_return(pending_profile_requires_verification)
+    allow(user).to receive(:gpo_verification_pending_profile?).
+      and_return(gpo_verification_pending_profile)
     stub_sign_in(user)
   end
 
@@ -26,7 +26,7 @@ describe Idv::ComeBackLaterController do
   end
 
   context 'user does not need USPS address verification' do
-    let(:pending_profile_requires_verification) { false }
+    let(:gpo_verification_pending_profile) { false }
 
     it 'redirects to the account path' do
       get :show

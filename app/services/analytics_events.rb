@@ -2473,8 +2473,19 @@ module AnalyticsEvents
   end
 
   # User authenticated by a remembered device
-  def remembered_device_used_for_authentication
-    track_event('Remembered device used for authentication')
+  # @param [DateTime] cookie_created_at time the remember device cookie was created
+  # @param [Integer] cookie_age_seconds age of the cookie in seconds
+  def remembered_device_used_for_authentication(
+    cookie_created_at:,
+    cookie_age_seconds:,
+    **extra
+  )
+    track_event(
+      'Remembered device used for authentication',
+      cookie_created_at: cookie_created_at,
+      cookie_age_seconds: cookie_age_seconds,
+      **extra,
+    )
   end
 
   # Service provider initiated remote logout
