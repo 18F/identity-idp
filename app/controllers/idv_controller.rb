@@ -13,12 +13,24 @@ class IdvController < ApplicationController
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url
-    elsif idv_attempter_throttled?
+    elsif idv_attempter_throttled?(:idv_resolution) # rate limited at verify info step
       irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
       analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_resolution,
       )
       redirect_to idv_session_errors_failure_url
+    elsif idv_attempter_throttled?(:idv_doc_auth) # rate limited at document capture step
+      irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
+      analytics.throttler_rate_limit_triggered(
+        throttle_type: :idv_doc_auth,
+      )
+      redirect_to idv_session_errors_throttled_url
+    elsif idv_attempter_throttled?(:proof_address) # Rate limited at phone step
+      irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
+      analytics.throttler_rate_limit_triggered(
+        throttle_type: :proof_address,
+      )
+      redirect_to idv_phone_errors_failure_url
     else
       verify_identity
     end
