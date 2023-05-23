@@ -108,7 +108,7 @@ module TwoFactorAuthenticatableMethods
 
   def handle_valid_otp_for_context(auth_method:)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_otp_for_authentication_context(auth_method: auth_method)
+      handle_valid_verification_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
       handle_valid_verification_for_confirmation_context(auth_method: auth_method)
     end
@@ -174,7 +174,7 @@ module TwoFactorAuthenticatableMethods
     reset_second_factor_attempts_count
   end
 
-  def handle_valid_otp_for_authentication_context(auth_method:)
+  def handle_valid_verification_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
     create_user_event(:sign_in_after_2fa)
