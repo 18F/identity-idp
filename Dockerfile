@@ -93,7 +93,6 @@ COPY --chown=app:app ./Rakefile ./Rakefile
 COPY --chown=app:app ./Makefile ./Makefile
 COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
-COPY --chown=app:app ./browsers.json ./browsers.json
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
 # Copy application.yml.default to application.yml
