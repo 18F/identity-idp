@@ -18,7 +18,7 @@ RSpec.describe Idv::GpoPresenter do
 
     context 'a letter has been sent' do
       before do
-        allow(user).to receive(:pending_profile).and_return(true)
+        allow(user).to receive(:gpo_verification_pending_profile).and_return(true)
       end
       it 'provides text to resend' do
         create_letter_send_event
@@ -52,7 +52,7 @@ RSpec.describe Idv::GpoPresenter do
 
     context 'a letter has been sent' do
       before do
-        allow(user).to receive(:pending_profile).and_return(true)
+        allow(user).to receive(:gpo_verification_pending_profile).and_return(true)
       end
       it 'provides text to resend' do
         create_letter_send_event
