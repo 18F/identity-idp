@@ -55,7 +55,7 @@ es:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
-        ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
       attempts:
