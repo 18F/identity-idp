@@ -146,7 +146,7 @@ en:
       body:
         closing_html: We sincerely apologize for the delay in service. Should you have
           questions or do not receive your result by June 1, please <a
-          href="%{contact_us_url}">contact Login.gov Customer Support</a>.
+          href="%{contact_us_url}">contact %{app_name} Customer Support</a>.
         heading: Results for In-Person Verification Delayed from May 20 until May 30
         instructions: At this time, if you attempted to complete the identity
           verification process at a Post Office, you do not need to try again.
@@ -157,7 +157,7 @@ en:
           in-person verification results. <strong>If you attempted to complete
           identity verification at a Post Office between May 20 and May 29, your
           results may not be emailed to you until Tuesday, May 30.</strong>
-      subject: Login.gov In-Person Verification Results Delayed
+      subject: '%{app_name} In-Person Verification Results Delayed'
     in_person_ready_to_verify:
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:

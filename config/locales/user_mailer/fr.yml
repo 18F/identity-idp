@@ -158,7 +158,7 @@ fr:
         closing_html: Nous nous excusons sincèrement pour le retard de service. Si vous
           avez des questions ou si vous ne recevez pas votre résultat avant le
           1er juin, veuillez <a href="%{contact_us_url}">contacter le soutien au
-          client de Login.gov</a>.
+          client de %{app_name}</a>.
         heading: Résultats de la vérification en personne reportés du 20 mai au 30 mai
         instructions: Pour le moment, si vous avez tenté de terminer le processus de
           vérification d’identité dans un bureau de poste, vous n’avez pas
@@ -171,7 +171,7 @@ fr:
           vous avez tenté d’effectuer une vérification d’identité dans un bureau
           de poste entre le 20 et le 29 mai, vos résultats ne vous seront
           peut-être pas envoyés par courriel avant le mardi 30 mai.</strong>
-      subject: Les résultats de la vérification en personne de Login.gov sont reportés
+      subject: Les résultats de la vérification en personne de %{app_name} sont reportés
     in_person_ready_to_verify:
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_ready_to_verify_reminder:

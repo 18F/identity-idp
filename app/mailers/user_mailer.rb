@@ -362,7 +362,7 @@ class UserMailer < ActionMailer::Base
       )
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_outage_notification.subject'),
+        subject: t('user_mailer.in_person_outage_notification.subject', app_name: APP_NAME),
       )
     end
   end

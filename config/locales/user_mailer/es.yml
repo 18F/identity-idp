@@ -156,7 +156,7 @@ es:
         closing_html: Le pedimos sinceras disculpas por el retraso en el servicio. Si
           tiene alguna pregunta o no recibe su resultado antes del 1 de junio,
           <a href="%{contact_us_url}">póngase en contacto con el servicio de
-          atención al cliente de Login.gov</a>.
+          atención al cliente de %{app_name}</a>.
         heading: Los resultados de la verificación presencial se pospondrán del 20 al 30
           de mayo
         instructions: En este momento, si ha intentado completar el proceso de
@@ -171,7 +171,7 @@ es:
           identidad en una oficina de correos entre el 20 y el 29 de mayo, es
           posible que no reciba los resultados por correo electrónico hasta el
           martes 30 de mayo.</strong>
-      subject: Los resultados de la verificación presencial de Login.gov se han
+      subject: Los resultados de la verificación presencial de %{app_name} se han
         retrasado
     in_person_ready_to_verify:
       subject: Está listo para verificar su identidad con %{app_name} en persona
