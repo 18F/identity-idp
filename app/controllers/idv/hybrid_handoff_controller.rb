@@ -41,8 +41,8 @@ module Idv
     def handle_phone_submission
       throttle.increment!
       return throttled_failure if throttle.throttled?
-      idv_session[:phone_for_mobile_flow] = permit(:phone)[:phone]
-      flow_session[:phone_for_mobile_flow] = idv_session[:phone_for_mobile_flow]
+      idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
+      flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       telephony_result = send_link
       failure_reason = nil
       if !telephony_result.success?
@@ -53,13 +53,56 @@ module Idv
         phone_number: formatted_destination_phone,
         failure_reason: failure_reason,
       )
-
-      if IdentityConfig.store.doc_auth_link_sent_controller_enabled
+      
+      if !failure_reason
         flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
       end
 
       build_telephony_form_response(telephony_result)
+    end
+
+    def send_link
+      session_uuid = flow_session[:document_capture_session_uuid]
+      update_document_capture_session_requested_at(session_uuid)
+      Telephony.send_doc_auth_link(
+        to: formatted_destination_phone,
+        link: link_for_send_link(session_uuid),
+        country_code: Phonelib.parse(formatted_destination_phone).country,
+        sp_or_app_name: sp_or_app_name,
+      )
+    end
+
+    def link_for_send_link(session_uuid)
+      idv_hybrid_mobile_entry_url(
+        'document-capture-session': session_uuid,
+        request_id: sp_session[:request_id],
+      )
+    end
+
+    def sp_or_app_name
+      current_sp&.friendly_name.presence || APP_NAME
+    end
+
+    def build_telephony_form_response(telephony_result)
+      FormResponse.new(
+        success: telephony_result.success?,
+        errors: { message: telephony_result.error&.friendly_message },
+        extra: {
+          telephony_response: telephony_result.to_h,
+          destination: :link_sent,
+        },
+      )
+    end
+
+    def update_document_capture_session_requested_at(session_uuid)
+      document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+      return unless document_capture_session
+      document_capture_session.update!(
+        requested_at: Time.zone.now,
+        cancelled_at: nil,
+        issuer: sp_session[:issuer],
+      )
     end
 
     def bypass_send_link_steps
@@ -115,6 +158,33 @@ module Idv
       )
     end
 
+    def throttle
+      @throttle ||= Throttle.new(
+        user: current_user,
+        throttle_type: :idv_send_link,
+      )
+    end
+
+    def throttled_failure
+      @flow.analytics.throttler_rate_limit_triggered(
+        throttle_type: :idv_send_link,
+      )
+      message = I18n.t(
+        'errors.doc_auth.send_link_throttle',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [throttle.expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      )
+
+      @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
+        phone_number: formatted_destination_phone,
+      )
+
+      failure(message)
+    end
+
     def render_404_if_hybrid_handoff_controller_disabled
       render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
     end
@@ -131,6 +201,118 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
+    end
+    def update_document_capture_session_requested_at(session_uuid)
+      document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+      return unless document_capture_session
+      document_capture_session.update!(
+        requested_at: Time.zone.now,
+        cancelled_at: nil,
+        issuer: sp_session[:issuer],
+      )
+    end
+
+    def bypass_send_link_steps
+      mark_upload_step_complete
+      mark_link_sent_step_complete
+
+      redirect_to idv_document_capture_url
+
+      response = form_response(destination: :document_capture)
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(response.to_h),
+      )
+      response
+    end
+
+    def mark_link_sent_step_complete
+      flow_session['Idv::Steps::LinkSentStep'] = true
+    end
+
+    def mark_upload_step_complete
+      flow_session['Idv::Steps::UploadStep'] = true
+    end
+
+    def extra_view_variables
+      {
+        flow_session: flow_session,
+        idv_phone_form: build_form,
+      }
+    end
+
+    def form_response(destination:)
+      FormResponse.new(
+        success: true,
+        errors: {},
+        extra: {
+          destination: destination,
+          skip_upload_step: mobile_device?,
+        },
+      )
+    end
+
+    def mobile_device?
+      # See app/javascript/packs/document-capture-welcome.js
+      # And app/services/idv/steps/agreement_step.rb
+      !!flow_session[:skip_upload_step]
+    end
+
+    def build_form
+      Idv::PhoneForm.new(
+        previous_params: {},
+        user: current_user,
+        delivery_methods: [:sms],
+      )
+    end
+
+    def throttle
+      @throttle ||= Throttle.new(
+        user: current_user,
+        throttle_type: :idv_send_link,
+      )
+    end
+
+    def throttled_failure
+      @flow.analytics.throttler_rate_limit_triggered(
+        throttle_type: :idv_send_link,
+      )
+      message = I18n.t(
+        'errors.doc_auth.send_link_throttle',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [throttle.expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      )
+
+      @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
+        phone_number: formatted_destination_phone,
+      )
+
+      failure(message)
+    end
+
+    def render_404_if_hybrid_handoff_controller_disabled
+      render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+    end
+
+    def confirm_agreement_step_complete
+      return if flow_session['Idv::Steps::AgreementStep']
+
+      redirect_to idv_doc_auth_url
+    end
+
+    def analytics_arguments
+      {
+        step: 'upload',
+        analytics_id: 'Doc Auth',
+        irs_reproofing: irs_reproofing?,
+      }.merge(**acuant_sdk_ab_test_analytics_args)
+    end
+
+    def formatted_destination_phone
+      raw_phone = params.require(:doc_auth).permit(:phone)
+      PhoneFormatter.format(raw_phone, country_code: 'US')
     end
   end
 end
