@@ -267,7 +267,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile_requires_verification?
-    pending_profile.present?
+    gpo_verification_pending_profile?
   end
 
   def identity_not_verified?
