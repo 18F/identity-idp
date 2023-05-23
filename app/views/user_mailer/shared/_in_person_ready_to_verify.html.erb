@@ -4,9 +4,15 @@
       <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
-      <p class="margin-bottom-1"><strong><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title') %></strong></p>
-      <p class="margin-bottom-1"><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.body') %></p>
-      <p class="margin-bottom-1"><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %></p>
+      <strong><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title') %></strong>
+      <br />
+      <br />
+      <%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.body') %>
+      <br />
+      <br />
+      <%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
+      <br />
+      <br />
     </td>
   </tr>
 </table>

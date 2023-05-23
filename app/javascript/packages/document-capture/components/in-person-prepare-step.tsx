@@ -24,16 +24,17 @@ function InPersonPrepareStep({ toPreviousStep }) {
   return (
     <>
       <Alert type="warning" className="margin-bottom-4">
-        <p>
+        <>
           <strong>
             {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.title')}
           </strong>
-        </p>
-        <p>
+          <br />
+          <br />
           {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.body', {
             app_name: getConfigValue('appName'),
           })}
-        </p>
+          <br />
+        </>
       </Alert>
 
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
