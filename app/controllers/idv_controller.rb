@@ -13,7 +13,24 @@ class IdvController < ApplicationController
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url
-    elsif idv_attempter_throttled?(:idv_resolution) # rate limited at verify info step
+    elsif check_throttles_and_redirect
+      # do nothing
+    else
+      verify_identity
+    end
+  end
+
+  def activated
+    redirect_to idv_url unless active_profile?
+    idv_session.clear
+  end
+
+  private
+
+  def check_throttles_and_redirect
+    rate_limited = true
+
+    if idv_attempter_throttled?(:idv_resolution) # rate limited at verify info step
       irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
       analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_resolution,
@@ -32,16 +49,11 @@ class IdvController < ApplicationController
       )
       redirect_to idv_phone_errors_failure_url
     else
-      verify_identity
+      rate_limited = false
     end
-  end
 
-  def activated
-    redirect_to idv_url unless active_profile?
-    idv_session.clear
+    return rate_limited
   end
-
-  private
 
   def verify_identity
     analytics.idv_intro_visit
