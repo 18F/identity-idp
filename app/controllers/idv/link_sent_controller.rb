@@ -69,8 +69,8 @@ module Idv
     end
 
     def handle_document_verification_success(get_results_response)
-      save_proofing_components
-      extract_pii_from_doc(get_results_response, store_in_session: true)
+      save_proofing_components(current_user)
+      extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
       mark_upload_step_complete
       flow_session[:flow_path] = 'hybrid'
     end

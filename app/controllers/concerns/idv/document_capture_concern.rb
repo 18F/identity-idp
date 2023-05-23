@@ -2,8 +2,8 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
-    def save_proofing_components
-      return unless effective_user
+    def save_proofing_components(user)
+      return unless user
 
       doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
         discriminator: document_capture_session_uuid,
@@ -14,7 +14,7 @@ module Idv
         document_check: doc_auth_vendor,
         document_type: 'state_id',
       }
-      ProofingComponent.create_or_find_by(user: effective_user).update(component_attributes)
+      ProofingComponent.create_or_find_by(user: user).update(component_attributes)
     end
 
     def successful_response
@@ -32,10 +32,10 @@ module Idv
     # @param [DocAuth::Response,
     #   DocumentCaptureSessionAsyncResult,
     #   DocumentCaptureSessionResult] response
-    def extract_pii_from_doc(response, store_in_session: false)
+    def extract_pii_from_doc(user, response, store_in_session: false)
       pii_from_doc = response.pii_from_doc.merge(
-        uuid: effective_user.uuid,
-        phone: effective_user.phone_configurations.take&.phone,
+        uuid: user.uuid,
+        phone: user.phone_configurations.take&.phone,
         uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
       )
 
@@ -47,7 +47,8 @@ module Idv
           idv_session.clear_applicant!
         end
       end
-      track_document_issuing_state(pii_from_doc[:state])
+
+      track_document_issuing_state(user, pii_from_doc[:state])
     end
 
     def in_person_cta_variant_testing_variables
@@ -67,9 +68,9 @@ module Idv
 
     private
 
-    def track_document_issuing_state(state)
+    def track_document_issuing_state(user, state)
       return unless IdentityConfig.store.state_tracking_enabled && state
-      doc_auth_log = DocAuthLog.find_by(user_id: effective_user.id)
+      doc_auth_log = DocAuthLog.find_by(user_id: user.id)
       return unless doc_auth_log
       doc_auth_log.state = state
       doc_auth_log.save!
