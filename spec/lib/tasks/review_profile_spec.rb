@@ -53,6 +53,16 @@ describe 'review_profile' do
         expect(stdout.string).to include('Error: Could not find user with that UUID')
       end
     end
+
+    context 'when the user has cancelled verification' do
+      it 'does not activate the profile' do
+        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
+
+        expect { invoke_task }.to raise_error(RuntimeError)
+
+        expect(user.reload.profiles.first.active).to eq(false)
+      end
+    end
   end
 
   describe 'users:review:reject' do

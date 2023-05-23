@@ -533,6 +533,11 @@ module AnalyticsEvents
     )
   end
 
+  # The user visited the gpo confirm cancellation screen
+  def idv_gpo_confirm_start_over_visited
+    track_event('IdV: gpo confirm start over visited')
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -1089,12 +1094,14 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    gpo_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1104,6 +1111,7 @@ module AnalyticsEvents
       success: success,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
+      gpo_verification_pending: gpo_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
@@ -1440,12 +1448,14 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
   # @param [Boolean] fraud_rejection
+  # @param [Boolean] gpo_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   def idv_review_complete(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    gpo_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1455,6 +1465,7 @@ module AnalyticsEvents
       success: success,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
+      gpo_verification_pending: gpo_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
@@ -2135,7 +2146,7 @@ module AnalyticsEvents
     )
   end
 
-  # User registration has been hadnded off to agency page
+  # User registration has been handed off to agency page
   # @param [Boolean] ial2
   # @param [Integer] ialmax
   # @param [String] service_provider_name
@@ -2236,7 +2247,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
   # (the user will need to use their personal key to reactivate their profile)
-  # The user changed the password for their account via the paswword reset flow
+  # The user changed the password for their account via the password reset flow
   def password_reset_password(success:, errors:, profile_deactivated:, **extra)
     track_event(
       'Password Reset: Password Submitted',
@@ -2462,8 +2473,19 @@ module AnalyticsEvents
   end
 
   # User authenticated by a remembered device
-  def remembered_device_used_for_authentication
-    track_event('Remembered device used for authentication')
+  # @param [DateTime] cookie_created_at time the remember device cookie was created
+  # @param [Integer] cookie_age_seconds age of the cookie in seconds
+  def remembered_device_used_for_authentication(
+    cookie_created_at:,
+    cookie_age_seconds:,
+    **extra
+  )
+    track_event(
+      'Remembered device used for authentication',
+      cookie_created_at: cookie_created_at,
+      cookie_age_seconds: cookie_age_seconds,
+      **extra,
+    )
   end
 
   # Service provider initiated remote logout
@@ -2610,7 +2632,7 @@ module AnalyticsEvents
     track_event('SP handoff bounced visited')
   end
 
-  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  # Tracks when a user visits the "This agency no longer uses Login.gov" page.
   def sp_inactive_visit
     track_event('SP inactive visited')
   end

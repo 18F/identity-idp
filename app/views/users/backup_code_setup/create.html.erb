@@ -28,14 +28,12 @@
     <% end %>
   </div>
   <div class="margin-top-1">
-    <% if desktop_device? %>
-      <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
-        <%= render DownloadButtonComponent.new(
-              file_data: @codes.join("\n"),
-              file_name: 'backup_codes.txt',
-              outline: true,
-            ) %>
-      <% end %>
+    <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
+      <%= render DownloadButtonComponent.new(
+            file_data: @codes.join("\n"),
+            file_name: 'backup_codes.txt',
+            outline: true,
+          ) %>
     <% end %>
     <%= render PrintButtonComponent.new(
           icon: :print,

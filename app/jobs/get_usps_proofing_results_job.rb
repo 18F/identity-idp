@@ -370,7 +370,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: true,
       reason: 'Successful status update',
     )
-    enrollment.profile.activate
+    enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
       proofed_at: proofed_at,
