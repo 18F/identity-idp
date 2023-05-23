@@ -4,7 +4,7 @@ module Idv
       STEPS = {
         welcome: Idv::Steps::WelcomeStep,
         agreement: Idv::Steps::AgreementStep,
-        upload: Idv::Steps::UploadStep,
+        **(IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled ? {} : {upload: Idv::Steps::UploadStep}),
       }.freeze
 
       STEP_INDICATOR_STEPS = [

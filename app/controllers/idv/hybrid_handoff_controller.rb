@@ -1,5 +1,6 @@
 module Idv
   class HybridHandoffController < ApplicationController
+    include ActionView::Helpers::DateHelper
     include IdvSession
     include IdvStepConcern
     include StepIndicatorConcern
@@ -226,7 +227,7 @@ module Idv
     end
 
     def throttled_failure
-      @flow.analytics.throttler_rate_limit_triggered(
+      analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_send_link,
       )
       message = I18n.t(
@@ -238,11 +239,12 @@ module Idv
         ),
       )
 
-      @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
+      irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
         phone_number: formatted_destination_phone,
       )
 
       failure(message)
+      redirect_to idv_hybrid_handoff_url
     end
 
     # copied from Flow::Failure module

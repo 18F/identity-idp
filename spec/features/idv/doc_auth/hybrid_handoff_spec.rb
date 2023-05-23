@@ -150,7 +150,7 @@ feature 'doc auth upload step' do
       expect(page.find(':focus')).to match_css('.phone-input__number')
     end
 
-    xit 'throttles sending the link' do
+    it 'throttles sending the link', js: true do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_upload_step
