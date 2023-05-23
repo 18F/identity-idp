@@ -86,6 +86,32 @@ RSpec.describe ButtonComponent, type: :component do
       expect(rendered).to have_css('use[href$="#print"]')
       expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
     end
+
+    context 'with content including whitespace and safe html' do
+      let(:content) { safe_join(['  ', content_tag('span', 'Button', class: 'example')]) }
+
+      it 'trims text of the content, maintaining html safety' do
+        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+        expect(rendered.to_html).to include('</svg><span class="example">Button</span>')
+      end
+    end
+
+    context 'with content including whitespace and unsafe html' do
+      let(:content) { safe_join(['  ', '<span class="example">Button</span>']) }
+
+      it 'trims text of the content, maintaining html safety' do
+        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+        expect(rendered.to_html).to include('</svg>&lt;span class="example"&gt;Button&lt;/span&gt;')
+      end
+    end
+
+    context 'with no content' do
+      it 'renders without error' do
+        render_inline ButtonComponent.new(icon: :print)
+      end
+    end
   end
 
   context 'with custom button action' do

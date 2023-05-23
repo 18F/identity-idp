@@ -1,0 +1,24 @@
+@use 'uswds-core' as *;
+
+lg-spinner-button {
+  .usa-button {
+    position: relative;
+  }
+
+  &:not(.spinner-button--spinner-active) .spinner-dots {
+    display: none;
+  }
+
+  &:not(.spinner-button--outline) .spinner-dots {
+    color: color('white');
+  }
+}
+
+.spinner-button--spinner-active .spinner-button__content {
+  opacity: 0;
+}
+
+.spinner-button__action-message {
+  @include u-text('bold', 'primary-darker');
+  @include u-margin-top(2);
+}

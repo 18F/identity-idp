@@ -1,12 +1,12 @@
 <%= content_tag(:'lg-spinner-button', class: css_class, 'spin-on-click': spin_on_click) do %>
-  <div class="spinner-button__content">
-    <%= render ButtonComponent.new(type: :button, **button_options).with_content(content) %>
+  <%= render ButtonComponent.new(type: :button, **button_options) do %>
+    <span class="spinner-button__content"><%= content %></span>
     <span class="spinner-dots spinner-dots--centered" aria-hidden="true">
       <span class="spinner-dots__dot"></span>
       <span class="spinner-dots__dot"></span>
       <span class="spinner-dots__dot"></span>
     </span>
-  </div>
+  <% end %>
   <% if action_message %>
     <%= tag.div '',
                 role: 'status',

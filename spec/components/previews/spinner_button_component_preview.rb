@@ -14,13 +14,15 @@ class SpinnerButtonComponentPreview < BaseComponentPreview
   end
   # @!endgroup
 
-  # @display form true
   # @param action_message text
-  def workbench(action_message: nil)
+  # @param wide toggle
+  # @param full_width toggle
+  def workbench(action_message: nil, wide: false, full_width: false)
     render(
       SpinnerButtonComponent.new(
-        form: form_builder,
         big: true,
+        wide:,
+        full_width:,
         **{ action_message: }.compact,
       ).with_content('Submit'),
     )
