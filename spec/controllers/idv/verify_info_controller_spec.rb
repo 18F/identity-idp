@@ -271,6 +271,56 @@ describe Idv::VerifyInfoController do
         end
       end
     end
+
+    context 'when aamva has trouble' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(
+            success: false,
+            errors: {},
+            exception: Proofing::Aamva::VerificationError.new('ExceptionId: 0001'),
+            vendor_name: nil,
+            transaction_id: '',
+            verified_attributes: [],
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          double_address_verification: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+        )
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(result.adjudicated_result.to_h)
+
+        document_capture_session.load_proofing_result
+      end
+
+      before do
+        stub_analytics
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        put :show
+      end
+
+      it 'redirects user to warning' do
+        expect(response).to redirect_to idv_session_errors_state_id_warning_url
+      end
+
+      it 'logs an event' do
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth warning visited',
+          step_name: 'Idv::VerifyInfoController',
+          remaining_attempts: kind_of(Numeric),
+        )
+      end
+    end
   end
 
   describe '#update' do
