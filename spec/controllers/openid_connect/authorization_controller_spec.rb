@@ -160,7 +160,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'user is rejected due to fraud' do
-              let(:user) { create(:profile, fraud_state: 'fraud_rejection').user }
               let(:user) do
                 create(
                   :profile,
