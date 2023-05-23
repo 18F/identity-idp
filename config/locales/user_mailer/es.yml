@@ -154,11 +154,11 @@ es:
     in_person_outage_notification:
       body:
         closing_html: Le pedimos sinceras disculpas por el retraso en el servicio. Si
-          tiene alguna pregunta o no recibe su resultado antes del 1 de Junio,
+          tiene alguna pregunta o no recibe su resultado antes del 1 de junio,
           <a href="%{contact_us_url}">póngase en contacto con el servicio de
           atención al cliente de Login.gov</a>.
         heading: Los resultados de la verificación presencial se pospondrán del 20 al 30
-          de Mayo
+          de mayo
         instructions: En este momento, si ha intentado completar el proceso de
           verificación de identidad en una oficina de correos, no es necesario
           que vuelva a intentarlo. Tenga la seguridad de que los resultados de
@@ -168,9 +168,9 @@ es:
         intro_html: Estamos trabajando en un problema técnico que está retrasando el
           envío de los correos electrónicos con los resultados de la
           verificación presencial. <strong>Si ha intentado verificar su
-          identidad en una oficina de correos entre el 20 y el 29 de Mayo, es
+          identidad en una oficina de correos entre el 20 y el 29 de mayo, es
           posible que no reciba los resultados por correo electrónico hasta el
-          martes 30 de Mayo.</strong>
+          martes 30 de mayo.</strong>
       subject: Los resultados de la verificación presencial de Login.gov se han
         retrasado
     in_person_ready_to_verify:
