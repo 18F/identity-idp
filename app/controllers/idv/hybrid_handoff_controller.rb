@@ -106,9 +106,7 @@ module Idv
     end
 
     def bypass_send_link_steps
-      mark_upload_step_complete
-      mark_link_sent_step_complete
-
+      flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
       response = form_response(destination: :document_capture)
@@ -116,14 +114,6 @@ module Idv
         **analytics_arguments.merge(response.to_h),
       )
       response
-    end
-
-    def mark_link_sent_step_complete
-      flow_session['Idv::Steps::LinkSentStep'] = true
-    end
-
-    def mark_upload_step_complete
-      flow_session['Idv::Steps::UploadStep'] = true
     end
 
     def extra_view_variables
@@ -210,19 +200,6 @@ module Idv
         cancelled_at: nil,
         issuer: sp_session[:issuer],
       )
-    end
-
-    def bypass_send_link_steps
-      mark_upload_step_complete
-      mark_link_sent_step_complete
-
-      redirect_to idv_document_capture_url
-
-      response = form_response(destination: :document_capture)
-      analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(response.to_h),
-      )
-      response
     end
 
     def mark_link_sent_step_complete

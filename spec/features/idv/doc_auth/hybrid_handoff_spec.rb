@@ -27,7 +27,7 @@ feature 'doc auth upload step' do
 
   context 'on a desktop device', js: true do
     before do
-      allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(false)
+      allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(false)
     end
 
     it 'displays with the expected content' do
@@ -36,7 +36,7 @@ feature 'doc auth upload step' do
       expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
     end
 
-    xit 'proceeds to document capture when user chooses to upload from computer' do
+    it 'proceeds to document capture when user chooses to upload from computer' do
       expect(fake_attempts_tracker).to receive(
         :idv_document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
