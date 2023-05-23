@@ -46,8 +46,6 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
     end
   end
 
-  # Does it make sense to include a new analytics method?
-  # It might for debugging and figuring out which job triggered a response.
   it 'logs message with email analytics attributes' do
     freeze_time do
       job.perform(Time.zone.now)
