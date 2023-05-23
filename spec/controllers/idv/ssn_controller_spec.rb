@@ -203,7 +203,6 @@ describe Idv::SsnController do
       before do
         flow_session[:flow_path] = 'standard'
         flow_session.delete('pii_from_doc')
-        flow_session['Idv::Steps::DocumentCaptureStep'] = true
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do
@@ -212,10 +211,16 @@ describe Idv::SsnController do
         expect(response).to redirect_to idv_document_capture_url
       end
 
-      it 'redirects to FSM DocumentCaptureStep on hybrid flow' do
+      it 'redirects to LinkSentController on hybrid flow' do
         flow_session[:flow_path] = 'hybrid'
         put :update
-        expect(flow_session['Idv::Steps::DocumentCaptureStep']).to be_nil
+        expect(response.status).to eq 302
+        expect(response).to redirect_to idv_link_sent_url
+      end
+
+      it 'redirects to FSM UploadStep if there is no flow_path' do
+        flow_session[:flow_path] = nil
+        put :update
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_doc_auth_url
       end
