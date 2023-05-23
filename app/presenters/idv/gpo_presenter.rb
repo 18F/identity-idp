@@ -23,7 +23,7 @@ module Idv
     end
 
     def resend_requested?
-      current_user.pending_profile_requires_verification?
+      current_user.gpo_verification_pending_profile?
     end
 
     def back_or_cancel_partial
