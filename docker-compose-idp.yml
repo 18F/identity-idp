@@ -16,13 +16,15 @@ services:
       POSTGRES_SSLMODE: 'prefer'
       POSTGRES_NAME: idp
       POSTGRES_HOST: postgres
-      POSTGRES_USER: postgres
+      POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_WORKER_SSLMODE: 'verify-full'
+      POSTGRES_WORKER_SSLMODE: 'prefer'
       POSTGRES_WORKER_NAME: idp-worker-jobs
       POSTGRES_WORKER_HOST: postgres-worker
-      POSTGRES_WORKER_USER: postgres
+      POSTGRES_WORKER_USERNAME: postgres
       POSTGRES_WORKER_PASSWORD: postgres
+      LOGIN_ENV: dev
+      RAILS_OFFLINE: 'true'
 
   postgres:
     image: postgres:14
