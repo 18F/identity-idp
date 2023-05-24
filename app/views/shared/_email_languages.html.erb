@@ -8,7 +8,6 @@ locals:
       :email_language,
       as: :radio_buttons,
       label: t('forms.registration.labels.email_language'),
-      input_html: { lang: "foo" },
       hint: local_assigns.fetch(
         :hint,
         t(
@@ -26,10 +25,10 @@ locals:
             locale == I18n.locale ?
               t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
               t("i18n.locale.#{locale}"),
-            lang: locale,
           ),
           locale,
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
+          lang: locale,
         ]
       end,
     ) %>
