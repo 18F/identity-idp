@@ -20,15 +20,13 @@ module InPerson::EnrollmentsReadyForStatusCheck
     # @return [Aws::SQS::Types::DeleteMessageBatchResult]
     def delete_message_batch(batch)
       sqs_client.delete_message_batch(
-        {
-          queue_url:,
-          entries: batch.map do |message|
-            {
-              id: message.message_id,
-              receipt_handle: message.receipt_handle,
-            }
-          end,
-        },
+        queue_url:,
+        entries: batch.map do |message|
+          {
+            id: message.message_id,
+            receipt_handle: message.receipt_handle,
+          }
+        end,
       )
     end
 
