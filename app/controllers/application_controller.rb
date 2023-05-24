@@ -240,7 +240,8 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return user_two_factor_authentication_url unless user_fully_authenticated?
-    return account_or_verify_profile_url if profile_needs_verification?
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_url
   end

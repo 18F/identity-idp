@@ -11,7 +11,6 @@ class SamlIdpController < ApplicationController
   include AuthorizationCountConcern
   include BillableEventTrackable
   include SecureHeadersConcern
-  include FraudReviewConcern
 
   prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
@@ -24,13 +23,16 @@ class SamlIdpController < ApplicationController
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
   before_action :confirm_two_factor_authenticated, only: :auth
   before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
+  before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: :auth
 
   def auth
     capture_analytics
-    return redirect_to_fraud_review if fraud_review_pending? && ial2_requested?
-    return redirect_to_fraud_rejection if fraud_rejection? && ial2_requested?
-    return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
-    return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
+    if ial_context.ial2_or_greater?
+      return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
+      return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
+      return redirect_to idv_url if identity_needs_verification?
+    end
+    return redirect_to sign_up_completed_url if needs_completion_screen_reason
     if auth_count == 1 && first_visit_for_sp?
       return redirect_to(user_authorization_confirmation_url)
     end
@@ -99,31 +101,23 @@ class SamlIdpController < ApplicationController
     SamlEndpoint.new(params[:path_year]).saml_metadata
   end
 
-  def redirect_to_verification_url
-    return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
-    redirect_to(idv_url) if identity_needs_verification?
-    redirect_to capture_password_url if identity_needs_decryption?
+  def prompt_for_password_if_ial2_request_and_pii_locked
+    return unless pii_requested_but_locked?
+    redirect_to capture_password_url
   end
 
-  def profile_or_identity_needs_verification_or_decryption?
-    return false unless ial_context.ial2_or_greater? || ialmax_requested_with_ial2_user?
-    profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
-  end
-
-  def ialmax_requested_with_ial2_user?
-    ial_context.ialmax_requested? && identity_needs_decryption?
-  end
-
-  def identity_needs_decryption?
-    current_user.identity_verified? &&
-      !Pii::Cacher.new(current_user, user_session).exists_in_session?
+  def pii_requested_but_locked?
+    if (sp_session && sp_session_ial > 1) || ial_context.ialmax_requested?
+      current_user.identity_verified? &&
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?
+    end
   end
 
   def capture_analytics
     analytics_payload = @result.to_h.merge(
       endpoint: api_saml_auth_path(path_year: params[:path_year]),
       idv: identity_needs_verification?,
-      finish_profile: profile_needs_verification?,
+      finish_profile: user_has_pending_profile?,
       requested_ial: requested_ial,
       request_signed: saml_request.signed?,
       matching_cert_serial: saml_request.service_provider.matching_cert&.serial&.to_s,
