@@ -3,8 +3,6 @@ require 'rails_helper'
 describe Idv::PhoneStep do
   include IdvHelper
 
-  before { stub_attempts_tracker }
-
   let(:user) { create(:user) }
   let(:service_provider) do
     create(
@@ -39,7 +37,6 @@ describe Idv::PhoneStep do
     Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:attempts_tracker) { @irs_attempts_api_tracker }
   let(:analytics) { FakeAnalytics.new }
 
   subject do
@@ -47,7 +44,6 @@ describe Idv::PhoneStep do
       idv_session: idv_session,
       trace_id: trace_id,
       analytics: analytics,
-      attempts_tracker: attempts_tracker,
     )
   end
 
@@ -131,13 +127,6 @@ describe Idv::PhoneStep do
       expect do
         subject.submit(phone: fail_phone)
       end.to(change { throttle.fetch_state!.attempts }.by(1))
-    end
-
-    it 'logs a throttled attempts_tracker event' do
-      throttle.increment_to_throttled!
-
-      expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
-      subject.submit(phone: bad_phone)
     end
 
     it 'marks the phone as unconfirmed if it matches 2FA phone' do

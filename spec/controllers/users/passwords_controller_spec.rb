@@ -6,11 +6,7 @@ describe Users::PasswordsController do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).
-          with(failure_reason: nil, success: true)
 
         params = { password: 'salty new password' }
         patch :update, params: { update_user_password_form: params }
@@ -81,13 +77,7 @@ describe Users::PasswordsController do
         stub_sign_in
 
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
-          success: false,
-          failure_reason: password_short_error,
-        )
 
         params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }

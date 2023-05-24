@@ -31,15 +31,10 @@ describe Idv::ForgotPasswordController do
     before do
       stub_sign_in(user)
       stub_analytics
-      stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
     end
 
     it 'tracks appropriate events' do
-      expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_sent).with(
-        email: user.email,
-      )
-
       post :update
 
       expect(@analytics).to have_received(:track_event).with(

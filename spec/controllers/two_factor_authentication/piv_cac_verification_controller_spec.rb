@@ -91,7 +91,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        stub_attempts_tracker
 
         attributes = {
           context: 'authentication',
@@ -183,7 +182,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         stub_sign_in_before_2fa(user)
 
         stub_analytics
-        stub_attempts_tracker
 
         attributes = {
           context: 'authentication',

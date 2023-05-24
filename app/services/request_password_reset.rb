@@ -1,5 +1,5 @@
 RequestPasswordReset = RedactedStruct.new(
-  :email, :request_id, :analytics, :irs_attempts_api_tracker,
+  :email, :request_id, :analytics,
   keyword_init: true,
   allowed_members: [:request_id]
 ) do
@@ -8,7 +8,6 @@ RequestPasswordReset = RedactedStruct.new(
       form = RegisterUserEmailForm.new(
         password_reset_requested: true,
         analytics: analytics,
-        attempts_tracker: irs_attempts_api_tracker,
       )
       result = form.submit({ email: email, terms_accepted: '1' }, instructions)
       [form.user, result]
@@ -25,7 +24,6 @@ RequestPasswordReset = RedactedStruct.new(
     throttle.increment!
     if throttle.throttled?
       analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
-      irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
     else
       token = user.set_reset_password_token
       UserMailer.with(user: user, email_address: email_address_record).reset_password_instructions(
@@ -35,8 +33,6 @@ RequestPasswordReset = RedactedStruct.new(
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
-
-      irs_attempts_api_tracker.forgot_password_email_sent(email: email)
     end
   end
 

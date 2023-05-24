@@ -23,7 +23,6 @@ describe Idv::OtpVerificationController do
 
   before do
     stub_analytics
-    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
 
     sign_in(user)
@@ -106,61 +105,6 @@ describe Idv::OtpVerificationController do
         'IdV: phone confirmation otp submitted',
         expected_result,
       )
-    end
-
-    describe 'track irs analytics event' do
-      let(:phone_property) { { phone_number: phone } }
-      context 'when the phone otp code is valid' do
-        it 'captures success event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: true,
-            **phone_property,
-            failure_reason: {},
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
-
-      context 'when the phone otp code is invalid' do
-        let(:invalid_otp_code_param) { { code: '000' } }
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-            failure_reason: {
-              code_matches: false,
-            },
-          )
-
-          put :update, params: invalid_otp_code_param
-        end
-      end
-
-      context 'when the phone otp code has expired' do
-        let(:expired_phone_confirmation_otp_sent_at) do
-          # Set time to a long time ago
-          phone_confirmation_otp_sent_at - 900000000
-        end
-        let(:user_phone_confirmation_session) do
-          Idv::PhoneConfirmationSession.new(
-            **phone_confirmation_session_properties,
-            sent_at: expired_phone_confirmation_otp_sent_at,
-          )
-        end
-
-        it 'captures failure event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_submitted).with(
-            success: false,
-            **phone_property,
-            failure_reason: {
-              code_expired: true,
-            },
-          )
-
-          put :update, params: otp_code_param
-        end
-      end
     end
   end
 end

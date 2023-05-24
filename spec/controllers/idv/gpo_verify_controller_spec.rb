@@ -22,7 +22,6 @@ RSpec.describe Idv::GpoVerifyController do
 
   before do
     stub_analytics
-    stub_attempts_tracker
     stub_sign_in(user)
     pending_user = stub_user_with_pending_profile(user)
     create(
@@ -134,8 +133,6 @@ RSpec.describe Idv::GpoVerifyController do
           enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success_properties)
 
         action
 
@@ -172,8 +169,6 @@ RSpec.describe Idv::GpoVerifyController do
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-            with(success_properties)
 
           action
 
@@ -208,8 +203,6 @@ RSpec.describe Idv::GpoVerifyController do
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
-            expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-              with(success_properties)
 
             action
 
@@ -304,8 +297,6 @@ RSpec.describe Idv::GpoVerifyController do
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-          with(success: false, failure_reason: otp_code_incorrect)
 
         action
 
@@ -340,8 +331,6 @@ RSpec.describe Idv::GpoVerifyController do
           'Throttler Rate Limit Triggered',
           throttle_type: :verify_gpo_key,
         ).once
-
-        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
 
         max_attempts.times do |i|
           post(

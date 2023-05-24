@@ -16,7 +16,6 @@ describe Idv::SsnController do
     stub_sign_in(user)
     subject.user_session['idv/doc_auth'] = flow_session
     stub_analytics
-    stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
   end
 
@@ -135,13 +134,6 @@ describe Idv::SsnController do
         put :update, params: params
 
         expect(response).to redirect_to(idv_address_url)
-      end
-
-      it 'logs attempts api event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
-          ssn: ssn,
-        )
-        put :update, params: params
       end
 
       context 'with existing session applicant' do

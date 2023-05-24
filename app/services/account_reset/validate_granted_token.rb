@@ -2,7 +2,6 @@ module AccountReset
   class ValidateGrantedToken
     include ActiveModel::Model
     include GrantedTokenValidator
-    include TrackIrsEvent
 
     def initialize(token, request, analytics)
       @token = token
@@ -12,7 +11,6 @@ module AccountReset
 
     def call
       @success = valid?
-      track_irs_event if !success && sp
       FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
 

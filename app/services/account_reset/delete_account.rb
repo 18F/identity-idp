@@ -2,7 +2,6 @@ module AccountReset
   class DeleteAccount
     include ActiveModel::Model
     include GrantedTokenValidator
-    include TrackIrsEvent
 
     def initialize(token, request, analytics)
       @token = token
@@ -15,7 +14,6 @@ module AccountReset
 
       track_account_age
       track_mfa_method_counts
-      track_irs_event if sp
 
       extra = extra_analytics_attributes
 

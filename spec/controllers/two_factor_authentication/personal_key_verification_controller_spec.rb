@@ -156,7 +156,6 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)

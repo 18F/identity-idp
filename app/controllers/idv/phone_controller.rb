@@ -43,11 +43,6 @@ module Idv
         call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
-      irs_attempts_api_tracker.idv_phone_submitted(
-        success: result.success?,
-        phone_number: step_params[:phone],
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
       flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
       submit_proofing_attempt
@@ -87,12 +82,6 @@ module Idv
         **result.to_h.merge(adapter: Telephony.config.adapter),
       )
 
-      irs_attempts_api_tracker.idv_phone_otp_sent(
-        phone_number: @idv_phone,
-        success: result.success?,
-        otp_delivery_method: idv_session.previous_phone_step_params[:otp_delivery_preference],
-        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
-      )
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -121,7 +110,6 @@ module Idv
         idv_session: idv_session,
         trace_id: amzn_trace_id,
         analytics: analytics,
-        attempts_tracker: irs_attempts_api_tracker,
       )
     end
 

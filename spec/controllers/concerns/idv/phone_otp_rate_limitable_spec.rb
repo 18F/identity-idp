@@ -12,9 +12,7 @@ RSpec.describe Idv::PhoneOtpRateLimitable, type: :controller do
   describe '#handle_too_many_otp_sends' do
     before do
       stub_analytics
-      stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
     it 'calls analytics tracking event' do
@@ -23,14 +21,6 @@ RSpec.describe Idv::PhoneOtpRateLimitable, type: :controller do
       expect(@analytics).to have_received(:track_event).with(
         'Idv: Phone OTP sends rate limited',
         proofing_components: nil,
-      )
-    end
-
-    it 'calls irs tracking event idv_phone_otp_sent_rate_limited' do
-      subject.handle_too_many_otp_sends
-
-      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
-        :idv_phone_otp_sent_rate_limited,
       )
     end
   end

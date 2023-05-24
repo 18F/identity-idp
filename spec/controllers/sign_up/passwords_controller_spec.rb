@@ -31,7 +31,6 @@ describe SignUp::PasswordsController do
 
       before do
         stub_analytics
-        stub_attempts_tracker
       end
 
       it 'tracks analytics' do
@@ -43,10 +42,6 @@ describe SignUp::PasswordsController do
           'Password Creation',
           analytics_hash.merge({ request_id_present: false }),
         )
-
-        expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
-          with(success_properties)
-        expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
         subject
       end
@@ -74,7 +69,6 @@ describe SignUp::PasswordsController do
 
       before do
         stub_analytics
-        stub_attempts_tracker
       end
 
       context 'with temporary param confirmation_enabled' do
@@ -112,13 +106,6 @@ describe SignUp::PasswordsController do
               )
             expect(@analytics).to receive(:track_event).
               with('Password Creation', analytics_hash)
-
-            expect(@irs_attempts_api_tracker).to receive(:user_registration_password_submitted).
-              with(
-                success: false,
-                failure_reason: error_details,
-              )
-            expect(@irs_attempts_api_tracker).not_to receive(:user_registration_email_confirmation)
 
             subject
           end

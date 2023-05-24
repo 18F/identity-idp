@@ -332,11 +332,6 @@ describe SignUp::CompletionsController do
     context 'when the user goes through reproofing' do
       let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
 
-      before do
-        stub_attempts_tracker
-        allow(@irs_attempts_api_tracker).to receive(:track_event)
-      end
-
       it 'does not log a reproofing event during initial proofing' do
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -344,7 +339,6 @@ describe SignUp::CompletionsController do
           issuer: 'foo',
           request_url: 'http://example.com',
         }
-        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
         patch :update
       end
 
@@ -356,7 +350,6 @@ describe SignUp::CompletionsController do
           issuer: 'foo',
           request_url: 'http://example.com',
         }
-        expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
       end
 
@@ -367,7 +360,6 @@ describe SignUp::CompletionsController do
           ial2: false,
           request_url: 'http://example.com',
         }
-        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
 
         patch :update
 

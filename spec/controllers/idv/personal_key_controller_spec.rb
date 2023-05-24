@@ -93,7 +93,6 @@ describe Idv::PersonalKeyController do
   describe '#show' do
     before do
       stub_idv_session
-      stub_attempts_tracker
     end
 
     it 'sets code instance variable' do
@@ -120,11 +119,6 @@ describe Idv::PersonalKeyController do
       get :show
 
       expect(flash[:allow_confirmations_continue]).to eq true
-    end
-
-    it 'logs when user generates personal key' do
-      expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
-      get :show
     end
 
     it 'sets flash.now[:success]' do

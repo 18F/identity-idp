@@ -55,7 +55,6 @@ describe Idv::InPerson::VerifyInfoController do
       allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
         and_return(true)
       stub_analytics
-      stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
     end
 

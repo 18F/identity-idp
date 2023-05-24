@@ -57,9 +57,7 @@ describe Idv::VerifyInfoController do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
     it 'renders the show template' do
@@ -134,13 +132,6 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
       end
-
-      it 'logs the correct attempts event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
-
-        get :show
-      end
     end
 
     context 'when the user is proofing throttled' do
@@ -155,13 +146,6 @@ describe Idv::VerifyInfoController do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
-      end
-
-      it 'logs the correct attempts event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
-
-        get :show
       end
     end
 
@@ -210,14 +194,6 @@ describe Idv::VerifyInfoController do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
         end
-
-        it 'it logs IRS idv_tmx_fraud_check event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
-            success: true,
-            failure_reason: nil,
-          )
-          get :show
-        end
       end
 
       context 'when threatmetrix response is No Result' do
@@ -226,14 +202,6 @@ describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
-        end
-
-        it 'it logs IRS idv_tmx_fraud_check event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
-            success: false,
-            failure_reason: expected_failure_reason,
-          )
-          get :show
         end
       end
 
@@ -244,14 +212,6 @@ describe Idv::VerifyInfoController do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
         end
-
-        it 'it logs IRS idv_tmx_fraud_check event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
-            success: false,
-            failure_reason: expected_failure_reason,
-          )
-          get :show
-        end
       end
 
       context 'when threatmetrix response is Review' do
@@ -261,23 +221,11 @@ describe Idv::VerifyInfoController do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
         end
-
-        it 'it logs IRS idv_tmx_fraud_check event' do
-          expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
-            success: false,
-            failure_reason: expected_failure_reason,
-          )
-          get :show
-        end
       end
     end
   end
 
   describe '#update' do
-    before do
-      stub_attempts_tracker
-    end
-
     it 'logs the correct analytics event' do
       stub_analytics
 
@@ -329,13 +277,6 @@ describe Idv::VerifyInfoController do
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
       end
-
-      it 'logs the correct attempts event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
-
-        put :update
-      end
     end
 
     context 'when the user is proofing throttled' do
@@ -350,13 +291,6 @@ describe Idv::VerifyInfoController do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
-      end
-
-      it 'logs the correct attempts event' do
-        expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
-
-        put :update
       end
     end
   end

@@ -93,10 +93,6 @@ describe AccountReset::RequestController do
     it 'logs the visit to attempts api' do
       user = create(:user, :with_piv_or_cac, :with_backup_code)
       stub_sign_in_before_2fa(user)
-      stub_attempts_tracker
-
-      expect(@irs_attempts_api_tracker).to receive(:track_event).
-        with(:account_reset_request_submitted, success: true)
 
       get :create
     end

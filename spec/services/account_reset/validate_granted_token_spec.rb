@@ -10,7 +10,6 @@ describe AccountReset::ValidateGrantedToken do
   let(:user) { create(:user) }
   let(:request) { FakeRequest.new }
   let(:analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   let(:service_provider) do
     create(

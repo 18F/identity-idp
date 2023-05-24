@@ -26,7 +26,6 @@ describe Idv::DocumentCaptureController do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
-    stub_attempts_tracker
   end
 
   describe 'before_actions' do

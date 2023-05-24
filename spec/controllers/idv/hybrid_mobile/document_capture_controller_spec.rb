@@ -18,7 +18,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
 
   before do
     stub_analytics
-    stub_attempts_tracker
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid

@@ -4,12 +4,10 @@ describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end
-  let(:success_properties) { { success: true, failure_reason: nil } }
   let(:token_expired_error) { 'token_expired' }
   describe '#edit' do
     before do
       stub_analytics
-      stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
     end
 
@@ -30,11 +28,6 @@ describe Users::ResetPasswordsController, devise: true do
         end
 
         it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_blank_error,
-          )
-
           get :edit, params: { reset_password_token: 'foo' }
 
           expect(@analytics).to have_received(:track_event).
@@ -62,11 +55,6 @@ describe Users::ResetPasswordsController, devise: true do
         end
 
         it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_token_error,
-          )
-
           get :edit, params: { reset_password_token: 'foo' }
 
           expect(@analytics).to have_received(:track_event).
@@ -94,10 +82,6 @@ describe Users::ResetPasswordsController, devise: true do
           forbidden = instance_double(ForbiddenPasswords)
           allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
           expect(forbidden).to receive(:call)
-
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success_properties,
-          )
 
           get :edit, params: { reset_password_token: 'foo' }
 
@@ -139,11 +123,6 @@ describe Users::ResetPasswordsController, devise: true do
         end
 
         it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_blank_error,
-          )
-
           get :edit
 
           expect(@analytics).to have_received(:track_event).
@@ -175,11 +154,6 @@ describe Users::ResetPasswordsController, devise: true do
         end
 
         it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_token_error,
-          )
-
           get :edit
 
           expect(@analytics).to have_received(:track_event).
@@ -225,13 +199,7 @@ describe Users::ResetPasswordsController, devise: true do
 
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          success: false,
-          failure_reason: reset_password_error_details,
-        )
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -268,7 +236,6 @@ describe Users::ResetPasswordsController, devise: true do
     context 'user submits invalid new password' do
       it 'renders edit' do
         stub_analytics
-        stub_attempts_tracker
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -291,10 +258,6 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to receive(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          success: false,
-          failure_reason: password_short_error,
-        )
 
         put :update, params: { reset_password_form: form_params }
 
@@ -326,7 +289,6 @@ describe Users::ResetPasswordsController, devise: true do
     context 'IAL1 user submits valid new password' do
       it 'redirects to sign in page' do
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
@@ -346,10 +308,6 @@ describe Users::ResetPasswordsController, devise: true do
           expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
           stub_user_mailer(user)
-
-          expect(@irs_attempts_api_tracker).to receive(
-            :forgot_password_new_password_submitted,
-          ).with(success_properties)
 
           password = 'a really long passw0rd'
           params = { password: password, reset_password_token: raw_reset_token }
@@ -378,7 +336,6 @@ describe Users::ResetPasswordsController, devise: true do
     context 'ial2 user submits valid new password' do
       it 'deactivates the active profile and redirects' do
         stub_analytics
-        stub_attempts_tracker
         allow(@analytics).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
@@ -394,10 +351,6 @@ describe Users::ResetPasswordsController, devise: true do
         expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         stub_user_mailer(user)
-
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          success_properties,
-        )
 
         get :edit, params: { reset_password_token: raw_reset_token }
         password = 'a really long passw0rd'
@@ -440,10 +393,6 @@ describe Users::ResetPasswordsController, devise: true do
 
         stub_user_mailer(user)
 
-        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          success_properties,
-        )
-
         password = 'a really long passw0rd'
         params = { password: password, reset_password_token: raw_reset_token }
 
@@ -472,11 +421,6 @@ describe Users::ResetPasswordsController, devise: true do
       it 'send an email to tell the user they do not have an account yet' do
         stub_analytics
         stub_attempts_tracker
-
-        expect(@irs_attempts_api_tracker).to receive(:user_registration_email_submitted).with(
-          email: email,
-          **success_properties,
-        )
 
         expect do
           put :create, params: {

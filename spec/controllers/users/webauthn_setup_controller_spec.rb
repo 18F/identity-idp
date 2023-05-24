@@ -45,7 +45,6 @@ describe Users::WebauthnSetupController do
       it 'tracks page visit' do
         stub_sign_in
         stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).
           with(
@@ -57,8 +56,6 @@ describe Users::WebauthnSetupController do
             sign_up_mfa_selection_order_bucket: nil,
             success: true,
           )
-
-        expect(@irs_attempts_api_tracker).not_to receive(:track_event)
 
         get :new
       end
@@ -181,7 +178,6 @@ describe Users::WebauthnSetupController do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       stub_sign_in(user)
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
       request.host = 'localhost:3000'
@@ -235,10 +231,6 @@ describe Users::WebauthnSetupController do
               method_name: :webauthn,
               platform_authenticator: false,
             },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_roaming, success: true
           )
 
           patch :confirm, params: params
@@ -295,10 +287,6 @@ describe Users::WebauthnSetupController do
             },
           )
 
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
-          )
-
           patch :confirm, params: params
         end
       end
@@ -336,10 +324,6 @@ describe Users::WebauthnSetupController do
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: false,
             },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: false
           )
 
           patch :confirm, params: params

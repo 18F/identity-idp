@@ -17,7 +17,6 @@ describe Users::BackupCodeSetupController do
     user = create(:user, :fully_registered)
     stub_sign_in(user)
     analytics = stub_analytics
-    stub_attempts_tracker
 
     Funnel::Registration::AddMfa.call(user.id, 'phone', analytics)
     expect(PushNotification::HttpPush).to receive(:deliver).
@@ -38,8 +37,6 @@ describe Users::BackupCodeSetupController do
       with('Backup Code Created', {
         enabled_mfa_methods_count: 2,
       })
-    expect(@irs_attempts_api_tracker).to receive(:track_event).
-      with(:mfa_enroll_backup_code, success: true)
 
     post :create
 

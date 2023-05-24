@@ -118,14 +118,6 @@ describe Users::PivCacAuthenticationSetupController do
           context 'with no additional MFAs chosen on setup' do
             let(:mfa_selections) { ['piv_cac'] }
             it 'redirects to suggest 2nd MFA page' do
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                :mfa_enroll_piv_cac,
-                success: true,
-                subject_dn: 'some dn',
-                failure_reason: nil,
-              )
-
               get :new, params: { token: good_token }
               expect(response).to redirect_to(auth_method_confirmation_url)
             end
@@ -142,14 +134,6 @@ describe Users::PivCacAuthenticationSetupController do
             end
 
             it 'sets the session to not require piv setup upon sign-in' do
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                :mfa_enroll_piv_cac,
-                success: true,
-                subject_dn: 'some dn',
-                failure_reason: nil,
-              )
-
               get :new, params: { token: good_token }
 
               expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
@@ -158,27 +142,11 @@ describe Users::PivCacAuthenticationSetupController do
 
           context 'with additional MFAs leftover' do
             it 'redirects to Mfa Confirmation page' do
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                :mfa_enroll_piv_cac,
-                success: true,
-                subject_dn: 'some dn',
-                failure_reason: nil,
-              )
-
               get :new, params: { token: good_token }
               expect(response).to redirect_to(phone_setup_url)
             end
 
             it 'sets the piv/cac session information' do
-              stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-                :mfa_enroll_piv_cac,
-                success: true,
-                subject_dn: 'some dn',
-                failure_reason: nil,
-              )
-
               get :new, params: { token: good_token }
               json = {
                 'subject' => 'some dn',
@@ -199,14 +167,6 @@ describe Users::PivCacAuthenticationSetupController do
 
         context 'when redirected with an error token' do
           it 'renders the error template' do
-            stub_attempts_tracker
-            expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-              :mfa_enroll_piv_cac,
-              success: false,
-              subject_dn: nil,
-              failure_reason: { type: 'certificate.bad' },
-            )
-
             get :new, params: { token: bad_token }
             expect(response).to redirect_to setup_piv_cac_error_path(error: 'certificate.bad')
           end
