@@ -9,7 +9,7 @@ import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
-import InPersonPostOfficeOutageAlert from './in-person-post-office-outage-alert';
+import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
@@ -25,7 +25,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
 
   return (
     <>
-      {inPersonUspsOutageMessageEnabled && <InPersonPostOfficeOutageAlert />}
+      {inPersonUspsOutageMessageEnabled && <InPersonUspsOutageAlert />}
 
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 

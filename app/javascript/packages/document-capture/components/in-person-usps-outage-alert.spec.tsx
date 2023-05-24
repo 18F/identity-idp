@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
-import InPersonPostOfficeOutageAlert from './in-person-post-office-outage-alert';
+import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
 
-describe('InPersonPostOfficeOutageAlert', () => {
+describe('InPersonUspsOutageAlert', () => {
   let getByText;
   beforeEach(() => {
-    getByText = render(<InPersonPostOfficeOutageAlert />).getByText;
+    getByText = render(<InPersonUspsOutageAlert />).getByText;
   });
 
   it('renders the title', () => {
