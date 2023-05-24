@@ -46,10 +46,11 @@ module IdvSession
   end
 
   def track_throttled_event(throttle_type)
+    analytics_args = { throttle_type: throttle_type }
+    analytics_args[:step_name] = :phone if throttle_type == :proof_address
+
     irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
-    analytics.throttler_rate_limit_triggered(
-      throttle_type: throttle_type,
-    )
+    analytics.throttler_rate_limit_triggered(**analytics_args)
   end
 
   def throttled_redirect(throttle_type)
