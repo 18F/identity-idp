@@ -6,7 +6,6 @@ import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import Warning from './warning';
@@ -291,4 +290,4 @@ function ReviewIssuesStep({
   );
 }
 
-export default withBackgroundEncryptedUpload(ReviewIssuesStep);
+export default ReviewIssuesStep;

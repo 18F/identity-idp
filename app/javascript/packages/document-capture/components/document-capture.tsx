@@ -17,7 +17,6 @@ import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
-import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
@@ -94,17 +93,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       field: error.field,
       error,
     }));
-  } else if (submissionError instanceof BackgroundEncryptedUploadError) {
-    initialActiveErrors = [{ field: submissionError.baseField, error: submissionError }];
   }
 
   let initialValues;
   if (submissionError && formValues) {
     initialValues = formValues;
-
-    if (submissionError instanceof BackgroundEncryptedUploadError) {
-      initialValues = except(initialValues, ...submissionError.fields);
-    }
   }
 
   const inPersonSteps: FormStep[] =
@@ -141,7 +134,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
                     captureHints: submissionError.hints,
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
-                : ReviewIssuesStep,
+                : withProps({
+                    remainingAttempts: Infinity,
+                    isFailedResult: false,
+                    captureHints: false,
+                  })(ReviewIssuesStep),
             title: t('errors.doc_auth.throttled_heading'),
           },
         ] as FormStep[]

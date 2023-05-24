@@ -7,7 +7,6 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
-import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
@@ -76,4 +75,4 @@ function DocumentsStep({
   );
 }
 
-export default withBackgroundEncryptedUpload(DocumentsStep);
+export default DocumentsStep;

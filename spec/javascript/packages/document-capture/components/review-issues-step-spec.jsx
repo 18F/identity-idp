@@ -2,7 +2,6 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import {
   ServiceProviderContextProvider,
-  UploadContextProvider,
   AnalyticsContext,
   InPersonContext,
 } from '@18f/identity-document-capture';
@@ -16,7 +15,7 @@ import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
   const DEFAULT_PROPS = { remainingAttempts: 3 };
-  const sandbox = useSandbox();
+  useSandbox();
 
   it('logs warning events', async () => {
     const trackEvent = sinon.spy();
@@ -134,44 +133,6 @@ describe('document-capture/components/review-issues-step', () => {
       front: file,
       front_image_metadata: sinon.match(/^\{.+\}$/),
     });
-  });
-
-  it('performs background encrypted uploads', async () => {
-    const onChange = sandbox.stub();
-    sandbox.stub(window, 'fetch').callsFake(() =>
-      Promise.resolve({
-        ok: true,
-        status: 200,
-        headers: new window.Headers(),
-      }),
-    );
-    const key = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
-    const { getByLabelText, getByRole } = render(
-      <UploadContextProvider
-        backgroundUploadURLs={{ back: 'about:blank#back' }}
-        backgroundUploadEncryptKey={key}
-      >
-        <ReviewIssuesStep {...DEFAULT_PROPS} onChange={onChange} />)
-      </UploadContextProvider>,
-    );
-
-    const file = await getFixtureFile('doc_auth_images/id-back.jpg');
-    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-
-    await Promise.all([
-      new Promise((resolve) => onChange.callsFake(resolve)),
-      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), file),
-    ]);
-    const patch = onChange.getCall(0).args[0];
-    expect(await patch.back_image_url).to.equal('about:blank#back');
-    expect(window.fetch.getCall(0).args[0]).to.equal('about:blank#back');
   });
 
   it('renders troubleshooting options', async () => {

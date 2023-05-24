@@ -48,17 +48,6 @@ function getServiceProvider() {
   return { name, failureToProofURL };
 }
 
-function getBackgroundUploadURLs(): Record<'front' | 'back', string> {
-  return ['front', 'back'].reduce((result, key) => {
-    const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
-    if (url) {
-      result[key] = url;
-    }
-
-    return result;
-  }, {} as Record<'front' | 'back', string>);
-}
-
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -78,30 +67,11 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   });
 };
 
-(async () => {
-  const backgroundUploadURLs = getBackgroundUploadURLs();
-  const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
-
+(() => {
   const formData: Record<string, any> = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
     locale: document.documentElement.lang,
   };
-
-  let backgroundUploadEncryptKey;
-  if (isAsyncForm) {
-    backgroundUploadEncryptKey = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
-
-    const exportedKey = await window.crypto.subtle.exportKey('raw', backgroundUploadEncryptKey);
-    formData.encryption_key = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
-    formData.step = 'verify_document';
-  }
 
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
@@ -149,8 +119,6 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
         statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
         isMockClient,
-        backgroundUploadURLs,
-        backgroundUploadEncryptKey,
         formData,
         flowPath,
       },
@@ -173,7 +141,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
-    [DocumentCapture, { isAsyncForm, onStepChange: extendSession }],
+    [DocumentCapture, { isAsyncForm: false, onStepChange: extendSession }],
   );
 
   render(<App />, appRoot);
