@@ -291,5 +291,5 @@ clobber_logs: ## Purges logs and tmp/
 	rm -rf tmp/letter_opener
 	rm -rf tmp/mails
 
-tidy: clobber_assets clobber_logs ## Remove assets and logs, and unused gems, but leave DB alone
+tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
