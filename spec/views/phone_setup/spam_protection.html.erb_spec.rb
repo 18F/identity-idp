@@ -8,6 +8,7 @@ describe 'users/phone_setup/spam_protection.html.erb' do
   subject(:rendered) { render(template: 'users/phone_setup/spam_protection', locals:) }
 
   before do
+    allow(view).to receive(:current_user).and_return(user)
     @new_phone_form = form
   end
 
@@ -41,6 +42,13 @@ describe 'users/phone_setup/spam_protection.html.erb' do
       expect(rendered).to have_link(
         t('two_factor_authentication.login_options_link_text'),
         href: two_factor_options_path,
+      )
+    end
+
+    it 'does not render cancel option' do
+      expect(rendered).to_not have_link(
+        t('links.cancel'),
+        href: account_path,
       )
     end
   end
