@@ -88,7 +88,7 @@ RSpec.describe ButtonComponent, type: :component do
     end
 
     context 'with content including whitespace and safe html' do
-      let(:content) { safe_join(['  ', content_tag('span', 'Button', class: 'example')]) }
+      let(:content) { safe_join([" \n ", content_tag('span', 'Button', class: 'example')]) }
 
       it 'trims text of the content, maintaining html safety' do
         rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
@@ -98,7 +98,7 @@ RSpec.describe ButtonComponent, type: :component do
     end
 
     context 'with content including whitespace and unsafe html' do
-      let(:content) { safe_join(['  ', '<span class="example">Button</span>']) }
+      let(:content) { safe_join([" \n ", '<span class="example">Button</span>']) }
 
       it 'trims text of the content, maintaining html safety' do
         rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
