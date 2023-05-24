@@ -145,8 +145,8 @@ class Profile < ApplicationRecord
   end
 
   def deactivate_for_fraud_review
-    update!(active: false)
     fraud_review
+    update!(active: false)
   end
 
   def reject_for_fraud(notify_user:)
