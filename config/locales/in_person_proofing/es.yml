@@ -143,7 +143,14 @@ es:
         state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
-        state_id_number_hint: 'Puede incluir letras, números y los siguientes símbolos: / * -'
+        state_id_number_hint_html: "Puede incluir letras, números y los siguientes
+          símbolos: <span class='usa-sr-only'>TO DO: ADD
+          TRANSLATION,</span><span aria-hidden='true'> </span> <span
+          class='usa-sr-only'>TO DO: ADD TRANSLATION,</span><span
+          aria-hidden='true'>/</span> <span class='usa-sr-only'>TO DO: ADD
+          TRANSLATION,</span><span aria-hidden='true'>*</span> <span
+          class='usa-sr-only'>TO DO: ADD TRANSLATION</span><span
+          aria-hidden='true'>-</span>"
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual

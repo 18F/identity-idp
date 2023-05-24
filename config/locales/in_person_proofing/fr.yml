@@ -145,8 +145,14 @@ fr:
         state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
-        state_id_number_hint: 'Il peut s’agir de lettres, de chiffres et des symboles
-          suivants: / * -'
+        state_id_number_hint_html: "Il peut s’agir de lettres, de chiffres et des
+          symboles suivants: <span class='usa-sr-only'>TO DO: ADD
+          TRANSLATION,</span><span aria-hidden='true'> </span> <span
+          class='usa-sr-only'>TO DO: ADD TRANSLATION,</span><span
+          aria-hidden='true'>/</span> <span class='usa-sr-only'>TO DO: ADD
+          TRANSLATION,</span><span aria-hidden='true'>*</span> <span
+          class='usa-sr-only'>TO DO: ADD TRANSLATION</span><span
+          aria-hidden='true'>-</span>"
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle
