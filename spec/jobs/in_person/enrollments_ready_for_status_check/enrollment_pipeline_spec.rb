@@ -149,8 +149,9 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheck::EnrollmentPipeline do
           }.to_json,
         )
         expect_error(
-          'SNS "Message" field is not a valid SES payload', sqs_message_id:,
-                                                            sns_message_id:
+          'SNS "Message" field is not a valid SES payload',
+          sqs_message_id:,
+          sns_message_id:,
         )
       end
 
