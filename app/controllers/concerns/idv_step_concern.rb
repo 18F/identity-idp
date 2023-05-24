@@ -11,7 +11,7 @@ module IdvStepConcern
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_gpo_verify_url if current_user.pending_profile_requires_verification?
+    redirect_to idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
   end
 
   def confirm_no_pending_in_person_enrollment
@@ -44,11 +44,9 @@ module IdvStepConcern
 
     if flow_path == 'standard'
       redirect_to idv_document_capture_url
-    elsif flow_path == 'hybrid' &&
-          IdentityConfig.store.doc_auth_link_sent_controller_enabled
+    elsif flow_path == 'hybrid'
       redirect_to idv_link_sent_url
-    else
-      flow_session.delete('Idv::Steps::DocumentCaptureStep')
+    else # no flow_path, go to UploadStep via FSM
       redirect_to idv_doc_auth_url
     end
   end

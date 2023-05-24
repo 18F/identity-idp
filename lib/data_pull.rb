@@ -11,6 +11,7 @@ class DataPull
 
   Result = Struct.new(
     :table, # tabular output, rendered as an ASCII table or as CSV
+    :json, # output that should only be formatted as JSON
     :subtask, # name of subtask, used for audit logging
     :uuids, # Array of UUIDs entered or returned, used for audit logging
     keyword_init: true,
@@ -20,6 +21,7 @@ class DataPull
     :include_missing,
     :format,
     :show_help,
+    :requesting_issuers,
     keyword_init: true,
   ) do
     alias_method :include_missing?, :include_missing
@@ -31,6 +33,7 @@ class DataPull
       include_missing: true,
       format: :table,
       show_help: false,
+      requesting_issuers: [],
     )
   end
 
@@ -46,12 +49,16 @@ class DataPull
       return
     end
 
-    result = subtask_class.new.run(args: argv, include_missing: config.include_missing?)
+    result = subtask_class.new.run(args: argv, config:)
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
 
-    render_output(result.table)
+    if result.json
+      stdout.puts result.json.to_json
+    else
+      render_output(result.table)
+    end
   end
 
   # @param [Array<Array<String>>] rows
@@ -91,31 +98,46 @@ class DataPull
 
   # @api private
   # A subtask is a class that has a run method, the type signature should look like:
-  # +#run(args: Array<String>, include_missing: Boolean) -> Result+
+  # +#run(args: Array<String>, config: Config) -> Result+
   # @return [Class,nil]
   def subtask(name)
     {
       'uuid-lookup' => UuidLookup,
       'uuid-convert' => UuidConvert,
       'email-lookup' => EmailLookup,
+      'ig-request' => InspectorGeneralRequest,
+      'profile-summary' => ProfileSummary,
     }[name]
   end
 
+  # rubocop:disable Metrics/BlockLength
   def option_parser
+    basename = File.basename($PROGRAM_NAME)
+
     @option_parser ||= OptionParser.new do |opts|
       opts.banner = <<~EOS
-        #{$PROGRAM_NAME} [subcommand] [arguments] [options]
+        #{basename} [subcommand] [arguments] [options]
 
         Example usage:
 
-          * #{$PROGRAM_NAME} uuid-lookup email1@example.com email2@example.com
+          * #{basename} uuid-lookup email1@example.com email2@example.com
 
-          * #{$PROGRAM_NAME} uuid-convert partner-uuid1 partner-uuid2
+          * #{basename} uuid-convert partner-uuid1 partner-uuid2
 
-          * #{$PROGRAM_NAME} email-lookup uuid1 uuid2
+          * #{basename} email-lookup uuid1 uuid2
+
+          * #{basename} ig-request uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
+
+          * #{basename} profile-summary uuid1 uuid2
 
         Options:
       EOS
+
+      opts.on('-i=ISSUER', '--requesting-issuer=ISSUER', <<-MSG) do |issuer|
+        requesting issuer (used for ig-request task)
+      MSG
+        config.requesting_issuers << issuer
+      end
 
       opts.on('--help') do
         config.show_help = true
@@ -134,15 +156,16 @@ class DataPull
       end
 
       opts.on('--[no-]include-missing', <<~STR) do |include_missing|
-        Whether or not to add rows in the output for missing inputs, defaults to off
+        Whether or not to add rows in the output for missing inputs, defaults to on
       STR
         config.include_missing = include_missing
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 
   class UuidLookup
-    def run(args:, include_missing:)
+    def run(args:, config:)
       emails = args
 
       table = []
@@ -155,7 +178,7 @@ class DataPull
         if user
           table << [email, user.uuid]
           uuids << user.uuid
-        elsif include_missing
+        elsif config.include_missing?
           table << [email, '[NOT FOUND]']
         end
       end
@@ -169,7 +192,7 @@ class DataPull
   end
 
   class UuidConvert
-    def run(args:, include_missing:)
+    def run(args:, config:)
       partner_uuids = args
 
       table = []
@@ -180,7 +203,7 @@ class DataPull
         table << [identity.uuid, identity.agency.name, identity.user.uuid]
       end
 
-      if include_missing
+      if config.include_missing?
         (partner_uuids - identities.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, '[NOT FOUND]', '[NOT FOUND]']
         end
@@ -195,7 +218,7 @@ class DataPull
   end
 
   class EmailLookup
-    def run(args:, include_missing:)
+    def run(args:, config:)
       uuids = args
 
       users = User.includes(:email_addresses).where(uuid: uuids).order(:uuid)
@@ -209,7 +232,7 @@ class DataPull
         end
       end
 
-      if include_missing
+      if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, '[NOT FOUND]', nil]
         end
@@ -217,6 +240,78 @@ class DataPull
 
       Result.new(
         subtask: 'email-lookup',
+        uuids: users.map(&:uuid),
+        table:,
+      )
+    end
+  end
+
+  class InspectorGeneralRequest
+    def run(args:, config:)
+      require 'data_requests/deployed'
+      ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
+      uuids = args
+
+      users = uuids.map { |uuid| DataRequests::Deployed::LookupUserByUuid.new(uuid).call }.compact
+      shared_device_users = DataRequests::Deployed::LookupSharedDeviceUsers.new(users).call
+
+      output = shared_device_users.map do |user|
+        DataRequests::Deployed::CreateUserReport.new(user, config.requesting_issuers).call
+      end
+
+      Result.new(
+        subtask: 'ig-request',
+        uuids: users.map(&:uuid),
+        json: output,
+      )
+    end
+  end
+
+  class ProfileSummary
+    def run(args:, config:)
+      uuids = args
+
+      users = User.includes(:profiles).where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[
+        uuid
+        profile_id
+        status
+        activated_timestamp
+        disabled_reason
+        gpo_verification_pending_timestamp
+        fraud_review_pending_timestamp
+        fraud_rejection_timestamp
+      ]
+
+      users.each do |user|
+        if user.profiles.any?
+          user.profiles.sort_by(&:id).each do |profile|
+            table << [
+              user.uuid,
+              profile.id,
+              profile.active ? 'active' : 'inactive',
+              profile.activated_at,
+              profile.deactivation_reason,
+              profile.gpo_verification_pending_at,
+              profile.fraud_review_pending_at,
+              profile.fraud_rejection_at,
+            ]
+          end
+        elsif config.include_missing?
+          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil]
+        end
+      end
+
+      if config.include_missing?
+        (uuids - users.map(&:uuid)).each do |missing_uuid|
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil]
+        end
+      end
+
+      Result.new(
+        subtask: 'profile-summary',
         uuids: users.map(&:uuid),
         table:,
       )

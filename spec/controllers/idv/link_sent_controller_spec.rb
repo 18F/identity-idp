@@ -7,24 +7,12 @@ describe Idv::LinkSentController do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'hybrid',
-      :phone_for_mobile_flow => '201-555-1212',
-      'Idv::Steps::UploadStep' => true }
+      :phone_for_mobile_flow => '201-555-1212' }
   end
 
   let(:user) { create(:user) }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      issuer: 'http://sp.example.com',
-      app_id: '123',
-    )
-  end
-
-  let(:feature_flag_enabled) { true }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_link_sent_controller_enabled).
-      and_return(feature_flag_enabled)
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
@@ -79,13 +67,25 @@ describe Idv::LinkSentController do
       )
     end
 
-    context 'upload step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
-        flow_session['Idv::Steps::UploadStep'] = nil
+    context '#confirm_upload_step_complete' do
+      context 'no flow_path' do
+        it 'redirects to idv_doc_auth_url' do
+          flow_session[:flow_path] = nil
 
-        get :show
+          get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_doc_auth_url)
+        end
+      end
+
+      context 'flow_path is standard' do
+        it 'redirects to idv_document_capture_url' do
+          flow_session[:flow_path] = 'standard'
+
+          get :show
+
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
       end
     end
 
@@ -95,6 +95,90 @@ describe Idv::LinkSentController do
         get :show
 
         expect(response).to redirect_to(idv_ssn_url)
+      end
+    end
+  end
+
+  describe '#update' do
+    let(:analytics_name) { 'IdV: doc auth link_sent submitted' }
+    let(:analytics_args) do
+      {
+        analytics_id: 'Doc Auth',
+        flow_path: 'hybrid',
+        irs_reproofing: false,
+        step: 'link_sent',
+      }
+    end
+
+    it 'sends analytics_submitted event' do
+      put :update
+
+      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+    end
+
+    context 'check results' do
+      let(:load_result) { double('load result') }
+      let(:session_canceled_at) { nil }
+      let(:load_result_success) { true }
+
+      before do
+        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
+        allow(load_result).to receive(:attention_with_barcode?).and_return(false)
+
+        allow(load_result).to receive(:success?).and_return(load_result_success)
+
+        document_capture_session = DocumentCaptureSession.create!(
+          user: user,
+          cancelled_at: session_canceled_at,
+        )
+        flow_session['document_capture_session_uuid'] = document_capture_session.uuid
+        allow(document_capture_session).to receive(:load_result).and_return(load_result)
+        allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
+      end
+
+      it 'redirects to ssn page when successful' do
+        put :update
+
+        expect(response).to redirect_to(idv_ssn_url)
+
+        pc = ProofingComponent.find_by(user_id: user.id)
+        expect(pc.document_check).to eq('mock')
+        expect(pc.document_type).to eq('state_id')
+      end
+
+      context 'document capture session canceled' do
+        let(:session_canceled_at) { Time.zone.now }
+
+        it 'redirects to doc_auth page' do
+          error_message = t('errors.doc_auth.document_capture_cancelled')
+          expect(FormResponse).to receive(:new).with(
+            { success: false,
+              errors: { message: error_message } },
+          )
+
+          put :update
+
+          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(flow_session[:error_message]).to eq(error_message)
+          expect(flow_session['Idv::Steps::UploadStep']).to be_nil
+        end
+      end
+
+      context 'document capture session result fails' do
+        let(:load_result_success) { false }
+
+        it 'returns an empty response' do
+          error_message = t('errors.doc_auth.phone_step_incomplete')
+          expect(FormResponse).to receive(:new).with(
+            { success: false,
+              errors: { message: error_message } },
+          )
+
+          put :update
+
+          expect(response).to have_http_status(204)
+          expect(flow_session[:error_message]).to eq(error_message)
+        end
       end
     end
   end

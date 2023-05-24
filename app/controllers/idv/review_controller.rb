@@ -5,6 +5,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneConfirmation
+    include FraudReviewConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
@@ -18,8 +19,9 @@ module Idv
 
       analytics.idv_review_complete(
         success: false,
-        fraud_review_pending: current_user.fraud_review_pending?,
-        fraud_rejection: current_user.fraud_rejection?,
+        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
+        fraud_review_pending: fraud_review_pending?,
+        fraud_rejection: fraud_rejection?,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
@@ -55,6 +57,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -63,6 +66,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 

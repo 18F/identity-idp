@@ -1,6 +1,7 @@
 shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
 
@@ -15,6 +16,7 @@ shared_examples 'clearing and restarting idv' do
 
   it 'allows the user to retry verification with gpo', js: true do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     expect(user.reload.pending_profile?).to eq(false)
 
@@ -33,12 +35,13 @@ shared_examples 'clearing and restarting idv' do
     expect(page).to have_content(t('idv.titles.come_back_later'))
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.identity_verified?).to eq(false)
-    expect(user.pending_profile?).to eq(true)
+    expect(User.find(user.id).pending_profile?).to eq(true)
     expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do
     click_on t('idv.messages.clear_and_start_over')
+    click_idv_continue
 
     visit account_path
 

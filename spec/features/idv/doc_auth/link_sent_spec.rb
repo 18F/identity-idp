@@ -11,8 +11,6 @@ feature 'doc auth link sent step' do
   before do
     allow(FeatureManagement).
       to(receive(:doc_capture_polling_enabled?).and_return(false))
-    allow(IdentityConfig.store).
-      to(receive(:doc_auth_link_sent_controller_enabled).and_return(true))
 
     user
     complete_doc_auth_steps_before_upload_step

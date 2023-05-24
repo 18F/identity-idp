@@ -17,14 +17,19 @@ class GpoVerifyForm
 
   def submit
     result = valid?
+    threatmetrix_check_failed = fraud_review_checker.fraud_check_failed?
     if result
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
-      elsif fraud_check_failed? && threatmetrix_enabled?
+      elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
         pending_profile&.remove_gpo_deactivation_reason
         deactivate_for_fraud_review
       else
+        pending_profile&.update!(
+          fraud_review_pending_at: nil,
+          fraud_rejection_at: nil,
+        )
         activate_profile
       end
     else
@@ -37,7 +42,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
-        threatmetrix_check_failed: fraud_check_failed?,
+        threatmetrix_check_failed: threatmetrix_check_failed,
       },
     )
   end
@@ -89,8 +94,8 @@ class GpoVerifyForm
     FeatureManagement.proofing_device_profiling_decisioning_enabled?
   end
 
-  def fraud_check_failed?
-    user.fraud_review_pending? || user.fraud_rejection?
+  def fraud_review_checker
+    @fraud_review_checker ||= FraudReviewChecker.new(user)
   end
 
   def activate_profile

@@ -782,6 +782,27 @@ RSpec.describe GetUspsProofingResultsJob do
               ),
             )
           end
+
+          context 'when the in_person_stop_expiring_enrollments flag is true' do
+            before do
+              allow(IdentityConfig.store).to(
+                receive(:in_person_stop_expiring_enrollments).and_return(true),
+              )
+            end
+
+            it 'treats the enrollment as incomplete' do
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.status).to eq('pending')
+              # we pass the expiration message to analytics
+              expect(job_analytics).to have_logged_event(
+                'GetUspsProofingResultsJob: Enrollment incomplete',
+                hash_including(
+                  response_message: 'More than 30 days have passed since opt-in to IPP',
+                ),
+              )
+            end
+          end
         end
 
         context 'when an enrollment expires unexpectedly' do
@@ -1014,6 +1035,13 @@ RSpec.describe GetUspsProofingResultsJob do
 
             expect(job_analytics).not_to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
+            )
+
+            expect(job_analytics).to have_logged_event(
+              'GetUspsProofingResultsJob: Enrollment incomplete',
+              hash_including(
+                response_message: 'Customer has not been to a post office to complete IPP',
+              ),
             )
           end
         end

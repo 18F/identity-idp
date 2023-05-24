@@ -40,15 +40,10 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
-      handle_valid_otp_for_authentication_context(auth_method: 'webauthn')
+      handle_valid_verification_for_authentication_context(auth_method: 'webauthn')
       handle_remember_device
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def handle_invalid_webauthn
@@ -87,10 +82,6 @@ module TwoFactorAuthentication
         remember_device_default: remember_device_default,
         platform_authenticator: params[:platform].to_s == 'true',
       )
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def save_challenge_in_session
