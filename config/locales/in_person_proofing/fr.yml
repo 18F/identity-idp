@@ -146,13 +146,12 @@ fr:
         state_id_jurisdiction_prompt: '- Sélectionnez -'
         state_id_number: Numéro d’identification
         state_id_number_hint_html: "Il peut s’agir de lettres, de chiffres et des
-          symboles suivants: <span class='usa-sr-only'>TO DO: ADD
-          TRANSLATION,</span><span aria-hidden='true'> </span> <span
-          class='usa-sr-only'>TO DO: ADD TRANSLATION,</span><span
-          aria-hidden='true'>/</span> <span class='usa-sr-only'>TO DO: ADD
-          TRANSLATION,</span><span aria-hidden='true'>*</span> <span
-          class='usa-sr-only'>TO DO: ADD TRANSLATION</span><span
-          aria-hidden='true'>-</span>"
+          symboles suivants: <span class='usa-sr-only'>des espaces, </span><span
+          aria-hidden='true'> </span> <span class='usa-sr-only'>des barres
+          obliques, </span><span aria-hidden='true'>/</span> <span
+          class='usa-sr-only'>des astérisques, </span><span
+          aria-hidden='true'>*</span> <span class='usa-sr-only'>des
+          tirets</span><span aria-hidden='true'>-</span>"
         zipcode: Code postal
     headings:
       address: Indiquez votre adresse résidentielle actuelle

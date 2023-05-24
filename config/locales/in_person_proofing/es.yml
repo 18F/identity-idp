@@ -144,13 +144,12 @@ es:
         state_id_jurisdiction_prompt: '- Seleccione -'
         state_id_number: Número de cédula
         state_id_number_hint_html: "Puede incluir letras, números y los siguientes
-          símbolos: <span class='usa-sr-only'>TO DO: ADD
-          TRANSLATION,</span><span aria-hidden='true'> </span> <span
-          class='usa-sr-only'>TO DO: ADD TRANSLATION,</span><span
-          aria-hidden='true'>/</span> <span class='usa-sr-only'>TO DO: ADD
-          TRANSLATION,</span><span aria-hidden='true'>*</span> <span
-          class='usa-sr-only'>TO DO: ADD TRANSLATION</span><span
-          aria-hidden='true'>-</span>"
+          símbolos: <span class='usa-sr-only'>espacios, </span><span
+          aria-hidden='true'> </span> <span class='usa-sr-only'>barras
+          diagonales, </span> <span aria-hidden='true'>/</span> <span
+          class='usa-sr-only'>asteriscos, </span><span
+          aria-hidden='true'>*</span> <span
+          class='usa-sr-only'>guiones</span><span aria-hidden='true'>-</span>"
         zipcode: Código postal
     headings:
       address: Ingresa tu domicilio actual
