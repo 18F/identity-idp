@@ -3,19 +3,15 @@ require 'rails_helper'
 describe Idv::HybridHandoffController do
   include IdvHelper
 
-  let(:flow_session) do
-    { 'Idv::Steps::AgreementStep' => true }
-  end
-
   let(:user) { create(:user) }
 
   before do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
       and_return(true)
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
+    subject.user_session['idv/doc_auth'] = { 'Idv::Steps::AgreementStep' => true }
   end
 
   describe 'before_actions' do
@@ -37,11 +33,11 @@ describe Idv::HybridHandoffController do
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth upload visited' }
     let(:analytics_args) do
-      {
-        analytics_id: 'Doc Auth',
-        irs_reproofing: false,
+      { flow_path: 'standard',
         step: 'upload',
-      }
+        acuant_sdk_upgrade_ab_test_bucket: :default,
+        analytics_id: 'Doc Auth',
+        irs_reproofing: false }
     end
 
     it 'renders the show template' do
@@ -66,7 +62,7 @@ describe Idv::HybridHandoffController do
 
     context 'agreement step is not complete' do
       it 'redirects to idv_doc_auth_url' do
-        flow_session['Idv::Steps::AgreementStep'] = nil
+        subject.user_session['idv/doc_auth']['Idv::Steps::AgreementStep'] = nil
 
         get :show
 
@@ -78,11 +74,15 @@ describe Idv::HybridHandoffController do
   describe '#update' do
     let(:analytics_name) { 'IdV: doc auth upload submitted' }
     let(:analytics_args) do
-      {
+      { success: true,
+        errors: {},
+        destination: :link_sent,
+        flow_path: 'hybrid',
+        step: 'upload',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
         analytics_id: 'Doc Auth',
         irs_reproofing: false,
-        step: 'upload',
-      }
+        skip_upload_step: false }
     end
 
     it 'sends analytics_submitted event' do

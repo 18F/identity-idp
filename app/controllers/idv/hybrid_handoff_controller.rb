@@ -11,6 +11,7 @@ module Idv
     before_action :confirm_agreement_step_complete
 
     def show
+      flow_session[:flow_path] = 'standard'
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -47,10 +48,6 @@ module Idv
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
-      analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
-      )
-
       failure_reason = nil
       if !telephony_result.success?
         failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
@@ -68,6 +65,10 @@ module Idv
       else
         redirect_to idv_hybrid_handoff_url
       end
+
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
+      )
 
       telephony_form_response
     end
@@ -159,6 +160,7 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
+        flow_path: flow_session[:flow_path],
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
