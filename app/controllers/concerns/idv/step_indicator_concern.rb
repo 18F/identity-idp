@@ -29,7 +29,7 @@ module Idv
     def gpo_address_verification?
       # Proofing component values are (currently) never reset between proofing attempts, hence why
       # this refers to the session address verification mechanism and not the proofing component.
-      return true if current_user&.pending_profile
+      return true if current_user&.gpo_verification_pending_profile?
 
       return idv_session&.address_verification_mechanism == 'gpo' if defined?(idv_session)
     end
