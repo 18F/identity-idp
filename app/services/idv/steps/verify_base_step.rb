@@ -90,9 +90,6 @@ module Idv
       end
 
       def idv_failure_log_throttled
-        @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
-          throttle_context: 'single-session',
-        )
         @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
           step_name: self.class.name,
@@ -181,9 +178,6 @@ module Idv
 
           throttle.increment!
           if throttle.throttled?
-            @flow.irs_attempts_api_tracker.idv_verification_rate_limited(
-              throttle_context: 'multi-session',
-            )
             @flow.analytics.throttler_rate_limit_triggered(
               throttle_type: :proof_ssn,
               step_name: self.class,
@@ -260,10 +254,6 @@ module Idv
                                 [:state_id, :state_id_jurisdiction]],
           },
         )
-        log_idv_verification_submitted_event(
-          success: form_response.success?,
-          failure_reason: @flow.irs_attempts_api_tracker.parse_failure_reason(form_response),
-        )
 
         if form_response.success?
           response = check_ssn
@@ -317,23 +307,6 @@ module Idv
           success: idv_success(result),
           errors: idv_errors(result),
           extra: extra.merge(proofing_results: idv_extra(result)),
-        )
-      end
-
-      def log_idv_verification_submitted_event(success: false, failure_reason: nil)
-        pii_from_doc = pii || {}
-        @flow.irs_attempts_api_tracker.idv_verification_submitted(
-          success: success,
-          document_state: pii_from_doc[:state],
-          document_number: pii_from_doc[:state_id_number],
-          document_issued: pii_from_doc[:state_id_issued],
-          document_expiration: pii_from_doc[:state_id_expiration],
-          first_name: pii_from_doc[:first_name],
-          last_name: pii_from_doc[:last_name],
-          date_of_birth: pii_from_doc[:dob],
-          address: pii_from_doc[:address1],
-          ssn: pii_from_doc[:ssn],
-          failure_reason: failure_reason,
         )
       end
     end

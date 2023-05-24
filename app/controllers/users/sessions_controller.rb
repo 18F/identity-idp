@@ -48,9 +48,7 @@ module Users
 
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
-      irs_attempts_api_tracker.logout_initiated(
-        success: true,
-      )
+
       super
     end
 
@@ -99,10 +97,6 @@ module Users
     end
 
     def process_locked_out_session
-      irs_attempts_api_tracker.login_rate_limited(
-        email: auth_params[:email],
-      )
-
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url
     end
@@ -177,10 +171,6 @@ module Users
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
-      )
-      irs_attempts_api_tracker.login_email_and_password_auth(
-        email: email,
-        success: success,
       )
     end
 

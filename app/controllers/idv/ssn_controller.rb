@@ -34,9 +34,6 @@ module Idv
       analytics.idv_doc_auth_ssn_submitted(
         **analytics_arguments.merge(form_response.to_h),
       )
-      irs_attempts_api_tracker.idv_ssn_submitted(
-        ssn: params[:doc_auth][:ssn],
-      )
 
       if form_response.success?
         flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]

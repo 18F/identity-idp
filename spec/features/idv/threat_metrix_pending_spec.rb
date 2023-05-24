@@ -3,18 +3,11 @@ require 'rails_helper'
 RSpec.feature 'Users pending ThreatMetrix review', :js do
   include IdvStepHelper
   include OidcAuthHelper
-  include IrsAttemptsApiTrackingHelper
   include DocAuthHelper
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
-      and_return(true)
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_idv_events_enabled).
-      and_return(true)
-    mock_irs_attempts_api_encryption_key
   end
 
   let(:service_provider) do

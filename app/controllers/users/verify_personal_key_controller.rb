@@ -31,10 +31,7 @@ module Users
           **result.to_h,
           pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         )
-        irs_attempts_api_tracker.personal_key_reactivation_submitted(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-        )
+
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)
         else
@@ -56,8 +53,6 @@ module Users
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_personal_key,
       )
-
-      irs_attempts_api_tracker.personal_key_reactivation_rate_limited
 
       @expires_at = throttle.expires_at
       render :throttled

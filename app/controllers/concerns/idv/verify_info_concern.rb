@@ -106,7 +106,6 @@ module Idv
 
     def idv_failure_log_throttled(throttle_type)
       if throttle_type == :idv_resolution
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
           step_name: self.class.name,
@@ -311,7 +310,6 @@ module Idv
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
-          log_irs_tmx_fraud_check_event(hash, current_user) if tmx_id
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end

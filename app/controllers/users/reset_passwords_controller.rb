@@ -29,10 +29,7 @@ module Users
         result = PasswordResetTokenValidator.new(token_user).submit
 
         analytics.password_reset_token(**result.to_h)
-        irs_attempts_api_tracker.forgot_password_email_confirmed(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-        )
+
         if result.success?
           @reset_password_form = ResetPasswordForm.new(build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
@@ -50,10 +47,6 @@ module Users
       result = @reset_password_form.submit(user_params)
 
       analytics.password_reset_password(**result.to_h)
-      irs_attempts_api_tracker.forgot_password_new_password_submitted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
 
       if result.success?
         session.delete(:reset_password_token) if session[:reset_password_token]
@@ -112,17 +105,11 @@ module Users
         email: email,
         request_id: request_id,
         analytics: analytics,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).perform
 
       return unless result
 
       analytics.user_registration_email(**result.to_h)
-      irs_attempts_api_tracker.user_registration_email_submitted(
-        email: email,
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
       create_user_event(:account_created, user)
     end
 

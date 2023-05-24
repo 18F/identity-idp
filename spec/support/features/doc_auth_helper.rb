@@ -297,7 +297,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     user = create(:user, :fully_registered)
     visit_idp_from_ial1_oidc_sp(
       client_id: service_provider.issuer,
-      irs_attempts_api_session_id: 'test-session-id',
     )
     visit root_path
     sign_in_and_2fa_user(user)

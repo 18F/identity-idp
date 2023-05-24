@@ -40,10 +40,6 @@ module Idv
 
       result = @gpo_verify_form.submit
       analytics.idv_gpo_verification_submitted(**result.to_h)
-      irs_attempts_api_tracker.idv_gpo_verification_submitted(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
 
       if !result.success?
         flash[:error] = @gpo_verify_form.errors.first.message
@@ -85,7 +81,6 @@ module Idv
     end
 
     def render_throttled
-      irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,
       )

@@ -111,12 +111,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
-          success: true,
-          subject_dn: x509_subject,
-          failure_reason: nil,
-        )
-
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
@@ -192,9 +186,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(mfa_device_type: 'piv_cac')
-
         piv_cac_mismatch = { type: 'user.piv_cac_mismatch' }
 
         submit_attributes = {
@@ -207,12 +198,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_piv_cac).with(
-          success: false,
-          subject_dn: bad_dn,
-          failure_reason: piv_cac_mismatch,
-        )
 
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: max attempts reached')

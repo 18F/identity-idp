@@ -19,10 +19,6 @@ module Users
       result = @update_user_password_form.submit(user_params)
 
       analytics.password_changed(**result.to_h)
-      irs_attempts_api_tracker.logged_in_password_change(
-        success: result.success?,
-        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-      )
 
       if result.success?
         handle_valid_password

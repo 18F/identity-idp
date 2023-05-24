@@ -27,7 +27,6 @@ module OpenidConnect
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
-        irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
         sign_out
         redirect_to(
@@ -68,7 +67,6 @@ module OpenidConnect
         render :index
       else
         analytics.logout_initiated(**result.to_h.except(:redirect_uri))
-        irs_attempts_api_tracker.logout_initiated(success: result.success?)
 
         sign_out
         redirect_to(

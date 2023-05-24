@@ -116,22 +116,6 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
-
-      if UserSessionContext.reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
-          reauthentication: true,
-          success: properties[:success],
-        )
-      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
-          reauthentication: false,
-          success: properties[:success],
-        )
-      elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_submitted(
-          success: properties[:success],
-        )
-      end
     end
 
     def sign_up_mfa_selection_order_bucket

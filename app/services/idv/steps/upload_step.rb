@@ -13,10 +13,6 @@ module Idv
       end
 
       def call
-        @flow.irs_attempts_api_tracker.idv_document_upload_method_selected(
-          upload_method: params[:type],
-        )
-
         # See the simple_form_for in
         # app/views/idv/doc_auth/upload.html.erb
         if hybrid_flow_chosen?
@@ -69,11 +65,6 @@ module Idv
         if !telephony_result.success?
           failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
         end
-        @flow.irs_attempts_api_tracker.idv_phone_upload_link_sent(
-          success: telephony_result.success?,
-          phone_number: formatted_destination_phone,
-          failure_reason: failure_reason,
-        )
 
         if !failure_reason
           flow_session[:flow_path] = 'hybrid'
@@ -120,10 +111,6 @@ module Idv
             [throttle.expires_at, Time.zone.now].compact.max,
             except: :seconds,
           ),
-        )
-
-        @flow.irs_attempts_api_tracker.idv_phone_send_link_rate_limited(
-          phone_number: formatted_destination_phone,
         )
 
         failure(message)

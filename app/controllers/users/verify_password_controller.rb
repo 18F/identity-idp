@@ -14,9 +14,6 @@ module Users
       @decrypted_pii = decrypted_pii
       result = verify_password_form.submit
 
-      irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
-        success: result.success?,
-      )
       if result.success?
         handle_success(result)
       else
@@ -41,7 +38,6 @@ module Users
 
     def handle_success(result)
       flash[:personal_key] = result.extra[:personal_key]
-      irs_attempts_api_tracker.idv_personal_key_generated
       reactivate_account_session.clear
       redirect_to account_url
     end

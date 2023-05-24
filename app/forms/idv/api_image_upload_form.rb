@@ -10,15 +10,12 @@ module Idv
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, service_provider:, analytics: nil,
-                   uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
+    def initialize(params, service_provider:, analytics: nil, uuid_prefix: nil)
       @params = params
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
-      @irs_attempts_api_tracker = irs_attempts_api_tracker
-      @store_encrypted_images = store_encrypted_images
     end
 
     def submit
@@ -40,15 +37,12 @@ module Idv
         doc_pii_response: doc_pii_response,
       )
 
-      track_event(response)
-
       response
     end
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :irs_attempts_api_tracker
+    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix
 
     def increment_throttle!
       return unless document_capture_session
@@ -175,7 +169,6 @@ module Idv
     def throttle_if_rate_limited
       return unless @throttled
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
-      irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
@@ -214,25 +207,6 @@ module Idv
           flow_path: params[:flow_path],
         ).merge(acuant_sdk_upgrade_ab_test_data),
       )
-    end
-
-    def store_encrypted_images_if_required
-      return unless store_encrypted_images?
-
-      encrypted_document_storage_writer.encrypt_and_write_document(
-        front_image: front_image_bytes,
-        front_image_content_type: front.content_type,
-        back_image: back_image_bytes,
-        back_image_content_type: back.content_type,
-      )
-    end
-
-    def store_encrypted_images?
-      @store_encrypted_images
-    end
-
-    def encrypted_document_storage_writer
-      @encrypted_document_storage_writer ||= EncryptedDocumentStorage::DocumentWriter.new
     end
 
     def acuant_sdk_upgrade_ab_test_data
@@ -292,27 +266,6 @@ module Idv
       @throttle ||= Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
-      )
-    end
-
-    def track_event(response)
-      pii_from_doc = response.pii_from_doc || {}
-      stored_image_result = store_encrypted_images_if_required
-
-      irs_attempts_api_tracker.idv_document_upload_submitted(
-        success: response.success?,
-        document_state: pii_from_doc[:state],
-        document_number: pii_from_doc[:state_id_number],
-        document_issued: pii_from_doc[:state_id_issued],
-        document_expiration: pii_from_doc[:state_id_expiration],
-        document_front_image_filename: stored_image_result&.front_filename,
-        document_back_image_filename: stored_image_result&.back_filename,
-        document_image_encryption_key: stored_image_result&.encryption_key,
-        first_name: pii_from_doc[:first_name],
-        last_name: pii_from_doc[:last_name],
-        date_of_birth: pii_from_doc[:dob],
-        address: pii_from_doc[:address1],
-        failure_reason: response.errors&.except(:hints)&.presence,
       )
     end
   end

@@ -24,11 +24,6 @@ module Idv
         (result.extra.slice(:code_expired) if result.extra[:code_expired]) ||
         (result.extra.slice(:code_matches) if !result.success? && !result.extra[:code_matches]) ||
         {}
-      irs_attempts_api_tracker.idv_phone_otp_submitted(
-        success: result.success?,
-        phone_number: idv_session.user_phone_confirmation_session.phone,
-        failure_reason: parsed_failure_reason,
-      )
 
       if result.success?
         idv_session.user_phone_confirmation = true
@@ -73,7 +68,6 @@ module Idv
       @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
         user: current_user,
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
-        irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
     end
   end

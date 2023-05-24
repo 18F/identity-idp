@@ -29,7 +29,6 @@ module Users
                   sign_up_mfa_selection_order_bucket,
       )
       analytics.backup_code_setup_visit(**analytics_properties)
-      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
 
       save_backup_codes
       track_backup_codes_created

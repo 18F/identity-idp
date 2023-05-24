@@ -62,8 +62,6 @@ module Idv
       user_session[:personal_key] = @code
       idv_session.personal_key = nil
 
-      irs_attempts_api_tracker.idv_personal_key_generated
-
       flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true
     end

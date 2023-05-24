@@ -23,10 +23,6 @@ module Users
         sign_up_mfa_priority_bucket: @sign_up_mfa_selection_order_bucket,
       )
       analytics.user_registration_2fa_setup(**analytics_hash)
-      irs_attempts_api_tracker.mfa_enroll_options_selected(
-        success: result.success?,
-        mfa_device_types: @two_factor_options_form.selection,
-      )
 
       if result.success?
         process_valid_form

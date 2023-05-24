@@ -18,10 +18,6 @@ module Idv
         def call
           flow_session[:pii_from_user][:ssn] = ssn
 
-          @flow.irs_attempts_api_tracker.idv_ssn_submitted(
-            ssn: ssn,
-          )
-
           idv_session.delete('applicant')
 
           maybe_redirect_to_verify_info
