@@ -2,6 +2,7 @@ module Idv
   class SessionErrorsController < ApplicationController
     include IdvSession
     include EffectiveUser
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
