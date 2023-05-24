@@ -45,7 +45,7 @@ You are encountering you OS's [limits on allowed file descriptors](https://wilso
 
 Try this to increase the user limit:
 ```
-$ ulimit -Sn 65536 && make test
+$ ulimit -Sn 65536
 ```
 To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_profile` file, depending on your shell:
 ```
