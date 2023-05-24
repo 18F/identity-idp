@@ -24,7 +24,7 @@ module TwoFactorAuthentication
         handle_valid_confirmation_otp if UserSessionContext.confirmation_context?(context)
         handle_valid_otp(next_url: nil, auth_method: params[:otp_delivery_preference])
       else
-        handle_invalid_otp(context: context, type: 'otp')
+        handle_invalid_otp(type: 'otp')
       end
     end
 

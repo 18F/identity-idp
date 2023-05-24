@@ -10,7 +10,7 @@ module TwoFactorAuthenticatableMethods
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:, context: nil)
+  def handle_second_factor_locked_user(type:)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
@@ -18,7 +18,7 @@ module TwoFactorAuthenticatableMethods
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends(phone: nil, context: nil)
+  def handle_too_many_otp_sends
     analytics.multi_factor_auth_max_sends
 
     handle_max_attempts('otp_requests')
@@ -97,13 +97,13 @@ module TwoFactorAuthenticatableMethods
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type:, context: nil)
+  def handle_invalid_otp(type:)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(context: context, type: type)
+      handle_second_factor_locked_user(type: type)
     else
       render_show_after_invalid
     end

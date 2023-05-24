@@ -24,7 +24,7 @@ module TwoFactorAuthentication
       if result.success?
         handle_valid_otp(next_url: nil, auth_method: 'authenticator')
       else
-        handle_invalid_otp(context: context, type: 'totp')
+        handle_invalid_otp(type: 'totp')
       end
     end
 

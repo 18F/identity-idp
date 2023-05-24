@@ -20,11 +20,6 @@ module Idv
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
 
-      parsed_failure_reason =
-        (result.extra.slice(:code_expired) if result.extra[:code_expired]) ||
-        (result.extra.slice(:code_matches) if !result.success? && !result.extra[:code_matches]) ||
-        {}
-
       if result.success?
         idv_session.user_phone_confirmation = true
         redirect_to idv_review_url
