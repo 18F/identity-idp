@@ -231,10 +231,6 @@ module Idv
           delete_async
           mark_step_incomplete(:verify)
           @flow.analytics.idv_proofing_resolution_result_missing
-          log_idv_verification_submitted_event(
-            success: false,
-            failure_reason: { idv_verification: [:timeout] },
-          )
         elsif current_async_state.done?
           async_state_done(current_async_state)
         end
