@@ -75,7 +75,11 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
-        post_office_outage_error_message:
+        post_office_search_error: We are having technical difficulties at the moment.
+          Try searching for a Post Office again. If this issue continues, come
+          back later.
+        text_html: Please try again. If you keep getting these errors, %{link}.
+        usps_outage_error_message:
           post_cta:
             body: In the meantime, you can still begin the in-person verification process on
               %{app_name} and then visit a Post Office. If you urgently need
@@ -91,10 +95,6 @@ en:
               verification results by Thursday, June 1.
             title: We’re working on a technical issue. Your identity verification results
               may not be emailed to you until Tuesday, May 30.
-        post_office_search_error: We are having technical difficulties at the moment.
-          Try searching for a Post Office again. If this issue continues, come
-          back later.
-        text_html: Please try again. If you keep getting these errors, %{link}.
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page

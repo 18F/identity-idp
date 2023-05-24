@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { Alert, Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
+import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
@@ -9,13 +9,15 @@ import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
+import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonURL, inPersonCtaVariantActive, inPersonUspsOutageMessageEnabled } =
+    useContext(InPersonContext);
 
   useEffect(() => {
     setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
@@ -23,19 +25,7 @@ function InPersonPrepareStep({ toPreviousStep }) {
 
   return (
     <>
-      <Alert type="warning" className="margin-bottom-4">
-        <>
-          <strong>
-            {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.title')}
-          </strong>
-          <br />
-          <br />
-          {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.body', {
-            app_name: getConfigValue('appName'),
-          })}
-          <br />
-        </>
-      </Alert>
+      {inPersonUspsOutageMessageEnabled && <InPersonUspsOutageAlert />}
 
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 

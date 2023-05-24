@@ -220,6 +220,7 @@ class IdentityConfig
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_completion_survey_url, type: :string)
+    config.add(:in_person_usps_outage_message_enabled, type: :boolean)
     config.add(:in_person_verify_info_controller_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
