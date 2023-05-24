@@ -75,7 +75,7 @@ en:
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
-        post_office_outage_error_message:
+        usps_outage_error_message:
           post_cta:
             body: In the meantime, you can still begin the in-person verification process on
               %{app_name} and then visit a Post Office. If you urgently need

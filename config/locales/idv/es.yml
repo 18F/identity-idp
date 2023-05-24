@@ -80,7 +80,7 @@ es:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.
         link: contáctanos
-        post_office_outage_error_message:
+        usps_outage_error_message:
           post_cta:
             body: Mientras tanto, todavía puedes iniciar el proceso de verificación
               presencial en %{app_name} y luego acudir a una oficina de correos.

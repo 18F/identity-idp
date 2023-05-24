@@ -6,12 +6,10 @@ function InPersonUspsOutageAlert() {
   return (
     <Alert type="warning" className="margin-bottom-4">
       <>
-        <strong>
-          {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.title')}
-        </strong>
+        <strong>{t('idv.failure.exceptions.usps_outage_error_message.post_cta.title')}</strong>
         <br />
         <br />
-        {t('idv.failure.exceptions.post_office_outage_error_message.post_cta.body', {
+        {t('idv.failure.exceptions.usps_outage_error_message.post_cta.body', {
           app_name: getConfigValue('appName'),
         })}
         <br />

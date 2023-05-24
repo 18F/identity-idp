@@ -26,7 +26,7 @@ describe('InPersonPrepareStep', () => {
         </InPersonContext.Provider>,
       );
       expect(
-        queryByText('idv.failure.exceptions.post_office_outage_error_message.post_cta.title'),
+        queryByText('idv.failure.exceptions.usps_outage_error_message.post_cta.title'),
       ).to.exist();
     });
     it('does not render a warning when the flag is disabled', () => {
@@ -36,7 +36,7 @@ describe('InPersonPrepareStep', () => {
         </InPersonContext.Provider>,
       );
       expect(
-        queryByText('idv.failure.exceptions.post_office_outage_error_message.post_cta.title'),
+        queryByText('idv.failure.exceptions.usps_outage_error_message.post_cta.title'),
       ).not.to.exist();
     });
   });

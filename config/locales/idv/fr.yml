@@ -84,7 +84,7 @@ fr:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.
         link: contactez-nous
-        post_office_outage_error_message:
+        usps_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
               en personne sur %{app_name} et vous pouvez visiter un bureau de

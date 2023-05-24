@@ -11,13 +11,13 @@
 
 <% if @presenter.usps_outage_message_enabled %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
-    <strong><%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.title') %></strong>
+    <strong><%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title') %></strong>
     <br/>
     <br/>
-    <%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.body') %>
+    <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.body') %>
     <br/>
     <br/>
-    <%= t('idv.failure.exceptions.post_office_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
+    <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
     <br/>
     <br/>
   <% end %>
