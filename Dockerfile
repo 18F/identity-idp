@@ -22,6 +22,11 @@ ENV POSTGRES_WORKER_NAME idp-worker-jobs
 ENV POSTGRES_WORKER_HOST postgres-worker
 ENV POSTGRES_WORKER_USERNAME postgres
 ENV POSTGRES_WORKER_PASSWORD postgres
+ENV REDIS_IRS_ATTEMPTS_API_URL redis://redis:6379/2
+ENV REDIS_THROTTLE_URL redis://redis:6379/1
+ENV REDIS_URL redis://redis:6379
+ENV ASSET_HOST http://localhost:3000
+ENV DOMAIN_NAME localhost:3000
 
 # Create a new user and set up the working directory
 RUN addgroup --gid 1000 app && \
