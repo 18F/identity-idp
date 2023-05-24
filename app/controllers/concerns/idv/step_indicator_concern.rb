@@ -2,8 +2,6 @@ module Idv
   module StepIndicatorConcern
     extend ActiveSupport::Concern
 
-    include IdvSession
-
     included do
       helper_method :step_indicator_steps
     end
@@ -31,7 +29,9 @@ module Idv
     def gpo_address_verification?
       # Proofing component values are (currently) never reset between proofing attempts, hence why
       # this refers to the session address verification mechanism and not the proofing component.
-      !!current_user.pending_profile || idv_session.address_verification_mechanism == 'gpo'
+      return true if current_user&.pending_profile
+
+      return idv_session&.address_verification_mechanism == 'gpo' if defined?(idv_session)
     end
 
     def proofing_components_as_hash
@@ -39,6 +39,8 @@ module Idv
       # are set during identity verification. These values are recorded to the profile at creation,
       # including for a pending profile.
       @proofing_components_as_hash ||= begin
+        return {} if !current_user
+
         if current_user.pending_profile
           current_user.pending_profile.proofing_components
         else
