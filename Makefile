@@ -22,7 +22,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	help \
 	lint \
 	lint_analytics_events \
-	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_optimized_assets \
@@ -70,7 +69,6 @@ else
 endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
-	make lint_tracker_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- bundler-audit ---"
