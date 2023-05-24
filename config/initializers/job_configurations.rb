@@ -111,6 +111,12 @@ else
         args: -> { [Time.zone.now] },
       },
       # Queue usps proofing job to GoodJob for waiting enrollments
+      get_usps_ready_proofing_results_job: {
+        class: 'GetUspsReadyProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_waiting_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Queue usps proofing job to GoodJob for enrollments
       get_usps_proofing_results_job: {
         class: 'GetUspsProofingResultsJob',
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,

@@ -14,9 +14,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   def perform(_now)
-    unless IdentityConfig.store.in_person_proofing_enabled
-      return true
-    end
+    return true unless IdentityConfig.store.in_person_proofing_enabled
 
     @enrollment_outcomes = {
       enrollments_checked: 0,

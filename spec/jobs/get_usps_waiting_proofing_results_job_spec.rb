@@ -18,7 +18,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
 
       response = JSON.parse(response_json)
       expect(job_analytics).to have_logged_event(
-        'GetUspsReadyProofingResultsJob: Enrollment status updated',
+        'GetUspsWaitingProofingResultsJob: Enrollment status updated',
         assurance_level: response['assuranceLevel'],
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
@@ -52,7 +52,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       job.perform(Time.zone.now)
       if email_type == 'deadline passed'
         expect(job_analytics).to have_logged_event(
-          'GetUspsReadyProofingResultsJob: deadline passed email initiated',
+          'GetUspsWaitingProofingResultsJob: deadline passed email initiated',
           enrollment_code: pending_enrollment.enrollment_code,
           enrollment_id: pending_enrollment.id,
           wait_until: anything,
@@ -61,7 +61,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         )
       else
         expect(job_analytics).to have_logged_event(
-          'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+          'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
           email_type: email_type,
           enrollment_code: pending_enrollment.enrollment_code,
           wait_until: anything,
@@ -85,8 +85,8 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
       expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
       expect(pending_enrollment.status_check_completed_at).to eq(Time.zone.now)
       expect(pending_enrollment.status).to eq(enrollment_status)
-      expect(pending_enrollment.profile.active).to eq(passed)
       expect(pending_enrollment.ready_for_status_check).to eq(ready_for_status_check)
+      expect(pending_enrollment.profile.active).to eq(passed)
     end
   end
 end
@@ -102,11 +102,9 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
 
     expect(pending_enrollment.pending?).to eq(true)
     expect(pending_enrollment.profile.active).to eq(false)
-    expect(pending_enrollment.ready_for_status_check).to eq(true)
-    # Might want to create another analytics method?
-    # Should we log whether something is marked ready for status check?
+    expect(pending_enrollment.ready_for_status_check).to eq(false)
     expect(job_analytics).to have_logged_event(
-      'GetUspsReadyProofingResultsJob: Exception raised',
+      'GetUspsWaitingProofingResultsJob: Exception raised',
       hash_including(
         enrollment_code: pending_enrollment.enrollment_code,
         enrollment_id: pending_enrollment.id,
@@ -155,7 +153,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
 
     # Write another analytics event?
     expect(job_analytics).to have_logged_event(
-      'GetUspsReadyProofingResultsJob: Exception raised',
+      'GetUspsWaitingProofingResultsJob: Exception raised',
       hash_including(
         reason: 'Request exception',
         response_present: false,
@@ -173,13 +171,13 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
   end
 end
 
-RSpec.describe GetUspsReadyProofingResultsJob do
+RSpec.describe GetUspsWaitingProofingResultsJob do
   include UspsIppHelper
   include ApproximatingHelper
 
   let(:reprocess_delay_minutes) { 2.0 }
   let(:request_delay_ms) { 0 }
-  let(:job) { GetUspsReadyProofingResultsJob.new }
+  let(:job) { GetUspsWaitingProofingResultsJob.new }
   let(:job_analytics) { FakeAnalytics.new }
   let(:transaction_start_date_time) do
     ActiveSupport::TimeZone[-6].strptime(
@@ -222,38 +220,38 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 :in_person_enrollment, :pending,
                 selected_location_details: { name: 'BALTIMORE' },
                 issuer: 'http://localhost:3000',
-                ready_for_status_check: true
+                ready_for_status_check: false
               ),
               create(
                 :in_person_enrollment, :pending,
                 selected_location_details: { name: 'FRIENDSHIP' },
-                ready_for_status_check: true
+                ready_for_status_check: false
               ),
               create(
                 :in_person_enrollment, :pending,
                 selected_location_details: { name: 'WASHINGTON' },
-                ready_for_status_check: true
+                ready_for_status_check: false
               ),
               create(
                 :in_person_enrollment, :pending,
                 selected_location_details: { name: 'ARLINGTON' },
-                ready_for_status_check: true
+                ready_for_status_check: false
               ),
               create(
                 :in_person_enrollment, :pending,
                 selected_location_details: { name: 'DEANWOOD' },
-                ready_for_status_check: true
+                ready_for_status_check: false
               ),
             ]
           end
           let(:pending_enrollment) { pending_enrollments[0] }
 
           before do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return([pending_enrollment])
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             allow(IdentityConfig.store).to(
-              receive(:in_person_enrollments_ready_job_enabled).and_return(true),
+              receive(:in_person_enrollments_ready_job_enabled).and_return(true)
             )
           end
 
@@ -264,14 +262,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               job.perform(Time.zone.now)
 
               expect(InPersonEnrollment).to(
-                have_received(:needs_status_check_on_ready_enrollments).
+                have_received(:needs_status_check_on_waiting_enrollments).
                 with(...reprocess_delay_minutes.minutes.ago),
               )
             end
           end
 
           it 'records the last attempted status check regardless of response code and contents' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return(pending_enrollments)
             stub_request_proofing_results_with_responses(
               request_failed_proofing_results_args,
@@ -316,7 +314,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           end
 
           it 'logs a message when the job starts' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return(pending_enrollments)
             stub_request_proofing_results_with_responses(
               request_failed_proofing_results_args,
@@ -328,14 +326,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job started',
+              'GetUspsWaitingProofingResultsJob: Job started',
               enrollments_count: 5,
               reprocess_delay_minutes: 2.0,
             )
           end
 
           it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return(pending_enrollments)
             stub_request_proofing_results_with_responses(
               request_passed_proofing_results_args,
@@ -348,7 +346,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
+              'GetUspsWaitingProofingResultsJob: Job completed',
               duration_seconds: anything,
               enrollments_checked: 5,
               enrollments_errored: 1,
@@ -360,13 +358,13 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             )
 
             expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              job_analytics.events['GetUspsWaitingProofingResultsJob: Job completed'].
                 first[:duration_seconds],
             ).to be >= 0.0
           end
 
           it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return(pending_enrollments)
             stub_request_proofing_results_with_responses(
               request_passed_proofing_results_args,
@@ -375,7 +373,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
+              'GetUspsWaitingProofingResultsJob: Job completed',
               duration_seconds: anything,
               enrollments_checked: 5,
               enrollments_errored: 0,
@@ -387,14 +385,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             )
 
             expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              job_analytics.events['GetUspsWaitingProofingResultsJob: Job completed'].
                 first[:duration_seconds],
             ).to be >= 0.0
           end
 
           it 'logs a message with counts of various outcomes when the job completes
           (no enrollments)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return([])
             stub_request_proofing_results_with_responses(
               request_passed_proofing_results_args,
@@ -403,7 +401,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             job.perform(Time.zone.now)
 
             expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
+              'GetUspsWaitingProofingResultsJob: Job completed',
               duration_seconds: anything,
               enrollments_checked: 0,
               enrollments_errored: 0,
@@ -415,7 +413,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             )
 
             expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              job_analytics.events['GetUspsWaitingProofingResultsJob: Job completed'].
                 first[:duration_seconds],
             ).to be >= 0.0
           end
@@ -433,7 +431,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               job.perform(Time.zone.now)
 
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Exception raised',
+                'GetUspsWaitingProofingResultsJob: Exception raised',
                 hash_including(
                   exception_message: error_message,
                   exception_class: 'StandardError',
@@ -447,7 +445,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             let(:request_delay_ms) { 750 }
 
             it 'adds a delay between requests to USPS' do
-              allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+              allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
                 and_return(pending_enrollments)
               stub_request_passed_proofing_results
               expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
@@ -500,7 +498,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 pending_enrollment.reload
                 expect(pending_enrollment.deadline_passed_sent).to be true
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsReadyProofingResultsJob: deadline passed email initiated',
+                  'GetUspsWaitingProofingResultsJob: deadline passed email initiated',
                   enrollment_code: pending_enrollment.enrollment_code,
                   enrollment_id: pending_enrollment.id,
                   service_provider: pending_enrollment.issuer,
@@ -569,7 +567,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
                 # New analytics method?
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                  'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                   email_type: 'Success',
                   enrollment_code: pending_enrollment.enrollment_code,
                   service_provider: anything,
@@ -594,7 +592,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 end
 
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                  'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                   email_type: 'Failed',
                   enrollment_code: pending_enrollment.enrollment_code,
                   service_provider: anything,
@@ -634,7 +632,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: true,
               email_type: 'Success',
               enrollment_status: 'passed',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_passed_proofing_results_response,
             )
@@ -644,14 +642,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   reason: 'Successful status update',
                   passed: true,
                 ),
               )
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                 email_type: 'Success',
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
@@ -671,7 +669,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'Failed',
               enrollment_status: 'failed',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_failed_proofing_results_response,
             )
@@ -681,14 +679,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   passed: false,
                   reason: 'Failed status',
                 ),
               )
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                 email_type: 'Failed',
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
@@ -708,7 +706,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'Failed fraud suspected',
               enrollment_status: 'failed',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_failed_suspected_fraud_proofing_results_response,
             )
@@ -718,7 +716,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   fraud_suspected: true,
                   passed: false,
@@ -726,7 +724,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
                 ),
               )
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                 email_type: 'Failed fraud suspected',
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
@@ -746,7 +744,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'Failed unsupported ID type',
               enrollment_status: 'failed',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_passed_proofing_unsupported_id_results_response,
             )
@@ -756,14 +754,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   passed: false,
                   reason: 'Unsupported ID type',
                 ),
               )
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Success or failure email initiated',
+                'GetUspsWaitingProofingResultsJob: Success or failure email initiated',
                 email_type: 'Failed unsupported ID type',
                 enrollment_code: pending_enrollment.enrollment_code,
                 service_provider: anything,
@@ -783,7 +781,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'deadline passed',
               enrollment_status: 'expired',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_expired_proofing_results_response,
             )
@@ -793,7 +791,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.proofed_at).to eq(nil)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   reason: 'Enrollment has expired',
                   transaction_end_date_time: nil,
@@ -813,7 +811,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'deadline passed',
               enrollment_status: 'expired',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_unexpected_expired_proofing_results_response,
             )
@@ -824,14 +822,14 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               )
               job.perform(Time.zone.now)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   passed: false,
                   reason: 'Enrollment has expired',
                 ),
               )
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Unexpected response received',
+                'GetUspsWaitingProofingResultsJob: Unexpected response received',
                 hash_including(reason: 'Unexpected number of days before enrollment expired'),
               )
             end
@@ -853,7 +851,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsReadyProofingResultsJob: Unexpected response received',
+                  'GetUspsWaitingProofingResultsJob: Unexpected response received',
                   hash_including(
                     reason: 'Invalid enrollment code',
                     response_message: /Enrollment code [0-9]{16} does not exist/,
@@ -877,7 +875,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
                 expect(pending_enrollment.reload.cancelled?).to be_truthy
                 expect(job_analytics).to have_logged_event(
-                  'GetUspsReadyProofingResultsJob: Unexpected response received',
+                  'GetUspsWaitingProofingResultsJob: Unexpected response received',
                   hash_including(
                     reason: 'Invalid applicant unique id',
                     response_message: /Applicant [0-9a-z]{18} does not exist/,
@@ -914,7 +912,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
               expect(pending_enrollment.pending?).to be_truthy
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Exception raised',
+                'GetUspsWaitingProofingResultsJob: Exception raised',
                 hash_including(
                   status: 'Not supported',
                 ),
@@ -1031,7 +1029,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               expect(pending_enrollment.pending?).to be_truthy
 
               expect(job_analytics).not_to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
               )
             end
           end
@@ -1065,11 +1063,11 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             create(
               :in_person_enrollment, :pending,
               capture_secondary_id_enabled: capture_secondary_id_enabled,
-              ready_for_status_check: true
+              ready_for_status_check: false
             )
           end
           before do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            allow(InPersonEnrollment).to receive(:needs_status_check_on_waiting_enrollments).
               and_return([pending_enrollment])
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             allow(IdentityConfig.store).to(
@@ -1087,7 +1085,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               passed: false,
               email_type: 'Failed unsupported secondary ID',
               enrollment_status: 'failed',
-              ready_for_status_check: true,
+              ready_for_status_check: false,
               response_json: UspsInPersonProofing::Mock::Fixtures.
                 request_passed_proofing_secondary_id_type_results_response,
             )
@@ -1097,7 +1095,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
               expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
               expect(pending_enrollment.profile.active).to eq(false)
               expect(job_analytics).to have_logged_event(
-                'GetUspsReadyProofingResultsJob: Enrollment status updated',
+                'GetUspsWaitingProofingResultsJob: Enrollment status updated',
                 hash_including(
                   passed: false,
                   reason: 'Provided secondary proof of address',

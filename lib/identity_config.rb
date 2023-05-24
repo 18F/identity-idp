@@ -442,6 +442,7 @@ class IdentityConfig
     config.add(:usps_upload_enabled, type: :boolean)
     config.add(:usps_ipp_transliteration_enabled, type: :boolean)
     config.add(:get_usps_ready_proofing_results_job_cron, type: :string)
+    config.add(:get_usps_waiting_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_cron, type: :string)
     config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
     config.add(:get_usps_proofing_results_job_request_delay_milliseconds, type: :integer)

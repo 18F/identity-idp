@@ -4,7 +4,8 @@ class GetUspsWaitingProofingResultsJob < GetUspsProofingResultsJob
   queue_as :long_running
 
   def perform(_now)
-    unless IdentityConfig.store.in_person_proofing_enabled && IdentityConfig.store.in_person_enrollments_ready_job_enabled
+    unless IdentityConfig.store.in_person_proofing_enabled &&
+           IdentityConfig.store.in_person_enrollments_ready_job_enabled
       return true
     end
 
@@ -19,7 +20,7 @@ class GetUspsWaitingProofingResultsJob < GetUspsProofingResultsJob
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.usps_status_check_on_waiting_enrollments(
+    enrollments = InPersonEnrollment.needs_status_check_on_waiting_enrollments(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
