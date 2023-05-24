@@ -34,19 +34,21 @@ module Idv
       return idv_session&.address_verification_mechanism == 'gpo' if defined?(idv_session)
     end
 
+    def proofing_components
+      return {} if !current_user
+
+      if current_user.pending_profile
+        current_user.pending_profile.proofing_components
+      else
+        ProofingComponent.find_by(user: current_user).as_json
+      end
+    end
+
     def proofing_components_as_hash
       # A proofing component record exists as a zero-or-one-to-one relation with a user, and values
       # are set during identity verification. These values are recorded to the profile at creation,
       # including for a pending profile.
-      @proofing_components_as_hash ||= begin
-        return {} if !current_user
-
-        if current_user.pending_profile
-          current_user.pending_profile.proofing_components
-        else
-          ProofingComponent.find_by(user: current_user).as_json
-        end
-      end.to_h
+      @proofing_components_as_hash ||= proofing_components.to_h
     end
   end
 end
