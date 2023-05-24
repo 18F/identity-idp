@@ -46,9 +46,11 @@ module Idv
       flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
-      
-      analytics.idv_doc_auth_upload_submitted(**analytics_arguments.merge(form_response(destination: :link_sent).to_h))
-      
+
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
+      )
+
       failure_reason = nil
       if !telephony_result.success?
         failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
@@ -59,7 +61,7 @@ module Idv
         phone_number: formatted_destination_phone,
         failure_reason: failure_reason,
       )
-      
+
       if !failure_reason
         flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
@@ -117,7 +119,7 @@ module Idv
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
-      response = form_response(destination: :document_capture)      
+      response = form_response(destination: :document_capture)
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(response.to_h),
       )
@@ -152,31 +154,12 @@ module Idv
       )
     end
 
-    def render_404_if_hybrid_handoff_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-    end
-
-    def confirm_agreement_step_complete
-      return if flow_session['Idv::Steps::AgreementStep']
-
-      redirect_to idv_doc_auth_url
-    end
-
     def analytics_arguments
       {
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
-    end
-    def update_document_capture_session_requested_at(session_uuid)
-      document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
-      return unless document_capture_session
-      document_capture_session.update!(
-        requested_at: Time.zone.now,
-        cancelled_at: nil,
-        issuer: sp_session[:issuer],
-      )
     end
 
     def mark_link_sent_step_complete
@@ -187,13 +170,6 @@ module Idv
       flow_session['Idv::Steps::UploadStep'] = true
     end
 
-    def extra_view_variables
-      {
-        flow_session: flow_session,
-        idv_phone_form: build_form,
-      }
-    end
-
     def form_response(destination:)
       FormResponse.new(
         success: true,
@@ -202,27 +178,6 @@ module Idv
           destination: destination,
           skip_upload_step: mobile_device?,
         },
-      )
-    end
-
-    def mobile_device?
-      # See app/javascript/packs/document-capture-welcome.js
-      # And app/services/idv/steps/agreement_step.rb
-      !!flow_session[:skip_upload_step]
-    end
-
-    def build_form
-      Idv::PhoneForm.new(
-        previous_params: {},
-        user: current_user,
-        delivery_methods: [:sms],
-      )
-    end
-
-    def throttle
-      @throttle ||= Throttle.new(
-        user: current_user,
-        throttle_type: :idv_send_link,
       )
     end
 
@@ -263,14 +218,6 @@ module Idv
       return if flow_session['Idv::Steps::AgreementStep']
 
       redirect_to idv_doc_auth_url
-    end
-
-    def analytics_arguments
-      {
-        step: 'upload',
-        analytics_id: 'Doc Auth',
-        irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def formatted_destination_phone

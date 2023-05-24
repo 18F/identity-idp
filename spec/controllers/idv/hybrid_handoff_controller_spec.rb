@@ -86,7 +86,7 @@ describe Idv::HybridHandoffController do
     end
 
     it 'sends analytics_submitted event' do
-      put :update, params: { doc_auth: {phone: '202-555-5555'} }
+      put :update, params: { doc_auth: { phone: '202-555-5555' } }
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end

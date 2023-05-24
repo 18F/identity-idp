@@ -27,7 +27,11 @@ feature 'doc auth upload step' do
 
   context 'on a desktop device', js: true do
     before do
-      allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(false)
+      allow_any_instance_of(
+        Idv::HybridHandoffController,
+      ).to receive(
+        :mobile_device?,
+      ).and_return(false)
     end
 
     it 'displays with the expected content' do
@@ -120,7 +124,7 @@ feature 'doc auth upload step' do
         failure_reason: { telephony: ['TelephonyError'] },
       )
       fill_in :doc_auth_phone, with: '225-555-1000'
-      
+
       click_send_link
 
       expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
@@ -204,10 +208,16 @@ feature 'doc auth upload step' do
       end
     end
 
-    xit 'includes expected URL parameters' do
-      allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
-        document_capture_session_uuid: document_capture_session.uuid,
-      )
+    it 'includes expected URL parameters' do
+      allow_any_instance_of(
+        Idv::HybridHandoffController,
+      ).to receive(
+        :flow_session,
+      ).and_wrap_original do |method, args|
+        session = method.call(*args)
+        session['document_capture_session_uuid'] = document_capture_session.uuid
+        session
+      end
 
       expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         params = Rack::Utils.parse_nested_query URI(config[:link]).query
@@ -220,10 +230,16 @@ feature 'doc auth upload step' do
       click_send_link
     end
 
-    xit 'sets requested_at on the capture session' do
-      allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
-        document_capture_session_uuid: document_capture_session.uuid,
-      )
+    it 'sets requested_at on the capture session' do
+      allow_any_instance_of(
+        Idv::HybridHandoffController,
+      ).to receive(
+        :flow_session,
+      ).and_wrap_original do |method, args|
+        session = method.call(*args)
+        session['document_capture_session_uuid'] = document_capture_session.uuid
+        session
+      end
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
