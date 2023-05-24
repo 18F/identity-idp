@@ -14,7 +14,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       ),
       service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
-      irs_attempts_api_tracker: irs_attempts_api_tracker,
       store_encrypted_images: store_encrypted_images,
     )
   end
@@ -30,7 +29,6 @@ RSpec.describe Idv::ApiImageUploadForm do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:irs_attempts_api_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:store_encrypted_images) { false }
 
   describe '#valid?' do
@@ -69,7 +67,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'is not valid' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
       end
@@ -79,24 +76,6 @@ RSpec.describe Idv::ApiImageUploadForm do
   describe '#submit' do
     context 'with a valid form' do
       it 'logs analytics' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-          {
-            address: '1 FAKE RD',
-            date_of_birth: '1938-10-06',
-            document_back_image_filename: nil,
-            document_expiration: '2099-12-31',
-            document_front_image_filename: nil,
-            document_image_encryption_key: nil,
-            document_issued: '2019-12-31',
-            document_number: '1111111111111',
-            document_state: 'MT',
-            failure_reason: nil,
-            first_name: 'FAKEY',
-            last_name: 'MCFAKERSON',
-            success: true,
-          },
-        )
-
         form.submit
 
         expect(fake_analytics).to have_logged_event(
@@ -262,13 +241,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       it 'includes doc_pii errors' do
-        expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-          hash_including(
-            {
-              success: false,
-            },
-          ),
-        )
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
       end
@@ -280,10 +252,6 @@ RSpec.describe Idv::ApiImageUploadForm do
 
         it 'writes encrypted documents' do
           form.submit
-
-          upload_events = irs_attempts_api_tracker.events[:idv_document_upload_submitted]
-          expect(upload_events).to have_attributes(length: 1)
-          upload_event = upload_events.first
 
           document_writer = form.send(:encrypted_document_storage_writer)
 
@@ -313,18 +281,6 @@ RSpec.describe Idv::ApiImageUploadForm do
           allow(form).to receive(:encrypted_document_storage_writer).and_return(document_writer)
 
           expect(document_writer).to_not receive(:encrypt_and_write_document)
-
-          form.submit
-        end
-
-        it 'does not send image info to attempts api' do
-          expect(irs_attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-            hash_including(
-              document_front_image_filename: nil,
-              document_back_image_filename: nil,
-              document_image_encryption_key: nil,
-            ),
-          )
 
           form.submit
         end

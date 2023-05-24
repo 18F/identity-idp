@@ -23,7 +23,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       active: true,
       redirect_uris: ['http://localhost:7654/auth/result'],
       ial: 2,
-      irs_attempts_api_enabled: true,
     )
   end
 
@@ -97,7 +96,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
   scenario 'users ThreatMetrix Pass, it logs idv_tmx_fraud_check event' do
     freeze_time do
       complete_all_idv_steps_with(threatmetrix: 'Pass')
-      expect_irs_event(expected_success: true, expected_failure_reason: nil)
     end
   end
 
@@ -118,7 +116,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
-        irs_attempts_api_session_id: 'test-session-id',
       )
       visit root_path
       sign_in_and_2fa_user(user)
@@ -136,23 +133,5 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     complete_all_idv_steps_with(threatmetrix: threatmetrix)
     expect(page).to have_content(t('idv.failure.setup.heading'))
     expect(page).to have_current_path(idv_please_call_path)
-    expect_irs_event(
-      expected_success: false,
-      expected_failure_reason: DocAuthHelper::SAMPLE_TMX_SUMMARY_REASON_CODE,
-    )
-  end
-
-  def expect_irs_event(expected_success:, expected_failure_reason:)
-    event_name = 'idv-tmx-fraud-check'
-    events = irs_attempts_api_tracked_events(timestamp: Time.zone.now)
-    received_event_types = events.map(&:event_type)
-
-    idv_tmx_fraud_check_event = events.find { |x| x.event_type == event_name }
-    failure_reason = idv_tmx_fraud_check_event.event_metadata[:failure_reason]
-    success = idv_tmx_fraud_check_event.event_metadata[:success]
-
-    expect(received_event_types).to include event_name
-    expect(failure_reason).to eq expected_failure_reason.as_json
-    expect(success).to eq expected_success
   end
 end

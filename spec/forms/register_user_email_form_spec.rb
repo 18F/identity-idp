@@ -2,8 +2,7 @@ require 'rails_helper'
 
 describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
-  let(:attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  subject { RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker) }
+  subject { RegisterUserEmailForm.new(analytics: analytics) }
 
   it_behaves_like 'email validation'
 
@@ -35,12 +34,6 @@ describe RegisterUserEmailForm do
       end
 
       it 'creates throttle events after reaching throttle limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: email_address, email_already_registered: true,
-        )
-
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
           subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1')
         end
@@ -96,12 +89,6 @@ describe RegisterUserEmailForm do
       end
 
       it 'creates throttle events after reaching throttle limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: email_address, email_already_registered: false,
-        )
-
         IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
           subject.submit(email: email_address, terms_accepted: '1')
         end
@@ -151,7 +138,7 @@ describe RegisterUserEmailForm do
       end
 
       it 'saves the user email_language for a valid form' do
-        form = RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker)
+        form = RegisterUserEmailForm.new(analytics: analytics)
 
         response = form.submit(
           email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: '1',

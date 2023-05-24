@@ -81,7 +81,6 @@ class Profile < ApplicationRecord
       fraud_review_pending_at: nil,
       fraud_rejection_at: nil,
     )
-    track_fraud_review_adjudication(decision: 'pass')
     activate
   end
 
@@ -121,9 +120,6 @@ class Profile < ApplicationRecord
       active: false,
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
-    )
-    track_fraud_review_adjudication(
-      decision: notify_user ? 'manual_reject' : 'automatic_reject',
     )
     UserAlerts::AlertUserAboutAccountRejected.call(user) if notify_user
   end
@@ -183,37 +179,7 @@ class Profile < ApplicationRecord
     Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: nil,
-      request: nil,
-      user: user,
-      sp: initiating_service_provider,
-      cookie_device_uuid: nil,
-      sp_request_uri: nil,
-      enabled_for_session: initiating_service_provider&.irs_attempts_api_enabled?,
-      analytics: Analytics.new(
-        user: user,
-        request: nil,
-        sp: initiating_service_provider&.issuer,
-        session: {},
-        ahoy: nil,
-      ),
-    )
-  end
-
   private
-
-  def track_fraud_review_adjudication(decision:)
-    if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review
-      fraud_review_request = user.fraud_review_requests.last
-      irs_attempts_api_tracker.fraud_review_adjudicated(
-        decision: decision,
-        cached_irs_session_id: fraud_review_request&.irs_session_id,
-        cached_login_session_id: fraud_review_request&.login_session_id,
-      )
-    end
-  end
 
   def personal_key_generator
     @personal_key_generator ||= PersonalKeyGenerator.new(user)

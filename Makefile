@@ -243,14 +243,11 @@ analytics_events: public/api/_analytics-events.json ## Generates a JSON file tha
 lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
-lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
-
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \

@@ -57,17 +57,8 @@ describe Idv::Steps::UploadStep do
       end
     end
 
-    let(:irs_attempts_api_tracker) do
-      IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new
-    end
-
     subject(:step) do
       Idv::Steps::UploadStep.new(flow)
-    end
-
-    before do
-      allow(controller).to receive(:irs_attempts_api_tracker).
-        and_return(irs_attempts_api_tracker)
     end
 
     describe '#extra_view_variables' do

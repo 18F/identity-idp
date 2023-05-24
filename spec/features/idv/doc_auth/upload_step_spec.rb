@@ -6,7 +6,6 @@ feature 'doc auth upload step' do
   include ActionView::Helpers::DateHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
@@ -18,8 +17,6 @@ feature 'doc auth upload step' do
     allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
     complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-      and_return(fake_attempts_tracker)
   end
 
   context 'on a desktop device', js: true do
@@ -34,10 +31,6 @@ feature 'doc auth upload step' do
     end
 
     it 'proceeds to document capture when user chooses to upload from computer' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_document_upload_method_selected,
-      ).with({ upload_method: 'desktop' })
-
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       click_upload_from_computer
@@ -55,10 +48,6 @@ feature 'doc auth upload step' do
     end
 
     it 'proceeds to link sent page when user chooses to use phone' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_document_upload_method_selected,
-      ).with({ upload_method: 'mobile' })
-
       click_send_link
 
       expect(page).to have_current_path(idv_link_sent_path)
@@ -69,14 +58,6 @@ feature 'doc auth upload step' do
     end
 
     it 'proceeds to the next page with valid info' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_phone_upload_link_sent,
-      ).with(
-        success: true,
-        phone_number: '+1 415-555-0199',
-        failure_reason: nil,
-      )
-
       expect(Telephony).to receive(:send_doc_auth_link).
         with(hash_including(to: '+1 415-555-0199')).
         and_call_original
@@ -111,11 +92,6 @@ feature 'doc auth upload step' do
     end
 
     it 'does not proceed if Telephony raises an error' do
-      expect(fake_attempts_tracker).to receive(:idv_phone_upload_link_sent).with(
-        success: false,
-        phone_number: '+1 225-555-1000',
-        failure_reason: { telephony: ['TelephonyError'] },
-      )
       fill_in :doc_auth_phone, with: '225-555-1000'
       click_send_link
 
@@ -155,10 +131,6 @@ feature 'doc auth upload step' do
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
         and_return(idv_send_link_max_attempts)
-
-      expect(fake_attempts_tracker).to receive(
-        :idv_phone_send_link_rate_limited,
-      ).with({ phone_number: '+1 415-555-0199' })
 
       freeze_time do
         (idv_send_link_max_attempts - 1).times do

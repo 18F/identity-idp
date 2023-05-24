@@ -15,7 +15,6 @@ describe 'sign_up/registrations/new.html.erb' do
     allow(view).to receive(:current_user).and_return(nil)
     @register_user_email_form = RegisterUserEmailForm.new(
       analytics: FakeAnalytics.new,
-      attempts_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
     )
     @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
     view_context = ActionController::Base.new.view_context

@@ -12,7 +12,6 @@ describe Idv::Steps::InPerson::SsnStep do
       app_id: '123',
     )
   end
-  let(:attempts_api) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:threatmetrix_session_id) { nil }
   let(:controller) do
     instance_double(
@@ -21,7 +20,6 @@ describe Idv::Steps::InPerson::SsnStep do
       params: params,
       current_user: user,
       analytics: FakeAnalytics.new,
-      irs_attempts_api_tracker: attempts_api,
     )
   end
 

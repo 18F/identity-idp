@@ -5,7 +5,6 @@ feature 'doc auth verify_info step', :js do
   include DocAuthHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   # values from Idp::Constants::MOCK_IDV_APPLICANT
   let(:fake_pii_details) do
@@ -23,8 +22,6 @@ feature 'doc auth verify_info step', :js do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-      and_return(fake_attempts_tracker)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
   end
@@ -97,12 +94,6 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'proceeds to the next page upon confirmation' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: true,
-      failure_reason: nil,
-      **fake_pii_details,
-      ssn: DocAuthHelper::GOOD_SSN,
-    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
     click_idv_continue
@@ -120,12 +111,6 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'does not proceed to the next page if resolution fails' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: false,
-      failure_reason: { ssn: ['Unverified SSN.'] },
-      **fake_pii_details,
-      ssn: DocAuthHelper::SSN_THAT_FAILS_RESOLUTION,
-    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -139,12 +124,6 @@ feature 'doc auth verify_info step', :js do
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: false,
-      failure_reason: nil,
-      **fake_pii_details,
-      ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
-    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
@@ -178,9 +157,6 @@ feature 'doc auth verify_info step', :js do
 
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
     it 'throttles resolution and continues when it expires' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'single-session' })
-
       (max_resolution_attempts - 2).times do
         click_idv_continue
         expect(page).to have_current_path(idv_session_errors_warning_path)
@@ -230,9 +206,6 @@ feature 'doc auth verify_info step', :js do
 
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
-
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'multi-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
@@ -370,12 +343,6 @@ feature 'doc auth verify_info step', :js do
     end
 
     it 'tracks attempts tracker event with failure reason' do
-      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-        success: false,
-        failure_reason: { idv_verification: [:timeout] },
-        **fake_pii_details,
-        ssn: DocAuthHelper::GOOD_SSN,
-      )
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
 
@@ -408,7 +375,6 @@ feature 'doc auth verify_info step', :js do
 
   context 'phone vendor outage' do
     let(:fake_analytics) { FakeAnalytics.new }
-    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
     # values from Idp::Constants::MOCK_IDV_APPLICANT
     let(:fake_pii_details) do
@@ -426,8 +392,6 @@ feature 'doc auth verify_info step', :js do
 
     before do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-        and_return(fake_attempts_tracker)
       allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_and_2fa_user
