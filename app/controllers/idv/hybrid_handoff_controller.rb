@@ -69,8 +69,6 @@ module Idv
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
       )
-
-      telephony_form_response
     end
 
     def send_link
