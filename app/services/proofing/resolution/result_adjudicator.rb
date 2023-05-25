@@ -19,7 +19,7 @@ module Proofing
         @double_address_verification = double_address_verification
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
-        @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
+        @same_address_as_id = same_address_as_id
       end
 
       def adjudicated_result
@@ -88,7 +88,7 @@ module Proofing
 
       def resolution_result_and_reason
         if !residential_resolution_result.success? &&
-           same_address_as_id == 'false' && double_address_verification == true
+           same_address_as_id.to_s == 'false' && double_address_verification == true
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]

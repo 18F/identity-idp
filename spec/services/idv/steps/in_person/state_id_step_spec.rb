@@ -88,7 +88,6 @@ describe Idv::Steps::InPerson::StateIdStep do
       let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
       let(:capture_secondary_id_enabled) { true }
       let(:dob) { InPersonHelper::GOOD_DOB }
-      # let(:same_address_as_id) { 'false' } # value on submission
       # residential
       let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
       let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -112,7 +111,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false', # value on submission
+            same_address_as_id: false, # value on submission
             address1:,
             address2:,
             city:,
@@ -132,7 +131,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           end
 
           # User picks "Yes, I live at the address on my state-issued ID" on state ID
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission
+          pii_from_user[:same_address_as_id] = true # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
@@ -177,7 +176,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'true', # value on submission
+            same_address_as_id: true, # value on submission
             address1:, # address1 and identity_doc_address1 is innitially different
             address2:,
             city:,
@@ -213,7 +212,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false',
+            same_address_as_id: false,
             address1:,
             address2:,
             city:,
@@ -232,7 +231,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           end
 
           # User picks "No, I live at a different address" on state ID
-          pii_from_user[:same_address_as_id] = 'false' # on form before submission
+          pii_from_user[:same_address_as_id] = false # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
@@ -276,7 +275,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false',
+            same_address_as_id: false,
             address1:,
             address2:,
             city:,
@@ -295,7 +294,7 @@ describe Idv::Steps::InPerson::StateIdStep do
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
 
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission
+          pii_from_user[:same_address_as_id] = true # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
@@ -404,7 +403,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:identity_doc_address1) { '123 Sesame Street' }
     let(:identity_doc_address2) { 'Apt. #C' }
     let(:identity_doc_zipcode) { '90001' }
-    let(:same_address_as_id) { 'true' }
+    let(:same_address_as_id) { true }
     let(:submitted_values) do
       {
         dob: dob,
@@ -445,7 +444,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     end
 
     context 'different address from id' do
-      let(:same_address_as_id) { 'false' }
+      let(:same_address_as_id) { false }
       it 'does not add state id values to address values in pii' do
         step.call
 

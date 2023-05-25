@@ -38,12 +38,21 @@ module Idv
       def consume_params(params)
         params.each do |key, value|
           raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-          send("#{key}=", value)
+
+          if key == 'same_address_as_id'
+            send("#{key}=", infer_boolean_type(value))
+          else
+            send("#{key}=", value)
+          end
         end
       end
 
       def raise_invalid_address_parameter_error(key)
         raise ArgumentError, "#{key} is an invalid address attribute"
+      end
+
+      def infer_boolean_type(value)
+        ActiveRecord::Type::Boolean.new.cast(value)
       end
     end
   end

@@ -201,7 +201,7 @@ module Idv
 
         double_address_verification =
           current_user.establishing_in_person_enrollment&.capture_secondary_id_enabled &&
-          flow_session[:pii_from_user][:same_address_as_id] == 'false'
+          flow_session[:pii_from_user][:same_address_as_id].to_s == 'false'
 
         idv_agent.proof_resolution(
           document_capture_session,

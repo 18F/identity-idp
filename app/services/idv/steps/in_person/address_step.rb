@@ -23,7 +23,7 @@ module Idv
 
           if capture_secondary_id_enabled?
             attrs = attrs.difference([:same_address_as_id])
-            flow_session[:pii_from_user][:same_address_as_id] = 'false' if updating_address?
+            flow_session[:pii_from_user][:same_address_as_id] = false if updating_address?
           end
 
           attrs.each do |attr|

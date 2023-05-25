@@ -143,7 +143,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
           result = subject
 
-          expect(result.same_address_as_id).to eq('true')
+          expect(result.same_address_as_id).to eq(true)
           expect(result.double_address_verification).to eq(true)
           expect(result.resolution_result).to eq(result.residential_resolution_result)
         end
@@ -281,7 +281,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               "state_id_jurisdiction": "AZ",
               "identity_doc_address_state": "CA",
               "state_id_number": "AZ333222111",
-              "same_address_as_id": "false",
+              "same_address_as_id": false,
               "state": "MI",
               "zipcode": "48880",
               "city": "Pontiac",
@@ -422,7 +422,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when double address verification is not enabled' do
       let(:double_address_verification) { false }
       let(:applicant_pii) do
-        Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: 'true')
+        Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: true)
       end
       let(:residential_instant_verify_proof) do
         instance_double(Proofing::Resolution::Result)

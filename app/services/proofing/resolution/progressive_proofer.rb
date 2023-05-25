@@ -127,7 +127,7 @@ module Proofing
       def proof_id_address_with_lexis_nexis_if_needed(applicant_pii:, timer:,
                                                       residential_instant_verify_result:,
                                                       double_address_verification:)
-        if applicant_pii[:same_address_as_id] == 'true' && double_address_verification == true
+        if applicant_pii[:same_address_as_id].to_s == 'true' && double_address_verification == true
           return residential_instant_verify_result
         end
         return resolution_cannot_pass unless residential_instant_verify_result.success?
@@ -141,7 +141,7 @@ module Proofing
                                             should_proof_state_id:, instant_verify_result:,
                                             residential_instant_verify_result:)
         return false unless should_proof_state_id
-        if double_address_verification == false || same_address_as_id == 'true'
+        if double_address_verification == false || same_address_as_id.to_s == 'true'
           user_can_pass_after_state_id_check?(instant_verify_result)
         else
           residential_instant_verify_result.success?

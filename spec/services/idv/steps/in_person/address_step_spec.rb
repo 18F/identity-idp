@@ -44,7 +44,7 @@ describe Idv::Steps::InPerson::AddressStep do
       let(:city) { 'GREAT FALLS' }
       let(:zipcode) { '59010' }
       let(:state) { 'Montana' }
-      let(:same_address_as_id) { 'false' }
+      let(:same_address_as_id) { false }
       let(:submitted_values) do
         {
           address1:,
@@ -91,10 +91,10 @@ describe Idv::Steps::InPerson::AddressStep do
 
         context 'when initially entering the residential address' do
           it 'leaves the "same_address_as_id" attr as false' do
-            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            flow.flow_session[:pii_from_user][:same_address_as_id] = false
             step.call
 
-            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq(false)
           end
         end
 
@@ -105,23 +105,23 @@ describe Idv::Steps::InPerson::AddressStep do
 
           context 'user previously selected that the residential address matched state ID' do
             before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+              flow.flow_session[:pii_from_user][:same_address_as_id] = true
             end
 
             it 'sets the "same_address_as_id" in the flow session to false' do
               step.call
-              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq(false)
             end
           end
 
           context 'user previously selected that the residential address did not match state ID' do
             before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+              flow.flow_session[:pii_from_user][:same_address_as_id] = false
             end
 
             it 'leaves the "same_address_as_id" in the flow session as false' do
               step.call
-              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq(false)
             end
           end
         end

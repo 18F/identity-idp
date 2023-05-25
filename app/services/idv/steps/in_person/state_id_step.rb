@@ -25,13 +25,13 @@ module Idv
           pii_from_user[:dob] = formatted_dob if formatted_dob
 
           if capture_secondary_id_enabled?
-            if pii_from_user[:same_address_as_id] == 'true'
+            if pii_from_user[:same_address_as_id].to_s == 'true'
               copy_state_id_address_to_residential_address(pii_from_user)
               mark_step_complete(:address)
             end
 
-            if initial_state_of_same_address_as_id == 'true' &&
-               pii_from_user[:same_address_as_id] == 'false'
+            if initial_state_of_same_address_as_id.to_s == 'true' &&
+               pii_from_user[:same_address_as_id].to_s == 'false'
               clear_residential_address(pii_from_user)
               mark_step_incomplete(:address)
            end
