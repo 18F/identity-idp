@@ -97,7 +97,7 @@ feature 'doc auth verify step', :js do
     it 'stays in FSM on hybrid flow' do
       complete_doc_auth_steps_before_link_sent_step
       visit(idv_address_url)
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      expect(page).to have_current_path(idv_link_sent_path)
     end
   end
 end

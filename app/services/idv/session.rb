@@ -8,6 +8,7 @@ module Idv
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
+      gpo_code_verified
       pii
       previous_phone_step_params
       profile_confirmation
@@ -42,10 +43,6 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def proofing_started?
-      applicant.present? && resolution_successful
-    end
-
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
@@ -74,11 +71,7 @@ module Idv
     end
 
     def deactivation_reason
-      if gpo_verification_needed?
-        :gpo_verification_pending
-      elsif in_person_enrollment?
-        :in_person_verification_pending
-      end
+      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?
@@ -151,6 +144,14 @@ module Idv
 
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
+    def address_confirmed?
+      gpo_code_verified == true
+    end
+
+    def address_confirmed!
+      session[:gpo_code_verified] = true
     end
 
     def invalidate_steps_after_ssn!

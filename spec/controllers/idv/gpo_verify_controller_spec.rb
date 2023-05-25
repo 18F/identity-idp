@@ -30,7 +30,7 @@ RSpec.describe Idv::GpoVerifyController do
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
-    allow(pending_user).to receive(:pending_profile_requires_verification?).
+    allow(pending_user).to receive(:gpo_verification_pending_profile?).
       and_return(has_pending_profile)
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).

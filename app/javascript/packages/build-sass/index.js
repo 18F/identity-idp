@@ -31,7 +31,7 @@ export async function buildFile(file, options) {
   const sassResult = sass.compile(file, {
     style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
-    loadPaths: ['node_modules', ...loadPaths],
+    loadPaths: [...loadPaths, 'node_modules'],
     quietDeps: true,
   });
 

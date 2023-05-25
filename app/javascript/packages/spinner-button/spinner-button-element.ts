@@ -42,7 +42,7 @@ export class SpinnerButtonElement extends HTMLElement {
   }
 
   get button(): HTMLElement {
-    return this.querySelector('a,button:not([type]),[type="submit"],[type="button"]')!;
+    return this.querySelector('.usa-button')!;
   }
 
   get actionMessage(): HTMLElement {
@@ -64,6 +64,7 @@ export class SpinnerButtonElement extends HTMLElement {
 
   toggleSpinner(isVisible: boolean) {
     this.classList.toggle('spinner-button--spinner-active', isVisible);
+    this.button.classList.toggle('usa-button--active', isVisible);
 
     if (isVisible) {
       this.button.setAttribute('disabled', '');

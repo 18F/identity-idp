@@ -87,7 +87,9 @@ module Users
 
     def process_valid_code
       create_events
-      mark_user_as_fully_authenticated
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
+      )
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
@@ -115,11 +117,6 @@ module Users
       Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
     end
 
     def process_invalid_code

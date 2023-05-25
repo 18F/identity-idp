@@ -158,12 +158,17 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      mark_user_as_fully_authenticated(form)
       handle_remember_device
       if form.platform_authenticator?
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
       else
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+        )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
         flash[:success] = t('notices.webauthn_configured')
       end
@@ -190,17 +195,6 @@ module Users
         flash[:error] = t('errors.webauthn_setup.general_error')
       end
       render :new
-    end
-
-    def mark_user_as_fully_authenticated(form)
-      if form.platform_authenticator?
-        user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
-      else
-        user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
-      end
-
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
     end
 
     def new_params

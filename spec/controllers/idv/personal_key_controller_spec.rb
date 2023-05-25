@@ -7,7 +7,6 @@ describe Idv::PersonalKeyController do
   def stub_idv_session
     stub_sign_in(user)
     idv_session.applicant = applicant
-    idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
@@ -48,7 +47,7 @@ describe Idv::PersonalKeyController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_vendor_session_started,
+        :confirm_phone_or_address_confirmed,
       )
     end
 
@@ -141,10 +140,10 @@ describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to the come back later url' do
+      it 'redirects to doc auth url' do
         get :show
 
-        expect(response).to redirect_to idv_come_back_later_url
+        expect(response).to redirect_to idv_doc_auth_url
       end
     end
   end
@@ -202,10 +201,10 @@ describe Idv::PersonalKeyController do
       end
 
       context 'with gpo personal key after verification' do
-        it 'redirects to the come back later url' do
+        it 'redirects to doc auth url' do
           patch :update
 
-          expect(response).to redirect_to idv_come_back_later_url
+          expect(response).to redirect_to idv_doc_auth_url
         end
       end
     end

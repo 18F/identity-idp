@@ -5,7 +5,6 @@ module Idv
         welcome: Idv::Steps::WelcomeStep,
         agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
-        link_sent: Idv::Steps::LinkSentStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [

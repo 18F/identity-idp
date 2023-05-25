@@ -163,15 +163,14 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     if response_message == IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
-      enrollment_outcomes[:enrollments_in_progress] += 1
-      analytics(user: enrollment.user).
-        idv_in_person_usps_proofing_results_job_enrollment_incomplete(
-          **enrollment_analytics_attributes(enrollment, complete: false),
-          response_message: response_message,
-        )
-      enrollment.update(status_check_completed_at: Time.zone.now)
+      handle_incomplete_status_update(enrollment, response_message)
     elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
-      handle_expired_status_update(enrollment, err.response, response_message)
+      # If we're blocking expirations, treat this enrollment as incomplete
+      if IdentityConfig.store.in_person_stop_expiring_enrollments.blank?
+        handle_expired_status_update(enrollment, err.response, response_message)
+      else
+        handle_incomplete_status_update(enrollment, response_message)
+      end
     elsif response_message == IPP_INVALID_ENROLLMENT_CODE_MESSAGE % enrollment.enrollment_code
       handle_unexpected_response(enrollment, response_message, reason: 'Invalid enrollment code')
     elsif response_message == IPP_INVALID_APPLICANT_MESSAGE % enrollment.unique_id
@@ -274,6 +273,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
+  def handle_incomplete_status_update(enrollment, response_message)
+    enrollment_outcomes[:enrollments_in_progress] += 1
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+        **enrollment_analytics_attributes(enrollment, complete: false),
+        response_message: response_message,
+      )
+    enrollment.update(status_check_completed_at: Time.zone.now)
+  end
+
   def handle_expired_status_update(enrollment, response, response_message)
     enrollment_outcomes[:enrollments_expired] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
@@ -370,7 +379,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       passed: true,
       reason: 'Successful status update',
     )
-    enrollment.profile.activate
+    enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
       proofed_at: proofed_at,

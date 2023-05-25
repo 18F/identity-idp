@@ -50,7 +50,7 @@ module TwoFactorAuthentication
         presented: true,
       )
 
-      handle_valid_otp_for_authentication_context(
+      handle_valid_verification_for_authentication_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
       )
       redirect_to after_otp_verification_confirmation_url

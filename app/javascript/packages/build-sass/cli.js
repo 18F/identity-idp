@@ -28,7 +28,7 @@ const { values: flags, positionals: fileArgs } = parseArgs({
 
 const isWatching = flags.watch;
 const outDir = flags['out-dir'];
-const loadPaths = [...getDefaultLoadPaths(), ...flags['load-path']];
+const loadPaths = [...flags['load-path'], ...getDefaultLoadPaths()];
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, loadPaths, optimize: isProduction };

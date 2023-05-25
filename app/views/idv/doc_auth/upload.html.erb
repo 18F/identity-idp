@@ -30,7 +30,7 @@
     <%= simple_form_for(
           idv_phone_form,
           as: :doc_auth,
-          url: url_for(type: :mobile, combined: true),
+          url: url_for(type: :mobile),
           method: 'PUT',
           html: { autocomplete: 'off' },
         ) do |f| %>

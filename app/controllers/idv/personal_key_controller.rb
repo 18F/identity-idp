@@ -7,9 +7,8 @@ module Idv
 
     before_action :apply_secure_headers_override
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_vendor_session_started
+    before_action :confirm_phone_or_address_confirmed
     before_action :confirm_profile_has_been_created
-    before_action :confirm_user_not_pending_gpo_verificaiton
 
     def show
       analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
@@ -50,11 +49,6 @@ module Idv
 
     def confirm_profile_has_been_created
       redirect_to account_url if profile.blank?
-    end
-
-    def confirm_user_not_pending_gpo_verificaiton
-      return unless current_user.pending_profile_requires_verification?
-      redirect_to idv_come_back_later_url
     end
 
     def add_proofing_component

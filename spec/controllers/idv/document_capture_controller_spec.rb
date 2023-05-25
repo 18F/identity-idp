@@ -85,7 +85,7 @@ describe Idv::DocumentCaptureController do
 
     context 'upload step is not complete' do
       it 'redirects to idv_doc_auth_url' do
-        flow_session['Idv::Steps::UploadStep'] = nil
+        flow_session.delete(:flow_path)
 
         get :show
 

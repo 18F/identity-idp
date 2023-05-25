@@ -108,9 +108,9 @@ module TwoFactorAuthenticatableMethods
 
   def handle_valid_otp_for_context(auth_method:)
     if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_otp_for_authentication_context(auth_method: auth_method)
+      handle_valid_verification_for_authentication_context(auth_method: auth_method)
     elsif UserSessionContext.confirmation_context?(context)
-      handle_valid_verification_for_confirmation_context
+      handle_valid_verification_for_confirmation_context(auth_method: auth_method)
     end
   end
 
@@ -168,21 +168,13 @@ module TwoFactorAuthenticatableMethods
     current_user.increment_second_factor_attempts_count!
   end
 
-  def handle_valid_verification_for_confirmation_context
-    user_session[:authn_at] = Time.zone.now
-    track_mfa_method_added
-    @next_mfa_setup_path = next_setup_path
+  def handle_valid_verification_for_confirmation_context(auth_method:)
+    user_session[:auth_method] = auth_method
+    mark_user_session_authenticated(:valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end
 
-  def track_mfa_method_added
-    mfa_user = MfaContext.new(current_user)
-    mfa_count = mfa_user.enabled_mfa_methods_count
-    analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
-    Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
-  end
-
-  def handle_valid_otp_for_authentication_context(auth_method:)
+  def handle_valid_verification_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
     create_user_event(:sign_in_after_2fa)
