@@ -16,8 +16,8 @@ module Telephony
       sms = PinpointSmsConfiguration.new(region: 'us-west-2')
       yield sms
 
-      shortcode_country_codes = Set.new(sms.country_code_shortcodes&.keys&.map(&:to_s) || [])
-      longcode_country_codes = Set.new(sms.country_code_longcode_pool&.keys&.map(&:to_s) || [])
+      shortcode_country_codes = sms.country_code_shortcodes&.keys || []
+      longcode_country_codes = sms.country_code_longcode_pool&.keys || []
       if shortcode_country_codes.intersect?(longcode_country_codes)
         raise 'cannot configure a country code for both longcodes and a shortcode'
       end
