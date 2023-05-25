@@ -22,6 +22,7 @@ Telephony.config do |c|
     c.pinpoint.add_sms_config do |sms|
       sms.application_id = sms_json_config['application_id']
       sms.region = sms_json_config['region']
+      sms.country_code_shortcodes = sms_json_config['country_code_shortcodes'] || {}
       sms.shortcode = sms_json_config['shortcode']
       sms.country_code_longcode_pool = sms_json_config['country_code_longcode_pool'] || {}
       sms.credential_role_arn = sms_json_config['credential_role_arn']

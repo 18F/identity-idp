@@ -15,6 +15,13 @@ module Telephony
       raise 'missing sms configuration block' unless block_given?
       sms = PinpointSmsConfiguration.new(region: 'us-west-2')
       yield sms
+
+      shortcode_country_codes = Set.new(sms.country_code_shortcodes&.keys&.map(&:to_s) || [])
+      longcode_country_codes = Set.new(sms.country_code_longcode_pool&.keys&.map(&:to_s) || [])
+      if shortcode_country_codes.intersect?(longcode_country_codes)
+        raise 'cannot configure a country code for both longcodes and a shortcode'
+      end
+
       sms_configs << sms
       sms
     end
@@ -42,6 +49,7 @@ module Telephony
   PinpointSmsConfiguration = Struct.new(
     :application_id,
     :shortcode,
+    :country_code_shortcodes,
     :country_code_longcode_pool,
     *PINPOINT_CONFIGURATION_NAMES,
     keyword_init: true,
