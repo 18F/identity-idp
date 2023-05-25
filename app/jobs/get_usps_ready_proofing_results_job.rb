@@ -1,13 +1,9 @@
 class GetUspsReadyProofingResultsJob < GetUspsProofingResultsJob
-  MILLISECONDS_PER_SECOND = 1000.0 # Specify float value to use floating point math
 
   queue_as :long_running
 
   def perform(_now)
-    unless IdentityConfig.store.in_person_proofing_enabled &&
-           IdentityConfig.store.in_person_enrollments_ready_job_enabled
-      return true
-    end
+    return true unless ipp_enabled? && ipp_ready_job_enabled?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
@@ -33,19 +29,10 @@ class GetUspsReadyProofingResultsJob < GetUspsProofingResultsJob
 
     check_enrollments(enrollments)
 
-    percent_enrollments_errored = 0
-    if enrollment_outcomes[:enrollments_checked] > 0
-      percent_enrollments_errored =
-        (enrollment_outcomes[:enrollments_errored].fdiv(
-          enrollment_outcomes[:enrollments_checked],
-        ) * 100).round(2)
-    end
-
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-      # Calculate % of errored enrollments
-      percent_enrollments_errored:,
+      percent_enrollments_errored: percent_errored(),
       job_name: self.class.name,
     )
 
