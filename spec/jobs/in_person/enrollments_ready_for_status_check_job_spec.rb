@@ -31,6 +31,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
 
     context 'in person proofing disabled' do
       let(:in_person_proofing_enabled) { false }
+      let(:in_person_enrollments_ready_job_enabled) { true }
       it 'returns true without doing anything' do
         expect(analytics).not_to receive(
           :idv_in_person_proofing_enrollments_ready_for_status_check_job_started,
@@ -45,6 +46,7 @@ RSpec.describe InPerson::EnrollmentsReadyForStatusCheckJob do
     end
 
     context 'job disabled' do
+      let(:in_person_proofing_enabled) { true }
       let(:in_person_enrollments_ready_job_enabled) { false }
       it 'returns true without doing anything' do
         expect(analytics).not_to receive(
