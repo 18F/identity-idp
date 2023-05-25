@@ -7,8 +7,8 @@ module InPerson
     queue_as :low
 
     def perform(_now)
-      return true unless IdentityConfig.store.in_person_proofing_enabled &&
-                         IdentityConfig.store.in_person_enrollments_ready_job_enabled
+      return true if IdentityConfig.store.in_person_proofing_enabled.blank? &&
+                     IdentityConfig.store.in_person_enrollments_ready_job_enabled.blank?
 
       begin
         analytics.idv_in_person_proofing_enrollments_ready_for_status_check_job_started
