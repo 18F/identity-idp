@@ -5,13 +5,8 @@ Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path
 Rails.application.config.assets.paths.push(
-  'node_modules',
+  'node_modules/intl-tel-input/build/img',
+  'node_modules/intl-tel-input/build/css',
+  'node_modules/@18f/identity-design-system/dist/assets/img',
   'node_modules/@18f/identity-design-system/dist/assets/fonts',
 )
-
-# Fix sassc sometimes segfaulting
-Rails.application.config.assets.configure do |env|
-  env.export_concurrent = false
-end
-
-Sprockets.export_concurrent = Rails.env.test?
