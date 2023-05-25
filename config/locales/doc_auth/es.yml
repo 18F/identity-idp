@@ -39,17 +39,17 @@ es:
         id_not_recognized: No pudimos reconocer su documento de identidad. Puede estar
           desgastado o dañado, o ser un tipo de documento de identidad que no
           reconocemos. Intente tomar nuevas fotografías.
-        id_not_verified: No pudimos verificar su documento de identidad. Puede que se
-          haya movido cuando tomó la foto. Intente tomar nuevas fotos.
+        id_not_verified: Puede que se haya movido cuando tomó la foto. Intente tomar
+          nuevas fotos.
         issue_date_checks: No pudimos leer la fecha de emisión en su documento de
           identidad. Intente tomar nuevas fotos.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
         sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar
           nuevas fotos.
-        visible_color_check: No pudimos verificar su documento de identidad. Puede que
-          se haya movido cuando tomó la foto, o la foto es demasiado oscura.
-          Intente tomar nuevas fotografías con una luz más brillante.
+        visible_color_check: Puede que se haya movido cuando tomó la foto, o la foto es
+          demasiado oscura. Intente tomar nuevas fotografías con una luz más
+          brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
       barcode_attention:

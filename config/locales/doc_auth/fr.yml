@@ -41,19 +41,17 @@ fr:
           est peut-être usée ou endommagée, ou bien il s’agit d’un type de carte
           d’identité que nous ne reconnaissons pas. Essayez de prendre de
           nouvelles photos.
-        id_not_verified: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut
-          qu’elle ait bougé lorsque vous avez pris la photo. Essayez de prendre
-          de nouvelles photos.
+        id_not_verified: Il se peut qu’elle ait bougé lorsque vous avez pris la photo.
+          Essayez de prendre de nouvelles photos.
         issue_date_checks: Nous n’avons pas pu lire la date d’émission sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
         ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de
           contrôle. Essayez de prendre de nouvelles photos.
         sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez
           de prendre de nouvelles photos.
-        visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Elle a
-          peut-être bougé lorsque vous avez pris la photo, ou la photo est trop
-          sombre. Essayez de prendre de nouvelles photos avec un éclairage plus
-          fort.
+        visible_color_check: Elle a peut-être bougé lorsque vous avez pris la photo, ou
+          la photo est trop sombre. Essayez de prendre de nouvelles photos avec
+          un éclairage plus fort.
         visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
       barcode_attention:
