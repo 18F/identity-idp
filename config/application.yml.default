@@ -340,6 +340,7 @@ verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
+version_headers_enabled: false
 use_dashboard_service_providers: false
 use_clean_edit_password_url: true
 use_kms: false
