@@ -35,7 +35,6 @@ describe Idv::HybridHandoffController do
     let(:analytics_args) do
       { flow_path: 'standard',
         step: 'upload',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
@@ -79,7 +78,6 @@ describe Idv::HybridHandoffController do
         destination: :link_sent,
         flow_path: 'hybrid',
         step: 'upload',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
         analytics_id: 'Doc Auth',
         irs_reproofing: false,
         skip_upload_step: false }
