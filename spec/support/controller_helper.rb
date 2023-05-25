@@ -4,14 +4,13 @@ module ControllerHelper
   def sign_in_as_user(user = create(:user, :fully_registered, password: VALID_PASSWORD))
     @request.env['devise.mapping'] = Devise.mappings[:user]
     sign_in user
+    controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
     user
   end
 
   def sign_in_before_2fa(user = create(:user, :fully_registered))
     sign_in_as_user(user)
     controller.current_user.create_direct_otp
-    allow(controller).to receive(:user_fully_authenticated?).and_return(false)
-    allow(controller).to receive(:signed_in_url).and_return(account_url)
   end
 
   def stub_sign_in(user = build(:user, password: VALID_PASSWORD))
@@ -32,6 +31,7 @@ module ControllerHelper
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
     allow(controller).to receive(:signed_in_url).and_return(account_url)
+    controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
   end
 
   def stub_idv_steps_before_verify_step(user)
