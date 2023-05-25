@@ -25,6 +25,7 @@ locals:
             locale == I18n.locale ?
               t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
               t("i18n.locale.#{locale}"),
+            lang: locale,
           ),
           locale,
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
