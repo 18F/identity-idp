@@ -103,9 +103,9 @@ module TwoFactorAuthentication
     def analytics_properties
       auth_method = if form&.webauthn_configuration&.platform_authenticator ||
                        params[:platform].to_s == 'true'
-                      'webauthn_platform'
+                      TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
                     else
-                      'webauthn'
+                      TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
                     end
       {
         context: context,
