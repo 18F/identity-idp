@@ -12,5 +12,9 @@
 .usa-tooltip {
   @include at-media-max('mobile-lg') {
     display: block;
+
+    .clipboard-button--unstyled & {
+      display: inline;
+    }
   }
 }

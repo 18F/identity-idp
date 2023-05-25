@@ -37,4 +37,18 @@ class ButtonComponent < BaseComponent
   def icon_content
     render IconComponent.new(icon:) if icon
   end
+
+  def content
+    original_content = super
+    if original_content.present? && icon.present?
+      # Content templates may include leading whitespace, which interferes with the layout when an
+      # icon is present. This can be solved in CSS using Flexbox, but doing so for all buttons may
+      # have unintended consequences.
+      trimmed_content = original_content.lstrip
+      trimmed_content = sanitize(trimmed_content) if original_content.html_safe?
+      trimmed_content
+    else
+      original_content
+    end
+  end
 end

@@ -24,7 +24,6 @@ describe Idv::Steps::UploadStep do
       ActionController::Parameters.new(
         {
           doc_auth: { phone: '(201) 555-1212' },
-          combined: true,
         },
       )
     end
