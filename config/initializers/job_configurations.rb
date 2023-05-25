@@ -104,6 +104,12 @@ else
         class: 'HeartbeatJob',
         cron: cron_5m,
       },
+      # Queue usps in-person visit notifications job to GoodJob
+      in_person_enrollments_ready_for_status_check_job: {
+        class: 'InPerson::EnrollmentsReadyForStatusCheckJob',
+        cron: IdentityConfig.store.in_person_enrollments_ready_job_cron,
+        args: -> { [Time.zone.now] },
+      },
       # Queue usps proofing job to GoodJob
       get_usps_proofing_results_job: {
         class: 'GetUspsProofingResultsJob',
