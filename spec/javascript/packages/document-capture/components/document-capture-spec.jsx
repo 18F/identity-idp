@@ -12,9 +12,7 @@ import {
   DeviceContext,
   InPersonContext,
 } from '@18f/identity-document-capture';
-import DocumentCapture, {
-  except,
-} from '@18f/identity-document-capture/components/document-capture';
+import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
@@ -43,16 +41,6 @@ describe('document-capture/components/document-capture', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
-  });
-
-  describe('except', () => {
-    it('returns a new object without the specified keys', () => {
-      const original = { a: 1, b: 2, c: 3, d: 4 };
-      const result = except(original, 'b', 'c');
-
-      expect(result).to.not.equal(original);
-      expect(result).to.deep.equal({ a: 1, d: 4 });
-    });
   });
 
   it('renders the form steps', () => {
