@@ -42,11 +42,11 @@ module TwoFactorAuthentication
     def handle_valid_webauthn
       if form.webauthn_configuration.platform_authenticator
         handle_valid_verification_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
       else
         handle_valid_verification_for_authentication_context(
-          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
         )
       end
       handle_remember_device
