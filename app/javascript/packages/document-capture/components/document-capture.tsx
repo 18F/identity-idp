@@ -41,17 +41,12 @@ export const except = <T extends Record<string, any>>(object: T, ...keys: string
 
 interface DocumentCaptureProps {
   /**
-   * Whether submission should poll for async response.
-   */
-  isAsyncForm?: boolean;
-
-  /**
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
 }
 
-function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: DocumentCaptureProps) {
+function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
@@ -81,10 +76,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
+        ...formValues,
         flow_path: flowPath,
       },
-    [isAsyncForm, formValues, flowPath],
+    [formValues, flowPath],
   );
 
   let initialActiveErrors;

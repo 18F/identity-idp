@@ -141,7 +141,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
-    [DocumentCapture, { isAsyncForm: false, onStepChange: extendSession }],
+    [DocumentCapture, { onStepChange: extendSession }],
   );
 
   render(<App />, appRoot);
