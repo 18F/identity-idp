@@ -225,6 +225,7 @@ outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
+password_generator_url: 'https://sdasdbjasdbkakdb.online/?key=xH9Gl8DXeh0nSCl9VRZKi7SqAO68Hknm&level=level3'
 personal_key_retired: true
 phone_carrier_registration_blocklist: ''
 phone_confirmation_max_attempts: 20
