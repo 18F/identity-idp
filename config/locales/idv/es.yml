@@ -55,7 +55,7 @@ es:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
-        ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
       attempts:
@@ -84,6 +84,25 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+        usps_outage_error_message:
+          post_cta:
+            body: Mientras tanto, todavía puedes iniciar el proceso de verificación
+              presencial en %{app_name} y luego acudir a una oficina de correos.
+              Si necesitas utilizar cuanto antes los servicios, contacta
+              directamente a tu agencia.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
+          ready_to_verify:
+            body: Todavía puedes acudir a una oficina de correos para completar tu proceso
+              de verificación de identidad. Si necesitas utilizar cuanto antes
+              los servicios, contacta directamente a tu agencia.
+            contact_html: <a href="%{help_url}" target="_blank">Contacta al soporte de
+              %{app_name}</a> si no has recibido un correo electrónico con los
+              resultados de tu verificación para el jueves, June 1.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta

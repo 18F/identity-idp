@@ -11,10 +11,6 @@ module Idv
           redirect_to idv_document_capture_url
         else
           mark_step_incomplete(:upload)
-
-          if !IdentityConfig.store.doc_auth_link_sent_controller_enabled
-            mark_step_incomplete(:link_sent)
-          end
         end
       end
     end

@@ -196,10 +196,21 @@ RSpec.describe User do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     end
     let(:pending_enrollment_profile) do
-      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
+
     let(:establishing_enrollment_profile) do
-      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
 
     let!(:failed_enrollment) do
@@ -985,22 +996,6 @@ RSpec.describe User do
       )
 
       expect(user.active_identity_for(sp)).to eq user.last_identity
-    end
-  end
-
-  describe '#pending_profile_requires_verification?' do
-    it 'returns false when no pending profile exists' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return(nil)
-
-      expect(user.pending_profile_requires_verification?).to eq false
-    end
-
-    it 'returns true when pending profile exists and identity is not verified' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return('profile')
-
-      expect(user.pending_profile_requires_verification?).to eq true
     end
   end
 

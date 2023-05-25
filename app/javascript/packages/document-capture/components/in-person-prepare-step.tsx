@@ -9,13 +9,15 @@ import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
+import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonURL, inPersonCtaVariantActive, inPersonUspsOutageMessageEnabled } =
+    useContext(InPersonContext);
 
   useEffect(() => {
     setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
@@ -23,6 +25,8 @@ function InPersonPrepareStep({ toPreviousStep }) {
 
   return (
     <>
+      {inPersonUspsOutageMessageEnabled && <InPersonUspsOutageAlert />}
+
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>

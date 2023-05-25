@@ -18,7 +18,7 @@ class Profile < ApplicationRecord
   enum deactivation_reason: {
     password_reset: 1,
     encryption_error: 2,
-    gpo_verification_pending: 3,
+    gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending: 5,
   }
@@ -73,8 +73,7 @@ class Profile < ApplicationRecord
 
   def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
-
-    update!(deactivation_reason: nil) if deactivation_reason == 'gpo_verification_pending'
+    update!(deactivation_reason: nil) if gpo_verification_pending_NO_LONGER_USED?
   end
 
   def activate_after_passing_review

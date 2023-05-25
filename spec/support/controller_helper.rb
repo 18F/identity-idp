@@ -89,7 +89,7 @@ module ControllerHelper
 
   def stub_user_with_pending_profile(user)
     allow(user).to receive(:pending_profile).and_return(pending_profile)
-    allow(user).to receive(:pending_profile_requires_verification?).
+    allow(user).to receive(:gpo_verification_pending_profile?).
       and_return(has_pending_profile)
     user
   end

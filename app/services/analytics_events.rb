@@ -686,32 +686,224 @@ module AnalyticsEvents
     track_event('IdV: in person proofing residential address submitted', **extra)
   end
 
-  def idv_in_person_proofing_address_submitted(**extra)
-    track_event('IdV: in person proofing address submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # address submitted by user
+  def idv_in_person_proofing_address_submitted(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing address submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_address_visited(**extra)
-    track_event('IdV: in person proofing address visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # address page visited
+  def idv_in_person_proofing_address_visited(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing address visited',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_cancel_update_address(**extra)
-    track_event('IdV: in person proofing cancel_update_address submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] same_address_as_id
+  # User clicked cancel on update address page
+  def idv_in_person_proofing_cancel_update_address(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing cancel_update_address submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_cancel_update_state_id(**extra)
-    track_event('IdV: in person proofing cancel_update_state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # User clicked cancel on update state id page
+  def idv_in_person_proofing_cancel_update_state_id(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing cancel_update_state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_redo_state_id_submitted(**extra)
-    track_event('IdV: in person proofing redo_state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] same_address_as_id
+  # User submitted state id on redo state id page
+  def idv_in_person_proofing_redo_state_id_submitted(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing redo_state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_state_id_submitted(**extra)
-    track_event('IdV: in person proofing state_id submitted', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] same_address_as_id
+  # User submitted state id
+  def idv_in_person_proofing_state_id_submitted(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    success: nil,
+    errors: nil,
+    same_address_as_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing state_id submitted',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      success: success,
+      errors: errors,
+      same_address_as_id: same_address_as_id,
+      **extra,
+    )
   end
 
-  def idv_in_person_proofing_state_id_visited(**extra)
-    track_event('IdV: in person proofing state_id visited', **extra)
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Integer] step_count
+  # @param [String] analytics_id
+  # @param [Boolean] irs_reproofing
+  # State id page visited
+  def idv_in_person_proofing_state_id_visited(
+    flow_path: nil,
+    step: nil,
+    step_count: nil,
+    analytics_id: nil,
+    irs_reproofing: nil,
+    **extra
+  )
+    track_event(
+      'IdV: in person proofing state_id visited',
+      flow_path: flow_path,
+      step: step,
+      step_count: step_count,
+      analytics_id: analytics_id,
+      irs_reproofing: irs_reproofing,
+      **extra,
+    )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
@@ -1094,12 +1286,14 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    gpo_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1109,6 +1303,7 @@ module AnalyticsEvents
       success: success,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
+      gpo_verification_pending: gpo_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
@@ -1445,12 +1640,14 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
   # @param [Boolean] fraud_rejection
+  # @param [Boolean] gpo_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   def idv_review_complete(
     success:,
     fraud_review_pending:,
     fraud_rejection:,
+    gpo_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -1460,6 +1657,7 @@ module AnalyticsEvents
       success: success,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
+      gpo_verification_pending: gpo_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
@@ -2467,8 +2665,19 @@ module AnalyticsEvents
   end
 
   # User authenticated by a remembered device
-  def remembered_device_used_for_authentication
-    track_event('Remembered device used for authentication')
+  # @param [DateTime] cookie_created_at time the remember device cookie was created
+  # @param [Integer] cookie_age_seconds age of the cookie in seconds
+  def remembered_device_used_for_authentication(
+    cookie_created_at:,
+    cookie_age_seconds:,
+    **extra
+  )
+    track_event(
+      'Remembered device used for authentication',
+      cookie_created_at: cookie_created_at,
+      cookie_age_seconds: cookie_age_seconds,
+      **extra,
+    )
   end
 
   # Service provider initiated remote logout

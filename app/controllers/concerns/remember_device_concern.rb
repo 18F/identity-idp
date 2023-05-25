@@ -25,7 +25,7 @@ module RememberDeviceConcern
       expiration_interval: decorated_session.mfa_expiration_interval,
     )
 
-    handle_valid_remember_device_cookie
+    handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)
   end
 
   def remember_device_cookie
@@ -69,16 +69,19 @@ module RememberDeviceConcern
     )
   end
 
-  def handle_valid_remember_device_cookie
+  def handle_valid_remember_device_cookie(remember_device_cookie:)
     user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
     mark_user_session_authenticated(:device_remembered)
-    handle_valid_remember_device_analytics
+    handle_valid_remember_device_analytics(cookie_created_at: remember_device_cookie.created_at)
     redirect_to after_otp_verification_confirmation_url unless reauthn?
     reset_otp_session_data
   end
 
-  def handle_valid_remember_device_analytics
-    analytics.remembered_device_used_for_authentication
+  def handle_valid_remember_device_analytics(cookie_created_at:)
+    analytics.remembered_device_used_for_authentication(
+      cookie_created_at: cookie_created_at,
+      cookie_age_seconds: (Time.zone.now - cookie_created_at).to_i,
+    )
   end
 
   def remember_device_cookie_expiration
