@@ -155,7 +155,6 @@ module TwoFactorAuthenticatableMethods
   def handle_valid_verification_for_confirmation_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa_confirmation)
-    reset_otp_session_data
     reset_second_factor_attempts_count
   end
 
@@ -164,17 +163,11 @@ module TwoFactorAuthenticatableMethods
     mark_user_session_authenticated(:valid_2fa)
     create_user_event(:sign_in_after_2fa)
 
-    reset_otp_session_data
     reset_second_factor_attempts_count
   end
 
   def reset_second_factor_attempts_count
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def reset_otp_session_data
-    user_session.delete(:unconfirmed_phone)
-    user_session[:context] = 'authentication'
   end
 
   def after_otp_verification_confirmation_url

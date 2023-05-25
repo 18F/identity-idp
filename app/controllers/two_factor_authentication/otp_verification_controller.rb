@@ -30,6 +30,7 @@ module TwoFactorAuthentication
         end
 
         handle_remember_device
+        reset_otp_session_data
         redirect_to after_otp_verification_confirmation_url
       else
         handle_invalid_otp(context: context, type: 'otp')
@@ -257,6 +258,11 @@ module TwoFactorAuthentication
 
     def direct_otp_code
       current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+    end
+
+    def reset_otp_session_data
+      user_session.delete(:unconfirmed_phone)
+      user_session[:context] = 'authentication'
     end
   end
 end

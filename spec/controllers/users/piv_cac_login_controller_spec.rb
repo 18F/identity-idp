@@ -146,14 +146,6 @@ describe Users::PivCacLoginController do
           end
 
           describe 'it handles the otp_context' do
-            it 'sets the otp user_session' do
-              expect(controller.user_session[:auth_method]).
-                to eq TwoFactorAuthenticatable::AuthMethod::PIV_CAC
-
-              expect(controller.user_session[:unconfirmed_phone]).to be nil
-              expect(controller.user_session[:context]).to eq 'authentication'
-            end
-
             it 'tracks the user_marked_authed event' do
               expect(@analytics).to have_received(:track_event).with(
                 'User marked authenticated',
