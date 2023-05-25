@@ -61,7 +61,7 @@ feature 'doc auth upload step' do
 
       click_send_link
 
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      expect(page).to have_current_path(idv_link_sent_path)
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :link_sent),
@@ -86,7 +86,7 @@ feature 'doc auth upload step' do
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
 
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     it 'does not proceed to the next page with invalid info' do
@@ -107,7 +107,7 @@ feature 'doc auth upload step' do
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
 
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     it 'does not proceed if Telephony raises an error' do
@@ -169,7 +169,7 @@ feature 'doc auth upload step' do
           fill_in :doc_auth_phone, with: '415-555-0199'
           click_send_link
 
-          expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+          expect(page).to have_current_path(idv_link_sent_path)
 
           click_doc_auth_back_link
         end
@@ -196,7 +196,7 @@ feature 'doc auth upload step' do
       travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link
-        expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+        expect(page).to have_current_path(idv_link_sent_path)
       end
     end
 

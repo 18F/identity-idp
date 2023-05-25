@@ -6,7 +6,6 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
-    include FraudReviewConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
@@ -22,10 +21,12 @@ module OpenidConnect
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
 
     def index
-      return redirect_to_fraud_review if fraud_review_pending_for_ial2_request?
-      return redirect_to_fraud_rejection if fraud_rejection_for_ial2_request?
-      return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
-      return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
+      if @authorize_form.ial2_or_greater?
+        return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
+        return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
+        return redirect_to idv_url if identity_needs_verification?
+      end
+      return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
 
       result = @authorize_form.submit
@@ -74,26 +75,6 @@ module OpenidConnect
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
       redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
       delete_branded_experience
-    end
-
-    def redirect_to_account_or_verify_profile_url
-      return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
-      redirect_to(idv_url) if identity_needs_verification?
-    end
-
-    def fraud_review_pending_for_ial2_request?
-      return false unless @authorize_form.ial2_or_greater?
-      fraud_review_pending?
-    end
-
-    def fraud_rejection_for_ial2_request?
-      return false unless @authorize_form.ial2_or_greater?
-      fraud_rejection?
-    end
-
-    def profile_or_identity_needs_verification?
-      return false unless @authorize_form.ial2_or_greater?
-      profile_needs_verification? || identity_needs_verification?
     end
 
     def track_authorize_analytics(result)

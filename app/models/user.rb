@@ -107,20 +107,32 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-      profiles.where.not(gpo_verification_pending_at: nil),
-    ).or(
-      profiles.where.not(fraud_review_pending_at: nil),
-    ).or(
-      profiles.where.not(fraud_rejection_at: nil),
-    ).order(created_at: :desc).first
+    return @pending_profile if defined?(@pending_profile)
 
-    return unless pending.present?
-    return if pending.password_reset?
-    return if pending.encryption_error? || pending.verification_cancelled?
-    return if active_profile.present? && active_profile.activated_at > pending.created_at
+    @pending_profile = begin
+      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+        profiles.where.not(gpo_verification_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_review_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_rejection_at: nil),
+      ).order(created_at: :desc).first
 
-    pending
+      if pending.blank?
+        nil
+      elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
+        # Profiles that are cancelled for reasons that do not require further verification steps
+        # are not pending profiles
+        nil
+      elsif active_profile.present? && active_profile.activated_at > pending.created_at
+        # If there is an active profile that is older than this pending profile that means the user
+        # has proofed since this profile was created. That profile takes precedence and there is no
+        # pending profile
+        nil
+      else
+        pending
+      end
+    end
   end
 
   def gpo_verification_pending_profile
@@ -141,6 +153,14 @@ class User < ApplicationRecord
 
   def fraud_rejection_profile
     pending_profile if pending_profile&.fraud_rejection?
+  end
+
+  def in_person_pending_profile?
+    in_person_pending_profile.present?
+  end
+
+  def in_person_pending_profile
+    pending_profile if pending_profile&.in_person_verification_pending?
   end
 
   def personal_key_generated_at
@@ -264,10 +284,6 @@ class User < ApplicationRecord
 
   def active_or_pending_profile
     active_profile || pending_profile
-  end
-
-  def pending_profile_requires_verification?
-    pending_profile.present?
   end
 
   def identity_not_verified?

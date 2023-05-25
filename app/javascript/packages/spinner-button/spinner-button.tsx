@@ -39,6 +39,7 @@ function SpinnerButton(
     actionMessage,
     longWaitDurationMs,
     isOutline,
+    children,
     ...buttonProps
   }: SpinnerButtonProps,
   ref: ForwardedRef<SpinnerButtonElement | null>,
@@ -55,14 +56,14 @@ function SpinnerButton(
       ref={elementRef}
       class={classes}
     >
-      <div className="spinner-button__content">
-        <Button isOutline={isOutline} {...buttonProps} />
+      <Button isOutline={isOutline} {...buttonProps}>
+        <div className="spinner-button__content">{children}</div>
         <span className="spinner-dots spinner-dots--centered" aria-hidden="true">
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />
         </span>
-      </div>
+      </Button>
       {actionMessage && (
         <div
           role="status"

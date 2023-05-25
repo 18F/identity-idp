@@ -2073,7 +2073,7 @@ describe SamlIdpController do
 
         stub_analytics
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        allow(controller).to receive(:profile_needs_verification?).and_return(true)
+        allow(controller).to receive(:user_has_pending_profile?).and_return(true)
 
         analytics_hash = {
           success: true,

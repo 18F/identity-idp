@@ -109,15 +109,25 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when user is authenticated with a remembered device via phone' do
       it 'does redirect to the profile' do
+        stub_analytics
         user = create(:user, :with_phone, **with_default_phone)
         stub_sign_in_before_2fa(user)
 
+        time1 = Time.zone.local(2023, 12, 13, 0, 0, 0)
         cookies.encrypted[:remember_device] = {
-          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
-          expires: 2.days.from_now,
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: time1).to_json,
+          expires: time1 + 10.seconds,
         }
 
-        get :show
+        travel_to(time1 + 1.second) do
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', { authentication_type: :device_remembered })
+          expect(@analytics).to receive(:track_event).with(
+            'Remembered device used for authentication',
+            { cookie_created_at: time1, cookie_age_seconds: 1 },
+          )
+          get :show
+        end
 
         expect(Telephony::Test::Message.messages.length).to eq(0)
         expect(Telephony::Test::Call.calls.length).to eq(0)
@@ -137,6 +147,26 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
+        expect(response).to redirect_to(
+          login_two_factor_path(**otp_preference_sms, **reauthn_param),
+        )
+      end
+    end
+
+    context 'when user is authenticated with an expired remembered device' do
+      it 'redirects to 2FA' do
+        user = create(:user, :with_phone, **with_default_phone)
+        stub_sign_in_before_2fa(user)
+
+        freeze_time do
+          cookies.encrypted[:remember_device] = {
+            value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+            expires: 2.days.ago,
+          }
+
+          get :show, params: reauthn_param
+        end
+
         expect(response).to redirect_to(
           login_two_factor_path(**otp_preference_sms, **reauthn_param),
         )

@@ -89,7 +89,7 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_otp
-      handle_valid_otp_for_authentication_context(
+      handle_valid_verification_for_authentication_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
       )
       if current_user.identity_verified? || current_user.password_reset_profile.present?

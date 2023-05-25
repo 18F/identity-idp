@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include VerifyProfileConcern
+  include BackupCodeReminderConcern
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
@@ -238,7 +239,11 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
-    user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
+    return user_two_factor_authentication_url unless user_fully_authenticated?
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    return url_for_pending_profile_reason if user_has_pending_profile?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
+    account_url
   end
 
   def after_mfa_setup_path
