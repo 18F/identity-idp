@@ -15,7 +15,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
       end
 
-      it 'redirects to the profile' do
+      it 'redirects to the profile and sets auth_method' do
         cfg = subject.current_user.auth_app_configurations.first
         expect(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -23,6 +23,8 @@ describe TwoFactorAuthentication::TotpVerificationController do
         post :create, params: { code: generate_totp_code(@secret) }
 
         expect(response).to redirect_to account_path
+        expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::TOTP
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -73,6 +75,11 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
+      end
+
+      it 'does not set auth_method and still requires 2FA' do
+        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
     end
 

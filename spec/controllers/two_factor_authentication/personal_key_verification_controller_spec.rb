@@ -67,6 +67,11 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         post :create, params: payload
+
+        expect(subject.user_session[:auth_method]).to eq(
+          TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+        )
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
     end
 
@@ -136,6 +141,9 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(subject).to receive(:handle_invalid_otp).and_call_original
 
         post :create, params: payload
+
+        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
       it 're-renders the personal key entry screen' do

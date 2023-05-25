@@ -161,6 +161,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
+
+      it 'does not set auth_method and requires 2FA' do
+        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+      end
     end
 
     context 'when the user enters an invalid OTP during reauthentication context' do
@@ -278,6 +283,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
         }
+
+        expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'tracks the attempt event with reauthentication parameter true' do
