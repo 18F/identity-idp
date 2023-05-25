@@ -77,7 +77,6 @@ module TwoFactorAuthentication
 
     def handle_valid_backup_code
       redirect_to after_otp_verification_confirmation_url
-      reset_otp_session_data
     end
 
     def check_sp_required_mfa
