@@ -5,6 +5,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
+    include RateLimitConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete
@@ -17,7 +18,9 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      render :show, locals: extra_view_variables
+      if !rate_limit_redirect!(:idv_doc_auth)
+        render :show, locals: extra_view_variables
+      end
     end
 
     def update

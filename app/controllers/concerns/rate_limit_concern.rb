@@ -6,14 +6,20 @@ module RateLimitConcern
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
       next if throttle_and_controller_match(throttle_type)
 
-      if idv_attempter_rate_limited?(throttle_type)
-        track_rate_limited_event(throttle_type)
-        rate_limited_redirect(throttle_type)
+      if rate_limit_redirect!(throttle_type)
         rate_limited = true
         break
       end
     end
     rate_limited
+  end
+
+  def rate_limit_redirect!(throttle_type)
+    if idv_attempter_rate_limited?(throttle_type)
+      track_rate_limited_event(throttle_type)
+      rate_limited_redirect(throttle_type)
+      return true
+    end
   end
 
   def track_rate_limited_event(throttle_type)
