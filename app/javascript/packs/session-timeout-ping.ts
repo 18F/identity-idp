@@ -27,7 +27,6 @@ function success(data: SessionStatus) {
 
   const timeRemaining = data.timeout.valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
-
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
@@ -36,7 +35,9 @@ function success(data: SessionStatus) {
     });
   }
 
-  const nextPingTimeout = Math.min(frequency, Math.max(timeRemaining, 0));
+  const nextPingTimeout =
+    timeRemaining > 0 && timeRemaining < frequency ? timeRemaining : frequency;
+
   // Disable reason: circular dependency between ping and success
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
   setTimeout(ping, nextPingTimeout);
