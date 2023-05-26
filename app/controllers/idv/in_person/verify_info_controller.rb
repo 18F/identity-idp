@@ -7,7 +7,6 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
-      before_action :renders_404_if_flag_not_set
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
 
@@ -54,10 +53,6 @@ module Idv
 
       def prev_url
         idv_in_person_step_url(step: :ssn)
-      end
-
-      def renders_404_if_flag_not_set
-        render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
       def pii
