@@ -67,80 +67,84 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   });
 };
 
-const formData: Record<string, any> = {
-  document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
-  locale: document.documentElement.lang,
-};
+(async () => {
+  const formData: Record<string, any> = {
+    document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
+    locale: document.documentElement.lang,
+  };
 
-const {
-  helpCenterRedirectUrl: helpCenterRedirectURL,
-  maxCaptureAttemptsBeforeTips,
-  maxCaptureAttemptsBeforeNativeCamera,
-  maxSubmissionAttemptsBeforeNativeCamera,
-  acuantVersion,
-  flowPath,
-  cancelUrl: cancelURL,
-  idvInPersonUrl: inPersonURL,
-  securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonCtaVariantTestingEnabled,
-  inPersonCtaVariantActive,
-} = appRoot.dataset as DOMStringMap & AppRootData;
+  const {
+    helpCenterRedirectUrl: helpCenterRedirectURL,
+    maxCaptureAttemptsBeforeTips,
+    maxCaptureAttemptsBeforeNativeCamera,
+    maxSubmissionAttemptsBeforeNativeCamera,
+    acuantVersion,
+    flowPath,
+    cancelUrl: cancelURL,
+    idvInPersonUrl: inPersonURL,
+    securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+    inPersonCtaVariantTestingEnabled,
+    inPersonCtaVariantActive,
+    inPersonUspsOutageMessageEnabled,
+  } = appRoot.dataset as DOMStringMap & AppRootData;
 
-const App = composeComponents(
-  [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
-  [DeviceContext.Provider, { value: device }],
-  [
-    InPersonContext.Provider,
-    {
-      value: {
-        inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
-        inPersonCtaVariantActive,
-        inPersonURL,
+  const App = composeComponents(
+    [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
+    [DeviceContext.Provider, { value: device }],
+    [
+      InPersonContext.Provider,
+      {
+        value: {
+          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
+          inPersonCtaVariantActive,
+          inPersonURL,
+          inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
+        },
       },
-    },
-  ],
-  [AnalyticsContextProvider, { trackEvent }],
-  [
-    AcuantContextProvider,
-    {
-      sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
-      credentials: getMetaContent('acuant-sdk-initialization-creds'),
-      endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
-      glareThreshold,
-      sharpnessThreshold,
-    },
-  ],
-  [
-    UploadContextProvider,
-    {
-      endpoint: String(appRoot.getAttribute('data-endpoint')),
-      statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
-      statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
-      isMockClient,
-      formData,
-      flowPath,
-    },
-  ],
-  [
-    FlowContext.Provider,
-    {
-      value: {
-        cancelURL,
-        currentStep: 'document_capture',
+    ],
+    [AnalyticsContextProvider, { trackEvent }],
+    [
+      AcuantContextProvider,
+      {
+        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+        credentials: getMetaContent('acuant-sdk-initialization-creds'),
+        endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
+        glareThreshold,
+        sharpnessThreshold,
       },
-    },
-  ],
-  [ServiceProviderContextProvider, { value: getServiceProvider() }],
-  [
-    FailedCaptureAttemptsContextProvider,
-    {
-      maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
-      maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
-      maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-    },
-  ],
-  [DocumentCapture, { onStepChange: extendSession }],
-);
+    ],
+    [
+      UploadContextProvider,
+      {
+        endpoint: String(appRoot.getAttribute('data-endpoint')),
+        statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
+        statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
+        isMockClient,
+        formData,
+        flowPath,
+      },
+    ],
+    [
+      FlowContext.Provider,
+      {
+        value: {
+          cancelURL,
+          currentStep: 'document_capture',
+        },
+      },
+    ],
+    [ServiceProviderContextProvider, { value: getServiceProvider() }],
+    [
+      FailedCaptureAttemptsContextProvider,
+      {
+        maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+        maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
+        maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+      },
+    ],
+    [DocumentCapture, { onStepChange: extendSession }],
+  );
 
-render(<App />, appRoot);
+  render(<App />, appRoot);
+})();
