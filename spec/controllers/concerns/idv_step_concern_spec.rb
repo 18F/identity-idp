@@ -236,9 +236,9 @@ describe 'IdvStepConcern' do
     end
   end
 
-  describe '#confirm_not_throttled' do
+  describe '#confirm_not_rate_limited' do
     controller Idv::StepController do
-      before_action :confirm_not_throttled
+      before_action :confirm_not_rate_limited
     end
 
     before(:each) do

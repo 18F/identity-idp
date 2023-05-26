@@ -2,11 +2,12 @@ module IdvStepConcern
   extend ActiveSupport::Concern
 
   include IdvSession
+  include RateLimitConcern
 
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
-    before_action :confirm_not_throttled
+    before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
   end
@@ -20,8 +21,8 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
   end
 
-  def confirm_not_throttled
-    check_throttled_and_redirect
+  def confirm_not_rate_limited
+    check_rate_limited_and_redirect
   end
 
   def flow_session

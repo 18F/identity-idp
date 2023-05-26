@@ -2,6 +2,7 @@ class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
   include FraudReviewConcern
+  include RateLimitConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
@@ -13,7 +14,7 @@ class IdvController < ApplicationController
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url
-    elsif check_throttled_and_redirect
+    elsif check_rate_limited_and_redirect
       # do nothing
     else
       verify_identity
