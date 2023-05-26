@@ -45,11 +45,11 @@ interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts: number;
+  remainingAttempts?: number;
 
-  isFailedResult: boolean;
+  isFailedResult?: boolean;
 
-  captureHints: boolean;
+  captureHints?: boolean;
 
   pii?: PII;
 }

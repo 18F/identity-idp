@@ -129,11 +129,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                     captureHints: submissionError.hints,
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
-                : withProps({
-                    remainingAttempts: Infinity,
-                    isFailedResult: false,
-                    captureHints: false,
-                  })(ReviewIssuesStep),
+                : ReviewIssuesStep,
             title: t('errors.doc_auth.throttled_heading'),
           },
         ] as FormStep[]
