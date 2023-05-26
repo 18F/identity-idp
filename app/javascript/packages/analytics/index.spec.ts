@@ -22,7 +22,7 @@ describe('trackEvent', () => {
   });
 
   context('page configuration does not exist', () => {
-    it('does not sendBeacon or fetch and resolves to undefined', async () => {
+    it('does not call sendBeacon or fetch and resolves to undefined', async () => {
       const result = await trackEvent('name');
 
       expect(result).to.be.undefined();
@@ -54,7 +54,7 @@ describe('trackEvent', () => {
         expect(await blobTextContents(data)).to.eql('{"event":"name"}');
       });
 
-      it('does not fall back to fetch', async () => {
+      it('does not call fetch', async () => {
         await trackEvent('name');
         expect(global.fetch).not.to.have.been.called();
       });
@@ -85,46 +85,10 @@ describe('trackEvent', () => {
         global.navigator.sendBeacon = sandbox.stub().throws();
       });
 
-      context('no payload', () => {
-        it('falls back to fetch and resolves to undefined', async () => {
-          const result = await trackEvent('name');
-
-          expect(result).to.be.undefined();
-          expect(global.fetch).to.have.been.calledWith(
-            endpoint,
-            sandbox.match({
-              body: '{"event":"name"}',
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-            }),
-          );
-        });
-      });
-
-      context('payload', () => {
-        it('falls back to fetch and resolves to undefined', async () => {
-          const result = await trackEvent('name', { foo: 'bar' });
-
-          expect(result).to.be.undefined();
-          expect(global.fetch).to.have.been.calledWith(
-            endpoint,
-            sandbox.match({
-              body: '{"event":"name","payload":{"foo":"bar"}}',
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-            }),
-          );
-        });
-      });
-
-      context('a network error occurs in the request', () => {
-        beforeEach(() => {
-          (global.fetch as SinonStub).rejects(new TypeError());
-        });
-
-        it('absorbs the error', async () => {
-          await trackEvent('name');
-        });
+      it('throws', () => {
+        expect(() => {
+          trackEvent('name');
+        }).to.throw();
       });
     });
 
@@ -133,46 +97,14 @@ describe('trackEvent', () => {
         global.navigator.sendBeacon = sandbox.stub().returns(false);
       });
 
-      context('no payload', () => {
-        it('falls back to fetch and resolves to undefined', async () => {
-          const result = await trackEvent('name');
-
-          expect(result).to.be.undefined();
-          expect(global.fetch).to.have.been.calledWith(
-            endpoint,
-            sandbox.match({
-              body: '{"event":"name"}',
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-            }),
-          );
-        });
+      it('returns undefined', async () => {
+        const result = await trackEvent('name');
+        expect(result).to.be.undefined();
       });
 
-      context('payload', () => {
-        it('falls back to fetch and resolves to undefined', async () => {
-          const result = await trackEvent('name', { foo: 'bar' });
-
-          expect(result).to.be.undefined();
-          expect(global.fetch).to.have.been.calledWith(
-            endpoint,
-            sandbox.match({
-              body: '{"event":"name","payload":{"foo":"bar"}}',
-              headers: { 'Content-Type': 'application/json' },
-              method: 'POST',
-            }),
-          );
-        });
-      });
-
-      context('a network error occurs in the request', () => {
-        beforeEach(() => {
-          (global.fetch as SinonStub).rejects(new TypeError());
-        });
-
-        it('absorbs the error', async () => {
-          await trackEvent('name');
-        });
+      it('does not call fetch', async () => {
+        await trackEvent('name');
+        expect(global.fetch).not.to.have.been.called();
       });
     });
   });
