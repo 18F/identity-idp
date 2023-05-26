@@ -9,13 +9,11 @@ import { I18n } from '@18f/identity-i18n';
 import { I18nContext } from '@18f/identity-react-i18n';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
   const DEFAULT_PROPS = { remainingAttempts: 3 };
-  useSandbox();
 
   it('logs warning events', async () => {
     const trackEvent = sinon.spy();
