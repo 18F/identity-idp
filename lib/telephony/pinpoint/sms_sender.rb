@@ -139,6 +139,8 @@ module Telephony
       def origination_number(country_code, sms_config)
         if sms_config.country_code_longcode_pool&.dig(country_code).present?
           sms_config.country_code_longcode_pool[country_code].sample
+        elsif sms_config.country_code_shortcodes&.dig(country_code).present?
+          sms_config.country_code_shortcodes[country_code]
         else
           sms_config.shortcode
         end

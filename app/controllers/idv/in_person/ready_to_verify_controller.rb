@@ -1,6 +1,7 @@
 module Idv
   module InPerson
     class ReadyToVerifyController < ApplicationController
+      include IdvSession
       include RenderConditionConcern
       include StepIndicatorConcern
 

@@ -285,6 +285,40 @@ describe Telephony::Pinpoint::SmsSender do
       end
     end
 
+    context 'in a non-sender_id country that has a configured shortcode' do
+      let(:country_code) { 'MX' }
+
+      it 'sends a message with a longcode and no sender_id' do
+        mock_build_client
+        response = subject.send(
+          message: 'This is a test!',
+          to: '+525555555555',
+          country_code: country_code,
+        )
+
+        expected_result = {
+          application_id: Telephony.config.pinpoint.sms_configs.first.application_id,
+          message_request: {
+            addresses: {
+              '+525555555555' => { channel_type: 'SMS' },
+            },
+            message_configuration: {
+              sms_message: {
+                body: 'This is a test!',
+                message_type: 'TRANSACTIONAL',
+                origination_number: '987654',
+              },
+            },
+          },
+        }
+
+        expect(Pinpoint::MockClient.last_request).to eq(expected_result)
+        expect(response.success?).to eq(true)
+        expect(response.error).to eq(nil)
+        expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      end
+    end
+
     context 'with multiple sms configs' do
       before do
         Telephony.config.pinpoint.add_sms_config do |sms|

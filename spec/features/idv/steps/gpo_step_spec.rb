@@ -28,7 +28,7 @@ feature 'idv gpo step', :js do
     let(:gpo_confirmation_code) do
       create(
         :gpo_confirmation_code,
-        profile: user.pending_profile,
+        profile: User.find(user.id).pending_profile,
         otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
       )
     end

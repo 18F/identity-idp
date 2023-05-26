@@ -84,7 +84,11 @@ fr:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.
         link: contactez-nous
-        post_office_outage_error_message:
+        post_office_search_error: Nous connaissons des difficultés techniques en ce
+          moment. Essayez de chercher à nouveau un bureau de poste. Si le
+          problème persiste, revenez plus tard.
+        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
+        usps_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
               en personne sur %{app_name} et vous pouvez visiter un bureau de
@@ -105,10 +109,6 @@ fr:
             title: Nous travaillons sur un problème technique. Il se peut que les résultats
               de votre vérification d’identité ne vous soient pas envoyés par
               courrier électronique avant le mardi, May 30.
-        post_office_search_error: Nous connaissons des difficultés techniques en ce
-          moment. Essayez de chercher à nouveau un bureau de poste. Si le
-          problème persiste, revenez plus tard.
-        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
