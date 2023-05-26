@@ -2,7 +2,17 @@ require 'rails_helper'
 
 describe Idv::StateIdForm do
   let(:subject) { Idv::StateIdForm.new(pii) }
-  let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
+  let(:valid_dob) do
+    valid_d = (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s.split('-')
+
+    ActionController::Parameters.new(
+      {
+        year: valid_d[0],
+        month: valid_d[1],
+        day: valid_d[2],
+      },
+    ).permit(:year, :month, :day)
+  end
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
   end

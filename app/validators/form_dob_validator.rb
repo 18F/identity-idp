@@ -16,13 +16,24 @@ module FormDobValidator
     end
   end
 
-  # @param [String|ActiveSupport::TimeWithZone] dob: string or ActiveSupport::TimeWithZone
-  # @return [Boolean] false unless it meets the required minimal age, including invalid input value and types
+  # @param [String|Date|ActionController::Parameters] dob: string or ActiveSupport::TimeWithZone
+  # @return [Boolean] false unless it meets the required minimal age,
+  #  including invalid input value and types
   def meet_min_age_req(dob)
     return false if dob.nil?
-    return false unless dob.is_a?(String) || dob.is_a?(ActiveSupport::TimeWithZone)
+    unless dob.is_a?(String) || dob.is_a?(ActionController::Parameters) ||
+           dob.is_a?(Date)
+      return false
+    end
     begin
-      dob_date = dob.is_a?(String) ? DateParser.parse_legacy(dob.strip) : dob
+      dob_date =
+        if dob.is_a?(ActionController::Parameters)
+          h = dob.to_hash.with_indifferent_access
+          Date.new(h[:year].to_i, h[:month].to_i, h[:day].to_i)
+        else
+          dob
+        end
+      dob_date = DateParser.parse_legacy(dob_date)
       today = Time.zone.today
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
