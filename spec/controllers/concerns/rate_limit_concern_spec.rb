@@ -69,5 +69,17 @@ describe 'RateLimitConcern' do
         expect(response).to redirect_to idv_phone_errors_failure_url
       end
     end
+
+    context 'including controller and throttle match' do
+      it 'does not redirect' do
+        allow(Idv::StepController).to receive(:throttle_and_controller_match).
+          and_return(true)
+
+        get :show
+
+        expect(response.body).to eq 'Hello'
+        expect(response.status).to eq 200
+      end
+    end
   end
 end

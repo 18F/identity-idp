@@ -23,6 +23,8 @@ module RateLimitConcern
   end
 
   def rate_limited_redirect(throttle_type)
+    return if throttle_and_controller_match(throttle_type)
+
     case throttle_type
     when :idv_resolution
       redirect_to idv_session_errors_failure_url
@@ -30,6 +32,19 @@ module RateLimitConcern
       redirect_to idv_session_errors_throttled_url
     when :proof_address
       redirect_to idv_phone_errors_failure_url if self.class != Idv::PhoneController
+    end
+  end
+
+  def throttle_and_controller_match(throttle_type)
+    case throttle_type
+    when :idv_resolution
+      self.instance_of?(Idv::VerifyInfoController) ||
+        self.instance_of?(Idv::InPerson::VerifyInfoController)
+    when :idv_doc_auth
+      self.instance_of?(Idv::DocumentCaptureController) ||
+        self.instance_of?(Idv::HybridMobile::DocumentCaptureController)
+    when :proof_address
+      self.instance_of?(Idv::PhoneController)
     end
   end
 
