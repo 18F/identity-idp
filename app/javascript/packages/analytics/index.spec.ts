@@ -22,8 +22,8 @@ describe('trackEvent', () => {
   });
 
   context('page configuration does not exist', () => {
-    it('does not call sendBeacon or fetch and resolves to undefined', async () => {
-      const result = await trackEvent('name');
+    it('does not call sendBeacon or fetch and resolves to undefined', () => {
+      const result = trackEvent('name');
 
       expect(result).to.be.undefined();
 
@@ -41,7 +41,7 @@ describe('trackEvent', () => {
 
     context('no payload', () => {
       it('calls sendBeacon and resolves to undefined', async () => {
-        const result = await trackEvent('name');
+        const result = trackEvent('name');
 
         expect(result).to.be.undefined();
 
@@ -54,15 +54,15 @@ describe('trackEvent', () => {
         expect(await blobTextContents(data)).to.eql('{"event":"name"}');
       });
 
-      it('does not call fetch', async () => {
-        await trackEvent('name');
+      it('does not call fetch', () => {
+        trackEvent('name');
         expect(global.fetch).not.to.have.been.called();
       });
     });
 
     context('payload', () => {
       it('calls sendBeacon and resolves to undefined', async () => {
-        const result = await trackEvent('name', { foo: 'bar' });
+        const result = trackEvent('name', { foo: 'bar' });
 
         expect(result).to.be.undefined();
 
@@ -74,8 +74,8 @@ describe('trackEvent', () => {
         expect(data).to.have.property('type').eql('application/json');
         expect(await blobTextContents(data)).to.eql('{"event":"name","payload":{"foo":"bar"}}');
       });
-      it('does not fall back to fetch', async () => {
-        await trackEvent('name', { foo: 'bar' });
+      it('does not fall back to fetch', () => {
+        trackEvent('name', { foo: 'bar' });
         expect(global.fetch).not.to.have.been.called();
       });
     });
@@ -97,13 +97,13 @@ describe('trackEvent', () => {
         global.navigator.sendBeacon = sandbox.stub().returns(false);
       });
 
-      it('returns undefined', async () => {
-        const result = await trackEvent('name');
+      it('returns undefined', () => {
+        const result = trackEvent('name');
         expect(result).to.be.undefined();
       });
 
-      it('does not call fetch', async () => {
-        await trackEvent('name');
+      it('does not call fetch', () => {
+        trackEvent('name');
         expect(global.fetch).not.to.have.been.called();
       });
     });
