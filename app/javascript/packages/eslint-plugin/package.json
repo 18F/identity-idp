@@ -1,6 +1,7 @@
 {
   "name": "@18f/eslint-plugin-identity",
   "version": "2.0.0",
+  "private": false,
   "description": "ESLint plugin and shareable configurations for Login.gov JavaScript standards",
   "repository": {
     "type": "git",
@@ -34,10 +35,10 @@
     "eslint-plugin-react-hooks": "*"
   },
   "peerDependenciesMeta": {
-    "@typescript-eslint/eslint-plugin": {
+    "@typescript-eslint/parser": {
       "optional": true
     },
-    "@typescript-eslint/parser": {
+    "@typescript-eslint/eslint-plugin": {
       "optional": true
     },
     "eslint-plugin-jsx-a11y": {
