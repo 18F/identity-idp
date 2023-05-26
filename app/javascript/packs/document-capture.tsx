@@ -48,17 +48,6 @@ function getServiceProvider() {
   return { name, failureToProofURL };
 }
 
-function getBackgroundUploadURLs(): Record<'front' | 'back', string> {
-  return ['front', 'back'].reduce((result, key) => {
-    const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
-    if (url) {
-      result[key] = url;
-    }
-
-    return result;
-  }, {} as Record<'front' | 'back', string>);
-}
-
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -78,105 +67,82 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   });
 };
 
-(async () => {
-  const backgroundUploadURLs = getBackgroundUploadURLs();
-  const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
+const formData: Record<string, any> = {
+  document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
+  locale: document.documentElement.lang,
+};
 
-  const formData: Record<string, any> = {
-    document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
-    locale: document.documentElement.lang,
-  };
+const {
+  helpCenterRedirectUrl: helpCenterRedirectURL,
+  maxCaptureAttemptsBeforeTips,
+  maxCaptureAttemptsBeforeNativeCamera,
+  maxSubmissionAttemptsBeforeNativeCamera,
+  acuantVersion,
+  flowPath,
+  cancelUrl: cancelURL,
+  idvInPersonUrl: inPersonURL,
+  securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+  inPersonCtaVariantTestingEnabled,
+  inPersonCtaVariantActive,
+  inPersonUspsOutageMessageEnabled,
+} = appRoot.dataset as DOMStringMap & AppRootData;
 
-  let backgroundUploadEncryptKey;
-  if (isAsyncForm) {
-    backgroundUploadEncryptKey = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
+const App = composeComponents(
+  [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
+  [DeviceContext.Provider, { value: device }],
+  [
+    InPersonContext.Provider,
+    {
+      value: {
+        inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
+        inPersonCtaVariantActive,
+        inPersonURL,
+        inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
       },
-      true,
-      ['encrypt', 'decrypt'],
-    );
+    },
+  ],
+  [AnalyticsContextProvider, { trackEvent }],
+  [
+    AcuantContextProvider,
+    {
+      sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
+      cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
+      credentials: getMetaContent('acuant-sdk-initialization-creds'),
+      endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
+      glareThreshold,
+      sharpnessThreshold,
+    },
+  ],
+  [
+    UploadContextProvider,
+    {
+      endpoint: String(appRoot.getAttribute('data-endpoint')),
+      statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
+      statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
+      isMockClient,
+      formData,
+      flowPath,
+    },
+  ],
+  [
+    FlowContext.Provider,
+    {
+      value: {
+        cancelURL,
+        currentStep: 'document_capture',
+      },
+    },
+  ],
+  [ServiceProviderContextProvider, { value: getServiceProvider() }],
+  [
+    FailedCaptureAttemptsContextProvider,
+    {
+      maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+      maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
+      maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
+    },
+  ],
+  [DocumentCapture, { onStepChange: extendSession }],
+);
 
-    const exportedKey = await window.crypto.subtle.exportKey('raw', backgroundUploadEncryptKey);
-    formData.encryption_key = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
-    formData.step = 'verify_document';
-  }
-
-  const {
-    helpCenterRedirectUrl: helpCenterRedirectURL,
-    maxCaptureAttemptsBeforeTips,
-    maxCaptureAttemptsBeforeNativeCamera,
-    maxSubmissionAttemptsBeforeNativeCamera,
-    acuantVersion,
-    flowPath,
-    cancelUrl: cancelURL,
-    idvInPersonUrl: inPersonURL,
-    securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-    inPersonCtaVariantTestingEnabled,
-    inPersonCtaVariantActive,
-    inPersonUspsOutageMessageEnabled,
-  } = appRoot.dataset as DOMStringMap & AppRootData;
-
-  const App = composeComponents(
-    [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
-    [DeviceContext.Provider, { value: device }],
-    [
-      InPersonContext.Provider,
-      {
-        value: {
-          inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
-          inPersonCtaVariantActive,
-          inPersonURL,
-          inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
-        },
-      },
-    ],
-    [AnalyticsContextProvider, { trackEvent }],
-    [
-      AcuantContextProvider,
-      {
-        sdkSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantJavascriptWebSdk.min.js`,
-        cameraSrc: acuantVersion && `/acuant/${acuantVersion}/AcuantCamera.min.js`,
-        credentials: getMetaContent('acuant-sdk-initialization-creds'),
-        endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
-        glareThreshold,
-        sharpnessThreshold,
-      },
-    ],
-    [
-      UploadContextProvider,
-      {
-        endpoint: String(appRoot.getAttribute('data-endpoint')),
-        statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
-        statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
-        isMockClient,
-        backgroundUploadURLs,
-        backgroundUploadEncryptKey,
-        formData,
-        flowPath,
-      },
-    ],
-    [
-      FlowContext.Provider,
-      {
-        value: {
-          cancelURL,
-          currentStep: 'document_capture',
-        },
-      },
-    ],
-    [ServiceProviderContextProvider, { value: getServiceProvider() }],
-    [
-      FailedCaptureAttemptsContextProvider,
-      {
-        maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
-        maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
-        maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
-      },
-    ],
-    [DocumentCapture, { isAsyncForm, onStepChange: extendSession }],
-  );
-
-  render(<App />, appRoot);
-})();
+render(<App />, appRoot);
