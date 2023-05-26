@@ -25,7 +25,13 @@
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
-  <%= render OneTimeCodeInputComponent.new(form: f, autofocus: true, value: @presenter.code_value) %>
+  <%= render OneTimeCodeInputComponent.new(
+        form: f,
+        autofocus: true,
+        value: @presenter.code_value,
+        code_length: TwoFactorAuthenticatable::OTP_LENGTH,
+        optional_prefix: '#',
+      ) %>
   <%= f.input(
         :remember_device,
         as: :boolean,

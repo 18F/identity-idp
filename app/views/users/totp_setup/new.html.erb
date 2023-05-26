@@ -40,7 +40,7 @@
       <%= render OneTimeCodeInputComponent.new(
             form: f,
             transport: nil,
-            maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+            code_length: TwoFactorAuthenticatable::OTP_LENGTH,
             field_options: {
               label: false,
               input_html: {

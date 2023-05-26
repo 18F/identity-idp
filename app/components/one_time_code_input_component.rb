@@ -2,7 +2,8 @@ class OneTimeCodeInputComponent < BaseComponent
   attr_reader :form,
               :name,
               :value,
-              :maxlength,
+              :code_length,
+              :optional_prefix,
               :autofocus,
               :transport,
               :numeric,
@@ -15,8 +16,9 @@ class OneTimeCodeInputComponent < BaseComponent
   # @param [FormBuilder] form Form builder instance.
   # @param [Symbol] name Field name. Defaults to `:code`.
   # @param [String] value Field value. Defaults to empty.
-  # @param [Integer] maxlength Sets maxlength for the field. Defaults to
+  # @param [Integer] code_length Expected code length. Defaults to
   # TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
+  # @param [String] optional_prefix Optional prefix to allow before code
   # @param [Boolean] autofocus Whether the input should be focused on page load. Defaults to
   # `false`.
   # @param [String] transport WebOTP transport method. Defaults to 'sms'.
@@ -27,7 +29,8 @@ class OneTimeCodeInputComponent < BaseComponent
     form:,
     name: :code,
     value: nil,
-    maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH + 1, # to allow for leading '#'
+    code_length: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+    optional_prefix: '',
     autofocus: false,
     transport: 'sms',
     numeric: true,
@@ -37,7 +40,8 @@ class OneTimeCodeInputComponent < BaseComponent
     @form = form
     @name = name
     @value = value
-    @maxlength = maxlength
+    @code_length = code_length
+    @optional_prefix = optional_prefix
     @autofocus = autofocus
     @transport = transport
     @numeric = numeric
@@ -53,11 +57,23 @@ class OneTimeCodeInputComponent < BaseComponent
     end
   end
 
+  def input_maxlength
+    optional_prefix.size + code_length
+  end
+
   def input_pattern
+    "#{input_pattern_prefix}#{input_pattern_character_set}{#{code_length}}"
+  end
+
+  def input_pattern_prefix
+    "#{Regexp.escape(optional_prefix)}?" if optional_prefix.present?
+  end
+
+  def input_pattern_character_set
     if numeric?
-      '#?[0-9]*'
+      '[0-9]'
     else
-      '#?[a-zA-Z0-9]*'
+      '[a-z0-9]'
     end
   end
 
