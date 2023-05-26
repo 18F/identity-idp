@@ -48,7 +48,7 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
       end
 
       it 'renders input pattern' do
-        expect(rendered).to have_css('[pattern="[a-z0-9]{6}"]')
+        expect(rendered).to have_css('[pattern="[a-zA-Z0-9]{6}"]')
       end
     end
   end
