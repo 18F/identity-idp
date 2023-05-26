@@ -36,11 +36,10 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
   },
 });
 global.window.Response = Response;
+global.navigator.sendBeacon = () => true;
 
 useCleanDOM(dom);
 useConsoleLogSpy();
-
-global.navigator.sendBeacon = () => true;
 
 // Remove after upgrading to React 18
 // See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
