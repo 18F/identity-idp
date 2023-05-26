@@ -4,6 +4,8 @@ module RateLimitConcern
   def check_rate_limited_and_redirect
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
+      next if throttle_and_controller_match(throttle_type)
+
       if idv_attempter_rate_limited?(throttle_type)
         track_rate_limited_event(throttle_type)
         rate_limited_redirect(throttle_type)
@@ -23,8 +25,6 @@ module RateLimitConcern
   end
 
   def rate_limited_redirect(throttle_type)
-    return if throttle_and_controller_match(throttle_type)
-
     case throttle_type
     when :idv_resolution
       redirect_to idv_session_errors_failure_url
