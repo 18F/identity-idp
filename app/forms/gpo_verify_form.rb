@@ -19,11 +19,11 @@ class GpoVerifyForm
     result = valid?
     threatmetrix_check_failed = fraud_review_checker.fraud_check_failed?
     if result
+      pending_profile&.remove_gpo_deactivation_reason
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
       elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
-        pending_profile&.remove_gpo_deactivation_reason
         deactivate_for_fraud_review
       else
         pending_profile&.update!(
