@@ -4,8 +4,8 @@ $render-font-face: false !default;
 
 @forward '@18f/identity-design-system/packages/uswds-core' with (
   $theme-body-font-size: 'sm',
-  $theme-font-path: '.',
-  $theme-image-path: '@18f/identity-design-system/dist/assets/img',
+  $theme-font-path: '',
+  $theme-image-path: '',
   $theme-global-border-box-sizing: true,
   $theme-global-link-styles: true,
   $theme-grid-container-max-width: 'tablet-lg',

@@ -13,28 +13,24 @@ describe('SpinnerButtonElement', () => {
 
   interface WrapperOptions {
     actionMessage?: string;
-    tagName?: string;
     spinOnClick?: boolean;
     inForm?: boolean;
     isButtonTo?: boolean;
   }
 
-  function createWrapper({
-    actionMessage,
-    tagName = 'a',
-    spinOnClick,
-    inForm,
-    isButtonTo,
-  }: WrapperOptions = {}) {
-    let tag;
-    if (tagName === 'a') {
-      tag = '<a href="#">Click Me</a>';
-    } else {
-      tag = '<input type="submit" value="Click Me">';
-    }
+  function createWrapper({ actionMessage, spinOnClick, inForm, isButtonTo }: WrapperOptions = {}) {
+    let button = `
+      <button class="usa-button">
+        <span class="spinner-button__content">Click Me</span>
+        <span class="spinner-dots" aria-hidden="true">
+          <span class="spinner-dots__dot"></span>
+          <span class="spinner-dots__dot"></span>
+          <span class="spinner-dots__dot"></span>
+        </span>
+      </button>`;
 
     if (isButtonTo) {
-      tag = `<form action="#">${tag}</form>`;
+      button = `<form action="#">${button}</form>`;
     }
 
     let html = `
@@ -42,14 +38,7 @@ describe('SpinnerButtonElement', () => {
         long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
       >
-        <div class="spinner-button__content">
-          ${tag}
-          <span class="spinner-dots" aria-hidden="true">
-            <span class="spinner-dots__dot"></span>
-            <span class="spinner-dots__dot"></span>
-            <span class="spinner-dots__dot"></span>
-          </span>
-        </div>
+        ${button}
         ${
           actionMessage
             ? `<div
@@ -71,7 +60,7 @@ describe('SpinnerButtonElement', () => {
 
   it('shows spinner on click', async () => {
     const wrapper = createWrapper();
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.click(button);
 
@@ -80,7 +69,7 @@ describe('SpinnerButtonElement', () => {
 
   context('inside form', () => {
     it('disables button without preventing form handlers', async () => {
-      const wrapper = createWrapper({ tagName: 'button', inForm: true });
+      const wrapper = createWrapper({ inForm: true });
       let didSubmit = false;
       wrapper.form!.addEventListener('submit', (event) => {
         didSubmit = true;
@@ -96,7 +85,7 @@ describe('SpinnerButtonElement', () => {
     });
 
     it('unbinds events when disconnected', () => {
-      const wrapper = createWrapper({ tagName: 'button', inForm: true });
+      const wrapper = createWrapper({ inForm: true });
       const form = wrapper.form!;
       form.removeChild(wrapper);
 
@@ -109,7 +98,7 @@ describe('SpinnerButtonElement', () => {
 
   context('with form inside (button_to)', () => {
     it('disables button without preventing form handlers', async () => {
-      const wrapper = createWrapper({ tagName: 'button', isButtonTo: true });
+      const wrapper = createWrapper({ isButtonTo: true });
       let didSubmit = false;
       wrapper.form!.addEventListener('submit', (event) => {
         didSubmit = true;
@@ -126,7 +115,7 @@ describe('SpinnerButtonElement', () => {
   });
 
   it('does not show spinner if form is invalid', async () => {
-    const wrapper = createWrapper({ tagName: 'button', inForm: true });
+    const wrapper = createWrapper({ inForm: true });
     const form = wrapper.closest('form')!;
     const input = document.createElement('input');
     input.required = true;
@@ -141,7 +130,7 @@ describe('SpinnerButtonElement', () => {
   it('announces action message', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -154,7 +143,7 @@ describe('SpinnerButtonElement', () => {
   it('shows action message visually after long delay', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -176,7 +165,7 @@ describe('SpinnerButtonElement', () => {
 
   it('supports disabling default spin on click behavior', async () => {
     const wrapper = createWrapper({ spinOnClick: false });
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.click(button);
 
@@ -185,7 +174,7 @@ describe('SpinnerButtonElement', () => {
 
   it('removes action message timeout when disconnected from the page', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
-    const button = screen.getByRole('link', { name: 'Click Me' });
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     sandbox.spy(window, 'setTimeout');
     sandbox.spy(window, 'clearTimeout');

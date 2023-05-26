@@ -3,11 +3,18 @@ class ClipboardButtonComponentPreview < BaseComponentPreview
   def default
     render(ClipboardButtonComponent.new(clipboard_text: 'Copied Text', class: css_class))
   end
+
+  def unstyled
+    render(
+      ClipboardButtonComponent.new(clipboard_text: 'Copied Text', unstyled: true, class: css_class),
+    )
+  end
   # @!endgroup
 
   # @param clipboard_text text
-  def workbench(clipboard_text: 'Copied Text')
-    render(ClipboardButtonComponent.new(clipboard_text:, class: css_class))
+  # @param unstyled toggle
+  def workbench(clipboard_text: 'Copied Text', unstyled: false)
+    render(ClipboardButtonComponent.new(clipboard_text:, unstyled:, class: css_class))
   end
 
   private

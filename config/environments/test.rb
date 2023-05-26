@@ -12,14 +12,11 @@ Rails.application.configure do
   config.action_controller.allow_forgery_protection = false
   config.active_support.test_order = :random
   config.active_support.deprecation = :stderr
-  config.assets.gzip = false
   config.i18n.raise_on_missing_translations = true
 
   config.action_mailer.delivery_method = :test
   config.action_mailer.default_url_options = { host: IdentityConfig.store.domain_name }
   config.action_mailer.asset_host = IdentityConfig.store.mailer_domain_name
-
-  config.assets.debug = false
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
@@ -31,8 +28,6 @@ Rails.application.configure do
   # config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_controller.asset_host = ENV['RAILS_ASSET_HOST'] if ENV.key?('RAILS_ASSET_HOST')
-
-  config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
 
   config.middleware.use RackSessionAccess::Middleware
 

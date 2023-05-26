@@ -947,6 +947,62 @@ module AnalyticsEvents
     )
   end
 
+  # A job to check USPS notifications about in-person enrollment status updates has started
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_started(**extra)
+    track_event(
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job started',
+      **extra,
+    )
+  end
+
+  # A job to check USPS notifications about in-person enrollment status updates has completed
+  # @param [Integer] fetched_items items fetched
+  # @param [Integer] processed_items items fetched and processed
+  # @param [Integer] deleted_items items fetched, processed, and then deleted from the queue
+  # @param [Integer] valid_items items that could be successfully used to update a record
+  # @param [Integer] invalid_items items that couldn't be used to update a record
+  # @param [Integer] incomplete_items fetched items not processed nor deleted from the queue
+  # @param [Integer] deletion_failed_items processed items that we failed to delete
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_completed(
+    fetched_items:,
+    processed_items:,
+    deleted_items:,
+    valid_items:,
+    invalid_items:,
+    incomplete_items:,
+    deletion_failed_items:,
+    **extra
+  )
+    track_event(
+      'InPersonEnrollmentsReadyForStatusCheckJob: Job completed',
+      fetched_items:,
+      processed_items:,
+      deleted_items:,
+      valid_items:,
+      invalid_items:,
+      incomplete_items:,
+      deletion_failed_items:,
+      **extra,
+    )
+  end
+
+  # A job to check USPS notifications about in-person enrollment status updates
+  # has encountered an error
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_proofing_enrollments_ready_for_status_check_job_ingestion_error(
+    exception_class:,
+    exception_message:,
+    **extra
+  )
+    track_event(
+      'InPersonEnrollmentsReadyForStatusCheckJob: Ingestion error',
+      exception_class:,
+      exception_message:,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_upload" param is true
   def idv_doc_auth_agreement_submitted(**extra)

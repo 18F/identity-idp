@@ -1,5 +1,6 @@
 module Idv
   class ComeBackLaterController < ApplicationController
+    include IdvSession
     include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
