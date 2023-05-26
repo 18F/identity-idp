@@ -22,23 +22,6 @@ import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 import { InPersonContext } from '../context';
 
-/**
- * Returns a new object with specified keys removed.
- *
- * @param object Original object.
- * @param keys Keys to remove.
- *
- * @return Object with keys removed.
- */
-export const except = <T extends Record<string, any>>(object: T, ...keys: string[]): Partial<T> =>
-  Object.entries(object).reduce((result, [key, value]) => {
-    if (!keys.includes(key)) {
-      result[key] = value;
-    }
-
-    return result;
-  }, {});
-
 interface DocumentCaptureProps {
   /**
    * Callback triggered on step change.
