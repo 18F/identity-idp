@@ -157,6 +157,7 @@ class ApplicationController < ActionController::Base
     return unless params[:timeout]
 
     if params[:timeout] == 'session'
+      analytics.session_timed_out
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,

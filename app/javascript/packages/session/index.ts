@@ -1,2 +1,2 @@
-export { requestSessionStatus, extendSession, endSession } from './requests';
-export type { SessionStatus, SessionDestroyResponse } from './requests';
+export { requestSessionStatus, extendSession } from './requests';
+export type { SessionStatus } from './requests';

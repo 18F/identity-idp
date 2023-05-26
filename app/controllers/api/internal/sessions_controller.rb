@@ -20,13 +20,6 @@ module Api
         render json: status_response
       end
 
-      def destroy
-        analytics.session_timed_out
-        request_id = sp_session[:request_id]
-        sign_out
-        render json: { redirect: root_url(request_id:, timeout: :session) }
-      end
-
       private
 
       def status_response

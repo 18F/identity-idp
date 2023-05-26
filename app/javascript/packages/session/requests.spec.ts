@@ -1,12 +1,8 @@
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import type { SetupServer } from 'msw/node';
-import { SESSIONS_URL, requestSessionStatus, extendSession, endSession } from './requests';
-import type {
-  SessionLiveStatusResponse,
-  SessionTimedOutStatusResponse,
-  SessionDestroyResponse,
-} from './requests';
+import { SESSIONS_URL, requestSessionStatus, extendSession } from './requests';
+import type { SessionLiveStatusResponse, SessionTimedOutStatusResponse } from './requests';
 
 describe('requestSessionStatus', () => {
   let server: SetupServer;
@@ -153,29 +149,5 @@ describe('extendSession', () => {
     it('throws an error', async () => {
       await expect(extendSession()).to.be.rejected();
     });
-  });
-});
-
-describe('endSession', () => {
-  const redirect = 'http://example.com';
-
-  let server: SetupServer;
-  before(() => {
-    server = setupServer(
-      rest.delete<{}, {}, SessionDestroyResponse>(SESSIONS_URL, (_req, res, ctx) =>
-        res(ctx.json({ redirect })),
-      ),
-    );
-    server.listen();
-  });
-
-  after(() => {
-    server.close();
-  });
-
-  it('resolves to the status', async () => {
-    const result = await endSession();
-
-    expect(result).to.deep.equal({ redirect });
   });
 });

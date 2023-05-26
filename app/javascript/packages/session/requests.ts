@@ -52,13 +52,6 @@ interface SessionTimedOutStatus {
 
 export type SessionStatus = SessionLiveStatus | SessionTimedOutStatus;
 
-export interface SessionDestroyResponse {
-  /**
-   * Redirect destination.
-   */
-  redirect: string;
-}
-
 export const SESSIONS_URL = '/api/internal/sessions';
 
 function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
@@ -107,10 +100,3 @@ export const extendSession = (): Promise<SessionStatus> =>
   request<SessionStatusResponse>(SESSIONS_URL, { method: 'PUT' })
     .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
-
-/**
- * Request that the current session be destroyed.
- *
- * @return A promise resolving once the session has been destroyed.
- */
-export const endSession = () => request<SessionDestroyResponse>(SESSIONS_URL, { method: 'DELETE' });
