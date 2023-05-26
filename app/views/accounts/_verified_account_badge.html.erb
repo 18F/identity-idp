@@ -1,9 +1,1 @@
-<div class="lg-verification-badge">
-  <%= image_tag(
-        asset_path('alerts/success.svg'),
-        size: 16,
-        class: 'text-middle',
-        alt: '',
-      ) %>
-  <%= t('headings.account.verified_account') %>
-</div>
+<%= render BadgeComponent.new(icon: :success).with_content(t('headings.account.verified_account')) %>
