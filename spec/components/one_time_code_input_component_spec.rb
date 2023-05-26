@@ -164,6 +164,14 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
       it 'renders input pattern' do
         expect(rendered).to have_css('[pattern="\\\$?[0-9]{6}"]')
       end
+
+      context 'with prefix which would be escaped in ruby but unescaped in javascript' do
+        let(:options) { { optional_prefix: '#' } }
+
+        it 'renders input pattern without escaping' do
+          expect(rendered).to have_css('[pattern="#?[0-9]{6}"]')
+        end
+      end
     end
   end
 end

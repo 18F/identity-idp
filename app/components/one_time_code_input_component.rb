@@ -13,6 +13,9 @@ class OneTimeCodeInputComponent < BaseComponent
   alias_method :numeric?, :numeric
   alias_method :autofocus?, :autofocus
 
+  # @see https://tc39.es/ecma262/#prod-SyntaxCharacter
+  JS_REGEXP_SYNTAX_CHARACTER = Regexp.union(%w[^ $ \ . * + ? ( ) [ ] { } |])
+
   # @param [FormBuilder] form Form builder instance.
   # @param [Symbol] name Field name. Defaults to `:code`.
   # @param [String] value Field value. Defaults to empty.
@@ -66,7 +69,7 @@ class OneTimeCodeInputComponent < BaseComponent
   end
 
   def input_pattern_prefix
-    "#{Regexp.escape(optional_prefix)}?" if optional_prefix.present?
+    "#{regexp_escape_for_js(optional_prefix)}?" if optional_prefix.present?
   end
 
   def input_pattern_character_set
@@ -87,5 +90,11 @@ class OneTimeCodeInputComponent < BaseComponent
 
   def input_css_class
     [*field_options.dig(:input_html, :class), 'one-time-code-input__input']
+  end
+
+  def regexp_escape_for_js(string)
+    # `Regexp.escape` escapes more characters than what is considered "special" for JavaScript
+    # regular expressions. Browsers may log errors for unexpected escaping of characters.
+    string.gsub(JS_REGEXP_SYNTAX_CHARACTER) { |c| Regexp.escape(c) }
   end
 end
