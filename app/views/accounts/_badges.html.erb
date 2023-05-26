@@ -1,7 +1,7 @@
 <% if @presenter.show_unphishable_badge? %>
-  <%= render 'accounts/unphishable_badge' %>
+  <%= render BadgeComponent.new(icon: :unphishable).with_content(t('headings.account.unphishable')) %>
 <% end %>
 
 <% if @presenter.show_verified_badge? %>
-  <%= render 'accounts/verified_account_badge' %>
+  <%= render BadgeComponent.new(icon: :success).with_content(t('headings.account.verified_account')) %>
 <% end %>
