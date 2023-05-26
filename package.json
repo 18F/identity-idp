@@ -9,7 +9,7 @@
     "app/javascript/packages/*"
   ],
   "scripts": {
-    "typecheck": "tsc --pretty false",
+    "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss'",
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
