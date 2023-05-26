@@ -7,7 +7,6 @@ module Idv
     include StepUtilitiesConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :render_404_if_hybrid_handoff_controller_disabled
     before_action :confirm_agreement_step_complete
 
     def show
@@ -208,10 +207,6 @@ module Idv
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)
-    end
-
-    def render_404_if_hybrid_handoff_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
     end
 
     def confirm_agreement_step_complete
