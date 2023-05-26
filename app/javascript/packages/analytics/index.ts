@@ -17,14 +17,30 @@ interface NewRelicGlobals {
  */
 export async function trackEvent(event: string, payload?: object): Promise<void> {
   const endpoint = getConfigValue('analyticsEndpoint');
+
   if (!endpoint) {
     return;
   }
 
+  const eventJson = JSON.stringify({ event, payload });
+
+  // Favor making analytics requests using sendBeacon(), which can be prioritized
+  // appropriately by the browser and have a better chance of succeeding during page unload.
+  try {
+    const blob = new Blob([eventJson], { type: 'application/json' });
+    const wasQueued = navigator.sendBeacon(endpoint, blob);
+    if (wasQueued) {
+      // The browser has promised it will send our request for us -- we can stop now.
+      return;
+    }
+  } catch {}
+
+  // Fall back to fetch() if sendBeacon is not available or if the call to sendBeacon() did
+  // not result in the browser actually making the request.
   await fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event, payload }),
+    body: eventJson,
   }).catch(() => {
     // An error would only be thrown if a network error occurred during the fetch request, which is
     // a scenario we can ignore. By absorbing the error, it should be assumed that an awaited call

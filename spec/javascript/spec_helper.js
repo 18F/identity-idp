@@ -40,6 +40,8 @@ global.window.Response = Response;
 useCleanDOM(dom);
 useConsoleLogSpy();
 
+global.navigator.sendBeacon = () => true;
+
 // Remove after upgrading to React 18
 // See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
 delete global.MessageChannel;
