@@ -39,7 +39,7 @@
     <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
   <%= render AccordionComponent.new do |c| %>
-    <% c.header { t('idv.messages.review.intro') } %>
+    <% c.with_header { t('idv.messages.review.intro') } %>
     <%= render 'shared/pii_review', pii: @applicant,
                                     phone: PhoneFormatter.format(@applicant[:phone]) %>
   <% end %>

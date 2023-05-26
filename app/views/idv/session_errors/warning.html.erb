@@ -1,12 +1,12 @@
 <% title t('titles.failure.information_not_verified') %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.header { t('idv.warning.sessions.heading') } %>
+  <% c.with_header { t('idv.warning.sessions.heading') } %>
 
   <p><%= t('idv.failure.sessions.warning') %></p>
   <p><strong><%= t('idv.warning.attempts', count: @remaining_attempts) %></strong></p>
 
-  <% c.action_button(
+  <% c.with_action_button(
        action: ->(**tag_options, &block) { link_to(@try_again_path, **tag_options, &block) },
        class: 'margin-bottom-2',
      ) { t('idv.forgot_password.try_again') } %>

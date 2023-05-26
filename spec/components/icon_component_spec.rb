@@ -12,7 +12,9 @@ RSpec.describe IconComponent, type: :component do
   it 'renders icon svg' do
     rendered = render_inline IconComponent.new(icon: :print)
 
-    expect(rendered).to have_css(".usa-icon use[href^='#{request.base_url}'][href$='.svg#print']")
+    expect(rendered).to have_css(
+      ".usa-icon use[href^='#{vc_test_request.base_url}'][href$='.svg#print']",
+    )
   end
 
   context 'with invalid icon' do

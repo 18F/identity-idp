@@ -7,7 +7,7 @@ RSpec.describe AccordionComponent, type: :component do
 
   subject(:rendered) do
     render_inline(described_class.new(**options)) do |c|
-      c.header { 'heading' }
+      c.with_header { 'heading' }
       'content'
     end
   end

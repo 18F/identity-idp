@@ -8,7 +8,7 @@
 </div>
 
 <%= render AccordionComponent.new do |c| %>
-  <% c.header { t('forms.personal_key_partial.explanation.header') } %>
+  <% c.with_header { t('forms.personal_key_partial.explanation.header') } %>
   <% t('forms.personal_key_partial.explanation.text').each do |paragraph| %>
     <p><%= paragraph %></p>
   <% end %>

@@ -25,7 +25,7 @@ RSpec.describe TabNavigationComponent, type: :component do
 
   context 'with link for current request' do
     before do
-      allow(request).to receive(:path).and_return('/first')
+      allow(vc_test_request).to receive(:path).and_return('/first')
     end
 
     it 'renders current link as highlighted' do

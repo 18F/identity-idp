@@ -1,6 +1,6 @@
 <noscript>
   <%= render StatusPageComponent.new(status: :error) do |c| %>
-    <% c.header { header } %>
+    <% c.with_header { header } %>
 
     <% if intro %>
       <p><%= intro %></p>
