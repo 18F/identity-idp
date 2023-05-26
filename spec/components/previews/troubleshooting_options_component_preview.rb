@@ -2,10 +2,10 @@ class TroubleshootingOptionsComponentPreview < BaseComponentPreview
   # @!group Preview
   def default
     render(TroubleshootingOptionsComponent.new) do |c|
-      c.header { 'Header' }
-      c.option(url: '') { 'Option 1' }
-      c.option(url: '') { 'Option 2' }
-      c.option(url: '', new_tab: true) { 'Option 3 (New Tab)' }
+      c.with_header { 'Header' }
+      c.with_option(url: '') { 'Option 1' }
+      c.with_option(url: '') { 'Option 2' }
+      c.with_option(url: '', new_tab: true) { 'Option 3 (New Tab)' }
     end
   end
   # @!endgroup
@@ -13,10 +13,10 @@ class TroubleshootingOptionsComponentPreview < BaseComponentPreview
   # @param header text
   def workbench(header: 'Header')
     render(TroubleshootingOptionsComponent.new) do |c|
-      c.header { header }
-      c.option(url: '') { 'Option 1' }
-      c.option(url: '') { 'Option 2' }
-      c.option(url: '', new_tab: true) { 'Option 3 (New Tab)' }
+      c.with_header { header }
+      c.with_option(url: '') { 'Option 1' }
+      c.with_option(url: '') { 'Option 2' }
+      c.with_option(url: '', new_tab: true) { 'Option 3 (New Tab)' }
     end
   end
 end

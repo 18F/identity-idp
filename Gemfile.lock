@@ -166,6 +166,9 @@ GEM
     aws-sdk-sns (1.49.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.53.0)
+      aws-sdk-core (~> 3, >= 3.165.0)
+      aws-sigv4 (~> 1.1)
     aws-sigv4 (1.5.2)
       aws-eventstream (~> 1, >= 1.0.2)
     axe-core-api (4.3.2)
@@ -377,17 +380,16 @@ GEM
     loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    lookbook (1.5.3)
-      actioncable
+    lookbook (2.0.3)
       activemodel
       css_parser
       htmlbeautifier (~> 1.3)
       htmlentities (~> 4.3.4)
-      listen (~> 3.0)
+      marcel (~> 1.0)
       railties (>= 5.0)
       redcarpet (~> 3.5)
       rouge (>= 3.26, < 5.0)
-      view_component (> 2.0, < 4)
+      view_component (>= 2.0)
       yard (~> 0.9.25)
       zeitwerk (~> 2.5)
     lru_redux (1.1.0)
@@ -551,7 +553,7 @@ GEM
     retries (0.0.5)
     rexml (3.2.5)
     rotp (6.2.0)
-    rouge (4.1.0)
+    rouge (4.1.1)
     rqrcode (2.1.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 1.0)
@@ -669,7 +671,7 @@ GEM
       activemodel
       mail (>= 2.6.1)
       simpleidn
-    view_component (2.82.0)
+    view_component (3.0.0)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
       method_source (~> 1.0)
@@ -730,6 +732,7 @@ DEPENDENCIES
   aws-sdk-pinpointsmsvoice
   aws-sdk-ses (~> 1.6)
   aws-sdk-sns
+  aws-sdk-sqs
   axe-core-rspec (~> 4.2)
   barby (~> 0.6.8)
   base32-crockford
@@ -769,8 +772,9 @@ DEPENDENCIES
   letter_opener (~> 1.8)
   listen
   lograge (>= 0.11.2)
-  lookbook (~> 1.5.3)
+  lookbook (~> 2.0.0)
   lru_redux
+  mail
   maxminddb
   msgpack (~> 1.6)
   multiset
@@ -829,7 +833,7 @@ DEPENDENCIES
   terminal-table
   uglifier (~> 4.2)
   valid_email (>= 0.1.3)
-  view_component (~> 2.82.0)
+  view_component (~> 3.0.0)
   webauthn (~> 2.5.2)
   webdrivers (~> 5.2.0)
   webmock

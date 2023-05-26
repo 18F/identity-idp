@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_02_235856) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_03_231037) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -308,7 +308,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_02_235856) do
     t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
     t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
+    t.boolean "ready_for_status_check", default: false
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"

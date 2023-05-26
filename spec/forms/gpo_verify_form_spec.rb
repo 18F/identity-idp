@@ -135,6 +135,7 @@ describe GpoVerifyForm do
 
           expect(pending_profile).not_to be_active
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
         it 'updates establishing in-person enrollment to pending' do

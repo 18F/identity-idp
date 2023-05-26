@@ -6,7 +6,7 @@
     ) %>
 
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
+  <% c.with_header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
   <p>
     <%= t('vendor_outage.alerts.pinpoint.idv.message_html', app_name: APP_NAME, sp_name: current_sp&.friendly_name || APP_NAME) %>
   </p>
@@ -18,7 +18,7 @@
       </li>
     <% end %>
   </ul>
-  <% c.action_button(
+  <% c.with_action_button(
        action: ->(**tag_options, &block) do
          link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
        end,
@@ -26,7 +26,7 @@
        wide: true,
        class: 'usa-button',
      ).with_content(t('doc_auth.buttons.continue')) %>
-  <% c.action_button(
+  <% c.with_action_button(
        action: ->(**tag_options, &block) do
          link_to(exit_url, **tag_options, &block)
        end,
@@ -35,14 +35,14 @@
        outline: true,
        class: 'usa-button',
      ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
-  <% c.troubleshooting_options do |tc| %>
-    <% tc.header { t('components.troubleshooting_options.default_heading') } %>
-    <% tc.option(
+  <% c.with_troubleshooting_options do |tc| %>
+    <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
+    <% tc.with_option(
          url: StatusPage.base_url,
          new_tab: true,
        ).with_content(t('vendor_outage.get_updates_on_status_page')) %>
     <% if decorated_session.sp_name %>
-      <% tc.option(
+      <% tc.with_option(
            url: current_sp.return_to_sp_url,
            new_tab: true,
          ).with_content(

@@ -9,6 +9,7 @@ module Idv
       vendor_phone_confirmation
       user_phone_confirmation
       gpo_code_verified
+      phone_for_mobile_flow
       pii
       previous_phone_step_params
       profile_confirmation
