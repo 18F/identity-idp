@@ -1,5 +1,4 @@
 class GetUspsWaitingProofingResultsJob < GetUspsProofingResultsJob
-
   queue_as :long_running
 
   def perform(_now)
@@ -32,7 +31,7 @@ class GetUspsWaitingProofingResultsJob < GetUspsProofingResultsJob
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-      percent_enrollments_errored: percent_errored(),
+      percent_enrollments_errored: percent_errored,
       job_name: self.class.name,
     )
 

@@ -44,7 +44,7 @@ module JobHelpers
       def mail_delivery_params(proofed_at)
         return {} if proofed_at.blank?
         mail_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
-                          DEFAULT_EMAIL_DELAY_IN_HOURS
+                           DEFAULT_EMAIL_DELAY_IN_HOURS
         wait_until = proofed_at + mail_delay_hours.hours
         return {} if mail_delay_hours == 0 || wait_until < Time.zone.now
         return { wait_until: wait_until, queue: :intentionally_delayed }

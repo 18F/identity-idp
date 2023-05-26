@@ -46,7 +46,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-      percent_enrollments_errored: percent_errored(),
+      percent_enrollments_errored: percent_errored,
       job_name: self.class.name,
     )
 
@@ -111,7 +111,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
-  def percent_errored()
+  def percent_errored
     error_rate = 0
     if enrollment_outcomes[:enrollments_checked] > 0
       error_rate =
@@ -265,9 +265,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       NewRelic::Agent.notice_error(err)
       analytics_payload = {
         enrollment_id: enrollment.id,
-          exception_class: err.class.to_s,
-          exception_message: err.message,
-          job_name: self.class.name,
+        exception_class: err.class.to_s,
+        exception_message: err.message,
+        job_name: self.class.name,
       }
       analytics_ipp_job_deadline_passed_email(user: enrollment.user, payload: analytics_payload)
     else
@@ -276,7 +276,10 @@ class GetUspsProofingResultsJob < ApplicationJob
         enrollment_id: enrollment.id,
         job_name: self.class.name,
       }
-      analytics_ipp_job_deadline_passed_email_initiated(user: enrollment.user, payload: analytics_payload)
+      analytics_ipp_job_deadline_passed_email_initiated(
+        user: enrollment.user,
+        payload: analytics_payload,
+      )
       enrollment.update(deadline_passed_sent: true)
     end
 

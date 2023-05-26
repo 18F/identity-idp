@@ -42,217 +42,217 @@ RSpec.describe GetUspsReadyProofingResultsJob do
   describe '#perform' do
     describe 'IPP enabled' do
       describe 'Ready Job enabled' do
-          let!(:pending_enrollments) do
-            [
-              create(
-                :in_person_enrollment, :pending,
-                selected_location_details: { name: 'BALTIMORE' },
-                issuer: 'http://localhost:3000',
-                ready_for_status_check: true
-              ),
-              create(
-                :in_person_enrollment, :pending,
-                selected_location_details: { name: 'FRIENDSHIP' },
-                ready_for_status_check: true
-              ),
-              create(
-                :in_person_enrollment, :pending,
-                selected_location_details: { name: 'WASHINGTON' },
-                ready_for_status_check: true
-              ),
-              create(
-                :in_person_enrollment, :pending,
-                selected_location_details: { name: 'ARLINGTON' },
-                ready_for_status_check: true
-              ),
-              create(
-                :in_person_enrollment, :pending,
-                selected_location_details: { name: 'DEANWOOD' },
-                ready_for_status_check: true
-              ),
-            ]
-          end
-          let(:pending_enrollment) { pending_enrollments[0] }
+        let!(:pending_enrollments) do
+          [
+            create(
+              :in_person_enrollment, :pending,
+              selected_location_details: { name: 'BALTIMORE' },
+              issuer: 'http://localhost:3000',
+              ready_for_status_check: true
+            ),
+            create(
+              :in_person_enrollment, :pending,
+              selected_location_details: { name: 'FRIENDSHIP' },
+              ready_for_status_check: true
+            ),
+            create(
+              :in_person_enrollment, :pending,
+              selected_location_details: { name: 'WASHINGTON' },
+              ready_for_status_check: true
+            ),
+            create(
+              :in_person_enrollment, :pending,
+              selected_location_details: { name: 'ARLINGTON' },
+              ready_for_status_check: true
+            ),
+            create(
+              :in_person_enrollment, :pending,
+              selected_location_details: { name: 'DEANWOOD' },
+              ready_for_status_check: true
+            ),
+          ]
+        end
+        let(:pending_enrollment) { pending_enrollments[0] }
 
-          before do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return([pending_enrollment])
-            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-            allow(IdentityConfig.store).to(
-              receive(:in_person_enrollments_ready_job_enabled).and_return(true),
-            )
-          end
+        before do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return([pending_enrollment])
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to(
+            receive(:in_person_enrollments_ready_job_enabled).and_return(true),
+          )
+        end
 
-          it 'requests the enrollments that need their status checked' do
-            stub_request_passed_proofing_results
+        it 'requests the enrollments that need their status checked' do
+          stub_request_passed_proofing_results
 
-            freeze_time do
-              job.perform(Time.zone.now)
-
-              expect(InPersonEnrollment).to(
-                have_received(:needs_status_check_on_ready_enrollments).
-                with(...reprocess_delay_minutes.minutes.ago),
-              )
-            end
-          end
-
-          it 'records the last attempted status check regardless of response code and contents' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return(pending_enrollments)
-            stub_request_proofing_results_with_responses(
-              request_failed_proofing_results_args,
-              request_in_progress_proofing_results_args,
-              request_in_progress_proofing_results_args,
-              request_failed_proofing_results_args,
-            )
-
-            expect(pending_enrollments.pluck(:status_check_attempted_at)).to(
-              all(eq nil),
-              'failed test precondition:
-              pending enrollments must not set status check attempted time',
-            )
-
-            expect(pending_enrollments.pluck(:status_check_completed_at)).to(
-              all(eq nil),
-              'failed test precondition:
-              pending enrollments must not set status check completed time',
-            )
-
-            freeze_time do
-              job.perform(Time.zone.now)
-
-              expect(
-                pending_enrollments.
-                  map(&:reload).
-                  pluck(:status_check_attempted_at),
-              ).to(
-                all(eq Time.zone.now),
-                'job must update status check attempted time for all pending enrollments',
-              )
-
-              expect(
-                pending_enrollments.
-                  map(&:reload).
-                  pluck(:status_check_completed_at),
-              ).to(
-                all(eq Time.zone.now),
-                'job must update status check completed time for all pending enrollments',
-              )
-            end
-          end
-
-          it 'logs a message when the job starts' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return(pending_enrollments)
-            stub_request_proofing_results_with_responses(
-              request_failed_proofing_results_args,
-              request_in_progress_proofing_results_args,
-              request_in_progress_proofing_results_args,
-              request_failed_proofing_results_args,
-            )
-
+          freeze_time do
             job.perform(Time.zone.now)
 
-            expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job started',
-              enrollments_count: 5,
-              reprocess_delay_minutes: 2.0,
+            expect(InPersonEnrollment).to(
+              have_received(:needs_status_check_on_ready_enrollments).
+              with(...reprocess_delay_minutes.minutes.ago),
             )
-          end
-
-          it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return(pending_enrollments)
-            stub_request_proofing_results_with_responses(
-              request_passed_proofing_results_args,
-              request_in_progress_proofing_results_args,
-              { status: 500 },
-              request_failed_proofing_results_args,
-              request_expired_proofing_results_args,
-            )
-
-            job.perform(Time.zone.now)
-
-            expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
-              duration_seconds: anything,
-              enrollments_checked: 5,
-              enrollments_errored: 1,
-              enrollments_expired: 1,
-              enrollments_failed: 1,
-              enrollments_in_progress: 1,
-              enrollments_passed: 1,
-              percent_enrollments_errored: 20,
-            )
-
-            expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
-                first[:duration_seconds],
-            ).to be >= 0.0
-          end
-
-          it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return(pending_enrollments)
-            stub_request_proofing_results_with_responses(
-              request_passed_proofing_results_args,
-            )
-
-            job.perform(Time.zone.now)
-
-            expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
-              duration_seconds: anything,
-              enrollments_checked: 5,
-              enrollments_errored: 0,
-              enrollments_expired: 0,
-              enrollments_failed: 0,
-              enrollments_in_progress: 0,
-              enrollments_passed: 5,
-              percent_enrollments_errored: 0,
-            )
-
-            expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
-                first[:duration_seconds],
-            ).to be >= 0.0
-          end
-
-          it 'logs a message with counts of various outcomes when the job completes
-          (no enrollments)' do
-            allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
-              and_return([])
-            stub_request_proofing_results_with_responses(
-              request_passed_proofing_results_args,
-            )
-
-            job.perform(Time.zone.now)
-
-            expect(job_analytics).to have_logged_event(
-              'GetUspsReadyProofingResultsJob: Job completed',
-              duration_seconds: anything,
-              enrollments_checked: 0,
-              enrollments_errored: 0,
-              enrollments_expired: 0,
-              enrollments_failed: 0,
-              enrollments_in_progress: 0,
-              enrollments_passed: 0,
-              percent_enrollments_errored: 0,
-            )
-
-            expect(
-              job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
-                first[:duration_seconds],
-            ).to be >= 0.0
           end
         end
+
+        it 'records the last attempted status check regardless of response code and contents' do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return(pending_enrollments)
+          stub_request_proofing_results_with_responses(
+            request_failed_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            request_failed_proofing_results_args,
+          )
+
+          expect(pending_enrollments.pluck(:status_check_attempted_at)).to(
+            all(eq nil),
+            'failed test precondition:
+              pending enrollments must not set status check attempted time',
+          )
+
+          expect(pending_enrollments.pluck(:status_check_completed_at)).to(
+            all(eq nil),
+            'failed test precondition:
+              pending enrollments must not set status check completed time',
+          )
+
+          freeze_time do
+            job.perform(Time.zone.now)
+
+            expect(
+              pending_enrollments.
+                map(&:reload).
+                pluck(:status_check_attempted_at),
+            ).to(
+              all(eq Time.zone.now),
+              'job must update status check attempted time for all pending enrollments',
+            )
+
+            expect(
+              pending_enrollments.
+                map(&:reload).
+                pluck(:status_check_completed_at),
+            ).to(
+              all(eq Time.zone.now),
+              'job must update status check completed time for all pending enrollments',
+            )
+          end
+        end
+
+        it 'logs a message when the job starts' do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return(pending_enrollments)
+          stub_request_proofing_results_with_responses(
+            request_failed_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            request_failed_proofing_results_args,
+          )
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsReadyProofingResultsJob: Job started',
+            enrollments_count: 5,
+            reprocess_delay_minutes: 2.0,
+          )
+        end
+
+        it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return(pending_enrollments)
+          stub_request_proofing_results_with_responses(
+            request_passed_proofing_results_args,
+            request_in_progress_proofing_results_args,
+            { status: 500 },
+            request_failed_proofing_results_args,
+            request_expired_proofing_results_args,
+          )
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsReadyProofingResultsJob: Job completed',
+            duration_seconds: anything,
+            enrollments_checked: 5,
+            enrollments_errored: 1,
+            enrollments_expired: 1,
+            enrollments_failed: 1,
+            enrollments_in_progress: 1,
+            enrollments_passed: 1,
+            percent_enrollments_errored: 20,
+          )
+
+          expect(
+            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              first[:duration_seconds],
+          ).to be >= 0.0
+        end
+
+        it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return(pending_enrollments)
+          stub_request_proofing_results_with_responses(
+            request_passed_proofing_results_args,
+          )
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsReadyProofingResultsJob: Job completed',
+            duration_seconds: anything,
+            enrollments_checked: 5,
+            enrollments_errored: 0,
+            enrollments_expired: 0,
+            enrollments_failed: 0,
+            enrollments_in_progress: 0,
+            enrollments_passed: 5,
+            percent_enrollments_errored: 0,
+          )
+
+          expect(
+            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              first[:duration_seconds],
+          ).to be >= 0.0
+        end
+
+        it 'logs a message with counts of various outcomes when the job completes
+          (no enrollments)' do
+          allow(InPersonEnrollment).to receive(:needs_status_check_on_ready_enrollments).
+            and_return([])
+          stub_request_proofing_results_with_responses(
+            request_passed_proofing_results_args,
+          )
+
+          job.perform(Time.zone.now)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsReadyProofingResultsJob: Job completed',
+            duration_seconds: anything,
+            enrollments_checked: 0,
+            enrollments_errored: 0,
+            enrollments_expired: 0,
+            enrollments_failed: 0,
+            enrollments_in_progress: 0,
+            enrollments_passed: 0,
+            percent_enrollments_errored: 0,
+          )
+
+          expect(
+            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+              first[:duration_seconds],
+          ).to be >= 0.0
+        end
       end
+    end
 
     describe 'IPP disabled' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
         allow(IdentityConfig.store).to(
-          receive(:in_person_enrollments_ready_job_enabled).and_return(true)
+          receive(:in_person_enrollments_ready_job_enabled).and_return(true),
         )
         allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
       end
@@ -268,7 +268,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         allow(IdentityConfig.store).to(
-          receive(:in_person_enrollments_ready_job_enabled).and_return(false)
+          receive(:in_person_enrollments_ready_job_enabled).and_return(false),
         )
         allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
       end
