@@ -5,6 +5,7 @@
 
 variables:
   GITLAB_CI: 'true'
+  FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:e846ed99aa3c8f9083731105b8ef25536c7ab3ed5e9f2b781b63431badcb091b'
@@ -107,7 +108,7 @@ check_changelog:
 
 specs:
   stage: test
-  parallel: 11
+  parallel: 22
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -128,6 +129,7 @@ specs:
   services:
     - name: postgres:13.9
       alias: db-postgres
+      command: ["--fsync=false", "--synchronous_commit=false", "--full_page_writes=false"]
     - name: redis:7.0
       alias: db-redis
   artifacts:
