@@ -129,8 +129,8 @@
         </lg-validated-field>
     </div>
   <% end -%>
-<div id="validated-field-error-<%= unique_id %>" class="usa-error-message <%= 'display-none' unless has_errors?  %>">
-  <% if has_errors?  %>
+<div id="validated-field-error-<%= unique_id %>" class="usa-error-message <%= 'display-none' unless has_errors? %>">
+  <% if has_errors? %>
     <%= error_msg %>
-  <% end  %>
+  <% end %>
 </div>
