@@ -244,7 +244,7 @@ en:
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        review: Re-enter your %{app_name} password to protect your data
+        review: Re-enter your %{app_name} password
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:

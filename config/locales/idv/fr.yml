@@ -275,7 +275,7 @@ fr:
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
+        review: 'Saisissez à nouveau votre mot de passe Login.gov %{app_name}'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

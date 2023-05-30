@@ -259,7 +259,7 @@ es:
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
+        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
