@@ -211,13 +211,17 @@ module TwoFactorAuthentication
     end
 
     def assign_phone
-      if user_session[:phone_id].present?
+      if updating_existing_number?
         phone_changed
       else
         phone_confirmed
       end
 
       update_phone_attributes
+    end
+
+    def updating_existing_number?
+      user_session[:phone_id].present?
     end
 
     def update_phone_attributes
