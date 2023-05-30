@@ -3,7 +3,6 @@ module FormDobValidator
   include ActionView::Helpers::TranslationHelper
 
   included do
-    include ActiveModel::Validations::Callbacks
     validate :validate_dob
   end
 
@@ -15,6 +14,8 @@ module FormDobValidator
       errors.add(:dob, message: dob_min_age_error, type: :dob_min_age_error)
     end
   end
+
+  private
 
   # @param [String|Date|ActionController::Parameters] dob
   # @return [Boolean] false unless it meets the required minimal age,
@@ -28,8 +29,7 @@ module FormDobValidator
     begin
       dob_date =
         if dob.is_a?(ActionController::Parameters)
-          h = dob.to_hash.with_indifferent_access
-          Date.new(h[:year].to_i, h[:month].to_i, h[:day].to_i)
+          param_to_date(dob)
         else
           dob
         end
@@ -48,5 +48,14 @@ module FormDobValidator
       'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
       app_name: APP_NAME,
     )
+  end
+
+  #
+  # @param [ActionController::Parameters] param
+  # @return [Date]
+  # It's caller's responsibility to ensure the param contains required entries
+  def param_to_date(param)
+    h = param.to_hash.with_indifferent_access
+    Date.new(h[:year].to_i, h[:month].to_i, h[:day].to_i)
   end
 end

@@ -123,7 +123,6 @@ class MemorableDateComponent < BaseComponent
   end
 
   def has_errors?
-    return false unless tag_options[:backend_validation]
     form.object.respond_to?(:errors) && form.object.errors.key?(name)
   end
 

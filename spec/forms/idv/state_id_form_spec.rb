@@ -43,6 +43,21 @@ describe Idv::StateIdForm do
       state_id_number: Faker::IDNumber.valid,
     }
   end
+  let(:invalid_char) { '1' }
+  let(:name_error_params) do
+    {
+      first_name: Faker::Name.first_name + invalid_char,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      identity_doc_address1: Faker::Address.street_address,
+      identity_doc_address2: Faker::Address.secondary_address,
+      identity_doc_zipcode: Faker::Address.zip_code,
+      identity_doc_address_state: Faker::Address.state_abbr,
+      same_address_as_id: 'true',
+      state_id_jurisdiction: 'AL',
+      state_id_number: Faker::IDNumber.valid,
+    }
+  end
   let(:pii) { nil }
   describe '#submit' do
     context 'when the form is valid' do
@@ -54,16 +69,19 @@ describe Idv::StateIdForm do
       end
     end
 
-    context 'when there is an error with dob minimum age' do
+    context 'when there is an error with name' do
       it 'returns a single min age error' do
-        result = subject.submit(dob_min_age_error_params)
-
+        allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
+        result = subject.submit(name_error_params)
+        expect(subject.errors.empty?).to be(false)
         expect(result).to be_kind_of(FormResponse)
-        expect(result.success?).to eq(false)
-        expect(result.errors[:dob]).to eq [I18n.t(
-          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-          app_name: APP_NAME,
-        )]
+        expect(result.success?).to eq(true)
+        expect(subject.errors[:first_name]).to eq [
+          I18n.t(
+            'in_person_proofing.form.state_id.errors.unsupported_chars',
+            char_list: [invalid_char].join(', '),
+          ),
+        ]
       end
     end
   end

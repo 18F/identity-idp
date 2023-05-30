@@ -20,7 +20,7 @@ module Idv
 
     def submit(params)
       consume_params(params)
-      validation_success = valid?
+      valid?
       cleaned_errors = errors.dup
       cleaned_errors.delete(:first_name, :nontransliterable_field)
       cleaned_errors.delete(:last_name, :nontransliterable_field)
@@ -29,7 +29,7 @@ module Idv
       cleaned_errors.delete(:identity_doc_address2, :nontransliterable_field)
 
       FormResponse.new(
-        success: validation_success,
+        success: cleaned_errors.empty?,
         errors: cleaned_errors,
       )
     end

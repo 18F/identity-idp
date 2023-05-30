@@ -280,7 +280,6 @@ RSpec.describe MemorableDateComponent, type: :component do
   end
 
   context 'backend validation error message' do
-    let(:tag_options) { { backend_validation: true } }
     let(:backend_error) { 'backend error' }
     it 'renders a visible error message element' do
       allow(form_builder.object).to receive(:errors).and_return(
