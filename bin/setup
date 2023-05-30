@@ -58,7 +58,7 @@ Dir.chdir APP_ROOT do
   run "yarn install"
 
   puts "\n== Stopping running services to ensure clean start =="
-  run "brew services stop --all"
+  run "brew services stop --all" if brew_installed
 
   puts "\n== Starting services =="
   run "brew services start redis" if brew_installed
