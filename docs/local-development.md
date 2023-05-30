@@ -44,7 +44,7 @@ If not using macOS:
     $ make setup
     ```
 
-    This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+    This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
 
 1. Now that you have you have everything installed, you can run the following command to start your local server:
 
