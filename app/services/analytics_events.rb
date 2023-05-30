@@ -3555,7 +3555,7 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_started(
     enrollments_count: nil,
     reprocess_delay_minutes: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3584,7 +3584,7 @@ module AnalyticsEvents
     enrollments_failed: nil,
     enrollments_in_progress: nil,
     enrollments_passed: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3649,7 +3649,7 @@ module AnalyticsEvents
     scan_count: nil,
     response_message: nil,
     response_status_code: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3686,7 +3686,7 @@ module AnalyticsEvents
   # @param [String] job_name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
     enrollment_id: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3706,7 +3706,7 @@ module AnalyticsEvents
     enrollment_id: nil,
     exception_class: nil,
     exception_message: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3752,7 +3752,7 @@ module AnalyticsEvents
     fraud_suspected: nil,
     passed: nil,
     reason: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3772,7 +3772,7 @@ module AnalyticsEvents
   # @param [String] job_name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_email_initiated(
     email_type: nil,
-    job_name: nil,
+    job_name:,
     **extra
   )
     track_event(
@@ -3803,6 +3803,7 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   # @param [Float] minutes_since_established
   # @param [String] response_message
+  # @param [String] job_name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_enrollment_incomplete(
     enrollment_code:,
     enrollment_id:,
@@ -3827,6 +3828,7 @@ module AnalyticsEvents
   # @param [Float] minutes_since_established
   # @param [String] response_message
   # @param [String] reason why was this error unexpected?
+  # @param [String] job_name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_unexpected_response(
     enrollment_code:,
     enrollment_id:,
