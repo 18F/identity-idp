@@ -11,6 +11,8 @@ module Idv
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
+    helper_method :step_indicator_step
+
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
 
@@ -74,6 +76,11 @@ module Idv
 
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
+    end
+
+    def step_indicator_step
+      return :secure_account unless address_verification_method == 'gpo'
+      :get_a_letter
     end
 
     private
