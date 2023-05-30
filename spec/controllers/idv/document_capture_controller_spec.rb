@@ -105,10 +105,7 @@ describe Idv::DocumentCaptureController do
     context 'user is rate_limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
-        profile = create(
-          :profile,
-          user: user,
-        )
+
         Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
         allow(subject).to receive(:current_user).and_return(user)
 
