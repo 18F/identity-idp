@@ -60,7 +60,10 @@ describe Idv::StateIdForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:dob]).to eq [I18n.t('doc_auth.errors.pii.birth_date_min_age')]
+        expect(result.errors[:dob]).to eq [I18n.t(
+          'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+          app_name: APP_NAME,
+        )]
       end
     end
   end
