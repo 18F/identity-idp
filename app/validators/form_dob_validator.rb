@@ -44,6 +44,9 @@ module FormDobValidator
   end
 
   def dob_min_age_error
-    I18n.t('doc_auth.errors.pii.birth_date_min_age')
+    I18n.t(
+      'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+      app_name: APP_NAME,
+    )
   end
 end
