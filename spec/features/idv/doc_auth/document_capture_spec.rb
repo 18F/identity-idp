@@ -26,7 +26,7 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
     complete_agreement_step
     visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
   context 'standard desktop flow' do

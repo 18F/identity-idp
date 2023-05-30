@@ -1,11 +1,7 @@
 require 'rails_helper'
 
-feature 'doc auth welcome step' do
+feature 'doc auth agreement step' do
   include DocAuthHelper
-
-  def expect_doc_auth_upload_step
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
-  end
 
   def expect_doc_auth_first_step
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
@@ -28,7 +24,7 @@ feature 'doc auth welcome step' do
       check t('doc_auth.instructions.consent', app_name: APP_NAME)
       click_continue
 
-      expect_doc_auth_upload_step
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
   end
 
@@ -49,7 +45,7 @@ feature 'doc auth welcome step' do
       check t('doc_auth.instructions.consent', app_name: APP_NAME)
       click_continue
 
-      expect_doc_auth_upload_step
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
   end
 
@@ -78,13 +74,13 @@ feature 'doc auth welcome step' do
         'IdV: doc auth upload visited',
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        step: 'upload', step_count: 1,
+        step: 'upload',
         irs_reproofing: false,
-        acuant_sdk_upgrade_ab_test_bucket: :default
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', step_count: 2, success: true),
+        hash_including(step: 'upload', success: true),
       )
     end
   end
