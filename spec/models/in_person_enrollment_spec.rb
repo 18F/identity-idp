@@ -262,10 +262,22 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'indicates whether a waiting enrollment needs a status check' do
-      expect(passed_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be_falsey
-      expect(failing_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be_falsey
-      expect(expired_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be_falsey
-      expect(checked_pending_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to(
+      expect(passed_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to(
+        be_falsey,
+      )
+      expect(
+        failing_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
+      ).to(
+        be_falsey,
+      )
+      expect(
+        expired_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
+      ).to(
+        be_falsey,
+      )
+      expect(
+        checked_pending_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
+      ).to(
         be_falsey,
       )
       needy_enrollments.each do |enrollment|

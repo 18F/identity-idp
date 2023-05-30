@@ -333,7 +333,6 @@ class GetUspsProofingResultsJob < ApplicationJob
         email_type: 'Failed fraud suspected',
         job_name: self.class.name,
       }
-      analytics_ipp_job_email_initiated(user: enrollment.user, payload: email_analytics_payload)
     else
       send_failed_email(enrollment.user, enrollment)
       email_analytics_payload = {
@@ -341,8 +340,8 @@ class GetUspsProofingResultsJob < ApplicationJob
         email_type: 'Failed',
         job_name: self.class.name,
       }
-      analytics_ipp_job_email_initiated(user: enrollment.user, payload: email_analytics_payload)
     end
+    analytics_ipp_job_email_initiated(user: enrollment.user, payload: email_analytics_payload)
   end
 
   def handle_successful_status_update(enrollment, response)

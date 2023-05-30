@@ -22,11 +22,13 @@ module JobHelpers
       end
 
       def analytics_ipp_job_deadline_passed_email_exception(user: AnonymousUser.new, payload: {})
-        analytics(user).idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(**payload)
+        analytics(user).
+          idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(**payload)
       end
 
       def analytics_ipp_job_deadline_passed_email_initiated(user: AnonymousUser.new, payload: {})
-        analytics(user).idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(**payload)
+        analytics(user).
+          idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(**payload)
       end
 
       def analytics_ipp_job_unexpected_response(user: AnonymousUser.new, payload: {})
