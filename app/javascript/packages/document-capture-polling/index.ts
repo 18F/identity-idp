@@ -6,6 +6,8 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
   DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL,
 );
 
+const STILL_ON_PAGE_INTERVAL = 5000;
+
 interface DocumentCapturePollingElements {
   form: HTMLFormElement;
 
@@ -44,6 +46,8 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
+  stillOnPageTimer: NodeJS.Timeout | undefined;
+
   constructor({
     elements,
     statusEndpoint,
@@ -74,6 +78,17 @@ export class DocumentCapturePolling {
       ? (event) => {
           event.preventDefault();
           event.returnValue = '';
+
+          this.trackEvent('IdV: Doc capture polling onbeforeunload');
+
+          if (this.stillOnPageTimer) {
+            clearTimeout(this.stillOnPageTimer);
+          }
+
+          this.stillOnPageTimer = setTimeout(() => {
+            this.trackEvent('IdV: Doc capture polling onbeforeunload still on page');
+            this.stillOnPageTimer = undefined;
+          }, STILL_ON_PAGE_INTERVAL);
         }
       : null;
   }
