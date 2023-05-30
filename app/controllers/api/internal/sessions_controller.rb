@@ -15,8 +15,11 @@ module Api
       end
 
       def update
-        analytics.session_kept_alive if live?
-        update_last_request_at
+        if live?
+          analytics.session_kept_alive
+          update_last_request_at
+        end
+
         render json: status_response
       end
 
