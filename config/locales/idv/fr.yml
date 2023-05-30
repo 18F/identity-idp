@@ -259,8 +259,6 @@ fr:
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
-          informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
       verifying: Vérification…
@@ -278,7 +276,7 @@ fr:
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        review: 'Saisissez à nouveau votre mot de passe Login.gov %{app_name}'
+        review: 'Saisissez à nouveau votre mot de passe %{app_name}'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

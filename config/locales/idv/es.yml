@@ -243,7 +243,6 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…

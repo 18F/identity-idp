@@ -388,7 +388,7 @@ RSpec.describe 'In Person Proofing', js: true do
         t('step_indicator.flows.idv.verify_phone_or_address'),
       )
       click_on t('idv.buttons.mail.send')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       complete_review_step
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
