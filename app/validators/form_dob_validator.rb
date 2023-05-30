@@ -11,15 +11,15 @@ module FormDobValidator
 
   def validate_dob
     return unless dob.present?
-    unless meet_min_age_req(dob)
+    unless meet_min_age_req?(dob)
       errors.add(:dob, message: dob_min_age_error, type: :dob_min_age_error)
     end
   end
 
-  # @param [String|Date|ActionController::Parameters] dob: string or ActiveSupport::TimeWithZone
+  # @param [String|Date|ActionController::Parameters] dob
   # @return [Boolean] false unless it meets the required minimal age,
   #  including invalid input value and types
-  def meet_min_age_req(dob)
+  def meet_min_age_req?(dob)
     return false if dob.nil?
     unless dob.is_a?(String) || dob.is_a?(ActionController::Parameters) ||
            dob.is_a?(Date)
