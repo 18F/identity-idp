@@ -17,9 +17,9 @@ describe 'RateLimitConcern' do
     end
   end
 
-  describe '#check_rate_limited_and_redirect' do
+  describe '#confirm_not_rate_limited' do
     controller Idv::StepController do
-      before_action :check_rate_limited_and_redirect
+      before_action :confirm_not_rate_limited
     end
 
     before(:each) do
