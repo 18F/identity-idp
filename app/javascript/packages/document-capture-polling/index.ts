@@ -94,7 +94,6 @@ export class DocumentCapturePolling {
       isThrottled: result === ResultType.THROTTLED,
     });
     this.bindPromptOnNavigate(false);
-
     if (redirect) {
       window.location.href = redirect;
     } else {
