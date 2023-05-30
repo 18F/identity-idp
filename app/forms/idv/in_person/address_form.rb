@@ -17,7 +17,7 @@ module Idv
       end
 
       def submit(params)
-        consume_params(params)
+        set_params(params)
 
         cleaned_errors = errors.dup
         cleaned_errors.delete(:city, :nontransliterable_field)
@@ -35,24 +35,17 @@ module Idv
       attr_reader :capture_secondary_id_enabled
       alias_method :capture_secondary_id_enabled?, :capture_secondary_id_enabled
 
-      def consume_params(params)
-        params.each do |key, value|
-          raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-
-          if key == 'same_address_as_id'
-            send("#{key}=", infer_boolean_type(value))
-          else
-            send("#{key}=", value)
-          end
-        end
+      def set_params(params)
+        @state = params[:state]
+        @zipcode = params[:zipcode]
+        @city = params[:city]
+        @address1 = params[:address1]
+        @address2 = params[:address2]
+        @same_address_as_id = ActiveRecord::Type::Boolean.new.cast(params[:same_address_as_id])
       end
 
       def raise_invalid_address_parameter_error(key)
         raise ArgumentError, "#{key} is an invalid address attribute"
-      end
-
-      def infer_boolean_type(value)
-        ActiveRecord::Type::Boolean.new.cast(value)
       end
     end
   end
