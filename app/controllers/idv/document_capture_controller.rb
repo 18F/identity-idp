@@ -18,7 +18,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :view, true)
 
-      render :show, locals: extra_view_variables if !rate_limit_redirect!(:idv_doc_auth)
+      render :show, locals: extra_view_variables
     end
 
     def update
