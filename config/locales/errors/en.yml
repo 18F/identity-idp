@@ -52,7 +52,7 @@ en:
       inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
-      invalid_phone_number: Phone number is not valid
+      invalid_phone_number: 'Enter a 10 digit phone number. Example: (201) 555-0123'
       invalid_recaptcha_token: You must complete the spam prevention challenge.
       invalid_sms_number: The phone number entered doesn’t support text messaging. Try
         the Phone call option.
