@@ -9,6 +9,10 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
 
   subject(:rendered) { render_inline OneTimeCodeInputComponent.new(form:, **options) }
 
+  before do
+    stub_const('TwoFactorAuthenticatable::DIRECT_OTP_LENGTH', 6)
+  end
+
   describe 'name' do
     context 'no name given' do
       it 'renders default name "code"' do
@@ -30,6 +34,10 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
       it 'renders input mode "numeric"' do
         expect(rendered).to have_selector('[inputmode="numeric"]')
       end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="[0-9]{6}"]')
+      end
     end
 
     context 'numeric is false' do
@@ -37,6 +45,10 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
 
       it 'renders input mode "text"' do
         expect(rendered).to have_selector('[inputmode="text"]')
+      end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="[a-zA-Z0-9]{6}"]')
       end
     end
   end
@@ -107,22 +119,58 @@ RSpec.describe OneTimeCodeInputComponent, type: :component do
     end
   end
 
-  describe 'maxlength' do
-    context 'no maxlength given' do
-      it 'renders input maxlength DIRECT_OTP_LENGTH + 1' do
-        expect(rendered).to have_selector(
-          "[maxlength=\"#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH + 1}\"]",
-        )
+  describe 'code_length' do
+    context 'without code_length' do
+      it 'renders input default maxlength' do
+        expect(rendered).to have_css('[maxlength="6"]')
+      end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="[0-9]{6}"]')
       end
     end
 
-    context 'maxlength given' do
-      let(:options) { { maxlength: 10 } }
+    context 'with code_length' do
+      let(:options) { { code_length: 10 } }
 
-      it 'renders input given maxlength' do
-        expect(rendered).to have_selector(
-          '[maxlength="10"]',
-        )
+      it 'renders input maxlength based on given code_length' do
+        expect(rendered).to have_css('[maxlength="10"]')
+      end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="[0-9]{10}"]')
+      end
+    end
+  end
+
+  describe 'optional_prefix' do
+    context 'without optional_prefix' do
+      it 'renders input default maxlength' do
+        expect(rendered).to have_css('[maxlength="6"]')
+      end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="[0-9]{6}"]')
+      end
+    end
+
+    context 'with optional_prefix given' do
+      let(:options) { { optional_prefix: '$' } }
+
+      it 'renders input maxlength based on given optional_prefix' do
+        expect(rendered).to have_css('[maxlength="7"]')
+      end
+
+      it 'renders input pattern' do
+        expect(rendered).to have_css('[pattern="\\\$?[0-9]{6}"]')
+      end
+
+      context 'with prefix which would be escaped in ruby but unescaped in javascript' do
+        let(:options) { { optional_prefix: '#' } }
+
+        it 'renders input pattern without escaping' do
+          expect(rendered).to have_css('[pattern="#?[0-9]{6}"]')
+        end
       end
     end
   end
