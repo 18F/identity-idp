@@ -53,7 +53,8 @@ module IdvSession
   end
 
   def idv_session_user
-    # effective_user fallback usage for SessionErrorsController and CancellationsController
-    current_user || effective_user
+    return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_session?
+
+    current_user
   end
 end
