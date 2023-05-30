@@ -17,8 +17,6 @@ describe('document-capture/context/upload', () => {
       'isMockClient',
       'statusPollInterval',
       'getStatus',
-      'backgroundUploadURLs',
-      'backgroundUploadEncryptKey',
       'flowPath',
       'formData',
     ]);
@@ -27,8 +25,6 @@ describe('document-capture/context/upload', () => {
     expect(result.current.getStatus).to.be.instanceOf(Function);
     expect(result.current.statusPollInterval).to.be.undefined();
     expect(result.current.isMockClient).to.be.false();
-    expect(result.current.backgroundUploadURLs).to.deep.equal({});
-    expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
     expect(await result.current.getStatus()).to.deep.equal({});
   });
 
@@ -74,37 +70,6 @@ describe('document-capture/context/upload', () => {
 
     await result.current.getStatus();
     expect(result.current.statusPollInterval).to.equal(1000);
-  });
-
-  it('can be overridden with background upload URLs', () => {
-    const backgroundUploadURLs = { foo: '/' };
-    const { result } = renderHook(() => useContext(UploadContext), {
-      wrapper: ({ children }) => (
-        <UploadContextProvider backgroundUploadURLs={backgroundUploadURLs}>
-          {children}
-        </UploadContextProvider>
-      ),
-    });
-
-    expect(result.current.backgroundUploadURLs).to.deep.equal(backgroundUploadURLs);
-  });
-
-  it('can be overridden with background upload encrypt key', async () => {
-    const key = await window.crypto.subtle.generateKey(
-      {
-        name: 'AES-GCM',
-        length: 256,
-      },
-      true,
-      ['encrypt', 'decrypt'],
-    );
-    const { result } = renderHook(() => useContext(UploadContext), {
-      wrapper: ({ children }) => (
-        <UploadContextProvider backgroundUploadEncryptKey={key}>{children}</UploadContextProvider>
-      ),
-    });
-
-    expect(result.current.backgroundUploadEncryptKey).to.equal(key);
   });
 
   it('provides endpoint to custom uploader', async () => {

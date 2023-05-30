@@ -23,13 +23,13 @@
     <h2><%= t('doc_auth.instructions.welcome') %></h2>
 
     <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-      <%= c.item(heading: t('doc_auth.instructions.bullet1')) do %>
+      <%= c.with_item(heading: t('doc_auth.instructions.bullet1')) do %>
         <p><%= t('doc_auth.instructions.text1') %></p>
       <% end %>
-      <%= c.item(heading: t('doc_auth.instructions.bullet2')) do %>
+      <%= c.with_item(heading: t('doc_auth.instructions.bullet2')) do %>
         <p><%= t('doc_auth.instructions.text2') %></p>
       <% end %>
-      <%= c.item(heading: t('doc_auth.instructions.bullet3')) do %>
+      <%= c.with_item(heading: t('doc_auth.instructions.bullet3')) do %>
         <ul class="usa-list">
           <% t('doc_auth.instructions.text3_html').each do |bullet_item| %>
             <li><%= bullet_item %></li>

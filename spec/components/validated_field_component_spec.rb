@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe ValidatedFieldComponent, type: :component do
   include SimpleForm::ActionViewExtensions::FormHelper
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
   let(:form_object) { User.new }
   let(:form_builder) do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})

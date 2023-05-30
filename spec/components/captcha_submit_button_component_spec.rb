@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe CaptchaSubmitButtonComponent, type: :component do
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
   let(:form_object) { NewPhoneForm.new(user: User.new) }
   let(:form) { SimpleForm::FormBuilder.new('', form_object, view_context, {}) }
   let(:content) { 'Button' }

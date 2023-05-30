@@ -99,7 +99,6 @@ module TwoFactorAuthentication
       else
         redirect_to authentication_methods_setup_url
       end
-      reset_otp_session_data
     end
   end
 end

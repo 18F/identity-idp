@@ -17,42 +17,19 @@ import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
-import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 import { InPersonContext } from '../context';
 
-/**
- * Returns a new object with specified keys removed.
- *
- * @param object Original object.
- * @param keys Keys to remove.
- *
- * @return Object with keys removed.
- */
-export const except = <T extends Record<string, any>>(object: T, ...keys: string[]): Partial<T> =>
-  Object.entries(object).reduce((result, [key, value]) => {
-    if (!keys.includes(key)) {
-      result[key] = value;
-    }
-
-    return result;
-  }, {});
-
 interface DocumentCaptureProps {
-  /**
-   * Whether submission should poll for async response.
-   */
-  isAsyncForm?: boolean;
-
   /**
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
 }
 
-function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: DocumentCaptureProps) {
+function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
@@ -82,10 +59,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const submissionFormValues = useMemo(
     () =>
       formValues && {
-        ...(isAsyncForm ? except(formValues, 'front', 'back') : formValues),
+        ...formValues,
         flow_path: flowPath,
       },
-    [isAsyncForm, formValues, flowPath],
+    [formValues, flowPath],
   );
 
   let initialActiveErrors;
@@ -94,17 +71,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       field: error.field,
       error,
     }));
-  } else if (submissionError instanceof BackgroundEncryptedUploadError) {
-    initialActiveErrors = [{ field: submissionError.baseField, error: submissionError }];
   }
 
   let initialValues;
   if (submissionError && formValues) {
     initialValues = formValues;
-
-    if (submissionError instanceof BackgroundEncryptedUploadError) {
-      initialValues = except(initialValues, ...submissionError.fields);
-    }
   }
 
   const inPersonSteps: FormStep[] =
