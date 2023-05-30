@@ -7,7 +7,6 @@ feature 'doc auth upload step' do
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:new_controller_enabled) { true }
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
@@ -16,8 +15,6 @@ feature 'doc auth upload step' do
 
   before do
     sign_in_and_2fa_user
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
-      and_return(new_controller_enabled)
     allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
     complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

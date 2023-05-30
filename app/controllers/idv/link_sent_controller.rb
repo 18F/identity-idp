@@ -45,10 +45,8 @@ module Idv
 
       if flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
-      elsif IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-        redirect_to idv_hybrid_handoff_url
       else
-        redirect_to idv_doc_auth_url
+        redirect_to idv_hybrid_handoff_url
       end
     end
 

@@ -69,12 +69,12 @@ describe Idv::LinkSentController do
 
     context '#confirm_upload_step_complete' do
       context 'no flow_path' do
-        it 'redirects to idv_doc_auth_url' do
+        it 'redirects to idv_hybrid_handoff_url' do
           flow_session[:flow_path] = nil
 
           get :show
 
-          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
 

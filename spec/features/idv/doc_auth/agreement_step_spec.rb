@@ -64,25 +64,6 @@ feature 'doc auth agreement step' do
     it 'progresses to document capture' do
       expect(page).to have_current_path(idv_document_capture_url)
     end
-
-    it 'logs analytics for upload step' do
-      log = DocAuthLog.last
-      expect(log.upload_view_count).to eq 1
-      expect(log.upload_view_at).not_to be_nil
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload visited',
-        analytics_id: 'Doc Auth',
-        flow_path: 'standard',
-        step: 'upload',
-        irs_reproofing: false,
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      )
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', success: true),
-      )
-    end
   end
 
   context 'during the acuant maintenance window' do
