@@ -1,7 +1,7 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  def check_rate_limited_and_redirect
+  def confirm_not_rate_limited
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
       next if throttle_and_controller_match(throttle_type) && action_name == 'update'

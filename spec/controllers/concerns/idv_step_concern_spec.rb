@@ -16,6 +16,15 @@ describe 'IdvStepConcern' do
     end
   end
 
+  describe 'before_actions' do
+    it 'includes confirm_not_rate_limited before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :confirm_not_rate_limited,
+      )
+    end
+  end
+
   describe '#confirm_idv_needed' do
     controller Idv::StepController do
       before_action :confirm_idv_needed
@@ -233,29 +242,6 @@ describe 'IdvStepConcern' do
 
         expect(response).to redirect_to idv_gpo_verify_url
       end
-    end
-  end
-
-  describe '#confirm_not_rate_limited' do
-    controller Idv::StepController do
-      before_action :confirm_not_rate_limited
-    end
-
-    before do
-      sign_in(user)
-      allow(subject).to receive(:current_user).and_return(user)
-
-      routes.draw do
-        get 'show' => 'idv/step#show'
-      end
-    end
-
-    it 'calls check_rate_limited_and_redirect' do
-      allow(controller).to receive(:check_rate_limited_and_redirect)
-
-      get :show
-
-      expect(controller).to have_received(:check_rate_limited_and_redirect)
     end
   end
 end

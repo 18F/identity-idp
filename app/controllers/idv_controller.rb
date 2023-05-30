@@ -7,6 +7,7 @@ class IdvController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
   before_action :handle_fraud
+  before_action :confirm_not_rate_limited
 
   def index
     if decorated_session.requested_more_recent_verification? ||
@@ -14,8 +15,6 @@ class IdvController < ApplicationController
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url
-    elsif check_rate_limited_and_redirect
-      # do nothing
     else
       verify_identity
     end

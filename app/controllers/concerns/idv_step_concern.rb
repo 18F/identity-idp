@@ -21,10 +21,6 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
   end
 
-  def confirm_not_rate_limited
-    check_rate_limited_and_redirect
-  end
-
   def flow_session
     user_session['idv/doc_auth'] || {}
   end
