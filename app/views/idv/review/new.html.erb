@@ -15,11 +15,6 @@
   <%= t('idv.messages.review.message', app_name: APP_NAME) %>
 </p>
 
-<%= new_tab_link_to(
-      t('idv.messages.sessions.read_more_encrypt', app_name: APP_NAME),
-      MarketingSite.security_url,
-    ) %>
-
 <%= simple_form_for(
       current_user,
       url: idv_review_path,
@@ -38,11 +33,6 @@
   <div class="text-right margin-top-neg-4 margin-bottom-4">
     <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
   </div>
-  <%= render AccordionComponent.new do |c| %>
-    <% c.with_header { t('idv.messages.review.intro') } %>
-    <%= render 'shared/pii_review', pii: @applicant,
-                                    phone: PhoneFormatter.format(@applicant[:phone]) %>
-  <% end %>
 
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
