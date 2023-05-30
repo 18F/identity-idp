@@ -75,7 +75,7 @@ describe Idv::StateIdForm do
         result = subject.submit(name_error_params)
         expect(subject.errors.empty?).to be(false)
         expect(result).to be_kind_of(FormResponse)
-        expect(result.success?).to eq(true)
+        expect(result.success?).to eq(false)
         expect(subject.errors[:first_name]).to eq [
           I18n.t(
             'in_person_proofing.form.state_id.errors.unsupported_chars',
