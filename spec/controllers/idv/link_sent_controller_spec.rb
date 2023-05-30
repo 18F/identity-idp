@@ -158,9 +158,8 @@ describe Idv::LinkSentController do
 
           put :update
 
-          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
           expect(flow_session[:error_message]).to eq(error_message)
-          expect(flow_session['Idv::Steps::UploadStep']).to be_nil
         end
       end
 
