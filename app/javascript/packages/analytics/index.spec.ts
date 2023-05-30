@@ -17,18 +17,16 @@ describe('trackEvent', () => {
   const sandbox = useSandbox();
 
   beforeEach(() => {
-    sandbox.stub(global, 'fetch').resolves();
     sandbox.stub(global.navigator, 'sendBeacon').returns(true);
   });
 
   context('page configuration does not exist', () => {
-    it('does not call sendBeacon or fetch and resolves to undefined', () => {
+    it('does not call sendBeacon and resolves to undefined', () => {
       const result = trackEvent('name');
 
       expect(result).to.be.undefined();
 
       expect(global.navigator.sendBeacon).not.to.have.been.called();
-      expect(global.fetch).not.to.have.been.called();
     });
   });
 
@@ -53,11 +51,6 @@ describe('trackEvent', () => {
 
         expect(await blobTextContents(data)).to.eql('{"event":"name"}');
       });
-
-      it('does not call fetch', () => {
-        trackEvent('name');
-        expect(global.fetch).not.to.have.been.called();
-      });
     });
 
     context('payload', () => {
@@ -73,10 +66,6 @@ describe('trackEvent', () => {
         expect(actualEndpoint).to.eql(endpoint);
         expect(data).to.have.property('type').eql('application/json');
         expect(await blobTextContents(data)).to.eql('{"event":"name","payload":{"foo":"bar"}}');
-      });
-      it('does not fall back to fetch', () => {
-        trackEvent('name', { foo: 'bar' });
-        expect(global.fetch).not.to.have.been.called();
       });
     });
 
@@ -100,11 +89,6 @@ describe('trackEvent', () => {
       it('returns undefined', () => {
         const result = trackEvent('name');
         expect(result).to.be.undefined();
-      });
-
-      it('does not call fetch', () => {
-        trackEvent('name');
-        expect(global.fetch).not.to.have.been.called();
       });
     });
   });
