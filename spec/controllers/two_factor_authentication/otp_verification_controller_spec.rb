@@ -161,6 +161,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_otp')
       end
+
+      it 'does not set auth_method and requires 2FA' do
+        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+      end
     end
 
     context 'when the user enters an invalid OTP during reauthentication context' do
@@ -278,6 +283,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
         }
+
+        expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'tracks the attempt event with reauthentication parameter true' do
@@ -393,6 +401,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       let(:user) { create(:user, :fully_registered) }
       before do
         sign_in_as_user(user)
+        subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
         subject.user_session[:unconfirmed_phone] = '+1 (703) 555-5555'
         subject.user_session[:context] = 'confirmation'
 
@@ -417,7 +426,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
       end
 
-      context 'user has an existing phone number' do
+      context 'user is fully authenticated and has an existing phone number' do
         context 'user enters a valid code' do
           before do
             subject.user_session[:mfa_selections] = ['sms']

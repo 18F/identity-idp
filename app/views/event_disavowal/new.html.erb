@@ -15,6 +15,9 @@
           field_options: {
             label: t('forms.passwords.edit.labels.password'),
             required: true,
+            input_html: {
+              autocomplete: 'new-password',
+            },
           },
         ) %>
     <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>

@@ -12,6 +12,9 @@ module Idv
       end
 
       def call
+        if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+          redirect_to idv_hybrid_handoff_url
+        end
       end
 
       def form_submit

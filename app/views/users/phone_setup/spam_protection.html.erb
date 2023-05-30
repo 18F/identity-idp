@@ -42,13 +42,13 @@
 <% end %>
 
 <%= render TroubleshootingOptionsComponent.new do |c| %>
-  <% c.header { t('components.troubleshooting_options.default_heading') } %>
+  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
   <% if local_assigns[:two_factor_options_path].present? %>
-    <% c.option(
+    <% c.with_option(
          url: two_factor_options_path,
        ).with_content(t('two_factor_authentication.login_options_link_text')) %>
   <% end %>
-  <% c.option(
+  <% c.with_option(
        url: help_center_redirect_path(
          category: 'get-started',
          article: 'authentication-options',

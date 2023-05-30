@@ -7,8 +7,7 @@ RSpec.describe BaseComponent, type: :component do
     end
   end
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:view_context).and_return(view_context)

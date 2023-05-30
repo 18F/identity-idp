@@ -6,7 +6,7 @@
 
 <%= simple_form_for('', url: submit_new_piv_cac_url) do |f| %>
   <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
-    <%= c.item(heading: t('instructions.mfa.piv_cac.step_1')) do %>
+    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_1')) do %>
       <p>
         <%= t('instructions.mfa.piv_cac.step_1_info') %>
       </p>
@@ -23,8 +23,8 @@
             },
           ) %>
     <% end %>
-    <%= c.item(heading: t('instructions.mfa.piv_cac.step_2')) %>
-    <%= c.item(heading: t('instructions.mfa.piv_cac.step_3')) do %>
+    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_2')) %>
+    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_3')) do %>
       <p>
         <%= t('instructions.mfa.piv_cac.step_3_info_html') %>
       </p>

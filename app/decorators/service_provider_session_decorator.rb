@@ -42,6 +42,8 @@ class ServiceProviderSessionDecorator
   def legacy_logo_url
     logo = sp_logo
     ActionController::Base.helpers.image_path("sp-logos/#{logo}")
+  rescue Propshaft::MissingAssetError
+    ''
   end
 
   def new_session_heading

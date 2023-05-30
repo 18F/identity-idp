@@ -44,17 +44,17 @@
 <section class="border-1px border-primary-light radius-lg padding-4">
   <h2 class="margin-top-0 margin-bottom-2"><%= t('in_person_proofing.body.barcode.what_to_expect') %></h2>
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% c.item(heading: t('in_person_proofing.process.what_to_do.heading')) do %>
+    <% c.with_item(heading: t('in_person_proofing.process.what_to_do.heading')) do %>
       <p><%= t('in_person_proofing.process.what_to_do.info', app_name: APP_NAME) %></p>
     <% end %>
-    <% c.item(heading: t('in_person_proofing.process.barcode.heading', app_name: APP_NAME)) do %>
+    <% c.with_item(heading: t('in_person_proofing.process.barcode.heading', app_name: APP_NAME)) do %>
       <p class="margin-bottom-105"><%= t('in_person_proofing.process.barcode.info') %></p>
     <% end %>
-    <% c.item(heading: t('in_person_proofing.process.state_id.heading')) do %>
+    <% c.with_item(heading: t('in_person_proofing.process.state_id.heading')) do %>
       <p><%= t('in_person_proofing.process.state_id.info') %></p>
     <% end %>
     <% if @presenter.needs_proof_of_address? %>
-      <% c.item(heading: t('in_person_proofing.process.proof_of_address.heading')) do %>
+      <% c.with_item(heading: t('in_person_proofing.process.proof_of_address.heading')) do %>
         <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
         <ul class="usa-list margin-y-105">
           <% t('in_person_proofing.process.proof_of_address.acceptable_proof').each do |proof| %>
