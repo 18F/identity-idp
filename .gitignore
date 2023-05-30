@@ -75,6 +75,7 @@ Vagrantfile
 
 package-lock.json
 browsers.json
+Brewfile.lock.json
 
 saml_*.txt
 saml_*.shr

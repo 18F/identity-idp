@@ -7,51 +7,52 @@ This installation method is meant for those who are familiar with setting up loc
 We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling to install the below dependencies; while we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
 
 ### Dependencies
+
+Installing the packages differs slightly if you're on a macOS or a different OS.
+
+If using macOS:
+
+1. Install [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
+1. Install Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+1. Skip to the [set up local environment section](#set-up-local-environment). Your other dependencies will be installed in that step.
+
+If not using macOS:
+
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby ~> 3.2.0
-- [PostgreSQL](http://www.postgresql.org/download/)
-- [Redis 7+](http://redis.io/)
-- [Node.js v16](https://nodejs.org)
-- [Yarn](https://yarnpkg.com/en/)
-- [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+    - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
+    - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+    - [PostgreSQL](http://www.postgresql.org/download/)
+    - [Redis 7+](http://redis.io/)
+    - [Node.js v16](https://nodejs.org)
+    - [Yarn](https://yarnpkg.com/en/)
+    - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
-2. You will need to install openssl version 1.1:
+1. You will need to install openssl version 1.1:
 
-- Run `brew install openssl@1.1`
+    - Run `brew install openssl@1.1`
 
-3. Test that you have Postgres and Redis running.
+1. Test that you have Postgres and Redis running.
 
-  For example, if you've installed with Homebrew, you can start the services like this:
+1. Continue to the [set up local environment section](#set-up-local-environment).
 
-  ```
-  $ brew services start redis
-  $ brew services start postgresql
-  ```
+### Set up local environment
 
-  To confirm the services are running properly, run:
-  ```
-  $ brew services list
-  ```
+1. Run the following command to set up your local environment:
 
-4. Run the following command to set up your local environment:
+    ```
+    $ make setup
+    ```
 
-  ```
-  $ make setup
-  ```
+    This command copies sample configuration files, installs required gems and brew packages (if using macOS), and sets up the database. Check out our [Makefile commands](../Makefile) to learn more about what this command does.
 
-  This command copies sample configuration files, installs required gems
-  and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+1. Now that you have you have everything installed, you can run the following command to start your local server:
 
-  Note: If you didn't explicitly install `openssl@1.1` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
+    ```
+    $ make run
+    ```
 
-5. Now that you have you have everything installed, you can run the following command to start your local server:
-
-  ```
-  $ make run
-  ```
-
-  You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
+    You should now be able to go to open up your favorite browser, go to `localhost:3000` and see your local development environment running.
 
 ### Running tests locally
 
