@@ -41,6 +41,8 @@ module Idv
         flash_now[:error] = t('idv.errors.mail_limit_reached')
       elsif idv_session.phone_confirmed?
         flash_now[:success] = t('idv.messages.review.phone_verified')
+      elsif address_verification_method == 'gpo'
+        flash_now[:info] = t('idv.messages.review.gpo_pending')
       end
     end
 
@@ -75,9 +77,9 @@ module Idv
     end
 
     private
-
+    
     def address_verification_method
-      user_session.dig('idv', 'address_verification_mechanism')
+      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
 
     def init_profile

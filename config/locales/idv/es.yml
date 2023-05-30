@@ -231,6 +231,7 @@ es:
       review:
         intro: Su información verificada
         phone_verified: Verificamos su número de teléfono
+        gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.

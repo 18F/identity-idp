@@ -217,6 +217,7 @@ en:
       review:
         intro: Your verified information
         phone_verified: We verified your phone number
+        gpo_pending: We'll send your letter once you re-enter your password.
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will

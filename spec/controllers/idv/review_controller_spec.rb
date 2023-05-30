@@ -160,13 +160,16 @@ describe Idv::ReviewController do
       end
 
       context 'user is in gpo flow' do
-        it 'does not display success message' do
+        it 'displays info message about sending letter' do
           idv_session.vendor_phone_confirmation = false
           idv_session.address_verification_mechanism = 'gpo'
 
           get :new
 
           expect(flash.now[:success]).to be_nil
+          expect(flash.now[:info]).to eq(
+            t('idv.messages.review.gpo_pending')
+          )
         end
       end
 
