@@ -35,3 +35,4 @@ production:
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   secret_key_base: development_secret_key_base
   domain_name: ['env', 'DOMAIN_NAME']
+  use_kms: false
