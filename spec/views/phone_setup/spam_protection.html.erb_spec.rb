@@ -55,7 +55,7 @@ describe 'users/phone_setup/spam_protection.html.erb' do
   end
 
   context 'fully registered user adding new phone' do
-    let(:user) {create(:user, :fully_registered) }
+    let(:user) { create(:user, :fully_registered) }
 
     it 'does not render additional troubleshooting option to two factor options' do
       expect(rendered).to_not have_link(
