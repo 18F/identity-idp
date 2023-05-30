@@ -53,6 +53,7 @@ module IdvSession
   end
 
   def idv_session_user
+    # effective_user fallback usage for SessionErrorsController and CancellationsController
     current_user || effective_user
   end
 end
