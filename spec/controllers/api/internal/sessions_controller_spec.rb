@@ -8,6 +8,7 @@ RSpec.describe Api::Internal::SessionsController do
   end
 
   before do
+    stub_analytics
     establish_warden_session if user
   end
 
@@ -79,11 +80,23 @@ RSpec.describe Api::Internal::SessionsController do
       expect(response.headers['X-CSRF-Token']).to be_kind_of(String)
     end
 
+    it 'does not track analytics event' do
+      response
+
+      expect(@analytics).not_to have_logged_event('Session Kept Alive')
+    end
+
     context 'signed in' do
       let(:user) { create(:user, :fully_registered) }
 
       it 'responds with live and timeout properties' do
         expect(response_body).to eq(live: true, timeout: User.timeout_in.from_now.as_json)
+      end
+
+      it 'tracks analytics event' do
+        response
+
+        expect(@analytics).to have_logged_event('Session Kept Alive')
       end
 
       context 'after a delay' do
@@ -97,6 +110,12 @@ RSpec.describe Api::Internal::SessionsController do
           it 'updates timeout and responds with live and timeout properties' do
             expect(response_body).to eq(live: true, timeout: User.timeout_in.from_now.as_json)
           end
+
+          it 'tracks analytics event' do
+            response
+
+            expect(@analytics).to have_logged_event('Session Kept Alive')
+          end
         end
 
         context 'after a delay exceeding session timeout' do
@@ -104,6 +123,12 @@ RSpec.describe Api::Internal::SessionsController do
 
           it 'responds with live and timeout properties' do
             expect(response_body).to eq(live: false, timeout: nil)
+          end
+
+          it 'does not track analytics event' do
+            response
+
+            expect(@analytics).not_to have_logged_event('Session Kept Alive')
           end
         end
       end
