@@ -10,6 +10,10 @@ describe 'RateLimitConcern' do
       def show
         render plain: 'Hello'
       end
+
+      def update
+        render plain: 'Bye'
+      end
     end
   end
 
@@ -23,6 +27,7 @@ describe 'RateLimitConcern' do
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
         get 'show' => 'idv/step#show'
+        put 'update' => 'idv/step#update'
       end
     end
 
@@ -60,25 +65,35 @@ describe 'RateLimitConcern' do
     end
 
     context 'with proof_address throttle (PhoneStep)' do
-      it 'redirects to proof_address throttled error page' do
+      before do
         throttle = Throttle.new(user: user, throttle_type: :proof_address)
         throttle.increment_to_throttled!
+      end
 
+      it 'redirects to proof_address throttled error page' do
         get :show
 
         expect(response).to redirect_to idv_phone_errors_failure_url
       end
-    end
 
-    context 'including controller and throttle match' do
-      it 'does not redirect' do
-        allow(Idv::StepController).to receive(:throttle_and_controller_match).
-          and_return(true)
+      context 'controller and throttle match' do
+        before do
+          allow(subject).to receive(:throttle_and_controller_match).
+            and_return(true)
+        end
 
-        get :show
+        it 'redirects on show' do
+          get :show
 
-        expect(response.body).to eq 'Hello'
-        expect(response.status).to eq 200
+          expect(response).to redirect_to idv_phone_errors_failure_url
+        end
+
+        it 'does not redirect on update' do
+          put :update
+
+          expect(response.body).to eq 'Bye'
+          expect(response.status).to eq 200
+        end
       end
     end
   end
