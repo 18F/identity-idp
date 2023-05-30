@@ -9,6 +9,7 @@ describe 'users/phone_setup/spam_protection.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     @new_phone_form = form
   end
 
@@ -47,6 +48,24 @@ describe 'users/phone_setup/spam_protection.html.erb' do
 
     it 'does not render cancel option' do
       expect(rendered).to_not have_link(
+        t('links.cancel'),
+        href: account_path,
+      )
+    end
+  end
+
+  context 'fully registered user adding new phone' do
+    let(:user) {create(:user, :fully_registered) }
+
+    it 'does not render additional troubleshooting option to two factor options' do
+      expect(rendered).to_not have_link(
+        t('two_factor_authentication.login_options_link_text'),
+        href: two_factor_options_path,
+      )
+    end
+
+    it 'renders cancel option' do
+      expect(rendered).to have_link(
         t('links.cancel'),
         href: account_path,
       )
