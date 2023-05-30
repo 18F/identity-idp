@@ -60,7 +60,12 @@ RUN apt-get update && \
     libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
-USER root
+# Install AWS CLI to troubleshoot
+RUN curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm awscliv2.zip
+
 RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" \
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
@@ -110,9 +115,6 @@ COPY --chown=app:app ./babel.config.js ./babel.config.js
 COPY --chown=app:app ./webpack.config.js ./webpack.config.js
 COPY --chown=app:app ./.browserslistrc ./.browserslistrc
 
-# Copy application.yml.default to application.yml
-COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
-
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yaml
 COPY --chown=app:app config/iaa_gtcs.localdev.yml $RAILS_ROOT/config/iaa_gtcs.yaml
@@ -132,6 +134,9 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 
 # Copy robots.txt
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
+
+# Copy application.yml.default to application.yml
+COPY --chown=app:app ./config/application.yml.default.docker $RAILS_ROOT/config/application.yml
 
 # Precompile assets
 RUN bundle exec rake assets:precompile --trace
