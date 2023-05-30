@@ -38,7 +38,9 @@ const mapSessionStatusResponse = ({ live, timeout }: SessionStatusResponse): Ses
  * @return A promise resolving to the current session status
  */
 export const requestSessionStatus = (): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(STATUS_API_ENDPOINT).then(mapSessionStatusResponse);
+  request<SessionStatusResponse>(STATUS_API_ENDPOINT)
+    .catch(() => ({ live: false, timeout: new Date().toISOString() }))
+    .then(mapSessionStatusResponse);
 
 /**
  * Request that the current session be kept alive. Returns a promise resolving to the updated
