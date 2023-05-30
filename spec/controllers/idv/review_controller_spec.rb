@@ -168,7 +168,7 @@ describe Idv::ReviewController do
 
           expect(flash.now[:success]).to be_nil
           expect(flash.now[:info]).to eq(
-            t('idv.messages.review.gpo_pending')
+            t('idv.messages.review.gpo_pending'),
           )
         end
       end

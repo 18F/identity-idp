@@ -77,7 +77,7 @@ module Idv
     end
 
     private
-    
+
     def address_verification_method
       user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end

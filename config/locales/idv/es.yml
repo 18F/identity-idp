@@ -229,10 +229,12 @@ es:
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        intro: Su información verificada
-        phone_verified: Verificamos su número de teléfono
         gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
-        message: '%{app_name} encriptará tu información con tu contraseña. Esto significa que tu información estará segura y solo tú podrás consultarla o modificarla.'
+        intro: Su información verificada
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
+        phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.
