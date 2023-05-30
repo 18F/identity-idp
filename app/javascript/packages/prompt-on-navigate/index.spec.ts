@@ -23,10 +23,10 @@ describe('promptOnNavigate', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt before navigate');
+    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
   });
 
-  it('logs a second event when the user stays on the page', () => {
+  it('logs a second event when the user stays on the page for 5s', () => {
     const trackEvent = sandbox.spy(analytics, 'trackEvent');
 
     promptOnNavigate();
@@ -35,15 +35,63 @@ describe('promptOnNavigate', () => {
 
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt before navigate');
+    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
     trackEvent.resetHistory();
 
     sandbox.clock.tick(2000);
     expect(trackEvent).not.to.have.been.called();
 
-    sandbox.clock.tick(6000);
-    expect(trackEvent).to.have.been.calledWith('Prompt before navigate user still on page', {
-      interval: 7500,
+    sandbox.clock.tick(3000);
+    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+      seconds: 5,
+    });
+  });
+
+  it('logs a third event when the user stays on the page for 15s', () => {
+    const trackEvent = sandbox.spy(analytics, 'trackEvent');
+
+    promptOnNavigate();
+
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+
+    window.dispatchEvent(event);
+
+    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
+    trackEvent.resetHistory();
+
+    sandbox.clock.tick(5000);
+    expect(trackEvent).to.have.been.called();
+    trackEvent.resetHistory();
+
+    sandbox.clock.tick(10000);
+    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+      seconds: 15,
+    });
+  });
+
+  it('logs a fourth event when the user stays on the page for 30s', () => {
+    const trackEvent = sandbox.spy(analytics, 'trackEvent');
+
+    promptOnNavigate();
+
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+
+    window.dispatchEvent(event);
+
+    expect(trackEvent).to.have.been.called();
+    trackEvent.resetHistory();
+
+    sandbox.clock.tick(5000);
+    expect(trackEvent).to.have.been.called();
+    trackEvent.resetHistory();
+
+    sandbox.clock.tick(10000);
+    expect(trackEvent).to.have.been.called();
+    trackEvent.resetHistory();
+
+    sandbox.clock.tick(15000);
+    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+      seconds: 30,
     });
   });
 
@@ -75,7 +123,7 @@ describe('promptOnNavigate', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt before navigate');
+    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
     trackEvent.resetHistory();
 
     sandbox.clock.tick(2000);
