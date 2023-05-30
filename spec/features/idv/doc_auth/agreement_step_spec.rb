@@ -105,7 +105,6 @@ feature 'doc auth welcome step' do
     end
   end
 
-
   context 'during the acuant maintenance window' do
     let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
     let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
