@@ -1,12 +1,14 @@
 require 'optparse'
 
 class ScriptBase
-  attr_reader :argv, :stdout, :stderr
+  attr_reader :argv, :stdout, :stderr, :subtask_class, :banner
 
-  def initialize(argv:, stdout:, stderr:)
-    @argv  = argv
+  def initialize(argv:, stdout:, stderr:, subtask_class:, banner:)
+    @argv = argv
     @stdout = stdout
     @stderr = stderr
+    @subtask_class = subtask_class
+    @banner = banner
   end
 
   Result = Struct.new(
@@ -39,7 +41,6 @@ class ScriptBase
 
   def run
     option_parser.parse!(argv)
-    subtask_class = subtask(argv.shift)
 
     if config.show_help? || !subtask_class
       stderr.puts '*Task*: `help`'
@@ -58,6 +59,40 @@ class ScriptBase
       stdout.puts result.json.to_json
     else
       render_output(result.table)
+    end
+  end
+
+  def option_parser
+    @option_parser ||= OptionParser.new do |opts|
+      opts.banner = banner
+
+      opts.on('-i=ISSUER', '--requesting-issuer=ISSUER', <<-MSG) do |issuer|
+        requesting issuer (used for ig-request task)
+      MSG
+        config.requesting_issuers << issuer
+      end
+
+      opts.on('--help') do
+        config.show_help = true
+      end
+
+      opts.on('--csv') do
+        config.format = :csv
+      end
+
+      opts.on('--table', 'Output format as an ASCII table (default)') do
+        config.format = :table
+      end
+
+      opts.on('--json') do
+        config.format = :json
+      end
+
+      opts.on('--[no-]include-missing', <<~STR) do |include_missing|
+        Whether or not to add rows in the output for missing inputs, defaults to on
+      STR
+        config.include_missing = include_missing
+      end
     end
   end
 

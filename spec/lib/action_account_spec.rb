@@ -117,7 +117,7 @@ RSpec.describe ActionAccount do
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ActionAccount::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Reject a user that has a pending review', aggregate_failures: true do
@@ -145,7 +145,7 @@ RSpec.describe ActionAccount do
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { ActionAccount::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'Pass a user that has a pending review', aggregate_failures: true do
