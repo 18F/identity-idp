@@ -1,12 +1,11 @@
 import { trackEvent as defaultTrackEvent } from '@18f/identity-analytics';
+import { promptOnNavigate } from '@18f/identity-prompt-on-navigate';
 
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
 export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
   DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL,
 );
-
-const STILL_ON_PAGE_INTERVAL = 5000;
 
 interface DocumentCapturePollingElements {
   form: HTMLFormElement;
@@ -46,7 +45,9 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
-  stillOnPageTimer: NodeJS.Timeout | undefined;
+  promptOnNavigateBound = false;
+
+  cleanUpPromptOnNavigate = () => {};
 
   constructor({
     elements,
@@ -74,23 +75,13 @@ export class DocumentCapturePolling {
    * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
    */
   bindPromptOnNavigate(shouldPrompt) {
-    window.onbeforeunload = shouldPrompt
-      ? (event) => {
-          event.preventDefault();
-          event.returnValue = '';
-
-          this.trackEvent('IdV: Doc capture polling onbeforeunload');
-
-          if (this.stillOnPageTimer) {
-            clearTimeout(this.stillOnPageTimer);
-          }
-
-          this.stillOnPageTimer = setTimeout(() => {
-            this.trackEvent('IdV: Doc capture polling onbeforeunload still on page');
-            this.stillOnPageTimer = undefined;
-          }, STILL_ON_PAGE_INTERVAL);
-        }
-      : null;
+    if (shouldPrompt && !this.promptOnNavigateBound) {
+      this.cleanUpPromptOnNavigate = promptOnNavigate();
+      this.promptOnNavigateBound = true;
+    } else if (!shouldPrompt) {
+      this.cleanUpPromptOnNavigate();
+      this.promptOnNavigateBound = false;
+    }
   }
 
   onMaxPollAttempts() {
@@ -103,6 +94,7 @@ export class DocumentCapturePolling {
       isThrottled: result === ResultType.THROTTLED,
     });
     this.bindPromptOnNavigate(false);
+
     if (redirect) {
       window.location.href = redirect;
     } else {
