@@ -2,7 +2,6 @@ module Idv
   module Actions
     module InPerson
       class CancelUpdateStateIdAction < Idv::Steps::DocAuthBaseStep
-
         def self.analytics_submitted_event
           :idv_in_person_proofing_cancel_update_state_id
         end

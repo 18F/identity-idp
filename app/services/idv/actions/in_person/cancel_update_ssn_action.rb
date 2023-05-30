@@ -2,7 +2,6 @@ module Idv
   module Actions
     module InPerson
       class CancelUpdateSsnAction < Idv::Steps::DocAuthBaseStep
-
         def self.analytics_submitted_event
           :idv_doc_auth_cancel_update_ssn_submitted
         end
