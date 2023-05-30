@@ -246,6 +246,7 @@ fr:
         intro: Vos informations vérifiées
         phone_verified: Nous avons vérifié votre numéro de téléphone
         gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez réintroduit votre mot de passe.
+        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela signifie que vos informations sont sécurisées et que vous seul pourrez y accéder ou les modifier.'
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.
