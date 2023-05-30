@@ -7,9 +7,6 @@
 
   &-wide {
     max-width: 100%;
-    padding-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
   }
 
   @include at-media('tablet') {
@@ -20,9 +17,6 @@
     &-wide {
       margin-top: units(6);
       max-width: 100%;
-      padding-bottom: 0;
-      padding-left: 0;
-      padding-right: 0;
     }
   }
 }
