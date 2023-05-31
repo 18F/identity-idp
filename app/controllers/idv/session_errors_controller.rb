@@ -2,10 +2,11 @@ module Idv
   class SessionErrorsController < ApplicationController
     include IdvSession
     include EffectiveUser
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
-    before_action :set_try_again_path, only: [:warning, :exception]
+    before_action :set_try_again_path, only: [:warning, :exception, :state_id_warning]
     before_action :ignore_form_step_wait_requests
 
     def exception
@@ -20,6 +21,10 @@ module Idv
 
       @remaining_attempts = throttle.remaining_count
       log_event(based_on_throttle: throttle)
+    end
+
+    def state_id_warning
+      log_event
     end
 
     def failure
