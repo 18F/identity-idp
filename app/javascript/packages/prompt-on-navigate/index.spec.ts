@@ -1,6 +1,6 @@
-import { promptOnNavigate } from '.';
 import { useSandbox } from '@18f/identity-test-helpers';
 import * as analytics from '@18f/identity-analytics';
+import { promptOnNavigate } from '.';
 
 describe('promptOnNavigate', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
