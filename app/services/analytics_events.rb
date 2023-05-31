@@ -2242,7 +2242,6 @@ module AnalyticsEvents
                                     phone_type:,
                                     types:,
                                     **extra)
-
     track_event(
       'Multi-Factor Authentication: phone setup',
       success: success,
@@ -2412,7 +2411,6 @@ module AnalyticsEvents
       ialmax: nil,
       **extra
     )
-
     track_event(
       'User registration: agency handoff visited',
       ial2: ial2,
