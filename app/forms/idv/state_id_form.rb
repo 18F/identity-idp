@@ -2,7 +2,6 @@ module Idv
   class StateIdForm
     include ActiveModel::Model
     include FormStateIdValidator
-    include FormDobValidator
 
     ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
                     identity_doc_city identity_doc_zipcode state_id_jurisdiction
