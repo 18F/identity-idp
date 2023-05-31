@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth upload step' do
+feature 'doc auth hybrid_handoff step' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -19,14 +19,14 @@ feature 'doc auth upload step' do
     allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
       and_return(new_controller_enabled)
     allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
-    complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
   end
 
-  context 'on a desktop device', js: true do
+  context 'on a desktop device' do
     before do
+      complete_doc_auth_steps_before_upload_step
       allow_any_instance_of(
         Idv::HybridHandoffController,
       ).to receive(
@@ -56,7 +56,7 @@ feature 'doc auth upload step' do
       )
     end
 
-    it "defaults phone to user's 2fa phone number" do
+    it "defaults phone to user's 2fa phone number", :js do
       field = page.find_field(t('two_factor_authentication.phone_label'))
       expect(field.value).to eq('(202) 555-1212')
     end
@@ -75,7 +75,7 @@ feature 'doc auth upload step' do
       )
     end
 
-    it 'proceeds to the next page with valid info' do
+    it 'proceeds to the next page with valid info', :js do
       expect(fake_attempts_tracker).to receive(
         :idv_phone_upload_link_sent,
       ).with(
@@ -96,7 +96,7 @@ feature 'doc auth upload step' do
       expect(page).to have_current_path(idv_link_sent_path)
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', :js do
       fill_in :doc_auth_phone, with: ''
       click_send_link
 
