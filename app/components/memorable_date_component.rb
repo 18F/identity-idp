@@ -127,7 +127,7 @@ class MemorableDateComponent < BaseComponent
   end
 
   def error_msg
-    form.object.errors[name]&.join('')
+    form.object.errors[name]&.first
   end
 
   # Configure default generic error messages for component,
