@@ -145,4 +145,5 @@ RUN bundle exec rake assets:precompile --trace
 EXPOSE 3000
 
 # Start the application
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+# CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+CMD ["bundle", "exec", "puma", "-b", "ssl://0.0.0.0:3000?key=/app/keys/localhost.key&cert=/app/keys/localhost.crt"]
