@@ -7,11 +7,12 @@ module UspsInPersonProofing
   #   validates_with UspsInPersonProofing::DateValidator,
   #     attributes: [:dob],
   #     message: "error",
+  #     less_than_or_equal_to: ->(_rec) {
+  #         Time.zone.today - IdentityConfig.store.idv_min_age_years.years
+  #     }
   #     ....
   #
   class DateValidator < ActiveModel::Validations::ComparisonValidator
-    include ActiveModel::Validations::HelperMethods
-
     private
 
     def prepare_value_for_validation(value, _record, _attr_name)
