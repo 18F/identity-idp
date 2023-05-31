@@ -3559,7 +3559,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Job started",
+      'GetUspsProofingResultsJob: Job started',
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: job_name,
@@ -3589,7 +3589,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Job completed",
+      'GetUspsProofingResultsJob: Job completed',
       duration_seconds: duration_seconds,
       enrollments_checked: enrollments_checked,
       enrollments_errored: enrollments_errored,
@@ -3655,7 +3655,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Exception raised",
+      'GetUspsProofingResultsJob: Exception raised',
       reason: reason,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -3693,7 +3693,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: deadline passed email initiated",
+      'GetUspsProofingResultsJob: deadline passed email initiated',
       enrollment_id: enrollment_id,
       job_name: job_name,
       **extra,
@@ -3714,7 +3714,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email",
+      'GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email',
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
@@ -3761,7 +3761,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Enrollment status updated",
+      'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -3782,7 +3782,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Success or failure email initiated",
+      'GetUspsProofingResultsJob: Success or failure email initiated',
       email_type: email_type,
       job_name: job_name,
       **extra,
@@ -3820,7 +3820,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Enrollment incomplete",
+      'GetUspsProofingResultsJob: Enrollment incomplete',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
@@ -3847,7 +3847,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "GetUspsProofingResultsJob: Unexpected response received",
+      'GetUspsProofingResultsJob: Unexpected response received',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,

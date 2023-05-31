@@ -157,7 +157,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             'GetUspsProofingResultsJob: Job started',
             enrollments_count: 5,
             reprocess_delay_minutes: 2.0,
-            job_name: "GetUspsReadyProofingResultsJob",
+            job_name: 'GetUspsReadyProofingResultsJob',
           )
         end
 
@@ -184,7 +184,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 1,
             enrollments_passed: 1,
             percent_enrollments_errored: 20,
-            job_name: "GetUspsReadyProofingResultsJob",
+            job_name: 'GetUspsReadyProofingResultsJob',
           )
 
           expect(
@@ -212,7 +212,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 5,
             percent_enrollments_errored: 0,
-            job_name: "GetUspsReadyProofingResultsJob",
+            job_name: 'GetUspsReadyProofingResultsJob',
           )
 
           expect(
@@ -241,7 +241,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 0,
             percent_enrollments_errored: 0,
-            job_name: "GetUspsReadyProofingResultsJob",
+            job_name: 'GetUspsReadyProofingResultsJob',
           )
 
           expect(
