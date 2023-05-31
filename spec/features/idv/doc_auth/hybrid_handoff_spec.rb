@@ -24,6 +24,16 @@ feature 'doc auth hybrid_handoff step' do
       and_return(fake_attempts_tracker)
   end
 
+  it 'does not skip ahead in standard desktop flow' do
+    visit(idv_hybrid_handoff_url)
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    complete_welcome_step
+    visit(idv_hybrid_handoff_url)
+    expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    complete_agreement_step
+    expect(page).to have_current_path(idv_hybrid_handoff_step)
+  end
+
   context 'on a desktop device' do
     before do
       complete_doc_auth_steps_before_upload_step
@@ -54,6 +64,9 @@ feature 'doc auth hybrid_handoff step' do
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :document_capture),
       )
+
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_document_capture_path)
     end
 
     it "defaults phone to user's 2fa phone number", :js do
@@ -73,6 +86,9 @@ feature 'doc auth hybrid_handoff step' do
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :link_sent),
       )
+
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_link_sent_path)
     end
 
     it 'proceeds to the next page with valid info', :js do
