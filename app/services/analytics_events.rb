@@ -3554,14 +3554,15 @@ module AnalyticsEvents
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
   def idv_in_person_usps_proofing_results_job_started(
     job_name:,
-    enrollments_count: nil,
-    reprocess_delay_minutes: nil,
+    enrollments_count:,
+    reprocess_delay_minutes:,
     **extra
   )
     track_event(
-      "#{job_name}: Job started",
+      "GetUspsProofingResultsJob: Job started",
       enrollments_count: enrollments_count,
       reprocess_delay_minutes: reprocess_delay_minutes,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3578,17 +3579,17 @@ module AnalyticsEvents
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
   def idv_in_person_usps_proofing_results_job_completed(
     job_name:,
-    duration_seconds: nil,
-    enrollments_checked: nil,
-    enrollments_errored: nil,
-    enrollments_expired: nil,
-    enrollments_failed: nil,
-    enrollments_in_progress: nil,
-    enrollments_passed: nil,
+    duration_seconds:,
+    enrollments_checked:,
+    enrollments_errored:,
+    enrollments_expired:,
+    enrollments_failed:,
+    enrollments_in_progress:,
+    enrollments_passed:,
     **extra
   )
     track_event(
-      "#{job_name}: Job completed",
+      "GetUspsProofingResultsJob: Job completed",
       duration_seconds: duration_seconds,
       enrollments_checked: enrollments_checked,
       enrollments_errored: enrollments_errored,
@@ -3596,6 +3597,7 @@ module AnalyticsEvents
       enrollments_failed: enrollments_failed,
       enrollments_in_progress: enrollments_in_progress,
       enrollments_passed: enrollments_passed,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3653,7 +3655,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "#{job_name}: Exception raised",
+      "GetUspsProofingResultsJob: Exception raised",
       reason: reason,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -3677,6 +3679,7 @@ module AnalyticsEvents
       scan_count: scan_count,
       response_message: response_message,
       response_status_code: response_status_code,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3686,12 +3689,13 @@ module AnalyticsEvents
   # @param [String] enrollment_id
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
     job_name:,
-    enrollment_id: nil,
+    enrollment_id:,
     **extra
   )
     track_event(
-      "#{job_name}: deadline passed email initiated",
+      "GetUspsProofingResultsJob: deadline passed email initiated",
       enrollment_id: enrollment_id,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3704,16 +3708,17 @@ module AnalyticsEvents
   # @param [String] exception_message
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
     job_name:,
-    enrollment_id: nil,
-    exception_class: nil,
-    exception_message: nil,
+    enrollment_id:,
+    exception_class:,
+    exception_message:,
     **extra
   )
     track_event(
-      "#{job_name}: Exception raised when attempting to send deadline passed email",
+      "GetUspsProofingResultsJob: Exception raised when attempting to send deadline passed email",
       enrollment_id: enrollment_id,
       exception_class: exception_class,
       exception_message: exception_message,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3723,7 +3728,7 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   def idv_in_person_email_reminder_job_exception(
-    enrollment_id: nil,
+    enrollment_id:,
     exception_class: nil,
     exception_message: nil,
     **extra
@@ -3747,22 +3752,23 @@ module AnalyticsEvents
   # @param [String] reason why did this enrollment pass or fail?
   def idv_in_person_usps_proofing_results_job_enrollment_updated(
     job_name:,
-    enrollment_code: nil,
-    enrollment_id: nil,
-    minutes_since_established: nil,
-    fraud_suspected: nil,
-    passed: nil,
-    reason: nil,
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_established:,
+    fraud_suspected:,
+    passed:,
+    reason:,
     **extra
   )
     track_event(
-      "#{job_name}: Enrollment status updated",
+      "GetUspsProofingResultsJob: Enrollment status updated",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       fraud_suspected: fraud_suspected,
       passed: passed,
       reason: reason,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3772,12 +3778,13 @@ module AnalyticsEvents
   # @param [String] email_type success, failed or failed fraud
   def idv_in_person_usps_proofing_results_job_email_initiated(
     job_name:,
-    email_type: nil,
+    email_type:,
     **extra
   )
     track_event(
-      "#{job_name}: Success or failure email initiated",
+      "GetUspsProofingResultsJob: Success or failure email initiated",
       email_type: email_type,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3813,11 +3820,12 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "#{job_name}: Enrollment incomplete",
+      "GetUspsProofingResultsJob: Enrollment incomplete",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       response_message: response_message,
+      job_name: job_name,
       **extra,
     )
   end
@@ -3839,12 +3847,13 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      "#{job_name}: Unexpected response received",
+      "GetUspsProofingResultsJob: Unexpected response received",
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
+      job_name: job_name,
       **extra,
     )
   end
