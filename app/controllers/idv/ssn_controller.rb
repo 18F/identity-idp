@@ -2,6 +2,7 @@ module Idv
   class SsnController < ApplicationController
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper

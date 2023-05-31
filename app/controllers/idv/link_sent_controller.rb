@@ -3,6 +3,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 

@@ -1,6 +1,7 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
+    include OutageConcern
     include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern

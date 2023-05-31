@@ -3,6 +3,7 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 

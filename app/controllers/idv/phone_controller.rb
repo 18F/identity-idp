@@ -2,6 +2,7 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
+    include OutageConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 
