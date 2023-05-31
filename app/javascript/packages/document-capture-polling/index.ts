@@ -45,9 +45,7 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
-  promptOnNavigateBound = false;
-
-  cleanUpPromptOnNavigate = () => {};
+  cleanUpPromptOnNavigate: (() => void) | undefined;
 
   constructor({
     elements,
@@ -75,12 +73,14 @@ export class DocumentCapturePolling {
    * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
    */
   bindPromptOnNavigate(shouldPrompt) {
-    if (shouldPrompt && !this.promptOnNavigateBound) {
+    const isAlreadyBound = !!this.cleanUpPromptOnNavigate;
+
+    if (shouldPrompt && !isAlreadyBound) {
       this.cleanUpPromptOnNavigate = promptOnNavigate();
-      this.promptOnNavigateBound = true;
-    } else if (!shouldPrompt) {
-      this.cleanUpPromptOnNavigate();
-      this.promptOnNavigateBound = false;
+    } else if (!shouldPrompt && isAlreadyBound) {
+      const cleanUp = this.cleanUpPromptOnNavigate ?? (() => {});
+      this.cleanUpPromptOnNavigate = undefined;
+      cleanUp();
     }
   }
 
