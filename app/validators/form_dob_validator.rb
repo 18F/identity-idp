@@ -18,6 +18,8 @@ module FormDobValidator
       # save original dob, convert it to Date
       self.dob_original = self.dob
       self.dob = val_to_date(self.dob_original)
+    rescue
+      self.dob = nil
     end
 
     after_validation do
