@@ -8,6 +8,9 @@ const defaults = {
   stillOnPageIntervalsInSeconds: [5, 15, 30],
 };
 
+const PROMPT_EVENT = 'Prompt on navigate';
+const STILL_ON_PAGE_EVENT = 'Prompt on navigate: user still on page';
+
 /**
  * Configures the window.onbeforeunload handler such that the user will be prompted before
  * reloading or navigating away
@@ -21,7 +24,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
     ev.preventDefault();
     ev.returnValue = '';
 
-    trackEvent('Prompt on navigate');
+    trackEvent(PROMPT_EVENT);
 
     const stillOnPageIntervalsInSeconds = [...options.stillOnPageIntervalsInSeconds];
     let elapsed = 0;
@@ -41,7 +44,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
       elapsed = interval;
 
       stillOnPageTimer = window.setTimeout(() => {
-        trackEvent('Prompt on navigate: user still on page', {
+        trackEvent(STILL_ON_PAGE_EVENT, {
           seconds: elapsed,
         });
         scheduleNextStillOnPagePing();
