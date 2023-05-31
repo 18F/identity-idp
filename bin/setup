@@ -62,7 +62,7 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Starting services =="
   run "brew services start redis" if brew_installed
-  run "brew services start postgresql@13" if brew_installed
+  run "brew services start postgresql@14" if brew_installed
 
   puts "\n== Preparing database =="
   run 'make clobber_db'
