@@ -39,4 +39,4 @@ production:
   email_from: no-reply@identitysandbox.gov
   aws_kms_key_id: alias/dev-login-dot-gov-keymaker
   log_to_stdout: true
-
+  telephony_adapter: test
