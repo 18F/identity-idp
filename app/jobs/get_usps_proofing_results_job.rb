@@ -97,10 +97,8 @@ class GetUspsProofingResultsJob < ApplicationJob
     # 400 status code. This is used for some status updates and some common client errors
     handle_bad_request_error(err, enrollment)
   rescue Faraday::ClientError, Faraday::ServerError, Faraday::Error => err
-    # 4xx or 5xx status code.
-    # These are unexpected but will have some sort of response body that we can try to log data from
-    # Faraday Timeouts, failed connections, parsing errors, and other HTTP errors.
-    # These generally won't have a response body
+    # 4xx, 5xx and any other Faraday error besides a 400 status code.
+    # These errors may or may not have a response body that we can pull info from.
     handle_client_or_server_error(err, enrollment)
   rescue StandardError => err
     handle_standard_error(err, enrollment)
@@ -129,13 +127,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     if response_message == IPP_INCOMPLETE_ERROR_MESSAGE
       # Customer has not been to post office for IPP
       handle_incomplete_status_update(enrollment, response_message)
-      analytics_payload = {
-        **enrollment_analytics_attributes(enrollment, complete: false),
-        response_message: response_message,
-        job_name: self.class.name,
-      }
-      analytics_ipp_job_enrollment_incomplete(user: enrollment.user, payload: analytics_payload)
-      enrollment.update(status_check_completed_at: Time.zone.now)
     elsif response_message&.match(IPP_EXPIRED_ERROR_MESSAGE)
       # If we're blocking expirations, treat this enrollment as incomplete
       if IdentityConfig.store.in_person_stop_expiring_enrollments.blank?
@@ -235,12 +226,12 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def handle_incomplete_status_update(enrollment, response_message)
     enrollment_outcomes[:enrollments_in_progress] += 1
-    analytics(user: enrollment.user).
-      idv_in_person_usps_proofing_results_job_enrollment_incomplete(
-        **enrollment_analytics_attributes(enrollment, complete: false),
-        response_message: response_message,
-        job_name: self.class.name,
-      )
+    analytics_payload = {
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      response_message: response_message,
+      job_name: self.class.name,
+    }
+    analytics_ipp_job_enrollment_incomplete(user: enrollment.user, payload: analytics_payload)
     enrollment.update(status_check_completed_at: Time.zone.now)
   end
 
