@@ -137,7 +137,7 @@ RSpec.describe DataPull do
 
       let(:args) { [*users.map { |u| u.email_addresses.first.email }, 'missing@example.com'] }
       let(:include_missing) { true }
-      let(:config) { DataPull::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
 
       subject(:result) { subtask.run(args:, config:) }
 
@@ -164,7 +164,7 @@ RSpec.describe DataPull do
 
       let(:args) { [*agency_identities.map(&:uuid), 'does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { DataPull::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'converts the agency agency identities to internal UUIDs', aggregate_failures: true do
@@ -190,7 +190,7 @@ RSpec.describe DataPull do
 
       let(:args) { [user.uuid, 'does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { DataPull::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads email addresses for the user', aggregate_failures: true do
@@ -218,7 +218,7 @@ RSpec.describe DataPull do
       let(:service_provider) { create(:service_provider) }
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
       let(:args) { [user.uuid] }
-      let(:config) { DataPull::Config.new(requesting_issuers: [service_provider.issuer]) }
+      let(:config) { ScriptBase::Config.new(requesting_issuers: [service_provider.issuer]) }
 
       subject(:result) { subtask.run(args:, config:) }
 
@@ -248,7 +248,7 @@ RSpec.describe DataPull do
 
       let(:args) { [user.uuid, user_without_profile.uuid, 'uuid-does-not-exist'] }
       let(:include_missing) { true }
-      let(:config) { DataPull::Config.new(include_missing:) }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads profile summary for the user', aggregate_failures: true do

@@ -16,6 +16,15 @@ describe 'IdvStepConcern' do
     end
   end
 
+  describe 'before_actions' do
+    it 'includes confirm_not_rate_limited before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :confirm_not_rate_limited,
+      )
+    end
+  end
+
   describe '#confirm_idv_needed' do
     controller Idv::StepController do
       before_action :confirm_idv_needed
@@ -220,17 +229,13 @@ describe 'IdvStepConcern' do
         get :show
 
         expect(response.body).to eq 'Hello'
-        expect(response).to_not redirect_to idv_in_person_ready_to_verify_url
+        expect(response).to_not redirect_to idv_gpo_verify_url
         expect(response.status).to eq 200
       end
     end
 
     context 'with pending gpo profile' do
       let(:user) { create(:user, :with_pending_gpo_profile, :fully_registered) }
-
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-      end
 
       it 'redirects to enter your code page' do
         get :show

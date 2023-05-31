@@ -33,13 +33,6 @@ module IdvSession
     )
   end
 
-  def idv_attempter_throttled?
-    Throttle.new(
-      user: idv_session_user,
-      throttle_type: :idv_resolution,
-    ).throttled?
-  end
-
   def redirect_unless_idv_session_user
     redirect_to root_url if !idv_session_user
   end

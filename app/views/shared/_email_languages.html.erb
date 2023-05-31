@@ -29,6 +29,7 @@ locals:
           ),
           locale,
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
+          lang: locale,
         ]
       end,
     ) %>
