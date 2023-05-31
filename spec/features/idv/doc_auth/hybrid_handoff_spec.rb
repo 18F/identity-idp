@@ -31,7 +31,7 @@ feature 'doc auth hybrid_handoff step' do
     visit(idv_hybrid_handoff_url)
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
     complete_agreement_step
-    expect(page).to have_current_path(idv_hybrid_handoff_step)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
   context 'on a desktop device' do

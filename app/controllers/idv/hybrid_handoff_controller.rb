@@ -9,6 +9,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :render_404_if_hybrid_handoff_controller_disabled
     before_action :confirm_agreement_step_complete
+    before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
       flow_session[:flow_path] = 'standard'
@@ -210,6 +211,16 @@ module Idv
       return if flow_session['Idv::Steps::AgreementStep']
 
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_hybrid_handoff_needed
+      return if !flow_session[:flow_path]
+
+      if flow_session[:flow_path] == 'standard'
+        redirect_to idv_document_capture_url
+      elsif flow_session[:flow_path] == 'hybrid'
+        redirect_to idv_link_sent_url
+      end
     end
 
     def formatted_destination_phone
