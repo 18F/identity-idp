@@ -62,7 +62,7 @@ module RememberDeviceConcern
     end
     remember_cookie = remember_device_cookie
     return true if remember_cookie.nil?
-
+    
     !remember_cookie.valid_for_user?(
       user: user,
       expiration_interval: interval,
