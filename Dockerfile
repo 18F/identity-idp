@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:3.2.2-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -57,7 +57,8 @@ RUN apt-get update && \
     libcurl4-openssl-dev \
     software-properties-common \
     libffi-dev \
-    libpq-dev && \
+    libpq-dev \
+    unzip && \
     rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI to troubleshoot
