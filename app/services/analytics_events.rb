@@ -3685,11 +3685,11 @@ module AnalyticsEvents
   end
 
   # Tracks deadline email initiated during USPS proofing results job
-  # @param [String] job_name of the job that triggered this event
   # @param [String] enrollment_id
+  # @param [String] job_name of the job that triggered this event
   def idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
-    job_name:,
     enrollment_id:,
+    job_name:,
     **extra
   )
     track_event(

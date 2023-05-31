@@ -43,6 +43,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         status: response['status'],
         transaction_end_date_time: anything,
         transaction_start_date_time: anything,
+        job_name: 'GetUspsProofingResultsJob',
       )
     end
   end
@@ -58,6 +59,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
+          job_name: 'GetUspsProofingResultsJob',
         )
       else
         expect(job_analytics).to have_logged_event(
@@ -67,6 +69,7 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
           wait_until: anything,
           service_provider: pending_enrollment.issuer,
           timestamp: Time.zone.now,
+          job_name: 'GetUspsProofingResultsJob',
         )
       end
     end
@@ -111,6 +114,7 @@ RSpec.shared_examples 'enrollment_encountering_an_exception' do |exception_class
         reason: reason,
         response_message: response_message,
         response_status_code: response_status_code,
+        job_name: 'GetUspsProofingResultsJob',
       ),
     )
   end
@@ -155,6 +159,7 @@ RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response'
         reason: 'Request exception',
         response_present: false,
         exception_class: error_type.to_s,
+        job_name: 'GetUspsProofingResultsJob',
       ),
     )
   end
@@ -317,6 +322,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Job started',
             enrollments_count: 5,
             reprocess_delay_minutes: 2.0,
+            job_name: 'GetUspsProofingResultsJob',
           )
         end
 
@@ -343,6 +349,7 @@ RSpec.describe GetUspsProofingResultsJob do
             enrollments_in_progress: 1,
             enrollments_passed: 1,
             percent_enrollments_errored: 20,
+            job_name: 'GetUspsProofingResultsJob',
           )
 
           expect(
@@ -370,6 +377,7 @@ RSpec.describe GetUspsProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 5,
             percent_enrollments_errored: 0,
+            job_name: 'GetUspsProofingResultsJob',
           )
 
           expect(
@@ -398,6 +406,7 @@ RSpec.describe GetUspsProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 0,
             percent_enrollments_errored: 0,
+            job_name: 'GetUspsProofingResultsJob',
           )
 
           expect(
@@ -424,6 +433,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 exception_message: error_message,
                 exception_class: 'StandardError',
                 reason: 'Request exception',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
           end
@@ -492,6 +502,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 service_provider: pending_enrollment.issuer,
                 timestamp: anything,
                 wait_until: nil,
+                job_name: 'GetUspsProofingResultsJob',
               )
             end
           end
@@ -560,6 +571,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 service_provider: anything,
                 timestamp: anything,
                 wait_until: wait_until,
+                job_name: 'GetUspsProofingResultsJob',
               )
             end
 
@@ -585,6 +597,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 service_provider: anything,
                 timestamp: anything,
                 wait_until: wait_until,
+                job_name: 'GetUspsProofingResultsJob',
               )
             end
           end
@@ -632,6 +645,7 @@ RSpec.describe GetUspsProofingResultsJob do
               hash_including(
                 reason: 'Successful status update',
                 passed: true,
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
             expect(job_analytics).to have_logged_event(
@@ -641,6 +655,7 @@ RSpec.describe GetUspsProofingResultsJob do
               service_provider: anything,
               timestamp: anything,
               wait_until: nil,
+              job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
@@ -668,6 +683,7 @@ RSpec.describe GetUspsProofingResultsJob do
               hash_including(
                 passed: false,
                 reason: 'Failed status',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
             expect(job_analytics).to have_logged_event(
@@ -677,6 +693,7 @@ RSpec.describe GetUspsProofingResultsJob do
               service_provider: anything,
               timestamp: anything,
               wait_until: nil,
+              job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
@@ -705,6 +722,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 fraud_suspected: true,
                 passed: false,
                 reason: 'Failed status',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
             expect(job_analytics).to have_logged_event(
@@ -714,6 +732,7 @@ RSpec.describe GetUspsProofingResultsJob do
               service_provider: anything,
               timestamp: anything,
               wait_until: nil,
+              job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
@@ -741,6 +760,7 @@ RSpec.describe GetUspsProofingResultsJob do
               hash_including(
                 passed: false,
                 reason: 'Unsupported ID type',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
 
@@ -751,6 +771,7 @@ RSpec.describe GetUspsProofingResultsJob do
               service_provider: anything,
               timestamp: anything,
               wait_until: nil,
+              job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
@@ -779,6 +800,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 reason: 'Enrollment has expired',
                 transaction_end_date_time: nil,
                 transaction_start_date_time: nil,
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
           end
@@ -799,6 +821,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 'GetUspsProofingResultsJob: Enrollment incomplete',
                 hash_including(
                   response_message: 'More than 30 days have passed since opt-in to IPP',
+                  job_name: 'GetUspsProofingResultsJob',
                 ),
               )
             end
@@ -830,12 +853,15 @@ RSpec.describe GetUspsProofingResultsJob do
               hash_including(
                 passed: false,
                 reason: 'Enrollment has expired',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
 
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Unexpected response received',
-              hash_including(reason: 'Unexpected number of days before enrollment expired'),
+              hash_including(
+                reason: 'Unexpected number of days before enrollment expired'),
+                job_name: 'GetUspsProofingResultsJob',
             )
           end
         end
@@ -860,6 +886,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 hash_including(
                   reason: 'Invalid enrollment code',
                   response_message: /Enrollment code [0-9]{16} does not exist/,
+                  job_name: 'GetUspsProofingResultsJob',
                 ),
               )
             end
@@ -884,6 +911,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 hash_including(
                   reason: 'Invalid applicant unique id',
                   response_message: /Applicant [0-9a-z]{18} does not exist/,
+                  job_name: 'GetUspsProofingResultsJob',
                 ),
               )
             end
@@ -920,6 +948,7 @@ RSpec.describe GetUspsProofingResultsJob do
               'GetUspsProofingResultsJob: Exception raised',
               hash_including(
                 status: 'Not supported',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
           end
@@ -1041,6 +1070,7 @@ RSpec.describe GetUspsProofingResultsJob do
               'GetUspsProofingResultsJob: Enrollment incomplete',
               hash_including(
                 response_message: 'Customer has not been to a post office to complete IPP',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
           end
@@ -1106,6 +1136,7 @@ RSpec.describe GetUspsProofingResultsJob do
               hash_including(
                 passed: false,
                 reason: 'Provided secondary proof of address',
+                job_name: 'GetUspsProofingResultsJob',
               ),
             )
           end

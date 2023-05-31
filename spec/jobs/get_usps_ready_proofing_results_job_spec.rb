@@ -154,9 +154,10 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsReadyProofingResultsJob: Job started',
+            'GetUspsProofingResultsJob: Job started',
             enrollments_count: 5,
             reprocess_delay_minutes: 2.0,
+            job_name: "GetUspsReadyProofingResultsJob",
           )
         end
 
@@ -174,7 +175,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsReadyProofingResultsJob: Job completed',
+            'GetUspsProofingResultsJob: Job completed',
             duration_seconds: anything,
             enrollments_checked: 5,
             enrollments_errored: 1,
@@ -183,10 +184,11 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 1,
             enrollments_passed: 1,
             percent_enrollments_errored: 20,
+            job_name: "GetUspsReadyProofingResultsJob",
           )
 
           expect(
-            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
               first[:duration_seconds],
           ).to be >= 0.0
         end
@@ -201,7 +203,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsReadyProofingResultsJob: Job completed',
+            'GetUspsProofingResultsJob: Job completed',
             duration_seconds: anything,
             enrollments_checked: 5,
             enrollments_errored: 0,
@@ -210,10 +212,11 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 5,
             percent_enrollments_errored: 0,
+            job_name: "GetUspsReadyProofingResultsJob",
           )
 
           expect(
-            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
               first[:duration_seconds],
           ).to be >= 0.0
         end
@@ -229,7 +232,7 @@ RSpec.describe GetUspsReadyProofingResultsJob do
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsReadyProofingResultsJob: Job completed',
+            'GetUspsProofingResultsJob: Job completed',
             duration_seconds: anything,
             enrollments_checked: 0,
             enrollments_errored: 0,
@@ -238,10 +241,11 @@ RSpec.describe GetUspsReadyProofingResultsJob do
             enrollments_in_progress: 0,
             enrollments_passed: 0,
             percent_enrollments_errored: 0,
+            job_name: "GetUspsReadyProofingResultsJob",
           )
 
           expect(
-            job_analytics.events['GetUspsReadyProofingResultsJob: Job completed'].
+            job_analytics.events['GetUspsProofingResultsJob: Job completed'].
               first[:duration_seconds],
           ).to be >= 0.0
         end
