@@ -15,7 +15,7 @@ const defaults = {
  * @returns {() => void} A function that, when called, will "clean up" -- restore the prior onbeforeunload handler and cancel any pending timeouts.
  */
 export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): () => void {
-  let stillOnPageTimer: NodeJS.Timeout | undefined;
+  let stillOnPageTimer: number | undefined;
 
   function handleBeforeUnload(ev: BeforeUnloadEvent) {
     ev.preventDefault();
@@ -40,7 +40,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
       const offsetFromNow = interval - elapsed;
       elapsed = interval;
 
-      stillOnPageTimer = setTimeout(() => {
+      stillOnPageTimer = window.setTimeout(() => {
         trackEvent('Prompt on navigate: user still on page', {
           seconds: elapsed,
         });
@@ -59,7 +59,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
       window.onbeforeunload = prevHandler;
     }
     if (stillOnPageTimer) {
-      clearTimeout(stillOnPageTimer);
+      window.clearTimeout(stillOnPageTimer);
       stillOnPageTimer = undefined;
     }
   };
