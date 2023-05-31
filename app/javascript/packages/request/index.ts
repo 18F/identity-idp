@@ -58,6 +58,8 @@ class CSRF {
  * Returns true if the request associated with the given options would require a valid CSRF token,
  * or false otherwise.
  *
+ * @see https://github.com/rails/rails/blob/v7.0.5/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L335-L343
+ *
  * @param options Request options
  *
  * @return Whether the request would require a CSRF token
