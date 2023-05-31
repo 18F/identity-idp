@@ -65,6 +65,7 @@ module Idv
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       end
 
       analytics.idv_doc_auth_upload_submitted(
@@ -193,6 +194,7 @@ module Idv
 
       failure(message)
       redirect_to idv_hybrid_handoff_url
+      flow_session[:flow_path] = nil
     end
 
     # copied from Flow::Failure module
