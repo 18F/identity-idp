@@ -16,11 +16,9 @@ module UspsInPersonProofing
     private
 
     def prepare_value_for_validation(value, _record, _attr_name)
-      begin
-        val_to_date(value)
-      rescue
-        nil
-      end
+      val_to_date(value)
+    rescue
+      nil
     end
 
     def val_to_date(param)
