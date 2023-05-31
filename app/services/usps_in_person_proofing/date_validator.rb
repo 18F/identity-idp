@@ -23,10 +23,13 @@ module UspsInPersonProofing
     end
 
     def val_to_date(param)
-      return param if param.is_a?(Date)
-      return DateParser.parse_legacy(param) if param.is_a?(String)
-      h = param.to_hash.with_indifferent_access
-      Date.new(h[:year].to_i, h[:month].to_i, h[:day].to_i)
+      case param
+      when String, Date
+        DateParser.parse_legacy(param)
+      else
+        h = param.to_hash.with_indifferent_access
+        Date.new(h[:year].to_i, h[:month].to_i, h[:day].to_i)
+      end
     end
   end
 end
