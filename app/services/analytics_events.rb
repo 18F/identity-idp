@@ -1,5 +1,15 @@
 # frozen_string_literal: true
 
+#  ______________________________________
+# / Adding something new in here? Please \
+# \ keep methods sorted alphabetically.  /
+#  --------------------------------------
+#         \   ^__^
+#          \  (oo)\_______
+#             (__)\       )\/\
+#                 ||----w |
+#                 ||     ||
+
 module AnalyticsEvents
   # @param [Boolean] success
   # When a user submits a form to delete their account
