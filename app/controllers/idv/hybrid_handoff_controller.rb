@@ -162,14 +162,6 @@ module Idv
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
-    def mark_link_sent_step_complete
-      flow_session['Idv::Steps::LinkSentStep'] = true
-    end
-
-    def mark_upload_step_complete
-      flow_session['Idv::Steps::UploadStep'] = true
-    end
-
     def form_response(destination:)
       FormResponse.new(
         success: true,
