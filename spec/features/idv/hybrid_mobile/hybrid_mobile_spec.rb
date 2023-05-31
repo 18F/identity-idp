@@ -42,6 +42,10 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
       visit idv_hybrid_mobile_capture_complete_url
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
 
+      # Confirm that jumping to LinkSent page does not cause errors
+      visit idv_link_sent_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
