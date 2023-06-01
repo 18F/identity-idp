@@ -21,6 +21,9 @@ module UspsInPersonProofing
       nil
     end
 
+    # @param [String,Date,#to_hash] param
+    # @return [Date]
+    # It's caller's responsibility to ensure the param contains required entries
     def val_to_date(param)
       case param
       when String, Date
