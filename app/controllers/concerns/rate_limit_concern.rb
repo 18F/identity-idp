@@ -55,7 +55,7 @@ module RateLimitConcern
 
   def idv_attempter_rate_limited?(throttle_type)
     Throttle.new(
-      user: current_user,
+      user: idv_session_user,
       throttle_type: throttle_type,
     ).throttled?
   end
