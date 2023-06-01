@@ -63,8 +63,8 @@ class PhoneInputComponent < BaseComponent
   def strings
     {
       country_code_label: t('components.phone_input.country_code_label'),
-      invalid_phone: t('errors.messages.invalid_phone_number.us'),
-      invalid_length: t('errors.messages.invalid_phone_number.international'),
+      invalid_phone_us: t('errors.messages.invalid_phone_number.us'),
+      invalid_phone_international: t('errors.messages.invalid_phone_number.international'),
       unsupported_country: unsupported_country_string,
     }
   end
