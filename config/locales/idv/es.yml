@@ -212,6 +212,8 @@ es:
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
         resend: Envíeme otra carta
+        resend_timeframe: Las cartas suelen tardar entre 3 y 7 días hábiles en llegar.
+        resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola vez de tu carta actual seguirá siendo válido durante un tiempo limitado. Puedes seguir utilizando el código de una sola vez de cualquiera de las dos cartas.
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
@@ -252,7 +254,7 @@ es:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
       mail:
-        resend: '¿Desea otra carta?'
+        resend: '¿Enviar otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
