@@ -27,7 +27,7 @@ describe Idv::InPerson::AddressForm do
       before(:each) do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(false)
       end
-      it '#submit success with good params' do
+      it 'submit success with good params' do
         good_params[:same_address_as_id] = true
         result = subject.submit(good_params)
         expect(subject.errors.empty?).to be(true)
@@ -35,7 +35,7 @@ describe Idv::InPerson::AddressForm do
         expect(result.success?).to be(true)
       end
 
-      it '#submit success with good params' do
+      it 'submit success with good params' do
         good_params[:same_address_as_id] = false
         result = subject.submit(good_params)
         expect(subject.errors.empty?).to be(true)
@@ -43,7 +43,7 @@ describe Idv::InPerson::AddressForm do
         expect(result.success?).to be(true)
       end
 
-      it '#submit success with bad params' do
+      it 'submit success with bad params' do
         bad_params[:same_address_as_id] = false
         result = subject.submit(bad_params)
         expect(subject.errors.empty?).to be(true)
@@ -56,14 +56,14 @@ describe Idv::InPerson::AddressForm do
       before(:each) do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
       end
-      it '#submit success with good params' do
+      it 'submit success with good params' do
         good_params[:same_address_as_id] = true
         result = subject.submit(good_params)
         expect(subject.errors.empty?).to be(true)
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to be(true)
       end
-      it '#submit failure with bad params' do
+      it 'submit failure with bad params' do
         bad_params[:same_address_as_id] = false
         result = subject.submit(bad_params)
         expect(subject.errors.empty?).to be(false)
@@ -79,7 +79,7 @@ describe Idv::InPerson::AddressForm do
       end
       context 'when capture_secondary_id_enabled is true' do
         let(:subject) { described_class.new(capture_secondary_id_enabled: true) }
-        it '#submit with missing same_address_as_id should be successful' do
+        it 'submit with missing same_address_as_id should be successful' do
           missing_required_params = good_params.except(:same_address_as_id)
           result = subject.submit(missing_required_params)
           expect(subject.errors.empty?).to be(true)
@@ -89,7 +89,7 @@ describe Idv::InPerson::AddressForm do
       end
       context 'when capture_secondary_id_enabled is false' do
         let(:subject) { described_class.new(capture_secondary_id_enabled: false) }
-        it '#submit with missing same_address_as_id will fail' do
+        it 'submit with missing same_address_as_id will fail' do
           missing_required_params = good_params.except(:same_address_as_id)
           result = subject.submit(missing_required_params)
           expect(subject.errors.empty?).to be(false)
