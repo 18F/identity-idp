@@ -1,4 +1,4 @@
-import { request } from '@18f/identity-request';
+import { request, ResponseError } from '@18f/identity-request';
 
 export interface SessionLiveStatusResponse {
   /**
@@ -69,13 +69,27 @@ function mapSessionStatusResponse<R extends SessionStatusResponse>({
 }
 
 /**
+ * Handles a thrown error from a session endpoint, interpreting an unauthorized request (401) as
+ * effectively an inactive session. Any other error is re-thrown as being unexpected.
+ *
+ * @param error Error thrown from request.
+ */
+function handleUnauthorizedStatusResponse(error: ResponseError) {
+  if (error.status === 401) {
+    return { live: false, timeout: null };
+  }
+
+  throw error;
+}
+
+/**
  * Request the current session status. Returns a promise resolving to the current session status.
  *
  * @return A promise resolving to the current session status
  */
 export const requestSessionStatus = (): Promise<SessionStatus> =>
   request<SessionStatusResponse>(STATUS_API_ENDPOINT)
-    .catch(() => ({ live: false, timeout: null }))
+    .catch(handleUnauthorizedStatusResponse)
     .then(mapSessionStatusResponse);
 
 /**
@@ -85,6 +99,6 @@ export const requestSessionStatus = (): Promise<SessionStatus> =>
  * @return A promise resolving to the updated session status.
  */
 export const extendSession = (): Promise<SessionStatus> =>
-  request<SessionStatusResponse>(KEEP_ALIVE_API_ENDPOINT, { method: 'POST' }).then(
-    mapSessionStatusResponse,
-  );
+  request<SessionStatusResponse>(KEEP_ALIVE_API_ENDPOINT, { method: 'POST' })
+    .catch(handleUnauthorizedStatusResponse)
+    .then(mapSessionStatusResponse);

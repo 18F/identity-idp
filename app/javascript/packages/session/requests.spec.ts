@@ -75,28 +75,84 @@ describe('requestSessionStatus', () => {
       expect(result).to.deep.equal({ isLive: false });
     });
   });
+
+  context('server responds with 500', () => {
+    before(() => {
+      server = setupServer(
+        rest.get<{}, {}>(STATUS_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(500))),
+      );
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('throws an error', async () => {
+      await expect(requestSessionStatus()).to.be.rejected();
+    });
+  });
 });
 
 describe('extendSession', () => {
-  const timeout = new Date(Date.now() + 1000).toISOString();
-
   let server: SetupServer;
-  before(() => {
-    server = setupServer(
-      rest.post<{}, {}, SessionLiveStatusResponse>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) =>
-        res(ctx.json({ live: true, timeout })),
-      ),
-    );
-    server.listen();
+
+  context('session active', () => {
+    const timeout = new Date(Date.now() + 1000).toISOString();
+
+    before(() => {
+      server = setupServer(
+        rest.post<{}, {}, SessionLiveStatusResponse>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) =>
+          res(ctx.json({ live: true, timeout })),
+        ),
+      );
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('resolves to the status', async () => {
+      const result = await extendSession();
+
+      expect(result).to.deep.equal({ isLive: true, timeout: new Date(timeout) });
+    });
   });
 
-  after(() => {
-    server.close();
+  context('server responds with 401', () => {
+    before(() => {
+      server = setupServer(
+        rest.post<{}, {}>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(401))),
+      );
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('resolves to the status', async () => {
+      const result = await extendSession();
+
+      expect(result).to.deep.equal({ isLive: false });
+    });
   });
 
-  it('resolves to the status', async () => {
-    const result = await extendSession();
+  context('server responds with 500', () => {
+    before(() => {
+      server = setupServer(
+        rest.post<{}, {}>(KEEP_ALIVE_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(500))),
+      );
+      server.listen();
+    });
 
-    expect(result).to.deep.equal({ isLive: true, timeout: new Date(timeout) });
+    after(() => {
+      server.close();
+    });
+
+    it('throws an error', async () => {
+      await expect(extendSession()).to.be.rejected();
+    });
   });
 });
