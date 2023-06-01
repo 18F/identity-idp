@@ -1,4 +1,4 @@
-import { isValidNumberForRegion } from 'libphonenumber-js';
+import { isValidNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
@@ -196,7 +196,7 @@ export class PhoneInputElement extends HTMLElement {
       return;
     }
 
-    const isInvalidNumber = !isValidNumberForRegion(phoneNumber, countryCode);
+    const isInvalidNumber = !isValidNumber(phoneNumber, countryCode);
     if (isInvalidNumber) {
       textInput.setCustomValidity(this.strings.invalid_phone_international || '');
     }
