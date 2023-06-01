@@ -62,6 +62,9 @@ module Idv
       if !failure_reason
         flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
+
+        # for the 50/50 state
+        flow_session['Idv::Steps::UploadStep'] = true
       else
         redirect_to idv_hybrid_handoff_url
       end
@@ -118,11 +121,13 @@ module Idv
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
+      # for the 50/50 state
+      flow_session['Idv::Steps::UploadStep'] = true
+
       response = form_response(destination: :document_capture)
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(response.to_h),
       )
-      response
     end
 
     def extra_view_variables
