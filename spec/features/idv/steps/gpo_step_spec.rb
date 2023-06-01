@@ -43,7 +43,7 @@ feature 'idv gpo step', :js do
       expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
       expect(page).to have_content(t('idv.buttons.mail.resend'))
       expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
-      
+
       expect { click_on t('idv.buttons.mail.resend') }.
         to change { GpoConfirmation.count }.from(1).to(2)
       expect_user_to_be_unverified(user)

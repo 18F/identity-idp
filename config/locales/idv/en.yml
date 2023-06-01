@@ -200,8 +200,10 @@ en:
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         resend: Send me another letter
+        resend_code_warning: If you request a new letter now, the one-time code from
+          your current letter will remain valid for a limited time. You may
+          still use the one-time code from either letter.
         resend_timeframe: Letters typically take 3 to 7 business days to arrive.
-        resend_code_warning: If you request a new letter now, the one-time code from your current letter will remain valid for a limited time. You may still use the one-time code from either letter.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
