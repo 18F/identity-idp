@@ -2,14 +2,16 @@
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: @step_indicator_current_step,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
+      steps: step_indicator_steps,
+      current_step: @step_indicator_current_step,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+  ) %>
 <% end %>
 
-<% unless @presenter.resend_requested? %>
+<% if @presenter.resend_requested? %>
+  <%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-2') %>
+<% else %>
   <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
 <% end %>
 
