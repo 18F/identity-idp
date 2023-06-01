@@ -83,7 +83,7 @@ feature 'IAL1 Single Sign On' do
       Warden.on_next_request do |proxy|
         proxy.env['devise.skip_trackable'] = true
         session = proxy.env['rack.session']
-        session['warden.user.user.session']['last_request_at'] = User.timeout_in.ago.to_i - 1
+        session['session_expires_at'] = Time.zone.now - 1
       end
 
       expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id), wait: 5)
