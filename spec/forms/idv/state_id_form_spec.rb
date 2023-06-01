@@ -82,6 +82,7 @@ describe Idv::StateIdForm do
             char_list: [invalid_char].join(', '),
           ),
         ]
+        expect(result.errors.empty?).to be(true)
       end
       it 'returns both name and dob error when both fields are invalid' do
         allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled).and_return(true)
