@@ -32,7 +32,6 @@ module Idv
     end
 
     def new
-      @applicant = idv_session.applicant
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
