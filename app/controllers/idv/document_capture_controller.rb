@@ -54,7 +54,11 @@ module Idv
     def confirm_upload_step_complete
       return if flow_session[:flow_path].present?
 
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+        redirect_to idv_hybrid_handoff_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_document_capture_needed

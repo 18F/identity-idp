@@ -1,4 +1,4 @@
-brew 'postgresql@13'
+brew 'postgresql@14'
 brew 'redis'
 brew 'node@16'
 brew 'yarn'

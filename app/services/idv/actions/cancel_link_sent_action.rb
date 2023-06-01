@@ -7,6 +7,7 @@ module Idv
 
       def call
         redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       end
     end
   end

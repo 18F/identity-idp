@@ -18,9 +18,6 @@ describe Idv::DocumentCaptureController do
     )
   end
 
-  let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
-  let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
-
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
@@ -99,6 +96,13 @@ describe Idv::DocumentCaptureController do
 
         expect(response).to redirect_to(idv_ssn_url)
       end
+    end
+
+    it 'does not use effective user outside of analytics_user in ApplicationControler' do
+      allow(subject).to receive(:analytics_user).and_return(subject.current_user)
+      expect(subject).not_to receive(:effective_user)
+
+      get :show
     end
 
     context 'user is rate_limited' do

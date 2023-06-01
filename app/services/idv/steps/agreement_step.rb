@@ -14,6 +14,7 @@ module Idv
       def call
         if flow_session[:skip_upload_step]
           redirect_to idv_document_capture_url
+          flow_session[:flow_path] = 'standard'
         else
           redirect_to idv_hybrid_handoff_url
         end
@@ -28,7 +29,6 @@ module Idv
       def skip_to_capture
         # See: Idv::DocAuthController#update_if_skipping_upload
         flow_session[:skip_upload_step] = true
-        flow_session[:flow_path] = 'standard'
       end
 
       def consent_form_params

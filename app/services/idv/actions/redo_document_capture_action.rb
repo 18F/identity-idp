@@ -11,6 +11,7 @@ module Idv
           redirect_to idv_document_capture_url
         else
           redirect_to idv_hybrid_handoff_url
+          flow_session[:flow_path] = nil
         end
       end
     end

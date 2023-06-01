@@ -312,6 +312,17 @@ fr:
       sessions:
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
           personnelles
+      state_id:
+        cancel_button: Quitter %{app_name}
+        explanation: |
+          Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations en ce moment.
+        heading: Nous travaillons à la résolution d’une erreur
+        next_steps:
+          items_html:
+            - Réessayer maintenant <strong>ou</strong>
+            - Quitter %{app_name} et réessayer plus tard
+          preamble: 'Vous pouvez:'
+        try_again_button: Réessayer
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

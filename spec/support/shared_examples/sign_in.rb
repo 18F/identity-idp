@@ -68,10 +68,9 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as IAL2 with personal key' do |sp|
-  it 'does not present personal key as an MFA option', :email, js: true do
-    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-
-    Capybara.reset_sessions!
+  it 'does not present personal key as an MFA option' do
+    user = create(:user, :fully_registered)
+    _profile = create(:profile, :active, :verified, :with_pii, user: user)
 
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
@@ -95,7 +94,7 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
     end
   end
 
-  it 'gets bad password error', :email, js: true do
+  it 'gets bad password error' do
     ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
@@ -203,8 +202,9 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       and_return(window_end)
   end
 
-  def user_with_broken_personal_key(protocol, scenario)
-    user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
+  def user_with_broken_personal_key(scenario)
+    user = create(:user, :fully_registered)
+    _profile = create(:profile, :active, :verified, :with_pii, user: user)
 
     case scenario
     when :broken_personal_key_window
@@ -235,8 +235,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
   ].each do |description, scenario|
     context description do
       context "protocol: #{protocol}, ial: #{sp_ial}" do
-        it 'prompts the user to get a new personal key when using email/password', js: true do
-          user = user_with_broken_personal_key(protocol, scenario)
+        it 'prompts the user to get a new personal key when using email/password' do
+          user = user_with_broken_personal_key(scenario)
 
           case sp_ial
           when 1
@@ -248,6 +248,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           end
 
           fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
           code = page.all('.personal-key-block__code').map(&:text).join(' ')
@@ -257,15 +259,14 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           expect(user.active_profile.reload.recover_pii(code)).to be_present
         end
 
-        it 'prompts for password when signing in via PIV/CAC', js: true do
-          user = user_with_broken_personal_key(protocol, scenario)
+        it 'prompts for password when signing in via PIV/CAC' do
+          user = user_with_broken_personal_key(scenario)
 
           create(:piv_cac_configuration, user: user)
 
           visit_idp_from_sp_with_ial1(protocol)
           click_on t('account.login.piv_cac')
           fill_in_piv_cac_credentials_and_submit(user)
-          click_submit_default if protocol == :saml
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
           expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
@@ -392,7 +393,8 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
-  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+  user = create(:user, :fully_registered)
+  _profile = create(:profile, :active, :verified, :with_pii, user: user)
   user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_idp_from_sp_with_ial2(sp)

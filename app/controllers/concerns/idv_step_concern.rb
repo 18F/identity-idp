@@ -13,12 +13,12 @@ module IdvStepConcern
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
+    redirect_to idv_gpo_verify_url if current_user&.gpo_verification_pending_profile?
   end
 
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
-    redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
+    redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
   def flow_session

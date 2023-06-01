@@ -35,11 +35,12 @@
                     minLength: 1,
                     maxLength: 2,
                     aria: {
-                      invalid: false,
+                      invalid: has_errors?,
                       labelledby: [
                         "memorable-date-month-label-#{unique_id}",
                         "memorable-date-month-hint-#{unique_id}",
                       ],
+                      describedby: ["validated-field-error-#{unique_id}"],
                     },
                     value: month,
                   },
@@ -71,11 +72,13 @@
                   minLength: 1,
                   maxLength: 2,
                   aria: {
-                    invalid: false,
+                    invalid: has_errors?,
                     labelledby: [
                       "memorable-date-day-label-#{unique_id}",
                       "memorable-date-day-hint-#{unique_id}",
                     ],
+                    describedby: ["validated-field-error-#{unique_id}"],
+
                   },
                   value: day,
                 },
@@ -107,11 +110,12 @@
                   minLength: 4,
                   maxLength: 4,
                   aria: {
-                    invalid: false,
+                    invalid: has_errors?,
                     labelledby: [
                       "memorable-date-year-label-#{unique_id}",
                       "memorable-date-year-hint-#{unique_id}",
                     ],
+                    describedby: ["validated-field-error-#{unique_id}"],
                   },
                   value: year,
                 },
@@ -125,4 +129,8 @@
         </lg-validated-field>
     </div>
   <% end -%>
-<div id="validated-field-error-<%= unique_id %>" class="usa-error-message display-none"></div>
+<div id="validated-field-error-<%= unique_id %>" class="usa-error-message <%= 'display-none' unless has_errors? %>">
+  <% if has_errors? %>
+    <%= error_msg %>
+  <% end %>
+</div>

@@ -76,7 +76,7 @@ module Idv
 
     def render_document_capture_cancelled
       redirect_to idv_hybrid_handoff_url
-      # Do this? flow_session[:flow_path] = nil
+      flow_session[:flow_path] = nil
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 
