@@ -47,8 +47,7 @@ module RateLimitConcern
       self.instance_of?(Idv::VerifyInfoController) ||
         self.instance_of?(Idv::InPerson::VerifyInfoController)
     when :idv_doc_auth
-      self.instance_of?(Idv::DocumentCaptureController) ||
-        self.instance_of?(Idv::HybridMobile::DocumentCaptureController)
+      self.instance_of?(Idv::DocumentCaptureController)
     when :proof_address
       self.instance_of?(Idv::PhoneController)
     end
@@ -56,7 +55,7 @@ module RateLimitConcern
 
   def idv_attempter_rate_limited?(throttle_type)
     Throttle.new(
-      user: effective_user,
+      user: idv_session_user,
       throttle_type: throttle_type,
     ).throttled?
   end

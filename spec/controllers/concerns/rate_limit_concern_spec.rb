@@ -6,6 +6,7 @@ describe 'RateLimitConcern' do
   module Idv
     class StepController < ApplicationController
       include RateLimitConcern
+      include IdvSession
 
       def show
         render plain: 'Hello'
