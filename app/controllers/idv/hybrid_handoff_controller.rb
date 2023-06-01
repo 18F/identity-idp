@@ -12,7 +12,6 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      flow_session[:flow_path] = 'standard'
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -65,12 +64,11 @@ module Idv
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
-        flow_session[:flow_path] = nil
       end
 
-      analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
-      )
+      analytics_args = analytics_arguments.merge(form_response(destination: :link_sent).to_h)
+      analytics_args[:flow_path] = flow_session[:flow_path]
+      analytics.idv_doc_auth_upload_submitted(**analytics_args)
     end
 
     def send_link
@@ -160,7 +158,6 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-        flow_path: flow_session[:flow_path],
       }.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
@@ -194,7 +191,6 @@ module Idv
 
       failure(message)
       redirect_to idv_hybrid_handoff_url
-      flow_session[:flow_path] = nil
     end
 
     # copied from Flow::Failure module

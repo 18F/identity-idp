@@ -40,8 +40,7 @@ describe Idv::HybridHandoffController do
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth upload visited' }
     let(:analytics_args) do
-      { flow_path: 'standard',
-        step: 'upload',
+      { step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
