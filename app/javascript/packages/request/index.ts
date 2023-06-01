@@ -54,6 +54,19 @@ class CSRF {
   }
 }
 
+/**
+ * Returns true if the request associated with the given options would require a valid CSRF token,
+ * or false otherwise.
+ *
+ * @see https://github.com/rails/rails/blob/v7.0.5/actionpack/lib/action_controller/metal/request_forgery_protection.rb#L335-L343
+ *
+ * @param options Request options
+ *
+ * @return Whether the request would require a CSRF token
+ */
+const isCSRFValidatedRequest = (options: RequestOptions) =>
+  !!options.method && !['GET', 'HEAD'].includes(options.method.toUpperCase());
+
 export async function request<Response = any>(
   url,
   options?: Partial<RequestOptions> & { read?: true },
@@ -67,7 +80,7 @@ export async function request(url: string, options: Partial<RequestOptions> = {}
   let { body, headers } = fetchOptions;
   headers = new Headers(headers);
 
-  if (csrf) {
+  if (csrf && isCSRFValidatedRequest(fetchOptions)) {
     const csrfToken = typeof csrf === 'boolean' ? CSRF.token : csrf();
 
     if (csrfToken) {

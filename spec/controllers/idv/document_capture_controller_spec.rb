@@ -101,6 +101,19 @@ describe Idv::DocumentCaptureController do
         expect(response).to redirect_to(idv_ssn_url)
       end
     end
+
+    context 'user is rate_limited' do
+      it 'redirects to rate limited page' do
+        user = create(:user)
+
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        allow(subject).to receive(:current_user).and_return(user)
+
+        get :show
+
+        expect(response).to redirect_to(idv_session_errors_throttled_url)
+      end
+    end
   end
 
   describe '#update' do
