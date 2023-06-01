@@ -3,6 +3,11 @@ require 'rails_helper'
 feature 'doc auth redo document capture action', js: true do
   include IdvStepHelper
   include DocAuthHelper
+  before do
+    allow(IdentityConfig.store).
+      to receive(:doc_auth_hybrid_handoff_controller_enabled).
+      and_return(true)
+  end
 
   context 'when barcode scan returns a warning', allow_browser_log: true do
     before do
@@ -64,7 +69,7 @@ feature 'doc auth redo document capture action', js: true do
         )
         click_link warning_link_text
 
-        expect(current_path).to eq(idv_document_capture_path)
+        expect(current_path).to eq(idv_document_capture_path) # /verify/ssn
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
