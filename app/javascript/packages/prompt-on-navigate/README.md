@@ -16,13 +16,13 @@ cleanUp();
 
 ## Analytics
 
-By default, `promptOnNavigate` will call `trackEvent` to log a `Prompt on navigate` event when the onbeforeunload handler is called. It will then log `Prompt on navigate: user still on page` events at 5, 15, and 30 seconds after the onbeforeunload handler is called (the `seconds` property on the event will contain the number of seconds since the initial prompt).
+By default, `promptOnNavigate` will call `trackEvent` to log a `User prompted before navigation` event when the onbeforeunload handler is called. It will then log `User prompted before navigation and still on page` events at 5, 15, and 30 seconds after the onbeforeunload handler is called (the `seconds` property on the event will contain the number of seconds since the initial prompt).
 
 You can customize these intervals by passing a `stillOnPageIntervalsInSeconds` option:
 
 ```js
 promptOnNavigate({
-  // Log a 'Prompt on navigate: user still on page' event 7 and 11 seconds after the initial prompt.
+  // Log a 'User prompted before navigation and still on page' event 7 and 11 seconds after the initial prompt.
   stillOnPageIntervalsInSeconds: [7, 11],
 });
 ```
