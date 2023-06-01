@@ -124,10 +124,9 @@ module Idv
       # for the 50/50 state
       flow_session['Idv::Steps::UploadStep'] = true
 
-      response = form_response(destination: :document_capture)
-      analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(response.to_h),
-      )
+      analytics_args = analytics_arguments.merge(form_response(destination: :document_capture).to_h)
+      analytics_args[:flow_path] = flow_session[:flow_path]
+      analytics.idv_doc_auth_upload_submitted(**analytics_args)
     end
 
     def extra_view_variables

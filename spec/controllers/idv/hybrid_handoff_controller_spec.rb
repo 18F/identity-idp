@@ -107,9 +107,17 @@ describe Idv::HybridHandoffController do
         skip_upload_step: false }
     end
 
-    it 'sends analytics_submitted event' do
+    it 'sends analytics_submitted event for hybrid' do
       put :update, params: { doc_auth: { phone: '202-555-5555' } }
 
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    it 'sends analytics_submitted event for desktop' do
+      put :update, params: { type: 'desktop' }
+
+      analytics_args[:flow_path] = 'standard'
+      analytics_args[:destination] = :document_capture
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
   end
