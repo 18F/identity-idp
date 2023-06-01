@@ -56,6 +56,25 @@ describe('requestSessionStatus', () => {
       expect(result).to.deep.equal({ isLive: true, timeout: new Date(timeout) });
     });
   });
+
+  context('server responds with 401', () => {
+    before(() => {
+      server = setupServer(
+        rest.get<{}, {}>(STATUS_API_ENDPOINT, (_req, res, ctx) => res(ctx.status(401))),
+      );
+      server.listen();
+    });
+
+    after(() => {
+      server.close();
+    });
+
+    it('resolves to the status', async () => {
+      const result = await requestSessionStatus();
+
+      expect(result).to.deep.equal({ isLive: false });
+    });
+  });
 });
 
 describe('extendSession', () => {
