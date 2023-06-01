@@ -79,13 +79,13 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    context 'upload step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+    context 'hybrid handoff step is not complete' do
+      it 'redirects to hybrid handoff' do
         flow_session.delete(:flow_path)
 
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 

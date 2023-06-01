@@ -52,7 +52,7 @@ feature 'doc auth document capture step', :js do
       # it redirects here if trying to move earlier in the flow
       visit(idv_doc_auth_agreement_step)
       expect(page).to have_current_path(idv_document_capture_path)
-      visit(idv_doc_auth_upload_step)
+      visit(idv_hybrid_handoff_url)
       expect(page).to have_current_path(idv_document_capture_path)
     end
 
