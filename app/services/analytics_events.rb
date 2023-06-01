@@ -11,15 +11,15 @@
 #                 ||     ||
 
 module AnalyticsEvents
+  # When a user visits the page to delete their account
+  def account_delete_visited
+    track_event('Account Delete visited')
+  end
+
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
     track_event('Account Delete submitted', success: success, **extra)
-  end
-
-  # When a user visits the page to delete their account
-  def account_delete_visited
-    track_event('Account Delete visited')
   end
 
   # @param [String] request_came_from the controller/action the request came from
