@@ -54,7 +54,10 @@ es:
       inclusion: No se incluye en la lista.
       invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
         enviar un SMS si tienes un teléfono que permita enviar SMS.
-      invalid_phone_number: 'Ingrese un número de teléfono de 10 dígitos. Ejemplo: (201) 555-0123'
+      invalid_phone_number:
+        international: 'Ingrese un número de teléfono con el número correcto de dígitos.
+          Ejemplo: (201) 555-0123'
+        us: 'Ingrese un número de teléfono de 10 dígitos. Ejemplo: (201) 555-0123'
       invalid_recaptcha_token: Debes superar el desafío de prevención de spam.
       invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto.
         Pruebe la opción de llamada telefónica.
