@@ -35,6 +35,13 @@ describe Idv::HybridHandoffController do
         :confirm_hybrid_handoff_needed,
       )
     end
+
+    it 'checks that the user is not on mobile' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_not_on_mobile,
+      )
+    end
   end
 
   describe '#show' do
@@ -90,6 +97,16 @@ describe Idv::HybridHandoffController do
         get :show
 
         expect(response).to redirect_to(idv_link_sent_url)
+      end
+    end
+
+    context 'user is on mobile' do
+      it 'redirects to document capture' do
+        subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+
+        get :show
+
+        expect(response).to redirect_to(idv_document_capture_url)
       end
     end
   end

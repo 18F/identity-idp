@@ -9,7 +9,9 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :render_404_if_hybrid_handoff_controller_disabled
     before_action :confirm_agreement_step_complete
+    before_action :allow_redo
     before_action :confirm_hybrid_handoff_needed, only: :show
+    before_action :confirm_not_on_mobile
 
     def show
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
@@ -228,6 +230,16 @@ module Idv
       elsif flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
       end
+    end
+
+    def allow_redo
+      flow_session['redo_document_capture'] = true if params[:redo]
+    end
+
+    def confirm_not_on_mobile
+      return unless mobile_device?
+
+      redirect_to idv_document_capture_url
     end
 
     def formatted_destination_phone
