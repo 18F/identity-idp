@@ -70,8 +70,9 @@ module Idv
         flow_session[:flow_path] = nil
       end
 
-      analytics_args = analytics_arguments.merge(telephony_form_response.to_h)
-      analytics.idv_doc_auth_upload_submitted(**analytics_args)
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(telephony_form_response.to_h),
+      )
     end
 
     def send_link
@@ -125,8 +126,11 @@ module Idv
       # for the 50/50 state
       flow_session['Idv::Steps::UploadStep'] = true
 
-      analytics_args = analytics_arguments.merge(form_response(destination: :document_capture).to_h)
-      analytics.idv_doc_auth_upload_submitted(**analytics_args)
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(
+          form_response(destination: :document_capture).to_h,
+        ),
+      )
     end
 
     def extra_view_variables

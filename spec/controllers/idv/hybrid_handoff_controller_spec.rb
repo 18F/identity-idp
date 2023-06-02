@@ -101,11 +101,11 @@ describe Idv::HybridHandoffController do
       let(:analytics_args) do
         { success: true,
           errors: { message: nil },
-          analytics_id: 'Doc Auth',
           destination: :link_sent,
           flow_path: 'hybrid',
-          irs_reproofing: false,
           step: 'upload',
+          analytics_id: 'Doc Auth',
+          irs_reproofing: false,
           telephony_response: { errors: {},
                                 message_id: 'fake-message-id',
                                 request_id: 'fake-message-request-id',
