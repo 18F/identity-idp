@@ -1,0 +1,6 @@
+brew 'postgresql@14'
+brew 'redis'
+brew 'node@16'
+brew 'yarn'
+brew 'openssl@1.1'
+cask 'chromedriver'

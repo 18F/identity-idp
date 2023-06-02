@@ -23,7 +23,11 @@ module TwoFactorAuthentication
       irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 
       if result.success?
-        handle_valid_otp(next_url: nil, auth_method: 'authenticator')
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
+        )
+        handle_remember_device
+        redirect_to after_sign_in_path_for(current_user)
       else
         handle_invalid_otp(context: context, type: 'totp')
       end

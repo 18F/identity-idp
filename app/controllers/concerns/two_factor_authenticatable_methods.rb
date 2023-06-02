@@ -67,7 +67,7 @@ module TwoFactorAuthenticatableMethods
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
 
-    redirect_to after_otp_verification_confirmation_url
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def check_sp_required_mfa_bypass(auth_method:)
@@ -93,25 +93,9 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_valid_otp(next_url:, auth_method: nil)
-    handle_valid_otp_for_context(auth_method: auth_method)
-    handle_remember_device
-    next_url ||= after_otp_verification_confirmation_url
-    reset_otp_session_data
-    redirect_to next_url
-  end
-
   def handle_remember_device
     save_user_opted_remember_device_pref
     save_remember_device_preference
-  end
-
-  def handle_valid_otp_for_context(auth_method:)
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_verification_for_authentication_context(auth_method: auth_method)
-    elsif UserSessionContext.confirmation_context?(context)
-      handle_valid_verification_for_confirmation_context(auth_method: auth_method)
-    end
   end
 
   # Method will be renamed in the next refactor.
@@ -184,17 +168,6 @@ module TwoFactorAuthenticatableMethods
 
   def reset_second_factor_attempts_count
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def reset_otp_session_data
-    user_session.delete(:unconfirmed_phone)
-    user_session[:context] = 'authentication'
-  end
-
-  def after_otp_verification_confirmation_url
-    return @next_mfa_setup_path if @next_mfa_setup_path
-    return account_url if @updating_existing_number
-    after_sign_in_path_for(current_user)
   end
 
   def mark_user_session_authenticated(authentication_type)

@@ -11,7 +11,7 @@
 
 <%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
   <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
-    <%= c.item(heading: t('forms.totp_setup.totp_step_1')) do %>
+    <%= c.with_item(heading: t('forms.totp_setup.totp_step_1')) do %>
       <p><%= t('forms.totp_setup.totp_step_1a') %></p>
       <%= render ValidatedFieldComponent.new(
             form: f,
@@ -25,8 +25,8 @@
             },
           ) %>
     <% end %>
-    <%= c.item(heading: t('forms.totp_setup.totp_step_2')) %>
-    <%= c.item(heading: t('forms.totp_setup.totp_step_3')) do %>
+    <%= c.with_item(heading: t('forms.totp_setup.totp_step_2')) %>
+    <%= c.with_item(heading: t('forms.totp_setup.totp_step_3')) do %>
       <div class="text-center">
         <%= image_tag @qrcode, size: 240, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
       </div>
@@ -36,11 +36,11 @@
       </code>
       <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
     <% end %>
-    <%= c.item(heading: t('forms.totp_setup.totp_step_4')) do %>
+    <%= c.with_item(heading: t('forms.totp_setup.totp_step_4')) do %>
       <%= render OneTimeCodeInputComponent.new(
             form: f,
             transport: nil,
-            maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+            code_length: TwoFactorAuthenticatable::OTP_LENGTH,
             field_options: {
               label: false,
               input_html: {

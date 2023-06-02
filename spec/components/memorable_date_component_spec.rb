@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe MemorableDateComponent, type: :component do
   include SimpleForm::ActionViewExtensions::FormHelper
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
   let(:form_object) { Date.new }
   let(:form_builder) do
     SimpleForm::FormBuilder.new('MemorableDate', form_object, view_context, {})
@@ -278,5 +277,18 @@ RSpec.describe MemorableDateComponent, type: :component do
     expect(
       MemorableDateComponent.extract_date_param('abcd'),
     ).to be_nil
+  end
+
+  context 'backend validation error message' do
+    let(:backend_error) { 'backend error' }
+    it 'renders a visible error message element' do
+      allow(form_builder.object).to receive(:errors).and_return(
+        {
+          name => [backend_error],
+        },
+      )
+      expect(rendered).not_to have_css('.usa-error-message.display-none')
+      expect(rendered.css('.usa-error-message')).to have_text(backend_error)
+    end
   end
 end

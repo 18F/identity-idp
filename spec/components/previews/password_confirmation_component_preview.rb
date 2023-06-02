@@ -7,13 +7,7 @@ class PasswordConfirmationComponentPreview < BaseComponentPreview
   # @!endgroup
 
   # @display form true
-  # @param toggle_label text
-  def workbench(toggle_label: nil)
-    render(
-      PasswordConfirmationComponent.new(
-        form: form_builder,
-        **{ toggle_label: }.compact,
-      ),
-    )
+  def workbench
+    render(PasswordConfirmationComponent.new(form: form_builder))
   end
 end

@@ -9,8 +9,6 @@ const UploadContext = createContext({
   getStatus: () => Promise.resolve({} as UploadSuccessResponse),
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
-  backgroundUploadURLs: {} as Record<string, string>,
-  backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
   formData: {} as Record<string, any>,
 });
@@ -112,16 +110,6 @@ interface UploadContextProviderProps {
   isMockClient?: boolean;
 
   /**
-   * URLs to which payload values corresponding to key should be uploaded as soon as possible.
-   */
-  backgroundUploadURLs: Record<string, string>;
-
-  /**
-   * Background upload encryption key.
-   */
-  backgroundUploadEncryptKey?: CryptoKey;
-
-  /**
    * Endpoint to which payload should be sent.
    */
   endpoint: string;
@@ -161,8 +149,6 @@ const DEFAULT_FORM_DATA = {};
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
-  backgroundUploadURLs = {},
-  backgroundUploadEncryptKey,
   endpoint,
   statusEndpoint,
   statusPollInterval,
@@ -181,8 +167,6 @@ function UploadContextProvider({
     upload: uploadWithFormData,
     getStatus,
     statusPollInterval,
-    backgroundUploadURLs,
-    backgroundUploadEncryptKey,
     isMockClient,
     flowPath,
     formData,

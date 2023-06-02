@@ -34,7 +34,7 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 1.5.3', require: false
+gem 'lookbook', '~> 2.0.0', require: false
 gem 'lru_redux'
 gem 'mail'
 gem 'msgpack', '~> 1.6'
@@ -70,7 +70,7 @@ gem 'subprocess', require: false
 gem 'terminal-table', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.82.0'
+gem 'view_component', '~> 3.0.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
@@ -87,7 +87,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
-  gem 'listen'
   gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
@@ -101,6 +100,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
+  gem 'listen'
   gem 'nokogiri', '~> 1.14.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'

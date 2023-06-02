@@ -40,10 +40,17 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_webauthn
-      handle_valid_verification_for_authentication_context(auth_method: 'webauthn')
+      if form.webauthn_configuration.platform_authenticator
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
+      else
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+        )
+      end
       handle_remember_device
-      redirect_to after_otp_verification_confirmation_url
-      reset_otp_session_data
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_webauthn
@@ -96,9 +103,9 @@ module TwoFactorAuthentication
     def analytics_properties
       auth_method = if form&.webauthn_configuration&.platform_authenticator ||
                        params[:platform].to_s == 'true'
-                      'webauthn_platform'
+                      TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
                     else
-                      'webauthn'
+                      TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
                     end
       {
         context: context,
