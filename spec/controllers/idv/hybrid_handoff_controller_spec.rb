@@ -94,21 +94,46 @@ describe Idv::HybridHandoffController do
 
   describe '#update' do
     let(:analytics_name) { 'IdV: doc auth upload submitted' }
-    let(:analytics_args) do
-      { success: true,
-        errors: {},
-        destination: :link_sent,
-        flow_path: 'hybrid',
-        step: 'upload',
-        analytics_id: 'Doc Auth',
-        irs_reproofing: false,
-        skip_upload_step: false }
+
+    context 'hybrid flow' do
+      let(:analytics_args) do
+        { success: true,
+          errors: { message: nil },
+          destination: :link_sent,
+          flow_path: 'hybrid',
+          step: 'upload',
+          analytics_id: 'Doc Auth',
+          irs_reproofing: false,
+          telephony_response: { errors: {},
+                                message_id: 'fake-message-id',
+                                request_id: 'fake-message-request-id',
+                                success: true } }
+      end
+
+      it 'sends analytics_submitted event for hybrid' do
+        put :update, params: { doc_auth: { phone: '202-555-5555' } }
+
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
     end
 
-    it 'sends analytics_submitted event' do
-      put :update, params: { doc_auth: { phone: '202-555-5555' } }
+    context 'desktop flow' do
+      let(:analytics_args) do
+        { success: true,
+          errors: {},
+          destination: :document_capture,
+          flow_path: 'standard',
+          step: 'upload',
+          analytics_id: 'Doc Auth',
+          irs_reproofing: false,
+          skip_upload_step: false }
+      end
 
-      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      it 'sends analytics_submitted event for desktop' do
+        put :update, params: { type: 'desktop' }
+
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
     end
   end
 end

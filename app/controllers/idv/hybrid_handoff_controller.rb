@@ -44,6 +44,7 @@ module Idv
       return throttled_failure if throttle.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
+      flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
@@ -59,18 +60,18 @@ module Idv
       )
 
       if !failure_reason
-        flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
 
         # for the 50/50 state
         flow_session['Idv::Steps::UploadStep'] = true
       else
         redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       end
 
-      analytics_args = analytics_arguments.merge(form_response(destination: :link_sent).to_h)
-      analytics_args[:flow_path] = flow_session[:flow_path]
-      analytics.idv_doc_auth_upload_submitted(**analytics_args)
+      analytics.idv_doc_auth_upload_submitted(
+        **analytics_arguments.merge(telephony_form_response.to_h),
+      )
     end
 
     def send_link
@@ -102,6 +103,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
+          flow_path: flow_session[:flow_path],
         },
       )
     end
@@ -123,9 +125,10 @@ module Idv
       # for the 50/50 state
       flow_session['Idv::Steps::UploadStep'] = true
 
-      response = form_response(destination: :document_capture)
       analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(response.to_h),
+        **analytics_arguments.merge(
+          form_response(destination: :document_capture).to_h,
+        ),
       )
     end
 
@@ -172,6 +175,7 @@ module Idv
         extra: {
           destination: destination,
           skip_upload_step: mobile_device?,
+          flow_path: flow_session[:flow_path],
         },
       )
     end
