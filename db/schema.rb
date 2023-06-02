@@ -592,9 +592,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.datetime "suspended_at"
     t.datetime "reinstated_at"
-    t.index ["reinstated_at"], name: "index_users_on_reinstated_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["suspended_at"], name: "index_users_on_suspended_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
