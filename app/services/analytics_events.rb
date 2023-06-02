@@ -3581,6 +3581,25 @@ module AnalyticsEvents
     )
   end
 
+  # User was shown an "Are you sure you want to navigate away from this page?" message from their
+  # browser (via onbeforeunload). (This is a frontend event.)
+  def user_prompted_before_navigation
+    track_event(
+      'User prompted before navigation',
+    )
+  end
+
+  # User was shown an "Are you sure you want to navigate away from this page?" prompt via
+  # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
+  # @param [Integer] seconds Amount of time user has been on page since prompt.
+  def user_prompted_before_navigation_and_still_on_page(seconds:, **extra)
+    track_event(
+      'User prompted before navigation and still on page',
+      seconds: seconds,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] sign_up_mfa_priority_bucket
