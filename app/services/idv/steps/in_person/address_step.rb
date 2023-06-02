@@ -4,7 +4,6 @@ module Idv
       class AddressStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
-
         def self.analytics_visited_event
           :idv_in_person_proofing_address_visited
         end
@@ -28,7 +27,6 @@ module Idv
           attrs.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
-
         end
 
         def extra_view_variables

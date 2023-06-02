@@ -22,7 +22,6 @@ module Idv
           )
 
           idv_session.delete('applicant')
-
         end
 
         def extra_view_variables

@@ -4,7 +4,6 @@ module Idv
       class StateIdStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
-
         def self.analytics_visited_event
           :idv_in_person_proofing_state_id_visited
         end
@@ -35,7 +34,6 @@ module Idv
               mark_step_incomplete(:address)
            end
           end
-
         end
 
         def extra_view_variables
