@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "identity_idp.name" -}}
+{{- define "identity-idp.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "identity_idp.fullname" -}}
+{{- define "identity-idp.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "identity_idp.chart" -}}
+{{- define "identity-idp.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "identity_idp.labels" -}}
-helm.sh/chart: {{ include "identity_idp.chart" . }}
-{{ include "identity_idp.selectorLabels" . }}
+{{- define "identity-idp.labels" -}}
+helm.sh/chart: {{ include "identity-idp.chart" . }}
+{{ include "identity-idp.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "identity_idp.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "identity_idp.name" . }}
+{{- define "identity-idp.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "identity-idp.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "identity_idp.serviceAccountName" -}}
+{{- define "identity-idp.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "identity_idp.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "identity-idp.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
