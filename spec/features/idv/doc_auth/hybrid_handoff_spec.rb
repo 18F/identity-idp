@@ -14,11 +14,13 @@ feature 'doc auth hybrid_handoff step' do
   end
 
   before do
-    sign_in_and_2fa_user
     allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
+
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_upload_step
   end
 
   it 'does not skip ahead in standard desktop flow' do
@@ -34,11 +36,6 @@ feature 'doc auth hybrid_handoff step' do
   context 'on a desktop device' do
     before do
       complete_doc_auth_steps_before_upload_step
-      allow_any_instance_of(
-        Idv::HybridHandoffController,
-      ).to receive(
-        :mobile_device?,
-      ).and_return(false)
     end
 
     it 'displays with the expected content' do
