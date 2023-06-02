@@ -2,12 +2,6 @@ module Idv
   module OutageConcern
     extend ActiveSupport::Concern
 
-    included do
-      # rubocop:disable Rails/LexicallyScopedActionFilter
-      before_action :check_for_outage, only: :show
-      # rubocop:enable Rails/LexicallyScopedActionFilter
-    end
-
     def check_for_outage
       return if flow_session[:skip_vendor_outage]
 

@@ -11,6 +11,7 @@ module Idv
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
     before_action :override_csp_for_threat_metrix_no_fsm
+    before_action :check_for_outage, only: :show
 
     attr_accessor :error_message
 
