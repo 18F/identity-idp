@@ -91,7 +91,6 @@ describe Users::VerifyPasswordController do
         end
 
         context 'without valid password' do
-          let(:pii) { { dob: Time.zone.today } }
           let(:response_bad) { FormResponse.new(success: false, errors: {}) }
 
           render_views
