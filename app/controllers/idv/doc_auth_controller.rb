@@ -13,6 +13,7 @@ module Idv
     before_action :redirect_if_flow_completed
     before_action :handle_fraud
     before_action :update_if_skipping_upload
+    before_action :check_for_outage, only: :show
 
     before_action :override_csp_for_threat_metrix
 
