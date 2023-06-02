@@ -969,15 +969,17 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    await userEvent.upload(input, validUpload);
+    await act(async () => {
+      uploadFile(input, validUpload);
 
-    await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', {
-      height: sinon.match.number,
-      mimeType: 'image/jpeg',
-      source: 'upload',
-      width: sinon.match.number,
-      attempt: sinon.match.number,
-      size: sinon.match.number,
+      await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', {
+        height: sinon.match.number,
+        mimeType: 'image/jpeg',
+        source: 'upload',
+        width: sinon.match.number,
+        attempt: sinon.match.number,
+        size: sinon.match.number,
+      });
     });
   });
 
@@ -1003,14 +1005,16 @@ describe('document-capture/components/acuant-capture', () => {
       </I18nContext.Provider>,
     );
 
-    const placeholder = getByLabelText('Image');
-    await userEvent.click(placeholder);
-    await userEvent.click(getByLabelText('account.navigation.close'));
-    const button = getByText('doc_auth.buttons.take_picture');
-    await userEvent.click(button);
-    await userEvent.click(getByLabelText('account.navigation.close'));
-    const upload = getByText('Upload');
-    fireEvent.click(upload);
+    await act(async () => {
+      const placeholder = getByLabelText('Image');
+      await userEvent.click(placeholder);
+      await userEvent.click(getByLabelText('account.navigation.close'));
+      const button = getByText('doc_auth.buttons.take_picture');
+      await userEvent.click(button);
+      await userEvent.click(getByLabelText('account.navigation.close'));
+      const upload = getByText('Upload');
+      fireEvent.click(upload);
+    });
 
     expect(trackEvent.callCount).to.be.at.least(3);
     expect(trackEvent).to.have.been.calledWith('IdV: test image clicked', {
