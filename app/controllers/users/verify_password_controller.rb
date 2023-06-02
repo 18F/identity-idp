@@ -6,12 +6,9 @@ module Users
     before_action :confirm_password_reset_profile
     before_action :confirm_personal_key
 
-    def new
-      @decrypted_pii = decrypted_pii
-    end
+    def new; end
 
     def update
-      @decrypted_pii = decrypted_pii
       result = verify_password_form.submit
 
       irs_attempts_api_tracker.logged_in_profile_change_reauthentication_submitted(
@@ -31,13 +28,6 @@ module Users
       return if reactivate_account_session.validated_personal_key?
       redirect_to root_url
     end
-
-    # rubocop:disable Naming/MemoizedInstanceVariableName
-    # @return [Pii::Attributes, nil]
-    def decrypted_pii
-      @_decrypted_pii ||= reactivate_account_session.decrypted_pii
-    end
-    # rubocop:enable Naming/MemoizedInstanceVariableName
 
     def handle_success(result)
       flash[:personal_key] = result.extra[:personal_key]

@@ -98,7 +98,6 @@ describe Users::VerifyPasswordController do
 
           before do
             allow(form).to receive(:submit).and_return(response_bad)
-            allow(controller).to receive(:decrypted_pii).and_return(pii)
 
             put :update, params: user_params
           end

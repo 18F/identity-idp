@@ -213,14 +213,12 @@ en:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
-        phone_of_record: Phone of record
         rules:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
         gpo_pending: We’ll send your letter once you re-enter your password.
-        intro: Your verified information
         message: '%{app_name} will encrypt your information with your password. This
           means that your information is secure and only you will be able to
           access or change it.'
@@ -235,11 +233,6 @@ en:
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
-    review:
-      dob: Date of birth
-      full_name: Full name
-      mailing_address: Mailing address
-      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
