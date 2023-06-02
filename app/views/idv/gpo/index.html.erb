@@ -10,21 +10,18 @@
 <% end %>
 
 <% if @presenter.resend_requested? %>
-  <%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-2') %>
+  <%= render StatusPageComponent.new(status: :warning) do |c| %>
+    <% c.with_header { @presenter.title } %>
+    <p>
+      <%= t('idv.messages.gpo.resend_timeframe') %>
+    </p>
+    <p>
+      <%= t('idv.messages.gpo.resend_code_warning') %>
+    </p>
+  <% end %>
 <% else %>
   <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
-<% end %>
-
-<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
-
-<% if @presenter.resend_requested? %>
-  <p>
-    <%= t('idv.messages.gpo.resend_timeframe') %>
-  </p>
-  <p>
-    <%= t('idv.messages.gpo.resend_code_warning') %>
-  </p>
-<% else %>  
+  <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
   <p>
     <%= t('idv.messages.gpo.address_on_file_html') %>
     <%= t('idv.messages.gpo.timeframe_html') %>
