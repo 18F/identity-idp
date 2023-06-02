@@ -8,8 +8,9 @@ const defaults = {
   stillOnPageIntervalsInSeconds: [5, 15, 30],
 };
 
-const PROMPT_EVENT = 'User prompted before navigation';
-const STILL_ON_PAGE_EVENT = 'User prompted before navigation and still on page';
+export const PROMPT_EVENT = 'User prompted before navigation';
+
+export const STILL_ON_PAGE_EVENT = 'User prompted before navigation and still on page';
 
 /**
  * Configures the window.onbeforeunload handler such that the user will be prompted before

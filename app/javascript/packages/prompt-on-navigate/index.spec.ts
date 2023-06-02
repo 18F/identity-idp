@@ -1,6 +1,6 @@
 import { useSandbox } from '@18f/identity-test-helpers';
 import * as analytics from '@18f/identity-analytics';
-import { promptOnNavigate } from '.';
+import { PROMPT_EVENT, STILL_ON_PAGE_EVENT, promptOnNavigate } from '.';
 
 describe('promptOnNavigate', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
@@ -23,7 +23,7 @@ describe('promptOnNavigate', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT);
   });
 
   it('logs a second event when the user stays on the page for 5s', () => {
@@ -35,14 +35,14 @@ describe('promptOnNavigate', () => {
 
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT);
     trackEvent.resetHistory();
 
     sandbox.clock.tick(2000);
     expect(trackEvent).not.to.have.been.called();
 
     sandbox.clock.tick(3000);
-    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+    expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
       seconds: 5,
     });
   });
@@ -56,7 +56,7 @@ describe('promptOnNavigate', () => {
 
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT);
     trackEvent.resetHistory();
 
     sandbox.clock.tick(5000);
@@ -64,7 +64,7 @@ describe('promptOnNavigate', () => {
     trackEvent.resetHistory();
 
     sandbox.clock.tick(10000);
-    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+    expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
       seconds: 15,
     });
   });
@@ -90,7 +90,7 @@ describe('promptOnNavigate', () => {
     trackEvent.resetHistory();
 
     sandbox.clock.tick(15000);
-    expect(trackEvent).to.have.been.calledWith('Prompt on navigate: user still on page', {
+    expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
       seconds: 30,
     });
   });
@@ -123,7 +123,7 @@ describe('promptOnNavigate', () => {
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith('Prompt on navigate');
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT);
     trackEvent.resetHistory();
 
     sandbox.clock.tick(2000);
