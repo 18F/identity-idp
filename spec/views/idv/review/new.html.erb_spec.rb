@@ -12,17 +12,6 @@ describe 'idv/review/new.html.erb' do
       allow(view).to receive(:step_indicator_steps).
         and_return(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
       allow(view).to receive(:step_indicator_step).and_return(:secure_account)
-      @applicant = {
-        first_name: 'Some',
-        last_name: 'One',
-        ssn: '666-66-1234',
-        dob: dob,
-        address1: '123 Main St',
-        city: 'Somewhere',
-        state: 'MO',
-        zipcode: '12345',
-        phone: '+1 (213) 555-0000',
-      }
 
       render
     end
