@@ -215,7 +215,11 @@ en:
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
+        gpo_pending: We’ll send your letter once you re-enter your password.
         intro: Your verified information
+        message: '%{app_name} will encrypt your information with your password. This
+          means that your information is secure and only you will be able to
+          access or change it.'
         phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
@@ -224,7 +228,6 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
@@ -242,7 +245,7 @@ en:
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        review: Re-enter your %{app_name} password to protect your data
+        review: Re-enter your %{app_name} password
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:

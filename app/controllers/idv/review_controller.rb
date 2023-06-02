@@ -11,6 +11,8 @@ module Idv
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
 
+    helper_method :step_indicator_step
+
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
 
@@ -30,7 +32,6 @@ module Idv
     end
 
     def new
-      @applicant = idv_session.applicant
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
@@ -41,6 +42,8 @@ module Idv
         flash_now[:error] = t('idv.errors.mail_limit_reached')
       elsif idv_session.phone_confirmed?
         flash_now[:success] = t('idv.messages.review.phone_verified')
+      elsif address_verification_method == 'gpo'
+        flash_now[:info] = t('idv.messages.review.gpo_pending')
       end
     end
 
@@ -74,10 +77,15 @@ module Idv
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end
 
+    def step_indicator_step
+      return :secure_account unless address_verification_method == 'gpo'
+      :get_a_letter
+    end
+
     private
 
     def address_verification_method
-      user_session.dig('idv', 'address_verification_mechanism')
+      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
 
     def init_profile

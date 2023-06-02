@@ -229,7 +229,11 @@ es:
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
+        gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
         intro: Su información verificada
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
         phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
@@ -239,7 +243,6 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
@@ -257,7 +260,7 @@ es:
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
+        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
