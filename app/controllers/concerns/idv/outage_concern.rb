@@ -15,9 +15,6 @@ module Idv
       # step and go straight to document upload
       flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
-      # session[:vendor_outage_redirect] = current_step
-      # session[:vendor_outage_redirect_from_idv] = true
-
       redirect_to idv_mail_only_warning_url
     end
   end
