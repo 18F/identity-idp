@@ -10,7 +10,9 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
+    # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
+    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def show
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
