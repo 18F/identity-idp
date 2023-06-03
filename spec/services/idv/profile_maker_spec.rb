@@ -19,7 +19,6 @@ describe Idv::ProfileMaker do
     it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
       profile = subject.save_profile(
-        active: false,
         fraud_review_needed: false,
         gpo_verification_needed: false,
       )
@@ -41,7 +40,6 @@ describe Idv::ProfileMaker do
     context 'with deactivation reason' do
       it 'creates an inactive profile with deactivation reason' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: false,
           gpo_verification_needed: false,
           deactivation_reason: :encryption_error,
@@ -59,7 +57,6 @@ describe Idv::ProfileMaker do
     context 'with fraud review needed' do
       it 'deactivates a profile for fraud review' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: true,
           gpo_verification_needed: false,
           deactivation_reason: nil,
@@ -77,7 +74,6 @@ describe Idv::ProfileMaker do
     context 'with gpo_verification_needed' do
       it 'deactivates a profile for gpo verification' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: false,
           gpo_verification_needed: true,
           deactivation_reason: nil,
@@ -98,7 +94,6 @@ describe Idv::ProfileMaker do
           now = Time.zone.now
 
           profile = subject.save_profile(
-            active: true,
             fraud_review_needed: false,
             gpo_verification_needed: false,
             deactivation_reason: nil,
@@ -122,7 +117,6 @@ describe Idv::ProfileMaker do
           now = Time.zone.now
 
           profile = subject.save_profile(
-            active: true,
             fraud_review_needed: false,
             gpo_verification_needed: false,
             deactivation_reason: nil,
