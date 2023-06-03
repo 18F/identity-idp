@@ -51,8 +51,8 @@ describe Idv::ProfileMaker do
         expect(profile.deactivation_reason).to eq 'encryption_error'
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq false
-        expect(profile.fraud_pending_reason).to eq nil
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.activated_at).to eq nil
       end
     end
 
@@ -69,8 +69,8 @@ describe Idv::ProfileMaker do
         expect(profile.deactivation_reason).to eq nil
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at.present?).to eq false
-        expect(profile.fraud_pending_reason).to eq nil
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.activated_at).to eq nil
       end
     end
 
@@ -87,26 +87,30 @@ describe Idv::ProfileMaker do
         expect(profile.deactivation_reason).to eq nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq true
-        expect(profile.fraud_pending_reason).to eq nil
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.activated_at).to eq nil
       end
     end
 
     context 'as active' do
       it 'creates an active profile' do
-        profile = subject.save_profile(
-          active: true,
-          fraud_review_needed: false,
-          gpo_verification_needed: false,
-          deactivation_reason: nil,
-        )
+        freeze_time do
+          now = Time.zone.now
 
-        expect(profile.active).to eq true
-        expect(profile.deactivation_reason).to be_nil
-        expect(profile.fraud_review_pending?).to eq(false)
-        expect(profile.gpo_verification_pending_at.present?).to eq false
-        expect(profile.fraud_pending_reason).to eq nil
-        expect(profile.initiating_service_provider).to eq initiating_service_provider
+          profile = subject.save_profile(
+            active: true,
+            fraud_review_needed: false,
+            gpo_verification_needed: false,
+            deactivation_reason: nil,
+          )
+
+          expect(profile.active).to eq true
+          expect(profile.deactivation_reason).to be_nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq false
+          expect(profile.initiating_service_provider).to eq initiating_service_provider
+          expect(profile.activated_at).to eq now
+        end
       end
     end
 
@@ -114,18 +118,23 @@ describe Idv::ProfileMaker do
       let(:initiating_service_provider) { create(:service_provider) }
 
       it 'creates a profile with the initiating sp recorded' do
-        profile = subject.save_profile(
-          active: true,
-          fraud_review_needed: false,
-          gpo_verification_needed: false,
-          deactivation_reason: nil,
-        )
+        freeze_time do
+          now = Time.zone.now
 
-        expect(profile.active).to eq true
-        expect(profile.deactivation_reason).to eq nil
-        expect(profile.fraud_review_pending?).to eq(false)
-        expect(profile.gpo_verification_pending_at.present?).to eq false
-        expect(profile.initiating_service_provider).to eq initiating_service_provider
+          profile = subject.save_profile(
+            active: true,
+            fraud_review_needed: false,
+            gpo_verification_needed: false,
+            deactivation_reason: nil,
+          )
+
+          expect(profile.active).to eq true
+          expect(profile.deactivation_reason).to eq nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq false
+          expect(profile.initiating_service_provider).to eq initiating_service_provider
+          expect(profile.activated_at).to eq now
+        end
       end
     end
   end
