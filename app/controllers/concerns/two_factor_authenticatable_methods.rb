@@ -158,10 +158,6 @@ module TwoFactorAuthenticatableMethods
     reset_second_factor_attempts_count
   end
 
-  def in_reauthn_flow?
-    user_session[:reauthn]
-  end
-
   def handle_valid_verification_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
