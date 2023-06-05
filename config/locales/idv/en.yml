@@ -97,13 +97,17 @@ en:
           Please try again.
         rate_limited:
           body: For security reasons, we limit the number of times you can attempt to
-            verify your phone number online. You will need to wait %{time_left}
-            and start over before trying to verify by phone again.
+            verify your phone number online.
+            # You will need to wait %{time_left}
+            # and start over before trying to verify by phone again.
           gpo:
             button: Verify by mail
             prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
               days.
           heading: 'We couldn’t verify your identity by phone'
+          options_header: 'You can:'
+          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
+          option_cancel: Cancel and start over again after %{time_left}
         timeout: Our request to verify your information timed out. Please try again.
         warning:
           attempts:
@@ -276,7 +280,7 @@ en:
       state_id:
         cancel_button: Exit %{app_name}
         explanation: |
-          Unfortunately, we’re experiencing technical difficulties 
+          Unfortunately, we’re experiencing technical difficulties
           with IDs from your state and are currently unable to verify your information.
         heading: We are working to resolve an error
         next_steps:
