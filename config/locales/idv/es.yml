@@ -228,14 +228,12 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        phone_of_record: Teléfono del registro
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
-        intro: Su información verificada
         message: '%{app_name} encriptará tu información con tu contraseña. Esto
           significa que tu información estará segura y solo tú podrás
           consultarla o modificarla.'
@@ -251,11 +249,6 @@ es:
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
-    review:
-      dob: Fecha de nacimiento
-      full_name: Nombre completo
-      mailing_address: Dirección postal
-      ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
