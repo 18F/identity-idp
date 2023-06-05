@@ -117,7 +117,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       error_rate =
         (enrollment_outcomes[:enrollments_errored].fdiv(
           enrollment_outcomes[:enrollments_checked],
-        ) * 100).round(0)
+        ) * 100).round(2)
     end
     error_rate
   end

@@ -183,7 +183,7 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
             enrollments_failed: 1,
             enrollments_in_progress: 1,
             enrollments_passed: 1,
-            percent_enrollments_errored: 20,
+            percent_enrollments_errored: 20.00,
             job_name: 'GetUspsWaitingProofingResultsJob',
           )
 
@@ -211,7 +211,7 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 5,
-            percent_enrollments_errored: 0,
+            percent_enrollments_errored: 0.00,
             job_name: 'GetUspsWaitingProofingResultsJob',
           )
 
@@ -240,7 +240,7 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 0,
-            percent_enrollments_errored: 0,
+            percent_enrollments_errored: 0.00,
             job_name: 'GetUspsWaitingProofingResultsJob',
           )
 

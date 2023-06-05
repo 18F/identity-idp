@@ -227,25 +227,25 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'indicates whether a ready enrollment needs a status check' do
       expect(passed_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be_falsey,
+        be(false),
       )
       expect(failing_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be_falsey,
+        be(false),
       )
       expect(expired_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be_falsey,
+        be(false),
       )
       expect(checked_pending_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be_falsey,
+        be(false),
       )
       needy_enrollments.each do |enrollment|
         expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-          be_falsey,
+          be(false),
         )
       end
       ready_enrollments.each do |enrollment|
         expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-          be_truthy,
+          be(true),
         )
       end
     end
@@ -263,28 +263,28 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'indicates whether a waiting enrollment needs a status check' do
       expect(passed_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to(
-        be_falsey,
+        be(false),
       )
       expect(
         failing_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
       ).to(
-        be_falsey,
+        be(false),
       )
       expect(
         expired_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
       ).to(
-        be_falsey,
+        be(false),
       )
       expect(
         checked_pending_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
       ).to(
-        be_falsey,
+        be(false),
       )
       needy_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be_truthy
+        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be(true)
       end
       ready_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be_falsey
+        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be(false)
       end
     end
   end
