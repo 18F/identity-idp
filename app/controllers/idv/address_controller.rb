@@ -2,8 +2,10 @@ module Idv
   class AddressController < ApplicationController
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
 
     before_action :confirm_document_capture_complete
+    before_action :check_for_outage, only: :show
 
     def new
       analytics.idv_address_visit

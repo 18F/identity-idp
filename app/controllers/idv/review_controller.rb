@@ -6,10 +6,12 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
     include FraudReviewConcern
+    inclue OutageConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
+    before_action :check_for_outage, only: :show
 
     helper_method :step_indicator_step
 
