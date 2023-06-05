@@ -40,7 +40,7 @@ module Users
       VerifyPasswordForm.new(
         user: current_user,
         password: params.require(:user).permit(:password)[:password],
-        decrypted_pii: decrypted_pii,
+        decrypted_pii: reactivate_account_session.decrypted_pii,
       )
     end
   end
