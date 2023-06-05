@@ -20,22 +20,3 @@ $icon-min-padding: 2px;
     margin-right: #{0.5rem - px-to-rem($icon-min-padding)};
   }
 }
-
-.ico-absolute {
-  background-repeat: no-repeat;
-  background-size: $h4;
-  position: relative;
-
-  &-success {
-    &::before {
-      background-image: url('/alert/success.svg');
-      content: '';
-      display: block;
-      height: $h4;
-      left: units(neg-4);
-      position: absolute;
-      top: (lh('body', $theme-body-line-height) - $h4) * 0.5;
-      width: $h4;
-    }
-  }
-}

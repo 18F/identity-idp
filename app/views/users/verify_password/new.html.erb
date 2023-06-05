@@ -23,10 +23,3 @@
       ) %>
   <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
-
-<div class='margin-top-6'>
-  <%= render AccordionComponent.new do |c| %>
-    <% c.with_header { t('idv.messages.review.intro') } %>
-    <%= render 'shared/pii_review', pii: @decrypted_pii, phone: @decrypted_pii[:phone] %>
-  <% end %>
-</div>

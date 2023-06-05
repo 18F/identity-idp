@@ -243,7 +243,6 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
-        phone_of_record: numéro de téléphone enregistré
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
@@ -251,7 +250,6 @@ fr:
       review:
         gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez
           réintroduit votre mot de passe.
-        intro: Vos informations vérifiées
         message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
           signifie que vos informations sont sécurisées et que vous seul pourrez
           y accéder ou les modifier.'
@@ -268,11 +266,6 @@ fr:
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
       verifying: Vérification…
-    review:
-      dob: Date de naissance
-      full_name: Nom complet
-      mailing_address: Adresse postale
-      ssn: Numéro de sécurité sociale (SSN)
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
