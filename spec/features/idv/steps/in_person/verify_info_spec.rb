@@ -7,8 +7,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
-      and_return(true)
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',
@@ -136,7 +134,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_content(t('titles.idv.phone'))
   end
 
-  context 'with in person verify info controller enabled ' do
+  context 'with in person verify info controller' do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:user) { user_with_2fa }
@@ -145,8 +143,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
     before do
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
         and_return(true)
       allow(user).to receive(:establishing_in_person_enrollment).
         and_return(enrollment)
