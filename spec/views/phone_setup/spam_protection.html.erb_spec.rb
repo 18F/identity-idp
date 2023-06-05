@@ -8,8 +8,6 @@ describe 'users/phone_setup/spam_protection.html.erb' do
   subject(:rendered) { render(template: 'users/phone_setup/spam_protection', locals:) }
 
   before do
-    allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     @new_phone_form = form
   end
 
