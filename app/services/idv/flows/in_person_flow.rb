@@ -9,9 +9,7 @@ module Idv
         ssn: Idv::Steps::InPerson::SsnStep, # enter SSN
       }.freeze
 
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::InPerson::VerifyWaitStepShow,
-      }.freeze
+      OPTIONAL_SHOW_STEPS = {}.freeze
 
       ACTIONS = {
         cancel_update_address: Idv::Actions::InPerson::CancelUpdateAddressAction,
