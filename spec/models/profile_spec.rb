@@ -345,6 +345,20 @@ describe Profile do
 
       expect { profile.activate_after_password_reset }.to raise_error
     end
+
+    it 'does not activate a profile with non password_reset deactivation_reason' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :encryption_error,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to_not eq nil
+    end
   end
 
   describe '#activate_after_passing_review' do

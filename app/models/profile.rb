@@ -93,10 +93,12 @@ class Profile < ApplicationRecord
   end
 
   def activate_after_password_reset
-    update!(
-      deactivation_reason: nil,
-    )
-    activate
+    if password_reset?
+      update!(
+        deactivation_reason: nil,
+      )
+      activate
+    end
   end
 
   def deactivate(reason)
