@@ -1160,7 +1160,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
     describe 'IPP Enrollments Ready Job Enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:in_person_enrollments_ready_job_enabled).and_return(true)
+        allow(IdentityConfig.store).to(
+          receive(:in_person_enrollments_ready_job_enabled).and_return(true),
+        )
         allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
       end
 
