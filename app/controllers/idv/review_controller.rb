@@ -6,7 +6,7 @@ module Idv
     include StepIndicatorConcern
     include PhoneConfirmation
     include FraudReviewConcern
-    inclue OutageConcern
+    include OutageConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
