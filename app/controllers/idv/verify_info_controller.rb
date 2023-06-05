@@ -9,9 +9,7 @@ module Idv
 
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
-    # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
-    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def show
       @step_indicator_steps = step_indicator_steps

@@ -11,9 +11,7 @@ module Idv
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
     before_action :extend_timeout_using_meta_refresh
-    # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
-    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
