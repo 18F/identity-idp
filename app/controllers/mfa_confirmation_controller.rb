@@ -22,7 +22,8 @@ class MfaConfirmationController < ApplicationController
 
   def new
     session[:password_attempts] ||= 0
-    user_session[:reauthn] = true
+    user_session[:context] = 'reauthentication'
+    user_session[:current_password_required] = true
   end
 
   def create

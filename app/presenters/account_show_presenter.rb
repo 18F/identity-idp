@@ -1,4 +1,5 @@
 class AccountShowPresenter
+  include ReauthenticationRequiredConcern
   attr_reader :user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
               :sp_session_request_url, :sp_name
 
