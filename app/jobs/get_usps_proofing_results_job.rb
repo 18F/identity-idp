@@ -15,6 +15,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def perform(_now)
     return true unless ipp_enabled?
+    return true if ipp_ready_job_enabled?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
