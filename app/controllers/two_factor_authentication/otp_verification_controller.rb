@@ -46,7 +46,6 @@ module TwoFactorAuthentication
       handle_valid_verification_for_confirmation_context(
         auth_method: params[:otp_delivery_preference],
       )
-      user_session[:reauthn] = false
       flash[:success] = t('notices.phone_confirmed')
       redirect_to next_setup_path || after_mfa_setup_path
     end
