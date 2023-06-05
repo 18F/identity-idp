@@ -205,7 +205,10 @@ module Idv
     end
 
     def confirm_agreement_step_complete
+      # delete when removing doc_auth_agreement_controller_enabled flag
       return if flow_session['Idv::Steps::AgreementStep']
+
+      return if idv_session.agreement_checked
 
       redirect_to idv_doc_auth_url
     end

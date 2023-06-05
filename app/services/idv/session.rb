@@ -2,6 +2,7 @@ module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
+      agreement_checked
       applicant
       go_back_path
       verify_info_step_document_capture_session_uuid
