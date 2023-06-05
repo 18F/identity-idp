@@ -71,14 +71,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     IdentityConfig.store.in_person_enrollments_ready_job_enabled == true
   end
 
-  def email_helper(enrollment:)
-    JobHelpers::UspsProofingResultsJob::EmailHelper.new(enrollment: enrollment)
-  end
-
-  def analytics_helper(enrollment:)
-    JobHelpers::UspsProofingResultsJob::AnalyticsHelper.new(enrollment)
-  end
-
   def check_enrollments(enrollments)
     last_enrollment_index = enrollments.length - 1
     enrollments.each_with_index do |enrollment, idx|
@@ -115,6 +107,10 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
+  def analytics(user: AnonymousUser.new)
+    Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
   def percent_errored
     error_rate = 0
     if enrollment_outcomes[:enrollments_checked] > 0
@@ -127,7 +123,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_bad_request_error(err, enrollment)
-    puts "Bad request error"
     response_body = err.response_body
     response_message = response_body&.[]('responseMessage')
 
@@ -153,130 +148,122 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_client_or_server_error(err, enrollment)
-    puts "Client or server error"
     NewRelic::Agent.notice_error(err)
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: false),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(err.response_body),
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
       response_status_code: err.response_status,
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_exception(payload: analytics_payload)
+      )
     enrollment_outcomes[:enrollments_errored] += 1
   end
 
   def handle_standard_error(err, enrollment)
-    puts "Standard error"
     NewRelic::Agent.notice_error(err)
     response_attributes = response_analytics_attributes(nil)
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: false),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
       **response_attributes,
       exception_class: err.class.to_s,
       exception_message: err.message,
       reason: 'Request exception',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_exception(payload: analytics_payload)
+      )
     enrollment_outcomes[:enrollments_errored] += 1
   end
 
   def handle_response_is_not_a_hash(enrollment)
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: false),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
       reason: 'Bad response structure',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_exception(payload: analytics_payload)
+      )
     enrollment_outcomes[:enrollments_errored] += 1
   end
 
   def handle_unsupported_status(enrollment, response)
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: false),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_analytics_attributes(enrollment, complete: false),
       **response_analytics_attributes(response),
       reason: 'Unsupported status',
       status: response['status'],
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_exception(payload: analytics_payload)
+      )
     enrollment_outcomes[:enrollments_errored] += 1
   end
 
   def handle_unsupported_id_type(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: true),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: false,
       primary_id_type: response['primaryIdType'],
       reason: 'Unsupported ID type',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_enrollment_updated(payload: analytics_payload)
+      )
     enrollment.update(
       status: :failed,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
-    )
+      )
 
-    email_helper(enrollment: enrollment).send_failed_email
-    email_analytics_payload = {
-      **email_helper(enrollment: enrollment).email_analytics_attributes,
+    send_failed_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
       email_type: 'Failed unsupported ID type',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_email_initiated(payload: email_analytics_payload)
+      )
   end
 
   def handle_incomplete_status_update(enrollment, response_message)
     enrollment_outcomes[:enrollments_in_progress] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: false),
-      response_message: response_message,
-      job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_exception(payload: analytics_payload)
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_enrollment_incomplete(
+        **enrollment_analytics_attributes(enrollment, complete: false),
+        response_message: response_message,
+        job_name: self.class.name,
+        )
+    enrollment.update(status_check_completed_at: Time.zone.now)
     enrollment.update(status_check_completed_at: Time.zone.now)
   end
 
   def handle_expired_status_update(enrollment, response, response_message)
     enrollment_outcomes[:enrollments_expired] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: true),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response[:body]),
       passed: false,
       reason: 'Enrollment has expired',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_enrollment_updated(payload: analytics_payload)
+      )
     enrollment.update(
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
 
     begin
-      email_helper(enrollment: enrollment).send_deadline_passed_email unless enrollment.deadline_passed_sent
+      send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err
       NewRelic::Agent.notice_error(err)
-      analytics_payload = {
-        enrollment_id: enrollment.id,
-        exception_class: err.class.to_s,
-        exception_message: err.message,
-        job_name: self.class.name,
-      }
-      analytics_helper(enrollment: enrollment).analytics_ipp_job_deadline_passed_email(payload: analytics_payload)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_exception(
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+          job_name: self.class.name,
+          )
     else
-      analytics_payload = {
-        **email_helper(enrollment: enrollment).email_analytics_attributes,
-        enrollment_id: enrollment.id,
-        job_name: self.class.name,
-      }
-      analytics_helper(enrollment: enrollment).analytics_ipp_job_deadline_passed_email_initiated(payload: analytics_payload)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_job_deadline_passed_email_initiated(
+          **email_analytics_attributes(enrollment),
+          enrollment_id: enrollment.id,
+          job_name: self.class.name,
+          )
       enrollment.update(deadline_passed_sent: true)
     end
 
@@ -297,26 +284,25 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_unexpected_response(enrollment, response_message, reason:, cancel: true)
     enrollment.cancelled! if cancel
 
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: cancel),
-      response_message: response_message,
-      reason: reason,
-      job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_unexpected_response(payload: analytics_payload)
+    analytics(user: enrollment.user).
+      idv_in_person_usps_proofing_results_job_unexpected_response(
+        **enrollment_analytics_attributes(enrollment, complete: cancel),
+        response_message: response_message,
+        reason: reason,
+        job_name: self.class.name,
+        )
   end
 
   def handle_failed_status(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: true),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: false,
       reason: 'Failed status',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_enrollment_updated(payload: analytics_payload)
+      )
 
     enrollment.update(
       status: :failed,
@@ -324,72 +310,67 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
     if response['fraudSuspected']
-      email_helper(enrollment: enrollment).send_failed_fraud_email
-      email_analytics_payload = {
-        **email_helper(enrollment: enrollment).email_analytics_attributes,
+      send_failed_fraud_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
         email_type: 'Failed fraud suspected',
         job_name: self.class.name,
-      }
+        )
     else
-      email_helper(enrollment: enrollment).send_failed_email
-      email_analytics_payload = {
-        **email_helper(enrollment: enrollment).email_analytics_attributes,
+      send_failed_email(enrollment.user, enrollment)
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+        **email_analytics_attributes(enrollment),
         email_type: 'Failed',
         job_name: self.class.name,
-      }
+        )
     end
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_email_initiated(payload: email_analytics_payload)
   end
 
   def handle_successful_status_update(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_passed] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: true),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: true,
       reason: 'Successful status update',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_enrollment_updated(payload: analytics_payload)
+      )
     enrollment.profile.activate_after_passing_in_person
     enrollment.update(
       status: :passed,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-    email_helper(enrollment: enrollment).send_verified_email
-    email_analytics_payload = {
-      **email_helper(enrollment: enrollment).email_analytics_attributes,
+    send_verified_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
       email_type: 'Success',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_email_initiated(payload: email_analytics_payload)
+      )
   end
 
   def handle_unsupported_secondary_id(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
     enrollment_outcomes[:enrollments_failed] += 1
-    analytics_payload = {
-      **analytics_helper(enrollment: enrollment).enrollment_analytics_attributes(complete: true),
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
+      **enrollment_analytics_attributes(enrollment, complete: true),
       **response_analytics_attributes(response),
       passed: false,
       reason: 'Provided secondary proof of address',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_enrollment_updated(payload: analytics_payload)
+      )
     enrollment.update(
       status: :failed,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
-    email_helper(enrollment: enrollment).send_failed_email
-    email_analytics_payload = {
-      **email_helper(enrollment: enrollment).email_analytics_attributes,
+    send_failed_email(enrollment.user, enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
+      **email_analytics_attributes(enrollment),
       email_type: 'Failed unsupported secondary ID',
       job_name: self.class.name,
-    }
-    analytics_helper(enrollment: enrollment).analytics_ipp_job_email_initiated(payload: email_analytics_payload)
+      )
   end
 
   def process_enrollment_response(enrollment, response)
@@ -412,6 +393,78 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       handle_unsupported_status(enrollment, response)
     end
+  end
+
+  def send_verified_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.with(user: user, email_address: email_address).in_person_verified(
+        enrollment: enrollment,
+        ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_deadline_passed_email(user, enrollment)
+    # rubocop:disable IdentityIdp/MailLaterLinter
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: user, email_address: email_address).in_person_deadline_passed(
+        enrollment: enrollment,
+        ).deliver_later
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_failed_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.with(user: user, email_address: email_address).in_person_failed(
+        enrollment: enrollment,
+        ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def send_failed_fraud_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      # rubocop:disable IdentityIdp/MailLaterLinter
+      UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
+        enrollment: enrollment,
+        ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      # rubocop:enable IdentityIdp/MailLaterLinter
+    end
+  end
+
+  def mail_delivery_params(proofed_at)
+    return {} if proofed_at.blank?
+    mail_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
+      DEFAULT_EMAIL_DELAY_IN_HOURS
+    wait_until = proofed_at + mail_delay_hours.hours
+    return {} if mail_delay_hours == 0 || wait_until < Time.zone.now
+    return { wait_until: wait_until, queue: :intentionally_delayed }
+  end
+
+  def email_analytics_attributes(enrollment)
+    {
+      enrollment_code: enrollment.enrollment_code,
+      timestamp: Time.zone.now,
+      service_provider: enrollment.issuer,
+      wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
+    }
+  end
+
+  def enrollment_analytics_attributes(enrollment, complete:)
+    {
+      enrollment_code: enrollment.enrollment_code,
+      enrollment_id: enrollment.id,
+      minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        enrollment.minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
+      minutes_since_established: enrollment.minutes_since_established,
+      minutes_to_completion: complete ? enrollment.minutes_since_established : nil,
+      issuer: enrollment.issuer,
+    }
   end
 
   def response_analytics_attributes(response)
