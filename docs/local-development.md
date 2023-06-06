@@ -24,7 +24,7 @@ If not using macOS:
     - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [PostGIS](https://postgis.net/documentation/getting_started/#installing-postgis)
-        - Note: if you run into errors installing `postgis` or creating the databse, check [the troubleshooting docs](./troubeshooting.md#errors-related-to-the-databse).
+        - Note: if you run into errors installing `postgis` or creating the databse, check [the troubleshooting docs](./troubleshooting.md#errors-related-to-the-databse).
     - [Redis 7+](http://redis.io/)
     - [Node.js v16](https://nodejs.org)
     - [Yarn](https://yarnpkg.com/en/)
