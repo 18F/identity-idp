@@ -31,7 +31,7 @@ module Idv
 
       Idv::ConsentForm.new.submit(consent_form_params)
 
-      idv_session.agreement_checked = true
+      idv_session.idv_consent_given = true
 
       redirect_to idv_hybrid_handoff_url
     end
@@ -52,7 +52,7 @@ module Idv
     end
 
     def consent_form_params
-      params.require(:doc_auth).permit(:ial2_consent_given)
+      params.require(:doc_auth).permit(:idv_consent_given)
     end
 
     def confirm_welcome_step_complete
@@ -62,7 +62,7 @@ module Idv
     end
 
     def confirm_agreement_needed
-      return unless idv_session.agreement_checked
+      return unless idv_session.idv_consent_given
 
       redirect_to idv_hybrid_handoff_url
     end

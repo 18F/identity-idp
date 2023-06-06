@@ -64,7 +64,7 @@ describe Idv::AgreementController do
 
     context 'agreement already visited' do
       it 'redirects to hybrid_handoff' do
-        allow(subject.idv_session).to receive(:agreement_checked).and_return(true)
+        allow(subject.idv_session).to receive(:idv_consent_given).and_return(true)
 
         get :show
 
