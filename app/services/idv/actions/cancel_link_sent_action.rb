@@ -8,6 +8,7 @@ module Idv
       def call
         if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
           redirect_to idv_hybrid_handoff_url
+          flow_session[:flow_path] = nil
         else
           mark_step_incomplete(:upload)
         end

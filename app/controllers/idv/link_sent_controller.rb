@@ -80,6 +80,7 @@ module Idv
     def render_document_capture_cancelled
       if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
         redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       else
         mark_upload_step_incomplete
         redirect_to idv_doc_auth_url # was idv_url, why?

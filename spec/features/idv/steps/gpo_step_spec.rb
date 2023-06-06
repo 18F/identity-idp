@@ -36,9 +36,18 @@ feature 'idv gpo step', :js do
     it 'allows the user to resend a letter and redirects to the come back later step' do
       complete_idv_and_return_to_gpo_step
 
+      # Confirm that we show the correct content on
+      # the GPO page for users requesting re-send
+      expect(page).to have_content(t('idv.titles.mail.resend'))
+      expect(page).to have_content(t('idv.messages.gpo.resend_timeframe'))
+      expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
+      expect(page).to have_content(t('idv.buttons.mail.resend'))
+      expect(page).to_not have_content(t('idv.messages.gpo.info_alert'))
+
       expect { click_on t('idv.buttons.mail.resend') }.
         to change { GpoConfirmation.count }.from(1).to(2)
       expect_user_to_be_unverified(user)
+
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 

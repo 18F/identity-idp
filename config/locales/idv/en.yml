@@ -200,6 +200,10 @@ en:
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         resend: Send me another letter
+        resend_code_warning: If you request a new letter now, the one-time code from
+          your current letter will remain valid for a limited time. You may
+          still use the one-time code from either letter.
+        resend_timeframe: Letters typically take 3 to 7 business days to arrive.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
@@ -209,13 +213,15 @@ en:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
-        phone_of_record: Phone of record
         rules:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        intro: Your verified information
+        gpo_pending: We’ll send your letter once you re-enter your password.
+        message: '%{app_name} will encrypt your information with your password. This
+          means that your information is secure and only you will be able to
+          access or change it.'
         phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
@@ -224,25 +230,19 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
-    review:
-      dob: Date of birth
-      full_name: Full name
-      mailing_address: Mailing address
-      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
-        resend: Want another letter?
+        resend: Send another letter?
         verify: Want a letter?
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        review: Re-enter your %{app_name} password to protect your data
+        review: Re-enter your %{app_name} password
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:
