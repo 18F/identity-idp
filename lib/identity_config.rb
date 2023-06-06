@@ -428,7 +428,6 @@ class IdentityConfig
       :sign_up_mfa_selection_order_testing, type: :json,
                                             options: { symbolize_names: true }
     )
-    config.add(:sign_in_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)
