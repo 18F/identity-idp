@@ -98,16 +98,14 @@ en:
         rate_limited:
           body: For security reasons, we limit the number of times you can attempt to
             verify your phone number online.
-            # You will need to wait %{time_left}
-            # and start over before trying to verify by phone again.
           gpo:
             button: Verify by mail
             prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
               days.
           heading: 'We couldn’t verify your identity by phone'
-          options_header: 'You can:'
-          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
           option_cancel: Cancel and start over again after %{time_left}
+          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
+          options_header: 'You can:'
         timeout: Our request to verify your information timed out. Please try again.
         warning:
           attempts:

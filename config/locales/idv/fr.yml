@@ -109,14 +109,16 @@ fr:
           pour le moment. Veuillez réessayer.
         rate_limited:
           body: Pour des raisons de sécurité, nous limitons le nombre de tentatives de
-            vérification de votre numéro de téléphone en ligne. Vous devrez
-            attendre %{time_left} et recommencer avant d’essayer à nouveau de
-            vérifier votre identité par téléphone.
+            vérification de votre numéro de téléphone en ligne.
           gpo:
             button: Vérifier par courrier
             prompt: Continuez maintenant en vérifiant par courrier, ce qui prend
               généralement de 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
+          option_cancel: Annuler et recommencer après %{time_left}
+          option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
+            <b>trois à sept jours ouvrables</b>.
+          options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
