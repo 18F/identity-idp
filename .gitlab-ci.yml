@@ -128,7 +128,7 @@ specs:
     RAILS_ENV: test
   services:
     - name: postgis/postgis:14-3.3
-      alias: db-postgres
+      alias: postgres
       command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
     - name: redis:7.0
       alias: db-redis
