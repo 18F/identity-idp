@@ -3,6 +3,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
@@ -10,6 +11,7 @@ module Idv
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
     before_action :extend_timeout_using_meta_refresh
+    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
