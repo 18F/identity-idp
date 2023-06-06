@@ -14,7 +14,7 @@ module Reporting
   class MonthlyProofingReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :time_range
+    attr_reader :time_range
 
     module Events
       IDV_DOC_AUTH_IMAGE_UPLOAD = 'IdV: doc auth image upload vendor submitted'
@@ -32,14 +32,12 @@ module Reporting
     # @param [String] isssuer
     # @param [Range<Time>] date
     def initialize(
-      issuer:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 3.hours,
       threads: 5
     )
-      @issuer = issuer
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -59,7 +57,6 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuer]
         csv << []
         csv << ['Metric', '# of Users']
         csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
@@ -71,7 +68,13 @@ module Reporting
         csv << ['Success through Address Confirmation Letters', gpo_verification_submitted]
         csv << ['Success through In-Person Verification', usps_enrollment_status_updated]
         csv << ['Successfully Verified Users', successfully_verified_users]
+        csv << ['Percentage of Users Successfully Proofed', proofed_percentage]
       end
+    end
+
+    def proofed_percentage
+      # Probably want to round this
+      successfully_verified_users / idv_doc_auth_image_vendor_submitted
     end
 
     def incomplete_users
@@ -140,7 +143,6 @@ module Reporting
 
     def query
       params = {
-        issuer: quote(issuer),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
@@ -151,7 +153,6 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
-        | filter properties.service_provider = %{issuer}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
