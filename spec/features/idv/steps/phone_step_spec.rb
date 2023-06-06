@@ -246,7 +246,8 @@ RSpec.feature 'idv phone step', :js do
       let(:gpo_enabled) { false }
 
       it 'does not link out to GPO flow' do
-        expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.prompt'))
+        prompt_text = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
+        expect(page).not_to have_content(prompt_text)
         expect(page).not_to have_content(t('idv.failure.phone.rate_limited.gpo.button'))
       end
     end
