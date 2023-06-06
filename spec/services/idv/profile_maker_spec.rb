@@ -47,12 +47,12 @@ describe Idv::ProfileMaker do
           deactivation_reason: :encryption_error,
         )
 
+        expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq 'encryption_error'
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq false
         expect(profile.initiating_service_provider).to eq initiating_service_provider
-        expect(profile.activated_at).to eq nil
       end
     end
 
@@ -65,12 +65,12 @@ describe Idv::ProfileMaker do
           deactivation_reason: nil,
         )
 
+        expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq nil
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at.present?).to eq false
         expect(profile.initiating_service_provider).to eq initiating_service_provider
-        expect(profile.activated_at).to eq nil
       end
     end
 
@@ -83,12 +83,12 @@ describe Idv::ProfileMaker do
           deactivation_reason: nil,
         )
 
+        expect(profile.activated_at).to eq nil
         expect(profile.active).to eq false
         expect(profile.deactivation_reason).to eq nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq true
         expect(profile.initiating_service_provider).to eq initiating_service_provider
-        expect(profile.activated_at).to eq nil
       end
     end
 
@@ -104,12 +104,12 @@ describe Idv::ProfileMaker do
             deactivation_reason: nil,
           )
 
+          expect(profile.activated_at).to eq now
           expect(profile.active).to eq true
           expect(profile.deactivation_reason).to be_nil
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq initiating_service_provider
-          expect(profile.activated_at).to eq now
         end
       end
     end
@@ -128,12 +128,12 @@ describe Idv::ProfileMaker do
             deactivation_reason: nil,
           )
 
+          expect(profile.activated_at).to eq now
           expect(profile.active).to eq true
           expect(profile.deactivation_reason).to eq nil
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq initiating_service_provider
-          expect(profile.activated_at).to eq now
         end
       end
     end
