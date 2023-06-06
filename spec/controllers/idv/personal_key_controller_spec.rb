@@ -87,6 +87,38 @@ describe Idv::PersonalKeyController do
           expect(response).to redirect_to account_path
         end
       end
+
+      context 'profile is pending from a different session' do
+        context 'profile is pending due to fraud review' do
+          before do
+            profile.deactivate_for_fraud_review
+            subject.idv_session.profile_id = nil
+          end
+
+          it 'does not redirect' do
+            get :index
+
+            expect(profile.user.pending_profile?).to eq true
+            expect(profile.fraud_review_pending_at).to_not eq nil
+            expect(response).to_not be_redirect
+          end
+        end
+
+        context 'profile is pending due to in person proofing' do
+          before do
+            profile.update!(deactivation_reason: :in_person_verification_pending)
+            subject.idv_session.profile_id = nil
+          end
+
+          it 'does not redirect' do
+            get :index
+
+            expect(profile.user.pending_profile?).to eq true
+            expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+            expect(response).to_not be_redirect
+          end
+        end
+      end
     end
   end
 
@@ -200,12 +232,10 @@ describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      context 'with gpo personal key after verification' do
-        it 'redirects to doc auth url' do
-          patch :update
+      it 'redirects to doc auth url' do
+        patch :update
 
-          expect(response).to redirect_to idv_doc_auth_url
-        end
+        expect(response).to redirect_to idv_doc_auth_url
       end
     end
 
@@ -239,16 +269,17 @@ describe Idv::PersonalKeyController do
 
     context 'with device profiling decisioning enabled' do
       before do
-        ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
       end
 
-      context 'threatmetrix review status is nil' do
+      context 'fraud_review_pending_at is nil' do
         it 'redirects to account path' do
           patch :update
 
+          expect(profile.fraud_review_pending_at).to eq nil
           expect(response).to redirect_to account_path
         end
+
         it 'logs key submitted event' do
           patch :update
 
@@ -263,62 +294,14 @@ describe Idv::PersonalKeyController do
         end
       end
 
-      context 'device profiling passes' do
+      context 'profile is in fraud_review' do
         before do
-          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'pass')
-        end
-        it 'redirects to account path' do
-          patch :update
-
-          expect(response).to redirect_to account_path
-        end
-        it 'logs key submitted event' do
-          patch :update
-
-          expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted',
-            address_verification_method: nil,
-            fraud_review_pending: false,
-            fraud_rejection: false,
-            deactivation_reason: nil,
-            proofing_components: nil,
-          )
-        end
-      end
-
-      context 'device profiling gets sent to review' do
-        before do
-          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'review')
           profile.deactivate_for_fraud_review
         end
 
         it 'redirects to idv please call path' do
           patch :update
-          expect(response).to redirect_to idv_please_call_path
-        end
-
-        it 'logs key submitted event' do
-          patch :update
-
-          expect(@analytics).to have_logged_event(
-            'IdV: personal key submitted',
-            fraud_review_pending: true,
-            fraud_rejection: false,
-            address_verification_method: nil,
-            deactivation_reason: nil,
-            proofing_components: nil,
-          )
-        end
-      end
-
-      context 'device profiling fails' do
-        before do
-          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'reject')
-          profile.deactivate_for_fraud_review
-        end
-
-        it 'redirects to idv please call path' do
-          patch :update
+          expect(profile.fraud_review_pending_at).to_not eq nil
           expect(response).to redirect_to idv_please_call_path
         end
 

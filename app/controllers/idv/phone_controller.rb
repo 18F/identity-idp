@@ -2,6 +2,7 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
+    include OutageConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 
@@ -10,6 +11,9 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
+    # rubocop:disable Rails/LexicallyScopedActionFilter
+    before_action :check_for_outage, only: :show
+    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def new
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]

@@ -10,6 +10,8 @@ describe Idv::SsnController do
       :flow_path => 'standard' }
   end
 
+  let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
+
   let(:user) { create(:user) }
 
   before do
@@ -84,6 +86,31 @@ describe Idv::SsnController do
       end
     end
 
+    context 'with an ssn in session' do
+      let(:referer) { idv_document_capture_url }
+      before do
+        flow_session['pii_from_doc'][:ssn] = ssn
+        request.env['HTTP_REFERER'] = referer
+      end
+
+      context 'referer is not verify_info' do
+        it 'redirects to verify_info' do
+          get :show
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
+      end
+
+      context 'referer is verify_info' do
+        let(:referer) { idv_verify_info_url }
+        it 'does not redirect' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+    end
+
     it 'overrides Content Security Policies for ThreatMetrix' do
       allow(IdentityConfig.store).to receive(:proofing_device_profiling).
         and_return(:enabled)
@@ -108,7 +135,6 @@ describe Idv::SsnController do
 
   describe '#update' do
     context 'with valid ssn' do
-      let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
