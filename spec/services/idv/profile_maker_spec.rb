@@ -53,6 +53,7 @@ describe Idv::ProfileMaker do
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq false
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -71,6 +72,7 @@ describe Idv::ProfileMaker do
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at.present?).to eq false
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -89,6 +91,7 @@ describe Idv::ProfileMaker do
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at.present?).to eq true
         expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -110,6 +113,7 @@ describe Idv::ProfileMaker do
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq initiating_service_provider
+          expect(profile.verified_at).to eq now
         end
       end
     end
@@ -134,6 +138,7 @@ describe Idv::ProfileMaker do
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq initiating_service_provider
+          expect(profile.verified_at).to eq now
         end
       end
     end
