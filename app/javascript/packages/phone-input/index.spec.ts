@@ -210,7 +210,7 @@ describe('PhoneInput', () => {
 
       const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
-      await userEvent.type(phoneNumber, '+5135551234');
+      await userEvent.type(phoneNumber, '5135551234');
       expect(phoneNumber.validationMessage).to.equal(
         'Enter a phone number with the correct number of digits. Example:(201) 555-0123',
       );
