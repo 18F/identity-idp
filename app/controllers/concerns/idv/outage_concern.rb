@@ -13,7 +13,9 @@ module Idv
 
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
-      user_session.fetch('idv/doc_auth', {})[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
+      unless FeatureManagement.idv_allow_hybrid_flow?
+        user_session.fetch('idv/doc_auth', {})[:skip_upload_step] = true
+      end
 
       redirect_to idv_mail_only_warning_url
     end
