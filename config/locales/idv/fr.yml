@@ -112,8 +112,6 @@ fr:
             vérification de votre numéro de téléphone en ligne.
           gpo:
             button: Vérifier par courrier
-            prompt: Continuez maintenant en vérifiant par courrier, ce qui prend
-              généralement de 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
           option_cancel: Annuler et recommencer après %{time_left}
           option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de

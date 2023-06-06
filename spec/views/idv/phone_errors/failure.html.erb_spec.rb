@@ -43,7 +43,9 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   end
 
   it 'describes GPO as an alternative' do
-    expect(rendered).to have_text(t('idv.failure.phone.rate_limited.gpo.prompt'))
+    raw_expected_text = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
+    expected_text = ActionView::Base.full_sanitizer.sanitize(raw_expected_text)
+    expect(rendered).to have_text(expected_text)
   end
 
   it 'includes a link to GPO flow' do

@@ -100,8 +100,6 @@ en:
             verify your phone number online.
           gpo:
             button: Verify by mail
-            prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
-              days.
           heading: 'We couldn’t verify your identity by phone'
           option_cancel: Cancel and start over again after %{time_left}
           option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
