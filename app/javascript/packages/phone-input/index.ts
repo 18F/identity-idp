@@ -1,4 +1,4 @@
-import { isValidNumberForRegion } from 'libphonenumber-js';
+import { isValidNumberForRegion, isValidNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
@@ -23,6 +23,12 @@ interface IntlTelInput extends IntlTelInputPlugin {
 
   options: Options;
 }
+
+const isPhoneValid = (phone, countryCode) => {
+  const phoneValid = isValidNumber(phone, countryCode);
+
+  return phoneValid;
+};
 
 const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
@@ -196,13 +202,14 @@ export class PhoneInputElement extends HTMLElement {
       return;
     }
 
-    const isInvalidNumber = !isValidNumberForRegion(phoneNumber, countryCode);
-    if (isInvalidNumber) {
-      textInput.setCustomValidity(this.strings.invalid_phone_international || '');
+    const isInvalidCountry = !isValidNumberForRegion(phoneNumber, countryCode);
+    if (isInvalidCountry) {
+      textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
-    if (isInvalidNumber && countryCode === 'US') {
-      textInput.setCustomValidity(this.strings.invalid_phone_us || '');
+    const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
+    if (isInvalidPhoneNumber) {
+      textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
     if (!this.isSupportedCountry()) {
@@ -216,6 +223,12 @@ export class PhoneInputElement extends HTMLElement {
       // should notify immediately.
       textInput.dispatchEvent(new CustomEvent('invalid'));
     }
+  }
+
+  getInvalidFormatMessage(countryCode: CountryCode): string {
+    return countryCode === 'US'
+      ? this.strings.invalid_phone_us || ''
+      : this.strings.invalid_phone_international || '';
   }
 
   formatTextInput() {
