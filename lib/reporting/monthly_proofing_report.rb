@@ -178,7 +178,7 @@ end
 
 # rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
-  options = Reporting::CommandLineOptions.new.parse!(ARGV)
+  options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
 
   puts Reporting::IdentityVerificationReport.new(**options).to_csv
 end
