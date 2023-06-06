@@ -3,7 +3,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def check_for_outage
-      return if flow_session[:skip_vendor_outage]
+      return if user_session['idv/doc_auth'][:skip_vendor_outage]
 
       return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
     end
