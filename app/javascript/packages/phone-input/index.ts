@@ -24,12 +24,6 @@ interface IntlTelInput extends IntlTelInputPlugin {
   options: Options;
 }
 
-const isPhoneValid = (phone, countryCode) => {
-  const phoneValid = isValidNumber(phone, countryCode);
-
-  return phoneValid;
-};
-
 const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
@@ -207,7 +201,7 @@ export class PhoneInputElement extends HTMLElement {
       textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
-    const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
+    const isInvalidPhoneNumber = !isValidNumber(phoneNumber, countryCode);
     if (isInvalidPhoneNumber) {
       textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
