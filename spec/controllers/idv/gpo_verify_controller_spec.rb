@@ -162,7 +162,7 @@ RSpec.describe Idv::GpoVerifyController do
             and_return(user.pending_profile.decrypt_pii(user.password).to_h)
         end
 
-        it 'redirects to ready to verify screen' do
+        xit 'redirects to ready to verify screen' do
           expect(@analytics).to receive(:track_event).with(
             'IdV: GPO verification submitted',
             success: true,
@@ -178,6 +178,24 @@ RSpec.describe Idv::GpoVerifyController do
           action
 
           expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+        end
+
+        it 'redirects to personal key page' do
+          expect(@analytics).to receive(:track_event).with(
+            'IdV: GPO verification submitted',
+            success: true,
+            errors: {},
+            pending_in_person_enrollment: true,
+            threatmetrix_check_failed: false,
+            enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+          )
+          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+            with(success_properties)
+
+          action
+
+          expect(response).to redirect_to(idv_personal_key_url)
         end
 
         it 'does not dispatch account verified alert' do
