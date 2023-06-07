@@ -135,8 +135,12 @@ module Reporting
             name
           , properties.user_id AS user_id
         | filter name in %{event_names}
-        | filter (name = %{idv_final_resolution} and isblank(properties.event_properties.deactivation_reason))
-                 or (name != %{idv_final_resolution})
+        | filter (
+               name = %{idv_final_resolution}
+           and isblank(properties.event_properties.deactivation_reason)
+           and properties.event_properties.fraud_review_pending != 1
+          )
+          or (name != %{idv_final_resolution})
         | limit 10000
       QUERY
     end
