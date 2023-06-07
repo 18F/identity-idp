@@ -12,11 +12,11 @@ en:
     doc_auth:
       address: Update your mailing address
       doc_capture: Add your ID
+      hybrid_handoff: Verify your ID
       link_sent: Link sent
       processing_images: Processing your images
       ssn: Enter your Social Security number
       switch_back: Switch back to your computer
-      upload: Verify your ID
       verify: Verify your identity
     edit_info:
       email_language: Edit email language preference
