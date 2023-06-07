@@ -1,11 +1,7 @@
 require 'rails_helper'
 
-feature 'doc auth welcome step' do
+feature 'doc auth agreement step' do
   include DocAuthHelper
-
-  def expect_doc_auth_upload_step
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
-  end
 
   def expect_doc_auth_first_step
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
@@ -28,7 +24,7 @@ feature 'doc auth welcome step' do
       check t('doc_auth.instructions.consent', app_name: APP_NAME)
       click_continue
 
-      expect_doc_auth_upload_step
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
   end
 
@@ -49,7 +45,7 @@ feature 'doc auth welcome step' do
       check t('doc_auth.instructions.consent', app_name: APP_NAME)
       click_continue
 
-      expect_doc_auth_upload_step
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
     end
   end
 
@@ -67,41 +63,6 @@ feature 'doc auth welcome step' do
 
     it 'progresses to document capture' do
       expect(page).to have_current_path(idv_document_capture_url)
-    end
-
-    it 'logs analytics for upload step' do
-      log = DocAuthLog.last
-      expect(log.upload_view_count).to eq 1
-      expect(log.upload_view_at).not_to be_nil
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload visited',
-        analytics_id: 'Doc Auth',
-        flow_path: 'standard',
-        step: 'upload', step_count: 1,
-        irs_reproofing: false,
-        acuant_sdk_upgrade_ab_test_bucket: :default
-      )
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', step_count: 2, success: true),
-      )
-    end
-  end
-
-  context 'doc_auth_hybrid_handoff_controller_enabled flag is true' do
-    context 'skipping upload step', :js, driver: :headless_chrome_mobile do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
-          and_return(true)
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_agreement_step
-        complete_agreement_step
-      end
-
-      it 'progresses to document capture' do
-        expect(page).to have_current_path(idv_document_capture_url)
-      end
     end
   end
 

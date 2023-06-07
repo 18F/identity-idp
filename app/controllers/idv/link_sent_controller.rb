@@ -36,7 +36,7 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: flow_session[:phone_for_mobile_flow],
+      { phone: idv_session.phone_for_mobile_flow,
         flow_session: flow_session }
     end
 
@@ -47,10 +47,8 @@ module Idv
 
       if flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
-      elsif IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-        redirect_to idv_hybrid_handoff_url
       else
-        redirect_to idv_doc_auth_url
+        redirect_to idv_hybrid_handoff_url
       end
     end
 
@@ -75,18 +73,12 @@ module Idv
     def handle_document_verification_success(get_results_response)
       save_proofing_components(current_user)
       extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
-      mark_upload_step_complete
       flow_session[:flow_path] = 'hybrid'
     end
 
     def render_document_capture_cancelled
-      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-        redirect_to idv_hybrid_handoff_url
-        flow_session[:flow_path] = nil
-      else
-        mark_upload_step_incomplete
-        redirect_to idv_doc_auth_url # was idv_url, why?
-      end
+      redirect_to idv_hybrid_handoff_url
+      flow_session[:flow_path] = nil
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 
@@ -103,14 +95,6 @@ module Idv
         document_capture_session&.load_result ||
           document_capture_session&.load_doc_auth_async_result
       end
-    end
-
-    def mark_upload_step_complete
-      flow_session['Idv::Steps::UploadStep'] = true
-    end
-
-    def mark_upload_step_incomplete
-      flow_session['Idv::Steps::UploadStep'] = nil
     end
 
     def extend_timeout_using_meta_refresh

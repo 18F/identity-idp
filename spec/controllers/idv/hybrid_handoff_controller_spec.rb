@@ -6,8 +6,6 @@ describe Idv::HybridHandoffController do
   let(:user) { create(:user) }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
-      and_return(true)
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
