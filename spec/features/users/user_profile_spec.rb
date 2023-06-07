@@ -181,4 +181,48 @@ feature 'User profile' do
       expect(current_path).to eq(account_history_path)
     end
   end
+
+  context 'allows verified user to see their information' do
+    let(:pii) { { ssn: '1234', dob: '1920-01-01' } }
+    context 'time between sign in and remember device' do
+      it 'does not have prompt to authenticate device' do
+        profile = create(:profile, :active, :verified, pii: pii)
+        sign_in_user(profile.user)
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        visit account_path
+        expect(page).to_not have_link(t('account.re_verify.footer'))
+      end
+    end
+
+    context 'when time expired' do
+      before do
+        allow(IdentityConfig.store).to receive(:pii_lock_timeout_in_minutes).and_return(1)
+      end
+      it 'has a prompt to authenticate device' do
+        profile = create(:profile, :active, :verified, pii: pii)
+        user = profile.user
+        sign_in_user(user)
+
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        timeout_in_minutes = IdentityConfig.store.pii_lock_timeout_in_minutes.to_i
+        travel_to((timeout_in_minutes + 26).minutes.from_now) do
+          sign_in_user(user)
+          visit account_path
+          expect(page).to have_link(t('account.re_verify.footer'))
+          expect(page).to_not have_content('January 01, 1920')
+          click_link t('account.re_verify.footer')
+          fill_in t('account.index.password'), with: user.password
+          click_button t('forms.buttons.continue')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          expect(page).to have_content('January 01, 1920')
+        end
+      end
+    end
+  end
 end
