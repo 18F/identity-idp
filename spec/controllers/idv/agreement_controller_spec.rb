@@ -84,8 +84,8 @@ describe Idv::AgreementController do
         irs_reproofing: false }
     end
 
-    it 'sends analytics_submitted event' do
-      put :update
+    it 'sends analytics_submitted event with consent given' do
+      put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
