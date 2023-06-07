@@ -56,7 +56,7 @@ module Reporting
       CSV.generate do |csv|
         csv << ['report_start', time_range.begin.iso8601]
         csv << ['report_end', time_range.end.iso8601]
-        csv << ['report_generated', Date.today.to_s]
+        csv << ['report_generated', Date.today.to_s] # rubocop:disable Rails/Date
         csv << ['metric', 'num_users', 'percent']
 
         start = idv_doc_auth_image_vendor_submitted
@@ -66,12 +66,11 @@ module Reporting
           ['verified', idv_final_resolution],
           ['started_gpo', idv_gpo_address_letter_requested],
           ['started_in_person', usps_ipp_enrollment_created],
-          ['started_fraud_review', idv_please_call_visited]
+          ['started_fraud_review', idv_please_call_visited],
         ].each do |(label, num)|
           csv << [label, num, num.to_f / start.to_f]
         end
       end
-      # rubocop:enable Metrics/LineLength
     end
 
     def idv_doc_auth_image_vendor_submitted

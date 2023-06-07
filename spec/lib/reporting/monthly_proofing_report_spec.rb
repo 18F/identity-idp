@@ -41,7 +41,7 @@ RSpec.describe Reporting::MonthlyProofingReport do
       expected_csv = [
         ['report_start', time_range.begin.iso8601],
         ['report_end', time_range.end.iso8601],
-        ['report_generated', Date.today.to_s],
+        ['report_generated', Date.today.to_s], # rubocop:disable Rails/Date
         ['metric', 'num_users', 'percent'],
         ['image_submitted', 5, 5.0 / 5],
         ['verified', 1, 1.0 / 5],
