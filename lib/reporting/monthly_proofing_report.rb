@@ -21,22 +21,21 @@ module Reporting
       IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'
       USPS_IPP_ENROLLMENT_CREATED = 'USPS IPPaaS enrollment created'
       IDV_FINAL_RESOLUTION = 'IdV: final resolution'
-      GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
-      USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
+      IDV_PLEASE_CALL_VISITED = 'IdV: Verify please call visited'
 
       def self.all_events
         constants.map { |c| const_get(c) }
       end
     end
 
-    # @param [String] isssuer
     # @param [Range<Time>] date
     def initialize(
       time_range:,
       verbose: false,
       progress: false,
       slice: 3.hours,
-      threads: 5
+      threads: 5,
+      issuer: nil # rubocop:disable Lint/UnusedMethodArgument
     )
       @time_range = time_range
       @verbose = verbose
@@ -55,30 +54,32 @@ module Reporting
 
     def to_csv
       CSV.generate do |csv|
-        csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
-        csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << []
-        csv << ['Metric', '# of Users']
-        csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
-        csv << ['Incomplete Users', incomplete_users]
-        csv << ['Address Confirmation Letters Requested', idv_gpo_address_letter_requested]
-        csv << ['Started In-Person Verification', usps_ipp_enrollment_created]
-        csv << ['Alternative Process Users', alternative_process_users]
-        csv << ['Success through Online Verification', idv_final_resolution]
-        csv << ['Success through Address Confirmation Letters', gpo_verification_submitted]
-        csv << ['Success through In-Person Verification', usps_enrollment_status_updated]
-        csv << ['Successfully Verified Users', successfully_verified_users]
-        csv << ['Percentage of Users Successfully Proofed', proofed_percentage]
+        csv << ['report_start', time_range.begin.iso8601]
+        csv << ['report_end', time_range.end.iso8601]
+        csv << ['report_generated', Date.today.to_s]
+        csv << ['metric', 'num_users', 'percent']
+
+        start = idv_doc_auth_image_vendor_submitted
+
+        [
+          ['image_submitted', idv_doc_auth_image_vendor_submitted],
+          ['verified', idv_final_resolution],
+          ['started_gpo', idv_gpo_address_letter_requested],
+          ['started_in_person', usps_ipp_enrollment_created],
+          ['started_fraud_review', idv_please_call_visited]
+        ].each do |(label, num)|
+          csv << [label, num, num.to_f / start.to_f]
+        end
       end
+      # rubocop:enable Metrics/LineLength
     end
 
-    def proofed_percentage
-      # Probably want to round this
-      successfully_verified_users / idv_doc_auth_image_vendor_submitted
+    def idv_doc_auth_image_vendor_submitted
+      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
     end
 
-    def incomplete_users
-      idv_doc_auth_image_vendor_submitted - successfully_verified_users - alternative_process_users
+    def idv_final_resolution
+      data[Events::IDV_FINAL_RESOLUTION].to_i
     end
 
     def idv_gpo_address_letter_requested
@@ -89,33 +90,8 @@ module Reporting
       data[Events::USPS_IPP_ENROLLMENT_CREATED].to_i
     end
 
-    def alternative_process_users
-      [
-        idv_gpo_address_letter_requested,
-        usps_ipp_enrollment_created,
-        -gpo_verification_submitted,
-        -usps_enrollment_status_updated,
-      ].sum
-    end
-
-    def idv_final_resolution
-      data[Events::IDV_FINAL_RESOLUTION].to_i
-    end
-
-    def gpo_verification_submitted
-      data[Events::GPO_VERIFICATION_SUBMITTED].to_i
-    end
-
-    def usps_enrollment_status_updated
-      data[Events::USPS_ENROLLMENT_STATUS_UPDATED].to_i
-    end
-
-    def successfully_verified_users
-      idv_final_resolution + gpo_verification_submitted + usps_enrollment_status_updated
-    end
-
-    def idv_doc_auth_image_vendor_submitted
-      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
+    def idv_please_call_visited
+      data[Events::IDV_PLEASE_CALL_VISITED].to_i
     end
 
     # Turns query results into a hash keyed by event name, values are a count of unique users
@@ -144,8 +120,6 @@ module Reporting
     def query
       params = {
         event_names: quote(Events.all_events),
-        usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
-        gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
       }
 
@@ -154,10 +128,6 @@ module Reporting
             name
           , properties.user_id AS user_id
         | filter name in %{event_names}
-        | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
-                 or (name != %{usps_enrollment_status_updated})
-        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1)
-                 or (name != %{gpo_verification_submitted})
         | filter (name = %{idv_final_resolution} and isblank(properties.event_properties.deactivation_reason))
                  or (name != %{idv_final_resolution})
         | limit 10000
@@ -180,6 +150,6 @@ end
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
 
-  puts Reporting::IdentityVerificationReport.new(**options).to_csv
+  puts Reporting::MonthlyProofingReport.new(**options).to_csv
 end
 # rubocop:enable Rails/Output
