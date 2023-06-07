@@ -22,6 +22,13 @@ describe Idv::AgreementController do
         :confirm_two_factor_authenticated,
       )
     end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
   end
 
   describe '#show' do
