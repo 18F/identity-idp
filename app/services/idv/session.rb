@@ -48,7 +48,6 @@ module Idv
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
-        active: deactivation_reason.nil?,
         deactivation_reason: deactivation_reason,
         fraud_review_needed: threatmetrix_failed_and_needs_review?,
         gpo_verification_needed: gpo_verification_needed?,
