@@ -336,13 +336,13 @@ describe Profile do
     end
 
     it 'activates a previously verified profile after password reset' do
-      verified_at = Time.now - 1.year
+      verified_at = Time.zone.now - 1.year
       profile = create(
         :profile,
         user: user,
         active: false,
         deactivation_reason: :password_reset,
-        verified_at: verified_at
+        verified_at: verified_at,
       )
 
       profile.activate_after_password_reset
