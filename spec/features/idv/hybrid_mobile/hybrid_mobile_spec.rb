@@ -23,7 +23,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
@@ -87,7 +87,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
