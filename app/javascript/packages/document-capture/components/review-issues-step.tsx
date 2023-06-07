@@ -219,39 +219,6 @@ function ReviewIssuesStep({
         </Warning>
       );
     }
-    if (inPersonCtaVariantActive === 'in_person_variant_c') {
-      return (
-        <Warning
-          heading={t('errors.doc_auth.throttled_heading')}
-          actionText={t('idv.failure.button.warning')}
-          actionOnClick={onWarningPageDismissed}
-          location="doc_auth_review_issues"
-          remainingAttempts={remainingAttempts}
-          troubleshootingOptions={
-            <DocumentCaptureTroubleshootingOptions
-              location="post_submission_warning"
-              showAlternativeProofingOptions={false}
-              heading={t('components.troubleshooting_options.ipp_heading')}
-            />
-          }
-        >
-          {!!unknownFieldErrors &&
-            unknownFieldErrors
-              .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
-
-          {remainingAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <strong>
-                {remainingAttempts === 1
-                  ? t('idv.failure.attempts.one')
-                  : t('idv.failure.attempts.other', { count: remainingAttempts })}
-              </strong>
-            </p>
-          )}
-        </Warning>
-      );
-    }
   }
 
   return (
