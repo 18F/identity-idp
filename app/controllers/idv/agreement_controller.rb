@@ -37,6 +37,8 @@ module Idv
         idv_session.idv_consent_given = true
 
         redirect_to idv_hybrid_handoff_url
+      else
+        redirect_to idv_agreement_url
       end
     end
 
