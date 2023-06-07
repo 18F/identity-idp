@@ -21,7 +21,8 @@ module Idv
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
       profile.deactivate_for_fraud_review if fraud_review_needed
-      profile.activate
+      # profile.activate
+      profile
     end
 
     private

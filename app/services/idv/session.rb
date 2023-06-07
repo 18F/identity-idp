@@ -52,6 +52,7 @@ module Idv
         fraud_review_needed: threatmetrix_failed_and_needs_review?,
         gpo_verification_needed: gpo_verification_needed?,
       )
+      profile.activate
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
