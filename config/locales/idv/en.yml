@@ -61,14 +61,10 @@ en:
         one: For security reasons, you have one attempt remaining to add your ID online.
         one_variant_a_html: For security reasons, you have <strong>one attempt<strong>
           remaining to add your ID online.
-        one_variant_b_html: Try taking new pictures. For security reasons, you have
-          <strong>one attempt<strong> remaining to add your ID online.
         other: For security reasons, you have %{count} attempts remaining to add your ID
           online.
         other_variant_a_html: For security reasons, you have <strong>%{count}
           attempts<strong> remaining to add your ID online.
-        other_variant_b_html: Try taking new pictures. For security reasons, you have
-          <strong>%{count} attempts<strong> remaining to add your ID online.
       button:
         warning: Try again
         warning_variant: Try again online

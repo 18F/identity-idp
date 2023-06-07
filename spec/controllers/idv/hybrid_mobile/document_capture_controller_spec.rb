@@ -214,18 +214,6 @@ describe Idv::HybridMobile::DocumentCaptureController do
             ).to eq(:in_person_variant_a)
           end
         end
-
-        context 'and A/B test specifies variant b' do
-          let(:active_variant) { :in_person_variant_b }
-
-          it 'passes the expected variables' do
-            expect(extra_view_variables[:in_person_cta_variant_testing_enabled]).to eq(true)
-            expect(
-              extra_view_variables[:in_person_cta_variant_active],
-            ).to eq(:in_person_variant_b)
-          end
-        end
-
       end
     end
   end
