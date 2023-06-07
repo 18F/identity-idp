@@ -46,7 +46,7 @@ class Profile < ApplicationRecord
   end
 
   # rubocop:disable Rails/SkipsModelValidations
-  def activate(reason_deactivated = nil)
+  def activate(reason_deactivated: nil)
     confirm_that_profile_can_be_activated!
 
     now = Time.zone.now
@@ -101,7 +101,7 @@ class Profile < ApplicationRecord
       update!(
         deactivation_reason: nil,
       )
-      activate(:password_reset)
+      activate(reason_deactivated: :password_reset)
     end
   end
 
