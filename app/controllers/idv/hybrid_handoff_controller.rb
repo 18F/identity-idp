@@ -207,10 +207,13 @@ module Idv
     def confirm_agreement_step_complete
       # delete when removing doc_auth_agreement_controller_enabled flag
       return if flow_session['Idv::Steps::AgreementStep']
-
       return if idv_session.idv_consent_given
 
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_agreement_controller_enabled
+        redirect_to idv_agreement_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_hybrid_handoff_needed

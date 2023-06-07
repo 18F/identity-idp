@@ -64,12 +64,23 @@ describe Idv::HybridHandoffController do
     end
 
     context 'agreement step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+      before do
         subject.user_session['idv/doc_auth']['Idv::Steps::AgreementStep'] = nil
+      end
 
+      it 'redirects to idv_doc_auth_url' do
         get :show
 
         expect(response).to redirect_to(idv_doc_auth_url)
+      end
+
+      it 'redirects to idv_agreement_url when feature flag is set' do
+        allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
+          and_return(true)
+
+        get :show
+
+        expect(response).to redirect_to(idv_agreement_url)
       end
     end
 
