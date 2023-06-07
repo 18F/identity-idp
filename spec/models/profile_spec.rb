@@ -347,6 +347,8 @@ describe Profile do
 
       profile.activate_after_password_reset
 
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
       expect(profile.verified_at).to eq verified_at
     end
 
