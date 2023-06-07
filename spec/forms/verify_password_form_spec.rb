@@ -14,9 +14,11 @@ describe VerifyPasswordForm, type: :model do
           decrypted_pii: Pii::Attributes.new_from_hash(pii)
         )
 
+        expect(profile.reload.active?).to eq false
+
         result = form.submit
 
-        expect(profile.active?).to eq false
+        expect(profile.reload.active?).to eq true
         expect(result.success?).to eq true
       end
     end
@@ -33,9 +35,11 @@ describe VerifyPasswordForm, type: :model do
           decrypted_pii: Pii::Attributes.new_from_hash(pii)
         )
 
+        expect(profile.reload.active?).to eq false
+
         result = form.submit
 
-        expect(profile.active?).to eq false
+        expect(profile.reload.active?).to eq false
         expect(result.success?).to eq false
         expect(result.errors[:password]).to eq [t('errors.messages.password_incorrect')]
       end
