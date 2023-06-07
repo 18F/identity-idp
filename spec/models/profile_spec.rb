@@ -381,16 +381,16 @@ describe Profile do
 
   describe '#activate_after_passing_in_person' do
     it 'activates a profile if it passes in person proofing' do
-      profile = create(
-        :profile,
-        user: user,
-        active: false,
-        fraud_review_pending_at: 1.day.ago,
-        deactivation_reason: :in_person_verification_pending,
-      )
+      profile = user.profiles.create
+      profile.active = false
+      profile.fraud_review_pending_at = 1.day.ago
+      profile.deactivation_reason = :in_person_verification_pending
+
       profile.activate_after_passing_in_person
 
       expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.activated_at).not_to be_nil
+      expect(profile.deactivation_reason).to be_nil
       expect(profile).to be_active
     end
   end
