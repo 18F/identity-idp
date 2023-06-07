@@ -332,6 +332,22 @@ describe Profile do
 
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq nil
+    end
+
+    it 'activates a previously verified profile after password reset' do
+      verified_at = Time.now - 1.year
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        verified_at: verified_at
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.verified_at).to eq verified_at
     end
 
     it 'does not activate a profile if it has a pending reason' do
