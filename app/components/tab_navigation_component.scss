@@ -2,14 +2,32 @@
 
 @forward 'usa-button-group';
 
-// Upstream: TODO
-.usa-button-group__item .usa-button {
-  @include u-display('flex');
-  @include u-flex('align-center', 'justify-center');
+// Upstream: https://github.com/uswds/uswds/pull/5324
+.usa-button-group--segmented {
+  .usa-button {
+    @include u-display('flex');
+    @include u-flex('align-center', 'justify-center');
+  }
+
+  .usa-button-group__item {
+    @include u-display('flex');
+    @include grid-col('auto');
+  }
 }
 
-.tab-navigation .usa-button--big {
-  @include at-media-max('tablet') {
-    font-size: units(2);
+.tab-navigation .usa-button-group--segmented {
+  .usa-button-group__item {
+    flex-basis: 50%;
+  }
+
+  .usa-button-group__item:last-child > .usa-button,
+  .usa-button {
+    width: 100%;
+  }
+
+  .usa-button--big {
+    @include at-media-max('tablet') {
+      font-size: units(2);
+    }
   }
 }
