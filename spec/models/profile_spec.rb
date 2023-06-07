@@ -330,9 +330,13 @@ describe Profile do
 
       profile.activate_after_password_reset
 
+      expect(profile.activated_at).to be_present
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to eq nil
-      expect(profile.verified_at).to eq nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.initiating_service_provider).to eq nil
+      expect(profile.verified_at).to eq nil # formerly present
     end
 
     it 'activates a previously verified profile after password reset' do
