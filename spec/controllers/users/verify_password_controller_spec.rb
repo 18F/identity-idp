@@ -91,14 +91,12 @@ describe Users::VerifyPasswordController do
         end
 
         context 'without valid password' do
-          let(:pii) { { dob: Time.zone.today } }
           let(:response_bad) { FormResponse.new(success: false, errors: {}) }
 
           render_views
 
           before do
             allow(form).to receive(:submit).and_return(response_bad)
-            allow(controller).to receive(:decrypted_pii).and_return(pii)
 
             put :update, params: user_params
           end

@@ -2,21 +2,23 @@ module IdvStepConcern
   extend ActiveSupport::Concern
 
   include IdvSession
+  include RateLimitConcern
 
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
   end
 
   def confirm_no_pending_gpo_profile
-    redirect_to idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
+    redirect_to idv_gpo_verify_url if current_user&.gpo_verification_pending_profile?
   end
 
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
-    redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
+    redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
   def flow_session

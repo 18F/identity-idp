@@ -1,11 +1,11 @@
 module Idv
   class SessionErrorsController < ApplicationController
     include IdvSession
-    include EffectiveUser
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
-    before_action :set_try_again_path, only: [:warning, :exception]
+    before_action :set_try_again_path, only: [:warning, :exception, :state_id_warning]
     before_action :ignore_form_step_wait_requests
 
     def exception
@@ -14,7 +14,7 @@ module Idv
 
     def warning
       throttle = Throttle.new(
-        user: effective_user,
+        user: idv_session_user,
         throttle_type: :idv_resolution,
       )
 
@@ -22,9 +22,13 @@ module Idv
       log_event(based_on_throttle: throttle)
     end
 
+    def state_id_warning
+      log_event
+    end
+
     def failure
       throttle = Throttle.new(
-        user: effective_user,
+        user: idv_session_user,
         throttle_type: :idv_resolution,
       )
       @expires_at = throttle.expires_at
@@ -48,7 +52,7 @@ module Idv
     end
 
     def throttled
-      throttle = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth)
+      throttle = Throttle.new(user: idv_session_user, throttle_type: :idv_doc_auth)
       log_event(based_on_throttle: throttle)
       @expires_at = throttle.expires_at
     end

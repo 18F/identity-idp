@@ -89,6 +89,22 @@ feature 'doc auth welcome step' do
     end
   end
 
+  context 'doc_auth_hybrid_handoff_controller_enabled flag is true' do
+    context 'skipping upload step', :js, driver: :headless_chrome_mobile do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
+          and_return(true)
+        sign_in_and_2fa_user
+        complete_doc_auth_steps_before_agreement_step
+        complete_agreement_step
+      end
+
+      it 'progresses to document capture' do
+        expect(page).to have_current_path(idv_document_capture_url)
+      end
+    end
+  end
+
   context 'during the acuant maintenance window' do
     let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
     let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }

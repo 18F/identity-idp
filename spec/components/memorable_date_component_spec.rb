@@ -278,4 +278,17 @@ RSpec.describe MemorableDateComponent, type: :component do
       MemorableDateComponent.extract_date_param('abcd'),
     ).to be_nil
   end
+
+  context 'backend validation error message' do
+    let(:backend_error) { 'backend error' }
+    it 'renders a visible error message element' do
+      allow(form_builder.object).to receive(:errors).and_return(
+        {
+          name => [backend_error],
+        },
+      )
+      expect(rendered).not_to have_css('.usa-error-message.display-none')
+      expect(rendered.css('.usa-error-message')).to have_text(backend_error)
+    end
+  end
 end

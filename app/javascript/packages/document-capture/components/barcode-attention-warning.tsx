@@ -1,15 +1,10 @@
-import { useContext } from 'react';
 import { Button, StatusPage } from '@18f/identity-components';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
 import { removeUnloadProtection } from '@18f/identity-url';
-import UploadContext from '../context/upload';
-import { toFormData } from '../services/upload';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-
-const DOCUMENT_CAPTURE_ERRORS_API_URL = '/api/verify/v2/document_capture_errors';
 
 interface BarcodeAttentionWarningProps {
   /**
@@ -24,16 +19,8 @@ interface BarcodeAttentionWarningProps {
 }
 
 function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProps) {
-  const { formData } = useContext(UploadContext);
-
-  async function skipAttention() {
-    await Promise.all([
-      trackEvent('IdV: barcode warning continue clicked'),
-      window.fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
-        method: 'DELETE',
-        body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
-      }),
-    ]);
+  function skipAttention() {
+    trackEvent('IdV: barcode warning continue clicked');
     removeUnloadProtection();
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
     form?.submit();

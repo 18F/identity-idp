@@ -1,4 +1,5 @@
 import { trackEvent as defaultTrackEvent } from '@18f/identity-analytics';
+import { promptOnNavigate } from '@18f/identity-prompt-on-navigate';
 
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
@@ -44,6 +45,8 @@ export class DocumentCapturePolling {
 
   pollAttempts = 0;
 
+  cleanUpPromptOnNavigate: (() => void) | undefined;
+
   constructor({
     elements,
     statusEndpoint,
@@ -70,20 +73,23 @@ export class DocumentCapturePolling {
    * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
    */
   bindPromptOnNavigate(shouldPrompt) {
-    window.onbeforeunload = shouldPrompt
-      ? (event) => {
-          event.preventDefault();
-          event.returnValue = '';
-        }
-      : null;
+    const isAlreadyBound = !!this.cleanUpPromptOnNavigate;
+
+    if (shouldPrompt && !isAlreadyBound) {
+      this.cleanUpPromptOnNavigate = promptOnNavigate();
+    } else if (!shouldPrompt && isAlreadyBound) {
+      const cleanUp = this.cleanUpPromptOnNavigate ?? (() => {});
+      this.cleanUpPromptOnNavigate = undefined;
+      cleanUp();
+    }
   }
 
   onMaxPollAttempts() {
     this.toggleFormVisible(true);
   }
 
-  async onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
-    await this.trackEvent('IdV: Link sent capture doc polling complete', {
+  onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
+    this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isThrottled: result === ResultType.THROTTLED,
     });

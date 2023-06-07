@@ -3,6 +3,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
@@ -10,6 +11,7 @@ module Idv
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
     before_action :extend_timeout_using_meta_refresh
+    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -78,8 +80,13 @@ module Idv
     end
 
     def render_document_capture_cancelled
-      mark_upload_step_incomplete
-      redirect_to idv_doc_auth_url # was idv_url, why?
+      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+        redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
+      else
+        mark_upload_step_incomplete
+        redirect_to idv_doc_auth_url # was idv_url, why?
+      end
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 

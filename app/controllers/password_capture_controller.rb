@@ -39,7 +39,7 @@ class PasswordCaptureController < ApplicationController
     cache_active_profile(password)
     session[:password_attempts] = 0
     user_session[:current_password_required] = false
-    redirect_to after_otp_verification_confirmation_url
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def handle_invalid_password
