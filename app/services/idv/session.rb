@@ -55,8 +55,8 @@ module Idv
 
       begin
         profile.activate
-      rescue RuntimeError => exception
-        NewRelic::Agent.notice_error(exception)
+      rescue RuntimeError => error
+        NewRelic::Agent.notice_error(error)
       end
 
       self.pii = profile_maker.pii_attributes
