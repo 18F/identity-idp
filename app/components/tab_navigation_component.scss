@@ -1,0 +1,15 @@
+@use 'uswds-core' as *;
+
+@forward 'usa-button-group';
+
+// Upstream: TODO
+.usa-button-group__item .usa-button {
+  @include u-display('flex');
+  @include u-flex('align-center', 'justify-center');
+}
+
+.tab-navigation .usa-button--big {
+  @include at-media-max('tablet') {
+    font-size: units(2);
+  }
+}

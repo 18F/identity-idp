@@ -1,4 +1,4 @@
-<%= content_tag(:nav, aria: { label: }, **tag_options) do %>
+<%= content_tag(:nav, aria: { label: }, **tag_options, class: [*tag_options[:class], 'tab-navigation']) do %>
   <ul class="usa-button-group usa-button-group--segmented">
     <% routes.each do |route| %>
       <li class="usa-button-group__item grid-col display-flex">
