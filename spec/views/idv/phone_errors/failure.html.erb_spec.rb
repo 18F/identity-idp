@@ -59,7 +59,10 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
     let(:gpo_letter_available) { false }
 
     it 'does not describe GPO as an alternative' do
-      expect(rendered).not_to have_text(t('idv.failure.phone.rate_limited.gpo.prompt'))
+      raw_gpo_alternative = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
+      gpo_alternative = ActionView::Base.full_sanitizer.sanitize(raw_gpo_alternative)
+
+      expect(rendered).not_to have_text(gpo_alternative)
     end
 
     it 'does not include a link to GPO flow' do
