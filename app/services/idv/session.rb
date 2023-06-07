@@ -52,13 +52,13 @@ module Idv
         fraud_review_needed: threatmetrix_failed_and_needs_review?,
         gpo_verification_needed: gpo_verification_needed?,
       )
-      
+
       begin
         profile.activate
       rescue RuntimeError => exception
         NewRelic::Agent.notice_error(exception)
       end
-      
+
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key

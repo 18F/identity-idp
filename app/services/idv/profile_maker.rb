@@ -14,14 +14,16 @@ module Idv
       gpo_verification_needed:,
       deactivation_reason: nil
     )
-      profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason, verified_at: Time.zone.now)
+      profile = Profile.new(
+        user: user, active: false, deactivation_reason: deactivation_reason,
+        verified_at: Time.zone.now
+      )
       profile.initiating_service_provider = initiating_service_provider
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
       profile.deactivate_for_fraud_review if fraud_review_needed
-      # profile.activate
       profile
     end
 
