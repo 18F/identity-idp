@@ -70,8 +70,8 @@ describe('PhoneInput', () => {
       <script type="application/json" class="phone-input__strings">
         {
           "country_code_label": "Country code",
-          "invalid_phone_us": "Enter a 10 digit phone number. Example: (201) 555-0123",
-          "invalid_phone_international": "Enter a phone number with the correct number of digits. Example:(201) 555-0123",
+          "invalid_phone_us": "Enter a 10 digit phone number.",
+          "invalid_phone_international": "Enter a phone number with the correct number of digits.",
           "unsupported_country": "We are unable to verify phone numbers from %{location}"
         }
       </script>
@@ -103,20 +103,18 @@ describe('PhoneInput', () => {
     expect(input.querySelector('.iti.iti--allow-dropdown')).to.be.ok();
   });
 
-  it('validates input for US phone numbers', async () => {
+  it('validates input', async () => {
     const input = createAndConnectElement();
 
     const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
     expect(phoneNumber.validity.valueMissing).to.be.true();
 
-    await userEvent.type(phoneNumber, '5555');
-    expect(phoneNumber.validationMessage).to.equal(
-      'Enter a 10 digit phone number. Example: (201) 555-0123',
-    );
+    await userEvent.type(phoneNumber, '5');
+    expect(phoneNumber.validationMessage).to.equal('Enter a 10 digit phone number.');
 
     await userEvent.type(phoneNumber, '13-555-1234');
-    expect(phoneNumber.validity.valid).to.be.false();
+    expect(phoneNumber.validity.valid).to.be.true();
   });
 
   it('validates supported delivery method', async () => {
@@ -212,7 +210,7 @@ describe('PhoneInput', () => {
 
       await userEvent.type(phoneNumber, '5135551234');
       expect(phoneNumber.validationMessage).to.equal(
-        'Enter a phone number with the correct number of digits. Example:(201) 555-0123',
+        'Enter a phone number with the correct number of digits.',
       );
     });
   });
