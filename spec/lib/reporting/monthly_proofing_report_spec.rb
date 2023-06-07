@@ -45,9 +45,9 @@ RSpec.describe Reporting::MonthlyProofingReport do
         ['metric', 'num_users', 'percent'],
         ['image_submitted', 5, 5.0 / 5],
         ['verified', 1, 1.0 / 5],
-        ['started_gpo', 1, 1.0 / 5],
-        ['started_in_person', 1, 1.0 / 5],
-        ['started_fraud_review', 1, 1.0 / 5],
+        ['not_verified_started_gpo', 1, 1.0 / 5],
+        ['not_verified_started_in_person', 1, 1.0 / 5],
+        ['not_verified_started_fraud_review', 1, 1.0 / 5],
       ]
 
       aggregate_failures do
@@ -59,13 +59,13 @@ RSpec.describe Reporting::MonthlyProofingReport do
   end
 
   describe '#data' do
-    it 'counts unique users per event as a hash' do
+    it 'keeps unique users per event as a hash' do
       expect(report.data).to eq(
-        'IdV: doc auth image upload vendor submitted' => 5,
-        'IdV: final resolution' => 1,
-        'IdV: USPS address letter requested' => 1,
-        'USPS IPPaaS enrollment created' => 1,
-        'IdV: Verify please call visited' => 1,
+        'IdV: doc auth image upload vendor submitted' => %w[user1 user2 user3 user4 user5].to_set,
+        'IdV: final resolution' => %w[user1].to_set,
+        'IdV: USPS address letter requested' => %w[user2].to_set,
+        'IdV: Verify please call visited' => %w[user3].to_set,
+        'USPS IPPaaS enrollment created' => %w[user4].to_set,
       )
     end
   end

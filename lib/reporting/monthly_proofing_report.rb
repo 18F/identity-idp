@@ -64,9 +64,9 @@ module Reporting
         [
           ['image_submitted', idv_doc_auth_image_vendor_submitted],
           ['verified', idv_final_resolution],
-          ['started_gpo', idv_gpo_address_letter_requested],
-          ['started_in_person', usps_ipp_enrollment_created],
-          ['started_fraud_review', idv_please_call_visited],
+          ['not_verified_started_gpo', idv_gpo_address_letter_requested],
+          ['not_verified_started_in_person', usps_ipp_enrollment_created],
+          ['not_verified_started_fraud_review', idv_please_call_visited],
         ].each do |(label, num)|
           csv << [label, num, num.to_f / start.to_f]
         end
@@ -74,28 +74,36 @@ module Reporting
     end
 
     def idv_doc_auth_image_vendor_submitted
-      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD].to_i
+      started_uuids.count
     end
 
     def idv_final_resolution
-      data[Events::IDV_FINAL_RESOLUTION].to_i
+      (data[Events::IDV_FINAL_RESOLUTION] & started_uuids).count
     end
 
     def idv_gpo_address_letter_requested
-      data[Events::IDV_GPO_ADDRESS_LETTER_REQUESTED].to_i
+      ((data[Events::IDV_GPO_ADDRESS_LETTER_REQUESTED] & started_uuids) - verified_uuids).count
     end
 
     def usps_ipp_enrollment_created
-      data[Events::USPS_IPP_ENROLLMENT_CREATED].to_i
+      ((data[Events::USPS_IPP_ENROLLMENT_CREATED] & started_uuids) - verified_uuids).count
     end
 
     def idv_please_call_visited
-      data[Events::IDV_PLEASE_CALL_VISITED].to_i
+      ((data[Events::IDV_PLEASE_CALL_VISITED] & started_uuids) - verified_uuids).count
     end
 
-    # Turns query results into a hash keyed by event name, values are a count of unique users
+    def verified_uuids
+      data[Events::IDV_FINAL_RESOLUTION]
+    end
+
+    def started_uuids
+      data[Events::IDV_DOC_AUTH_IMAGE_UPLOAD]
+    end
+
+    # Turns query results into a hash keyed by event name, values are a set of unique user IDs
     # for that event
-    # @return [Hash<String,Integer>]
+    # @return [Hash<String,Set<String>>]
     def data
       @data ||= begin
         event_users = Hash.new do |h, uuid|
@@ -108,7 +116,7 @@ module Reporting
           event_users[row['name']] << row['user_id']
         end
 
-        event_users.transform_values(&:count)
+        event_users
       end
     end
 
