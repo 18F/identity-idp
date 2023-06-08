@@ -147,7 +147,7 @@ RSpec.describe PinpointSupportedCountries do
 
     context 'when we do not have a sender ID for a country that requires one' do
       before do
-        stub_const('PinpointSupportedCountries::SENDER_ID_COUNTRIES', [])
+        allow(IdentityConfig.store).to receive(:sender_id_countries).and_return([])
       end
 
       it 'is supported' do

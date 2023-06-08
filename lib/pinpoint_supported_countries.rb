@@ -9,16 +9,6 @@ class PinpointSupportedCountries
   PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
 
-  # The list of countries where we have our sender ID registered
-  SENDER_ID_COUNTRIES = %w[
-    BY
-    EG
-    FR
-    JO
-    PH
-    TH
-  ].to_set.freeze
-
   CountrySupport = Struct.new(
     :iso_code,
     :name,
@@ -69,7 +59,7 @@ class PinpointSupportedCountries
         iso_code = sms_config['ISO code']
         supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'
-          SENDER_ID_COUNTRIES.include?(iso_code)
+          IdentityConfig.store.sender_id_countries.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
           true
         else

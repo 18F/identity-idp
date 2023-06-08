@@ -14,7 +14,7 @@ Telephony.config do |c|
   c.voice_rate = IdentityConfig.store.voice_otp_speech_rate
 
   c.country_sender_ids = IdentityConfig.store.pinpoint_sms_sender_id.presence &&
-                         PinpointSupportedCountries::SENDER_ID_COUNTRIES.index_with do
+                         IdentityConfig.store.sender_id_countries.index_with do
                            IdentityConfig.store.pinpoint_sms_sender_id
                          end
 
