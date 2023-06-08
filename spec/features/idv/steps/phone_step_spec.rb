@@ -49,7 +49,7 @@ feature 'idv phone step', :js do
       fill_in :idv_phone_form_phone, with: '578190'
       click_idv_send_security_code
       expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+      expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
     end
   end
 
