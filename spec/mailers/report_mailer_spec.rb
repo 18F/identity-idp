@@ -44,15 +44,15 @@ describe ReportMailer, type: :mailer do
     end
 
     it 'is plaintext only, no HTML' do
-      expect(mail.html_part).to be_nil
     end
 
-    it 'puts the rails env and error class name in the subject' do
+    it 'puts the rails env and error in a plaintext email', aggregate_failures: true do
+      expect(mail.html_part).to be_nil
+
       expect(mail.subject).to include('prod')
       expect(mail.subject).to include('RuntimeError')
-    end
 
-    it 'puts the error message in the email body' do
+
       expect(mail.text_part.body).to include('this is my test')
     end
   end
