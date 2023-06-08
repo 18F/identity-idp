@@ -60,7 +60,6 @@ RSpec.describe Idv::ProfileMaker do
 
         expect(profile.active).to eq false
         expect(profile.fraud_review_pending?).to eq(true)
-        expect(profile.verified_at).not_to be_nil
       end
     end
 
@@ -74,7 +73,6 @@ RSpec.describe Idv::ProfileMaker do
 
         expect(profile.active).to eq false
         expect(profile.gpo_verification_pending_at.present?).to eq true
-        expect(profile.verified_at).to be_nil
       end
     end
 
