@@ -61,10 +61,9 @@ function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
 function mapSessionStatusResponse<R extends SessionTimedOutStatusResponse>(
   response: R,
 ): SessionTimedOutStatus;
-function mapSessionStatusResponse<R extends SessionStatusResponse>({
-  live,
-  timeout,
-}: R): SessionLiveStatus | SessionTimedOutStatus {
+function mapSessionStatusResponse<
+  R extends SessionLiveStatusResponse | SessionTimedOutStatusResponse,
+>({ live, timeout }: R): SessionLiveStatus | SessionTimedOutStatus {
   return live ? { isLive: true, timeout: new Date(timeout) } : { isLive: false };
 }
 
