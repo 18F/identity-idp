@@ -13,7 +13,7 @@ feature 'mobile hybrid flow entry', js: true do
     end
 
     sign_in_and_2fa_user
-    complete_doc_auth_steps_before_upload_step
+    complete_doc_auth_steps_before_hybrid_handoff_step
     click_send_link
 
     link

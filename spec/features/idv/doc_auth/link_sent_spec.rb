@@ -13,7 +13,7 @@ feature 'doc auth link sent step' do
       to(receive(:doc_capture_polling_enabled?).and_return(false))
 
     user
-    complete_doc_auth_steps_before_upload_step
+    complete_doc_auth_steps_before_hybrid_handoff_step
     clear_and_fill_in(:doc_auth_phone, phone_number)
     click_send_link
   end
