@@ -78,7 +78,7 @@ describe TwoFactorOptionsPresenter do
     end
     context 'when priority is authentication first in a/b testing bucket' do
       let(:presenter) do
-        described_class.new(user_agent: user_agent, priority_bucket: :authentication_app_priority)
+        described_class.new(user_agent: user_agent)
       end
 
       it 'supplies auth app as the first option' do
@@ -90,7 +90,7 @@ describe TwoFactorOptionsPresenter do
 
     context 'when priority is usability ordered in a/b testing bucket' do
       let(:presenter) do
-        described_class.new(user_agent: user_agent, priority_bucket: :usability_priority)
+        described_class.new(user_agent: user_agent)
       end
 
       it 'supplies phone as the first option' do
