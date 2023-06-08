@@ -56,7 +56,7 @@ review-app:
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
     - >
-      helm upgrade --install --namespace review-apps --debug
+      helm upgrade --install --namespace review-apps
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${CI_COMMIT_SHA}"
       --set idp.ingress.enabled=true
