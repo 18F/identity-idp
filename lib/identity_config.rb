@@ -411,7 +411,7 @@ class IdentityConfig
     config.add(:scrypt_cost, type: :string)
     config.add(:secret_key_base, type: :string)
     config.add(:seed_agreements_data, type: :boolean)
-    config.add(:sender_id_countries, type: :comma_separated_list)
+    config.add(:sender_id_countries, type: :comma_separated_string_list)
     config.add(:service_provider_request_ttl_hours, type: :integer)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
