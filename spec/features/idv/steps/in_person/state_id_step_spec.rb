@@ -13,9 +13,6 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
   end
 
   context 'capture secondary id is enabled' do
-    let(:capture_secondary_id_enabled) { true }
-    let(:double_address_verification) { true }
-
     before do
       allow(IdentityConfig.store).
         to(receive(:in_person_capture_secondary_id_enabled)).
