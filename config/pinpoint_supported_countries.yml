@@ -47,7 +47,7 @@ AT:
 AU:
   country_code: '61'
   name: Australia
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
 AW:
   country_code: '297'
