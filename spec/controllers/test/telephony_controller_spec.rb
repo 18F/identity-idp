@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Test::TelephonyController do
+RSpec.describe Test::TelephonyController do
   describe '#index' do
     it 'sets @messages and @calls and renders' do
       Telephony.send_authentication_otp(

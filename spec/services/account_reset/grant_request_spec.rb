@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::GrantRequest do
+RSpec.describe AccountReset::GrantRequest do
   include AccountResetHelper
 
   let(:user) { create(:user) }

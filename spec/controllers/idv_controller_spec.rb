@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IdvController do
+RSpec.describe IdvController do
   before do
     stub_sign_in
   end

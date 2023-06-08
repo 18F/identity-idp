@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DocumentCaptureController do
+RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
   let(:flow_session) do

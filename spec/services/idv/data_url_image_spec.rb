@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DataUrlImage do
+RSpec.describe Idv::DataUrlImage do
   let(:data) { 'abc def' }
   let(:data_url) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
   subject(:data_url_image) { described_class.new(data_url) }

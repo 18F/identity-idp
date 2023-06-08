@@ -13,6 +13,7 @@ RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
 
 RSpec.configure do |config|
   # see more settings at spec/rails_helper.rb
+  config.disable_monkey_patching!
   config.raise_errors_for_deprecations!
   config.order = :random
   config.color = true

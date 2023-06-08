@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::SoapErrorHandler do
+RSpec.describe Proofing::Aamva::SoapErrorHandler do
   let(:response_body) { AamvaFixtures.soap_fault_response }
 
   subject do

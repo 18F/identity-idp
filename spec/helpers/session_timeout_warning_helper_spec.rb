@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SessionTimeoutWarningHelper do
+RSpec.describe SessionTimeoutWarningHelper do
   describe '#expires_at' do
     around do |ex|
       freeze_time { ex.run }

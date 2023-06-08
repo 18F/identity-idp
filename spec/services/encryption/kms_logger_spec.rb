@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::KmsLogger do
+RSpec.describe Encryption::KmsLogger do
   describe '.log' do
     context 'with a context' do
       it 'logs the context' do

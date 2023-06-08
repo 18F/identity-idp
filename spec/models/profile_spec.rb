@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Profile do
+RSpec.describe Profile do
   let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :fully_registered) }
   let(:profile) { user.profiles.create }

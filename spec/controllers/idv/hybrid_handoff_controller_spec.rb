@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::HybridHandoffController do
+RSpec.describe Idv::HybridHandoffController do
   include IdvHelper
 
   let(:user) { create(:user) }

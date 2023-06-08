@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SignUp::CompletionsController do
+RSpec.describe SignUp::CompletionsController do
   describe '#show' do
     let(:current_sp) { create(:service_provider) }
 

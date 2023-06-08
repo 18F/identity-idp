@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/registrations/new.html.erb' do
+RSpec.describe 'sign_up/registrations/new.html.erb' do
   let(:sign_in_a_b_test_bucket) { :default }
 
   let(:sp) do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/sessions/new.html.erb' do
+RSpec.describe 'devise/sessions/new.html.erb' do
   let(:sign_in_a_b_test_bucket) { :default }
 
   before do

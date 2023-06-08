@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::HybridMobile::EntryController do
+RSpec.describe Idv::HybridMobile::EntryController do
   include IdvHelper
 
   describe '#show' do

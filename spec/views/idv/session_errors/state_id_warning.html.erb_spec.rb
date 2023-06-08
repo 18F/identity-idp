@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/state_id_warning.html.erb' do
+RSpec.describe 'idv/session_errors/state_id_warning.html.erb' do
   before do
     assign(:try_again_path, '/try_again')
 
