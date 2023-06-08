@@ -48,8 +48,8 @@ module IdvStepConcern
       redirect_to idv_document_capture_url
     elsif flow_path == 'hybrid'
       redirect_to idv_link_sent_url
-    else # no flow_path, go to UploadStep via FSM
-      redirect_to idv_doc_auth_url
+    else # no flow_path
+      redirect_to idv_hybrid_handoff_path
     end
   end
 

@@ -47,20 +47,20 @@ function handleTimeout(redirectURL: string) {
   forceRedirect(redirectURL);
 }
 
-function success(data: SessionStatus) {
-  if (!data.isLive) {
+function success({ isLive, timeout }: SessionStatus) {
+  if (!isLive) {
     if (timeoutUrl) {
       handleTimeout(timeoutUrl);
     }
     return;
   }
 
-  const timeRemaining = new Date(data.timeout).valueOf() - Date.now();
+  const timeRemaining = timeout.valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
-      countdownEl.expiration = new Date(data.timeout);
+      countdownEl.expiration = timeout;
       countdownEl.start();
     });
   }

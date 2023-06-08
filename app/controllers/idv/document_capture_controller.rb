@@ -4,6 +4,7 @@ module Idv
     include DocumentCaptureConcern
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include RateLimitConcern
@@ -12,6 +13,7 @@ module Idv
     before_action :confirm_upload_step_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
+    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -54,11 +56,7 @@ module Idv
     def confirm_upload_step_complete
       return if flow_session[:flow_path].present?
 
-      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-        redirect_to idv_hybrid_handoff_url
-      else
-        redirect_to idv_doc_auth_url
-      end
+      redirect_to idv_hybrid_handoff_url
     end
 
     def confirm_document_capture_needed

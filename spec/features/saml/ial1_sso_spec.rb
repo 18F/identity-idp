@@ -70,22 +70,34 @@ feature 'IAL1 Single Sign On' do
       )
     end
 
-    it 'after session timeout, signing in takes user back to SP' do
+    it 'after session timeout, signing in takes user back to SP', :js, allow_browser_log: true do
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
+
       user = create(:user, :fully_registered)
       request_url = saml_authn_request_url
 
       visit request_url
       sp_request_id = ServiceProviderRequestProxy.last.uuid
+      fill_in_credentials_and_submit(user.email, user.password)
 
-      visit timeout_path
-      expect(current_url).to eq root_url(request_id: sp_request_id)
+      Warden.on_next_request do |proxy|
+        proxy.env['devise.skip_trackable'] = true
+        session = proxy.env['rack.session']
+        session['session_expires_at'] = Time.zone.now - 1
+      end
+
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id), wait: 5)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_call_original
 
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
-      click_submit_default_twice
+      click_submit_default
+
+      # SAML does internal redirect using JavaScript prior to showing consent screen
+      expect(page).to have_current_path(sign_up_completed_path, wait: 5)
       click_agree_and_continue
 
-      expect(current_url).to eq complete_saml_url
+      expect(page).to have_current_path(test_saml_decode_assertion_path)
     end
   end
 
