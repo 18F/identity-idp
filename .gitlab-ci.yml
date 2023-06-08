@@ -81,6 +81,25 @@ review-app:
         {\"name\":\"ASSET_HOST\",\"value\":\"https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"},
         {\"name\":\"DOMAIN_NAME\",\"value\":\"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"}
       ]"
+      --set-json worker.env="[
+        {\"name\":\"POSTGRES_SSLMODE\",\"value\":\"prefer\"},
+        {\"name\":\"POSTGRES_NAME\",\"value\":\"idp\"},
+        {\"name\":\"POSTGRES_HOST\",\"value\":\"$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps\"},
+        {\"name\":\"POSTGRES_USERNAME\",\"value\":\"postgres\"},
+        {\"name\":\"POSTGRES_PASSWORD\",\"value\":\"postgres\"},
+        {\"name\":\"POSTGRES_WORKER_SSLMODE\",\"value\":\"prefer\"},
+        {\"name\":\"POSTGRES_WORKER_NAME\",\"value\":\"idp-worker-jobs\"},
+        {\"name\":\"POSTGRES_WORKER_HOST\",\"value\":\"$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps\"},
+        {\"name\":\"POSTGRES_WORKER_USERNAME\",\"value\":\"postgres\"},
+        {\"name\":\"POSTGRES_WORKER_PASSWORD\",\"value\":\"postgres\"},
+        {\"name\":\"LOGIN_ENV\",\"value\":\"dev\"},
+        {\"name\":\"RAILS_OFFLINE\",\"value\":\"true\"},
+        {\"name\":\"REDIS_IRS_ATTEMPTS_API_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2\"},
+        {\"name\":\"REDIS_THROTTLE_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1\"},
+        {\"name\":\"REDIS_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379\"},
+        {\"name\":\"ASSET_HOST\",\"value\":\"https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"},
+        {\"name\":\"DOMAIN_NAME\",\"value\":\"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"}
+      ]"
       --set-json idp.ingress.hosts="[
         {\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}
       ]"
