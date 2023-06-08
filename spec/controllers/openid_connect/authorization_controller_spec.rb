@@ -168,7 +168,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             it 'redirects to have the user enter their personal key' do
               action
-              expect(controller).to redirect_to(reactivate_account_url)
+              expect(controller).to redirect_to(reactivate_account_url) #
             end
           end
         end
@@ -313,7 +313,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
-              action
+              action #
 
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
               expect(sp_return_log.ial).to eq(1)

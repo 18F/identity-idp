@@ -11,7 +11,7 @@ RSpec.describe OpenidConnectCertsPresenter do
       expect(json[:keys].all? { |k| k[:alg] == 'RS256' }).to eq(true)
       expect(json[:keys].all? { |k| k[:use] == 'sig' }).to eq(true)
 
-      key_from_response = JWT::JWK.import(json[:keys].first).public_key
+      key_from_response = JWT::JWK.import(json[:keys].first).public_key #
       public_key = AppArtifacts.store.oidc_public_key
 
       expect(key_from_response.to_pem).to eq(public_key.to_pem)
