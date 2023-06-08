@@ -21,7 +21,7 @@ export interface SessionTimedOutStatusResponse {
   /**
    * ISO8601-formatted date string for session timeout.
    */
-  timeout: null;
+  timeout: string;
 }
 
 type SessionStatusResponse = SessionLiveStatusResponse | SessionTimedOutStatusResponse;
