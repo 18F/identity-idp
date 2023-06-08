@@ -67,7 +67,7 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def reason_that_profile_cannot_be_activated
+  def reason_not_to_activate
     if pending_reasons.any?
       return "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
     elsif deactivation_reason.present?
@@ -219,7 +219,7 @@ class Profile < ApplicationRecord
   private
 
   def confirm_that_profile_can_be_activated!
-    reason = reason_that_profile_cannot_be_activated
+    reason = reason_not_to_activate
     raise reason if reason
   end
 
