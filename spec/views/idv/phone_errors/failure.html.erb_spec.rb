@@ -22,7 +22,7 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
 
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
-      t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+      t('idv.failure.phone.rate_limited.option_cancel_and_return_to_sp'),
       href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
     )
     expect(rendered).to have_link(
