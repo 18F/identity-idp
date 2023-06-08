@@ -4,7 +4,7 @@ describe ReportMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
 
-  describe 'deleted_user_accounts_report' do
+  describe '#deleted_user_accounts_report' do
     let(:mail) do
       ReportMailer.deleted_user_accounts_report(
         email: email_address.email,
@@ -28,6 +28,32 @@ describe ReportMailer, type: :mailer do
       expect(mail.html_part.body).to have_content('my name')
       expect(mail.html_part.body).to have_content('issuer1')
       expect(mail.html_part.body).to have_content('issuer2')
+    end
+  end
+
+  describe '#warn_error' do
+    let(:error) { RuntimeError.new('this is my test message') }
+    let(:env) { ActiveSupport::StringInquirer.new('prod') }
+
+    let(:mail) do
+      ReportMailer.warn_error(
+        email: 'test@example.com',
+        error: error,
+        env: env,
+      )
+    end
+
+    it 'is plaintext only, no HTML' do
+      expect(mail.html_part).to be_nil
+    end
+
+    it 'puts the rails env and error class name in the subject' do
+      expect(mail.subject).to include('prod')
+      expect(mail.subject).to include('RuntimeError')
+    end
+
+    it 'puts the error message in the email body' do
+      expect(mail.text_part.body).to include('this is my test')
     end
   end
 end
