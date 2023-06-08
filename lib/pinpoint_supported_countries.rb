@@ -9,7 +9,6 @@ class PinpointSupportedCountries
   PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
 
-  # The list of countries where we have our sender ID registered
 
   CountrySupport = Struct.new(
     :iso_code,
