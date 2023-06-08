@@ -189,13 +189,16 @@
   <% end %>
   <% if capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
+      <%# using :tel for mobile numeric keypad %>
       <%= render ValidatedFieldComponent.new(
+            as: :tel,             
             name: :identity_doc_zipcode,
             form: f,
             input_html: { value: pii[:identity_doc_zipcode] },
             label: t('in_person_proofing.form.state_id.zipcode'),
             label_html: { class: 'usa-label' },
-            maxlength: 255,
+            pattern: '\d{5}([\-]\d{4})?',
+            error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
             required: true,
           ) %>
     </div>
