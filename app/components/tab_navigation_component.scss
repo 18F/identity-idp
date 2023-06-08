@@ -15,6 +15,27 @@
   }
 }
 
+// Upstream: https://github.com/18F/identity-design-system/pull/359
+.usa-button-group__item {
+  &:first-child > .usa-button.usa-button--big {
+    margin-right: -1 * units($theme-button-stroke-width);
+  }
+
+  &:last-child > .usa-button.usa-button--big {
+    margin-left: -2 * units($theme-button-stroke-width);
+    width: calc(100% + #{units($theme-button-stroke-width) * 2});
+
+    @include at-media('mobile-lg') {
+      margin-left: -1 * units($theme-button-stroke-width);
+    }
+  }
+
+  &:where(:not(:first-child):not(:last-child)) > .usa-button.usa-button--big {
+    margin-right: -1 * units($theme-button-stroke-width);
+    margin-left: -1 * units($theme-button-stroke-width);
+  }
+}
+
 .tab-navigation .usa-button-group--segmented {
   .usa-button-group__item {
     flex-basis: 50%;
