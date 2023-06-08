@@ -3581,23 +3581,23 @@ module AnalyticsEvents
 
   # User was shown an "Are you sure you want to navigate away from this page?" message from their
   # browser (via onbeforeunload). (This is a frontend event.)
-  # @param [String] location Where this event was encountered.
-  def user_prompted_before_navigation(location:, **extra)
+  # @param [String] path Path where this event was encountered.
+  def user_prompted_before_navigation(path:, **extra)
     track_event(
       'User prompted before navigation',
-      location: location,
+      path: path,
       **extra,
     )
   end
 
   # User was shown an "Are you sure you want to navigate away from this page?" prompt via
   # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
-  # @param [String] location Where this event was encountered.
+  # @param [String] path Path where this event was encountered.
   # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(location:, seconds:, **extra)
+  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
     track_event(
       'User prompted before navigation and still on page',
-      location: location,
+      path: path,
       seconds: seconds,
       **extra,
     )

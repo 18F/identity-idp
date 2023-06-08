@@ -1,7 +1,6 @@
 import { trackEvent } from '@18f/identity-analytics';
 
 export type PromptOnNavigateOptions = {
-  location?: string;
   stillOnPageIntervalsInSeconds: number[];
 };
 
@@ -26,7 +25,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
     ev.preventDefault();
     ev.returnValue = '';
 
-    trackEvent(PROMPT_EVENT, { location: options.location ?? window.location.pathname });
+    trackEvent(PROMPT_EVENT, { path: window.location.pathname });
 
     const stillOnPageIntervalsInSeconds = [...options.stillOnPageIntervalsInSeconds];
     let elapsed = 0;
@@ -47,7 +46,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
 
       stillOnPageTimer = window.setTimeout(() => {
         trackEvent(STILL_ON_PAGE_EVENT, {
-          location: options.location ?? window.location.pathname,
+          path: window.location.pathname,
           seconds: elapsed,
         });
         scheduleNextStillOnPagePing();

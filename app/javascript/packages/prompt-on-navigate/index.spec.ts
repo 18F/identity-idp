@@ -35,7 +35,7 @@ describe('promptOnNavigate', () => {
 
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT, { location: '/' });
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT, { path: '/' });
     trackEvent.resetHistory();
 
     sandbox.clock.tick(2000);
@@ -43,7 +43,7 @@ describe('promptOnNavigate', () => {
 
     sandbox.clock.tick(3000);
     expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
-      location: '/',
+      path: '/',
       seconds: 5,
     });
   });
@@ -57,7 +57,7 @@ describe('promptOnNavigate', () => {
 
     window.dispatchEvent(event);
 
-    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT, { location: '/' });
+    expect(trackEvent).to.have.been.calledOnceWith(PROMPT_EVENT, { path: '/' });
     trackEvent.resetHistory();
 
     sandbox.clock.tick(5000);
@@ -66,7 +66,7 @@ describe('promptOnNavigate', () => {
 
     sandbox.clock.tick(10000);
     expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
-      location: '/',
+      path: '/',
       seconds: 15,
     });
   });
@@ -93,7 +93,7 @@ describe('promptOnNavigate', () => {
 
     sandbox.clock.tick(15000);
     expect(trackEvent).to.have.been.calledWith(STILL_ON_PAGE_EVENT, {
-      location: '/',
+      path: '/',
       seconds: 30,
     });
   });
