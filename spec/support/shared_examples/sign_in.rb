@@ -191,7 +191,7 @@ RSpec.shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
-RSpec.shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:|
+RSpec.shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:| # rubocop:disable Layout/LineLength
   let(:window_start) { 3.days.ago }
   let(:window_end) { 1.day.ago }
 

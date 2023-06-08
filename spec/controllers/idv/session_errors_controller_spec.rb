@@ -28,7 +28,8 @@ RSpec.describe Idv::SessionErrorsController do
           expect(response).to have_http_status(204)
         end
         it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+          expect(@analytics).not_to receive(:track_event).
+            with('IdV: session error visited', anything)
           get action
         end
       end
@@ -79,7 +80,8 @@ RSpec.describe Idv::SessionErrorsController do
           expect(response).to have_http_status(204)
         end
         it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+          expect(@analytics).not_to receive(:track_event).
+            with('IdV: session error visited', anything)
           get action
         end
       end
