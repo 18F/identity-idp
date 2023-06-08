@@ -8,3 +8,10 @@ es:
     system_demand_report:
       name: Nombre
       subject: Informe de demanda del sistema
+    sp_issuer_user_counts_report:
+      name: Nombre
+      subject: Informe de recuento de usuarios del proveedor de servicios
+      issuer: Identificación del emisor
+      total: Total de usuarias
+      ial1_total: IAL1 usuarias
+      ial2_total: IAL2 usuarias

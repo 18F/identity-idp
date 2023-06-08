@@ -8,3 +8,13 @@ en:
     system_demand_report:
       name: Name
       subject: System demand report
+    sp_issuer_user_counts_report:
+      name: Name
+      subject: Service provider user count report
+      issuer: Issuer
+      total: Total users
+      ial1_total: IAL1 users
+      ial2_total: IAL2 users
+
+
+
