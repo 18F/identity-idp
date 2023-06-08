@@ -105,6 +105,14 @@ RSpec.describe ServiceProviderSeeder do
           expect(ServiceProvider.find_by(issuer: staging_issuer)).not_to be_present
           expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).not_to be_present
         end
+
+        it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          create(:service_provider, issuer: 'missing_issuer')
+          run
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
+        end
       end
 
       context 'in the staging environment' do
@@ -117,6 +125,14 @@ RSpec.describe ServiceProviderSeeder do
           expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).to be_present
           expect(ServiceProvider.find_by(issuer: sandbox_issuer)).not_to be_present
           expect(ServiceProvider.find_by(issuer: prod_issuer)).not_to be_present
+        end
+
+        it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          create(:service_provider, issuer: 'missing_issuer')
+          run
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
         end
       end
 
