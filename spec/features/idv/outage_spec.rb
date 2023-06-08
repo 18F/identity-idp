@@ -12,7 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-feature 'IdV Outage Spec' do
+RSpec.feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'SP return logs' do
+RSpec.feature 'SP return logs' do
   include SamlAuthHelper
 
   let(:email) { 'test@test.com' }

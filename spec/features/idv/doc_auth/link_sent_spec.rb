@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth link sent step' do
+RSpec.feature 'doc auth link sent step' do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
