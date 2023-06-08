@@ -114,6 +114,7 @@ fr:
             button: Vérifier par courrier
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
           option_cancel: Annuler et recommencer après %{time_left}
+          option_cancel_and_return_to_sp: Annuler
           option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
             <b>trois à sept jours ouvrables</b>.
           options_header: 'Vous Pouvez :'
