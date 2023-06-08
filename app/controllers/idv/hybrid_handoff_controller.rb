@@ -211,6 +211,8 @@ module Idv
     end
 
     def confirm_hybrid_handoff_needed
+      flow_session['redo_document_capture'] = true && return if params[:redo]
+
       return if !flow_session[:flow_path]
 
       if flow_session[:flow_path] == 'standard'
