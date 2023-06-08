@@ -191,7 +191,7 @@
     <div class="tablet:grid-col-8 margin-bottom-5">
       <%# using :tel for mobile numeric keypad %>
       <%= render ValidatedFieldComponent.new(
-            as: :tel,             
+            as: :tel,
             name: :identity_doc_zipcode,
             form: f,
             input_html: { value: pii[:identity_doc_zipcode] },
