@@ -18,7 +18,7 @@ module Idv
       profile.initiating_service_provider = initiating_service_provider
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
-      profile.verified_at = Time.zone.now unless deactivation_reason # is this necessary to preserve?
+      profile.verified_at = Time.zone.now unless deactivation_reason || gpo_verification_needed
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
       profile.deactivate_for_fraud_review if fraud_review_needed
