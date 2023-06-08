@@ -87,11 +87,6 @@ function ReviewIssuesStep({
 
     setHasDismissed(true);
   }
-  function onInPersonSelected() {
-    trackEvent('IdV: verify in person troubleshooting option clicked', {
-      in_person_cta_variant: inPersonCtaVariantActive,
-    });
-  }
 
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
