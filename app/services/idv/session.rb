@@ -53,7 +53,7 @@ module Idv
         gpo_verification_needed: gpo_verification_needed?,
       )
 
-      profile.activate unless reason_that_profile_cannot_be_activated
+      profile.activate unless profile.reason_that_profile_cannot_be_activated
 
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
