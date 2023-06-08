@@ -152,6 +152,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       context 'with establishing in person enrollment' do
+        let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: pending_profile) }
         let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
@@ -160,24 +161,6 @@ RSpec.describe Idv::GpoVerifyController do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           allow(controller).to receive(:pii).
             and_return(user.pending_profile.decrypt_pii(user.password).to_h)
-        end
-
-        xit 'redirects to ready to verify screen' do
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
-            success: true,
-            errors: {},
-            pending_in_person_enrollment: true,
-            threatmetrix_check_failed: false,
-            enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
-            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-          )
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
-            with(success_properties)
-
-          action
-
-          expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
         end
 
         it 'redirects to personal key page' do

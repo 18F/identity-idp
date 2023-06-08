@@ -51,19 +51,22 @@ module Idv
         return
       end
 
-      pending_in_person_enrollment = result.extra[:pending_in_person_enrollment].present?
-
-      prepare_for_personal_key(pending_in_person_enrollment)
+      prepare_for_personal_key
 
       redirect_to idv_personal_key_url
     end
 
     private
 
-    def prepare_for_personal_key(pending_in_person_enrollment)
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      current_user.pending_in_person_enrollment.present?
+    end
+
+    def prepare_for_personal_key
       event, _disavowal_token = create_user_event(:account_verified)
 
-      unless fraud_check_failed? || pending_in_person_enrollment
+      unless fraud_check_failed? || pending_in_person_enrollment?
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
