@@ -30,8 +30,6 @@ es:
         button_variant: Inténtelo en persona
         prompt_detail: Es posible que pueda verificar su documento de identidad en
           persona en una oficina de correos participante cercana.
-        prompt_detail_b: Si tiene problemas para añadir su documento de identidad en
-          línea, puede intentarlo en persona en algunas oficinas de correos.
       expect:
         heading: Qué esperar después de la visita
         info: Le enviaremos un correo electrónico para informarle si su verificación de

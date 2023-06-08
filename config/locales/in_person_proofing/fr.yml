@@ -31,9 +31,6 @@ fr:
         button_variant: Essayer en personne
         prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité en
           personne dans un bureau de poste participant près de chez vous.
-        prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce
-          d’identité en ligne, vous pourrez peut-être essayer de le faire en
-          personne dans certains bureaux de poste.
       expect:
         heading: Que faire après votre visite
         info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous

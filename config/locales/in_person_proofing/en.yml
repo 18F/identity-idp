@@ -27,8 +27,6 @@ en:
         button_variant: Try in person
         prompt_detail: You may be able to verify your ID in person at a participating
           Post Office near you.
-        prompt_detail_b: Alternatively, if you are having trouble adding your ID online,
-          you may be able to try in person at limited post office locations.
       expect:
         heading: What to expect after your visit
         info: We’ll send you an email to let you know if your identity verification was
