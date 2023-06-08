@@ -71,7 +71,7 @@ class Profile < ApplicationRecord
     if pending_reasons.any?
       "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
     elsif deactivation_reason.present?
-      return "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
     end
   end
 
