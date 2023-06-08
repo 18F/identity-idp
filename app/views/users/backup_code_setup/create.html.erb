@@ -27,6 +27,11 @@
       </div>
     <% end %>
   </div>
+
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
+    <%= t('forms.backup_code.caution_codes') %>
+  <% end %>
+
   <div class="margin-top-1">
     <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
       <%= render DownloadButtonComponent.new(
