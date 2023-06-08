@@ -15,7 +15,7 @@ RSpec.describe Api::Internal::SessionsController do
     subject(:response) { JSON.parse(get(:show).body, symbolize_names: true) }
 
     it 'responds with live and timeout properties' do
-      expect(response).to eq(live: false, timeout: Time.zone.now.as_json)
+      expect(response).to eq(live: false, timeout: nil)
     end
 
     context 'signed in' do
@@ -45,10 +45,7 @@ RSpec.describe Api::Internal::SessionsController do
           let(:delay) { User.timeout_in + 1.second }
 
           it 'responds with live and timeout properties' do
-            expect(response).to eq(
-              live: false,
-              timeout: (User.timeout_in - delay).from_now.as_json,
-            )
+            expect(response).to eq(live: false, timeout: nil)
           end
         end
       end
