@@ -33,10 +33,10 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    it 'checks that upload step is complete' do
+    it 'checks that hybrid_handoff is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_upload_step_complete,
+        :confirm_hybrid_handoff_complete,
       )
     end
   end
