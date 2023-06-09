@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ArcgisTokenJob, type: :job do
-
-  let(:subject) {described_class.new}
+  let(:subject) { described_class.new }
   describe 'arcgis token job' do
     before(:each) do
       subject.token_keeper.remove_token!
@@ -35,7 +34,7 @@ RSpec.describe ArcgisTokenJob, type: :job do
             expires: (Time.zone.now.to_f + 3600) * 1000,
             ssl: true,
           }.to_json,
-          headers: { content_type: 'application/json;charset=UTF-8' } }
+          headers: { content_type: 'application/json;charset=UTF-8' } },
       )
       subject.perform
     end

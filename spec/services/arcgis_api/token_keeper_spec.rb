@@ -17,14 +17,16 @@ RSpec.describe ArcgisApi::TokenKeeper do
   let(:expected_sec) { 'GFEDCBA' }
   let(:expires_at) { (Time.zone.now.to_f + 15) * 1000 }
   let(:cache) { Rails.cache }
-  before do
+  # before do
+  #   allow(Rails).to receive(:cache).and_return(cache_store)
+  # end
+
+  before(:each) do
     allow(Rails).to receive(:cache).and_return(cache_store)
+    subject.remove_token!
   end
 
   shared_examples 'acquire token test' do
-    before(:each) do
-      Rails.cache.delete(subject.cache_key)
-    end
     context 'token not expired and not in prefetch timeframe' do
       it 'get same token at second call' do
         expected = 'ABCDEFG'

@@ -10,18 +10,24 @@ module ArcgisApi
   #   sliding_expires_at: xxxxxxx,
   #   expires_at: xxxxxxxxx,
   # }
-  # expires_at: unix time that the token will expire, returned from the Arcgis API generateToken call.
+  # expires_at: unix time that the token will expire, returned from
+  #   the Arcgis API generateToken call.
   #
-  # sliding_expires_at: a time that the token does not actually expire but used to control timing of
+  # sliding_expires_at: a time that the token does not actually
+  #   expire but used to control timing of
   # requesting a new token before it expires. It's initially set to expires_at - 3*prefetch_ttl.
   #
-  # When sliding_expires_at<= current time <= sliding_expires_at + prefetch_ttl, the entry's sliding_expires_at
-  # time is updated to sliding_expires_at + prefetch_ttl and a new token is requested and saved to cache.
+  # When sliding_expires_at<= current time <= sliding_expires_at + prefetch_ttl,
+  # the entry's sliding_expires_at time is updated to
+  # sliding_expires_at + prefetch_ttl and a new token is requested and saved to cache.
   #
-  # When sliding_expires_at + prefetch_ttl < current time, a new token is requested and saved to cache.
+  # When sliding_expires_at + prefetch_ttl < current time,
+  # a new token is requested and saved to cache.
   #
-  # Optimistically, the token in cache will NOT expire when accessed by multi-threaded/distributed clients.
-  # Since there is about prefetch_ttl - 2*prefetch_ttl length of time to generate a new API token.
+  # Optimistically, the token in cache will NOT expire
+  # when accessed by multi-threaded/distributed clients,
+  # since there is about prefetch_ttl - 2*prefetch_ttl
+  # length of time to generate a new API token.
   #
   class TokenKeeper
     API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
@@ -30,7 +36,8 @@ module ArcgisApi
 
     attr_accessor :connection_factory, :prefetch_ttl, :cache_key, :analytics
 
-    # @param [Faraday::Connection] conn
+    # @param [String] cache_key token cache key
+    # @param [ArcgisApi::ConnectionFactory] connection_factory
     # @param [Number] prefetch_ttl number of seconds used to calculate a sliding_expires_at time
     def initialize(cache_key, connection_factory, prefetch_ttl)
       @cache_key = cache_key || API_TOKEN_CACHE_KEY
@@ -44,7 +51,8 @@ module ArcgisApi
     # @return [String] Auth token
     def token
       cache_value = Rails.cache.read(cache_key)
-      if cache_value.nil? && IdentityConfig.store.arcgis_token_sync_request_enabled
+      return cache_value unless IdentityConfig.store.arcgis_token_sync_request_enabled
+      if cache_value.nil?
         retrieve_token!&.fetch(:token)
       elsif !cache_value.nil?
         handle_expired_token(cache_value)&.fetch(:token)
@@ -80,10 +88,9 @@ module ArcgisApi
       if IdentityConfig.store.arcgis_token_sliding_expiration_enabled
         now = Time.zone.now.to_f
         if sliding_expires_at && now >= sliding_expires_at
-          Rails.logger.debug '### passed sliding expires_at'
-          # if passed sliding expiration time(exp-3*prefetch_ttl) but not 2*prefetch_ttl from hard expiration time
+          # if passed sliding expiration time(exp-3*prefetch_ttl)
+          # but not 2*prefetch_ttl from hard expiration time
           if now > (sliding_expires_at + prefetch_ttl)
-            Rails.logger.debug '### get new token'
             cache_value = retrieve_token!
           else
             # extend sliding expiration time
@@ -111,7 +118,9 @@ module ArcgisApi
       }
 
       if IdentityConfig.store.arcgis_token_sliding_expiration_enabled == true
-        cache_entry = cache_entry.merge({ sliding_expires_at: prefetch_ttl >= 0 ? expires_at - 3 * prefetch_ttl : expires_at })
+        cache_entry = cache_entry.merge(
+          { sliding_expires_at: prefetch_ttl >= 0 ? expires_at - 3 * prefetch_ttl : expires_at },
+        )
       end
       Rails.logger.debug { "####save token: #{cache_entry}" }
       save_token(cache_entry, expires_at)
@@ -143,8 +152,8 @@ module ArcgisApi
         methods: %i[post],
         interval: IdentityConfig.store.arcgis_get_token_retry_interval,
         backoff_factor: IdentityConfig.store.arcgis_get_token_retry_backoff_factor,
-        exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError, Faraday::ClientError,
-                     Faraday::RetriableResponse],
+        exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
+                     Faraday::ClientError, Faraday::RetriableResponse],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
           notify_retry(env, exception, retry_count, will_retry_in)
@@ -186,7 +195,6 @@ module ArcgisApi
           response_status_code: error_code,
           api_status_code: error_code,
         )
-        #Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
         raise Faraday::RetriableResponse.new(
           RuntimeError.new(error_message),
           {

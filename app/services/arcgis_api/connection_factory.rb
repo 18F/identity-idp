@@ -1,10 +1,9 @@
 module ArcgisApi
   class ConnectionFactory
-
     # @param [String|URI] url
     # @options [Hash] Faraday connection options
     # @return Faraday::Connection
-    def connection(url = nil, options={})
+    def connection(url = nil, options = {})
       conn_options = options.dup
       Faraday.new(url, conn_options) do |conn|
         # Log request metrics
