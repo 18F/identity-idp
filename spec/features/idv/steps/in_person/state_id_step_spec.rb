@@ -1,12 +1,8 @@
 require 'rails_helper'
-require 'axe-rspec'
 
 RSpec.describe 'doc auth IPP state ID step', js: true do
   include IdvStepHelper
   include InPersonHelper
-  include VerifyStepHelper
-
-  let(:remote_identity_proofing) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
