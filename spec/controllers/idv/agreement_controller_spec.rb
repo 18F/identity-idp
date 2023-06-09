@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::AgreementController do
+RSpec.describe Idv::AgreementController do
   include IdvHelper
 
   let(:user) { create(:user) }
