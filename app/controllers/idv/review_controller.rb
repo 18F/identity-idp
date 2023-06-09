@@ -92,6 +92,11 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
 
       if idv_session.address_verification_mechanism == 'gpo'
+        current_user.confirmed_email_addresses.each do |email_address|
+          UserMailer.with(user: current_user, email_address: email_address).
+            letter_reminder.deliver_now_or_later
+        end
+
         analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
       end
 
