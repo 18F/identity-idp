@@ -3,16 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe ArcgisApi::TokenKeeper do
-
   # Faraday::Connection object that uses the test adapter
   let(:connection_factory) { ArcgisApi::ConnectionFactory.new }
   let(:prefetch_ttl) { 1 }
-  let(:analytics) {instance_spy(Analytics)}
-  let(:subject) {
+  let(:analytics) { instance_spy(Analytics) }
+  let(:subject) do
     obj = described_class.new('test_arcgis_api_token', connection_factory, prefetch_ttl)
-    obj.analytics=(analytics)
+    obj.analytics = (analytics)
     obj
-  }
+  end
 
   let(:expected) { 'ABCDEFG' }
   let(:expected_sec) { 'GFEDCBA' }
@@ -27,7 +26,6 @@ RSpec.describe ArcgisApi::TokenKeeper do
       Rails.cache.delete(subject.cache_key)
     end
     context 'token not expired and not in prefetch timeframe' do
-
       it 'get same token at second call' do
         expected = 'ABCDEFG'
         expected_sec = 'GFEDCBA'
@@ -86,8 +84,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
         5
       end
       context 'get token at different timing' do
-
-        it 'get cached token when sliding_expires_at passed but still with in sliding_expires_at+prefetch_ttl' do
+        it 'get same token between sliding_expires_at passed and sliding_expires_at+prefetch_ttl' do
           expect(Rails.cache).to receive(:read).with(kind_of(String)).
             and_call_original
           token = subject.token
@@ -98,7 +95,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
           token = subject.token
           expect(token).to eq(expected)
         end
-        it 'regenerate token when sliding_expires_at passed and also passed sliding_expires_at+prefetch_ttl' do
+        it 'regenerates token when passed sliding_expires_at+prefetch_ttl' do
           expect(Rails.cache).to receive(:read).with(kind_of(String)).
             and_call_original
           token = subject.token
@@ -109,7 +106,6 @@ RSpec.describe ArcgisApi::TokenKeeper do
           token = subject.token
           expect(token).to eq(expected_sec)
         end
-
       end
     end
 
@@ -124,8 +120,8 @@ RSpec.describe ArcgisApi::TokenKeeper do
               expires: (Time.zone.now.to_f + 15) * 1000,
               ssl: true,
             }.to_json,
-            headers: { content_type: 'application/json;charset=UTF-8' } }
-          )
+            headers: { content_type: 'application/json;charset=UTF-8' } },
+        )
         subject.save_token(expected, expires_at)
       end
       let(:prefetch_ttl) do
@@ -141,7 +137,8 @@ RSpec.describe ArcgisApi::TokenKeeper do
     let(:cache_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
     context 'sliding expiration enabled' do
       before(:each) do
-        allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).
+          and_return(true)
       end
       include_examples 'acquire token test'
     end
@@ -171,11 +168,17 @@ RSpec.describe ArcgisApi::TokenKeeper do
               expires: (Time.zone.now.to_f + 3600) * 1000,
               ssl: true,
             }.to_json,
-            headers: { content_type: 'application/json;charset=UTF-8' } }
-          )
+            headers: { content_type: 'application/json;charset=UTF-8' } },
+        )
         token = subject.fetch_save_token!
         expect(token.fetch(:token)).to eq(expected)
         expect(analytics).to have_received(:idv_arcgis_request_failure).exactly(3).times
+      end
+    end
+    context 'token sync request disabled' do
+      it 'does not fetch token' do
+        allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(false)
+        expect(subject.token).to be(nil)
       end
     end
   end
