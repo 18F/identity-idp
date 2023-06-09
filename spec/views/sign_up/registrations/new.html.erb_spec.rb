@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/registrations/new.html.erb' do
+RSpec.describe 'sign_up/registrations/new.html.erb' do
   let(:sp) do
     build_stubbed(
       :service_provider,

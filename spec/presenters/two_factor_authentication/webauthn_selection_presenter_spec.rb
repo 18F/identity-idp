@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::WebauthnSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::WebauthnSelectionPresenter do
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user) }
   let(:configuration) {}

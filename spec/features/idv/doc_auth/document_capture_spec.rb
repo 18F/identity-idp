@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth document capture step', :js do
+RSpec.feature 'doc auth document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper

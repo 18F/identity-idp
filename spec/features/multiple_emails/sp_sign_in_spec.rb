@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'signing into an SP with multiple emails enabled' do
+RSpec.feature 'signing into an SP with multiple emails enabled' do
   include SamlAuthHelper
 
   context 'with the email scope' do

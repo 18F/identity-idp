@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::Ddp::VerificationRequest do
+RSpec.describe Proofing::LexisNexis::Ddp::VerificationRequest do
   let(:dob) { '1980-01-01' }
   let(:applicant) do
     {

@@ -1,4 +1,4 @@
-shared_examples 'sp requesting attributes' do |sp|
+RSpec.shared_examples 'sp requesting attributes' do |sp|
   include SamlAuthHelper
   include IdvStepHelper
 

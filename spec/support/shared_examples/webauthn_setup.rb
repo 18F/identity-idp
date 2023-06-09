@@ -1,4 +1,4 @@
-shared_examples 'webauthn setup' do
+RSpec.shared_examples 'webauthn setup' do
   it 'allows a user to setup webauthn' do
     mock_webauthn_setup_challenge
     visit_webauthn_setup

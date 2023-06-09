@@ -1,4 +1,4 @@
-shared_examples 'a lexisnexis rdp proofer' do
+RSpec.shared_examples 'a lexisnexis rdp proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
@@ -53,7 +53,7 @@ shared_examples 'a lexisnexis rdp proofer' do
   end
 end
 
-shared_examples 'a lexisnexis request' do |basic_auth: true|
+RSpec.shared_examples 'a lexisnexis request' do |basic_auth: true|
   describe '#http_headers' do
     it 'contains the content type' do
       expect(subject.headers).to include('Content-Type' => 'application/json')

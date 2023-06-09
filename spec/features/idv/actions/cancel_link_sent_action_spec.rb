@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth cancel link sent action' do
+RSpec.feature 'doc auth cancel link sent action' do
   include IdvStepHelper
   include DocAuthHelper
 

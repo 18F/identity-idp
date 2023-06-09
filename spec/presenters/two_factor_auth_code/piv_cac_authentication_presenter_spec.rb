@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
+RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TagHelper
 

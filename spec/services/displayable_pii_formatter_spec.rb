@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DisplayablePiiFormatter do
+RSpec.describe DisplayablePiiFormatter do
   let(:last_sign_in_email_address) { 'test1@example.com' }
   let(:alternate_email_address) { 'test2@example.com' }
   let(:unconfirmed_email) { 'unconfirmed@example.com' }

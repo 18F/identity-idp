@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderMfaPolicy do
+RSpec.describe ServiceProviderMfaPolicy do
   let(:user) { create(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:auth_method) { TwoFactorAuthenticatable::AuthMethod::SMS }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EmailConfirmationTokenValidator do
+RSpec.describe EmailConfirmationTokenValidator do
   describe '#submit' do
     subject { described_class.new(email_address, current_user) }
 

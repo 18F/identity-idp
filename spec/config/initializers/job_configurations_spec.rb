@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'GoodJob.cron' do
+RSpec.describe 'GoodJob.cron' do
   it 'has valid cron jobs' do
     expect(Rails.application.config.good_job.cron).to be_present
     aggregate_failures do

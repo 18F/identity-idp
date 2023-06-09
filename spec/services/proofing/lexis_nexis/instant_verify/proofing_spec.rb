@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::InstantVerify::Proofer do
+RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
   let(:applicant) do
     {
       uuid_prefix: '0987',

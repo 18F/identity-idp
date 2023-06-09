@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DocumentCaptureSession do
+RSpec.describe DocumentCaptureSession do
   let(:doc_auth_response) do
     DocAuth::Response.new(
       success: true,

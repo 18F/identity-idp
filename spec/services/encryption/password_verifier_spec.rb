@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::PasswordVerifier do
+RSpec.describe Encryption::PasswordVerifier do
   let(:password) { 'saltypickles' }
   let(:user_uuid) { 'asdf-1234' }
 

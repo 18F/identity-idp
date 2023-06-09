@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
   let(:flow_session) do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::VerifyInfoController do
+RSpec.describe Idv::InPerson::VerifyInfoController do
   include IdvHelper
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
