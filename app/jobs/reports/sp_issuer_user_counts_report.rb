@@ -21,19 +21,18 @@ module Reports
       total = user_counts_json['total']
       ial1_total = user_counts_json['ial1_total']
       ial2_total = user_counts_json['ial2_total']
-     
 
       emails = IdentityConfig.store.sp_issuer_user_counts.emails
 
       emails.each do |email|
-          ReportMailer.system_demand_report(
-            email: email,
-            issuer: issuer,
-            total: total,
-            ial1_total: ial1_total,
-            ial2_total: ial2_total,
-            name: REPORT_NAME,
-          ).deliver_now
+        ReportMailer.system_demand_report(
+          email: email,
+          issuer: issuer,
+          total: total,
+          ial1_total: ial1_total,
+          ial2_total: ial2_total,
+          name: REPORT_NAME,
+        ).deliver_now
       end
     end
   end

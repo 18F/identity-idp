@@ -31,7 +31,7 @@ module Db
         SQL
 
         query = ApplicationRecord.sanitize_sql_array([sql, issuer])
-        ActiveRecord::Base.connection.exec_query(sql).to_a
+        ActiveRecord::Base.connection.exec_query(query).to_a
       end
 
       def self.overall
