@@ -161,8 +161,7 @@ module ArcgisApi
       }
       connection_factory.connection do |conn|
         conn.request :retry, faraday_retry_options
-        # conn.response :arcgis_response_validation
-        conn.use ResponseValidation
+        conn.use ArcgisApi::ResponseValidation
       end
     end
 
@@ -176,7 +175,8 @@ module ArcgisApi
     def token_expired(cache_entry)
       expires_at = cache_entry.fetch(:expires_at, nil)
       sliding_expires_at = cache_entry.fetch(:sliding_expires_at, nil)
-      check = IdentityConfig.store.arcgis_token_sliding_expiration_enabled ? sliding_expires_at : expires_at
+      check = IdentityConfig.store.arcgis_token_sliding_expiration_enabled ?
+                sliding_expires_at : expires_at
       return check && Time.zone.now.to_f >= check
     end
 
@@ -222,7 +222,9 @@ module ArcgisApi
       analytics.idv_arcgis_request_failure(
         event: 'Request ArcGIS Token',
         exception_class: 'ArcGIS',
+        # rubocop:disable Layout/LineLength
         exception_message: "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}",
+        # rubocop:enable Layout/LineLength
         response_body_present: resp_body.present?,
         response_body: resp_body,
         response_status_code: env.status,
