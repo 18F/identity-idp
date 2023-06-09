@@ -174,7 +174,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
         )
         token = subject.fetch_save_token!
         expect(token.fetch(:token)).to eq(expected)
-        expect(analytics).to have_received(:idv_arcgis_request_failure).exactly(3).times
+        expect(analytics).to have_received(:idv_arcgis_token_failure).exactly(3).times
       end
     end
     context 'token sync request disabled' do

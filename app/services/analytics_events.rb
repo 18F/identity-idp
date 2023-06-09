@@ -541,7 +541,6 @@ module AnalyticsEvents
   # @param [Hash] response_body
   # @param [Integer] response_status_code
   def idv_arcgis_request_failure(
-    event: 'Request ArcGIS Address Candidates: request failed',
     exception_class:,
     exception_message:,
     response_body_present:,
@@ -550,7 +549,32 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      event,
+      'Request ArcGIS Address Candidates: request failed',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      response_body_present: response_body_present,
+      response_body: response_body,
+      response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Tracks if request to get auth token from ArcGIS fails
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Boolean] response_body_present
+  # @param [Hash] response_body
+  # @param [Integer] response_status_code
+  def idv_arcgis_token_failure(
+    exception_class:,
+    exception_message:,
+    response_body_present:,
+    response_body:,
+    response_status_code:,
+    **extra
+  )
+    track_event(
+      'Request ArcGIS Token: request failed',
       exception_class: exception_class,
       exception_message: exception_message,
       response_body_present: response_body_present,

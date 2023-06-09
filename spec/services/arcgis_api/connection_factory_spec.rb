@@ -18,7 +18,7 @@ RSpec.describe ArcgisApi::ConnectionFactory do
             'User-Agent' => 'Faraday v2.7.4',
           },
         ).
-        to_return(status: 200, body: test_response, headers: {content_type: 'application/json'})
+        to_return(status: 200, body: test_response, headers: { content_type: 'application/json' })
 
       conn = subject.connection do |con|
         expect(con).to be_instance_of(Faraday::Connection)

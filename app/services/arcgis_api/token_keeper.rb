@@ -122,7 +122,6 @@ module ArcgisApi
           { sliding_expires_at: prefetch_ttl >= 0 ? expires_at - 3 * prefetch_ttl : expires_at },
         )
       end
-      Rails.logger.debug { "####save token: #{cache_entry}" }
       save_token(cache_entry, expires_at)
       cache_entry
     end
@@ -215,12 +214,13 @@ module ArcgisApi
         rescue
           env.body
         end
+      else
+        resp_body = env.body
       end
 
       api_status_code = resp_body.is_a?(Hash) ? resp_body.dig('error', 'code') : env.status
 
-      analytics.idv_arcgis_request_failure(
-        event: 'Request ArcGIS Token',
+      analytics.idv_arcgis_token_failure(
         exception_class: 'ArcGIS',
         # rubocop:disable Layout/LineLength
         exception_message: "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}",
