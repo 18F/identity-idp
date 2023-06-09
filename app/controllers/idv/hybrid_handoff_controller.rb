@@ -45,7 +45,6 @@ module Idv
       throttle.increment!
       return throttled_failure if throttle.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
-      flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
@@ -63,9 +62,6 @@ module Idv
 
       if !failure_reason
         redirect_to idv_link_sent_url
-
-        # for the 50/50 state
-        flow_session['Idv::Steps::UploadStep'] = true
       else
         redirect_to idv_hybrid_handoff_url
         flow_session[:flow_path] = nil
@@ -123,9 +119,6 @@ module Idv
     def bypass_send_link_steps
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
-
-      # for the 50/50 state
-      flow_session['Idv::Steps::UploadStep'] = true
 
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(
@@ -212,18 +205,35 @@ module Idv
     end
 
     def confirm_agreement_step_complete
+      # delete when removing doc_auth_agreement_controller_enabled flag
       return if flow_session['Idv::Steps::AgreementStep']
+      return if idv_session.idv_consent_given
 
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_agreement_controller_enabled
+        redirect_to idv_agreement_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_hybrid_handoff_needed
+      setup_for_redo if params[:redo]
+
       return if !flow_session[:flow_path]
 
       if flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
       elsif flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
+      end
+    end
+
+    def setup_for_redo
+      flow_session[:redo_document_capture] = true
+      if flow_session[:skip_upload_step]
+        flow_session[:flow_path] = 'standard'
+      else
+        flow_session[:flow_path] = nil
       end
     end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DocAuthFormResponse do
+RSpec.describe Idv::DocAuthFormResponse do
   let(:extra) { {} }
   subject(:response) { described_class.new(success: true, extra: extra) }
 

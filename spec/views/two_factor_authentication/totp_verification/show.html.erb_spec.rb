@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/totp_verification/show.html.erb' do
+RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
   let(:user) { create(:user, :fully_registered, :with_authentication_app) }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(

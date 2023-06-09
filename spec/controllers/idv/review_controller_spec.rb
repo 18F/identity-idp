@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ReviewController do
+RSpec.describe Idv::ReviewController do
   include UspsIppHelper
 
   let(:user) do

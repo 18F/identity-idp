@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DocumentCaptureController do
+RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
   let(:flow_session) do
@@ -33,10 +33,10 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    it 'checks that upload step is complete' do
+    it 'checks that hybrid_handoff is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_upload_step_complete,
+        :confirm_hybrid_handoff_complete,
       )
     end
   end
@@ -79,13 +79,13 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    context 'upload step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+    context 'hybrid handoff step is not complete' do
+      it 'redirects to hybrid handoff' do
         flow_session.delete(:flow_path)
 
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserSessionContext do
+RSpec.describe UserSessionContext do
   let(:confirmation) { { context: 'confirmation' } }
 
   describe '.authentication_context?' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Profile do
+RSpec.describe Profile do
   let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :fully_registered) }
   let(:profile) { user.profiles.create }
@@ -332,6 +332,24 @@ describe Profile do
 
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq nil
+    end
+
+    it 'activates a previously verified profile after password reset' do
+      verified_at = Time.zone.now - 1.year
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        verified_at: verified_at,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq verified_at
     end
 
     it 'does not activate a profile if it has a pending reason' do
@@ -358,6 +376,22 @@ describe Profile do
 
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to_not eq nil
+    end
+  end
+
+  describe '#activate_after_passing_in_person' do
+    it 'activates a profile if it passes in person proofing' do
+      profile = user.profiles.create
+      profile.active = false
+      profile.fraud_review_pending_at = 1.day.ago
+      profile.deactivation_reason = :in_person_verification_pending
+
+      profile.activate_after_passing_in_person
+
+      expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.activated_at).not_to be_nil
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile).to be_active
     end
   end
 

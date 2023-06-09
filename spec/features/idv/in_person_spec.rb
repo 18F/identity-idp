@@ -330,7 +330,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_upload_step
+        complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 

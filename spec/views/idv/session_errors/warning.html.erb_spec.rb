@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/warning.html.erb' do
+RSpec.describe 'idv/session_errors/warning.html.erb' do
   let(:sp_name) { nil }
   let(:try_again_path) { '/example/path' }
   let(:remaining_attempts) { 5 }

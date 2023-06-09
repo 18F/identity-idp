@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::UnavailableController, type: :controller do
+RSpec.describe Idv::UnavailableController, type: :controller do
   let(:idv_available) { false }
 
   before do

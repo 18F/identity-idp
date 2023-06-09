@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ResetPasswordForm, type: :model do
+RSpec.describe ResetPasswordForm, type: :model do
   subject { ResetPasswordForm.new(build_stubbed(:user, uuid: '123')) }
 
   it_behaves_like 'password validation'

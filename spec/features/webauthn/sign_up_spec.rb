@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'webauthn sign up' do
+RSpec.feature 'webauthn sign up' do
   include OidcAuthHelper
   include WebAuthnHelper
 

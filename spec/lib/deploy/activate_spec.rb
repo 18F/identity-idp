@@ -1,7 +1,7 @@
 require 'rails_helper'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
-describe Deploy::Activate do
+RSpec.describe Deploy::Activate do
   let(:root) { @root }
 
   around(:each) do |ex|

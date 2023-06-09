@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SignUp::PasswordsController do
+RSpec.describe SignUp::PasswordsController do
   let(:token) { 'new token' }
 
   describe '#create' do

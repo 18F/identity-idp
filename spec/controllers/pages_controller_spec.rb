@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PagesController do
+RSpec.describe PagesController do
   describe 'analytics' do
     controller do
       def index

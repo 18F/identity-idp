@@ -136,6 +136,7 @@ es:
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
       front: Parte Delantera
+      hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
       review_issues: Revise sus imágenes e inténtelo de nuevo
@@ -143,7 +144,6 @@ es:
       ssn: Ingresa tu número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       text_message: Enviamos un mensaje a su teléfono
-      upload: '¿Cómo desea añadir su documento de identidad?'
       upload_from_computer: Continuar en esta computadora
       upload_from_phone: Utilice su teléfono para tomar las fotos
       verify_identity: Verifique su identidad
@@ -172,6 +172,8 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su documento de identidad expedido por el Estado. Usamos esta
         información para verificar su identidad.
+      hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
+        identidad expedido por el estado.
       image_loaded: Imagen cargada
       image_loading: Cargando la imagen
       image_updated: Imagen actualizada
@@ -199,8 +201,6 @@ es:
       ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
         nacimiento y dirección.
       tag: Recomendado
-      upload: Recopilaremos información sobre usted leyendo su documento de identidad
-        expedido por el estado.
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de
         identidad desde esta computadora.
       upload_from_phone: No tendrá que volver a iniciar sesión y volverá a cambiar a

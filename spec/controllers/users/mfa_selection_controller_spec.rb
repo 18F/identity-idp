@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::MfaSelectionController do
+RSpec.describe Users::MfaSelectionController do
   let(:current_sp) { create(:service_provider) }
 
   describe '#index' do

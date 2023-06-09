@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv gpo step', :js do
+RSpec.feature 'idv gpo step', :js do
   include IdvStepHelper
   include OidcAuthHelper
 

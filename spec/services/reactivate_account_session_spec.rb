@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReactivateAccountSession do
+RSpec.describe ReactivateAccountSession do
   let(:user) { build(:user) }
   let(:user_session) { {} }
 

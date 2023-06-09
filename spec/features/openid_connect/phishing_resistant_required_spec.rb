@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Phishing-resistant authentication required in an OIDC context' do
+RSpec.describe 'Phishing-resistant authentication required in an OIDC context' do
   include OidcAuthHelper
 
   describe 'OpenID Connect requesting AAL3 authentication' do

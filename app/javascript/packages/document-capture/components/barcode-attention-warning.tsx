@@ -1,5 +1,4 @@
 import { Button, StatusPage } from '@18f/identity-components';
-import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
 import { removeUnloadProtection } from '@18f/identity-url';
@@ -36,9 +35,9 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
       header={t('doc_auth.errors.barcode_attention.heading')}
       status="warning"
       actionButtons={[
-        <SpinnerButton key="continue" isBig isWide onClick={skipAttention}>
+        <Button key="continue" isBig isWide onClick={skipAttention}>
           {t('forms.buttons.continue')}
-        </SpinnerButton>,
+        </Button>,
         <Button key="add-new" isBig isOutline isWide onClick={handleDismiss}>
           {t('doc_auth.buttons.add_new_photos')}
         </Button>,

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnController do
+RSpec.describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do
@@ -79,10 +79,10 @@ describe Idv::SsnController do
     context 'without a flow session' do
       let(:flow_session) { nil }
 
-      it 'redirects to doc_auth' do
+      it 'redirects to hybrid_handoff' do
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 
@@ -244,11 +244,11 @@ describe Idv::SsnController do
         expect(response).to redirect_to idv_link_sent_url
       end
 
-      it 'redirects to FSM UploadStep if there is no flow_path' do
+      it 'redirects to hybrid_handoff if there is no flow_path' do
         flow_session[:flow_path] = nil
         put :update
         expect(response.status).to eq 302
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_hybrid_handoff_url
       end
     end
   end

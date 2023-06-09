@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV phone number input', :js do
+RSpec.feature 'IdV phone number input', :js do
   include IdvStepHelper
 
   before do

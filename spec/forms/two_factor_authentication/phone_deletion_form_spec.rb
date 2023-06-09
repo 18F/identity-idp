@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::PhoneDeletionForm do
+RSpec.describe TwoFactorAuthentication::PhoneDeletionForm do
   let(:form) { described_class.new(user, configuration) }
 
   describe '#submit' do

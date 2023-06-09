@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProvider do
+RSpec.describe ServiceProvider do
   let(:service_provider) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
 
   describe 'associations' do

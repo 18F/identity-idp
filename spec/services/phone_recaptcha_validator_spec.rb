@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneRecaptchaValidator do
+RSpec.describe PhoneRecaptchaValidator do
   let(:country_score_overrides_config) { {} }
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }

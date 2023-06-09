@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::AddressSearchController do
+RSpec.describe Idv::InPerson::AddressSearchController do
   include IdvHelper
 
   let(:user) { create(:user) }

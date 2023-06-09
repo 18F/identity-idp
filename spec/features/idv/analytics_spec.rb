@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-feature 'Analytics Regression', js: true do
+RSpec.feature 'Analytics Regression', js: true do
   include IdvStepHelper
   include InPersonHelper
 
@@ -16,8 +16,8 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: consent checkbox toggled' => { checked: true },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth upload visited' => { flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
+      'IdV: doc auth upload visited' => { step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'Frontend: IdV: front image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
@@ -51,8 +51,8 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth upload visited' => { flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
+      'IdV: doc auth upload visited' => { step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'Frontend: IdV: front image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
@@ -79,8 +79,8 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement visited' => { flow_path: 'standard', step: 'agreement', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'agreement', step_count: 1, analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default },
-      'IdV: doc auth upload visited' => { flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
+      'IdV: doc auth upload visited' => { step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth upload submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
       'Frontend: IdV: front image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
@@ -139,7 +139,7 @@ feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -174,7 +174,7 @@ feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
