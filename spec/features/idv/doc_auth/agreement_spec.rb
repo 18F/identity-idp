@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth agreement step' do
+RSpec.feature 'doc auth agreement step' do
   include DocAuthHelper
 
   before do
