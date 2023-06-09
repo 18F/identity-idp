@@ -3,7 +3,13 @@ require 'rails_helper'
 RSpec.describe ArcgisTokenJob, type: :job do
 
   let(:subject) {described_class.new}
-  describe 'job run' do
+  describe 'arcgis token job' do
+    before(:each) do
+      subject.token_keeper.remove_token!
+    end
+    after(:each) do
+      subject.token_keeper.remove_token!
+    end
     it 'fetches token successfully' do
       expected = 'ABCDEFG'
       stub_request(:post, %r{/generateToken}).to_return(

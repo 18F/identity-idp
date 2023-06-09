@@ -113,6 +113,7 @@ class IdentityConfig
     config.add(:arcgis_api_suggest_url, type: :string)
     config.add(:arcgis_api_find_address_candidates_url, type: :string)
     config.add(:arcgis_api_request_timeout_seconds, type: :integer)
+    config.add(:arcgis_token_sync_request_enabled, type: :boolean)
     config.add(:arcgis_token_sliding_expiration_enabled, type: :boolean)
     config.add(:arcgis_get_token_retry_max, type: :integer)
     config.add(:arcgis_get_token_retry_interval, type: :integer)
