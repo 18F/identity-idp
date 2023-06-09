@@ -55,7 +55,7 @@ RSpec.describe Idv::HybridHandoffController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'updates DocAuthLog document_capture_view_count' do
+    it 'updates DocAuthLog upload_view_count' do
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :show }.to(
@@ -64,12 +64,23 @@ RSpec.describe Idv::HybridHandoffController do
     end
 
     context 'agreement step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+      before do
         subject.user_session['idv/doc_auth']['Idv::Steps::AgreementStep'] = nil
+      end
 
+      it 'redirects to idv_doc_auth_url' do
         get :show
 
         expect(response).to redirect_to(idv_doc_auth_url)
+      end
+
+      it 'redirects to idv_agreement_url when feature flag is set' do
+        allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
+          and_return(true)
+
+        get :show
+
+        expect(response).to redirect_to(idv_agreement_url)
       end
     end
 
