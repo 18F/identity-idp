@@ -34,7 +34,7 @@ RSpec.describe NavigationPresenter do
             item.title == I18n.t('account.navigation.reset_personal_key')
           end
 
-          expect(has_reset_personal_key).to eq(false) #
+          expect(has_reset_personal_key).to eq(false)
         end
       end
     end

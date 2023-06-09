@@ -617,7 +617,7 @@ describe SamlIdpController do
         user = create(:profile, :password_reset).user
         generate_saml_response(user, ial2_settings)
 
-        expect(response).to redirect_to reactivate_account_path #
+        expect(response).to redirect_to reactivate_account_path
       end
     end
 
