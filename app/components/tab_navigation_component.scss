@@ -1,6 +1,6 @@
 @use 'uswds-core' as *;
 
-@forward 'usa-button-group';
+@forward 'usa-button-group/src/styles';
 
 // Upstream: https://github.com/uswds/uswds/pull/5324
 .usa-button-group--segmented {
