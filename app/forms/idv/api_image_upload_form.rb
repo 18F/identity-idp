@@ -85,7 +85,10 @@ module Idv
       response.extra[:state] = response.pii_from_doc[:state]
       response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
 
-      update_analytics(response, timer.results['vendor_request'])
+      update_analytics(
+        client_response: response,
+        vendor_request_time_in_ms: timer.results['vendor_request'],
+      )
 
       response
     end
@@ -209,7 +212,7 @@ module Idv
       end
     end
 
-    def update_analytics(client_response, vendor_request_time_in_ms)
+    def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
       analytics.idv_doc_auth_submitted_image_upload_vendor(
