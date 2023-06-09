@@ -18,7 +18,7 @@ module SessionTimeoutWarningHelper
   def timeout_refresh_path
     UriService.add_params(
       request.original_fullpath,
-      timeout: true,
+      timeout: :form,
     )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 

@@ -7,7 +7,6 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
-    include SignInABTestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -24,12 +23,9 @@ module Users
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
-      @is_on_home_page = true
-      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
-        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
       )
       super
     end

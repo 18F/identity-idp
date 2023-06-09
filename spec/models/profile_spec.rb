@@ -379,6 +379,22 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#activate_after_passing_in_person' do
+    it 'activates a profile if it passes in person proofing' do
+      profile = user.profiles.create
+      profile.active = false
+      profile.fraud_review_pending_at = 1.day.ago
+      profile.deactivation_reason = :in_person_verification_pending
+
+      profile.activate_after_passing_in_person
+
+      expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.activated_at).not_to be_nil
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile).to be_active
+    end
+  end
+
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
       profile = create(

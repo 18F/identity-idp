@@ -17,7 +17,6 @@ Rails.application.routes.draw do
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
-      delete '/sessions' => 'sessions#destroy'
     end
   end
 

@@ -83,7 +83,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       Warden.on_next_request do |proxy|
         proxy.env['devise.skip_trackable'] = true
         session = proxy.env['rack.session']
-        session['session_expires_at'] = Time.zone.now - 1
+        session['warden.user.user.session']['last_request_at'] = 30.minutes.ago.to_i
       end
 
       expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id), wait: 5)
