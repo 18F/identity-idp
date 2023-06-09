@@ -211,12 +211,23 @@ module Idv
     end
 
     def confirm_hybrid_handoff_needed
+      setup_for_redo if params[:redo]
+
       return if !flow_session[:flow_path]
 
       if flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
       elsif flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
+      end
+    end
+
+    def setup_for_redo
+      flow_session[:redo_document_capture] = true
+      if flow_session[:skip_upload_step]
+        flow_session[:flow_path] = 'standard'
+      else
+        flow_session[:flow_path] = nil
       end
     end
 
