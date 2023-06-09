@@ -402,6 +402,18 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       click_button t('forms.verify_profile.submit')
 
+      # personal key
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('titles.idv.personal_key'))
+      deadline = nil
+      freeze_time do
+        acknowledge_and_confirm_personal_key
+        deadline = (Time.zone.now +
+          IdentityConfig.store.in_person_enrollment_validity_in_days.days).
+          in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
+          strftime(t('time.formats.event_date'))
+      end
+
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect_in_person_gpo_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
