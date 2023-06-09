@@ -26,5 +26,3 @@ module ArcgisApi
     end
   end
 end
-
-Faraday::Response.register_middleware(arcgis_response_validation: ArcgisApi::ResponseValidation)
