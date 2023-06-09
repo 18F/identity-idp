@@ -51,7 +51,7 @@ describe Idv::AgreementController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'updates DocAuthLog document_capture_view_count' do
+    it 'updates DocAuthLog agreement_view_count' do
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :show }.to(
@@ -98,7 +98,7 @@ describe Idv::AgreementController do
     end
   end
 
-  context 'when doc_auth_document_capture_controller_enabled is false' do
+  context 'when doc_auth_agreement_controller_enabled is false' do
     let(:feature_flag_enabled) { false }
 
     it 'returns 404' do

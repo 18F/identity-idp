@@ -55,7 +55,7 @@ describe Idv::HybridHandoffController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'updates DocAuthLog document_capture_view_count' do
+    it 'updates DocAuthLog upload_view_count' do
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :show }.to(
