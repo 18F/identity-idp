@@ -71,7 +71,7 @@ module Idv
     def post_images_to_client
       timer = JobHelpers::Timer.new
 
-      response = timer.time 'vendor_request' do
+      response = timer.time('vendor_request') do
         doc_auth_client.post_images(
           front_image: front_image_bytes,
           back_image: back_image_bytes,
