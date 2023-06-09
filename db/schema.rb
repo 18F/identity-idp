@@ -15,6 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
