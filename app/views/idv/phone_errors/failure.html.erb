@@ -12,7 +12,7 @@
         decorated_session.sp_name && {
           url: return_to_sp_failure_to_proof_path(step: 'phone', location: request.params[:action]),
           text: t('idv.failure.phone.rate_limited.option_cancel_and_return_to_sp'),
-          new_tab: true,
+          new_tab: false,
         },
       ].select(&:present?),
     ) do %>
