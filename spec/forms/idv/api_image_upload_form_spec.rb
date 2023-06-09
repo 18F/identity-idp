@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
-  include AnalyticsEvents
-
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
