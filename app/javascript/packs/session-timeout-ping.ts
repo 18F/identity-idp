@@ -17,20 +17,20 @@ const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-mod
 const keepaliveEl = document.getElementById('session-keepalive-btn');
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
 
-function success(data: SessionStatus) {
-  if (!data.isLive) {
+function success({ isLive, timeout }: SessionStatus) {
+  if (!isLive) {
     if (timeoutUrl) {
       forceRedirect(timeoutUrl);
     }
     return;
   }
 
-  const timeRemaining = data.timeout.valueOf() - Date.now();
+  const timeRemaining = timeout.valueOf() - Date.now();
   const showWarning = timeRemaining < warning;
   if (showWarning) {
     modal.show();
     countdownEls.forEach((countdownEl) => {
-      countdownEl.expiration = data.timeout;
+      countdownEl.expiration = timeout;
       countdownEl.start();
     });
   }
