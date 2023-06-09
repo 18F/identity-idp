@@ -39,11 +39,6 @@ module AbTests
     buckets
   end
 
-  SIGN_UP_MFA_SELECTION = AbTestBucket.new(
-    experiment_name: 'MFA selection order: Auth app first',
-    buckets: IdentityConfig.store.sign_up_mfa_selection_order_testing,
-  )
-
   IN_PERSON_CTA = AbTestBucket.new(
     experiment_name: 'In-Person Proofing CTA',
     buckets: in_person_cta_variant_testing_buckets,

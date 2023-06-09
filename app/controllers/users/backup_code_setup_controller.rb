@@ -24,10 +24,7 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics_properties = result.to_h.merge(
-        sign_up_mfa_selection_order_bucket:
-                  sign_up_mfa_selection_order_bucket,
-      )
+      analytics_properties = result.to_h
       analytics.backup_code_setup_visit(**analytics_properties)
       irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
 
@@ -79,7 +76,6 @@ module Users
     def track_backup_codes_confirmation_setup_visit
       analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
