@@ -107,7 +107,10 @@ module Reporting
               results&.concat(parsed_results)
               if each_result_queue
                 parsed_results.each do |row|
-                  each_result_queue << row
+                  begin
+                    each_result_queue << row
+                  rescue ClosedQueueError
+                  end
                 end
               end
             end
