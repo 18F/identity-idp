@@ -83,7 +83,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:user) { user_with_2fa }
-    let(:same_address_as_id) { false }
+    let(:same_address_as_id) { false } # meaningful
     let(:double_address_verification) { true }
 
     before do
@@ -134,7 +134,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     let(:user) { user_with_2fa }
-    let(:same_address_as_id) { true }
+    let(:same_address_as_id) { true } # meaningful
     let(:double_address_verification) { true }
 
     before do
@@ -151,7 +151,7 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
       complete_prepare_step(user)
       complete_location_step(user)
       complete_state_id_step(
-        user, same_address_as_id: same_address_as_id,
+        user, same_address_as_id: same_address_as_id, # meaningful
               double_address_verification: double_address_verification
       )
       click_idv_continue

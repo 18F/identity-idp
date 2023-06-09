@@ -115,7 +115,7 @@ describe Idv::Session do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-            same_address_as_id: true,
+            same_address_as_id: true, # meaningless
           ).with_indifferent_access
         end
 

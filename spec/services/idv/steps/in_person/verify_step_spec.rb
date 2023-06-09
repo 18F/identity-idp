@@ -52,7 +52,7 @@ describe Idv::Steps::InPerson::VerifyStep do
   end
 
   describe '#call' do
-    let(:same_address_as_id) { 'false' }
+    let(:same_address_as_id) { 'false' } # meaningful
     let(:capture_secondary_id_enabled) { true }
     let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
     before do

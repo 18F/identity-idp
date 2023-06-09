@@ -9,7 +9,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:pii) do
     Pii::Attributes.new_from_hash(
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-        merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
+        merge(same_address_as_id: current_address_matches_id ? 'true' : 'false'). # meaningless
         transform_keys(&:to_s),
     )
   end
@@ -101,7 +101,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           let(:pii) do
             Pii::Attributes.new_from_hash(
               Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-                merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
+                merge(same_address_as_id: current_address_matches_id ? 'true' : 'false'). # meaningless
                 merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS).
                 transform_keys(&:to_s),
             )

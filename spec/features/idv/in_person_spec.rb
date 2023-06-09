@@ -740,22 +740,20 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'can redo the address page form' do
-       # meaningful
-      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true) # meaningful
       # skip address step
       complete_ssn_step(user)
       # click update address button on the verify page
       click_button t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      # meaningless
-      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: false)
+      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: false) # meaningless
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
     end
 
     it 'allows user to update their residential address as different from their state id' do
-      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+      complete_state_id_step(user, same_address_as_id: true, double_address_verification: true) # meaningful
       complete_ssn_step(user)
 
       # click "update residential address"
@@ -799,7 +797,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       it 'does not update their previous selection of "Yes,
       I live at the address on my state-issued ID"' do
-        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true) # meaningful
         # skip address step
         complete_ssn_step(user)
         # expect to be on verify page
@@ -831,7 +829,7 @@ RSpec.describe 'In Person Proofing', js: true do
       end
 
       it 'does not update their previous selection of "No, I live at a different address"' do
-        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true) # meaningful
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step
@@ -865,7 +863,7 @@ RSpec.describe 'In Person Proofing', js: true do
       end
 
       it 'updates their previous selection from "Yes" TO "No, I live at a different address"' do
-        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
+        complete_state_id_step(user, same_address_as_id: true, double_address_verification: true) # meaningful
         # skip address step
         complete_ssn_step(user)
         # click update state ID button on the verify page
@@ -900,7 +898,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       it 'updates their previous selection from "No" TO "Yes,
       I live at the address on my state-issued ID"' do
-        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true)
+        complete_state_id_step(user, same_address_as_id: false, double_address_verification: true) # meaningful
         # expect to be on address page
         expect(page).to have_content(t('in_person_proofing.headings.address'))
         # complete address step

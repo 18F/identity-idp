@@ -44,7 +44,7 @@ describe Idv::Steps::InPerson::AddressStep do
       let(:city) { 'GREAT FALLS' }
       let(:zipcode) { '59010' }
       let(:state) { 'Montana' }
-      let(:same_address_as_id) { 'false' }
+      let(:same_address_as_id) { 'false' } # meaningless
       let(:submitted_values) do
         {
           address1:,
@@ -91,7 +91,7 @@ describe Idv::Steps::InPerson::AddressStep do
 
         context 'when initially entering the residential address' do
           it 'leaves the "same_address_as_id" attr as false' do
-            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false' # meaningful
             step.call
 
             expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
@@ -105,7 +105,7 @@ describe Idv::Steps::InPerson::AddressStep do
 
           context 'user previously selected that the residential address matched state ID' do
             before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true' # meaningless
             end
 
             it 'sets the "same_address_as_id" in the flow session to false' do
@@ -116,7 +116,7 @@ describe Idv::Steps::InPerson::AddressStep do
 
           context 'user previously selected that the residential address did not match state ID' do
             before(:each) do
-              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false' # meaningless
             end
 
             it 'leaves the "same_address_as_id" in the flow session as false' do

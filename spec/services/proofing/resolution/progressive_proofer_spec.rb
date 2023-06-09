@@ -264,6 +264,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
         let(:double_address_verification) { true }
         let(:applicant_pii) do
+          # meaningful
           JSON.parse(<<-STR, symbolize_names: true)
             {
               "uuid": "3e8db152-4d35-4207-b828-3eee8c52c50f",
@@ -422,7 +423,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when double address verification is not enabled' do
       let(:double_address_verification) { false }
       let(:applicant_pii) do
-        Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: 'true')
+        Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: 'true') # meaningless
       end
       let(:residential_instant_verify_proof) do
         instance_double(Proofing::Resolution::Result)
