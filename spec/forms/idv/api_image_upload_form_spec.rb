@@ -136,7 +136,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           state_id_type: 'drivers_license',
           success: true,
           user_id: document_capture_session.user.uuid,
-          vendor_request_time_in_ms: a_kind_of(Numeric),
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
       end
 
