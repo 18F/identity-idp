@@ -219,8 +219,7 @@ class Profile < ApplicationRecord
   private
 
   def confirm_that_profile_can_be_activated!
-    reason = reason_not_to_activate
-    raise reason if reason
+    raise reason_not_to_activate if reason_not_to_activate
   end
 
   def track_fraud_review_adjudication(decision:)
