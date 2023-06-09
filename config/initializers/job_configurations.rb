@@ -173,7 +173,7 @@ else
       arcgis_token: {
         class: 'ArcgisApi::ArcgisTokenJob',
         cron: cron_55m,
-      }
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength
