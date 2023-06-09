@@ -16,7 +16,7 @@ FactoryBot.define do
     end
 
     trait :password_reset do
-      active { true }
+      active { false }
       activated_at { Time.zone.now }
       verified_at { Time.zone.now }
       deactivation_reason { :password_reset }
