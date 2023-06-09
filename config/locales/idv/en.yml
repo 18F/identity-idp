@@ -10,8 +10,8 @@ en:
       change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
-        resend: Send another letter
-        send: Send a letter
+        resend: Request another letter
+        send: Request a letter
     cancel:
       actions:
         account_page: Go to account page
@@ -237,8 +237,7 @@ en:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
-        resend: Send another letter?
-        verify: Want a letter?
+        verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:

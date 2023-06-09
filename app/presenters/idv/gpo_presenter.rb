@@ -10,7 +10,7 @@ module Idv
     end
 
     def title
-      resend_requested? ? I18n.t('idv.titles.mail.resend') : I18n.t('idv.titles.mail.verify')
+      I18n.t('idv.titles.mail.verify')
     end
 
     def button
