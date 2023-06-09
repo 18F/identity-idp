@@ -167,11 +167,7 @@ function ReviewIssuesStep({
 
         {remainingAttempts <= DISPLAY_ATTEMPTS && (
           <p>
-            {remainingAttempts === 1
-              ? formatWithStrongNoWrap(t('idv.failure.attempts.one_variant_a_html'))
-              : formatWithStrongNoWrap(
-                  t('idv.failure.attempts.other_variant_a_html', { count: remainingAttempts }),
-                )}
+            {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
           </p>
         )}
       </Warning>
