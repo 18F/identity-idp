@@ -1,6 +1,6 @@
 require 'shoulda/matchers'
 
-shared_examples 'a phone form' do
+RSpec.shared_examples 'a phone form' do
   describe 'phone presence validation' do
     it 'is invalid when phone is blank' do
       params[:phone] = ''

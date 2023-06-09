@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SamlCompletionController do
+RSpec.describe SamlCompletionController do
   describe 'GET #index' do
     render_views
     include ActionView::Helpers::FormTagHelper

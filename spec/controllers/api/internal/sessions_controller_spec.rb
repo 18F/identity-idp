@@ -8,6 +8,7 @@ RSpec.describe Api::Internal::SessionsController do
   end
 
   before do
+    stub_analytics
     establish_warden_session if user
   end
 
@@ -62,6 +63,73 @@ RSpec.describe Api::Internal::SessionsController do
 
         it 'responds with live and timeout properties' do
           expect(response).to eq(live: true, timeout: (future_time + User.timeout_in).as_json)
+        end
+      end
+    end
+  end
+
+  describe '#update' do
+    let(:response) { put(:update) }
+    subject(:response_body) { JSON.parse(response.body, symbolize_names: true) }
+
+    it 'responds with live and timeout properties' do
+      expect(response_body).to eq(live: false, timeout: nil)
+    end
+
+    it 'includes csrf token in the response headers' do
+      expect(response.headers['X-CSRF-Token']).to be_kind_of(String)
+    end
+
+    it 'does not track analytics event' do
+      response
+
+      expect(@analytics).not_to have_logged_event('Session Kept Alive')
+    end
+
+    context 'signed in' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'responds with live and timeout properties' do
+        expect(response_body).to eq(live: true, timeout: User.timeout_in.from_now.as_json)
+      end
+
+      it 'tracks analytics event' do
+        response
+
+        expect(@analytics).to have_logged_event('Session Kept Alive')
+      end
+
+      context 'after a delay' do
+        let(:delay) { 0.seconds }
+
+        before { travel_to delay.from_now }
+
+        context 'after a delay prior to session timeout' do
+          let(:delay) { User.timeout_in - 1.second }
+
+          it 'updates timeout and responds with live and timeout properties' do
+            expect(response_body).to eq(live: true, timeout: User.timeout_in.from_now.as_json)
+          end
+
+          it 'tracks analytics event' do
+            response
+
+            expect(@analytics).to have_logged_event('Session Kept Alive')
+          end
+        end
+
+        context 'after a delay exceeding session timeout' do
+          let(:delay) { User.timeout_in + 1.second }
+
+          it 'responds with live and timeout properties' do
+            expect(response_body).to eq(live: false, timeout: nil)
+          end
+
+          it 'does not track analytics event' do
+            response
+
+            expect(@analytics).not_to have_logged_event('Session Kept Alive')
+          end
         end
       end
     end

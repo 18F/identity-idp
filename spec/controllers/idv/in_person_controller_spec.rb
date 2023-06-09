@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPersonController do
+RSpec.describe Idv::InPersonController do
   let(:in_person_proofing_enabled) { false }
   let(:sp) { nil }
   let(:user) { nil }

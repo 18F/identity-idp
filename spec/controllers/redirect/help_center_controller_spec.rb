@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Redirect::HelpCenterController do
+RSpec.describe Redirect::HelpCenterController do
   before do
     stub_analytics
   end

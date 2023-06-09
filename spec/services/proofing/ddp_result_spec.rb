@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::DdpResult do
+RSpec.describe Proofing::DdpResult do
   describe '#add_error' do
     shared_examples 'add_error' do |key|
       it 'returns itself' do

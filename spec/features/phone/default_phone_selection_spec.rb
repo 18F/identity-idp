@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'default phone selection' do
+RSpec.describe 'default phone selection' do
   let(:user) { create(:user, :with_phone) }
   let(:phone_config2) do
     create(

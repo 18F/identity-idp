@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth ssn step', :js do
+RSpec.feature 'doc auth ssn step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::HybridHandoffController do
+RSpec.describe Idv::HybridHandoffController do
   include IdvHelper
 
   let(:user) { create(:user) }
@@ -89,6 +89,33 @@ describe Idv::HybridHandoffController do
 
         expect(response).to redirect_to(idv_link_sent_url)
       end
+    end
+  end
+
+  context 'redo document capture' do
+    it 'does not redirect in standard flow' do
+      subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+
+      get :show, params: { redo: true }
+
+      expect(response).to render_template :show
+    end
+
+    it 'does not redirect in hybrid flow' do
+      subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+
+      get :show, params: { redo: true }
+
+      expect(response).to render_template :show
+    end
+
+    it 'redirects to document_capture on a mobile device' do
+      subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+      subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+
+      get :show, params: { redo: true }
+
+      expect(response).to redirect_to(idv_document_capture_url)
     end
   end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SamlPostController do
+RSpec.describe SamlPostController do
   describe 'POST /api/saml/auth' do
     render_views
     include ActionView::Helpers::FormTagHelper

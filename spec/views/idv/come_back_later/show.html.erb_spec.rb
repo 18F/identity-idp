@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/come_back_later/show.html.erb' do
+RSpec.describe 'idv/come_back_later/show.html.erb' do
   let(:sp_name) { '🔒🌐💻' }
   let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO }
 
