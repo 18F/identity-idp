@@ -3,6 +3,7 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
+cron_55m = '0/55 * * * *'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -163,6 +164,10 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      arcgis_token: {
+        class: 'ArcgisApi::ArcgisTokenJob',
+        cron: cron_55m,
+      }
     }
   end
   # rubocop:enable Metrics/BlockLength
