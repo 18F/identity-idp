@@ -329,6 +329,8 @@ Rails.application.routes.draw do
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
+      get '/agreement' => 'agreement#show'
+      put '/agreement' => 'agreement#update'
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
