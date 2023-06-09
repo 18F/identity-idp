@@ -31,14 +31,12 @@ RSpec.describe ArcgisApi::TokenKeeper do
       it 'get same token at second call' do
         expected = 'ABCDEFG'
         expected_sec = 'GFEDCBA'
-        # set expiring in 5 seconds
-        expires_at = (Time.zone.now.to_f + 5) * 1000
 
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
             body: {
               token: expected,
-              expires: expires_at,
+              expires: (Time.zone.now.to_f + 5) * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
@@ -66,13 +64,12 @@ RSpec.describe ArcgisApi::TokenKeeper do
     context 'token not expired and but in prefetch timeframe' do
       let(:expected) { 'ABCDEFG' }
       let(:expected_sec) { 'GFEDCBA' }
-      let(:expires_at) { (Time.zone.now.to_f + 15) * 1000 }
       before(:each) do
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
             body: {
               token: expected,
-              expires: expires_at,
+              expires: (Time.zone.now.to_f + 15) * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
@@ -91,12 +88,11 @@ RSpec.describe ArcgisApi::TokenKeeper do
       context 'get token at different timing' do
 
         it 'get cached token when sliding_expires_at passed but still with in sliding_expires_at+prefetch_ttl' do
-
           expect(Rails.cache).to receive(:read).with(kind_of(String)).
             and_call_original
           token = subject.token
           expect(token).to eq(expected)
-          sleep(6)
+          sleep(1)
           expect(Rails.cache).to receive(:read).with(kind_of(String)).
             and_call_original
           token = subject.token
@@ -120,13 +116,12 @@ RSpec.describe ArcgisApi::TokenKeeper do
     context 'value only token in cache' do
       let(:expected) { 'ABCDEFG' }
       let(:expected_sec) { 'GFEDCBA' }
-      let(:expires_at) { (Time.zone.now.to_f + 15) * 1000 }
       before(:each) do
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
             body: {
               token: expected,
-              expires: expires_at,
+              expires: (Time.zone.now.to_f + 15) * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } }
@@ -158,6 +153,9 @@ RSpec.describe ArcgisApi::TokenKeeper do
       it 'retry remote request multiple times as needed and emit analytics events' do
         stub_request(:post, %r{/generateToken}).to_return(
           {
+            status: 403,
+          },
+          {
             status: 200,
             body: ArcgisApi::Mock::Fixtures.request_token_service_error,
             headers: { content_type: 'application/json;charset=UTF-8' },
@@ -175,9 +173,9 @@ RSpec.describe ArcgisApi::TokenKeeper do
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } }
           )
-        token = subject.fetch_save_token
+        token = subject.fetch_save_token!
         expect(token.fetch(:token)).to eq(expected)
-        expect(analytics).to have_received(:idv_arcgis_request_failure).exactly(2).times
+        expect(analytics).to have_received(:idv_arcgis_request_failure).exactly(3).times
       end
     end
   end

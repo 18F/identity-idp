@@ -49,10 +49,11 @@ arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generate
 arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
 arcgis_api_request_timeout_seconds: 5
-arcgis_token_sliding_expiration_enabled: true
 arcgis_get_token_retry_max: 5
 arcgis_get_token_retry_interval: 1
 arcgis_get_token_retry_backoff_factor: 2
+arcgis_token_sliding_expiration_enabled: true
+arcgis_token_sync_request_enabled: false
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
@@ -527,6 +528,7 @@ production:
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
+  arcgis_token_sync_request_enabled: true
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://facial_match.example.com
   acuant_passlive_url: https://liveness.example.com

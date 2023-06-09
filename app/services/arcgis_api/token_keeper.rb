@@ -43,14 +43,41 @@ module ArcgisApi
     # If the cache has expired, retrieves a new token and returns it
     # @return [String] Auth token
     def token
-      cache_value = Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
+      cache_value = Rails.cache.read(cache_key)
+      if cache_value.nil? && IdentityConfig.store.arcgis_token_sync_request_enabled
+        retrieve_token!&.fetch(:token)
+      elsif !cache_value.nil?
+        handle_expired_token(cache_value)&.fetch(:token)
+      end
+    end
+
+    def fetch_save_token!
+      retrieve_token!
+    end
+
+    # @param [Object] cache_value the entry to save in cache
+    # @param [Number] expires_at the unix time cache entry should expire
+    def save_token(cache_value, expires_at)
+      Rails.cache.write(cache_key, cache_value, expires_at: expires_at)
+      # If using a redis cache we have to manually set the expires_at. This is because we aren't
+      # using a dedicated Redis cache and instead are just using our existing Redis server with
+      # mixed usage patterns. Without this cache entries don't expire.
+      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
+      Rails.cache.try(:redis)&.expireat(cache_key, expires_at.to_i)
+    end
+
+    def remove_token!
+      Rails.cache.delete(cache_key)
+    end
+
+    private
+
+    def handle_expired_token(cache_value)
       cache_value = wrap_raw_token(cache_value) unless cache_value.is_a?(Hash)
-      expires_at = cache_value&.fetch(:expires_at, nil)
+      expires_at = cache_value.fetch(:expires_at, nil)
       sliding_expires_at = cache_value&.fetch(:sliding_expires_at, nil)
       # start fetch new token before actual expires time
-      Rails.logger.debug { "### gettting token #{cache_value}" }
       if IdentityConfig.store.arcgis_token_sliding_expiration_enabled
-        Rails.logger.debug 'here########'
         now = Time.zone.now.to_f
         if sliding_expires_at && now >= sliding_expires_at
           Rails.logger.debug '### passed sliding expires_at'
@@ -64,30 +91,13 @@ module ArcgisApi
             save_token(cache_value, expires_at)
           end
         else
-          Rails.logger.debug { "Not passed sliding windown #{sliding_expires_at}, #{now}" }
+          Rails.logger.debug { "Not passed sliding expiration #{sliding_expires_at}, #{now}" }
         end
       elsif expires_at && expires_at <= now
         cache_value = retrieve_token!
       end
-      cache_value&.fetch(:token)
+      cache_value
     end
-
-    def fetch_save_token
-      retrieve_token!
-    end
-
-    # @param [Object] cache_value the entry to save in cache
-    # @param [Number] expires_at the unix time cache entry should expire
-    def save_token(cache_value, expires_at)
-      Rails.cache.write(API_TOKEN_CACHE_KEY, cache_value, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(API_TOKEN_CACHE_KEY, expires_at.to_i)
-    end
-
-    private
 
     # Makes a request to retrieve a new token
     # it expires after 1 hour
@@ -154,6 +164,13 @@ module ArcgisApi
       }
     end
 
+    def token_expired(cache_entry)
+      expires_at = cache_entry.fetch(:expires_at, nil)
+      sliding_expires_at = cache_entry.fetch(:sliding_expires_at, nil)
+      check = IdentityConfig.store.arcgis_token_sliding_expiration_enabled ? sliding_expires_at : expires_at
+      return check && Time.zone.now.to_f >= check
+    end
+
     def handle_api_errors(response_body)
       if response_body['error']
         # response_body is in this format:
@@ -169,7 +186,7 @@ module ArcgisApi
           response_status_code: error_code,
           api_status_code: error_code,
         )
-        Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
+        #Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
         raise Faraday::RetriableResponse.new(
           RuntimeError.new(error_message),
           {
