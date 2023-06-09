@@ -2,12 +2,17 @@ require 'rails_helper'
 
 RSpec.describe ArcgisApi::Geocoder do
   include ArcgisApiHelper
-
-  let(:subject) { ArcgisApi::Geocoder.new }
+  let(:cache_key) { 'test_arcgis_geocoder_token' }
+  let(:token_keeper) { ArcgisApi::TokenKeeper.new(cache_key, nil, nil) }
+  let(:subject) { ArcgisApi::Geocoder.new(token_keeper: token_keeper, connection_factory: nil) }
 
   describe '#suggest' do
     before(:each) do
       stub_generate_token_response
+      token_keeper.remove_token!
+    end
+    after(:each) do
+      token_keeper.remove_token!
     end
 
     it 'returns suggestions' do
@@ -105,12 +110,11 @@ RSpec.describe ArcgisApi::Geocoder do
     end
   end
 
-  describe '#retrieve_token!' do
+  describe '#token!' do
     it 'sets token and token_expires_at' do
       stub_generate_token_response
-      subject.retrieve_token!
-
-      expect(subject.token).to be_present
+      token = subject.token
+      expect(token).to be_present
     end
 
     it 'attempts to generate a token with invalid credentials' do
@@ -139,7 +143,7 @@ RSpec.describe ArcgisApi::Geocoder do
       allow(IdentityConfig.store).to receive(:arcgis_api_password).
         and_return(password)
 
-      subject.retrieve_token!
+      subject.token
 
       expect(WebMock).to have_requested(:post, %r{/generateToken}).
         with(
@@ -196,21 +200,6 @@ RSpec.describe ArcgisApi::Geocoder do
 
       expect(WebMock).to have_requested(:get, %r{/suggest}).
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
-    end
-
-    context 'when using redis as a backing store' do
-      before do |ex|
-        allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
-        )
-      end
-
-      it 'manually sets the expiration' do
-        stub_generate_token_response
-        subject.retrieve_token!
-        ttl = Rails.cache.redis.ttl(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)
-        expect(ttl).to be > 0
-      end
     end
   end
 end

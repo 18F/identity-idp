@@ -41,6 +41,13 @@ module ArcgisApi
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
     ]
 
+    attr_accessor :token_keeper, :connection_factory
+
+    def initialize(token_keeper: nil, connection_factory: nil)
+      @connection_factory = connection_factory || ArcgisApi::ConnectionFactory.new
+      @token_keeper = token_keeper || TokenKeeper.new(API_TOKEN_CACHE_KEY, @connection_factory, nil)
+    end
+
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
     # will include an associated magic_key value which can later be used to get more details about
     # the address using the #find_address_candidates method
@@ -55,7 +62,8 @@ module ArcgisApi
       }
 
       parse_suggestions(
-        faraday.get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
+        connection_factory.connection.
+          get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
       )
@@ -83,56 +91,22 @@ module ArcgisApi
       }
 
       parse_address_candidates(
-        faraday.get(
-          IdentityConfig.store.arcgis_api_find_address_candidates_url, params,
-          dynamic_headers
+        connection_factory.connection.get(
+          IdentityConfig.store.arcgis_api_find_address_candidates_url, params, dynamic_headers
         ) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_find_address_candidates' }
         end.body,
       )
     end
 
-    # Makes a request to retrieve a new token
-    # it expires after 1 hour
-    # @return [String] Auth token
-    def retrieve_token!
-      token, expires = request_token.fetch_values('token', 'expires')
-      expires_at = Time.zone.at(expires / 1000)
-      Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(API_TOKEN_CACHE_KEY, expires_at.to_i)
-      token
-    end
-
     # Checks the cache for an unexpired token and returns that.
     # If the cache has expired, retrieves a new token and returns it
     # @return [String] Auth token
     def token
-      Rails.cache.read(API_TOKEN_CACHE_KEY) || retrieve_token!
+      token_keeper.token
     end
 
     private
-
-    def faraday
-      Faraday.new do |conn|
-        # Log request metrics
-        conn.request :instrumentation, name: 'request_metric.faraday'
-
-        conn.options.timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
-
-        # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
-        # Note: The order of this matters for parsing the error response body.
-        conn.response :raise_error
-
-        # Parse JSON responses
-        conn.response :json, content_type: 'application/json'
-
-        yield conn if block_given?
-      end
-    end
 
     def parse_suggestions(response_body)
       handle_api_errors(response_body)
@@ -197,26 +171,6 @@ module ArcgisApi
     # Returns the same value returned by that block of code.
     def dynamic_headers
       { 'Authorization' => "Bearer #{token}" }
-    end
-
-    # Makes HTTP request to authentication endpoint and
-    # returns the token and when it expires (1 hour).
-    # @return [Hash] API response
-    def request_token
-      body = {
-        username: IdentityConfig.store.arcgis_api_username,
-        password: IdentityConfig.store.arcgis_api_password,
-        referer: IdentityConfig.store.domain_name,
-        f: 'json',
-      }
-
-      faraday.post(
-        IdentityConfig.store.arcgis_api_generate_token_url, URI.encode_www_form(body)
-      ) do |req|
-        req.options.context = { service_name: 'arcgis_token' }
-      end.body.tap do |body|
-        handle_api_errors(body)
-      end
     end
 
     def analytics(user: AnonymousUser.new)
