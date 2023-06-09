@@ -107,10 +107,7 @@ module Reporting
               results&.concat(parsed_results)
               if each_result_queue
                 parsed_results.each do |row|
-                  begin
-                    each_result_queue << row
-                  rescue ClosedQueueError
-                  end
+                  each_result_queue << row
                 end
               end
             end
@@ -126,7 +123,7 @@ module Reporting
       # rubocop:enable Metrics/BlockLength
 
       if each_result_queue
-        threads << Thread.new do
+        result_thread = Thread.new do
           while (row = each_result_queue.pop)
             yield row
           end
@@ -138,9 +135,11 @@ module Reporting
         log(:debug, "waiting, num_in_progress=#{num_in_progress}, queue_size=#{queue.size}")
         sleep wait_duration
       end
+
       queue.close
-      each_result_queue&.close
       threads.each(&:value) # wait for all threads
+      each_result_queue&.close
+      result_thread&.value
 
       @progress_bar&.finish
 
