@@ -47,6 +47,14 @@
   </div>
 </div>
 
-<%= form_tag(backup_code_continue_path, method: :patch) do %>
-  <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
+<%= simple_form_for(:backup_code_accepted_form, url: backup_code_continue_path, method: :patch) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :backup_code_notice_accepted,
+        as: :boolean,
+        label: t('forms.backup_code.saved'),
+        label_html: { class: 'margin-y-2' },
+        required: true,
+      ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
