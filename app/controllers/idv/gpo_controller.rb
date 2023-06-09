@@ -99,7 +99,6 @@ module Idv
 
     def send_reminder
       current_user.send_email_to_all_addresses(:letter_reminder)
-      end
     end
 
     def pii_locked?
