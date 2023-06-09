@@ -49,6 +49,10 @@ arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generate
 arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
 arcgis_api_request_timeout_seconds: 5
+arcgis_token_sliding_expiration_enabled: true
+arcgis_get_token_retry_max: 5
+arcgis_get_token_retry_interval: 1
+arcgis_get_token_retry_backoff_factor: 2
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300
