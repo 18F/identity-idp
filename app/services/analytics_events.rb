@@ -751,6 +751,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -764,6 +765,7 @@ module AnalyticsEvents
     flow_path:,
     billed: nil,
     doc_auth_result: nil,
+    vendor_request_time_in_ms: nil,
     **extra
   )
     track_event(
@@ -780,6 +782,7 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
+      vendor_request_time_in_ms: vendor_request_time_in_ms,
       **extra,
     )
   end
