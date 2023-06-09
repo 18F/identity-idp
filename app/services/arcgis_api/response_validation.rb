@@ -1,4 +1,5 @@
 module ArcgisApi
+  # Faraday middleware to raise exception when response status is 200 but with error in body
   class ResponseValidation < Faraday::Middleware
     def on_complete(env)
       return unless env[:status] == 200 && env.body

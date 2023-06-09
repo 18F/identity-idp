@@ -138,11 +138,11 @@ module ArcgisApi
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
           notify_retry(env, exception, retry_count, will_retry_in)
-        }
+        },
       }
       connection_factory.connection do |conn|
         conn.request :retry, faraday_retry_options
-        #conn.response :arcgis_response_validation
+        # conn.response :arcgis_response_validation
         conn.use ResponseValidation
       end
     end
@@ -181,13 +181,27 @@ module ArcgisApi
     end
 
     def notify_retry(env, exception, retry_count, will_retry_in)
+      case env.body
+      when Hash
+        resp_body = env.body
+      when String
+        resp_body = begin
+          JSON.parse(env.body)
+        rescue
+          env.body
+        end
+      end
+
+      api_status_code = resp_body.is_a?(Hash) ? resp_body.dig('error', 'code') : env.status
+
       analytics.idv_arcgis_request_failure(
+        event: 'Request ArcGIS Token',
         exception_class: 'ArcGIS',
-        exception_message: "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.to_s}",
-        response_body_present: false,
-        response_body: env.body,
-        response_status_code: 200,
-        api_status_code: 200,
+        exception_message: "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}",
+        response_body_present: resp_body.present?,
+        response_body: resp_body,
+        response_status_code: env.status,
+        api_status_code: api_status_code,
       )
     end
   end

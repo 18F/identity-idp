@@ -541,6 +541,7 @@ module AnalyticsEvents
   # @param [Hash] response_body
   # @param [Integer] response_status_code
   def idv_arcgis_request_failure(
+    event: 'Request ArcGIS Address Candidates: request failed',
     exception_class:,
     exception_message:,
     response_body_present:,
@@ -549,7 +550,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'Request ArcGIS Address Candidates: request failed',
+      event,
       exception_class: exception_class,
       exception_message: exception_message,
       response_body_present: response_body_present,
