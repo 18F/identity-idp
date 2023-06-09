@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Request::AuthenticationTokenRequest do
+RSpec.describe Proofing::Aamva::Request::AuthenticationTokenRequest do
   let(:security_context_token_identifier) { 'sct-token-identifier' }
   let(:security_context_token_reference) { 'sct-token-reference' }
   let(:client_hmac_secret) { 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=' }

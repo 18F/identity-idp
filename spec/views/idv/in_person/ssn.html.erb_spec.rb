@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/in_person/ssn.html.erb' do
+RSpec.describe 'idv/in_person/ssn.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:threatmetrix_enabled) { nil }

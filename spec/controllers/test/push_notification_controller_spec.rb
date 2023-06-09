@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Test::PushNotificationController do
+RSpec.describe Test::PushNotificationController do
   before do
     allow(IdentityConfig.store).to receive(:risc_notifications_local_enabled).and_return(true)
   end

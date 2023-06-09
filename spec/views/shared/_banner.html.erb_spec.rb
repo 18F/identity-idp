@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_banner.html.erb' do
+RSpec.describe 'shared/_banner.html.erb' do
   before do
     sp_with_logo = build_stubbed(
       :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'

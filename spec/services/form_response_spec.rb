@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FormResponse do
+RSpec.describe FormResponse do
   describe '#success?' do
     context 'when the success argument is true' do
       it 'returns true' do

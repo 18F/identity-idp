@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CompletionsPresenter do
+RSpec.describe CompletionsPresenter do
   let(:identities) do
     [
       build(

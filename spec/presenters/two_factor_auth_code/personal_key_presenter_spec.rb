@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::PersonalKeyPresenter do
+RSpec.describe TwoFactorAuthCode::PersonalKeyPresenter do
   include Rails.application.routes.url_helpers
 
   let(:presenter) do

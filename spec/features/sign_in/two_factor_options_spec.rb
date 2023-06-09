@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'when using PIV/CAC to sign in' do
+RSpec.describe 'when using PIV/CAC to sign in' do
   let(:user) { user_with_piv_cac }
 
   it 'does not show any MFA options' do
@@ -9,7 +9,7 @@ describe 'when using PIV/CAC to sign in' do
   end
 end
 
-describe '2FA options when signing in' do
+RSpec.describe '2FA options when signing in' do
   context 'when the user only has SMS configured' do
     it 'only displays SMS and Voice' do
       user = create(:user, :fully_registered, otp_delivery_preference: 'sms')

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv review step', :js do
+RSpec.feature 'idv review step', :js do
   include IdvStepHelper
 
   it 'routes to root if not signed in', js: false, driver: :desktop_rack_test do

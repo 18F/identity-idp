@@ -1,7 +1,6 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
-    include SignInABTestConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
@@ -93,10 +92,7 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.user_registration_complete(
-        **analytics_attributes(last_page),
-        sign_in_a_b_test_bucket:,
-      )
+      analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 
     def pii

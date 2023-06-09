@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Sign in to the IRS' do
+RSpec.feature 'Sign in to the IRS' do
   before(:all) do
     @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5

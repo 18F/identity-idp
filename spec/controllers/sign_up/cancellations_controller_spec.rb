@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SignUp::CancellationsController do
+RSpec.describe SignUp::CancellationsController do
   describe '#new' do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in

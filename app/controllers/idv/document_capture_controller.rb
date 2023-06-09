@@ -10,7 +10,7 @@ module Idv
     include RateLimitConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_upload_step_complete
+    before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
     before_action :check_for_outage, only: :show
@@ -53,7 +53,7 @@ module Idv
 
     private
 
-    def confirm_upload_step_complete
+    def confirm_hybrid_handoff_complete
       return if flow_session[:flow_path].present?
 
       redirect_to idv_hybrid_handoff_url

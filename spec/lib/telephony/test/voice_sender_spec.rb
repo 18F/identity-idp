@@ -1,4 +1,4 @@
-describe Telephony::Test::VoiceSender do
+RSpec.describe Telephony::Test::VoiceSender do
   before do
     Telephony::Test::Call.clear_calls
   end

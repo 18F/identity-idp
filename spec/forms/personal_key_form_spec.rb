@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PersonalKeyForm do
+RSpec.describe PersonalKeyForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do

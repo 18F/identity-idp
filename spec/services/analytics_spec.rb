@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Analytics do
+RSpec.describe Analytics do
   let(:analytics_attributes) do
     {
       user_id: current_user.uuid,

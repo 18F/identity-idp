@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::GpoController do
+RSpec.describe Idv::GpoController do
   let(:user) { create(:user) }
 
   before do

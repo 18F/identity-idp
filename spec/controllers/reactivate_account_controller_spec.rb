@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReactivateAccountController do
+RSpec.describe ReactivateAccountController do
   let(:user) { create(:user, profiles: profiles) }
   let(:profiles) { [] }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/activated.html.erb' do
+RSpec.describe 'idv/activated.html.erb' do
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('idv.titles.activated'))
 

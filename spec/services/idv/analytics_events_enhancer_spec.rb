@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::AnalyticsEventsEnhancer do
+RSpec.describe Idv::AnalyticsEventsEnhancer do
   let(:user) { build(:user) }
   let(:analytics_class) do
     Class.new(FakeAnalytics) do
