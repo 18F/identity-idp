@@ -4,7 +4,7 @@ module ArcgisApi
     # @options [Hash] Faraday connection options
     # @return Faraday::Connection
     def connection(url = nil, options = {})
-      conn_options = options.dup
+      conn_options = options ? options.dup : {}
       Faraday.new(url, conn_options) do |conn|
         # Log request metrics
         conn.request :instrumentation, name: 'request_metric.faraday'
