@@ -1,13 +1,14 @@
 module ArcgisApi
   module Mock
-    class Geocoder < ArcgisApi::Geocoder
-      def faraday
-        super do |conn|
-          conn.adapter :test do |stub|
-            stub_generate_token(stub)
-            stub_suggestions(stub)
-            stub_address_candidates(stub)
-          end
+    class MockConnectionFactory < ArcgisApi::ConnectionFactory
+      def connection(url = nil, options = nil)
+        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+          stub_generate_token(stub)
+          stub_suggestions(stub)
+          stub_address_candidates(stub)
+        end
+        super(url, options) do |con|
+          con.adapter :test, stubs
         end
       end
 
@@ -20,7 +21,7 @@ module ArcgisApi
             { 'Content-Type': 'application/json' },
             {
               token: '1234',
-              expires: 1234,
+              expires: (Time.zone.now.to_f + 30) * 1000,
               ssl: true,
             }.to_json,
           ]
@@ -45,6 +46,12 @@ module ArcgisApi
             ArcgisApi::Mock::Fixtures.request_candidates_response,
           ]
         end
+      end
+    end
+
+    class Geocoder < ArcgisApi::Geocoder
+      def initialize
+        super(token_keeper: nil, connection_factory: ArcgisApi::Mock::MockConnectionFactory.new)
       end
     end
   end

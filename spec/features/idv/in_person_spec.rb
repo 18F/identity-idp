@@ -10,6 +10,7 @@ RSpec.describe 'In Person Proofing', js: true do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
       and_return(false)
+    allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(true)
   end
 
   context 'ThreatMetrix review pending' do

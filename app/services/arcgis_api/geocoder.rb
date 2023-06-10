@@ -91,7 +91,7 @@ module ArcgisApi
       }
 
       parse_address_candidates(
-        connection_factory.connection.get(
+        connection.get(
           IdentityConfig.store.arcgis_api_find_address_candidates_url, params, dynamic_headers
         ) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_find_address_candidates' }
@@ -107,6 +107,12 @@ module ArcgisApi
     end
 
     private
+
+    def connection
+      connection_factory.connection do |conn|
+        yield(conn) if block_given?
+      end
+    end
 
     def parse_suggestions(response_body)
       handle_api_errors(response_body)
