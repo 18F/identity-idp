@@ -146,7 +146,9 @@ RSpec.describe ArcgisApi::TokenKeeper do
     end
   end
   context 'with redis store' do
-    let(:cache_store) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
+    let(:cache_store) do
+      ActiveSupport::Cache.lookup_store(:redis_cache_store, { url: IdentityConfig.store.redis_url })
+    end
     include_examples 'acquire token test'
     context 'retry options' do
       it 'retry remote request multiple times as needed and emit analytics events' do
@@ -179,7 +181,8 @@ RSpec.describe ArcgisApi::TokenKeeper do
     end
     context 'token sync request disabled' do
       it 'does not fetch token' do
-        allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).
+          and_return(false)
         expect(subject.token).to be(nil)
       end
     end
