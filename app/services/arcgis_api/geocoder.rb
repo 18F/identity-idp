@@ -6,8 +6,6 @@ module ArcgisApi
       keyword_init: true
     )
     Location = Struct.new(:latitude, :longitude, keyword_init: true)
-    API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
-    API_TOKEN_CACHE_KEY = "arcgis_api_token:#{API_TOKEN_HOST}"
 
     # These are option URL params that tend to apply to multiple endpoints
     # https://developers.arcgis.com/rest/geocode/api-reference/geocoding-find-address-candidates.htm#ESRI_SECTION2_38613C3FCB12462CAADD55B2905140BF
@@ -43,9 +41,9 @@ module ArcgisApi
 
     attr_accessor :token_keeper, :connection_factory
 
-    def initialize(token_keeper: nil, connection_factory: nil)
-      @connection_factory = connection_factory || ArcgisApi::ConnectionFactory.new
-      @token_keeper = token_keeper || TokenKeeper.new(API_TOKEN_CACHE_KEY, @connection_factory, nil)
+    def initialize(connection_factory: ArcgisApi::ConnectionFactory.new)
+      @connection_factory = connection_factory
+      @token_keeper = TokenKeeper.new(connection_factory: connection_factory)
     end
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
@@ -160,7 +158,6 @@ module ArcgisApi
           response_status_code: error_code,
           api_status_code: error_code,
         )
-        Rails.cache.delete(API_TOKEN_CACHE_KEY) # this might only be needed for local testing
         raise Faraday::ClientError.new(
           RuntimeError.new(error_message),
           {

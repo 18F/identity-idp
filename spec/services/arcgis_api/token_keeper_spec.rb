@@ -8,7 +8,10 @@ RSpec.describe ArcgisApi::TokenKeeper do
   let(:prefetch_ttl) { 1 }
   let(:analytics) { instance_spy(Analytics) }
   let(:subject) do
-    obj = described_class.new('test_arcgis_api_token', connection_factory, prefetch_ttl)
+    obj = described_class.new(
+      cache_key: 'test_arcgis_api_token',
+      connection_factory: connection_factory, prefetch_ttl: prefetch_ttl
+    )
     obj.analytics = (analytics)
     obj
   end

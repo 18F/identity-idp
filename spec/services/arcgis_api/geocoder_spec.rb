@@ -3,16 +3,20 @@ require 'rails_helper'
 RSpec.describe ArcgisApi::Geocoder do
   include ArcgisApiHelper
   let(:cache_key) { 'test_arcgis_geocoder_token' }
-  let(:token_keeper) { ArcgisApi::TokenKeeper.new(cache_key, nil, nil) }
-  let(:subject) { ArcgisApi::Geocoder.new(token_keeper: token_keeper, connection_factory: nil) }
+
+  let(:subject) do
+    test_obj = ArcgisApi::Geocoder.new
+    test_obj.token_keeper.cache_key = (cache_key)
+    test_obj
+  end
 
   describe '#suggest' do
     before(:each) do
       stub_generate_token_response
-      token_keeper.remove_token
+      subject.token_keeper.remove_token
     end
     after(:each) do
-      token_keeper.remove_token
+      subject.token_keeper.remove_token
     end
 
     it 'returns suggestions' do

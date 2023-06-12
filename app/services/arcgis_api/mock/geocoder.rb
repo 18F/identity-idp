@@ -57,7 +57,7 @@ module ArcgisApi
     # Mocking Geocoder with injected mocking connection factory
     class Geocoder < ArcgisApi::Geocoder
       def initialize
-        super(token_keeper: nil, connection_factory: ArcgisApi::Mock::MockConnectionFactory.new)
+        super(connection_factory: ArcgisApi::Mock::MockConnectionFactory.new)
       end
     end
   end
