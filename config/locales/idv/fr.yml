@@ -62,11 +62,10 @@ fr:
         zipcode: Entrez un code postal à 5 ou 9 chiffres
     failure:
       attempts_html:
-        one: Pour des raisons de sécurité, il vous reste <strong>une
-          tentative</strong> pour ajouter votre pièce d’identité en ligne.
-        other: Pour des raisons de sécurité, il vous reste
-          <strong>%{count} tentatives</strong> pour ajouter votre pièce
-          d’identité en ligne.
+        one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>
+          pour ajouter votre pièce d’identité en ligne.
+        other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+          tentatives</strong> pour ajouter votre pièce d’identité en ligne.
       button:
         warning: Essayez à nouveau
         warning_variant: Réessayer en ligne

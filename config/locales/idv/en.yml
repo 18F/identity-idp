@@ -58,10 +58,10 @@ en:
         zipcode: Enter a 5 or 9 digit ZIP Code
     failure:
       attempts_html:
-        one: For security reasons, you have <strong>one attempt<strong>
+        one: For security reasons, you have <strong>one attempt<strong> remaining to add
+          your ID online.
+        other: For security reasons, you have <strong>%{count} attempts<strong>
           remaining to add your ID online.
-        other: For security reasons, you have <strong>%{count}
-          attempts<strong> remaining to add your ID online.
       button:
         warning: Try again
         warning_variant: Try again online

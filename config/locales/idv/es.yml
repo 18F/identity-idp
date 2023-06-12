@@ -59,10 +59,10 @@ es:
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
       attempts_html:
-        one: Por motivos de seguridad, le quedan <strong>un
-          intento</strong> para añadir su documento de identidad en línea.
-        other: Por motivos de seguridad, le quedan <strong>%{count}
-          intentos</strong> para añadir su documento de identidad en línea.
+        one: Por motivos de seguridad, le quedan <strong>un intento</strong> para añadir
+          su documento de identidad en línea.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>
+          para añadir su documento de identidad en línea.
       button:
         warning: Inténtelo de nuevo
         warning_variant: Vuelva a intentarlo en línea
