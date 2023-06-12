@@ -574,7 +574,7 @@ describe Idv::ReviewController do
                   let(:review_status) { review_status }
                   let(:proofing_device_profiling_state) { proofing_device_profiling_state }
                   let(:applicant) do
-                    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE # meaningless
+                    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
                   end
                   let(:stub_idv_session) do
                     stub_user_with_applicant_data(user, applicant)

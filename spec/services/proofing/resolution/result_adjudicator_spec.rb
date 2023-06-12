@@ -30,7 +30,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
   let(:should_proof_state_id) { true }
   let(:double_address_verification) { false }
-  let(:same_address_as_id) { 'true' } # meaningless
+  let(:same_address_as_id) { 'true' }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }

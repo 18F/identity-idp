@@ -275,7 +275,6 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false', # meaningless
             address1:,
             address2:,
             city:,
@@ -294,7 +293,6 @@ describe Idv::Steps::InPerson::StateIdStep do
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
 
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission # meaningless
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city

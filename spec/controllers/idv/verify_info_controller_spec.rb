@@ -292,7 +292,7 @@ describe Idv::VerifyInfoController do
           double_address_verification: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
-          same_address_as_id: true, # meaningless
+          same_address_as_id: true,
           should_proof_state_id: true,
         )
 

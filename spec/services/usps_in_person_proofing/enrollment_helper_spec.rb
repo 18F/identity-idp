@@ -9,7 +9,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:pii) do
     Pii::Attributes.new_from_hash(
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-        merge(same_address_as_id: current_address_matches_id ? 'true' : 'false'). # meaningless
+        merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
         transform_keys(&:to_s),
     )
   end
@@ -73,7 +73,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         subject.schedule_in_person_enrollment(user, pii)
         enrollment.reload
 
-        expect(enrollment.current_address_matches_id).to eq(current_address_matches_id)
+        expect(enrollment.current_address_matches_id).to eq(false)
       end
 
       context 'transliteration disabled' do
@@ -101,7 +101,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           let(:pii) do
             Pii::Attributes.new_from_hash(
               Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.
-                merge(same_address_as_id: current_address_matches_id ? 'true' : 'false'). # meaningless
+                merge(same_address_as_id: current_address_matches_id ? 'true' : 'false').
                 merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS).
                 transform_keys(&:to_s),
             )
