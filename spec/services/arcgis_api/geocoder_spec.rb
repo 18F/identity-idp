@@ -9,10 +9,10 @@ RSpec.describe ArcgisApi::Geocoder do
   describe '#suggest' do
     before(:each) do
       stub_generate_token_response
-      token_keeper.remove_token!
+      token_keeper.remove_token
     end
     after(:each) do
-      token_keeper.remove_token!
+      token_keeper.remove_token
     end
 
     it 'returns suggestions' do

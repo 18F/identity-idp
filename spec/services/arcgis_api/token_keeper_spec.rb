@@ -23,7 +23,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
 
   before(:each) do
     allow(Rails).to receive(:cache).and_return(cache_store)
-    subject.remove_token!
+    subject.remove_token
   end
 
   shared_examples 'acquire token test' do
@@ -172,7 +172,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
         )
-        token = subject.fetch_save_token!
+        token = subject.retrieve_token
         expect(token.fetch(:token)).to eq(expected)
         expect(analytics).to have_received(:idv_arcgis_token_failure).exactly(3).times
       end

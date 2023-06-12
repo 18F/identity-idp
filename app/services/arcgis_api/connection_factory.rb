@@ -1,4 +1,5 @@
 module ArcgisApi
+  # Stateless factory object that create a new Farady::COnnection object
   class ConnectionFactory
     # @param [String|URI] url
     # @options [Hash] Faraday connection options

@@ -7,6 +7,6 @@ class ArcgisTokenJob < ApplicationJob
   end
 
   def perform
-    token_keeper.fetch_save_token!
+    token_keeper.retrieve_token
   end
 end

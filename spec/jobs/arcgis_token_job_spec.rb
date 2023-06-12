@@ -6,7 +6,7 @@ RSpec.describe ArcgisTokenJob, type: :job do
   describe 'arcgis token job' do
     it 'fetches token successfully' do
       subject.perform
-      expect(token_keeper).to have_received(:fetch_save_token!).once
+      expect(token_keeper).to have_received(:retrieve_token).once
     end
   end
 end
