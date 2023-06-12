@@ -8,6 +8,7 @@ module Idv
 
         def call
           mark_step_complete(:state_id) if flow_session.dig(:pii_from_user, :first_name)
+          redirect_to idv_in_person_verify_info_url
         end
       end
     end

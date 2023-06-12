@@ -34,6 +34,8 @@ module Idv
               mark_step_incomplete(:address)
            end
           end
+
+          redirect_to idv_in_person_verify_info_url if flow_session[steps[:address].to_s]
         end
 
         def extra_view_variables

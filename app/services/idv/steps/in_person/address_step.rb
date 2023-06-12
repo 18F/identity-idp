@@ -27,6 +27,8 @@ module Idv
           attrs.each do |attr|
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
+
+          redirect_to idv_in_person_verify_info_url if updating_address?
         end
 
         def extra_view_variables
