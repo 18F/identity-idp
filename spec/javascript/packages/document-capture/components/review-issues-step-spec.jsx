@@ -43,7 +43,7 @@ describe('document-capture/components/review-issues-step', () => {
         value={
           new I18n({
             strings: {
-              'idv.failure.attempts': {
+              'idv.failure.attempts_html': {
                 one: 'One attempt remaining',
                 other: '%{count} attempts remaining',
               },
@@ -75,7 +75,7 @@ describe('document-capture/components/review-issues-step', () => {
         value={
           new I18n({
             strings: {
-              'idv.failure.attempts': {
+              'idv.failure.attempts_html': {
                 one: 'One attempt remaining',
                 other: '%{count} attempts remaining',
               },
