@@ -24,7 +24,11 @@ module Idv
 
           idv_session.delete('applicant')
 
-          maybe_redirect_to_verify_info
+          # maybe_redirect_to_verify_info
+          # add this in its own pr for now
+          # if (IdentityConfig.store.in_person_verify_info_controller_enabled)
+          redirect_to idv_in_person_verify_info_url
+          # end
         end
 
         def extra_view_variables
