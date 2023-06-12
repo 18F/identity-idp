@@ -48,6 +48,12 @@ module Idv
         double_address_verification: capture_secondary_id_enabled,
       )
 
+      # Don't allow the user to go back to document capture after verifying
+      if flow_session['redo_document_capture']
+        flow_session.delete('redo_document_capture')
+        flow_session[:flow_path] ||= 'standard'
+      end
+
       redirect_to after_update_url
     end
 
