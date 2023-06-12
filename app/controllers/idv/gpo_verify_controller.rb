@@ -63,10 +63,14 @@ module Idv
       current_user.pending_in_person_enrollment.present?
     end
 
-    def prepare_for_personal_key
-      event, _disavowal_token = create_user_event(:account_verified)
+    def account_not_ready_to_be_activated?
+      fraud_check_failed? || pending_in_person_enrollment?
+    end
 
-      unless fraud_check_failed? || pending_in_person_enrollment?
+    def prepare_for_personal_key
+      unless account_not_ready_to_be_activated?
+        event, _disavowal_token = create_user_event(:account_verified)
+
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,
