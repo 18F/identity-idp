@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::InPerson::VerifyInfoController do
   include IdvHelper
 
-  let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
+  let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_user => pii_from_user,
@@ -55,6 +55,7 @@ describe Idv::InPerson::VerifyInfoController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'verify',
+        same_address_as_id: true,
       }
     end
 
