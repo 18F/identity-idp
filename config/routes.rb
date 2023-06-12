@@ -394,21 +394,25 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
+      get '/by_mail' => 'gpo_verify#index', as: :gpo_verify
+      post '/by_mail' => 'gpo_verify#create'
+      get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
+          as: :confirm_start_over
+
+      if FeatureManagement.gpo_verification_enabled?
+        get '/usps' => 'gpo#index', as: :gpo
+        put '/usps' => 'gpo#create'
+        post '/usps' => 'gpo#update'
+      end
+
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
     end
 
-    get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
-    post '/account/verify' => 'idv/gpo_verify#create'
-    get '/account/verify/confirm_start_over' => 'idv/confirm_start_over#index', as: :idv_confirm_start_over
-    if FeatureManagement.gpo_verification_enabled?
-      scope '/verify', module: 'idv', as: 'idv' do
-        get '/usps' => 'gpo#index', as: :gpo
-        put '/usps' => 'gpo#create'
-        post '/usps' => 'gpo#update'
-      end
-    end
+    # Old paths to GPO outside of IdV.
+    get '/account/verify', to: redirect('/verify/by_mail')
+    get '/account/verify/confirm_start_over', to: redirect('/verify/by_mail/confirm_start_over')
 
     root to: 'users/sessions#new'
   end
