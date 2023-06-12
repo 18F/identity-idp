@@ -171,7 +171,7 @@ else
         args: -> { [Time.zone.yesterday] },
       },
       arcgis_token: {
-        class: 'ArcgisApi::ArcgisTokenJob',
+        class: 'ArcgisTokenJob',
         cron: cron_55m,
       },
     }
