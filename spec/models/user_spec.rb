@@ -699,6 +699,150 @@ RSpec.describe User do
     end
   end
 
+  describe '#suspended?' do
+    it 'returns true if user is suspended' do
+      user = create(:user, :suspended)
+      expect(user.suspended?).to eq true
+    end
+
+    it 'returns false if user is not suspended' do
+      user = create(:user)
+      expect(user.suspended?).to eq false
+    end
+  end
+
+  describe '#reinstated?' do
+    it 'returns true if user is reinstated' do
+      user = create(:user, :reinstated)
+      expect(user.reinstated?).to eq true
+    end
+
+    it 'returns false if user is not reinstated' do
+      user = create(:user)
+      expect(user.reinstated?).to eq false
+    end
+  end
+
+  describe '#suspend' do
+    let!(:analytics_hash) do
+      {
+        success: success,
+        errors: errors,
+        user_id: user.uuid,
+      }
+    end
+    context 'when user is already reinstated' do
+      let(:user) { create(:user, :reinstated) }
+      let(:error_message) { 'Cannot suspend a user who has already been reinstated.' }
+      let(:errors) { { user: [error_message] } }
+      let(:success) { false }
+      it 'raise an error and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Suspended', analytics_hash)
+
+        expect do
+          user.suspend
+        end.to raise_error(
+          RuntimeError,
+          error_message,
+        )
+      end
+    end
+
+    context 'when user is already suspended' do
+      let(:user) { create(:user, :suspended) }
+      let(:error_message) { 'Cannot suspend a user who is already suspended.' }
+      let(:errors) { { user: [error_message] } }
+      let(:success) { false }
+      it 'raise an error and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Suspended', analytics_hash)
+
+        expect do
+          user.suspend
+        end.to raise_error(
+          RuntimeError,
+          error_message,
+        )
+      end
+    end
+
+    context 'when user is not suspended not reinstated' do
+      let(:user) { create(:user) }
+      let(:errors) { {} }
+      let(:success) { true }
+      it 'sets a timestamp for suspended_at and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Suspended', analytics_hash)
+
+        user.suspend
+
+        expect(user.suspended?).to eq true
+        expect(user.suspended_at).to_not be_nil
+      end
+    end
+  end
+
+  describe '#reinstate' do
+    let!(:analytics_hash) do
+      {
+        success: success,
+        errors: errors,
+        user_id: user.uuid,
+      }
+    end
+    context 'when user is not suspended' do
+      let(:user) { create(:user) }
+      let(:error_message) { 'Cannot reinstate user who is not currently suspended.' }
+      let(:errors) { { user: [error_message] } }
+      let(:success) { false }
+      it 'raise an error and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Reinstated', analytics_hash)
+
+        expect do
+          user.reinstate
+        end.to raise_error(
+          RuntimeError,
+          error_message,
+        )
+      end
+    end
+
+    context 'when user is already reinstated' do
+      let(:user) { create(:user, :reinstated) }
+      let(:error_message) { 'Cannot reinstate user who has already been reinstated.' }
+      let(:errors) { { user: [error_message] } }
+      let(:success) { false }
+      it 'raise an error and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Reinstated', analytics_hash)
+
+        expect do
+          user.reinstate
+        end.to raise_error(
+          RuntimeError,
+          error_message,
+        )
+      end
+    end
+
+    context 'when user is suspended but not reinstated' do
+      let(:user) { create(:user, :suspended) }
+      let(:errors) { {} }
+      let(:success) { true }
+      it 'sets a timestamp for reinstated_at and log anlytics event' do
+        expect(user.analytics).to receive(:track_event).
+          with('User: Reinstated', analytics_hash)
+
+        user.reinstate
+
+        expect(user.reinstated?).to eq true
+        expect(user.reinstated_at).to_not be_nil
+      end
+    end
+  end
+
   describe '#should_receive_in_person_completion_survey?' do
     let!(:user) { create(:user) }
     let(:service_provider) { create(:service_provider) }

@@ -3873,6 +3873,48 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user reinstated
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] user_id
+  def user_reinstated(
+    success:,
+    errors:,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User: Reinstated',
+      {
+        success: success,
+        errors: errors,
+        user_id: user_id,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user suspended
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] user_id
+  def user_suspended(
+    success:,
+    errors:,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User: Suspended',
+      {
+        success: success,
+        errors: errors,
+        user_id: user_id,
+        **extra,
+      }.compact,
+    )
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
