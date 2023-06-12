@@ -1,4 +1,4 @@
-shared_examples 'sp handoff after identity verification' do |sp|
+RSpec.shared_examples 'sp handoff after identity verification' do |sp|
   include SamlAuthHelper
   include IdvHelper
   include JavascriptDriverHelper

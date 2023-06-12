@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Agency do
+RSpec.describe Agency do
   describe 'Associations' do
     it { is_expected.to have_many(:agency_identities).dependent(:destroy) }
     it { is_expected.to have_many(:service_providers).inverse_of(:agency) }

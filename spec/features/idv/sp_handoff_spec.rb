@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV SP handoff', :email do
+RSpec.feature 'IdV SP handoff', :email do
   include SamlAuthHelper
   include IdvStepHelper
 

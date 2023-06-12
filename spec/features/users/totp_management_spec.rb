@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'totp management' do
+RSpec.describe 'totp management' do
   context 'when the user has totp enabled' do
     let(:user) { create(:user, :fully_registered, :with_authentication_app) }
 

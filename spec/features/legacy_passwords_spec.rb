@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'legacy passwords' do
+RSpec.feature 'legacy passwords' do
   scenario 'signing in with a password digested by the uak verifier updates the digest' do
     user = create(:user, :fully_registered)
     user.update!(

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DuplicateSsnFinder do
+RSpec.describe Idv::DuplicateSsnFinder do
   describe '#ssn_is_unique?' do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }

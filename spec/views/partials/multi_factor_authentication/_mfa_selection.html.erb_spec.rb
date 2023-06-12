@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
+RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   include SimpleForm::ActionViewExtensions::FormHelper
   include Devise::Test::ControllerHelpers
 

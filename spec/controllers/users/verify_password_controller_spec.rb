@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::VerifyPasswordController do
+RSpec.describe Users::VerifyPasswordController do
   let(:key) { 'key' }
   let(:profiles) { [] }
   let(:recovery_hash) { { personal_key: key } }

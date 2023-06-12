@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SignOutController do
+RSpec.describe SignOutController do
   describe '#destroy' do
     it 'redirects to decorated_session.cancel_link_url with flash message' do
       stub_sign_in_before_2fa

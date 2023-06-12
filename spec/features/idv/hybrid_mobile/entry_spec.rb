@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'mobile hybrid flow entry', js: true do
+RSpec.feature 'mobile hybrid flow entry', js: true do
   include IdvStepHelper
 
   let(:link_sent_via_sms) do

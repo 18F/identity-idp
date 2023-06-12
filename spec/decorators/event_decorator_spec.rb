@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDecorator do
+RSpec.describe EventDecorator do
   let(:event) { build_stubbed(:event, event_type: :email_changed) }
   subject(:decorator) { EventDecorator.new(event) }
 

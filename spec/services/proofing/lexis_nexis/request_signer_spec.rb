@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::RequestSigner do
+RSpec.describe Proofing::LexisNexis::RequestSigner do
   let(:message_body) { 'APPLICANT_DATA' }
   let(:path) { '/request/path' }
   let(:timestamp) { Time.zone.now.strftime('%s%L') }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::OtpVerificationController do
+RSpec.describe Idv::OtpVerificationController do
   let(:user) { create(:user) }
 
   let(:phone) { '2255555000' }

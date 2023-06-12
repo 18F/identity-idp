@@ -1,4 +1,5 @@
 brew 'postgresql@14'
+brew 'postgis'
 brew 'redis'
 brew 'node@16'
 brew 'yarn'
