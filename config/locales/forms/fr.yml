@@ -144,7 +144,7 @@ fr:
       required_checkbox: Veuillez cocher cette case pour continuer
     verify_profile:
       alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
-      clear_and_start_over: Effacez vos informations et recommencez
+      clear_and_start_over: Supprimez vos données et recommencez
       instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
         avez reçue.
       name: Code à usage unique
