@@ -38,7 +38,7 @@ else
       sp_issuer_user_counts: {
         class: 'Reports::SpIssuerUserCountsReport',
         cron: cron_24h,
-        args: -> { [Time.zone.today, IdentityConfig.store.sp_issuer_user_counts_report.issuer] },
+        args: -> { [Time.zone.today] },
       },
       # Combined Invoice Supplement Report to S3
       combined_invoice_supplement_report: {
