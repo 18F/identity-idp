@@ -1,0 +1,17 @@
+<% title t('titles.backup_codes') %>
+
+<%= render PageHeadingComponent.new.with_content(t('titles.backup_codes')) %>
+
+<p class='margin-top-1 margin-bottom-4'>
+  <%= t('forms.backup_code_reminder.body_info') %>
+</p>
+
+<%= button_to(
+      account_path,
+      method: :get,
+      class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+    ) do %>
+  <%= t('forms.backup_code_reminder.have_codes') %>
+<% end %>
+
+<%= link_to t('forms.backup_code_reminder.need_new_codes'), backup_code_regenerate_path %>

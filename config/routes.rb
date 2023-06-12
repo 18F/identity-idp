@@ -276,6 +276,7 @@ Rails.application.routes.draw do
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
+    get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
