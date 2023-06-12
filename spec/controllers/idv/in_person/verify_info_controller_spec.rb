@@ -56,6 +56,7 @@ describe Idv::InPerson::VerifyInfoController do
         irs_reproofing: false,
         step: 'verify',
         same_address_as_id: true,
+        pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
       }
     end
 
