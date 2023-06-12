@@ -183,25 +183,29 @@ RSpec.feature 'User profile' do
   end
 
   context 'allows verified user to see their information' do
-    let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
     context 'time between sign in and remember device' do
       it 'does not have prompt to authenticate device' do
-        profile = create(:profile, :active, :verified, pii: pii)
+        profile = create(:profile, :active, :verified, pii: Idp::Constants::MOCK_IDV_APPLICANT)
         sign_in_user(profile.user)
         check t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
         click_submit_default
         visit account_path
         expect(page).to_not have_link(t('account.re_verify.footer'))
-        expect(page).to have_content('January 01, 1920')
+
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
+        expect(page).to have_content(parsed_date)
       end
     end
 
     context 'when time expired' do
       it 'has a prompt to authenticate device' do
-        profile = create(:profile, :active, :verified, pii: pii)
+        profile = create(:profile, :active, :verified, pii: Idp::Constants::MOCK_IDV_APPLICANT)
         user = profile.user
         sign_in_user(user)
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
 
         check t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
@@ -212,13 +216,13 @@ RSpec.feature 'User profile' do
           sign_in_user(user)
           visit account_path
           expect(page).to have_link(t('account.re_verify.footer'))
-          expect(page).to_not have_content('January 01, 1920')
+          expect(page).to_not have_content(parsed_date)
           click_link t('account.re_verify.footer')
           fill_in t('account.index.password'), with: user.password
           click_button t('forms.buttons.continue')
           fill_in_code_with_last_phone_otp
           click_submit_default
-          expect(page).to have_content('January 01, 1920')
+          expect(page).to have_content(parsed_date)
         end
       end
     end
