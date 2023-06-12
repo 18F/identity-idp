@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Response::SecurityTokenResponse do
+RSpec.describe Proofing::Aamva::Response::SecurityTokenResponse do
   let(:security_context_token_identifier) { 'sct-token-identifier' }
   let(:security_context_token_reference) { 'sct-token-reference' }
   let(:nonce) { 'MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE=' }

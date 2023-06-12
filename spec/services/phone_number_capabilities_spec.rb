@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneNumberCapabilities do
+RSpec.describe PhoneNumberCapabilities do
   let(:phone) { '+1 (703) 555-5000' }
   let(:phone_confirmed) { false }
   subject(:capabilities) { PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed) }

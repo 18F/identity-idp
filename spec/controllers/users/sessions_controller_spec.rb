@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::SessionsController, devise: true do
+RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
   let(:mock_valid_site) { 'http://example.com' }
 

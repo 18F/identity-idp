@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MfaConfirmationPresenter do
+RSpec.describe MfaConfirmationPresenter do
   let(:user) { create(:user, :with_phone) }
   let(:presenter) { described_class.new(user) }
 

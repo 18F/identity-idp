@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ImageUploadsController do
+RSpec.describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 

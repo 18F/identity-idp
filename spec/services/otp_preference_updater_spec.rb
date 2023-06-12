@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe OtpPreferenceUpdater do
+RSpec.describe OtpPreferenceUpdater do
   subject do
     OtpPreferenceUpdater.new(
       user: build_stubbed(:user, otp_delivery_preference: 'sms'),

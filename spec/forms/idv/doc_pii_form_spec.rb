@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DocPiiForm do
+RSpec.describe Idv::DocPiiForm do
   let(:user) { create(:user) }
   let(:subject) { Idv::DocPiiForm.new(pii: pii) }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }

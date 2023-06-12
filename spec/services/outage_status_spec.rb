@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe OutageStatus do
+RSpec.describe OutageStatus do
   subject(:vendor_status) do
     OutageStatus.new
   end

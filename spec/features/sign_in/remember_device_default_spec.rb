@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Remember device checkbox' do
+RSpec.describe 'Remember device checkbox' do
   include SamlAuthHelper
 
   context 'when the user signs in and arrives at the 2FA page' do

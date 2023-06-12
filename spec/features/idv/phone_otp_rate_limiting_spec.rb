@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp rate limiting', :js do
+RSpec.feature 'phone otp rate limiting', :js do
   include IdvStepHelper
 
   let(:user) { user_with_2fa }

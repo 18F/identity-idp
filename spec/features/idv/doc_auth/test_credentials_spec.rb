@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth test credentials', :js do
+RSpec.feature 'doc auth test credentials', :js do
   include IdvStepHelper
   include DocAuthHelper
 

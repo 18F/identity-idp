@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'reactivate_account/index.html.erb' do
+RSpec.describe 'reactivate_account/index.html.erb' do
   subject(:rendered) do
     render
   end

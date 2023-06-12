@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AbTests do
+RSpec.describe AbTests do
   def reload_ab_test_initializer!
     # undefine the AB tests instances so we can re-initialize them with different config values
     AbTests.constants.each do |const_name|

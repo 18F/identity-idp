@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-feature 'Analytics Regression', js: true do
+RSpec.feature 'Analytics Regression', js: true do
   include IdvStepHelper
   include InPersonHelper
 

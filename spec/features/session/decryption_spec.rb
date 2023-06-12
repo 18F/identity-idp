@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Session decryption' do
+RSpec.feature 'Session decryption' do
   context 'when there is a session decryption error' do
     it 'should raise an error and log the user out' do
       sign_in_and_2fa_user

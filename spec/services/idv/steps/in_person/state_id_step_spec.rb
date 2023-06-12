@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::StateIdStep do
+RSpec.describe Idv::Steps::InPerson::StateIdStep do
   include InPersonHelper
   let(:submitted_values) { {} }
   let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }

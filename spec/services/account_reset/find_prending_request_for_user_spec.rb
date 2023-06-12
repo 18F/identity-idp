@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::FindPendingRequestForUser do
+RSpec.describe AccountReset::FindPendingRequestForUser do
   describe '#call' do
     let(:user) { create(:user) }
     let(:granted_at) { nil }

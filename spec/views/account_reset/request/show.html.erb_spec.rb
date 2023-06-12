@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'account_reset/request/show.html.erb' do
+RSpec.describe 'account_reset/request/show.html.erb' do
   before do
     user = create(:user, :fully_registered, :with_personal_key)
     allow(view).to receive(:current_user).and_return(user)

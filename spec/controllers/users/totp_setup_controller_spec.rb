@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::TotpSetupController, devise: true do
+RSpec.describe Users::TotpSetupController, devise: true do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
