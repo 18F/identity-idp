@@ -32,8 +32,8 @@ class PinpointSupportedCountries
   )
 
   # @return [Hash<String, String>] a hash that matches the structure of country_dialing_codes.yml
-  def run
-    country_dialing_codes = load_country_dialing_codes
+  def run(sms_sender_id_country_codes:)
+    country_dialing_codes = load_country_dialing_codes(sms_sender_id_country_codes: sms_sender_id_country_codes)
 
     duplicate_iso = country_dialing_codes.
       group_by(&:iso_code).
@@ -51,7 +51,7 @@ class PinpointSupportedCountries
   end
 
   # @return [Array<CountrySupport>]
-  def sms_support
+  def sms_support(sender_id_country_codes:)
     TableConverter.new(download(PINPOINT_SMS_URL)).
       convert.
       select { |sms_config| sms_config['ISO code'] }. # skip section rows
@@ -59,7 +59,7 @@ class PinpointSupportedCountries
         iso_code = sms_config['ISO code']
         supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'
-          IdentityConfig.store.sender_id_countries.include?(iso_code)
+          sender_id_country_codes.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
           true
         else
@@ -87,7 +87,8 @@ class PinpointSupportedCountries
   end
 
   # @return [Array<CountryDialingCode>] combines sms and voice support into one array of configs
-  def load_country_dialing_codes
+  def load_country_dialing_codes(sms_sender_id_country_codes:)
+    sms_support = sms_support(sender_id_country_codes: sms_sender_id_country_codes)
     (sms_support + voice_support).group_by(&:name).map do |_name, configs|
       combined = configs.reduce(:merge)
 

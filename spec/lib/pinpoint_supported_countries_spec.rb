@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'pinpoint_supported_countries'
 
 RSpec.describe PinpointSupportedCountries do
@@ -9,6 +9,7 @@ RSpec.describe PinpointSupportedCountries do
       to_return(body: voice_table)
 
     stub_const('STDERR', StringIO.new)
+    allow(IdentityConfig.store).to receive(:sender_id_country_codes).and_return(['BY'])
   end
 
   subject(:countries) { PinpointSupportedCountries.new }
@@ -102,7 +103,7 @@ RSpec.describe PinpointSupportedCountries do
 
   describe '#run' do
     it 'returns a hash that matches the structure of country_dialing_codes.yml' do
-      expect(countries.run).to eq YAML.safe_load <<-STR
+      expect(countries.run(sms_sender_id_country_codes: IdentityConfig.store.sender_id_country_codes)).to eq YAML.safe_load <<-STR
         AR:
           country_code: '54'
           name: Argentina
@@ -135,7 +136,7 @@ RSpec.describe PinpointSupportedCountries do
   describe '#sms_support' do
     # rubocop:disable Layout/LineLength
     it 'parses the SMS page from poinpoint an array of configs' do
-      expect(countries.sms_support).to eq [
+      expect(countries.sms_support(sender_id_country_codes: IdentityConfig.store.sender_id_country_codes)).to eq [
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AR', name: 'Argentina', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AU', name: 'Australia', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'BY', name: 'Belarus', supports_sms: true),
@@ -147,11 +148,11 @@ RSpec.describe PinpointSupportedCountries do
 
     context 'when we do not have a sender ID for a country that requires one' do
       before do
-        allow(IdentityConfig.store).to receive(:sender_id_countries).and_return([])
+        allow(IdentityConfig.store).to receive(:sender_id_country_codes).and_return([])
       end
 
       it 'is supported' do
-        belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
+        belarus = countries.sms_support(sender_id_country_codes: IdentityConfig.store.sender_id_country_codes).find { |c| c.iso_code == 'BY' }
         expect(belarus.supports_sms).to eq(false)
       end
     end
@@ -172,7 +173,7 @@ RSpec.describe PinpointSupportedCountries do
   describe '#load_country_dialing_codes' do
     # rubocop:disable Layout/LineLength
     it 'combines sms and voice support and country code into a shared config' do
-      expect(countries.load_country_dialing_codes).to eq [
+      expect(countries.load_country_dialing_codes(sms_sender_id_country_codes: IdentityConfig.store.sender_id_country_codes)).to eq [
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '54', iso_code: 'AR', name: 'Argentina', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '61', iso_code: 'AU', name: 'Australia', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: true, supports_voice: false),

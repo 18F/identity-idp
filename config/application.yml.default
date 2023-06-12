@@ -310,7 +310,7 @@ s3_reports_enabled: false
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
-sender_id_countries: 'BY,EG,FR,JO,PH,TH'
+sender_id_country_codes: 'BY,EG,FR,JO,PH,TH'
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false

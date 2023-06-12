@@ -14,6 +14,7 @@ require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
 require_relative '../lib/good_job_connection_pool_size'
 require_relative '../lib/identity_cors'
+require_relative '../lib/pinpoint_supported_countries'
 
 Bundler.require(*Rails.groups)
 
