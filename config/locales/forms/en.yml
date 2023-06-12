@@ -134,6 +134,9 @@ en:
     validation:
       required_checkbox: Please check this box to continue
     verify_profile:
+      alert_info: 'We sent a lettter with your one-time code to:'
+      wrong_address: Not the right address?
+      clear_and_start_over: Clear your information and start over
       instructions: Enter the 10-character code from the letter you received.
       name: One-time code
       return_to_profile: Return to your profile

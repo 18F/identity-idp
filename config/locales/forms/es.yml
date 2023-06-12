@@ -142,6 +142,9 @@ es:
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
+      alert_info: 'Enviamos una carta con su código único a:'
+      wrong_address: ¿La dirección no es correcta?
+      clear_and_start_over: Borrar su información y empezar de nuevo
       instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
       name: Código único
       return_to_profile: Regrese a su perfil

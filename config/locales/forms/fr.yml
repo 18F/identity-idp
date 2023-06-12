@@ -143,6 +143,9 @@ fr:
     validation:
       required_checkbox: Veuillez cocher cette case pour continuer
     verify_profile:
+      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      wrong_address: Pas la bonne adresse?
+      clear_and_start_over: Effacez vos informations et recommencez
       instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
         avez reçue.
       name: Code à usage unique
