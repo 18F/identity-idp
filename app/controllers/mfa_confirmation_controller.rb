@@ -45,11 +45,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_valid_password
-    if current_user.auth_app_configurations.any?
-      redirect_to login_two_factor_authenticator_url(reauthn: true)
-    else
-      redirect_to user_two_factor_authentication_url(reauthn: true)
-    end
+    redirect_to login_two_factor_options_path(reauthn: true)
     session[:password_attempts] = 0
     user_session[:current_password_required] = false
   end
