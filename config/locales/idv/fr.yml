@@ -11,7 +11,7 @@ fr:
       change_state_id_label: Mettre à jour les informations figurant sur votre document d’identité
       continue_plain: Continuer
       mail:
-        resend: Demander une autre lettre
+        resend: Envoyer une autre lettre
         send: Demander une lettre
     cancel:
       actions:

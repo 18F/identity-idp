@@ -11,7 +11,7 @@ es:
       change_state_id_label: Actualizar la información de su cédula de identidad
       continue_plain: Continuar
       mail:
-        resend: Solicitar otra carta
+        resend: Enviar otra carta
         send: Solicitar una carta
     cancel:
       actions:

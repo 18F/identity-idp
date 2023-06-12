@@ -10,7 +10,7 @@ en:
       change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
-        resend: Request another letter
+        resend: Send another letter
         send: Request a letter
     cancel:
       actions:
