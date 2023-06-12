@@ -19,17 +19,21 @@ locals:
         ),
       ),
       collection: I18n.available_locales.map do |locale|
+        label = locale == I18n.locale ?
+          t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
+          t("i18n.locale.#{locale}")
+
         [
           content_tag(
             :span,
-            locale == I18n.locale ?
-              t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
-              t("i18n.locale.#{locale}"),
+            label,
             lang: locale,
+            aria: { hidden: true },
           ),
           locale,
           checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
           lang: locale,
+          aria: { label: label },
         ]
       end,
     ) %>

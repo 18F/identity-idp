@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Event do
+RSpec.describe Event do
   it { is_expected.to belong_to(:user) }
 
   describe 'validations' do
@@ -15,8 +15,11 @@ describe Event do
 
   it 'has a translation for every event type' do
     missing_translations = Event.event_types.keys.select do |event_type|
-      translation = I18n.t("event_types.#{event_type}", raise: true)
-      translation.empty?
+      I18n.t(
+        "event_types.#{event_type}",
+        raise: true,
+        ignore_test_helper_missing_interpolation: true,
+      ).empty?
     rescue I18n::MissingTranslationData
       true
     end

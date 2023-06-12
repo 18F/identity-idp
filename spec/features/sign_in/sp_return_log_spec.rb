@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'SP return logs' do
+RSpec.feature 'SP return logs' do
   include SamlAuthHelper
 
   it 'updates user id after user authenticates so we can track any user back to issuer', :email do

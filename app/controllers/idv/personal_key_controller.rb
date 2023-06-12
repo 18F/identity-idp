@@ -74,7 +74,7 @@ module Idv
 
     def profile
       return idv_session.profile if idv_session.profile
-      current_user.active_profile
+      current_user.active_or_pending_profile
     end
 
     def generate_personal_key

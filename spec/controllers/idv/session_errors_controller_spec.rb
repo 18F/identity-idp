@@ -1,120 +1,122 @@
 require 'rails_helper'
 
-shared_examples_for 'an idv session errors controller action' do
-  context 'the user is authenticated and has not confirmed their profile' do
-    let(:user) { build(:user) }
+RSpec.describe Idv::SessionErrorsController do
+  shared_examples_for 'an idv session errors controller action' do
+    context 'the user is authenticated and has not confirmed their profile' do
+      let(:user) { build(:user) }
 
-    it 'renders the error' do
-      get action
-      expect(response).to render_template(template)
-    end
-
-    it 'logs an event' do
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: session error visited',
-        hash_including(type: action.to_s),
-      ).once
-      get action
-    end
-
-    context 'fetch() request from form-steps-wait JS' do
-      before do
-        request.headers['X-Form-Steps-Wait'] = '1'
+      it 'renders the error' do
+        get action
+        expect(response).to render_template(template)
       end
 
-      it 'returns an empty response' do
+      it 'logs an event' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        ).once
         get action
-        expect(response).to have_http_status(204)
+      end
+
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+        it 'does not log an event' do
+          expect(@analytics).not_to receive(:track_event).
+            with('IdV: session error visited', anything)
+          get action
+        end
+      end
+    end
+
+    context 'the user is authenticated and has confirmed their profile' do
+      let(:verify_info_step_complete) { true }
+      let(:user) { build(:user) }
+
+      it 'redirects to the phone url' do
+        get action
+
+        expect(response).to redirect_to(idv_phone_url)
       end
       it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        expect(@analytics).not_to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
         get action
       end
     end
-  end
 
-  context 'the user is authenticated and has confirmed their profile' do
-    let(:verify_info_step_complete) { true }
-    let(:user) { build(:user) }
-
-    it 'redirects to the phone url' do
-      get action
-
-      expect(response).to redirect_to(idv_phone_url)
-    end
-    it 'does not log an event' do
-      expect(@analytics).not_to receive(:track_event).with(
-        'IdV: session error visited',
-        hash_including(type: action.to_s),
-      )
-      get action
-    end
-  end
-
-  context 'the user is not authenticated and in doc capture flow' do
-    before do
-      user = create(:user, :fully_registered)
-      controller.session[:doc_capture_user_id] = user.id
-    end
-    it 'renders the error' do
-      get action
-      expect(response).to render_template(template)
-    end
-    it 'logs an event' do
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: session error visited',
-        hash_including(type: action.to_s),
-      ).once
-      get action
-    end
-
-    context 'fetch() request from form-steps-wait JS' do
+    context 'the user is not authenticated and in doc capture flow' do
       before do
-        request.headers['X-Form-Steps-Wait'] = '1'
+        user = create(:user, :fully_registered)
+        controller.session[:doc_capture_user_id] = user.id
+      end
+      it 'renders the error' do
+        get action
+        expect(response).to render_template(template)
+      end
+      it 'logs an event' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        ).once
+        get action
       end
 
-      it 'returns an empty response' do
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+        it 'does not log an event' do
+          expect(@analytics).not_to receive(:track_event).
+            with('IdV: session error visited', anything)
+          get action
+        end
+      end
+    end
+
+    context 'the user is not authenticated and not recovering their account' do
+      it 'redirects to sign in' do
         get action
-        expect(response).to have_http_status(204)
+
+        expect(response).to redirect_to(new_user_session_url)
       end
       it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with('IdV: session error visited', anything)
+        expect(@analytics).not_to receive(:track_event).with(
+          'IdV: session error visited',
+          hash_including(type: action.to_s),
+        )
         get action
+      end
+    end
+
+    context 'the user is in the hybrid flow' do
+      render_views
+      let(:effective_user) { create(:user) }
+
+      before do
+        session[:doc_capture_user_id] = effective_user.id
+      end
+
+      it 'renders the error template' do
+        get action
+        expect(response).to render_template(template)
       end
     end
   end
 
-  context 'the user is not authenticated and not recovering their account' do
-    it 'redirects to sign in' do
-      get action
-
-      expect(response).to redirect_to(new_user_session_url)
-    end
-    it 'does not log an event' do
-      expect(@analytics).not_to receive(:track_event).with(
-        'IdV: session error visited',
-        hash_including(type: action.to_s),
-      )
-      get action
-    end
-  end
-
-  context 'the user is in the hybrid flow' do
-    render_views
-    let(:effective_user) { create(:user) }
-
-    before do
-      session[:doc_capture_user_id] = effective_user.id
-    end
-
-    it 'renders the error template' do
-      get action
-      expect(response).to render_template(template)
-    end
-  end
-end
-
-describe Idv::SessionErrorsController do
   let(:idv_session) { double }
   let(:verify_info_step_complete) { false }
   let(:user) { nil }

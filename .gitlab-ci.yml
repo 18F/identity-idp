@@ -120,16 +120,16 @@ specs:
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
-    DOCKER_DB_HOST: postgres
+    DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity_idp_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.9
+    - name: postgis/postgis:13-3.3
       alias: db-postgres
-      command: ["--fsync=false", "--synchronous_commit=false", "--full_page_writes=false"]
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
     - name: redis:7.0
       alias: db-redis
   artifacts:
@@ -258,4 +258,3 @@ trigger_devops:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-

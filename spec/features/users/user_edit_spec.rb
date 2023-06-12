@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User edit' do
+RSpec.feature 'User edit' do
   let(:user) { create(:user, :fully_registered) }
 
   context 'editing password' do

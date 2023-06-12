@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::DeleteController do
+RSpec.describe Users::DeleteController do
   describe '#show' do
     it 'shows and logs a visit' do
       stub_analytics

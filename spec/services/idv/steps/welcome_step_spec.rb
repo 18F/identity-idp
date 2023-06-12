@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::WelcomeStep do
+RSpec.describe Idv::Steps::WelcomeStep do
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }

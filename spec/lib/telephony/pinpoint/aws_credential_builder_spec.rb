@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Telephony::Pinpoint::AwsCredentialBuilder do
+RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
   include_context 'telephony'
 
   subject(:credential_builder) { described_class.new(config) }

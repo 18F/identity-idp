@@ -87,10 +87,10 @@ doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
+doc_auth_agreement_controller_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_hybrid_handoff_controller_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
@@ -321,11 +321,11 @@ session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sign_up_mfa_selection_order_testing: '{ "default": 100, "authentication_app_priority": 0, "usability_priority": 0 }'
-sign_in_a_b_testing: '{ "default": 100,"tabbed" :0, "banner": 0 } '
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
+team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -355,7 +355,9 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
-get_usps_proofing_results_job_cron: '0/10 * * * *'
+get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
+get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
+get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'

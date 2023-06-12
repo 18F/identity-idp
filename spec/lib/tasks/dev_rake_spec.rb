@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'dev rake tasks' do
+RSpec.describe 'dev rake tasks' do
   include UspsIppHelper
 
   let(:env) do

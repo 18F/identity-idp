@@ -5,6 +5,7 @@ module Idv
       applicant
       go_back_path
       verify_info_step_document_capture_session_uuid
+      idv_consent_given
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation

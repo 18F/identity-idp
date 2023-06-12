@@ -2,6 +2,7 @@ module Idv
   class SsnController < ApplicationController
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
@@ -9,7 +10,9 @@ module Idv
 
     before_action :confirm_verify_info_step_needed
     before_action :confirm_document_capture_complete
+    before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix_no_fsm
+    before_action :check_for_outage, only: :show
 
     attr_accessor :error_message
 
@@ -49,6 +52,13 @@ module Idv
     end
 
     private
+
+    def confirm_repeat_ssn
+      return if !pii_from_doc[:ssn]
+      return if request.referer == idv_verify_info_url
+
+      redirect_to idv_verify_info_url
+    end
 
     def next_url
       if pii_from_doc[:state] == 'PR'

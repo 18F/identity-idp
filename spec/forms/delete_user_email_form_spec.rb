@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DeleteUserEmailForm do
+RSpec.describe DeleteUserEmailForm do
   describe '#submit' do
     subject(:submit) { form.submit }
 

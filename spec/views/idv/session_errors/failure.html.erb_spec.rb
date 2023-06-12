@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/failure.html.erb' do
+RSpec.describe 'idv/session_errors/failure.html.erb' do
   let(:sp_name) { nil }
   let(:timeout_hours) { 6 }
 
