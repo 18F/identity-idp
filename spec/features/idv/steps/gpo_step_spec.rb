@@ -38,7 +38,7 @@ RSpec.feature 'idv gpo step', :js do
 
       # Confirm that we show the correct content on
       # the GPO page for users requesting re-send
-      expect(page).to have_content(t('idv.titles.mail.resend'))
+      expect(page).to have_content(t('idv.titles.mail.verify'))
       expect(page).to have_content(t('idv.messages.gpo.resend_timeframe'))
       expect(page).to have_content(t('idv.messages.gpo.resend_code_warning'))
       expect(page).to have_content(t('idv.buttons.mail.resend'))
