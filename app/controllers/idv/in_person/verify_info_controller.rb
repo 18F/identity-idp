@@ -73,7 +73,7 @@ module Idv
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
         }.merge(**acuant_sdk_ab_test_analytics_args).
-        merge(**extra_analytics_properties)
+          merge(**extra_analytics_properties)
       end
 
       def extra_analytics_properties
