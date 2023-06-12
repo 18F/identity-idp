@@ -156,15 +156,12 @@ module Idv
     end
 
     def analytics_arguments
-      args = {
+      {
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
-
-      args[:redo_document_capture] = true if params[:redo]
-
-      args
+        redo_document_capture: params[:redo] ? true : nil,
+      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def form_response(destination:)
