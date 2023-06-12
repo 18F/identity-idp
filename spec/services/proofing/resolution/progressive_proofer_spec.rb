@@ -264,7 +264,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
         let(:double_address_verification) { true }
         let(:applicant_pii) do
-          # meaningful
           JSON.parse(<<-STR, symbolize_names: true)
             {
               "uuid": "3e8db152-4d35-4207-b828-3eee8c52c50f",

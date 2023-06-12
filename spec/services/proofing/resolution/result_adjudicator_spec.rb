@@ -148,7 +148,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       let(:double_address_verification) { true }
       let(:should_proof_state_id) { true }
       context 'residential address and id address are different' do
-        let(:same_address_as_id) { 'false' } # meaningful
+        let(:same_address_as_id) { 'false' }
         context 'LexisNexis fails for the residential address' do
           let(:resolution_success) { false }
           let(:residential_resolution_result) do

@@ -111,7 +111,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false', # value on submission # meaningful
+            same_address_as_id: 'false', # value on submission
             address1:,
             address2:,
             city:,
@@ -131,7 +131,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           end
 
           # User picks "Yes, I live at the address on my state-issued ID" on state ID
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission # meaningful
+          pii_from_user[:same_address_as_id] = 'true' # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
@@ -176,7 +176,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'true', # value on submission # meaningful
+            same_address_as_id: 'true', # value on submission
             address1:, # address1 and identity_doc_address1 is innitially different
             address2:,
             city:,
@@ -212,7 +212,7 @@ describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false', # meaningful
+            same_address_as_id: 'false',
             address1:,
             address2:,
             city:,
@@ -231,7 +231,7 @@ describe Idv::Steps::InPerson::StateIdStep do
           end
 
           # User picks "No, I live at a different address" on state ID
-          pii_from_user[:same_address_as_id] = 'false' # on form before submission # meaningful
+          pii_from_user[:same_address_as_id] = 'false' # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
@@ -401,7 +401,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     let(:identity_doc_address1) { '123 Sesame Street' }
     let(:identity_doc_address2) { 'Apt. #C' }
     let(:identity_doc_zipcode) { '90001' }
-    let(:same_address_as_id) { 'true' } # meaningful
+    let(:same_address_as_id) { 'true' }
     let(:submitted_values) do
       {
         dob: dob,
@@ -442,7 +442,7 @@ describe Idv::Steps::InPerson::StateIdStep do
     end
 
     context 'different address from id' do
-      let(:same_address_as_id) { 'false' } # meaningful
+      let(:same_address_as_id) { 'false' }
       it 'does not add state id values to address values in pii' do
         step.call
 
