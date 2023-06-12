@@ -43,9 +43,11 @@ module ArcgisApi
     # @param [String] cache_key token cache key
     # @param [ArcgisApi::ConnectionFactory] connection_factory
     # @param [Number] prefetch_ttl number of seconds used to calculate a sliding_expires_at time
-    def initialize(cache_key, connection_factory, prefetch_ttl)
-      @cache_key = cache_key || API_TOKEN_CACHE_KEY
-      @connection_factory = connection_factory || ArcgisApi::ConnectionFactory.new
+    def initialize(cache_key: API_TOKEN_CACHE_KEY,
+                   connection_factory: ArcgisApi::ConnectionFactory.new,
+                   prefetch_ttl: API_PREFETCH_TTL_SECONDS)
+      @cache_key = cache_key
+      @connection_factory = connection_factory
       @prefetch_ttl = prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS
       @analytics = Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
     end

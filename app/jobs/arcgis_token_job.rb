@@ -1,9 +1,9 @@
 class ArcgisTokenJob < ApplicationJob
   queue_as :default
 
-  attr_accessor :token_keeper
-  def initialize(token_keeper = nil)
-    @token_keeper = token_keeper || ArcgisApi::TokenKeeper.new(nil, nil, nil)
+  attr_reader :token_keeper
+  def initialize(token_keeper: ArcgisApi::TokenKeeper.new)
+    @token_keeper = token_keeper
   end
 
   def perform
