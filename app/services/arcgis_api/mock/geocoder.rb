@@ -1,21 +1,26 @@
 module ArcgisApi
   module Mock
+    # Mocking connection factory to generate stub response
     class MockConnectionFactory < ArcgisApi::ConnectionFactory
-      def connection(url = nil, options = nil)
-        stubs = Faraday::Adapter::Test::Stubs.new do |stub|
+      attr_reader :stub
+      def initialize
+        @stub = Faraday::Adapter::Test::Stubs.new do |stub|
           stub_generate_token(stub)
           stub_suggestions(stub)
           stub_address_candidates(stub)
         end
+      end
+
+      def connection(url = nil, options = nil)
         super(url, options) do |con|
-          con.adapter :test, stubs
+          con.adapter :test, stub
         end
       end
 
       private
 
       def stub_generate_token(stub)
-        stub.post(IdentityConfig.store.arcgis_api_generate_token_url) do |env|
+        stub.post(IdentityConfig.store.arcgis_api_generate_token_url) do |_|
           [
             200,
             { 'Content-Type': 'application/json' },
@@ -29,7 +34,7 @@ module ArcgisApi
       end
 
       def stub_suggestions(stub)
-        stub.get(IdentityConfig.store.arcgis_api_suggest_url) do |env|
+        stub.get(IdentityConfig.store.arcgis_api_suggest_url) do |_|
           [
             200,
             { 'Content-Type': 'application/json' },
@@ -39,7 +44,7 @@ module ArcgisApi
       end
 
       def stub_address_candidates(stub)
-        stub.get(IdentityConfig.store.arcgis_api_find_address_candidates_url) do |env|
+        stub.get(IdentityConfig.store.arcgis_api_find_address_candidates_url) do |_|
           [
             200,
             { 'Content-Type': 'application/json' },
@@ -49,6 +54,7 @@ module ArcgisApi
       end
     end
 
+    # Mocking Geocoder with injected mocking connection factory
     class Geocoder < ArcgisApi::Geocoder
       def initialize
         super(token_keeper: nil, connection_factory: ArcgisApi::Mock::MockConnectionFactory.new)
