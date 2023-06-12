@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'ostruct'
 
-describe Proofing::Aamva::Proofer do
+RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
     Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Db::SpReturnLog do
+RSpec.describe Db::SpReturnLog do
   describe '#create_return' do
     it 'does not fail if row already exists' do
       sp_return_log = SpReturnLog.create(

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe NoJsController do
+RSpec.describe NoJsController do
   describe '#index' do
     subject(:response) { get :index }
 

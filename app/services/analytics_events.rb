@@ -3366,14 +3366,12 @@ module AnalyticsEvents
 
   # @param [String] flash
   # @param [String] stored_location
-  # @param [String] sign_in_a_b_test_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
-      sign_in_a_b_test_bucket:,
       **extra,
     )
   end
@@ -3583,18 +3581,23 @@ module AnalyticsEvents
 
   # User was shown an "Are you sure you want to navigate away from this page?" message from their
   # browser (via onbeforeunload). (This is a frontend event.)
-  def user_prompted_before_navigation
+  # @param [String] path Path where this event was encountered.
+  def user_prompted_before_navigation(path:, **extra)
     track_event(
       'User prompted before navigation',
+      path: path,
+      **extra,
     )
   end
 
   # User was shown an "Are you sure you want to navigate away from this page?" prompt via
   # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
+  # @param [String] path Path where this event was encountered.
   # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(seconds:, **extra)
+  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
     track_event(
       'User prompted before navigation and still on page',
+      path: path,
       seconds: seconds,
       **extra,
     )
@@ -3704,7 +3707,6 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
-  # @param [String] sign_in_a_b_test_bucket
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_complete(
@@ -3712,7 +3714,6 @@ module AnalyticsEvents
     service_provider_name:,
     page_occurence:,
     needs_completion_screen_reason:,
-    sign_in_a_b_test_bucket:,
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
@@ -3725,7 +3726,6 @@ module AnalyticsEvents
       service_provider_name: service_provider_name,
       page_occurence: page_occurence,
       needs_completion_screen_reason: needs_completion_screen_reason,
-      sign_in_a_b_test_bucket:,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,
@@ -3785,15 +3785,8 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits enter email page
-  # @param [String] sign_in_a_b_test_bucket
-  # @param [Boolean] from_sign_in
-  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, **extra)
-    track_event(
-      'User Registration: enter email visited',
-      sign_in_a_b_test_bucket:,
-      from_sign_in:,
-      **extra,
-    )
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
   end
 
   # @param [Boolean] success

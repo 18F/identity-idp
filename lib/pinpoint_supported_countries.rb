@@ -15,9 +15,14 @@ class PinpointSupportedCountries
     EG
     FR
     JO
-    MX
     PH
     TH
+  ].to_set.freeze
+
+  # Countries where AWS claims sender ID is required, and we don't have one, and
+  # it seems to work anyway.
+  SENDER_ID_EXCEPTION_COUNTRIES = %w[
+    AU
   ].to_set.freeze
 
   CountrySupport = Struct.new(
@@ -70,7 +75,7 @@ class PinpointSupportedCountries
         iso_code = sms_config['ISO code']
         supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'
-          SENDER_ID_COUNTRIES.include?(iso_code)
+          SENDER_ID_COUNTRIES.include?(iso_code) || SENDER_ID_EXCEPTION_COUNTRIES.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
           true
         else

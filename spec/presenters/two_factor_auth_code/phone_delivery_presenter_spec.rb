@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::PhoneDeliveryPresenter do
+RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
 

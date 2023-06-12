@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::MultiRegionKmsClient do
+RSpec.describe Encryption::MultiRegionKmsClient do
   let(:kms_enabled) { true }
   let(:kms_multi_region_enabled) { true }
   let(:aws_kms_regions) { %w[us-north-1 us-south-1] }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
   let(:flow_session) do
@@ -27,10 +27,10 @@ describe Idv::LinkSentController do
       )
     end
 
-    it 'checks that upload step is complete' do
+    it 'checks that hybrid_handoff is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_upload_step_complete,
+        :confirm_hybrid_handoff_complete,
       )
     end
   end
@@ -66,7 +66,7 @@ describe Idv::LinkSentController do
       )
     end
 
-    context '#confirm_upload_step_complete' do
+    context '#confirm_hybrid_handoff_complete' do
       context 'no flow_path' do
         it 'redirects to idv_hybrid_handoff_url' do
           flow_session[:flow_path] = nil

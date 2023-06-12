@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorOptionsPresenter do
+RSpec.describe TwoFactorOptionsPresenter do
   include Rails.application.routes.url_helpers
   include RequestHelper
 

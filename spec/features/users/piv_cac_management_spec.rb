@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'PIV/CAC Management' do
+RSpec.feature 'PIV/CAC Management' do
   def find_form(page, attributes)
     page.all('form').detect do |form|
       attributes.all? { |key, value| form[key] == value }

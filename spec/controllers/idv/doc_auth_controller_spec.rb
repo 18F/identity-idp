@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::DocAuthController do
+RSpec.describe Idv::DocAuthController do
   include DocAuthHelper
 
   let(:user) { build(:user) }

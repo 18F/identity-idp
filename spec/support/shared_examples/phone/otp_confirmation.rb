@@ -1,4 +1,4 @@
-shared_examples 'phone otp confirmation' do |delivery_method|
+RSpec.shared_examples 'phone otp confirmation' do |delivery_method|
   it 'allows the user to confirm a phone' do
     visit_otp_confirmation(delivery_method)
     fill_in :code, with: last_otp(delivery_method)

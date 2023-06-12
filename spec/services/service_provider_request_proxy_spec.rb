@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderRequestProxy do
+RSpec.describe ServiceProviderRequestProxy do
   before do
     ServiceProviderRequestProxy.flush
   end

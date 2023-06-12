@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountShowPresenter do
+RSpec.describe AccountShowPresenter do
   describe '#header_personalization' do
     context 'AccountShowPresenter instance has decrypted_pii' do
       it "returns the user's first name" do

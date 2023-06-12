@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SamlEndpoint do
+RSpec.describe SamlEndpoint do
   let(:year) { '2023' }
 
   subject { described_class.new(year) }

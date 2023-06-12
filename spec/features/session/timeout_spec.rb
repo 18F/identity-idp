@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Session Timeout' do
+RSpec.feature 'Session Timeout' do
   context 'when SP info no longer in session but request_id params exists' do
     it 'preserves the branded experience' do
       issuer = 'http://localhost:3000'

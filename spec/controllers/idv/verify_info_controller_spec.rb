@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::VerifyInfoController do
+RSpec.describe Idv::VerifyInfoController do
   include IdvHelper
 
   let(:flow_session) do

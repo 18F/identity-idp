@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::PiiEncryptor do
+RSpec.describe Encryption::Encryptors::PiiEncryptor do
   let(:password) { 'password' }
   let(:plaintext) { 'Oooh baby baby' }
 
