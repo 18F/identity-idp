@@ -183,9 +183,10 @@ RSpec.feature 'User profile' do
   end
 
   context 'allows verified user to see their information' do
+    let(:pii) { dob: Idp::Constants::MOCK_IDV_APPLICANT[:dob]}
     context 'time between sign in and remember device' do
       it 'does not have prompt to authenticate device' do
-        profile = create(:profile, :active, :verified, pii: Idp::Constants::MOCK_IDV_APPLICANT)
+        profile = create(:profile, :active, :verified, pii: pii)
         sign_in_user(profile.user)
         check t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
@@ -201,7 +202,7 @@ RSpec.feature 'User profile' do
 
     context 'when time expired' do
       it 'has a prompt to authenticate device' do
-        profile = create(:profile, :active, :verified, pii: Idp::Constants::MOCK_IDV_APPLICANT)
+        profile = create(:profile, :active, :verified, pii: pii)
         user = profile.user
         sign_in_user(user)
         dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
