@@ -1,5 +1,5 @@
 require 'rails_helper'
-RSpec.feature 'Email confirmation during sign up' do
+RSpec.feature 'Email language Preference' do
   describe 'visitor signs up with email language preference' do
     it 'defaults to the current locale' do
       visit sign_up_email_path
