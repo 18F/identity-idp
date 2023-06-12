@@ -22,16 +22,15 @@ module Db
             service_provider AS issuer,
             count(user_id) AS total,
             count(user_id)-count(verified_at) AS ial1_total,
-            count(verified_at) AS ial2_total,
-            MAX(app_id) AS app_id
+            count(verified_at) AS ial2_total
           FROM identities, service_providers
-          WHERE identities.service_provider = service_providers.issuer
-          AND identities.service_provider = ?
+          WHERE identities.service_provider = ?
           GROUP BY identities.service_provider ORDER BY identities.service_provider
+          LIMIT 1
         SQL
 
         query = ApplicationRecord.sanitize_sql_array([sql, issuer])
-        ActiveRecord::Base.connection.exec_query(query).to_a
+        ActiveRecord::Base.connection.execute(query).first
       end
 
       def self.overall
