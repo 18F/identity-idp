@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'User profile' do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper

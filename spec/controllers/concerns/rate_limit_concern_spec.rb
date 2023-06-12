@@ -1,11 +1,12 @@
 require 'rails_helper'
 
-describe 'RateLimitConcern' do
+RSpec.describe 'RateLimitConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
   module Idv
     class StepController < ApplicationController
       include RateLimitConcern
+      include IdvSession
 
       def show
         render plain: 'Hello'

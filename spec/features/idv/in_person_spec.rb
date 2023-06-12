@@ -330,7 +330,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_upload_step
+        complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 
@@ -388,7 +388,7 @@ RSpec.describe 'In Person Proofing', js: true do
         t('step_indicator.flows.idv.verify_phone_or_address'),
       )
       click_on t('idv.buttons.mail.send')
-      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       complete_review_step
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))

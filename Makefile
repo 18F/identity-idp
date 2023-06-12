@@ -25,6 +25,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	help \
 	lint \
 	lint_analytics_events \
+	lint_analytics_events_sorted \
 	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
@@ -75,6 +76,7 @@ endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events
+	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- bundler-audit ---"
@@ -101,6 +103,7 @@ endif
 	make lint_readme
 	@echo "--- lint migrations ---"
 	make lint_migrations
+
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
@@ -246,6 +249,10 @@ analytics_events: public/api/_analytics-events.json ## Generates a JSON file tha
 
 lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
+
+lint_analytics_events_sorted:
+	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
+		|| (echo 'Error: methods in analytics_events.rb are not sorted alphabetically' && exit 1)
 
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<

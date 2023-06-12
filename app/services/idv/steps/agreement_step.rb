@@ -12,7 +12,10 @@ module Idv
       end
 
       def call
-        if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+        if flow_session[:skip_upload_step]
+          redirect_to idv_document_capture_url
+          flow_session[:flow_path] = 'standard'
+        else
           redirect_to idv_hybrid_handoff_url
         end
       end

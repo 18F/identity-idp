@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::DeletedUserAccountsReport do
+RSpec.describe Reports::DeletedUserAccountsReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
   let(:name) { 'An SP' }

@@ -1,5 +1,9 @@
 type CSRFGetter = () => string | undefined;
 
+export class ResponseError extends Error {
+  status: number;
+}
+
 interface RequestOptions extends RequestInit {
   /**
    * Either boolean or unstringified POJO to send with the request as JSON. Defaults to true.
@@ -102,7 +106,9 @@ export async function request(url: string, options: Partial<RequestOptions> = {}
 
   if (read) {
     if (!response.ok) {
-      throw new Error();
+      const error = new ResponseError();
+      error.status = response.status;
+      throw error;
     }
 
     return json ? response.json() : response.text();

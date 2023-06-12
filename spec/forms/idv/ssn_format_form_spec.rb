@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnFormatForm do
+RSpec.describe Idv::SsnFormatForm do
   let(:user) { create(:user) }
   let(:ssn) { '111-11-1111' }
   let(:flow_session) { {} }

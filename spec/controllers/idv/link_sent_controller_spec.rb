@@ -1,13 +1,12 @@
 require 'rails_helper'
 
-describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'hybrid',
-      :phone_for_mobile_flow => '201-555-1212' }
+      :flow_path => 'hybrid' }
   end
 
   let(:user) { create(:user) }
@@ -28,10 +27,10 @@ describe Idv::LinkSentController do
       )
     end
 
-    it 'checks that upload step is complete' do
+    it 'checks that hybrid_handoff is complete' do
       expect(subject).to have_actions(
         :before,
-        :confirm_upload_step_complete,
+        :confirm_hybrid_handoff_complete,
       )
     end
   end
@@ -67,14 +66,14 @@ describe Idv::LinkSentController do
       )
     end
 
-    context '#confirm_upload_step_complete' do
+    context '#confirm_hybrid_handoff_complete' do
       context 'no flow_path' do
-        it 'redirects to idv_doc_auth_url' do
+        it 'redirects to idv_hybrid_handoff_url' do
           flow_session[:flow_path] = nil
 
           get :show
 
-          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
 
@@ -148,19 +147,20 @@ describe Idv::LinkSentController do
 
       context 'document capture session canceled' do
         let(:session_canceled_at) { Time.zone.now }
+        let(:error_message) { t('errors.doc_auth.document_capture_cancelled') }
 
-        it 'redirects to doc_auth page' do
-          error_message = t('errors.doc_auth.document_capture_cancelled')
+        before do
           expect(FormResponse).to receive(:new).with(
             { success: false,
               errors: { message: error_message } },
           )
+        end
 
+        it 'redirects to hybrid_handoff page' do
           put :update
 
-          expect(response).to redirect_to(idv_doc_auth_url)
+          expect(response).to redirect_to(idv_hybrid_handoff_url)
           expect(flow_session[:error_message]).to eq(error_message)
-          expect(flow_session['Idv::Steps::UploadStep']).to be_nil
         end
       end
 

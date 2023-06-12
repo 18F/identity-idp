@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Hybrid Flow', :allow_net_connect_on_start do
+RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
@@ -23,7 +23,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
@@ -41,6 +41,11 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
       # Confirm app disallows jumping ahead to CaptureComplete page
       visit idv_hybrid_mobile_capture_complete_url
       expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+      # Confirm that jumping to LinkSent page does not cause errors
+      visit idv_link_sent_url
+      expect(page).to have_current_path(root_url)
+      visit idv_hybrid_mobile_document_capture_url
 
       attach_and_submit_images
 
@@ -82,7 +87,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 

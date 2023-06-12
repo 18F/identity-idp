@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SsnFormatter do
+RSpec.describe SsnFormatter do
   describe '.format' do
     let(:ssn) { '' }
     subject { SsnFormatter.format(ssn) }

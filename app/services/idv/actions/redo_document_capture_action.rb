@@ -9,10 +9,9 @@ module Idv
         flow_session['redo_document_capture'] = true
         if flow_session[:skip_upload_step]
           redirect_to idv_document_capture_url
-        elsif IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-          redirect_to idv_hybrid_handoff_url
         else
-          mark_step_incomplete(:upload)
+          redirect_to idv_hybrid_handoff_url
+          flow_session[:flow_path] = nil
         end
       end
     end

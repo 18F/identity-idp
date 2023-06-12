@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::ValidateGrantedToken do
+RSpec.describe AccountReset::ValidateGrantedToken do
   include AccountResetHelper
 
   let(:expired_token_message) do

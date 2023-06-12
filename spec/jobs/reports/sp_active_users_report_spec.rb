@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::SpActiveUsersReport do
+RSpec.describe Reports::SpActiveUsersReport do
   subject { described_class.new }
 
   let(:issuer) { 'foo' }

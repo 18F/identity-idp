@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-feature 'Accessibility on pages that do not require authentication', :js do
+RSpec.feature 'Accessibility on pages that do not require authentication', :js do
   scenario 'login / root path' do
     visit root_path
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'i18n requests' do
+RSpec.describe 'i18n requests' do
   context 'with CSRF errors' do
     before do
       ActionController::Base.allow_forgery_protection = true

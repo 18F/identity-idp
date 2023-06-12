@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ReviewController do
+RSpec.describe Idv::ReviewController do
   include UspsIppHelper
 
   let(:user) do
@@ -159,14 +159,31 @@ describe Idv::ReviewController do
         )
       end
 
+      it 'uses the correct step indicator step' do
+        indicator_step = subject.step_indicator_step
+
+        expect(indicator_step).to eq(:secure_account)
+      end
+
       context 'user is in gpo flow' do
-        it 'does not display success message' do
+        before do
           idv_session.vendor_phone_confirmation = false
           idv_session.address_verification_mechanism = 'gpo'
+        end
 
+        it 'displays info message about sending letter' do
           get :new
 
           expect(flash.now[:success]).to be_nil
+          expect(flash.now[:info]).to eq(
+            t('idv.messages.review.gpo_pending'),
+          )
+        end
+
+        it 'uses the correct step indicator step' do
+          indicator_step = subject.step_indicator_step
+
+          expect(indicator_step).to eq(:get_a_letter)
         end
       end
 
@@ -492,6 +509,26 @@ describe Idv::ReviewController do
               expect(enrollment.enrollment_code).to be_a(String)
               expect(enrollment.profile).to eq(user.profiles.last)
               expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+            end
+          end
+
+          context 'when the USPS response is not a hash' do
+            let(:stub_usps_response) do
+              stub_request_enroll_non_hash_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected a hash but got a NilClass',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
             end
           end
 
