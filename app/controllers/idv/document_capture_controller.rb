@@ -69,12 +69,18 @@ module Idv
     end
 
     def analytics_arguments
-      {
+      args = {
         flow_path: flow_path,
         step: 'document_capture',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }.merge(**acuant_sdk_ab_test_analytics_args)
+
+      if flow_session[:redo_document_capture]
+        args[:redo_document_capture] = flow_session[:redo_document_capture]
+      end
+
+      args
     end
 
     def handle_stored_result
