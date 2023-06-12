@@ -25,7 +25,7 @@ module Idv
 
           # add this in its own pr for now
           # if (IdentityConfig.store.in_person_verify_info_controller_enabled)
-            redirect_to idv_in_person_verify_info_url
+          redirect_to idv_in_person_verify_info_url
           # end
         end
 
