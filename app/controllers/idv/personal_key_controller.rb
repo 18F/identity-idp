@@ -3,12 +3,12 @@ module Idv
     include IdvSession
     include StepIndicatorConcern
     include SecureHeadersConcern
+    include FraudReviewConcern
 
     before_action :apply_secure_headers_override
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_vendor_session_started
+    before_action :confirm_phone_or_address_confirmed
     before_action :confirm_profile_has_been_created
-    before_action :confirm_user_not_pending_gpo_verificaiton
 
     def show
       analytics.idv_personal_key_visited(address_verification_method: address_verification_method)
@@ -23,8 +23,8 @@ module Idv
       analytics.idv_personal_key_submitted(
         address_verification_method: address_verification_method,
         deactivation_reason: idv_session.profile&.deactivation_reason,
-        fraud_review_pending: idv_session.profile&.fraud_review_pending?,
-        fraud_rejection: idv_session.profile&.fraud_rejection?,
+        fraud_review_pending: fraud_review_pending?,
+        fraud_rejection: fraud_rejection?,
       )
       redirect_to next_step
     end
@@ -38,7 +38,7 @@ module Idv
     def next_step
       if in_person_enrollment?
         idv_in_person_ready_to_verify_url
-      elsif blocked_by_device_profiling?
+      elsif fraud_check_failed?
         idv_please_call_url
       elsif session[:sp]
         sign_up_completed_url
@@ -49,11 +49,6 @@ module Idv
 
     def confirm_profile_has_been_created
       redirect_to account_url if profile.blank?
-    end
-
-    def confirm_user_not_pending_gpo_verificaiton
-      return unless current_user.pending_profile_requires_verification?
-      redirect_to idv_come_back_later_url
     end
 
     def add_proofing_component
@@ -79,7 +74,7 @@ module Idv
 
     def profile
       return idv_session.profile if idv_session.profile
-      current_user.active_profile
+      current_user.active_or_pending_profile
     end
 
     def generate_personal_key
@@ -90,11 +85,6 @@ module Idv
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
       current_user.pending_in_person_enrollment.present?
-    end
-
-    def blocked_by_device_profiling?
-      !profile.active &&
-        profile.fraud_review_pending? || profile.fraud_rejection
     end
   end
 end

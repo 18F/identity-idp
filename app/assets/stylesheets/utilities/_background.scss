@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 @include at-media('tablet') {
   /* stylelint-disable-next-line selector-class-pattern */
   .tablet\:bg-primary-lighter {

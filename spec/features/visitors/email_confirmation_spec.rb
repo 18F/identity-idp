@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Email confirmation during sign up' do
+RSpec.feature 'Email confirmation during sign up' do
   scenario 'confirms valid email and sets valid password' do
     allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
     reset_email
@@ -15,6 +15,9 @@ feature 'Email confirmation during sign up' do
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
     fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: Features::SessionHelper::VALID_PASSWORD
+
     click_button t('forms.buttons.continue')
 
     expect(current_url).to eq authentication_methods_setup_url

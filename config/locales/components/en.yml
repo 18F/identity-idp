@@ -9,6 +9,7 @@ en:
       mock_score_label: 'reCAPTCHA score: (0.0 - 1.0)'
     clipboard_button:
       label: Copy
+      tooltip: Copied!
     countdown_alert:
       time_remaining_html: '%{countdown_html} remaining'
     download_button:
@@ -42,6 +43,12 @@ en:
         alphanumeric: 'Example: 123ABC'
         numeric: 'Example: 123456'
       label: One-time code
+    password_confirmation:
+      confirm_label: Confirm password
+      errors:
+        empty: Type your password again
+        mismatch: Your passwords don’t match
+      toggle_label: Show password
     password_toggle:
       label: Password
       toggle_label: Show password

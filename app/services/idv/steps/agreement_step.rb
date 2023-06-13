@@ -12,6 +12,12 @@ module Idv
       end
 
       def call
+        if flow_session[:skip_upload_step]
+          redirect_to idv_document_capture_url
+          flow_session[:flow_path] = 'standard'
+        else
+          redirect_to idv_hybrid_handoff_url
+        end
       end
 
       def form_submit

@@ -1,3 +1,6 @@
+@use 'uswds-core' as *;
+@use '../variables/app' as *;
+
 .profile-info-box {
   border: 0;
   border-radius: 0;

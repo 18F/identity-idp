@@ -5,6 +5,7 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         include ThreatMetrixStepHelper
+        include TempMaybeRedirectToVerifyInfoHelper
 
         def self.analytics_visited_event
           :idv_doc_auth_ssn_visited
@@ -23,12 +24,12 @@ module Idv
 
           idv_session.delete('applicant')
 
-          exit_flow_state_machine if IdentityConfig.store.in_person_verify_info_controller_enabled
+          maybe_redirect_to_verify_info
         end
 
         def extra_view_variables
           {
-            updating_ssn: updating_ssn,
+            updating_ssn: updating_ssn?,
             **threatmetrix_view_variables,
           }
         end
@@ -43,13 +44,8 @@ module Idv
           flow_params[:ssn]
         end
 
-        def updating_ssn
+        def updating_ssn?
           flow_session.dig(:pii_from_user, :ssn).present?
-        end
-
-        def exit_flow_state_machine
-          flow_session[:flow_path] = @flow.flow_path
-          redirect_to idv_in_person_verify_info_url
         end
       end
     end

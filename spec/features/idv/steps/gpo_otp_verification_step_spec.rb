@@ -1,18 +1,17 @@
 require 'rails_helper'
 
-feature 'idv gpo otp verification step' do
+RSpec.feature 'idv gpo otp verification step' do
   include IdvStepHelper
 
   let(:otp) { 'ABC123' }
   let(:profile) do
     create(
       :profile,
-      deactivation_reason: :gpo_verification_pending,
+      deactivation_reason: 3,
+      gpo_verification_pending_at: 2.days.ago,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
-      proofing_components: {
-        threatmetrix: threatmetrix_enabled,
-        threatmetrix_review_status: threatmetrix_review_status,
-      },
+      fraud_review_pending_at: fraud_review_pending_timestamp,
+      fraud_rejection_at: fraud_rejection_timestamp,
     )
   end
   let(:gpo_confirmation_code) do
@@ -24,7 +23,8 @@ feature 'idv gpo otp verification step' do
   end
   let(:user) { profile.user }
   let(:threatmetrix_enabled) { false }
-  let(:threatmetrix_review_status) { nil }
+  let(:fraud_review_pending_timestamp) { nil }
+  let(:fraud_rejection_timestamp) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
   let(:fraud_review_pending) { false }
@@ -38,7 +38,7 @@ feature 'idv gpo otp verification step' do
 
   context 'ThreatMetrix disabled, but we have ThreatMetrix status on proofing component' do
     let(:threatmetrix_enabled) { false }
-    let(:threatmetrix_review_status) { 'review' }
+    let(:fraud_review_pending_timestamp) { 1.day.ago }
     it_behaves_like 'gpo otp verification'
   end
 
@@ -46,26 +46,26 @@ feature 'idv gpo otp verification step' do
     let(:threatmetrix_enabled) { true }
 
     context 'ThreatMetrix says "pass"' do
-      let(:threatmetrix_review_status) { 'pass' }
+      let(:fraud_review_pending_timestamp) { nil }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'ThreatMetrix says "review"' do
-      let(:threatmetrix_review_status) { 'review' }
+      let(:fraud_review_pending_timestamp) { 1.day.ago }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'ThreatMetrix says "reject"' do
-      let(:threatmetrix_review_status) { 'reject' }
+      let(:fraud_rejection_timestamp) { 1.day.ago }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'No ThreatMetrix result on proofing component' do
-      let(:threatmetrix_review_status) { nil }
+      let(:fraud_review_pending_timestamp) { nil }
       it_behaves_like 'gpo otp verification'
     end
   end

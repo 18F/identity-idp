@@ -1,6 +1,7 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
+    include OutageConcern
     include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
@@ -8,6 +9,7 @@ module Idv
 
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
+    before_action :check_for_outage, only: :show
 
     def show
       @step_indicator_steps = step_indicator_steps
@@ -32,56 +34,14 @@ module Idv
       process_async_state(load_async_state)
     end
 
-    def update
-      return if idv_session.verify_info_step_document_capture_session_uuid
-      analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-        call('verify', :update, true)
-
-      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-
-      ssn_throttle.increment!
-      if ssn_throttle.throttled?
-        idv_failure_log_throttled(:proof_ssn)
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :proof_ssn,
-          step_name: 'verify_info',
-        )
-        redirect_to idv_session_errors_ssn_failure_url
-        return
-      end
-
-      if resolution_throttle.throttled?
-        idv_failure_log_throttled(:idv_resolution)
-        redirect_to throttled_url
-        return
-      end
-
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: current_user.id,
-        issuer: sp_session[:issuer],
-      )
-      document_capture_session.requested_at = Time.zone.now
-
-      idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
-      idv_session.vendor_phone_confirmation = false
-      idv_session.user_phone_confirmation = false
-
-      Idv::Agent.new(pii).proof_resolution(
-        document_capture_session,
-        should_proof_state_id: should_use_aamva?(pii),
-        trace_id: amzn_trace_id,
-        user_id: current_user.id,
-        threatmetrix_session_id: flow_session[:threatmetrix_session_id],
-        request_ip: request.remote_ip,
-        double_address_verification: current_user.establishing_in_person_enrollment&.
-        capture_secondary_id_enabled || false,
-      )
-
-      redirect_to idv_verify_info_url
-    end
-
     private
+
+    # state ID type isn't manually set for Idv::VerifyInfoController
+    def set_state_id_type; end
+
+    def after_update_url
+      idv_verify_info_url
+    end
 
     def prev_url
       idv_ssn_url
@@ -99,17 +59,6 @@ module Idv
     # copied from verify_step
     def pii
       @pii = flow_session[:pii_from_doc]
-    end
-
-    def delete_pii
-      flow_session.delete(:pii_from_doc)
-      flow_session.delete(:pii_from_user)
-    end
-
-    # copied from address_controller
-    def confirm_ssn_step_complete
-      return if pii.present? && pii[:ssn].present?
-      redirect_to prev_url
     end
   end
 end

@@ -27,10 +27,6 @@ module Idv
 
         private
 
-        def capture_secondary_id_enabled?
-          current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
-        end
-
         def pii
           flow_session[:pii_from_user]
         end

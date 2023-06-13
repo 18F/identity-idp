@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneConfiguration do
+RSpec.describe PhoneConfiguration do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_presence_of(:encrypted_phone) }

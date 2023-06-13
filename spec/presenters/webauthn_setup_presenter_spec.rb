@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthnSetupPresenter do
+RSpec.describe WebauthnSetupPresenter do
   let(:user) { build(:user) }
   let(:user_fully_authenticated) { false }
   let(:user_opted_remember_device_cookie) { true }
@@ -25,7 +25,13 @@ describe WebauthnSetupPresenter do
   describe '#image_path' do
     subject { presenter.image_path }
 
-    it { is_expected.to  eq('security-key.svg') }
+    it { is_expected.to eq('security-key.svg') }
+  end
+
+  describe '#page_title' do
+    subject { presenter.page_title }
+
+    it { is_expected.to eq(t('titles.webauthn_setup')) }
   end
 
   describe '#heading' do
@@ -71,7 +77,13 @@ describe WebauthnSetupPresenter do
     describe '#image_path' do
       subject { presenter.image_path }
 
-      it { is_expected.to  eq('platform-authenticator.svg') }
+      it { is_expected.to eq('platform-authenticator.svg') }
+    end
+
+    describe '#page_title' do
+      subject { presenter.page_title }
+
+      it { is_expected.to eq(t('headings.webauthn_platform_setup.new')) }
     end
 
     describe '#heading' do

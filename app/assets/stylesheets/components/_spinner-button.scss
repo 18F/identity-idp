@@ -1,42 +1,21 @@
-lg-spinner-button {
-  display: block;
+@use 'uswds-core' as *;
 
-  @include at-media('mobile-lg') {
-    display: inline-block;
+lg-spinner-button {
+  .usa-button {
+    position: relative;
   }
 
   &:not(.spinner-button--spinner-active) .spinner-dots {
     display: none;
   }
+
+  &:not(.spinner-button--outline) .spinner-dots {
+    color: color('white');
+  }
 }
 
-.spinner-button--spinner-active {
-  .spinner-button__content {
-    position: relative;
-
-    a,
-    button:not([type]),
-    [type='submit'],
-    [type='button'],
-    .usa-button:disabled.usa-button--active:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse),
-    .usa-button--disabled.usa-button--active:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse) {
-      color: transparent;
-      opacity: 1;
-    }
-  }
-
-  &:not(.spinner-button--outline) .spinner-button__content {
-    a,
-    button:not([type]),
-    [type='submit'],
-    [type='button'] {
-      background-color: color('primary-darker');
-    }
-
-    .spinner-dots {
-      color: color('white');
-    }
-  }
+.spinner-button--spinner-active .spinner-button__content {
+  opacity: 0;
 }
 
 .spinner-button__action-message {

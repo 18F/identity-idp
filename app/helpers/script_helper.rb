@@ -39,7 +39,7 @@ module ScriptHelper
   private
 
   SAME_ORIGIN_ASSETS = %w[
-    identity-style-guide/dist/assets/img/sprite.svg
+    sprite.svg
   ].to_set.freeze
 
   def local_crossorigin_sources?

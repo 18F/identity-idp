@@ -1,20 +1,15 @@
 require 'rails_helper'
 
-feature 'doc auth document capture step', :js do
+RSpec.feature 'doc auth document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
-  let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:sp_name) { 'Test SP' }
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).
-      and_return(doc_auth_enable_presigned_s3_urls)
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
 
@@ -31,7 +26,7 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
     complete_agreement_step
     visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
   context 'standard desktop flow' do
@@ -40,9 +35,9 @@ feature 'doc auth document capture step', :js do
     end
 
     it 'shows the new DocumentCapture page for desktop standard flow' do
-      expect(page).to have_current_path(idv_document_capture_url)
+      expect(page).to have_current_path(idv_document_capture_path)
 
-      expect(page).to have_content(t('doc_auth.headings.document_capture'))
+      expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
       expect(page).to have_content(t('step_indicator.flows.idv.verify_id'))
 
       expect(fake_analytics).to have_logged_event(
@@ -53,6 +48,12 @@ feature 'doc auth document capture step', :js do
         irs_reproofing: false,
         acuant_sdk_upgrade_ab_test_bucket: :default,
       )
+
+      # it redirects here if trying to move earlier in the flow
+      visit(idv_doc_auth_agreement_step)
+      expect(page).to have_current_path(idv_document_capture_path)
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_document_capture_path)
     end
 
     it 'logs return to sp link click' do

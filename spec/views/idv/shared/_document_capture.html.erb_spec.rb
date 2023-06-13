@@ -1,9 +1,8 @@
 require 'rails_helper'
 
-describe 'idv/shared/_document_capture.html.erb' do
+RSpec.describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
-  let(:async_uploads_enabled) { false }
   let(:document_capture_session_uuid) { nil }
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
@@ -11,11 +10,9 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuer) { nil }
-  let(:front_image_upload_url) { nil }
-  let(:back_image_upload_url) { nil }
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
-  let(:acuant_version) { '11.8.1' }
+  let(:acuant_version) { '1.3.3.7' }
   let(:in_person_cta_variant_testing_enabled) { false }
   let(:in_person_cta_variant_active) { '' }
 
@@ -28,8 +25,6 @@ describe 'idv/shared/_document_capture.html.erb' do
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     allow(view).to receive(:url_for).and_return('https://example.com/')
 
-    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
-      and_return(async_uploads_enabled)
     allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?) do |issuer|
       if issuer.nil?
         in_person_proofing_enabled
@@ -47,43 +42,12 @@ describe 'idv/shared/_document_capture.html.erb' do
       sp_name: sp_name,
       flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,
-      front_image_upload_url: front_image_upload_url,
-      back_image_upload_url: back_image_upload_url,
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
       in_person_cta_variant_testing_enabled: in_person_cta_variant_testing_enabled,
       in_person_cta_variant_active: in_person_cta_variant_active,
     }
-  end
-
-  describe 'async upload urls' do
-    context 'when async upload is disabled' do
-      let(:async_uploads_enabled) { false }
-
-      it 'does not modify CSP connect_src headers' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to eq(
-          ["'self'", '*.nr-data.net'],
-        )
-      end
-    end
-
-    context 'when async upload are enabled' do
-      let(:async_uploads_enabled) { true }
-      let(:front_image_upload_url) { 'https://s3.example.com/bucket/a?X-Amz-Security-Token=UAOL2' }
-      let(:back_image_upload_url) { 'https://s3.example.com/bucket/b?X-Amz-Security-Token=UAOL2' }
-
-      it 'does modifies CSP connect_src headers to include upload urls' do
-        render_partial
-
-        connect_src = controller.request.content_security_policy.connect_src
-        expect(connect_src).to include('https://s3.example.com/bucket/a')
-        expect(connect_src).to include('https://s3.example.com/bucket/b')
-      end
-    end
   end
 
   describe 'in person url' do

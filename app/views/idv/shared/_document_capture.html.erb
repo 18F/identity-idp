@@ -4,11 +4,6 @@
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
   <%= stylesheet_link_tag 'document-capture' %>
 <% end %>
-<% add_document_capture_image_urls_to_csp(
-     request,
-     [front_image_upload_url, back_image_upload_url],
-   )
-%>
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
       liveness_required: nil,
@@ -18,12 +13,8 @@
         step: :document_capture,
       ),
       document_capture_session_uuid: document_capture_session_uuid,
-      endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    api_verify_v2_document_capture_url :
-    api_verify_images_url,
-      status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document_status) :
-    nil,
+      endpoint: api_verify_images_url,
+      status_endpoint: nil,
       glare_threshold: IdentityConfig.store.doc_auth_client_glare_threshold,
       sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
       status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
@@ -37,12 +28,11 @@
       flow_path: flow_path,
       cancel_url: idv_cancel_path,
       failure_to_proof_url: failure_to_proof_url,
-      front_image_upload_url: front_image_upload_url,
-      back_image_upload_url: back_image_upload_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
       in_person_cta_variant_testing_enabled: IdentityConfig.store.in_person_cta_variant_testing_enabled,
       in_person_cta_variant_active: in_person_cta_variant_active,
+      in_person_usps_outage_message_enabled: IdentityConfig.store.in_person_usps_outage_message_enabled,
     } %>
   <%= simple_form_for(
         :doc_auth,

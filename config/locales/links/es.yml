@@ -15,7 +15,7 @@ es:
     exit_login: Salga de %{app_name}
     go_back: Regresa
     help: Ayuda
-    new_window: '(abre nueva ventana)'
+    new_tab: (abrir nueva pestaña)
     next: Siguiente
     passwords:
       forgot: '¿Olvidó su contraseña?'

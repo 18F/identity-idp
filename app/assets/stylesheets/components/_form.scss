@@ -1,9 +1,4 @@
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-appearance: none;
-  margin: 0;
-}
+@use 'uswds-core' as *;
 
 // ===============================================
 // Pending upstream Login Design System revisions:
@@ -11,7 +6,6 @@ input::-webkit-inner-spin-button {
 
 .usa-form-group--error {
   border-left-style: none;
-  margin-top: units(3); // Remove after: https://github.com/uswds/uswds/issues/4189
   padding-left: 0;
 
   @include at-media('desktop') {

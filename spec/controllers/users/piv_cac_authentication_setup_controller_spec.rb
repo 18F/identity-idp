@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::PivCacAuthenticationSetupController do
+RSpec.describe Users::PivCacAuthenticationSetupController do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -76,7 +76,7 @@ describe Users::PivCacAuthenticationSetupController do
         allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
         subject.user_session[:piv_cac_nickname] = nickname
         subject.user_session[:authn_at] = Time.zone.now
-        subject.user_session[:auth_method] = 'phone'
+        subject.user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::SMS
       end
 
       let(:nonce) { 'nonce' }

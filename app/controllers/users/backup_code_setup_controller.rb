@@ -1,7 +1,7 @@
 module Users
   class BackupCodeSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -24,7 +24,11 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics.backup_code_setup_visit(**result.to_h)
+      analytics_properties = result.to_h.merge(
+        sign_up_mfa_selection_order_bucket:
+                  sign_up_mfa_selection_order_bucket,
+      )
+      analytics.backup_code_setup_visit(**analytics_properties)
       irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
 
       save_backup_codes
@@ -75,6 +79,7 @@ module Users
     def track_backup_codes_confirmation_setup_visit
       analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
@@ -88,6 +93,11 @@ module Users
       user_session[:backup_codes] = @codes
     end
 
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
     def set_backup_code_setup_presenter
       @presenter = SetupPresenter.new(
         current_user: current_user,
@@ -97,17 +107,10 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
-    end
-
     def save_backup_codes
-      mark_user_as_fully_authenticated
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
       generator.save(user_session[:backup_codes])
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)

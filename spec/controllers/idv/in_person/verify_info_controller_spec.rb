@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::VerifyInfoController do
+RSpec.describe Idv::InPerson::VerifyInfoController do
   include IdvHelper
 
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
@@ -33,7 +33,7 @@ describe Idv::InPerson::VerifyInfoController do
       )
     end
 
-    it 'confirms verify step not already complete' do
+    it 'confirms verify step needed' do
       expect(subject).to have_actions(
         :before,
         :confirm_verify_info_step_needed,
@@ -84,18 +84,28 @@ describe Idv::InPerson::VerifyInfoController do
     end
 
     describe '#update' do
+      it 'redirects to the expected page' do
+        put :update
+
+        expect(response).to redirect_to idv_in_person_verify_info_url
+      end
+
       context 'double address verification is not enabled' do
         let(:capture_secondary_id_enabled) { false }
         let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
         before do
           allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
         end
-        it 'sets uuid_prefix on pii_from_user' do
+
+        it 'sets uuid_prefix and state_id_type on pii_from_user' do
           expect(Idv::Agent).to receive(:new).
             with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
+          # our test data already has the expected value by default
+          flow_session[:pii_from_user].delete(:state_id_type)
 
           put :update
 
+          expect(flow_session[:pii_from_user][:state_id_type]).to eq 'drivers_license'
           expect(flow_session[:pii_from_user][:uuid_prefix]).to eq service_provider.app_id
         end
 

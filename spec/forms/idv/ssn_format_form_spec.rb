@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnFormatForm do
+RSpec.describe Idv::SsnFormatForm do
   let(:user) { create(:user) }
   let(:ssn) { '111-11-1111' }
   let(:flow_session) { {} }
@@ -36,7 +36,7 @@ describe Idv::SsnFormatForm do
     end
   end
 
-  describe '#updating_ssn' do
+  describe '#updating_ssn?' do
     context 'when no flow_session value is provided' do
       subject { Idv::SsnFormatForm.new(user) }
 

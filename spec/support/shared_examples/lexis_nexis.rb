@@ -1,4 +1,4 @@
-shared_examples 'a lexisnexis rdp proofer' do
+RSpec.shared_examples 'a lexisnexis rdp proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:reference) { SecureRandom.uuid }
@@ -14,7 +14,7 @@ shared_examples 'a lexisnexis rdp proofer' do
     allow(response).to receive(:transaction_reason_code).and_return('123abc')
     allow(response).to receive(:product_list).and_return([])
 
-    allow(verification_request).to receive(:send).and_return(response)
+    allow(verification_request).to receive(:send_request).and_return(response)
     allow(verification_request.class).to receive(:new).
       with(applicant: applicant, config: kind_of(Proofing::LexisNexis::Config)).
       and_return(verification_request)
@@ -53,14 +53,14 @@ shared_examples 'a lexisnexis rdp proofer' do
   end
 end
 
-shared_examples 'a lexisnexis request' do |basic_auth: true|
+RSpec.shared_examples 'a lexisnexis request' do |basic_auth: true|
   describe '#http_headers' do
     it 'contains the content type' do
       expect(subject.headers).to include('Content-Type' => 'application/json')
     end
   end
 
-  describe '#send' do
+  describe '#send_request' do
     if basic_auth
       it 'includes the basic auth header' do
         credentials = Base64.strict_encode64('test_username:test_password')
@@ -69,7 +69,7 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
         stub_request(:post, subject.url).
           to_return(status: 200, body: response_body)
 
-        subject.send
+        subject.send_request
 
         expect(a_request(:post, subject.url).with(headers: { 'Authorization' => expected_value })).
           to have_been_requested
@@ -80,7 +80,7 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
       stub_request(:post, subject.url).
         to_return(status: 200, body: response_body)
 
-      ln_response = subject.send
+      ln_response = subject.send_request
       expect(ln_response).to be_a(Proofing::LexisNexis::Response)
       expect(ln_response.response.status).to eq 200
       expect(ln_response.response.body).to eq response_body

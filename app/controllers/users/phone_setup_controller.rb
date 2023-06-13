@@ -1,5 +1,6 @@
 module Users
   class PhoneSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include UserAuthenticator
     include PhoneConfirmation
     include MfaSetupConcern
@@ -42,10 +43,16 @@ module Users
       FeatureManagement.phone_recaptcha_enabled?
     end
 
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
       analytics.user_registration_phone_setup_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
@@ -60,10 +67,6 @@ module Users
 
     def setup_voice_preference?
       params[:otp_delivery_preference].to_s == 'voice'
-    end
-
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
     end
 
     def handle_create_success(phone)

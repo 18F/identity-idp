@@ -2,12 +2,7 @@
   "name": "@18f/identity-clipboard-button",
   "version": "1.0.0",
   "private": true,
-  "peerDependencies": {
-    "react": "*"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
+  "dependencies": {
+    "@18f/identity-design-system": "^7.0.1"
   }
 }

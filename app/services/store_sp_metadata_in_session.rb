@@ -9,7 +9,6 @@ class StoreSpMetadataInSession
     @service_provider = requested_service_provider
 
     return if sp_request.is_a?(NullServiceProviderRequest)
-
     update_session
   end
 

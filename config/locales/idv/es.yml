@@ -32,6 +32,11 @@ es:
               su cuenta, no habrá verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
               administrar o eliminar su cuenta desde %{account_page_text}.
+        gpo:
+          start_over: Si borras tu información y empiezas de nuevo
+          warnings:
+            - El código único de tu carta ya no funcionará
+            - Tendrás que volver a verificar tu identidad otra vez
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
         start_over: Si vuelve a empezar, reiniciará este proceso desde el principio.
@@ -50,7 +55,7 @@ es:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
-        ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
       attempts:
@@ -79,6 +84,28 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+        usps_outage_error_message:
+          post_cta:
+            body: Mientras tanto, todavía puedes iniciar el proceso de verificación
+              presencial en %{app_name} y luego acudir a una oficina de correos.
+              Si necesitas utilizar cuanto antes los servicios, contacta
+              directamente a tu agencia.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
+          ready_to_verify:
+            body: Todavía puedes acudir a una oficina de correos para completar tu proceso
+              de verificación de identidad. Si necesitas utilizar cuanto antes
+              los servicios, contacta directamente a tu agencia.
+            contact_html: <a href="%{help_url}" target="_blank">Contacta al soporte de
+              %{app_name}</a> si no has recibido un correo electrónico con los
+              resultados de tu verificación para el jueves, June 1.
+            title: Estamos resolviendo un problema técnico. Es probable que los resultados
+              de tu verificación de identidad se te envíen por correo
+              electrónico hasta el martes, May 30.
+      exit:
+        with_sp: Salir de %{app_name} y volver a %{sp_name}
+        without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
       phone:
         heading: No pudimos encontrar coincidencias entre este número de teléfono y
           otros registros
@@ -108,18 +135,16 @@ es:
             how_long_it_takes: Suele tardar entre 3 y 7 días laborables.
           heading: No pudimos asociarlo a este número
           learn_more_link: 'Más información sobre qué número de teléfono usar'
-          next_steps_html: 'Vuelva a intentarlo con <strong>otro número</strong> que
-            utilice a menudo y desde hace tiempo. Puede ser un número del
-            trabajo o particular.'
+          next_steps_html: 'Pruebe con <strong>otro</strong> número que utilice a menudo y
+            desde hace tiempo.. Puede ser un número del trabajo o particular.'
           try_again_button: 'Intente con otro número'
           you_entered: 'Ud. entregó:'
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
-          seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea.'
-        heading: No hemos podido encontrar registros que coincidan con su información
-          personal.
+        fail_html: 'Por su seguridad, limitamos el número de veces que puede intentar
+          verificar la información personal en línea. <strong>Inténtelo de nuevo
+          en %{timeout}.</strong>'
+        heading: No encontramos registros que coincidan con sus datos personales
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
@@ -180,13 +205,18 @@ es:
         Si restablece su contraseña, el código único de su carta ya no
         funcionará y tendrá que verificar su identidad de nuevo.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
-      confirm: Usted ha encriptado sus datos verificados.
+      confirm: Hemos asegurado su información verificada
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
         resend: Envíeme otra carta
+        resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola
+          vez de tu carta actual seguirá siendo válido durante un tiempo
+          limitado. Puedes seguir utilizando el código de una sola vez de
+          cualquiera de las dos cartas.
+        resend_timeframe: Las cartas suelen tardar entre 3 y 7 días hábiles en llegar.
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
@@ -198,14 +228,16 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        phone_of_record: Teléfono del registro
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        info_verified_html: Encontramos registros que coinciden con su %{phone_message}
-        intro: Su información verificada
+        gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
+        phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
         código único.
@@ -214,25 +246,19 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
-    review:
-      dob: Fecha de nacimiento
-      full_name: Nombre completo
-      mailing_address: Dirección postal
-      ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
       mail:
-        resend: '¿Desea otra carta?'
+        resend: '¿Enviar otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
+        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:
@@ -240,7 +266,6 @@ es:
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
-        add_new_photos: Añada nuevas fotos de su ID emitido por el estado
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
         get_help_at_sp: Obtenga ayuda en %{sp_name}
@@ -248,6 +273,7 @@ es:
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
           dirección por correo
         learn_more_verify_by_phone: Más información sobre qué número de teléfono usar
+        learn_more_verify_by_phone_in_person: Más información sobre cómo verificar su número de teléfono
         learn_more_verify_in_person: Más información sobre la verificación en persona
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
@@ -264,6 +290,23 @@ es:
       status_page_link: 'Consulte las actualizaciones en nuestra página de estado'
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
         parte, tal vez no podamos verificar su identidad en estos momentos.
+    warning:
+      attempts:
+        one: Por motivos de seguridad, le quedan un intento.
+        other: Por motivos de seguridad, le quedan %{count} intentos.
+      sessions:
+        heading: No encontramos registros que coincidan con sus datos personales
+      state_id:
+        cancel_button: Salga de %{app_name}
+        explanation: |
+          Desafortunadamente, estamos experimentando dificultades técnicas con las identificaciones de su estado y actualmente no podemos verificar su información.
+        heading: Estamos trabajando para resolver un error
+        next_steps:
+          items_html:
+            - Volver a intentarlo ahora <strong>o</strong>
+            - Salir de %{app_name} y volver a intentarlo más tarde
+          preamble: 'Usted puede:'
+        try_again_button: Inténtalo de nuevo
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe

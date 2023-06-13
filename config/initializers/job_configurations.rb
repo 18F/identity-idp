@@ -104,10 +104,28 @@ else
         class: 'HeartbeatJob',
         cron: cron_5m,
       },
+      # Queue usps in-person visit notifications job to GoodJob
+      in_person_enrollments_ready_for_status_check_job: {
+        class: 'InPerson::EnrollmentsReadyForStatusCheckJob',
+        cron: IdentityConfig.store.in_person_enrollments_ready_job_cron,
+        args: -> { [Time.zone.now] },
+      },
       # Queue usps proofing job to GoodJob
       get_usps_proofing_results_job: {
         class: 'GetUspsProofingResultsJob',
         cron: IdentityConfig.store.get_usps_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Queue usps proofing job to GoodJob for ready enrollments
+      get_usps_ready_proofing_results_job: {
+        class: 'GetUspsReadyProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_ready_proofing_results_job_cron,
+        args: -> { [Time.zone.now] },
+      },
+      # Queue usps proofing job to GoodJob for waiting enrollments
+      get_usps_waiting_proofing_results_job: {
+        class: 'GetUspsWaitingProofingResultsJob',
+        cron: IdentityConfig.store.get_usps_waiting_proofing_results_job_cron,
         args: -> { [Time.zone.now] },
       },
       # Queue daily in-person proofing reminder email job

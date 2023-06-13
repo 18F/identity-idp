@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'ostruct'
 
-describe Proofing::Aamva::Proofer do
+RSpec.describe Proofing::Aamva::Proofer do
   let(:aamva_applicant) do
     Aamva::Applicant.from_proofer_applicant(OpenStruct.new(state_id_data))
   end
@@ -127,6 +127,102 @@ describe Proofing::Aamva::Proofer do
             address
           ].to_set,
         )
+      end
+    end
+
+    context 'when AAMVA throws an exception' do
+      let(:exception) { RuntimeError.new }
+
+      before do
+        allow_any_instance_of(::Proofing::Aamva::Request::VerificationRequest).
+          to receive(:send).and_raise(exception)
+      end
+
+      it 'logs to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        result = subject.proof(state_id_data)
+
+        expect(result.success?).to eq(false)
+        expect(result.exception).to eq(exception)
+        expect(result.mva_exception?).to eq(false)
+      end
+
+      context 'the exception is a timeout error' do
+        let(:exception) { Proofing::TimeoutError.new }
+
+        it 'does not log to NewRelic' do
+          expect(NewRelic::Agent).not_to receive(:notice_error)
+
+          result = subject.proof(state_id_data)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to eq(exception)
+          expect(result.mva_exception?).to eq(false)
+        end
+      end
+
+      context 'the exception is a verification error due to the MVA being unavailable' do
+        let(:exception) do
+          Proofing::Aamva::VerificationError.new(
+            'DLDV VSS - ExceptionId: 0001, ExceptionText: MVA system is unavailable',
+          )
+        end
+
+        it 'logs to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error)
+
+          result = subject.proof(state_id_data)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to eq(exception)
+          expect(result.mva_unavailable?).to eq(true)
+          expect(result.mva_system_error?).to eq(false)
+          expect(result.mva_timeout?).to eq(false)
+          expect(result.mva_exception?).to eq(true)
+        end
+      end
+
+      context 'the exception is a verification error due to a MVA system error' do
+        let(:exception) do
+          Proofing::Aamva::VerificationError.new(
+            'DLDV VSS - ExceptionId: 0002, ExceptionText: MVA system error',
+          )
+        end
+
+        it 'logs to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error)
+
+          result = subject.proof(state_id_data)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to eq(exception)
+          expect(result.mva_unavailable?).to eq(false)
+          expect(result.mva_system_error?).to eq(true)
+          expect(result.mva_timeout?).to eq(false)
+          expect(result.mva_exception?).to eq(true)
+        end
+      end
+
+      context 'the exception is a verification error due to a MVA timeout' do
+        let(:exception) do
+          Proofing::Aamva::VerificationError.new(
+            'DLDV VSS - ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
+          )
+        end
+
+        it 'does not log to NewRelic' do
+          expect(NewRelic::Agent).not_to receive(:notice_error)
+
+          result = subject.proof(state_id_data)
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).to eq(exception)
+          expect(result.mva_unavailable?).to eq(false)
+          expect(result.mva_system_error?).to eq(false)
+          expect(result.mva_timeout?).to eq(true)
+          expect(result.mva_exception?).to eq(true)
+        end
       end
     end
   end

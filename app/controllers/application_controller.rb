@@ -2,6 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include VerifyProfileConcern
+  include BackupCodeReminderConcern
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
@@ -33,11 +34,8 @@ class ApplicationController < ActionController::Base
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
-    now = Time.zone.now
-    session[:session_started_at] = now if session[:session_started_at].nil?
-    session[:session_expires_at] = now + Devise.timeout_in
-    session[:pinged_at] ||= now
-    redirect_on_timeout
+    session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
+    redirect_with_flash_if_timeout
   end
 
   # for lograge
@@ -155,18 +153,26 @@ class ApplicationController < ActionController::Base
                           end
   end
 
-  def redirect_on_timeout
+  def redirect_with_flash_if_timeout
     return unless params[:timeout]
 
-    unless current_user
+    if params[:timeout] == 'session'
+      analytics.session_timed_out
+      flash[:info] = t(
+        'notices.session_timedout',
+        app_name: APP_NAME,
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
+      )
+    elsif current_user.blank?
       flash[:info] = t(
         'notices.session_cleared',
         minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
     end
+
     begin
       redirect_to url_for(permitted_timeout_params)
-    rescue ActionController::UrlGenerationError # binary data in params cause redirect to throw this
+    rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
       head :bad_request
     end
   end
@@ -238,7 +244,11 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
-    user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
+    return user_two_factor_authentication_url unless user_fully_authenticated?
+    return reactivate_account_url if user_needs_to_reactivate_account?
+    return url_for_pending_profile_reason if user_has_pending_profile?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
+    account_url
   end
 
   def after_mfa_setup_path

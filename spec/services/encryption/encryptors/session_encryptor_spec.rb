@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::SessionEncryptor do
+RSpec.describe Encryption::Encryptors::SessionEncryptor do
   let(:plaintext) { '{ "foo": "bar" }' }
 
   describe '#encrypt' do

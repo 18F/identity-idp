@@ -31,6 +31,11 @@ en:
               will not have verified your identity.
             - You will still have a %{app_name} account. You can manage or
               delete your account on your %{account_page_text}.
+        gpo:
+          start_over: 'If you clear your information and start over:'
+          warnings:
+            - The one-time code in your letter will no longer work
+            - You will start over verifying your identity from the beginning
         hybrid: If you cancel now, you will be prompted to switch back to your computer
           to continue verifying your identity.
         start_over: If you start over, you will restart this process from the beginning.
@@ -49,7 +54,7 @@ en:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
-        ssn: 'Your Social Security number must be entered in as ###-##-####'
+        ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code
     failure:
       attempts:
@@ -74,6 +79,25 @@ en:
           Try searching for a Post Office again. If this issue continues, come
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
+        usps_outage_error_message:
+          post_cta:
+            body: In the meantime, you can still begin the in-person verification process on
+              %{app_name} and then visit a Post Office. If you urgently need
+              access to services, please contact your agency directly.
+            title: We’re working on a technical issue. Your identity verification results
+              may not be emailed to you until Tuesday, May 30.
+          ready_to_verify:
+            body: You can still visit a Post Office to complete verifying your identity. If
+              you urgently need access to services, please contact your agency
+              directly.
+            contact_html: <a href="%{help_url}" target="_blank">Contact %{app_name}
+              support</a> if you have not received an email with your
+              verification results by Thursday, June 1.
+            title: We’re working on a technical issue. Your identity verification results
+              may not be emailed to you until Tuesday, May 30.
+      exit:
+        with_sp: Exit %{app_name} and return to %{sp_name}
+        without_sp: Exit identity verification and go to your account page
       phone:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
@@ -100,17 +124,16 @@ en:
             how_long_it_takes: This typically takes 3 - 7 business days.
           heading: We couldn’t match you to this number
           learn_more_link: 'Learn more about what phone number to use'
-          next_steps_html: 'Please try again with <strong>another</strong> number that you
-            use often and have used for a long time. This can be a work or home
-            number.'
+          next_steps_html: 'Try <strong>another</strong> number that you use often and
+            have used for a long time. This can be a work or home number.'
           try_again_button: 'Try another number'
           you_entered: 'You entered:'
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
-          we limit the number of times you can attempt to verify personal
-          information online.'
-        heading: We could not find records matching your personal information.
+        fail_html: 'For your security, we limit the number of times you can attempt to
+          verify personal information online. <strong>Try again in
+          %{timeout}.</strong>'
+        heading: We couldn’t find records matching your personal information
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
@@ -133,7 +156,7 @@ en:
         - If you forgot your password, you’ll need to reset it and fill out the
           form again.
         - You’ll have to re-enter your personal information, like your name,
-          state-issued ID, etc.
+          state‑issued ID, etc.
     form:
       address1: Address line 1
       address2: Address line 2
@@ -154,8 +177,8 @@ en:
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
-          state-issued ID</strong>.
-        state_issue: State-issued ID
+          state‑issued ID</strong>.
+        state_issue: State‑issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
@@ -170,13 +193,17 @@ en:
         /> If you reset your password, the one-time code in your letter will no
         longer work and you’ll have to verify your identity again.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
-      confirm: You have encrypted your verified data
+      confirm: We secured your verified information
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         resend: Send me another letter
+        resend_code_warning: If you request a new letter now, the one-time code from
+          your current letter will remain valid for a limited time. You may
+          still use the one-time code from either letter.
+        resend_timeframe: Letters typically take 3 to 7 business days to arrive.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
@@ -186,14 +213,16 @@ en:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
-        phone_of_record: Phone of record
         rules:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:
-        info_verified_html: We found records matching your %{phone_message}
-        intro: Your verified information
+        gpo_pending: We’ll send your letter once you re-enter your password.
+        message: '%{app_name} will encrypt your information with your password. This
+          means that your information is secure and only you will be able to
+          access or change it.'
+        phone_verified: We verified your phone number
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will
@@ -201,25 +230,19 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
       verifying: Verifying…
-    review:
-      dob: Date of birth
-      full_name: Full name
-      mailing_address: Mailing address
-      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
-        resend: Want another letter?
+        resend: Send another letter?
         verify: Want a letter?
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:
-        review: Re-enter your %{app_name} password to protect your data
+        review: Re-enter your %{app_name} password
       unavailable: 'We are working to resolve an error'
     troubleshooting:
       headings:
@@ -227,15 +250,15 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
-        add_new_photos: Add new photos of your state-issued ID
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail
         learn_more_verify_by_phone: Learn more about what phone number to use
+        learn_more_verify_by_phone_in_person: Learn more about verifying your phone number
         learn_more_verify_in_person: Learn more about verifying in person
-        supported_documents: See a list of accepted state-issued IDs
+        supported_documents: See a list of accepted state‑issued IDs
         verify_by_mail: Verify your address by mail instead
     unavailable:
       exit_button: 'Exit %{app_name}'
@@ -248,6 +271,24 @@ en:
       status_page_link: 'Get updates on our status page'
       technical_difficulties: Unfortunately, we are having technical difficulties and
         cannot verify your identity at this time.
+    warning:
+      attempts:
+        one: For security reasons, you have one attempt remaining.
+        other: For security reasons, you have %{count} attempts remaining.
+      sessions:
+        heading: We couldn’t find records matching your personal information
+      state_id:
+        cancel_button: Exit %{app_name}
+        explanation: |
+          Unfortunately, we’re experiencing technical difficulties 
+          with IDs from your state and are currently unable to verify your information.
+        heading: We are working to resolve an error
+        next_steps:
+          items_html:
+            - Try again now <strong>or</strong>
+            - Exit %{app_name} and try again later
+          preamble: 'You can:'
+        try_again_button: Try again
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

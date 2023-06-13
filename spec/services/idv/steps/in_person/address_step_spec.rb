@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::AddressStep do
+RSpec.describe Idv::Steps::InPerson::AddressStep do
+  include InPersonHelper
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }
   let(:params) { ActionController::Parameters.new({ in_person_address: submitted_values }) }
@@ -43,7 +44,7 @@ describe Idv::Steps::InPerson::AddressStep do
       let(:city) { 'GREAT FALLS' }
       let(:zipcode) { '59010' }
       let(:state) { 'Montana' }
-      let(:same_address_as_id) { false }
+      let(:same_address_as_id) { 'false' }
       let(:submitted_values) do
         {
           address1:,
@@ -59,11 +60,10 @@ describe Idv::Steps::InPerson::AddressStep do
         Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
-
-        step.call
       end
 
       it 'sets values in flow session' do
+        step.call
         expect(flow.flow_session[:pii_from_user]).to include(
           address1:,
           address2:,
@@ -76,13 +76,10 @@ describe Idv::Steps::InPerson::AddressStep do
 
       context 'with secondary capture enabled' do
         let(:capture_secondary_id_enabled) { true }
-        it 'excludes same_address_as_id from session' do
-          expect(flow.flow_session[:pii_from_user]).not_to include(
-            same_address_as_id:,
-          )
-        end
 
-        it 'sets other values in flow session' do
+        it 'sets the values in flow session' do
+          step.call
+
           expect(flow.flow_session[:pii_from_user]).to include(
             address1:,
             address2:,
@@ -90,6 +87,43 @@ describe Idv::Steps::InPerson::AddressStep do
             zipcode:,
             state:,
           )
+        end
+
+        context 'when initially entering the residential address' do
+          it 'leaves the "same_address_as_id" attr as false' do
+            flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            step.call
+
+            expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+          end
+        end
+
+        context 'when updating the residential address' do
+          before(:each) do
+            flow.flow_session[:pii_from_user][:address1] = '123 New Residential Ave'
+          end
+
+          context 'user previously selected that the residential address matched state ID' do
+            before(:each) do
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
+            end
+
+            it 'sets the "same_address_as_id" in the flow session to false' do
+              step.call
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            end
+          end
+
+          context 'user previously selected that the residential address did not match state ID' do
+            before(:each) do
+              flow.flow_session[:pii_from_user][:same_address_as_id] = 'false'
+            end
+
+            it 'leaves the "same_address_as_id" in the flow session as false' do
+              step.call
+              expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
+            end
+          end
         end
       end
     end
@@ -115,7 +149,7 @@ describe Idv::Steps::InPerson::AddressStep do
     let(:params) { ActionController::Parameters.new }
 
     context 'address1 is set' do
-      it 'returns extra view variables' do
+      it 'returns extra view variables and updating_address is true' do
         pii_from_user[:address1] = address1
 
         expect(step.extra_view_variables).to include(
@@ -123,6 +157,18 @@ describe Idv::Steps::InPerson::AddressStep do
             address1:,
           ),
           updating_address: true,
+        )
+      end
+    end
+
+    context 'address1 is not set' do
+      it 'does not return extra view variables and updating_address is false' do
+        expect(step.extra_view_variables[:pii]).not_to include(
+          address1:,
+        )
+
+        expect(step.extra_view_variables).to include(
+          updating_address: false,
         )
       end
     end

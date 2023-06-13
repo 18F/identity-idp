@@ -21,8 +21,8 @@
     "app/javascript/app",
     "app/javascript/packages",
     "app/javascript/packs",
-    "spec/javascripts/spec_helper.d.ts",
-    "spec/javascripts/**/*.ts",
+    "spec/javascript/spec_helper.d.ts",
+    "spec/javascript/**/*.ts",
     "scripts"
   ],
   "exclude": [

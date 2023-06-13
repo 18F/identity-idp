@@ -1,4 +1,4 @@
-shared_examples 'signing in with the site in Spanish' do |sp|
+RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
@@ -29,7 +29,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
   end
 end
 
-shared_examples 'signing in from service provider' do |sp|
+RSpec.shared_examples 'signing in from service provider' do |sp|
   it 'does not display session timeout alert on sign in page' do
     visit_idp_from_sp_with_ial1(sp)
 
@@ -37,19 +37,19 @@ shared_examples 'signing in from service provider' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL1 with personal key' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
-shared_examples 'signing in as IAL1 with piv/cac' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating', email: true do
     ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 end
 
-shared_examples 'visiting 2fa when fully authenticated' do |sp|
+RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
@@ -67,11 +67,10 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL2 with personal key' do |sp|
-  it 'does not present personal key as an MFA option', :email, js: true do
-    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-
-    Capybara.reset_sessions!
+RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
+  it 'does not present personal key as an MFA option' do
+    user = create(:user, :fully_registered)
+    _profile = create(:profile, :active, :verified, :with_pii, user: user)
 
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
@@ -82,7 +81,7 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL2 with piv/cac' do |sp|
+RSpec.shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating and getting the password', :email, js: true do
     ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
@@ -95,12 +94,12 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
     end
   end
 
-  it 'gets bad password error', :email, js: true do
+  it 'gets bad password error' do
     ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
 
-shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
 
@@ -126,7 +125,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
   end
 end
 
-shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
+RSpec.shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
   xit 'redirects to SP after reactivating account', :email, js: true do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     visit_idp_from_sp_with_ial2(sp)
@@ -160,7 +159,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
   end
 end
 
-shared_examples 'signing in with wrong credentials' do |sp|
+RSpec.shared_examples 'signing in with wrong credentials' do |sp|
   # This tests the custom Devise error message defined in lib/custom_devise_failure_app.rb
   context 'when the user does not exist' do
     it 'links to forgot password page with locale and request_id' do
@@ -192,7 +191,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
-shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:|
+RSpec.shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:| # rubocop:disable Layout/LineLength
   let(:window_start) { 3.days.ago }
   let(:window_end) { 1.day.ago }
 
@@ -203,8 +202,9 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       and_return(window_end)
   end
 
-  def user_with_broken_personal_key(protocol, scenario)
-    user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
+  def user_with_broken_personal_key(scenario)
+    user = create(:user, :fully_registered)
+    _profile = create(:profile, :active, :verified, :with_pii, user: user)
 
     case scenario
     when :broken_personal_key_window
@@ -235,8 +235,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
   ].each do |description, scenario|
     context description do
       context "protocol: #{protocol}, ial: #{sp_ial}" do
-        it 'prompts the user to get a new personal key when using email/password', js: true do
-          user = user_with_broken_personal_key(protocol, scenario)
+        it 'prompts the user to get a new personal key when using email/password' do
+          user = user_with_broken_personal_key(scenario)
 
           case sp_ial
           when 1
@@ -248,6 +248,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           end
 
           fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
+          click_submit_default
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
           code = page.all('.personal-key-block__code').map(&:text).join(' ')
@@ -257,15 +259,14 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
           expect(user.active_profile.reload.recover_pii(code)).to be_present
         end
 
-        it 'prompts for password when signing in via PIV/CAC', js: true do
-          user = user_with_broken_personal_key(protocol, scenario)
+        it 'prompts for password when signing in via PIV/CAC' do
+          user = user_with_broken_personal_key(scenario)
 
           create(:piv_cac_configuration, user: user)
 
           visit_idp_from_sp_with_ial1(protocol)
           click_on t('account.login.piv_cac')
           fill_in_piv_cac_credentials_and_submit(user)
-          click_submit_default if protocol == :saml
 
           expect(page).to have_content(t('account.personal_key.needs_new'))
           expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
@@ -392,7 +393,8 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
-  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+  user = create(:user, :fully_registered)
+  _profile = create(:profile, :active, :verified, :with_pii, user: user)
   user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_idp_from_sp_with_ial2(sp)

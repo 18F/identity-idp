@@ -7,6 +7,10 @@ module Idv
 
       private
 
+      def capture_secondary_id_enabled?
+        current_user.establishing_in_person_enrollment.capture_secondary_id_enabled
+      end
+
       def save_proofing_components
         return unless current_user
 

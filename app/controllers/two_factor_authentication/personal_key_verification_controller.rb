@@ -89,7 +89,9 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_otp
-      handle_valid_otp_for_authentication_context(auth_method: 'personal_key')
+      handle_valid_verification_for_authentication_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY,
+      )
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled?
@@ -97,7 +99,6 @@ module TwoFactorAuthentication
       else
         redirect_to authentication_methods_setup_url
       end
-      reset_otp_session_data
     end
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SessionsController do
+RSpec.describe Idv::SessionsController do
   let(:user) { build(:user) }
   let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 
@@ -75,7 +75,7 @@ describe Idv::SessionsController do
       let(:user) do
         create(
           :user,
-          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
+          profiles: [create(:profile, gpo_verification_pending_at: 1.day.ago)],
         )
       end
 

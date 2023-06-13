@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::WebauthnSetupController do
+RSpec.describe Users::WebauthnSetupController do
   include WebAuthnHelper
 
   describe 'before_actions' do
@@ -53,6 +53,8 @@ describe Users::WebauthnSetupController do
             platform_authenticator: false,
             errors: {},
             enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             success: true,
           )
 
@@ -88,8 +90,11 @@ describe Users::WebauthnSetupController do
           success: true,
           errors: {},
           in_multi_mfa_selection_flow: false,
+          sign_up_mfa_selection_order_bucket: nil,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
+        expect(@analytics).to receive(:track_event).
+          with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication Setup', result)
 
@@ -207,12 +212,15 @@ describe Users::WebauthnSetupController do
         end
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics)
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 1,
               errors: {},
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -257,6 +265,8 @@ describe Users::WebauthnSetupController do
           }
         end
         it 'should log expected events' do
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
           expect(@analytics).to receive(:track_event).with(
             'User Registration: User Fully Registered',
             { mfa_method: 'webauthn_platform' },
@@ -268,6 +278,7 @@ describe Users::WebauthnSetupController do
               enabled_mfa_methods_count: 1,
               errors: {},
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: { webauthn_platform: 1 },
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -319,6 +330,7 @@ describe Users::WebauthnSetupController do
                 link: MarketingSite.contact_url,
               )] },
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],

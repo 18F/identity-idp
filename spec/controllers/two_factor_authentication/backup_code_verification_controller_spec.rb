@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::BackupCodeVerificationController do
+RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
   let(:backup_code) { { backup_code: 'foo' } }
   let(:payload) { { backup_code_verification_form: backup_code } }
 
@@ -41,6 +41,11 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
           with(:mfa_login_backup_code, success: true)
 
         post :create, params: payload
+
+        expect(subject.user_session[:auth_method]).to eq(
+          TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+        )
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'tracks the valid authentication event when there are exisitng codes' do
@@ -120,6 +125,8 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
+        expect(subject.user_session[:auth_method]).to eq nil
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
       it 'tracks the max attempts event' do

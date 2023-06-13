@@ -50,28 +50,28 @@ Dir.chdir APP_ROOT do
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
   puts "\n== Installing dependencies =="
+  brew_installed = system "brew -v 2>&1"
+  run "brew bundle" if brew_installed
   run "gem install bundler --conservative"
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
 
+  puts "\n== Stopping running services to ensure clean start =="
+  run "brew services stop --all" if brew_installed
+
+  puts "\n== Starting services =="
+  run "brew services start redis" if brew_installed
+  run "brew services start postgresql@14" if brew_installed
+
   puts "\n== Preparing database =="
-  run 'bin/rake db:create'
-  run 'bin/rake db:environment:set'
-  run 'bin/rake db:reset'
-  run 'bin/rake db:environment:set'
-  run 'bin/rake dev:prime'
+  run 'make clobber_db'
 
   puts "\n== Cleaning up old assets =="
-  run "bin/rake assets:clobber"
-  run "RAILS_ENV=test bin/rake assets:clobber"
+  run "make clobber_assets"
 
   puts "\n== Removing old logs and tempfiles =="
-  run "rm -f log/*"
-  run "rm -rf tmp/cache"
-  run "rm -rf tmp/encrypted_doc_storage"
-  run "rm -rf tmp/letter_opener"
-  run "rm -rf tmp/mails"
+  run "make clobber_logs"
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"

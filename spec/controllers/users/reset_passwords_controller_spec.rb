@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::ResetPasswordsController, devise: true do
+RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:password_error_message) do
     t('errors.attributes.password.too_short.other', count: Devise.password_length.first)
   end

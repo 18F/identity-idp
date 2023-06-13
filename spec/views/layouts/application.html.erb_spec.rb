@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'layouts/application.html.erb' do
+RSpec.describe 'layouts/application.html.erb' do
   include Devise::Test::ControllerHelpers
 
   before do
@@ -73,7 +73,7 @@ describe 'layouts/application.html.erb' do
         render
 
         doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include("Something with 'single quotes' - Login.gov")
+        expect(doc.at_css('title').text).to eq("Something with 'single quotes' | #{APP_NAME}")
       end
 
       it 'properly works with > in the title tag' do
@@ -82,7 +82,7 @@ describe 'layouts/application.html.erb' do
         render
 
         doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include('Symbols <> - Login.gov')
+        expect(doc.at_css('title').text).to eq("Symbols <> | #{APP_NAME}")
       end
     end
 
@@ -91,7 +91,7 @@ describe 'layouts/application.html.erb' do
         render
 
         doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include('Login.gov')
+        expect(doc.at_css('title').text).to eq(APP_NAME)
       end
     end
   end

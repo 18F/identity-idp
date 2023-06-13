@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp rate limiting', :js do
+RSpec.feature 'phone otp rate limiting', :js do
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
@@ -37,7 +37,7 @@ feature 'phone otp rate limiting', :js do
       complete_idv_steps_before_phone_otp_verification_step(user)
 
       max_attempts.times do
-        fill_in('code', with: 'wrong')
+        fill_in('code', with: 'badbad')
         click_button t('forms.buttons.submit.default')
       end
 

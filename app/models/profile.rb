@@ -18,7 +18,7 @@ class Profile < ApplicationRecord
   enum deactivation_reason: {
     password_reset: 1,
     encryption_error: 2,
-    gpo_verification_pending: 3,
+    gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending: 5,
   }
@@ -37,38 +37,51 @@ class Profile < ApplicationRecord
     gpo_verification_pending_at.present?
   end
 
+  def pending_reasons
+    [
+      *(:gpo_verification_pending if gpo_verification_pending?),
+      *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      *(:in_person_verification_pending if in_person_verification_pending?),
+    ]
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
-  def activate
-    return if has_deactivation_reason?
+  def activate(reason_deactivated: nil)
+    confirm_that_profile_can_be_activated!
+
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
+
+    attrs = {
+      active: true,
+      activated_at: now,
+    }
+
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset
+
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(
-        active: true,
-        activated_at: now,
-        deactivation_reason: nil,
-        gpo_verification_pending_at: nil,
-        fraud_review_pending: false,
-        fraud_rejection: false,
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
-        verified_at: now,
-      )
+      update!(attrs)
     end
     send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def activate_after_gpo_verification
+  def confirm_that_profile_can_be_activated!
+    if pending_reasons.any?
+      raise "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+    elsif deactivation_reason.present?
+      raise "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+    end
+  end
+
+  def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
-    activate
+    update!(deactivation_reason: nil) if gpo_verification_pending_NO_LONGER_USED?
   end
 
   def activate_after_passing_review
     update!(
-      fraud_review_pending: false,
-      fraud_rejection: false,
       fraud_review_pending_at: nil,
       fraud_rejection_at: nil,
     )
@@ -76,12 +89,33 @@ class Profile < ApplicationRecord
     activate
   end
 
+  def activate_after_passing_in_person
+    update!(
+      deactivation_reason: nil,
+      fraud_review_pending_at: nil,
+    )
+    activate
+  end
+
+  def activate_after_password_reset
+    if password_reset?
+      update!(
+        deactivation_reason: nil,
+      )
+      activate(reason_deactivated: :password_reset)
+    end
+  end
+
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
   end
 
   def has_deactivation_reason?
-    fraud_review_pending? || fraud_rejection? || gpo_verification_pending?
+    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
+  end
+
+  def has_fraud_deactivation_reason?
+    fraud_review_pending? || fraud_rejection?
   end
 
   def deactivate_for_gpo_verification
@@ -91,8 +125,6 @@ class Profile < ApplicationRecord
   def deactivate_for_fraud_review
     update!(
       active: false,
-      fraud_review_pending: true,
-      fraud_rejection: false,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )
@@ -101,8 +133,6 @@ class Profile < ApplicationRecord
   def reject_for_fraud(notify_user:)
     update!(
       active: false,
-      fraud_review_pending: false,
-      fraud_rejection: true,
       fraud_review_pending_at: nil,
       fraud_rejection_at: Time.zone.now,
     )

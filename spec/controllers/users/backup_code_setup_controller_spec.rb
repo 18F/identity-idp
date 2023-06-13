@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::BackupCodeSetupController do
+RSpec.describe Users::BackupCodeSetupController do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -23,6 +23,8 @@ describe Users::BackupCodeSetupController do
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     expect(@analytics).to receive(:track_event).
+      with('User marked authenticated', { authentication_type: :valid_2fa_confirmation })
+    expect(@analytics).to receive(:track_event).
       with('Backup Code Setup Visited', {
         success: true,
         errors: {},
@@ -30,6 +32,7 @@ describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
+        sign_up_mfa_selection_order_bucket: nil,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {

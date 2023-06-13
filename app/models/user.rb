@@ -102,12 +102,41 @@ class User < ApplicationRecord
     pending_profile.present?
   end
 
-  def pending_profile
-    profiles.gpo_verification_pending.order(created_at: :desc).first
+  def gpo_verification_pending_profile?
+    gpo_verification_pending_profile.present?
   end
 
-  def fraud_review_eligible?
-    fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
+  def pending_profile
+    return @pending_profile if defined?(@pending_profile)
+
+    @pending_profile = begin
+      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+        profiles.where.not(gpo_verification_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_review_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_rejection_at: nil),
+      ).order(created_at: :desc).first
+
+      if pending.blank?
+        nil
+      elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
+        # Profiles that are cancelled for reasons that do not require further verification steps
+        # are not pending profiles
+        nil
+      elsif active_profile.present? && active_profile.activated_at > pending.created_at
+        # If there is an active profile that is older than this pending profile that means the user
+        # has proofed since this profile was created. That profile takes precedence and there is no
+        # pending profile
+        nil
+      else
+        pending
+      end
+    end
+  end
+
+  def gpo_verification_pending_profile
+    pending_profile if pending_profile&.gpo_verification_pending?
   end
 
   def fraud_review_pending?
@@ -119,13 +148,19 @@ class User < ApplicationRecord
   end
 
   def fraud_review_pending_profile
-    @fraud_review_pending_profile ||=
-      profiles.where.not(fraud_review_pending_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_review_pending?
   end
 
   def fraud_rejection_profile
-    @fraud_rejection_profile ||=
-      profiles.where.not(fraud_rejection_at: nil).order(created_at: :desc).first
+    pending_profile if pending_profile&.fraud_rejection?
+  end
+
+  def in_person_pending_profile?
+    in_person_pending_profile.present?
+  end
+
+  def in_person_pending_profile
+    pending_profile if pending_profile&.in_person_verification_pending?
   end
 
   def personal_key_generated_at
@@ -251,13 +286,6 @@ class User < ApplicationRecord
     active_profile || pending_profile
   end
 
-  def pending_profile_requires_verification?
-    return false if pending_profile.blank?
-    return true if identity_not_verified?
-    return false if active_profile_newer_than_pending_profile?
-    true
-  end
-
   def identity_not_verified?
     !identity_verified?
   end
@@ -270,10 +298,6 @@ class User < ApplicationRecord
     return false unless service_provider&.irs_attempts_api_enabled
     return false unless active_profile.present?
     !active_profile.initiating_service_provider&.irs_attempts_api_enabled
-  end
-
-  def active_profile_newer_than_pending_profile?
-    active_profile.activated_at >= pending_profile.created_at
   end
 
   # This user's most recently activated profile that has also been deactivated

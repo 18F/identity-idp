@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/address/new' do
+RSpec.describe 'idv/address/new' do
   let(:parsed_page) { Nokogiri::HTML.parse(rendered) }
 
   before do

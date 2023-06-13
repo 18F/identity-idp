@@ -9,6 +9,7 @@ fr:
       mock_score_label: 'Score reCAPTCHA: (0.0 - 1.0)'
     clipboard_button:
       label: Copier
+      tooltip: Copié!
     countdown_alert:
       time_remaining_html: '%{countdown_html} restantes'
     download_button:
@@ -42,6 +43,12 @@ fr:
         alphanumeric: 'Exemple: 123ABC'
         numeric: 'Exemple: 123456'
       label: Code à usage unique
+    password_confirmation:
+      confirm_label: Confirmer le mot de passe
+      errors:
+        empty: Tapez à nouveau votre mot de passe
+        mismatch: Vos mots de passe ne correspondent pas
+      toggle_label: Afficher le mot de passe
     password_toggle:
       label: Mot de passe
       toggle_label: Afficher le mot de passe

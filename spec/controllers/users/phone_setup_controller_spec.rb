@@ -1,6 +1,7 @@
 require 'rails_helper'
 
-describe Users::PhoneSetupController do
+RSpec.describe Users::PhoneSetupController do
+  let(:mfa_selections) { ['voice'] }
   before do
     allow(IdentityConfig.store).to receive(:phone_service_check).and_return(true)
     allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
@@ -22,7 +23,9 @@ describe Users::PhoneSetupController do
         stub_sign_in_before_2fa(user)
 
         expect(@analytics).to receive(:track_event).
-          with('User Registration: phone setup visited', enabled_mfa_methods_count: 0)
+          with('User Registration: phone setup visited',
+               { enabled_mfa_methods_count: 0,
+                 sign_up_mfa_selection_order_bucket: nil })
         expect(NewPhoneForm).to receive(:new).with(
           user:,
           analytics: kind_of(Analytics),

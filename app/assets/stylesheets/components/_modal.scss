@@ -1,3 +1,6 @@
+@use 'uswds-core' as *;
+@use '../variables/app' as *;
+
 .usa-modal-overlay {
   // Temporary styles to avoid inheriting too much of the USWDS opinionated modal styling until
   // modal styles are settled in the Login.gov Design System.
@@ -5,9 +8,6 @@
   display: flex;
   align-items: start;
   justify-content: center;
-
-  // Pending upstream Login Design System revision:
-  background: rgba(color('base-darker'), 50%);
 
   @include at-media('tablet') {
     align-items: center;

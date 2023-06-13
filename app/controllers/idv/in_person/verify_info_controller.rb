@@ -6,13 +6,16 @@ module Idv
       include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
+      include OutageConcern
 
       before_action :renders_404_if_flag_not_set
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
+      before_action :check_for_outage, only: :show
 
       def show
         @step_indicator_steps = step_indicator_steps
+        @capture_secondary_id_enabled = capture_secondary_id_enabled
 
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -33,86 +36,34 @@ module Idv
         process_async_state(load_async_state)
       end
 
-      def update
-        return if idv_session.verify_info_step_document_capture_session_uuid
-        analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
-          call('verify', :update, true)
-
-        pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
-        pii[:state_id_type] = 'drivers_license' unless pii.blank?
-
-        ssn_throttle.increment!
-        if ssn_throttle.throttled?
-          idv_failure_log_throttled(:proof_ssn)
-          analytics.throttler_rate_limit_triggered(
-            throttle_type: :proof_ssn,
-            step_name: 'verify_info',
-          )
-          redirect_to idv_session_errors_ssn_failure_url
-          return
-        end
-
-        if resolution_throttle.throttled?
-          idv_failure_log_throttled(:idv_resolution)
-          redirect_to throttled_url
-          return
-        end
-
-        document_capture_session = DocumentCaptureSession.create(
-          user_id: current_user.id,
-          issuer: sp_session[:issuer],
-        )
-        document_capture_session.requested_at = Time.zone.now
-
-        idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
-        idv_session.vendor_phone_confirmation = false
-        idv_session.user_phone_confirmation = false
-
-        Idv::Agent.new(pii).proof_resolution(
-          document_capture_session,
-          should_proof_state_id: should_use_aamva?(pii),
-          trace_id: amzn_trace_id,
-          user_id: current_user.id,
-          threatmetrix_session_id: flow_session[:threatmetrix_session_id],
-          request_ip: request.remote_ip,
-          double_address_verification: current_user.establishing_in_person_enrollment&.
-            capture_secondary_id_enabled || false,
-        )
-
-        redirect_to idv_in_person_verify_info_url
-      end
-
       private
 
+      # state_id_type is hard-coded here because it's required for proofing against
+      # AAMVA. We're sticking with driver's license because most states don't discern
+      # between various ID types and driver's license is the most common one that will
+      # be supported. See also LG-3852 and related findings document.
+      def set_state_id_type
+        pii[:state_id_type] = 'drivers_license' unless invalid_state?
+      end
+
+      def invalid_state?
+        pii.blank?
+      end
+
+      def after_update_url
+        idv_in_person_verify_info_url
+      end
+
       def prev_url
-        idv_in_person_url
+        idv_in_person_step_url(step: :ssn)
       end
 
       def renders_404_if_flag_not_set
         render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
-      # copied from address_controller
-      def confirm_ssn_step_complete
-        return if pii.present? && pii[:ssn].present?
-        redirect_to idv_in_person_url
-      end
-
-      def confirm_verify_info_step_needed
-        # todo: should this instead be like so?
-        # return unless idv_session.resolution_successful == true
-        return unless idv_session.verify_info_step_complete?
-        redirect_to idv_phone_url
-      end
-
       def pii
         @pii = flow_session[:pii_from_user]
-      end
-
-      def delete_pii
-        flow_session.delete(:pii_from_doc)
-        flow_session.delete(:pii_from_user)
       end
 
       # override StepUtilitiesConcern

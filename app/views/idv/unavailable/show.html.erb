@@ -2,7 +2,7 @@
 
 <%= render StatusPageComponent.new(status: :error) do |c| %>
 
-  <% c.header { t('idv.titles.unavailable') } %>
+  <% c.with_header { t('idv.titles.unavailable') } %>
 
   <p>
     <% if decorated_session.sp_name.present? %>
@@ -20,14 +20,14 @@
     <%= t(
           'idv.unavailable.next_steps_html',
           app_name: APP_NAME,
-          status_page_link: new_window_link_to(
+          status_page_link: new_tab_link_to(
             t('idv.unavailable.status_page_link'),
             StatusPage.base_url,
           ),
         ) %>
   </p>
 
-  <% c.action_button(
+  <% c.with_action_button(
        action: ->(**tag_options, &block) do
          link_to(
            return_to_sp_failure_to_proof_path(location: :unavailable),

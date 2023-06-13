@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp verification step spec', :js do
+RSpec.feature 'phone otp verification step spec', :js do
   include IdvStepHelper
 
   it 'requires the user to enter the correct otp before continuing' do

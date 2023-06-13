@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/throttled.html.erb' do
+RSpec.describe 'idv/session_errors/throttled.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
 
@@ -21,7 +21,10 @@ describe 'idv/session_errors/throttled.html.erb' do
         t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
         href: MarketingSite.contact_url,
       )
-      expect(rendered).not_to have_link(href: return_to_sp_cancel_path)
+      expect(rendered).to have_link(
+        t('idv.failure.exit.without_sp', app_name: APP_NAME),
+        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'throttled'),
+      )
     end
   end
 
@@ -35,8 +38,8 @@ describe 'idv/session_errors/throttled.html.erb' do
         href: MarketingSite.contact_url,
       )
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'throttled'),
+        t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: sp_name),
+        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'throttled'),
       )
     end
   end

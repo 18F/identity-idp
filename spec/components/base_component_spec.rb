@@ -7,8 +7,7 @@ RSpec.describe BaseComponent, type: :component do
     end
   end
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
+  let(:view_context) { vc_test_controller.view_context }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:view_context).and_return(view_context)
@@ -95,6 +94,80 @@ RSpec.describe BaseComponent, type: :component do
       end
 
       render_inline(ExampleComponentWithScriptRenderingOtherComponentWithScript.new)
+    end
+  end
+
+  context 'with sidecar stylesheet' do
+    class ExampleComponentWithStylesheet < BaseComponent
+      def call
+        ''
+      end
+
+      def self.sidecar_files(extensions)
+        files = []
+        files << '/example_component_with_stylesheet.scss' if extensions.include?('scss')
+        files.presence || super(extensions)
+      end
+    end
+
+    class ExampleComponentWithStylesheetRenderingOtherComponentWithStylesheet < BaseComponent
+      def call
+        render(ExampleComponentWithStylesheet.new)
+      end
+
+      def self.sidecar_files(extensions)
+        if extensions.include?('scss')
+          ['/example_component_with_stylesheet_rendering_other_component_with_stylesheet.scss']
+        else
+          super(extensions)
+        end
+      end
+    end
+
+    class NestedExampleComponentWithStylesheet < ExampleComponentWithStylesheet
+      def self.sidecar_files(extensions)
+        if extensions.include?('scss')
+          ['/nested_example_component_with_stylesheet.scss']
+        else
+          super(extensions)
+        end
+      end
+    end
+
+    it 'adds script to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_stylesheets).with(
+        'example_component_with_stylesheet',
+      )
+
+      render_inline(ExampleComponentWithStylesheet.new)
+    end
+
+    it 'adds own and parent scripts to class variable when rendered' do
+      expect(view_context).to receive(:enqueue_component_stylesheets).with(
+        'nested_example_component_with_stylesheet',
+        'example_component_with_stylesheet',
+      )
+
+      render_inline(NestedExampleComponentWithStylesheet.new)
+    end
+
+    it 'adds own and scripts of any other component it renders' do
+      call = 0
+      expect(view_context).to receive(:enqueue_component_stylesheets).twice do |*args|
+        call += 1
+        case call
+        when 1
+          expect(args).to eq [
+            'example_component_with_stylesheet_rendering_other_component_with_stylesheet',
+          ]
+        when 2
+          expect(args).to eq [
+            'example_component_with_stylesheet',
+          ]
+        end
+      end
+
+      render_inline(ExampleComponentWithStylesheetRenderingOtherComponentWithStylesheet.new)
     end
   end
 

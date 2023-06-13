@@ -1,0 +1,69 @@
+// Prevent USWDS from rendering `@font-face` in every stylesheet. One stylesheet should override
+// this to ensure that the `@font-face` is defined at least once.
+$render-font-face: false !default;
+
+@forward '@18f/identity-design-system/packages/uswds-core' with (
+  $theme-body-font-size: 'sm',
+  $theme-font-path: '',
+  $theme-image-path: '',
+  $theme-global-border-box-sizing: true,
+  $theme-global-link-styles: true,
+  $theme-grid-container-max-width: 'tablet-lg',
+  $theme-header-min-width: 'tablet',
+  $theme-link-visited-color: 'primary',
+  $theme-style-body-element: true,
+  $theme-typeface-tokens:
+    if(
+      $render-font-face,
+      (),
+      (
+        'roboto-mono': (
+          cap-height: 380px,
+          src: false,
+        ),
+        'public-sans': (
+          cap-height: 362px,
+          src: false,
+        ),
+      )
+    ),
+  $output-these-utilities: (
+    'add-list-reset',
+    'align-items',
+    'align-self',
+    'background-color',
+    'border',
+    'border-color',
+    'border-style',
+    'border-width',
+    'bottom',
+    'clearfix',
+    'color',
+    'display',
+    'flex',
+    'flex-direction',
+    'flex-wrap',
+    'float',
+    'font',
+    'font-family',
+    'font-feature',
+    'font-style',
+    'font-weight',
+    'height',
+    'justify-content',
+    'left',
+    'margin',
+    'margin-horizontal',
+    'margin-vertical',
+    'maxw',
+    'padding',
+    'position',
+    'right',
+    'text-align',
+    'text-transform',
+    'top',
+    'vertical-align',
+    'whitespace',
+    'width',
+  )
+);

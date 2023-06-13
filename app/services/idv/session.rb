@@ -5,9 +5,12 @@ module Idv
       applicant
       go_back_path
       verify_info_step_document_capture_session_uuid
+      idv_consent_given
       idv_phone_step_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
+      gpo_code_verified
+      phone_for_mobile_flow
       pii
       previous_phone_step_params
       profile_confirmation
@@ -15,6 +18,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      threatmetrix_review_status
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
@@ -39,10 +43,6 @@ module Idv
     def respond_to_missing?(method_sym, include_private)
       attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
-    end
-
-    def proofing_started?
-      applicant.present? && resolution_successful
     end
 
     def create_profile_from_applicant_with_password(user_password)
@@ -73,11 +73,7 @@ module Idv
     end
 
     def deactivation_reason
-      if gpo_verification_needed?
-        :gpo_verification_pending
-      elsif in_person_enrollment?
-        :in_person_verification_pending
-      end
+      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?
@@ -150,6 +146,14 @@ module Idv
 
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
+    def address_confirmed?
+      gpo_code_verified == true
+    end
+
+    def address_confirmed!
+      session[:gpo_code_verified] = true
     end
 
     def invalidate_steps_after_ssn!
@@ -227,11 +231,9 @@ module Idv
         return ok_no_review_needed
       end
 
-      component = ProofingComponent.find_by(user: @current_user)
+      return ok_no_review_needed if threatmetrix_review_status.nil?
 
-      return ok_no_review_needed if !component.threatmetrix
-
-      return ok_no_review_needed if component.threatmetrix_review_status == 'pass'
+      return ok_no_review_needed if threatmetrix_review_status == 'pass'
 
       return failed_and_needs_review
     end

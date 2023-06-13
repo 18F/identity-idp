@@ -4,8 +4,6 @@ module Idv
       STEPS = {
         welcome: Idv::Steps::WelcomeStep,
         agreement: Idv::Steps::AgreementStep,
-        upload: Idv::Steps::UploadStep,
-        link_sent: Idv::Steps::LinkSentStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
@@ -29,7 +27,6 @@ module Idv
       ACTIONS = {
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
         redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
-        verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
 
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow

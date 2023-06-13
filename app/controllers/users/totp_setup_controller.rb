@@ -1,8 +1,7 @@
 module Users
   class TotpSetupController < ApplicationController
-    include RememberDeviceConcern
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -67,8 +66,9 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
     end
 
     def track_event
@@ -77,6 +77,7 @@ module Users
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
@@ -86,16 +87,13 @@ module Users
 
     def process_valid_code
       create_events
-      mark_user_as_fully_authenticated
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
+      )
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def create_events
@@ -119,11 +117,6 @@ module Users
       Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
     end
 
     def process_invalid_code
@@ -151,6 +144,7 @@ module Users
     def analytics_properties
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end

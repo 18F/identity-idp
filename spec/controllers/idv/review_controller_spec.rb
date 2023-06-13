@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ReviewController do
+RSpec.describe Idv::ReviewController do
   include UspsIppHelper
 
   let(:user) do
@@ -155,14 +155,36 @@ describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t(
-            'idv.messages.review.info_verified_html',
-            phone_message: ActionController::Base.helpers.content_tag(
-              :strong,
-              t('idv.messages.phone.phone_of_record'),
-            ),
-          ),
+          t('idv.messages.review.phone_verified'),
         )
+      end
+
+      it 'uses the correct step indicator step' do
+        indicator_step = subject.step_indicator_step
+
+        expect(indicator_step).to eq(:secure_account)
+      end
+
+      context 'user is in gpo flow' do
+        before do
+          idv_session.vendor_phone_confirmation = false
+          idv_session.address_verification_mechanism = 'gpo'
+        end
+
+        it 'displays info message about sending letter' do
+          get :new
+
+          expect(flash.now[:success]).to be_nil
+          expect(flash.now[:info]).to eq(
+            t('idv.messages.review.gpo_pending'),
+          )
+        end
+
+        it 'uses the correct step indicator step' do
+          indicator_step = subject.step_indicator_step
+
+          expect(indicator_step).to eq(:get_a_letter)
+        end
       end
 
       it 'updates the doc auth log for the user for the encrypt view event' do
@@ -240,6 +262,7 @@ describe Idv::ReviewController do
           success: false,
           fraud_review_pending: false,
           fraud_rejection: false,
+          gpo_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: nil,
         )
@@ -261,6 +284,7 @@ describe Idv::ReviewController do
           success: true,
           fraud_review_pending: false,
           fraud_rejection: false,
+          gpo_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: anything,
         )
@@ -488,6 +512,26 @@ describe Idv::ReviewController do
             end
           end
 
+          context 'when the USPS response is not a hash' do
+            let(:stub_usps_response) do
+              stub_request_enroll_non_hash_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected a hash but got a NilClass',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
+            end
+          end
+
           context 'when the USPS response is missing an enrollment code' do
             let(:stub_usps_response) do
               stub_request_enroll_invalid_response
@@ -537,59 +581,75 @@ describe Idv::ReviewController do
           end
         end
 
-        context 'with threatmetrix required but review status did not pass' do
-          let(:applicant) do
-            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-          end
-          let(:stub_idv_session) do
-            stub_user_with_applicant_data(user, applicant)
-          end
+        context 'threatmetrix review status is set in profile' do
+          %i[enabled disabled].each do |proofing_device_profiling_state|
+            context "when proofing_device_profiling is #{proofing_device_profiling_state}" do
+              [nil, 'pass', 'review'].each do |review_status|
+                context "when review status is #{review_status.nil? ? 'nil' : review_status}" do
+                  let(:fraud_review_pending?) do
+                    proofing_device_profiling_state == :enabled &&
+                      !review_status.nil? && review_status != 'pass'
+                  end
+                  let(:review_status) { review_status }
+                  let(:proofing_device_profiling_state) { proofing_device_profiling_state }
+                  let(:applicant) do
+                    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+                  end
+                  let(:stub_idv_session) do
+                    stub_user_with_applicant_data(user, applicant)
+                  end
 
-          before(:each) do
-            stub_request_token
-            ProofingComponent.create(
-              user: user,
-              threatmetrix: true,
-              threatmetrix_review_status: 'review',
-            )
-            allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
-          end
+                  before do
+                    allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+                      and_return(proofing_device_profiling_state)
+                    idv_session.threatmetrix_review_status = review_status
+                  end
 
-          it 'creates a disabled profile' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+                  before(:each) do
+                    stub_request_token
+                  end
 
-            expect(user.profiles.last.fraud_review_pending?).to eq(true)
-          end
+                  it 'creates a profile with fraud_review_pending defined' do
+                    put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-          it 'logs events' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-            expect(@analytics).to have_logged_event(
-              'IdV: review complete',
-              success: true,
-              fraud_review_pending: true,
-              fraud_rejection: false,
-              proofing_components: nil,
-              deactivation_reason: nil,
-            )
-            expect(@analytics).to have_logged_event(
-              'IdV: final resolution',
-              success: true,
-              fraud_review_pending: true,
-              fraud_rejection: false,
-              proofing_components: nil,
-              deactivation_reason: nil,
-            )
-          end
+                    expect(user.profiles.last.fraud_review_pending?).to eq(fraud_review_pending?)
+                  end
 
-          it 'updates the doc auth log for the user for the verified view event' do
-            unstub_analytics
-            doc_auth_log = DocAuthLog.create(user_id: user.id)
+                  it 'logs events' do
+                    put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+                    expect(@analytics).to have_logged_event(
+                      'IdV: review complete',
+                      success: true,
+                      fraud_review_pending: fraud_review_pending?,
+                      fraud_rejection: false,
+                      gpo_verification_pending: false,
+                      proofing_components: nil,
+                      deactivation_reason: nil,
+                    )
+                    expect(@analytics).to have_logged_event(
+                      'IdV: final resolution',
+                      success: true,
+                      fraud_review_pending: fraud_review_pending?,
+                      fraud_rejection: false,
+                      gpo_verification_pending: false,
+                      proofing_components: nil,
+                      deactivation_reason: nil,
+                    )
+                  end
 
-            expect do
-              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-            end.to(
-              change { doc_auth_log.reload.verified_view_count }.from(0).to(1),
-            )
+                  it 'updates the doc auth log for the user for the verified view event' do
+                    unstub_analytics
+                    doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+                    expect do
+                      put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+                    end.to(
+                      change { doc_auth_log.reload.verified_view_count }.from(0).to(1),
+                    )
+                  end
+                end
+              end
+            end
           end
         end
       end

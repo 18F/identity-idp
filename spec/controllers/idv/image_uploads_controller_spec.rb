@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ImageUploadsController do
+RSpec.describe Idv::ImageUploadsController do
   let(:document_filename_regex) { /^[a-f0-9]{8}-([a-f0-9]{4}-){3}[a-f0-9]{12}\.[a-z]+$/ }
   let(:base64_regex) { /^[a-z0-9+\/]+=*$/i }
 
@@ -210,7 +210,7 @@ describe Idv::ImageUploadsController do
         expect(json).to eq(
           {
             success: false,
-            errors: [{ field: 'limit', message: 'We could not verify your ID' }],
+            errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
             result_failed: false,
@@ -258,7 +258,7 @@ describe Idv::ImageUploadsController do
             document_issued: nil,
             document_number: nil,
             document_state: nil,
-            failure_reason: { limit: ['We could not verify your ID'] },
+            failure_reason: { limit: ['We couldn’t verify your ID'] },
             first_name: nil,
             last_name: nil,
             success: false },
@@ -319,6 +319,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -468,6 +469,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -547,6 +549,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -626,6 +629,7 @@ describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -730,6 +734,7 @@ describe Idv::ImageUploadsController do
           doc_auth_result: nil,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         action
@@ -794,6 +799,7 @@ describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         action

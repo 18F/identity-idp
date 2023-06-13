@@ -23,7 +23,6 @@ es:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
         continuación y luego haga clic en continuar.
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
-      document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       send_link_throttle: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
@@ -31,9 +30,9 @@ es:
         como alternativa.
       throttled_heading: No pudimos verificar la identificación
       throttled_subheading: Intente tomar nuevas fotografías.
-      throttled_text_html: '<strong>Por favor, inténtelo de nuevo en
-        %{timeout}.</strong> Por su seguridad, limitamos el número de veces que
-        puede intentar verificar un documento en línea.'
+      throttled_text_html: 'Por su seguridad, limitamos el número de veces que puede
+        intentar verificar un documento en línea. <strong>Inténtelo de nuevo en
+        %{timeout}.</strong>'
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
@@ -55,7 +54,9 @@ es:
       inclusion: No se incluye en la lista.
       invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
         enviar un SMS si tienes un teléfono que permita enviar SMS.
-      invalid_phone_number: Número de teléfono no válido
+      invalid_phone_number:
+        international: Ingrese un número de teléfono con el número correcto de dígitos.
+        us: Ingrese un número de teléfono de 10 dígitos.
       invalid_recaptcha_token: Debes superar el desafío de prevención de spam.
       invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto.
         Pruebe la opción de llamada telefónica.
@@ -67,6 +68,7 @@ es:
       otp_format: Ingrese su código único por completo sin espacios ni caracteres
         especiales
       password_incorrect: La contraseña es incorrecta
+      password_mismatch: Sus contraseñas no coinciden
       personal_key_incorrect: La clave personal es incorrecta
       phone_carrier: Lo sentimos, no podemos admitir ese operador telefónico en este
         momento. Por favor, seleccione un número diferente e inténtelo de nuevo.

@@ -25,7 +25,7 @@ module RememberDeviceConcern
       expiration_interval: decorated_session.mfa_expiration_interval,
     )
 
-    handle_valid_remember_device_cookie
+    handle_valid_remember_device_cookie(remember_device_cookie: remember_device_cookie)
   end
 
   def remember_device_cookie
@@ -57,7 +57,9 @@ module RememberDeviceConcern
   private
 
   def expired_for_interval?(user, interval)
-    return false unless user_session[:auth_method] == 'remember_device'
+    unless user_session[:auth_method] == TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
+      return false
+    end
     remember_cookie = remember_device_cookie
     return true if remember_cookie.nil?
 
@@ -67,17 +69,18 @@ module RememberDeviceConcern
     )
   end
 
-  def handle_valid_remember_device_cookie
-    user_session[:auth_method] = 'remember_device'
+  def handle_valid_remember_device_cookie(remember_device_cookie:)
+    user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
     mark_user_session_authenticated(:device_remembered)
-    handle_valid_remember_device_analytics
-    bypass_sign_in current_user
-    redirect_to after_otp_verification_confirmation_url unless reauthn?
-    reset_otp_session_data
+    handle_valid_remember_device_analytics(cookie_created_at: remember_device_cookie.created_at)
+    redirect_to after_sign_in_path_for(current_user) unless reauthn?
   end
 
-  def handle_valid_remember_device_analytics
-    analytics.remembered_device_used_for_authentication
+  def handle_valid_remember_device_analytics(cookie_created_at:)
+    analytics.remembered_device_used_for_authentication(
+      cookie_created_at: cookie_created_at,
+      cookie_age_seconds: (Time.zone.now - cookie_created_at).to_i,
+    )
   end
 
   def remember_device_cookie_expiration

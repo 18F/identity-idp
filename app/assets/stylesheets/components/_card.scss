@@ -1,3 +1,6 @@
+@use 'uswds-core' as *;
+@use '../variables/app' as *;
+
 .card {
   background-color: color('white');
   max-width: $container-skinny-width;

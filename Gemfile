@@ -5,12 +5,14 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 7.0.0'
 
+gem 'activerecord-postgis-adapter'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-sns'
+gem 'aws-sdk-sqs'
 gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.0', require: false
@@ -33,8 +35,9 @@ gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
-gem 'lookbook', '~> 1.5.3', require: false
+gem 'lookbook', '~> 2.0.0', require: false
 gem 'lru_redux'
+gem 'mail'
 gem 'msgpack', '~> 1.6'
 gem 'maxminddb'
 gem 'multiset'
@@ -42,8 +45,9 @@ gem 'net-sftp'
 gem 'newrelic_rpm', '~> 8.0'
 gem 'pg'
 gem 'phonelib'
-gem 'premailer-rails', '>= 1.11.1'
+gem 'premailer-rails', '>= 1.12.0'
 gem 'profanity_filter'
+gem 'propshaft'
 gem 'rack', '>= 2.2.3.1'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
@@ -61,13 +65,13 @@ gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.18.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
-gem 'sprockets-rails'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
+gem 'terminal-table', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.82.0'
+gem 'view_component', '~> 3.0.0'
 gem 'webauthn', '~> 2.5.2'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
@@ -97,6 +101,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
+  gem 'listen'
   gem 'nokogiri', '~> 1.14.0'
   gem 'pg_query', require: false
   gem 'pry-byebug'
@@ -124,6 +129,7 @@ group :test do
   gem 'rspec-retry'
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
+  gem 'tableparser', require: false
   gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::SessionsController, devise: true do
+RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
   let(:mock_valid_site) { 'http://example.com' }
 
@@ -351,7 +351,7 @@ describe Users::SessionsController, devise: true do
         user = create(:user, :fully_registered)
         create(
           :profile,
-          deactivation_reason: :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           user: user, pii: { ssn: '1234' }
         )
 
@@ -590,14 +590,12 @@ describe Users::SessionsController, devise: true do
       it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
         subject.session['user_return_to'] = mock_valid_site
 
         expect(@analytics).to receive(:track_event).with(
           'Sign in page visited',
           flash: 'hello',
           stored_location: mock_valid_site,
-          sign_in_a_b_test_bucket: :default,
         )
 
         get :new
@@ -623,7 +621,7 @@ describe Users::SessionsController, devise: true do
       it 'redirects to the verify profile page' do
         profile = create(
           :profile,
-          deactivation_reason: :gpo_verification_pending,
+          gpo_verification_pending_at: 1.day.ago,
           pii: { ssn: '6666', dob: '1920-01-01' },
         )
         user = profile.user

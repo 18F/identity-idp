@@ -44,7 +44,7 @@ type AnalyticsContextProviderProps = Pick<AnalyticsContextValue, 'trackEvent'> &
 
 const DEFAULT_EVENT_METADATA: Record<string, any> = {};
 
-export const LOGGED_STEPS: string[] = ['location', 'prepare', 'switch_back'];
+export const LOGGED_STEPS: string[] = ['prepare', 'location', 'switch_back'];
 
 const AnalyticsContext = createContext<AnalyticsContextValue>({
   trackEvent: () => Promise.resolve(),
@@ -71,7 +71,7 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
 
   const extraAnalyticsAttributes = (stepName) => {
     const extra: EventMetadata = { ...DEFAULT_EVENT_METADATA };
-    if (stepName === 'location') {
+    if (stepName === 'prepare' || stepName === 'location') {
       extra.in_person_cta_variant = inPersonCtaVariantActive;
     }
     return extra;

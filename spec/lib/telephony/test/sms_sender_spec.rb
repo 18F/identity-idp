@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Telephony::Test::SmsSender do
+RSpec.describe Telephony::Test::SmsSender do
   include_context 'telephony'
 
   before do

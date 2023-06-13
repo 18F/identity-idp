@@ -10,9 +10,13 @@ module Idv
     def index
       analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
-      @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
+
+      @user_can_request_another_gpo_code =
+        FeatureManagement.gpo_verification_enabled? &&
+        !gpo_mail.mail_spammed? &&
+        !gpo_mail.profile_too_old?
 
       if throttle.throttled?
         render_throttled
@@ -31,43 +35,46 @@ module Idv
       throttle.increment!
       if throttle.throttled?
         render_throttled
+        return
+      end
+
+      result = @gpo_verify_form.submit
+      analytics.idv_gpo_verification_submitted(**result.to_h)
+      irs_attempts_api_tracker.idv_gpo_verification_submitted(
+        success: result.success?,
+        failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
+      )
+
+      if !result.success?
+        flash[:error] = @gpo_verify_form.errors.first.message
+        redirect_to idv_gpo_verify_url
+        return
+      end
+
+      if result.extra[:pending_in_person_enrollment]
+        redirect_to idv_in_person_ready_to_verify_url
       else
-        result = @gpo_verify_form.submit
-        analytics.idv_gpo_verification_submitted(**result.to_h)
-        irs_attempts_api_tracker.idv_gpo_verification_submitted(
-          success: result.success?,
-          failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
-        )
+        prepare_for_personal_key
 
-        if result.success?
-          if result.extra[:pending_in_person_enrollment]
-            redirect_to idv_in_person_ready_to_verify_url
-          else
-            event, _disavowal_token = create_user_event(:account_verified)
-
-            if !threatmetrix_check_failed?(result)
-              UserAlerts::AlertUserAboutAccountVerified.call(
-                user: current_user,
-                date_time: event.created_at,
-                sp_name: decorated_session.sp_name,
-              )
-              flash[:success] = t('account.index.verification.success')
-            end
-
-            redirect_to next_step
-          end
-        else
-          flash[:error] = @gpo_verify_form.errors.first.message
-          redirect_to idv_gpo_verify_url
-        end
+        redirect_to idv_personal_key_url
       end
     end
 
     private
 
-    def next_step
-      enable_personal_key_generation
-      idv_personal_key_url
+    def prepare_for_personal_key
+      event, _disavowal_token = create_user_event(:account_verified)
+
+      if !fraud_check_failed?
+        UserAlerts::AlertUserAboutAccountVerified.call(
+          user: current_user,
+          date_time: event.created_at,
+          sp_name: decorated_session.sp_name,
+        )
+        flash[:success] = t('account.index.verification.success')
+      end
+
+      idv_session.address_confirmed!
     end
 
     def throttle
@@ -100,21 +107,12 @@ module Idv
     end
 
     def confirm_verification_needed
-      return if current_user.pending_profile_requires_verification?
+      return if current_user.gpo_verification_pending_profile?
       redirect_to account_url
-    end
-
-    def threatmetrix_check_failed?(result)
-      result.extra[:threatmetrix_check_failed] && threatmetrix_enabled?
     end
 
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
-    end
-
-    def enable_personal_key_generation
-      idv_session.resolution_successful = 'gpo'
-      idv_session.applicant = pii
     end
   end
 end

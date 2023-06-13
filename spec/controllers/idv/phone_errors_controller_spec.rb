@@ -1,86 +1,86 @@
 require 'rails_helper'
 
-shared_examples_for 'an idv phone errors controller action' do
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
-    end
-  end
-
-  context 'the user is authenticated and has not confirmed their phone' do
-    let(:user) { create(:user) }
-
-    it 'renders the error' do
-      get action
-
-      expect(response).to render_template(template)
-    end
-
-    it 'logs an event' do
-      expect(@analytics).to receive(:track_event).with(
-        'IdV: phone error visited',
-        hash_including(
-          type: action,
-        ),
-      )
-      get action
-    end
-
-    context 'fetch() request from form-steps-wait JS' do
-      before do
-        request.headers['X-Form-Steps-Wait'] = '1'
+RSpec.describe Idv::PhoneErrorsController do
+  shared_examples_for 'an idv phone errors controller action' do
+    describe 'before_actions' do
+      it 'includes before_actions from IdvSession' do
+        expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
       end
-      it 'returns an empty response' do
+    end
+
+    context 'the user is authenticated and has not confirmed their phone' do
+      let(:user) { create(:user) }
+
+      it 'renders the error' do
         get action
-        expect(response).to have_http_status(204)
+
+        expect(response).to render_template(template)
+      end
+
+      it 'logs an event' do
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: phone error visited',
+          hash_including(
+            type: action,
+          ),
+        )
+        get action
+      end
+
+      context 'fetch() request from form-steps-wait JS' do
+        before do
+          request.headers['X-Form-Steps-Wait'] = '1'
+        end
+        it 'returns an empty response' do
+          get action
+          expect(response).to have_http_status(204)
+        end
+        it 'does not log an event' do
+          expect(@analytics).not_to receive(:track_event).with('IdV: phone error visited', anything)
+          get action
+        end
+      end
+    end
+
+    context 'the user is authenticated and has confirmed their phone' do
+      let(:user) { create(:user) }
+      let(:idv_session_user_phone_confirmation) { true }
+
+      it 'redirects to the review url' do
+        get action
+
+        expect(response).to redirect_to(idv_review_url)
       end
       it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with('IdV: phone error visited', anything)
+        expect(@analytics).not_to receive(:track_event).with(
+          'IdV: phone error visited',
+          hash_including(
+            type: action,
+          ),
+        )
+        get action
+      end
+    end
+
+    context 'the user is not authenticated and not recovering their account' do
+      let(:user) { nil }
+      it 'redirects to sign in' do
+        get action
+
+        expect(response).to redirect_to(new_user_session_url)
+      end
+      it 'does not log an event' do
+        expect(@analytics).not_to receive(:track_event).with(
+          'IdV: phone error visited',
+          hash_including(
+            type: action,
+          ),
+        )
         get action
       end
     end
   end
 
-  context 'the user is authenticated and has confirmed their phone' do
-    let(:user) { create(:user) }
-    let(:idv_session_user_phone_confirmation) { true }
-
-    it 'redirects to the review url' do
-      get action
-
-      expect(response).to redirect_to(idv_review_url)
-    end
-    it 'does not log an event' do
-      expect(@analytics).not_to receive(:track_event).with(
-        'IdV: phone error visited',
-        hash_including(
-          type: action,
-        ),
-      )
-      get action
-    end
-  end
-
-  context 'the user is not authenticated and not recovering their account' do
-    let(:user) { nil }
-    it 'redirects to sign in' do
-      get action
-
-      expect(response).to redirect_to(new_user_session_url)
-    end
-    it 'does not log an event' do
-      expect(@analytics).not_to receive(:track_event).with(
-        'IdV: phone error visited',
-        hash_including(
-          type: action,
-        ),
-      )
-      get action
-    end
-  end
-end
-
-describe Idv::PhoneErrorsController do
   let(:idv_session) { double }
   let(:idv_session_user_phone_confirmation) { false }
   let(:user) { nil }
@@ -214,16 +214,9 @@ describe Idv::PhoneErrorsController do
 
     context 'while throttled' do
       let(:user) { create(:user) }
-      let(:attempted_at) do
-        d = DateTime.now # microsecond precision failing on CI
-        Time.zone.parse(d.to_s)
-      end
-
-      before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
-      end
 
       it 'assigns expiration time' do
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
@@ -231,6 +224,8 @@ describe Idv::PhoneErrorsController do
 
       it 'logs an event' do
         freeze_time do
+          attempted_at = Time.zone.now.utc
+          Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
           throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
 
           get action

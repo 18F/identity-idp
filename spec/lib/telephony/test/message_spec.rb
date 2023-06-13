@@ -1,4 +1,4 @@
-describe Telephony::Test::Message do
+RSpec.describe Telephony::Test::Message do
   let(:body) { 'The code is 123456' }
   let(:otp) { '123456' }
 

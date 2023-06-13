@@ -1,8 +1,11 @@
 require 'rails_helper'
 
-describe Idv::AcuantConcern, :controller do
+RSpec.describe Idv::AcuantConcern, :controller do
   controller ApplicationController do
     include Idv::AcuantConcern
+
+    before_action :override_csp_to_allow_acuant
+    def index; end
   end
 
   let(:session_uuid) { SecureRandom.uuid }
@@ -76,6 +79,17 @@ describe Idv::AcuantConcern, :controller do
         expect(variables[:use_alternate_sdk]).to eq(false)
         expect(variables[:acuant_version]).to eq(default_sdk_version)
       end
+    end
+  end
+
+  describe '#override_csp_to_allow_acuant' do
+    it 'sets the headers for the document capture step' do
+      get :index, params: { step: 'document_capture' }
+
+      csp = response.request.content_security_policy
+      expect(csp.script_src).to include("'unsafe-eval'")
+      expect(csp.style_src).to include("'unsafe-inline'")
+      expect(csp.img_src).to include('blob:')
     end
   end
 end

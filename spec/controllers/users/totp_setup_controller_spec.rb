@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::TotpSetupController, devise: true do
+RSpec.describe Users::TotpSetupController, devise: true do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -42,6 +42,7 @@ describe Users::TotpSetupController, devise: true do
           user_signed_up: true,
           totp_secret_present: true,
           enabled_mfa_methods_count: 1,
+          sign_up_mfa_selection_order_bucket: nil,
         }
 
         expect(@analytics).
@@ -77,6 +78,7 @@ describe Users::TotpSetupController, devise: true do
           user_signed_up: false,
           totp_secret_present: true,
           enabled_mfa_methods_count: 0,
+          sign_up_mfa_selection_order_bucket: nil,
         }
 
         expect(@analytics).
@@ -115,6 +117,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -152,6 +155,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: next_auth_app_id,
             enabled_mfa_methods_count: 2,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -190,6 +194,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -229,6 +234,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 1,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
@@ -267,6 +273,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
           expect(@analytics).to have_received(:track_event).
@@ -305,6 +312,7 @@ describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -330,6 +338,7 @@ describe Users::TotpSetupController, devise: true do
               auth_app_configuration_id: next_auth_app_id,
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: true,
+              sign_up_mfa_selection_order_bucket: :default,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
@@ -366,6 +375,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
+            sign_up_mfa_selection_order_bucket: nil,
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 

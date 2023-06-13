@@ -1,7 +1,6 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
-    include SignInABTestConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
@@ -47,13 +46,21 @@ module SignUp
         current_sp: current_sp,
         decrypted_pii: pii,
         requested_attributes: decorated_session.requested_attributes.map(&:to_sym),
-        ial2_requested: sp_session[:ial2] || sp_session[:ialmax],
+        ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
       )
     end
 
     def ial2?
       sp_session[:ial2]
+    end
+
+    def ial_max?
+      sp_session[:ialmax]
+    end
+
+    def ial2_requested?
+      !!(ial2? || (ial_max? && current_user.identity_verified?))
     end
 
     def return_to_account
@@ -85,10 +92,7 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.user_registration_complete(
-        **analytics_attributes(last_page),
-        sign_in_a_b_test_bucket:,
-      )
+      analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 
     def pii

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'OIDC Authorization Confirmation' do
+RSpec.feature 'OIDC Authorization Confirmation' do
   include OidcAuthHelper
 
   before do
@@ -80,6 +80,31 @@ feature 'OIDC Authorization Confirmation' do
       visit user_authorization_confirmation_path
 
       expect(current_path).to eq(new_user_session_path)
+    end
+  end
+
+  context 'first time registration' do
+    it 'redirects user to sp and does not go through authorization_confirmation page' do
+      email = 'test@test.com'
+
+      perform_in_browser(:one) do
+        visit visit_idp_from_ial1_oidc_sp
+        sign_up_user_from_sp_without_confirming_email(email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
+        expect(current_path).to eq sign_up_completed_path
+        within('.requested-attributes') do
+          expect(page).to have_content t('help_text.requested_attributes.email')
+          expect(page).to have_content email
+        end
+
+        click_agree_and_continue
+
+        expect(current_url).to match('http://localhost:7654/auth/result')
+        expect(page.get_rack_session.keys).to include('sp')
+      end
     end
   end
 end

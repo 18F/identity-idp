@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'FeatureManagement' do
+RSpec.describe 'FeatureManagement' do
   describe '#prefill_otp_codes?' do
     context 'when SMS sending is disabled' do
       before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true) }
@@ -308,20 +308,6 @@ describe 'FeatureManagement' do
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
-    end
-  end
-
-  describe '#document_capture_async_uploads_enabled?' do
-    it 'returns true when IdentityConfig presigned S3 URL setting is true' do
-      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { true }
-
-      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
-    end
-
-    it 'returns false when IdentityConfig presigned S3 URL setting is false' do
-      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { false }
-
-      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
     end
   end
 

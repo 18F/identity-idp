@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::VerifyInfoController do
+RSpec.describe Idv::VerifyInfoController do
   include IdvHelper
 
   let(:flow_session) do
@@ -182,6 +182,7 @@ describe Idv::VerifyInfoController do
           errors: {},
           exception: nil,
           success: true,
+          threatmetrix_review_status: review_status,
         }
       end
 
@@ -205,6 +206,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Pass' do
         let(:review_status) { 'pass' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('pass')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: true,
@@ -215,7 +221,12 @@ describe Idv::VerifyInfoController do
       end
 
       context 'when threatmetrix response is No Result' do
-        let(:review_status) { 'no_result' }
+        let(:review_status) { nil }
+
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to be_nil
+        end
 
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
@@ -229,6 +240,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Reject' do
         let(:review_status) { 'reject' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
@@ -241,6 +257,11 @@ describe Idv::VerifyInfoController do
       context 'when threatmetrix response is Review' do
         let(:review_status) { 'review' }
 
+        it 'sets the review status in the idv session' do
+          get :show
+          expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+
         it 'it logs IRS idv_tmx_fraud_check event' do
           expect(@irs_attempts_api_tracker).to receive(:idv_tmx_fraud_check).with(
             success: false,
@@ -248,6 +269,56 @@ describe Idv::VerifyInfoController do
           )
           get :show
         end
+      end
+    end
+
+    context 'when aamva has trouble' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(user:)
+      end
+
+      let(:async_state) do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        result = Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(
+            success: false,
+            errors: {},
+            exception: Proofing::Aamva::VerificationError.new('ExceptionId: 0001'),
+            vendor_name: nil,
+            transaction_id: '',
+            verified_attributes: [],
+          ),
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          double_address_verification: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(success: true),
+          same_address_as_id: true,
+          should_proof_state_id: true,
+        )
+
+        document_capture_session.create_proofing_session
+
+        document_capture_session.store_proofing_result(result.adjudicated_result.to_h)
+
+        document_capture_session.load_proofing_result
+      end
+
+      before do
+        stub_analytics
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        put :show
+      end
+
+      it 'redirects user to warning' do
+        expect(response).to redirect_to idv_session_errors_state_id_warning_url
+      end
+
+      it 'logs an event' do
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth warning visited',
+          step_name: 'Idv::VerifyInfoController',
+          remaining_attempts: kind_of(Numeric),
+        )
       end
     end
   end
@@ -266,6 +337,23 @@ describe Idv::VerifyInfoController do
         'IdV: doc auth verify submitted',
         **analytics_hash,
       )
+    end
+
+    it 'redirects to the expected page' do
+      put :update
+
+      expect(response).to redirect_to idv_verify_info_url
+    end
+
+    it 'modifies pii as expected' do
+      app_id = 'hello-world'
+      sp = create(:service_provider, app_id: app_id)
+      sp_session = { issuer: sp.issuer }
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+
+      put :update
+
+      expect(flow_session[:pii_from_doc][:uuid_prefix]).to eq app_id
     end
 
     it 'updates DocAuthLog verify_submit_count' do

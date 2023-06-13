@@ -1,8 +1,8 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'review_profile' do
-  let(:user) { create(:user, :deactivated_fraud_profile) }
+RSpec.describe 'review_profile' do
+  let(:user) { create(:user, :fraud_review_pending) }
   let(:uuid) { user.uuid }
   let(:task_name) { nil }
 
@@ -54,19 +54,13 @@ describe 'review_profile' do
       end
     end
 
-    context 'when the user profile has a nil verified_at' do
-      let(:user) do
-        create(
-          :user,
-          :with_pending_in_person_enrollment,
-          proofing_component: build(:proofing_component),
-        )
-      end
+    context 'when the user has cancelled verification' do
+      it 'does not activate the profile' do
+        user.profiles.first.update!(gpo_verification_pending_at: user.created_at)
 
-      it 'prints an error' do
-        invoke_task
+        expect { invoke_task }.to raise_error(RuntimeError)
 
-        expect(stdout.string).to include('Error: User does not have a pending fraud review')
+        expect(user.reload.profiles.first.active).to eq(false)
       end
     end
   end
@@ -77,8 +71,7 @@ describe 'review_profile' do
     it 'deactivates the users profile with reason threatmetrix_review_rejected' do
       invoke_task
       expect(user.reload.profiles.first.active).to eq(false)
-      expect(user.reload.profiles.first.fraud_rejection).to eq(true)
-      expect(user.reload.profiles.first.fraud_rejection_at).to_not be_nil
+      expect(user.reload.profiles.first.fraud_rejection?).to eq(true)
     end
 
     it 'sends the user an email about their account deactivation' do

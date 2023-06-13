@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::VerificationClient do
+RSpec.describe Proofing::Aamva::VerificationClient do
   let(:applicant) do
     applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-4567-abcd-efgh',
@@ -20,9 +20,8 @@ describe Proofing::Aamva::VerificationClient do
 
   describe '#send_verification_request' do
     before do
-      auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-      allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-      allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token).
+        and_return('ThisIsTheToken')
     end
 
     it 'gets the auth token from the auth client' do
@@ -46,9 +45,8 @@ describe Proofing::Aamva::VerificationClient do
     let(:response_http_status) { 200 }
 
     before do
-      auth_client = instance_double(Proofing::Aamva::AuthenticationClient)
-      allow(auth_client).to receive(:fetch_token).and_return('ThisIsTheToken')
-      allow(Proofing::Aamva::AuthenticationClient).to receive(:new).and_return(auth_client)
+      allow(Proofing::Aamva::AuthenticationClient).to receive(:auth_token).
+        and_return('ThisIsTheToken')
 
       stub_request(:post, AamvaFixtures.example_config.verification_url).
         to_return(body: response_body, status: response_http_status)
@@ -109,7 +107,7 @@ describe Proofing::Aamva::VerificationClient do
         it 'throws an exception about the MVA timeout' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
           )
         end
 
@@ -135,7 +133,7 @@ describe Proofing::Aamva::VerificationClient do
         it 'throws an exception about the MVA timeout' do
           expect { response }.to raise_error(
             Proofing::Aamva::VerificationError,
-            /#{Proofing::Aamva::Response::VerificationResponse::MVA_TIMEOUT_EXCEPTION}/o,
+            /#{Proofing::StateIdResult::MVA_TIMEOUT_EXCEPTION}/o,
           )
         end
       end

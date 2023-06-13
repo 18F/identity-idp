@@ -14,6 +14,7 @@ Default behavior includes:
 - Autoprefixer configuration based on the current project's [Browserslist](https://browsersl.ist/) configuration.
 - Automatically adds `node_modules` as a loaded path for Sass compilation.
 - Output filenames derived from the input filenames (`main.css.scss` becomes `main.css`).
+- Automatically adds required load paths for `@18f/identity-design-system` and `@uswds/uswds`.
 
 ## Usage
 
@@ -22,7 +23,7 @@ Default behavior includes:
 Invoke the included `build-sass` executable with the source files and any relevant command flags.
 
 ```
-npx build-sass path/to/sass/*.css.scss --out-dir=build --load-path=node_modules/@uswds/uswds/packages
+npx build-sass path/to/sass/*.scss --out-dir=build
 ```
 
 Flags:

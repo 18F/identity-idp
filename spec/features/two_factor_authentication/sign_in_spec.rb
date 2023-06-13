@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Two Factor Authentication' do
+RSpec.feature 'Two Factor Authentication' do
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa
@@ -75,7 +75,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         fill_in 'new_phone_form_phone', with: ''
 
@@ -87,7 +87,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'IE'
 
         fill_in 'new_phone_form_phone', with: ''
@@ -99,7 +99,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
@@ -261,17 +261,42 @@ feature 'Two Factor Authentication' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
+      input = page.find_field(t('components.one_time_code_input.label'))
+      expect(page.evaluate_script('document.activeElement.id')).to eq(input[:id])
     end
 
-    scenario 'user enters incorrect OTP', js: true do
+    it 'validates OTP format', js: true do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
 
-      expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
-      fill_in 'code', with: 'BADBAD'
+      input = page.find_field(t('components.one_time_code_input.label'))
+
+      # Invalid: Unsupported characters
+      input.fill_in with: 'BADBAD'
       click_submit_default
       expect(page).to have_content(t('errors.messages.otp_format'))
+
+      # Invalid: Not enough characters, with prefix
+      fill_in t('components.one_time_code_input.label'), with: '#12345'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.otp_format'))
+
+      # Invalid: Not enough characters, without prefix
+      fill_in t('components.one_time_code_input.label'), with: '12345'
+      click_submit_default
+      expect(page).to have_content(t('errors.messages.otp_format'))
+
+      # Valid: Enough characters, with prefix
+      input.fill_in with: '#123456'
+      expect(input.value).to eq('#123456')
+      page.evaluate_script('document.activeElement.closest("form").reportValidity()')
+      expect(page).not_to have_content(t('errors.messages.otp_format'))
+
+      # Valid: Enough characters, without prefix
+      input.fill_in with: '123456'
+      expect(input.value).to eq('123456')
+      page.evaluate_script('document.activeElement.closest("form").reportValidity()')
+      expect(page).not_to have_content(t('errors.messages.otp_format'))
     end
 
     scenario 'the user changes delivery method' do

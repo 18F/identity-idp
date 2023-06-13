@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Hybrid Flow', :allow_net_connect_on_start do
+RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   include IdvHelper
   include IdvStepHelper
   include DocAuthHelper
@@ -8,13 +8,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
   let(:phone_number) { '415-555-0199' }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(true)
-
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
-    allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls).and_return(true)
-    allow(Identity::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
 
   before do
@@ -29,23 +23,40 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
+
+      # Confirm that Continue button is not shown when polling is enabled
+      expect(page).not_to have_content(t('doc_auth.buttons.continue'))
     end
 
     expect(@sms_link).to be_present
 
     perform_in_browser(:mobile) do
       visit @sms_link
+
+      # Confirm app disallows jumping ahead to CaptureComplete page
+      visit idv_hybrid_mobile_capture_complete_url
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+
+      # Confirm that jumping to LinkSent page does not cause errors
+      visit idv_link_sent_url
+      expect(page).to have_current_path(root_url)
+      visit idv_hybrid_mobile_document_capture_url
+
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
-      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+      expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+      # Confirm app disallows jumping back to DocumentCapture page
+      visit idv_hybrid_mobile_document_capture_url
+      expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
     end
 
     perform_in_browser(:desktop) do
@@ -76,7 +87,7 @@ describe 'Hybrid Flow', :allow_net_connect_on_start do
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
-      complete_doc_auth_steps_before_upload_step
+      complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
 

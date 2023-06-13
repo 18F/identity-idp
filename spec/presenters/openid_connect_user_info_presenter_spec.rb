@@ -27,18 +27,50 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   describe '#user_info' do
     subject(:user_info) { presenter.user_info }
 
-    it 'has basic attributes' do
-      ial = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
-      aal = Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
+    context 'basic ial1' do
+      it 'has basic attributes' do
+        ial = Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[identity.ial]
+        aal = Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
 
-      aggregate_failures do
-        expect(user_info[:sub]).to eq(identity.uuid)
-        expect(user_info[:iss]).to eq(root_url)
-        expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
-        expect(user_info[:email_verified]).to eq(true)
-        expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-        expect(user_info[:ial]).to eq(ial)
-        expect(user_info[:aal]).to eq(aal)
+        aggregate_failures do
+          expect(user_info[:sub]).to eq(identity.uuid)
+          expect(user_info[:iss]).to eq(root_url)
+          expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+          expect(user_info[:email_verified]).to eq(true)
+          expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+          expect(user_info[:ial]).to eq(ial)
+          expect(user_info[:aal]).to eq(aal)
+        end
+      end
+    end
+
+    context 'ialmax' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:ial_value) { Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[ial] }
+      let(:aal) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
+      before { identity.ial = ial }
+
+      it 'has basic attributes' do
+        aggregate_failures do
+          expect(user_info[:sub]).to eq(identity.uuid)
+          expect(user_info[:iss]).to eq(root_url)
+          expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+          expect(user_info[:email_verified]).to eq(true)
+          expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
+          expect(user_info[:ial]).to eq(ial_value)
+          expect(user_info[:aal]).to eq(aal)
+        end
+      end
+
+      it 'does not return ial2 attributes' do
+        aggregate_failures do
+          expect(user_info[:given_name]).to eq(nil)
+          expect(user_info[:family_name]).to eq(nil)
+          expect(user_info[:birthdate]).to eq(nil)
+          expect(user_info[:phone]).to eq(nil)
+          expect(user_info[:phone_verified]).to eq(nil)
+          expect(user_info[:address]).to eq(nil)
+        end
       end
     end
 
@@ -112,7 +144,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       context 'when the identity has ial2 access' do
-        before { identity.ial = 2 }
+        before { identity.ial = Idp::Constants::IAL2 }
 
         context 'when the scope includes all attributes' do
           it 'returns ial2 attributes' do
@@ -182,7 +214,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       context 'when the identity only has ial1 access' do
-        before { identity.ial = 1 }
+        before { identity.ial = Idp::Constants::IAL1 }
 
         it 'does not return ial2 attributes' do
           aggregate_failures do
@@ -192,6 +224,56 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             expect(user_info[:phone]).to eq(nil)
             expect(user_info[:phone_verified]).to eq(nil)
             expect(user_info[:address]).to eq(nil)
+          end
+        end
+      end
+
+      context 'when the identity has ialmax access' do
+        before { identity.ial = Idp::Constants::IAL_MAX }
+
+        context 'when the scope includes all attributes' do
+          it 'returns ial2 attributes' do
+            aggregate_failures do
+              expect(user_info[:given_name]).to eq('John')
+              expect(user_info[:family_name]).to eq('Smith')
+              expect(user_info[:birthdate]).to eq('1970-12-31')
+              expect(user_info[:phone]).to eq('+17035555555')
+              expect(user_info[:phone_verified]).to eq(true)
+              expect(user_info[:address]).to eq(
+                formatted: "123 Fake St\nApt 456\nWashington, DC 12345",
+                street_address: "123 Fake St\nApt 456",
+                locality: 'Washington',
+                region: 'DC',
+                postal_code: '12345',
+              )
+              expect(user_info[:verified_at]).to eq(profile.verified_at.to_i)
+              expect(user_info[:social_security_number]).to eq('666661234')
+            end
+          end
+
+          it 'renders values as simple strings as json' do
+            json = user_info.as_json
+
+            expect(json['given_name']).to eq('John')
+          end
+        end
+
+        context 'when the scope only includes minimal attributes' do
+          let(:scope) { 'openid email phone' }
+
+          it 'returns attributes allowed by the scope' do
+            aggregate_failures do
+              expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
+              expect(user_info[:email_verified]).to eq(true)
+              expect(user_info[:given_name]).to eq(nil)
+              expect(user_info[:family_name]).to eq(nil)
+              expect(user_info[:birthdate]).to eq(nil)
+              expect(user_info[:phone]).to eq('+17035555555')
+              expect(user_info[:phone_verified]).to eq(true)
+              expect(user_info[:address]).to eq(nil)
+              expect(user_info[:verified_at]).to eq(nil)
+              expect(user_info[:social_security_number]).to eq(nil)
+            end
           end
         end
       end

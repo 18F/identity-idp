@@ -9,7 +9,7 @@
 </p>
 
 <%= render AccordionComponent.new(class: 'margin-y-2') do |c| %>
-  <% c.header { t('devise.registrations.start.accordion') } %>
+  <% c.with_header { t('devise.registrations.start.accordion') } %>
   <p class="grid-row grid-gutter">
     <%= image_tag(
           asset_url('get-started/email-password.svg'),
@@ -65,6 +65,6 @@
     </span>
   </p>
   <p>
-    <%= new_window_link_to t('devise.registrations.start.learn_more'), MarketingSite.help_url %>
+    <%= new_tab_link_to t('devise.registrations.start.learn_more'), MarketingSite.help_url %>
   </p>
 <% end %>

@@ -21,11 +21,15 @@
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
 <p class="margin-top-2">
-  <%= new_window_link_to t('notices.privacy.security_and_privacy_practices'),
-                         MarketingSite.security_and_privacy_practices_url %>
+  <%= new_tab_link_to(
+        t('notices.privacy.security_and_privacy_practices'),
+        MarketingSite.security_and_privacy_practices_url,
+      ) %>
 </p>
 
 <p>
-  <%= new_window_link_to t('notices.privacy.privacy_act_statement'),
-                         MarketingSite.privacy_act_statement_url %>
+  <%= new_tab_link_to(
+        t('notices.privacy.privacy_act_statement'),
+        MarketingSite.privacy_act_statement_url,
+      ) %>
 </p>

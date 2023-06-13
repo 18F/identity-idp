@@ -111,7 +111,7 @@ function FullScreen(
       {!hideCloseButton && (
         <button
           type="button"
-          aria-label={t('users.personal_key.close')}
+          aria-label={t('account.navigation.close')}
           onClick={onRequestClose}
           className="full-screen__close-button usa-button padding-2 margin-2"
         >

@@ -1,6 +1,6 @@
 <noscript>
   <%= render StatusPageComponent.new(status: :error) do |c| %>
-    <% c.header { header } %>
+    <% c.with_header { header } %>
 
     <% if intro %>
       <p><%= intro %></p>
@@ -10,7 +10,7 @@
 
     <ul class="usa-list">
       <% browser_resources.each do |resource| %>
-        <li><%= new_window_link_to resource[:name], resource[:url] %></li>
+        <li><%= new_tab_link_to resource[:name], resource[:url] %></li>
       <% end %>
     </ul>
 

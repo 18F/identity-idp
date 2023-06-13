@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Visitor sets password during signup' do
+RSpec.feature 'Visitor sets password during signup' do
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user
@@ -84,6 +84,8 @@ feature 'Visitor sets password during signup' do
 
     scenario 'visitor gets password help message' do
       fill_in t('forms.password'), with: '1234567891011'
+      fill_in t('components.password_confirmation.confirm_label'),
+              with: '1234567891011'
 
       click_button t('forms.buttons.continue')
 

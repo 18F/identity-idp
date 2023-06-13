@@ -6,7 +6,6 @@ import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import Warning from './warning';
@@ -46,11 +45,11 @@ interface ReviewIssuesStepValue {
 }
 
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
-  remainingAttempts: number;
+  remainingAttempts?: number;
 
-  isFailedResult: boolean;
+  isFailedResult?: boolean;
 
-  captureHints: boolean;
+  captureHints?: boolean;
 
   pii?: PII;
 }
@@ -116,31 +115,35 @@ function ReviewIssuesStep({
 
     if (!inPersonURL || isFailedResult) {
       return (
-        <Warning
-          heading={t('errors.doc_auth.throttled_heading')}
-          actionText={t('idv.failure.button.warning')}
-          actionOnClick={onWarningPageDismissed}
-          location="doc_auth_review_issues"
-          remainingAttempts={remainingAttempts}
-          troubleshootingOptions={
-            <DocumentCaptureTroubleshootingOptions
-              location="post_submission_warning"
-              showAlternativeProofingOptions={!isFailedResult}
-              heading={t('components.troubleshooting_options.ipp_heading')}
-            />
-          }
-        >
-          {!!unknownFieldErrors &&
-            unknownFieldErrors
-              .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        <>
+          <Warning
+            heading={t('errors.doc_auth.throttled_heading')}
+            actionText={t('idv.failure.button.warning')}
+            actionOnClick={onWarningPageDismissed}
+            location="doc_auth_review_issues"
+            remainingAttempts={remainingAttempts}
+            troubleshootingOptions={
+              <DocumentCaptureTroubleshootingOptions
+                location="post_submission_warning"
+                showAlternativeProofingOptions={!isFailedResult}
+                showSPOption={false}
+                heading={t('components.troubleshooting_options.ipp_heading')}
+              />
+            }
+          >
+            {!!unknownFieldErrors &&
+              unknownFieldErrors
+                .filter((error) => !['front', 'back'].includes(error.field!))
+                .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-          {remainingAttempts <= DISPLAY_ATTEMPTS && (
-            <p>
-              <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
-            </p>
-          )}
-        </Warning>
+            {remainingAttempts <= DISPLAY_ATTEMPTS && (
+              <p>
+                <strong>{t('idv.failure.attempts', { count: remainingAttempts })}</strong>
+              </p>
+            )}
+          </Warning>
+          <Cancel />
+        </>
       );
     }
     if (inPersonCtaVariantActive === 'in_person_variant_a') {
@@ -187,7 +190,7 @@ function ReviewIssuesStep({
           actionOnClick={onWarningPageDismissed}
           altActionText={t('in_person_proofing.body.cta.button_variant')}
           altActionOnClick={onInPersonSelected}
-          altHref="#location"
+          altHref="#prepare"
           location="doc_auth_review_issues"
           remainingAttempts={remainingAttempts}
           troubleshootingOptions={
@@ -287,4 +290,4 @@ function ReviewIssuesStep({
   );
 }
 
-export default withBackgroundEncryptedUpload(ReviewIssuesStep);
+export default ReviewIssuesStep;

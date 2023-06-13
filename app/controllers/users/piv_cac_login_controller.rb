@@ -74,19 +74,26 @@ module Users
         presented: true,
       )
 
-      handle_valid_otp(next_url: next_step, auth_method: 'piv_cac')
+      handle_valid_verification_for_authentication_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
+      redirect_to next_step
     end
 
     def next_step
       if ial_context.ial2_requested?
         capture_password_url
       else
-        after_otp_verification_confirmation_url
+        after_sign_in_path_for(current_user)
       end
     end
 
     def ial_context
-      @ial_context ||= IalContext.new(ial: sp_session_ial, service_provider: current_sp)
+      @ial_context ||= IalContext.new(
+        ial: sp_session_ial,
+        service_provider: current_sp,
+        user: piv_cac_login_form.user,
+      )
     end
 
     def process_invalid_submission
@@ -97,14 +104,6 @@ module Users
 
     def process_token_with_error
       redirect_to login_piv_cac_error_url(error: piv_cac_login_form.error_type)
-    end
-
-    def mark_user_session_authenticated(authentication_type)
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
-      analytics.user_marked_authed(
-        authentication_type: authentication_type,
-      )
     end
   end
 end

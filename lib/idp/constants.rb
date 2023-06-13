@@ -109,6 +109,16 @@ module Idp
       identity_doc_city: 'Best City',
       identity_doc_zipcode: '12345',
       identity_doc_address_state: 'VA',
+      same_address_as_id: 'false',
+    ).freeze
+
+    MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(
+      identity_doc_address1: MOCK_IDV_APPLICANT_WITH_SSN[:address1],
+      identity_doc_address2: MOCK_IDV_APPLICANT_WITH_SSN[:address2],
+      identity_doc_city: MOCK_IDV_APPLICANT_WITH_SSN[:city],
+      identity_doc_zipcode: MOCK_IDV_APPLICANT_WITH_SSN[:zipcode],
+      identity_doc_address_state: MOCK_IDV_APPLICANT_WITH_SSN[:state],
+      same_address_as_id: 'true',
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze

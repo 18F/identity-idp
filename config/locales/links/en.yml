@@ -15,7 +15,7 @@ en:
     exit_login: Exit %{app_name}
     go_back: Go back
     help: Help
-    new_window: '(opens new window)'
+    new_tab: '(opens new tab)'
     next: Sign in
     passwords:
       forgot: Forgot your password?

@@ -159,6 +159,21 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
+  describe '#usps_outage_message_enabled' do
+    subject(:usps_outage_message_enabled) { presenter.usps_outage_message_enabled }
+    it 'returns true when the flag is enabled' do
+      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+        and_return(true).once
+      expect(usps_outage_message_enabled).to be(true)
+    end
+
+    it 'returns false when the flag is disabled' do
+      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+        and_return(false).once
+      expect(usps_outage_message_enabled).to be(false)
+    end
+  end
+
   describe '#barcode_image_url' do
     subject(:barcode_image_url) { presenter.barcode_image_url }
 

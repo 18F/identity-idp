@@ -5,6 +5,7 @@
 
 variables:
   GITLAB_CI: 'true'
+  FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:e846ed99aa3c8f9083731105b8ef25536c7ab3ed5e9f2b781b63431badcb091b'
@@ -107,7 +108,7 @@ check_changelog:
 
 specs:
   stage: test
-  parallel: 11
+  parallel: 22
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -119,16 +120,17 @@ specs:
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
-    DOCKER_DB_HOST: postgres
+    DOCKER_DB_HOST: db-postgres
     POSTGRES_DB: identity_idp_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:13.4
+    - name: postgis/postgis:13-3.3
       alias: db-postgres
-    - name: redis
+      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
+    - name: redis:7.0
       alias: db-redis
   artifacts:
     expire_in: 31d
@@ -256,4 +258,3 @@ trigger_devops:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv phone step', :js do
+RSpec.feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
 
@@ -49,7 +49,7 @@ feature 'idv phone step', :js do
       fill_in :idv_phone_form_phone, with: '578190'
       click_idv_send_security_code
       expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+      expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
     end
   end
 
@@ -146,6 +146,16 @@ feature 'idv phone step', :js do
 
       expect(page).to have_content(t('idv.failure.phone.warning.heading'))
       expect(page).to have_content('+1 703-555-5555')
+    end
+
+    it 'goes to the cancel page when cancel link is clicked' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step
+      fill_out_phone_form_fail
+      click_idv_send_security_code
+      click_on t('links.cancel')
+
+      expect(page).to have_current_path(idv_cancel_path(step: 'phone'))
     end
 
     it 'links to verify by mail, from which user can return back to the warning screen' do

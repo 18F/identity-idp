@@ -196,10 +196,21 @@ RSpec.describe User do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     end
     let(:pending_enrollment_profile) do
-      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
+
     let(:establishing_enrollment_profile) do
-      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
+      create(
+        :profile,
+        gpo_verification_pending_at: 1.day.ago,
+        user: user,
+        pii: { first_name: 'Susan' },
+      )
     end
 
     let!(:failed_enrollment) do
@@ -462,22 +473,83 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
-    context 'when a profile with a gpo_verification_pending deactivation_reason exists' do
-      it 'returns the most recent profile' do
-        user = User.new
-        _old_profile = create(
+    context 'when a pending profile exists' do
+      let(:user) { User.new }
+      let!(:pending) do
+        create(
           :profile,
-          :gpo_verification_pending,
-          created_at: 1.day.ago,
+          gpo_verification_pending_at: 2.days.ago,
+          created_at: 2.days.ago,
           user: user,
         )
-        new_profile = create(
+      end
+
+      it 'returns nil if the active profile is newer than the pending profile' do
+        allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: Time.zone.now))
+
+        expect(user.pending_profile).to be_nil
+      end
+
+      it 'returns the profile if the active profile is older than the pending profile' do
+        allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 3.days.ago))
+
+        expect(user.pending_profile).to eq pending
+      end
+    end
+
+    context 'when pending profile does not exist' do
+      it 'returns nil' do
+        user = User.new
+        create(
           :profile,
-          :gpo_verification_pending,
+          deactivation_reason: :encryption_error,
           user: user,
         )
 
-        expect(user.pending_profile).to eq new_profile
+        expect(user.pending_profile).to be_nil
+      end
+    end
+
+    context 'verification was cancelled for a pending profile' do
+      it 'return nil' do
+        user = User.new
+        create(
+          :profile,
+          gpo_verification_pending_at: Time.zone.now,
+          deactivation_reason: :verification_cancelled,
+          user: user,
+        )
+
+        expect(user.pending_profile).to be_nil
+      end
+    end
+
+    context 'the pending profile is stuck because of a password reset' do
+      it 'return nil' do
+        user = User.new
+        create(
+          :profile,
+          gpo_verification_pending_at: Time.zone.now,
+          deactivation_reason: :password_reset,
+          user: user,
+        )
+
+        expect(user.pending_profile).to be_nil
+      end
+    end
+  end
+
+  describe '#gpo_verification_pending_profile' do
+    context 'when a profile with a gpo_verification_pending_at timestamp exists' do
+      it 'returns the profile' do
+        user = User.new
+        profile = create(
+          :profile,
+          gpo_verification_pending_at: Time.zone.now,
+          user: user,
+        )
+
+        expect(user.gpo_verification_pending_profile).to eq profile
       end
     end
 
@@ -496,48 +568,7 @@ RSpec.describe User do
           user: user,
         )
 
-        expect(user.pending_profile).to be_nil
-      end
-    end
-  end
-
-  describe '#fraud_review_eligible?' do
-    context 'when fraud_review_pending_at is nil' do
-      it 'returns false' do
-        fraud_review_pending_at = nil
-
-        user = create(:user)
-        user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
-        )
-
-        expect(user.fraud_review_eligible?).to be_falsey
-      end
-    end
-
-    context 'when verified_at is within 30 days' do
-      it 'returns true' do
-        fraud_review_pending_at = 15.days.ago
-
-        user = create(:user)
-        user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
-        )
-
-        expect(user.fraud_review_eligible?).to eq true
-      end
-    end
-
-    context 'when verified_at is older than 30 days' do
-      it 'returns false' do
-        fraud_review_pending_at = 45.days.ago
-
-        user = create(:user)
-        user.profiles.create(
-          fraud_review_pending_at: fraud_review_pending_at,
-        )
-
-        expect(user.fraud_review_eligible?).to eq false
+        expect(user.gpo_verification_pending_profile).to be_nil
       end
     end
   end
@@ -968,44 +999,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#pending_profile_requires_verification?' do
-    it 'returns false when no pending profile exists' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return(nil)
-
-      expect(user.pending_profile_requires_verification?).to eq false
-    end
-
-    it 'returns true when pending profile exists and identity is not verified' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return('profile')
-      allow(user).to receive(:identity_not_verified?).and_return(true)
-
-      expect(user.pending_profile_requires_verification?).to eq true
-    end
-
-    it 'returns false when active profile is newer than pending profile' do
-      user = User.new
-      allow(user).to receive(:pending_profile).and_return('profile')
-      allow(user).to receive(:identity_not_verified?).and_return(false)
-      allow(user).to receive(:active_profile_newer_than_pending_profile?).
-        and_return(true)
-
-      expect(user.pending_profile_requires_verification?).to eq false
-    end
-
-    it 'returns true when pending profile is newer than active profile' do
-      user = User.new
-
-      allow(user).to receive(:pending_profile).and_return('profile')
-      allow(user).to receive(:identity_not_verified?).and_return(false)
-      allow(user).to receive(:active_profile_newer_than_pending_profile?).
-        and_return(false)
-
-      expect(user.pending_profile_requires_verification?).to eq true
-    end
-  end
-
   describe '#identity_not_verified?' do
     it 'returns true if identity_verified returns false' do
       user = User.new
@@ -1035,26 +1028,6 @@ RSpec.describe User do
       allow(user).to receive(:active_profile).and_return(nil)
 
       expect(user.identity_verified?).to eq false
-    end
-  end
-
-  describe '#active_profile_newer_than_pending_profile?' do
-    it 'returns true if the active profile is newer than the pending profile' do
-      user = User.new
-      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: Time.zone.now))
-      allow(user).to receive(:pending_profile).
-        and_return(Profile.new(created_at: 1.day.ago))
-
-      expect(user.active_profile_newer_than_pending_profile?).to eq true
-    end
-
-    it 'returns false if the active profile is older than the pending profile' do
-      user = User.new
-      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 1.day.ago))
-      allow(user).to receive(:pending_profile).
-        and_return(Profile.new(created_at: Time.zone.now))
-
-      expect(user.active_profile_newer_than_pending_profile?).to eq false
     end
   end
 

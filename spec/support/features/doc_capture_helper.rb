@@ -34,20 +34,12 @@ module DocCaptureHelper
 
   def complete_doc_capture_steps_before_document_capture_step(user = user_with_2fa)
     complete_doc_capture_steps_before_first_step(user) unless
-      current_path == idv_capture_doc_document_capture_step
+      current_path == idv_hybrid_mobile_document_capture_path
   end
 
   def complete_doc_capture_steps_before_capture_complete_step(user = user_with_2fa)
     complete_doc_capture_steps_before_document_capture_step(user)
     attach_and_submit_images
-  end
-
-  def idv_capture_doc_document_capture_step
-    idv_capture_doc_step_path(step: :document_capture)
-  end
-
-  def idv_capture_doc_capture_complete_step
-    idv_capture_doc_step_path(step: :capture_complete)
   end
 
   def mock_doc_captured(user_id, response = DocAuth::Response.new(success: true))

@@ -157,6 +157,7 @@ module Features
     def sign_up_and_set_password
       user = sign_up
       fill_in t('forms.password'), with: VALID_PASSWORD
+      fill_in t('components.password_confirmation.confirm_label'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end
@@ -390,12 +391,12 @@ module Features
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect(current_url).to eq sign_up_email_url
       expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect(current_url).to eq sign_up_email_url
       expect_branded_experience
 
       submit_form_with_invalid_email
@@ -442,7 +443,7 @@ module Features
 
       expect_branded_experience
 
-      submit_form_with_valid_password
+      submit_form_with_valid_password_confirmation
 
       set_up_2fa_with_valid_phone
       skip_second_mfa_prompt
@@ -509,6 +510,13 @@ module Features
       click_button t('forms.buttons.continue')
     end
 
+    def submit_form_with_valid_password_confirmation(password = VALID_PASSWORD)
+      fill_in t('forms.password'), with: password
+      fill_in t('components.password_confirmation.confirm_label'), with: password
+
+      click_button t('forms.buttons.continue')
+    end
+
     def set_up_2fa_with_valid_phone
       select_2fa_option('phone')
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
@@ -546,7 +554,7 @@ module Features
       find_link(t('links.create_account')).click
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
-      submit_form_with_valid_password
+      submit_form_with_valid_password_confirmation
     end
 
     def register_user_with_authenticator_app(email = 'test@test.com')
@@ -565,6 +573,14 @@ module Features
       secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
+    end
+
+    def set_up_2fa_with_backup_codes
+      select_2fa_option('backup_code')
+
+      expect(page).to have_current_path backup_code_setup_path
+
+      click_button 'Continue'
     end
 
     def register_user_with_piv_cac(email = 'test@test.com')

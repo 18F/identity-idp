@@ -126,7 +126,7 @@ en:
         %{date}.
       subject: Your identity could not be verified in person
       verifying_identity: 'When verifying your identity:'
-      verifying_step_not_expired: Your state-issued ID or driver’s license must not be
+      verifying_step_not_expired: Your state‑issued ID or driver’s license must not be
         expired. We do not currently accept any other forms of identification,
         such as passports and military IDs.
       verifying_step_proof_of_address: If you try to verify your identity in person
@@ -142,10 +142,23 @@ en:
           %{location} Post Office on %{date}.
       greeting: Hello,
       subject: Your identity could not be verified in person
+    in_person_outage_notification:
+      body:
+        closing_html: We sincerely apologize for the delay in service. Should you have
+          questions or do not receive your result by June 1, please <a
+          href="%{contact_us_url}">contact %{app_name} Customer Support</a>.
+        heading: Results for In-Person Verification Delayed from May 20 until May 30
+        instructions: At this time, if you attempted to complete the identity
+          verification process at a Post Office, you do not need to try again.
+          Rest assured that your verification results are not lost; they are
+          securely stored and will be emailed to you once we fix the technical
+          issue.
+        intro_html: We’re working on a technical issue that is delaying emails of
+          in-person verification results. <strong>If you attempted to complete
+          identity verification at a Post Office between May 20 and May 29, your
+          results may not be emailed to you until Tuesday, May 30.</strong>
+      subject: '%{app_name} In-Person Verification Results Delayed'
     in_person_ready_to_verify:
-      greeting: Hello,
-      intro: Here are the details to verify your identity in person at a United States
-        Post Office near you.
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_ready_to_verify_reminder:
       greeting: Hello,

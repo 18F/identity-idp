@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/show.html.erb' do
+RSpec.describe 'accounts/show.html.erb' do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do
@@ -44,7 +44,7 @@ describe 'accounts/show.html.erb' do
 
   context 'when the user does not have pending_profile' do
     before do
-      allow(user).to receive(:pending_profile).and_return(false)
+      allow(user).to receive(:pending_profile).and_return(nil)
     end
 
     it 'lacks a pending profile section' do
@@ -58,7 +58,13 @@ describe 'accounts/show.html.erb' do
 
   context 'when current user has pending_profile' do
     before do
-      allow(user).to receive(:pending_profile).and_return(build(:profile))
+      pending = create(
+        :profile,
+        gpo_verification_pending_at: 2.days.ago,
+        created_at: 2.days.ago,
+        user: user,
+      )
+      allow(user).to receive(:pending_profile).and_return(pending)
     end
 
     it 'contains a link to activate profile' do

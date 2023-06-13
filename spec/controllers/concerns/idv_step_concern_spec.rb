@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IdvStepConcern' do
+RSpec.describe 'IdvStepConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
@@ -13,6 +13,15 @@ describe 'IdvStepConcern' do
       def show
         render plain: 'Hello'
       end
+    end
+  end
+
+  describe 'before_actions' do
+    it 'includes confirm_not_rate_limited before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :confirm_not_rate_limited,
+      )
     end
   end
 
@@ -160,6 +169,78 @@ describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to(idv_in_person_verify_info_url)
+      end
+    end
+  end
+
+  describe '#confirm_no_pending_in_person_enrollment' do
+    controller Idv::StepController do
+      before_action :confirm_no_pending_in_person_enrollment
+    end
+
+    before(:each) do
+      sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'without pending in person enrollment' do
+      it 'does not redirect' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_in_person_ready_to_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'with pending in person enrollment' do
+      let(:user) { create(:user, :with_pending_in_person_enrollment, :fully_registered) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'redirects to in person ready to verify page' do
+        get :show
+
+        expect(response).to redirect_to idv_in_person_ready_to_verify_url
+      end
+    end
+  end
+
+  describe '#confirm_no_pending_gpo_profile' do
+    controller Idv::StepController do
+      before_action :confirm_no_pending_gpo_profile
+    end
+
+    before(:each) do
+      sign_in(user)
+      allow(subject).to receive(:current_user).and_return(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'without pending gpo profile' do
+      it 'does not redirect' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_gpo_verify_url
+        expect(response.status).to eq 200
+      end
+    end
+
+    context 'with pending gpo profile' do
+      let(:user) { create(:user, :with_pending_gpo_profile, :fully_registered) }
+
+      it 'redirects to enter your code page' do
+        get :show
+
+        expect(response).to redirect_to idv_gpo_verify_url
       end
     end
   end

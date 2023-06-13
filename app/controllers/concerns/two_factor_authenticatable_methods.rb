@@ -67,14 +67,17 @@ module TwoFactorAuthenticatableMethods
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
 
-    redirect_to after_otp_verification_confirmation_url
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def check_sp_required_mfa_bypass(auth_method:)
     return unless service_provider_mfa_policy.user_needs_sp_auth_method_verification?
     return if service_provider_mfa_policy.phishing_resistant_required? &&
-              ServiceProviderMfaPolicy::PHISHING_RESISTANT_METHODS.include?(auth_method)
-    return if service_provider_mfa_policy.piv_cac_required? && auth_method == 'piv_cac'
+              TwoFactorAuthenticatable::AuthMethod.phishing_resistant?(auth_method)
+    if service_provider_mfa_policy.piv_cac_required? &&
+       auth_method == TwoFactorAuthenticatable::AuthMethod::PIV_CAC
+      return
+    end
     prompt_to_verify_sp_required_mfa
   end
 
@@ -90,25 +93,9 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_valid_otp(next_url:, auth_method: nil)
-    handle_valid_otp_for_context(auth_method: auth_method)
-    handle_remember_device
-    next_url ||= after_otp_verification_confirmation_url
-    reset_otp_session_data
-    redirect_to next_url
-  end
-
   def handle_remember_device
     save_user_opted_remember_device_pref
     save_remember_device_preference
-  end
-
-  def handle_valid_otp_for_context(auth_method:)
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      handle_valid_otp_for_authentication_context(auth_method: auth_method)
-    elsif UserSessionContext.confirmation_context?(context)
-      handle_valid_otp_for_confirmation_context
-    end
   end
 
   # Method will be renamed in the next refactor.
@@ -165,87 +152,22 @@ module TwoFactorAuthenticatableMethods
     current_user.increment_second_factor_attempts_count!
   end
 
-  def handle_valid_otp_for_confirmation_context
-    user_session[:authn_at] = Time.zone.now
-    assign_phone
-    track_mfa_method_added
-    @next_mfa_setup_path = next_setup_path
+  def handle_valid_verification_for_confirmation_context(auth_method:)
+    user_session[:auth_method] = auth_method
+    mark_user_session_authenticated(:valid_2fa_confirmation)
     reset_second_factor_attempts_count
-    flash[:success] = t('notices.phone_confirmed')
   end
 
-  def track_mfa_method_added
-    mfa_user = MfaContext.new(current_user)
-    mfa_count = mfa_user.enabled_mfa_methods_count
-    analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
-    Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
-  end
-
-  def handle_valid_otp_for_authentication_context(auth_method:)
+  def handle_valid_verification_for_authentication_context(auth_method:)
     user_session[:auth_method] = auth_method
     mark_user_session_authenticated(:valid_2fa)
-    bypass_sign_in current_user
     create_user_event(:sign_in_after_2fa)
 
     reset_second_factor_attempts_count
   end
 
-  def assign_phone
-    @updating_existing_number = user_session[:phone_id].present?
-
-    if @updating_existing_number && UserSessionContext.confirmation_context?(context)
-      phone_changed
-    else
-      phone_confirmed
-    end
-
-    update_phone_attributes
-  end
-
   def reset_second_factor_attempts_count
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def phone_changed
-    create_user_event(:phone_changed)
-    send_phone_added_email
-  end
-
-  def phone_confirmed
-    create_user_event(:phone_confirmed)
-    # If the user has MFA configured, then they are not adding a phone during sign up and are
-    # instead adding it outside the sign up flow
-    return unless MfaPolicy.new(current_user).two_factor_enabled?
-    send_phone_added_email
-  end
-
-  def send_phone_added_email
-    _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: current_user, email_address: email_address).
-        phone_added(disavowal_token: disavowal_token).deliver_now_or_later
-    end
-  end
-
-  def update_phone_attributes
-    UpdateUser.new(
-      user: current_user,
-      attributes: { phone_id: user_session[:phone_id],
-                    phone: user_session[:unconfirmed_phone],
-                    phone_confirmed_at: Time.zone.now,
-                    otp_make_default_number: selected_otp_make_default_number },
-    ).call
-  end
-
-  def reset_otp_session_data
-    user_session.delete(:unconfirmed_phone)
-    user_session[:context] = 'authentication'
-  end
-
-  def after_otp_verification_confirmation_url
-    return @next_mfa_setup_path if @next_mfa_setup_path
-    return account_url if @updating_existing_number
-    after_sign_in_path_for(current_user)
   end
 
   def mark_user_session_authenticated(authentication_type)
@@ -260,10 +182,6 @@ module TwoFactorAuthenticatableMethods
     )
   end
 
-  def direct_otp_code
-    current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-  end
-
   def otp_expiration
     return if current_user.direct_otp_sent_at.blank?
     current_user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
@@ -273,33 +191,9 @@ module TwoFactorAuthenticatableMethods
     cookies.encrypted[:user_opted_remember_device_preference]
   end
 
-  def unconfirmed_phone?
-    user_session[:unconfirmed_phone] && UserSessionContext.confirmation_context?(context)
-  end
-
-  def selected_otp_make_default_number
-    params&.dig(:otp_make_default_number)
-  end
-
   def generic_data
     {
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
     }
-  end
-
-  def display_phone_to_deliver_to
-    if UserSessionContext.authentication_or_reauthentication_context?(context)
-      phone_configuration.masked_phone
-    else
-      user_session[:unconfirmed_phone]
-    end
-  end
-
-  def confirmation_for_add_phone?
-    UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
-  end
-
-  def phone_configuration
-    MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
   end
 end

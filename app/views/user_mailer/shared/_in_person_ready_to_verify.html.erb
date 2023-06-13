@@ -1,3 +1,33 @@
+<% if @presenter.usps_outage_message_enabled %>
+<table class="warning-alert margin-y-4">
+  <tr>
+    <td width="16">
+      <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
+    </td>
+    <td>
+      <strong><%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title') %></strong>
+      <br />
+      <br />
+      <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.body') %>
+      <br />
+      <br />
+      <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
+      <br />
+      <br />
+    </td>
+  </tr>
+</table>
+<% end %>
+<div class="text-center">
+  <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
+  <%= render BarcodeComponent.new(
+        barcode_data: @presenter.enrollment_code,
+        barcode_image_url: @presenter.barcode_image_url,
+        label: nil,
+        label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+      ) %>
+</div>
+
 <table class="info-alert margin-y-4">
   <tr>
     <td width="16">
@@ -10,44 +40,36 @@
   </tr>
 </table>
 
-<div class="border-1px border-primary-light radius-lg padding-4">
+<div class="border-1px border-primary-light radius-lg padding-4 margin-bottom-4">
   <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
-    <%= t('in_person_proofing.body.barcode.items_to_bring') %>
+    <%= t('in_person_proofing.body.barcode.what_to_expect') %>
   </h2>
-  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
   <table class="process-list">
     <tr>
       <td><div class="process-list__circle">1</div></td>
       <td>
-        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
-        <p><%= t('in_person_proofing.process.barcode.info') %></p>
-        <div class="display-inline-block">
-          <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
-          <%= render BarcodeComponent.new(
-                barcode_data: @presenter.enrollment_code,
-                barcode_image_url: @presenter.barcode_image_url,
-                label: nil,
-                label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
-              ) %>
-        </div>
+        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.what_to_do.heading') %></h3>
+        <p><%= t('in_person_proofing.process.what_to_do.info', app_name: APP_NAME) %></p>
+
       </td>
     </tr>
     <tr>
       <td><div class="process-list__circle">2</div></td>
       <td>
+        <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading', app_name: APP_NAME) %></h3>
+        <p class="margin-bottom-105"><%= t('in_person_proofing.process.barcode.info') %></p>
+     </td>
+    </tr>
+    <tr>
+      <td><div class="process-list__circle">3</div></td>
+      <td>
         <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.state_id.heading') %></h3>
         <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
-        <ul class="usa-list margin-y-105">
-          <% t('in_person_proofing.process.state_id.acceptable_documents').each do |document| %>
-            <li><%= document %></li>
-          <% end %>
-        </ul>
-        <p><%= t('in_person_proofing.process.state_id.no_other_documents') %></p>
       </td>
     </tr>
     <% if @presenter.needs_proof_of_address? %>
       <tr>
-        <td><div class="process-list__circle">3</div></td>
+        <td><div class="process-list__circle">4</div></td>
         <td>
           <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.proof_of_address.heading') %></h3>
           <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>
@@ -73,6 +95,14 @@
   </p>
 </div>
 
+<h2 class="font-heading-lg text-bold margin-top-2"><%= t('in_person_proofing.body.location.heading') %></h2>
+<p class="margin-bottom-0">
+  <%= t('in_person_proofing.body.location.info') %>
+  <% if @presenter.selected_location_details.present? %>
+    <%= t('in_person_proofing.body.location.selection') %>
+  <% end %>
+</p>
+
 <% if @presenter.selected_location_details.present? %>
   <div class="margin-y-4">
     <h2 class="font-sans-md margin-bottom-1 text-normal text-bold"><%= @presenter.selected_location_details['name'] %></h2>
@@ -88,3 +118,6 @@
     </div>
   </div>
 <% end %>
+
+<h2 class="font-heading-lg text-bold margin-bottom-2"><%= t('in_person_proofing.body.expect.heading') %></h2>
+<p class="margin-bottom-0"><%= t('in_person_proofing.body.expect.info') %></p>

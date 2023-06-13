@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/doc_auth/_back.html.erb' do
+RSpec.describe 'idv/doc_auth/_back.html.erb' do
   let(:step_url) { nil }
   let(:action) { nil }
   let(:step) { nil }

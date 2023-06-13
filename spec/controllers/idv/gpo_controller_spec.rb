@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::GpoController do
+RSpec.describe Idv::GpoController do
   let(:user) { create(:user) }
 
   before do
@@ -15,6 +15,7 @@ describe Idv::GpoController do
         :confirm_two_factor_authenticated,
         :confirm_idv_needed,
         :confirm_mail_not_spammed,
+        :confirm_profile_not_too_old,
       )
     end
 
@@ -95,6 +96,34 @@ describe Idv::GpoController do
         expect(assigns(:step_indicator_current_step)).to eq(:get_a_letter)
       end
     end
+
+    context 'user has a pending profile' do
+      let(:profile_created_at) { Time.zone.now }
+      let(:pending_profile) do
+        create(
+          :profile,
+          :with_pii,
+          user: user,
+          created_at: profile_created_at,
+        )
+      end
+      before do
+        allow(user).to receive(:pending_profile).and_return(pending_profile)
+      end
+
+      it 'renders ok' do
+        get :index
+        expect(response).to be_ok
+      end
+
+      context 'but pending profile is too old to send another letter' do
+        let(:profile_created_at) { Time.zone.now - 31.days }
+        it 'redirects back to /verify' do
+          get :index
+          expect(response).to redirect_to(idv_path)
+        end
+      end
+    end
   end
 
   describe '#create' do
@@ -136,7 +165,7 @@ describe Idv::GpoController do
       before do
         stub_sign_in(user)
         stub_user_with_pending_profile(user)
-        allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
+        allow(user).to receive(:gpo_verification_pending_profile?).and_return(true)
       end
 
       it 'calls the GpoConfirmationMaker to send another letter and redirects' do

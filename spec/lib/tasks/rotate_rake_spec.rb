@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'rotate' do
+RSpec.describe 'rotate' do
   let(:user) { create(:user, :with_phone, with: { phone: '703-555-5555' }) }
   before do
     Rake.application.rake_require('lib/tasks/rotate', [Rails.root.to_s])

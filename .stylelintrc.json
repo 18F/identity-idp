@@ -1,3 +1,5 @@
 {
-  "extends": "@18f/identity-stylelint-config"
+  "extends": "@18f/identity-stylelint-config",
+  "ignoreFiles": "**/fixtures/**/*",
+  "reportNeedlessDisables": true
 }

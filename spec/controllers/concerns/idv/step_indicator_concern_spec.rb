@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::StepIndicatorConcern, type: :controller do
   controller ApplicationController do
+    include IdvSession
     include Idv::StepIndicatorConcern
   end
 
@@ -49,7 +50,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
       end
 
       context 'with a pending profile' do
-        let(:profile) { create(:profile, deactivation_reason: :gpo_verification_pending) }
+        let(:profile) { create(:profile, gpo_verification_pending_at: 1.day.ago) }
 
         it 'returns doc auth gpo steps' do
           expect(steps).to eq doc_auth_step_indicator_steps_gpo
@@ -90,7 +91,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         let(:profile) do
           create(
             :profile,
-            deactivation_reason: :gpo_verification_pending,
+            gpo_verification_pending_at: 1.day.ago,
             proofing_components: { 'document_check' => Idp::Constants::Vendors::USPS },
           )
         end
@@ -114,6 +115,36 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
 
           it 'returns in person gpo steps' do
             expect(steps).to eq in_person_step_indicator_steps_gpo
+          end
+        end
+      end
+
+      context 'when user is not signed in' do
+        let(:user) { nil }
+        it 'returns doc auth flow steps and does not crash' do
+          expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+        end
+
+        context 'when idv_session method is not present' do
+          controller ApplicationController do
+            include Idv::StepIndicatorConcern
+          end
+          it 'returns doc auth flow steps and does not crash' do
+            expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+          end
+        end
+
+        context 'when idv_session is nil' do
+          controller ApplicationController do
+            include Idv::StepIndicatorConcern
+          end
+
+          before do
+            allow(controller).to receive(:idv_session).and_return(nil)
+          end
+
+          it 'returns doc auth flow steps and does not crash' do
+            expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
           end
         end
       end

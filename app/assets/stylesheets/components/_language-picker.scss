@@ -1,3 +1,5 @@
+@use 'uswds-core' as *;
+
 .language-picker {
   position: relative;
   width: auto;
@@ -64,10 +66,10 @@
     }
 
     &::after {
-      background-image: url(identity-style-guide/dist/assets/img/angle-arrow-up.svg);
+      background-image: url('/angle-arrow-up.svg');
 
       @include at-media('tablet') {
-        background-image: url(identity-style-guide/dist/assets/img/angle-arrow-up-white.svg);
+        background-image: url('/angle-arrow-up-white.svg');
       }
     }
   }
@@ -77,7 +79,7 @@
     color: color('white');
 
     &::after {
-      background-image: url(identity-style-guide/dist/assets/img/angle-arrow-down-white.svg);
+      background-image: url('/angle-arrow-down-white.svg');
     }
   }
 }

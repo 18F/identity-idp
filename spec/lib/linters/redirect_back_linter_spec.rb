@@ -2,7 +2,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../lib/linters/redirect_back_linter'
 
-describe RuboCop::Cop::IdentityIdp::RedirectBackLinter do
+RSpec.describe RuboCop::Cop::IdentityIdp::RedirectBackLinter do
   include CopHelper
   include RuboCop::RSpec::ExpectOffense
 

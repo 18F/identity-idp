@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountsController do
+RSpec.describe AccountsController do
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
@@ -63,7 +63,7 @@ describe AccountsController do
         user = create(
           :user,
           :fully_registered,
-          profiles: [build(:profile, deactivation_reason: :gpo_verification_pending)],
+          profiles: [build(:profile, gpo_verification_pending_at: 1.day.ago)],
         )
 
         sign_in user

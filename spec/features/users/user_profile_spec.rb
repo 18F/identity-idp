@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-feature 'User profile' do
+RSpec.feature 'User profile' do
   include IdvStepHelper
   include NavigationHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
+  include BrowserEmulationHelper
 
   context 'account status badges' do
     before do
@@ -165,6 +166,19 @@ feature 'User profile' do
 
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       end
+    end
+  end
+
+  context 'with a mobile device', js: true, driver: :headless_chrome_mobile do
+    before { sign_in_and_2fa_user }
+
+    it 'allows a user to navigate between pages' do
+      # Emulate reduced motion to avoid timing issues with mobile menu flyout animation
+      emulate_reduced_motion
+      click_on t('account.navigation.menu')
+      click_link t('account.navigation.history')
+
+      expect(current_path).to eq(account_history_path)
     end
   end
 end

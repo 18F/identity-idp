@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rexml/document'
 require 'rexml/xpath'
 
-describe Proofing::Aamva::Request::SecurityTokenRequest do
+RSpec.describe Proofing::Aamva::Request::SecurityTokenRequest do
   let(:config) { AamvaFixtures.example_config }
 
   before do

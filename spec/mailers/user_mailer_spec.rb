@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserMailer, type: :mailer do
+RSpec.describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
@@ -546,6 +546,7 @@ describe UserMailer, type: :mailer do
         current_address_matches_id: current_address_matches_id,
       )
     end
+
     describe '#in_person_ready_to_verify' do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
@@ -573,6 +574,34 @@ describe UserMailer, type: :mailer do
               t('in_person_proofing.process.proof_of_address.heading'),
             )
         end
+      end
+
+      context 'USPS outage message' do
+        it 'renders a warning when the flag is enabled' do
+          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+            and_return(true)
+
+          expect(mail.html_part.body).
+            to have_content(
+              t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+            )
+        end
+        it 'does not renders a warning when the flag is disabled' do
+          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+            and_return(false)
+
+          expect(mail.html_part.body).
+            to_not have_content(
+              t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+            )
+        end
+      end
+
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
       end
     end
 
@@ -606,6 +635,13 @@ describe UserMailer, type: :mailer do
               t('in_person_proofing.process.proof_of_address.heading'),
             )
         end
+      end
+
+      it 'renders the body' do
+        expect(mail.html_part.body).
+          to have_content(
+            t('in_person_proofing.process.state_id.heading'),
+          )
       end
     end
 

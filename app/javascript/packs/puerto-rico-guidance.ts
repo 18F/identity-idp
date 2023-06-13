@@ -1,8 +1,12 @@
-function showOrHidePuertoRicoExtras(forStateCode) {
+export function showOrHidePuertoRicoExtras(forStateCode) {
   const isPuertoRico = forStateCode === 'PR';
 
   document.querySelectorAll('.puerto-rico-extras').forEach((element) => {
-    element.classList.toggle('display-none', !isPuertoRico);
+    if (isPuertoRico) {
+      element.classList.remove('display-none');
+    } else {
+      element.classList.add('display-none');
+    }
   });
 }
 
@@ -13,5 +17,21 @@ function onStateSelectionChange() {
   showOrHidePuertoRicoExtras(stateSelector?.value);
 }
 
+function onIdentityDocStateSelection() {
+  const stateSelectors = document.querySelectorAll('.address-state-selector');
+  stateSelectors.forEach((stateSelector) => {
+    if (stateSelector instanceof HTMLSelectElement) {
+      stateSelector.addEventListener('change', () =>
+        showOrHidePuertoRicoExtras(stateSelector.value),
+      );
+      showOrHidePuertoRicoExtras(stateSelector.value);
+    }
+  });
+}
+
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
-onStateSelectionChange(); // set initial visibility
+
+document.addEventListener('DOMContentLoaded', () => {
+  onStateSelectionChange();
+  onIdentityDocStateSelection();
+});

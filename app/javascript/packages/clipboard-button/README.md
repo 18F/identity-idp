@@ -15,7 +15,7 @@ import '@18f/identity-clipboard-button/clipboard-button-element';
 The custom element will implement the copying behavior, but all markup must already exist, rendered server-side or by the included React component.
 
 ```html
-<lg-clipboard-button data-clipboard-text="text to copy">
+<lg-clipboard-button clipboard-text="text to copy" tooltip-text="Copied!">
   <button type="button">Copy</button>
 </lg-clipboard-button>
 ```

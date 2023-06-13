@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ProfileMaker do
+RSpec.describe Idv::ProfileMaker do
   describe '#save_profile' do
     let(:applicant) { { first_name: 'Some', last_name: 'One' } }
     let(:user) { create(:user, :fully_registered) }
@@ -62,7 +62,7 @@ describe Idv::ProfileMaker do
         )
 
         expect(profile.active).to eq false
-        expect(profile.fraud_review_pending).to eq true
+        expect(profile.fraud_review_pending?).to eq(true)
       end
     end
 

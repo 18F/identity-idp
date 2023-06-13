@@ -2,6 +2,68 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
+    def update
+      return if idv_session.verify_info_step_document_capture_session_uuid
+      analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('verify', :update, true)
+
+      pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
+      set_state_id_type
+
+      ssn_throttle.increment!
+      if ssn_throttle.throttled?
+        idv_failure_log_throttled(:proof_ssn)
+        analytics.throttler_rate_limit_triggered(
+          throttle_type: :proof_ssn,
+          step_name: 'verify_info',
+        )
+        redirect_to idv_session_errors_ssn_failure_url
+        return
+      end
+
+      if resolution_throttle.throttled?
+        idv_failure_log_throttled(:idv_resolution)
+        redirect_to throttled_url
+        return
+      end
+
+      document_capture_session = DocumentCaptureSession.create(
+        user_id: current_user.id,
+        issuer: sp_session[:issuer],
+      )
+      document_capture_session.requested_at = Time.zone.now
+
+      idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
+      idv_session.vendor_phone_confirmation = false
+      idv_session.user_phone_confirmation = false
+
+      Idv::Agent.new(pii).proof_resolution(
+        document_capture_session,
+        should_proof_state_id: should_use_aamva?(pii),
+        trace_id: amzn_trace_id,
+        user_id: current_user.id,
+        threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+        request_ip: request.remote_ip,
+        double_address_verification: capture_secondary_id_enabled,
+      )
+
+      # Don't allow the user to go back to document capture after verifying
+      if flow_session['redo_document_capture']
+        flow_session.delete('redo_document_capture')
+        flow_session[:flow_path] ||= 'standard'
+      end
+
+      redirect_to after_update_url
+    end
+
+    private
+
+    def capture_secondary_id_enabled
+      current_user.establishing_in_person_enrollment&.
+          capture_secondary_id_enabled || false
+    end
+
     def should_use_aamva?(pii)
       aamva_state?(pii) && !aamva_disallowed_for_service_provider?
     end
@@ -34,11 +96,22 @@ module Idv
 
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
+      is_mva_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :state_id,
+        :mva_exception,
+      )
 
       resolution_throttle.increment! if proofing_results_exception.blank?
+
       if resolution_throttle.throttled?
         idv_failure_log_throttled(:idv_resolution)
         redirect_to throttled_url
+      elsif proofing_results_exception.present? && is_mva_exception
+        idv_failure_log_warning
+        redirect_to state_id_warning_url
       elsif proofing_results_exception.present?
         idv_failure_log_error
         redirect_to exception_url
@@ -80,6 +153,10 @@ module Idv
 
     def exception_url
       idv_session_errors_exception_url
+    end
+
+    def state_id_warning_url
+      idv_session_errors_state_id_warning_url
     end
 
     def warning_url
@@ -134,6 +211,7 @@ module Idv
       delete_async
 
       if form_response.success?
+        save_threatmetrix_status(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
@@ -148,6 +226,11 @@ module Idv
     def next_step_url
       return idv_gpo_url if FeatureManagement.idv_gpo_only?
       idv_phone_url
+    end
+
+    def save_threatmetrix_status(form_response)
+      review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
+      idv_session.threatmetrix_review_status = review_status
     end
 
     def summarize_result_and_throttle_failures(summary_result)
@@ -231,6 +314,11 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant['uuid'] = current_user.uuid
       delete_pii
+    end
+
+    def delete_pii
+      flow_session.delete(:pii_from_doc)
+      flow_session.delete(:pii_from_user)
     end
 
     def add_proofing_costs(results)

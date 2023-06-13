@@ -6,7 +6,8 @@ module Idv
       end
 
       def call
-        mark_step_incomplete(:upload)
+        redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       end
     end
   end

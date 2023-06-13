@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth test credentials', :js do
+RSpec.feature 'doc auth test credentials', :js do
   include IdvStepHelper
   include DocAuthHelper
 
@@ -41,7 +41,11 @@ feature 'doc auth test credentials', :js do
     )
     click_on I18n.t('forms.buttons.submit.default')
 
-    expect(page).to have_content(I18n.t('doc_auth.errors.alerts.barcode_content_check'))
+    expect(page).to have_content(
+      I18n.t(
+        'doc_auth.errors.alerts.barcode_content_check',
+      ).tr(' ', ' '),
+    )
     expect(page).to have_current_path(idv_document_capture_url)
   end
 end

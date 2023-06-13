@@ -1,6 +1,7 @@
 module SignUp
   class EmailConfirmationsController < ApplicationController
     include UnconfirmedUserConcern
+    include AuthorizationCountConcern
 
     before_action :find_user_with_confirmation_token
     before_action :confirm_user_needs_sign_up_confirmation
@@ -31,7 +32,9 @@ module SignUp
     end
 
     def store_sp_metadata_in_session
-      StoreSpMetadataInSession.new(session:, request_id:).call if request_id.present?
+      return if request_id.blank?
+      StoreSpMetadataInSession.new(session:, request_id:).call
+      bump_auth_count
     end
 
     def request_id

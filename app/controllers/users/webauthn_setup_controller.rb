@@ -1,7 +1,7 @@
 module Users
   class WebauthnSetupController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
-    include RememberDeviceConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -26,7 +26,8 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.webauthn_setup_visit(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.webauthn_setup_visit(**properties)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
 
@@ -102,8 +103,9 @@ module Users
       )
     end
 
-    def user_opted_remember_device_cookie
-      cookies.encrypted[:user_opted_remember_device_preference]
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
     end
 
     def flash_error(errors)
@@ -156,28 +158,28 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      mark_user_as_fully_authenticated
       handle_remember_device
       if form.platform_authenticator?
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
       else
+        handle_valid_verification_for_confirmation_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+        )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
         flash[:success] = t('notices.webauthn_configured')
       end
-      user_session[:auth_method] = 'webauthn'
       redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def analytics_properties
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       }
-    end
-
-    def handle_remember_device
-      save_user_opted_remember_device_pref
-      save_remember_device_preference
     end
 
     def process_invalid_webauthn(form)
@@ -193,11 +195,6 @@ module Users
         flash[:error] = t('errors.webauthn_setup.general_error')
       end
       render :new
-    end
-
-    def mark_user_as_fully_authenticated
-      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
-      user_session[:authn_at] = Time.zone.now
     end
 
     def new_params

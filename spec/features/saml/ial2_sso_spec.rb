@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IAL2 Single Sign On' do
+RSpec.feature 'IAL2 Single Sign On' do
   include SamlAuthHelper
   include IdvStepHelper
   include DocAuthHelper
@@ -79,7 +79,7 @@ feature 'IAL2 Single Sign On' do
     let(:profile) do
       create(
         :profile,
-        deactivation_reason: :gpo_verification_pending,
+        gpo_verification_pending_at: 1.day.ago,
         pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::WebauthnVerificationController do
+RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
   include WebAuthnHelper
 
   describe 'when not signed in' do
@@ -91,6 +91,11 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         )
 
         patch :confirm, params: params
+
+        expect(subject.user_session[:auth_method]).to eq(
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
+        )
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'tracks a valid platform authenticator submission' do
@@ -117,6 +122,10 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         )
 
         patch :confirm, params: params
+        expect(subject.user_session[:auth_method]).to eq(
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
+        )
+        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
       it 'tracks an invalid submission' do
@@ -173,6 +182,8 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           it 'redirects to webauthn show page' do
             patch :confirm, params: params
             expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
+            expect(subject.user_session[:auth_method]).to eq nil
+            expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
           end
 
           it 'displays flash error message' do

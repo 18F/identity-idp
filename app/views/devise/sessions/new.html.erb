@@ -10,22 +10,18 @@
 
 <% if decorated_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
-<% elsif @sign_in_a_b_test_bucket != :tabbed %>
-  <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
 <% end %>
 
-<% if @sign_in_a_b_test_bucket == :tabbed %>
-  <%= render TabNavigationComponent.new(
-        label: t('account.login.tab_navigation'),
-        routes: [
-          { text: t('links.next'), path: new_user_session_url },
-          { text: t('links.create_account'), path: sign_up_email_url(source: :sign_in) },
-        ],
-        class: 'margin-bottom-4',
-      ) %>
+<%= render TabNavigationComponent.new(
+      label: t('account.login.tab_navigation'),
+      routes: [
+        { text: t('links.next'), path: new_user_session_url },
+        { text: t('links.create_account'), path: sign_up_email_url },
+      ],
+      class: 'margin-bottom-4',
+    ) %>
 
-  <%= render PageHeadingComponent.new.with_content(t('headings.sign_in_existing_users')) %>
-<% end %>
+<%= render PageHeadingComponent.new.with_content(t('headings.sign_in_existing_users')) %>
 
 <%= render 'shared/sp_alert', section: 'sign_in' %>
 
@@ -46,14 +42,14 @@
   <%= render PasswordToggleComponent.new(
         form: f,
         class: 'margin-bottom-4',
-        field_options: { required: true },
+        field_options: {
+          required: true,
+          input_html: {
+            autocomplete: 'current-password',
+          },
+        },
       ) %>
   <%= f.submit t('links.next'), full_width: true, wide: false %>
-  <% if @sign_in_a_b_test_bucket == :default %>
-    <div class="margin-top-4 margin-bottom-2">
-      <%= render 'shared/create_account_banner' %>
-    </div>
-  <% end %>
 <% end %>
 <% if @ial && desktop_device? %>
   <div class='margin-x-neg-1 margin-top-205'>
@@ -81,14 +77,14 @@
   </div>
 
   <p class="margin-y-1">
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('notices.privacy.security_and_privacy_practices'),
           MarketingSite.security_and_privacy_practices_url,
         ) %>
   </p>
 
   <p class="margin-y-1">
-    <%= new_window_link_to(
+    <%= new_tab_link_to(
           t('notices.privacy.privacy_act_statement'),
           MarketingSite.privacy_act_statement_url,
         ) %>

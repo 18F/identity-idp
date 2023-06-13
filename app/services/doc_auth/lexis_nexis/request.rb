@@ -83,10 +83,10 @@ module DocAuth
           end,
         }
 
-        Faraday.new(url: url.to_s, headers: headers) do |conn|
+        Faraday.new(url: url.to_s, headers: request_headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
-          conn.request :authorization, :basic, username, password
+          conn.request :authorization, :basic, username, password unless hmac_auth_enabled?
           conn.adapter :net_http
           conn.options.timeout = timeout
           conn.options.read_timeout = timeout
@@ -107,11 +107,26 @@ module DocAuth
         URI.join(config.base_url, path)
       end
 
-      def headers
-        {
+      def request_headers
+        headers = {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         }
+        headers['Authorization'] = hmac_authorization if hmac_auth_enabled?
+        headers
+      end
+
+      def hmac_auth_enabled?
+        IdentityConfig.store.lexisnexis_hmac_auth_enabled
+      end
+
+      # Example HMAC auth header from RDP_REST_V3_DecisioningGuide_March22.pdf, page 21
+      def hmac_authorization
+        Proofing::LexisNexis::RequestSigner.new(
+          config: config,
+          message_body: body,
+          path: path,
+        ).hmac_authorization
       end
 
       def settings

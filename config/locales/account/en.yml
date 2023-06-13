@@ -83,6 +83,7 @@ en:
       add_phone_number: Add phone number
       add_platform_authenticator: Add Face or Touch Unlock
       add_security_key: Add security key
+      close: Close
       connected_accounts: Your connected accounts
       customer_support: Customer support
       delete_account: Delete account

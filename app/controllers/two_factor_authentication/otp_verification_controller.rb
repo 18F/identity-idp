@@ -21,13 +21,34 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
-        handle_valid_otp(next_url: nil, auth_method: params[:otp_delivery_preference])
+        handle_remember_device
+
+        if UserSessionContext.confirmation_context?(context)
+          handle_valid_confirmation_otp
+        else
+          handle_valid_verification_for_authentication_context(
+            auth_method: params[:otp_delivery_preference],
+          )
+          redirect_to after_sign_in_path_for(current_user)
+        end
+
+        reset_otp_session_data
       else
         handle_invalid_otp(context: context, type: 'otp')
       end
     end
 
     private
+
+    def handle_valid_confirmation_otp
+      assign_phone
+      track_mfa_added
+      handle_valid_verification_for_confirmation_context(
+        auth_method: params[:otp_delivery_preference],
+      )
+      flash[:success] = t('notices.phone_confirmed')
+      redirect_to next_setup_path || after_mfa_setup_path
+    end
 
     def otp_verification_form
       OtpVerificationForm.new(current_user, sanitized_otp_code)
@@ -38,6 +59,13 @@ module TwoFactorAuthentication
 
       flash[:error] = t('errors.messages.phone_required')
       redirect_to new_user_session_path
+    end
+
+    def track_mfa_added
+      analytics.multi_factor_auth_added_phone(
+        enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
+      )
+      Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
     end
 
     def confirm_multiple_factors_enabled
@@ -119,6 +147,11 @@ module TwoFactorAuthentication
       end
     end
 
+    def sign_up_mfa_selection_order_bucket
+      return unless in_multi_mfa_selection_flow?
+      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
@@ -132,6 +165,7 @@ module TwoFactorAuthentication
         phone_configuration_id: phone_configuration&.id,
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        sign_up_mfa_priority_bucket: sign_up_mfa_selection_order_bucket,
       }
     end
 
@@ -156,8 +190,82 @@ module TwoFactorAuthentication
       }.merge(generic_data)
     end
 
+    def display_phone_to_deliver_to
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
+        phone_configuration.masked_phone
+      else
+        user_session[:unconfirmed_phone]
+      end
+    end
+
+    def unconfirmed_phone?
+      user_session[:unconfirmed_phone] && UserSessionContext.confirmation_context?(context)
+    end
+
+    def confirmation_for_add_phone?
+      UserSessionContext.confirmation_context?(context) && user_fully_authenticated?
+    end
+
     def check_sp_required_mfa
       check_sp_required_mfa_bypass(auth_method: params[:otp_delivery_preference])
+    end
+
+    def assign_phone
+      if updating_existing_number?
+        phone_changed
+      else
+        phone_confirmed
+      end
+
+      update_phone_attributes
+    end
+
+    def updating_existing_number?
+      user_session[:phone_id].present?
+    end
+
+    def update_phone_attributes
+      UpdateUser.new(
+        user: current_user,
+        attributes: { phone_id: user_session[:phone_id],
+                      phone: user_session[:unconfirmed_phone],
+                      phone_confirmed_at: Time.zone.now,
+                      otp_make_default_number: selected_otp_make_default_number },
+      ).call
+    end
+
+    def phone_changed
+      create_user_event(:phone_changed)
+      send_phone_added_email
+    end
+
+    def phone_confirmed
+      create_user_event(:phone_confirmed)
+      # If the user has MFA configured, then they are not adding a phone during sign up and are
+      # instead adding it outside the sign up flow
+      return unless MfaPolicy.new(current_user).two_factor_enabled?
+      send_phone_added_email
+    end
+
+    def send_phone_added_email
+      _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.with(user: current_user, email_address: email_address).
+          phone_added(disavowal_token: disavowal_token).deliver_now_or_later
+      end
+    end
+
+    def selected_otp_make_default_number
+      params&.dig(:otp_make_default_number)
+    end
+
+    def direct_otp_code
+      current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+    end
+
+    def reset_otp_session_data
+      user_session.delete(:unconfirmed_phone)
+      user_session[:context] = 'authentication'
     end
   end
 end

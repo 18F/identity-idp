@@ -1,12 +1,7 @@
 require 'rails_helper'
 
-feature 'mobile hybrid flow entry', js: true do
+RSpec.feature 'mobile hybrid flow entry', js: true do
   include IdvStepHelper
-
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_mobile_controllers_enabled).
-      and_return(true)
-  end
 
   let(:link_sent_via_sms) do
     link = nil
@@ -18,7 +13,7 @@ feature 'mobile hybrid flow entry', js: true do
     end
 
     sign_in_and_2fa_user
-    complete_doc_auth_steps_before_upload_step
+    complete_doc_auth_steps_before_hybrid_handoff_step
     click_send_link
 
     link
@@ -28,6 +23,25 @@ feature 'mobile hybrid flow entry', js: true do
 
   context 'valid link' do
     it 'puts the user on the document capture page' do
+      expect(link_to_visit).to be
+
+      Capybara.using_session('mobile') do
+        visit link_to_visit
+        # Should have redirected to the actual doc capture url
+        expect(current_url).to eql(idv_hybrid_mobile_document_capture_url)
+      end
+    end
+  end
+
+  context 'old link' do
+    let(:link_to_visit) do
+      # Edit in the old link, which should redirect to the new controller
+      uri = URI.parse(link_sent_via_sms)
+      uri.path = '/verify/capture-doc'
+      uri.to_s
+    end
+
+    it 'puts the user on the new document capture page' do
       expect(link_to_visit).to be
 
       Capybara.using_session('mobile') do

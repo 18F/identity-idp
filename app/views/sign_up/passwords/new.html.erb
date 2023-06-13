@@ -11,11 +11,10 @@
       method: :post,
       html: { autocomplete: 'off' },
     ) do |f| %>
-  <%= render PasswordToggleComponent.new(
+  <%= text_field_tag('username', @email_address.email, hidden: true, autocomplete: 'username') %>
+  <%= render PasswordConfirmationComponent.new(
         form: f,
         field_options: {
-          label: t('forms.password'),
-          required: true,
           input_html: { aria: { describedby: 'password-description' } },
         },
       ) %>

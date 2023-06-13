@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Profile do
+RSpec.describe Profile do
   let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :fully_registered) }
   let(:profile) { user.profiles.create }
@@ -264,23 +264,29 @@ describe Profile do
     end
 
     context 'activation guards against deactivation reasons' do
+      before do
+        allow(FeatureManagement).to receive(
+          :proofing_device_profiling_decisioning_enabled?,
+        ).and_return(true)
+      end
+
       it 'does not activate a profile with gpo verification pending' do
         profile.update(gpo_verification_pending_at: 1.day.ago)
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end
 
       it 'does not activate a profile if under fraud review' do
         profile.update(fraud_review_pending_at: 1.day.ago)
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end
 
       it 'does not activate a profile if rejected for fraud' do
         profile.update(fraud_rejection_at: Time.zone.now - 1.day)
-        profile.activate
+        expect { profile.activate }.to raise_error(RuntimeError)
 
         expect(profile).to_not be_active
       end
@@ -301,14 +307,90 @@ describe Profile do
     end
   end
 
-  describe '#activate_after_gpo_verification' do
-    it 'activates a profile after gpo verification' do
+  describe '#remove_gpo_deactivation_reason' do
+    it 'removes the gpo_verification_pending_at deactivation reason' do
       profile = create(
         :profile, user: user, active: false,
                   gpo_verification_pending_at: 1.day.ago
       )
-      profile.activate_after_gpo_verification
+      profile.remove_gpo_deactivation_reason
 
+      expect(profile.gpo_verification_pending?).to be(false)
+    end
+  end
+
+  describe '#activate_after_password_reset' do
+    it 'activates a profile after password reset' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq nil
+    end
+
+    it 'activates a previously verified profile after password reset' do
+      verified_at = Time.zone.now - 1.year
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        verified_at: verified_at,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq verified_at
+    end
+
+    it 'does not activate a profile if it has a pending reason' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        fraud_review_pending_at: 1.day.ago,
+      )
+
+      expect { profile.activate_after_password_reset }.to raise_error
+    end
+
+    it 'does not activate a profile with non password_reset deactivation_reason' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :encryption_error,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to_not eq nil
+    end
+  end
+
+  describe '#activate_after_passing_in_person' do
+    it 'activates a profile if it passes in person proofing' do
+      profile = user.profiles.create
+      profile.active = false
+      profile.fraud_review_pending_at = 1.day.ago
+      profile.deactivation_reason = :in_person_verification_pending
+
+      profile.activate_after_passing_in_person
+
+      expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.activated_at).not_to be_nil
+      expect(profile.deactivation_reason).to be_nil
       expect(profile).to be_active
     end
   end
@@ -404,10 +486,8 @@ describe Profile do
       profile.deactivate_for_fraud_review
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending).to eq(true)
-      expect(profile.fraud_review_pending_at).to_not be_nil
-      expect(profile.fraud_rejection).to eq(false)
-      expect(profile.fraud_rejection_at).to be_nil
+      expect(profile.fraud_review_pending?).to eq(true)
+      expect(profile.fraud_rejection?).to eq(false)
     end
   end
 

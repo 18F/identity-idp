@@ -2,10 +2,23 @@ module IdvStepConcern
   extend ActiveSupport::Concern
 
   include IdvSession
+  include RateLimitConcern
 
   included do
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
+    before_action :confirm_not_rate_limited
+    before_action :confirm_no_pending_gpo_profile
+    before_action :confirm_no_pending_in_person_enrollment
+  end
+
+  def confirm_no_pending_gpo_profile
+    redirect_to idv_gpo_verify_url if current_user&.gpo_verification_pending_profile?
+  end
+
+  def confirm_no_pending_in_person_enrollment
+    return if !IdentityConfig.store.in_person_proofing_enabled
+    redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
   def flow_session
@@ -21,14 +34,22 @@ module IdvStepConcern
     flow_session[:flow_path]
   end
 
+  private
+
+  def confirm_ssn_step_complete
+    return if pii.present? && pii[:ssn].present?
+    redirect_to prev_url
+  end
+
   def confirm_document_capture_complete
     return if pii_from_doc.present?
 
     if flow_path == 'standard'
       redirect_to idv_document_capture_url
-    else
-      flow_session.delete('Idv::Steps::DocumentCaptureStep')
-      redirect_to idv_doc_auth_url
+    elsif flow_path == 'hybrid'
+      redirect_to idv_link_sent_url
+    else # no flow_path
+      redirect_to idv_hybrid_handoff_path
     end
   end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'sign up with backup code' do
+RSpec.feature 'sign up with backup code' do
   include DocAuthHelper
   include SamlAuthHelper
 
@@ -20,16 +20,6 @@ feature 'sign up with backup code' do
 
     expect(current_path).to eq auth_method_confirmation_path
     expect(user.backup_code_configurations.count).to eq(10)
-  end
-
-  it 'does not show download button on a mobile device' do
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-
-    sign_up_and_set_password
-
-    select_2fa_option('backup_code')
-
-    expect(page).to_not have_link(t('components.download_button.label'))
   end
 
   it 'works for each code and refreshes the codes on the last one' do

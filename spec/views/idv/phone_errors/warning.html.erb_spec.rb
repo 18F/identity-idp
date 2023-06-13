@@ -1,6 +1,8 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/warning.html.erb' do
+RSpec.describe 'idv/phone_errors/warning.html.erb' do
+  include Devise::Test::ControllerHelpers
+
   let(:sp_name) { 'Example SP' }
   let(:remaining_attempts) { 5 }
   let(:gpo_letter_available) { false }
@@ -61,13 +63,6 @@ describe 'idv/phone_errors/warning.html.erb' do
     )
   end
 
-  it 'renders a list of troubleshooting options' do
-    expect(rendered).to have_link(
-      t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-      href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
-    )
-  end
-
   context 'no sp' do
     let(:sp_name) { nil }
     it 'does not prompt user to get help at sp' do
@@ -79,12 +74,6 @@ describe 'idv/phone_errors/warning.html.erb' do
   end
 
   context 'gpo verification disabled' do
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
-      )
-    end
     it 'does not render link to gpo flow' do
       expect(rendered).not_to have_link(
         t('idv.troubleshooting.options.verify_by_mail'),

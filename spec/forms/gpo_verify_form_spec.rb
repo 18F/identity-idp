@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe GpoVerifyForm do
+RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
@@ -14,7 +14,7 @@ describe GpoVerifyForm do
     create(
       :profile,
       user: user,
-      deactivation_reason: :gpo_verification_pending,
+      gpo_verification_pending_at: 1.day.ago,
       proofing_components: proofing_components,
     )
   end
@@ -135,6 +135,7 @@ describe GpoVerifyForm do
 
           expect(pending_profile).not_to be_active
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
         it 'updates establishing in-person enrollment to pending' do
@@ -149,10 +150,12 @@ describe GpoVerifyForm do
       end
 
       context 'ThreatMetrix rejection' do
-        let(:proofing_components) do
-          ProofingComponent.create(
-            user: user, threatmetrix: true,
-            threatmetrix_review_status: threatmetrix_review_status
+        let(:pending_profile) do
+          create(
+            :profile,
+            user: user,
+            gpo_verification_pending_at: 1.day.ago,
+            fraud_review_pending_at: 1.day.ago,
           )
         end
 

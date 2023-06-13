@@ -14,18 +14,8 @@ class OutOfBandSessionAccessor
 
   def ttl
     uuid = Rack::Session::SessionId.new(session_uuid)
-    if IdentityConfig.store.redis_session_read_public_id
-      session_store.instance_eval do
-        with_redis_connection do |client|
-          public_id_ttl = client.ttl(prefixed(uuid))
-          return public_id_ttl if public_id_ttl >= 0
-          client.ttl(prefixed_public_id(uuid))
-        end
-      end
-    else
-      session_store.instance_eval do
-        with_redis_connection { |client| client.ttl(prefixed(uuid)) }
-      end
+    session_store.instance_eval do
+      with_redis_connection { |client| client.ttl(prefixed(uuid)) }
     end
   end
 

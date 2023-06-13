@@ -15,6 +15,9 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	brakeman \
 	build_artifact \
 	check \
+	clobber_db \
+	clobber_assets \
+	clobber_logs \
 	docker_setup \
 	download_acuant_sdk \
 	fast_setup \
@@ -22,6 +25,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	help \
 	lint \
 	lint_analytics_events \
+	lint_analytics_events_sorted \
 	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
@@ -34,6 +38,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
+	tidy \
 	update \
 	urn \
 	README.md \
@@ -71,6 +76,7 @@ endif
 	@echo "--- analytics_events ---"
 	make lint_analytics_events
 	make lint_tracker_events
+	make lint_analytics_events_sorted
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- bundler-audit ---"
@@ -95,6 +101,9 @@ endif
 	yarn lint:css
 	@echo "--- README.md ---"
 	make lint_readme
+	@echo "--- lint migrations ---"
+	make lint_migrations
+
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
@@ -104,6 +113,9 @@ lint_yaml: normalize_yaml ## Lints YAML files
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
+
+lint_migrations:
+	scripts/migration_check
 
 lint_gemfile_lock: Gemfile Gemfile.lock ## Lints the Gemfile and its lockfile
 	@bundle check
@@ -238,6 +250,10 @@ analytics_events: public/api/_analytics-events.json ## Generates a JSON file tha
 lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
+lint_analytics_events_sorted:
+	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
+		|| (echo 'Error: methods in analytics_events.rb are not sorted alphabetically' && exit 1)
+
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
 
@@ -263,3 +279,24 @@ README.md: docs/ ## Generates README.md based on the contents of the docs direct
 
 download_acuant_sdk: ## Downloads the most recent Acuant SDK release from Github
 	@scripts/download_acuant_sdk.sh
+
+clobber_db: ## Resets the database for make setup
+	bin/rake db:create
+	bin/rake db:environment:set
+	bin/rake db:reset
+	bin/rake db:environment:set
+	bin/rake dev:prime
+
+clobber_assets: ## Removes (clobbers) assets
+	bin/rake assets:clobber
+	RAILS_ENV=test bin/rake assets:clobber
+
+clobber_logs: ## Purges logs and tmp/
+	rm -f log/*
+	rm -rf tmp/cache/*
+	rm -rf tmp/encrypted_doc_storage
+	rm -rf tmp/letter_opener
+	rm -rf tmp/mails
+
+tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
+	bundle clean

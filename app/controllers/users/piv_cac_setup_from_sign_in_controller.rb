@@ -1,5 +1,6 @@
 module Users
   class PivCacSetupFromSignInController < ApplicationController
+    include TwoFactorAuthenticatableMethods
     include PivCacConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
@@ -67,6 +68,9 @@ module Users
     end
 
     def process_valid_submission
+      handle_valid_verification_for_confirmation_context(
+        auth_method: TwoFactorAuthenticatable::AuthMethod::PIV_CAC,
+      )
       session.delete(:needs_to_setup_piv_cac_after_sign_in)
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,

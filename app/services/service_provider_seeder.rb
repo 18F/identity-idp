@@ -2,9 +2,10 @@
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end
 
-  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env)
+  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env, yaml_path: 'config')
     @rails_env = rails_env
     @deploy_env = deploy_env
+    @yaml_path = yaml_path
   end
 
   def run
@@ -40,10 +41,9 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join('config', 'service_providers.yml').read
+    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
     file.gsub!('%{env}', deploy_env) if deploy_env
-    content = ERB.new(file).result
-    YAML.safe_load(content).fetch(rails_env)
+    YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
     Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
     raise syntax_error
@@ -80,6 +80,12 @@ class ServiceProviderSeeder
     extra_sp_error = ExtraServiceProviderError.new(
       "Extra service providers found in DB: #{extra_sps.join(', ')}",
     )
-    NewRelic::Agent.notice_error(extra_sp_error)
+
+    if IdentityConfig.store.team_ursula_email.present?
+      ReportMailer.warn_error(
+        email: IdentityConfig.store.team_ursula_email,
+        error: extra_sp_error,
+      ).deliver_now_or_later
+    end
   end
 end

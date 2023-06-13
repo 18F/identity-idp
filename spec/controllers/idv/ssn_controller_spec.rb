@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnController do
+RSpec.describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do
@@ -9,6 +9,8 @@ describe Idv::SsnController do
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard' }
   end
+
+  let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
 
   let(:user) { create(:user) }
 
@@ -32,6 +34,13 @@ describe Idv::SsnController do
       expect(subject).to have_actions(
         :before,
         :confirm_document_capture_complete,
+      )
+    end
+
+    it 'overrides CSPs for ThreatMetrix' do
+      expect(subject).to have_actions(
+        :before,
+        :override_csp_for_threat_metrix_no_fsm,
       )
     end
   end
@@ -70,17 +79,62 @@ describe Idv::SsnController do
     context 'without a flow session' do
       let(:flow_session) { nil }
 
-      it 'redirects to doc_auth' do
+      it 'redirects to hybrid_handoff' do
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
+    context 'with an ssn in session' do
+      let(:referer) { idv_document_capture_url }
+      before do
+        flow_session['pii_from_doc'][:ssn] = ssn
+        request.env['HTTP_REFERER'] = referer
+      end
+
+      context 'referer is not verify_info' do
+        it 'redirects to verify_info' do
+          get :show
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
+      end
+
+      context 'referer is verify_info' do
+        let(:referer) { idv_verify_info_url }
+        it 'does not redirect' do
+          get :show
+
+          expect(response).to render_template :show
+        end
+      end
+    end
+
+    it 'overrides Content Security Policies for ThreatMetrix' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+      get :show
+
+      csp = response.request.content_security_policy
+
+      aggregate_failures do
+        expect(csp.directives['script-src']).to include('h.online-metrix.net')
+        expect(csp.directives['script-src']).to include("'unsafe-eval'")
+
+        expect(csp.directives['style-src']).to include("'unsafe-inline'")
+
+        expect(csp.directives['child-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['connect-src']).to include('h.online-metrix.net')
+
+        expect(csp.directives['img-src']).to include('*.online-metrix.net')
       end
     end
   end
 
   describe '#update' do
     context 'with valid ssn' do
-      let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
@@ -175,7 +229,6 @@ describe Idv::SsnController do
       before do
         flow_session[:flow_path] = 'standard'
         flow_session.delete('pii_from_doc')
-        flow_session['Idv::Steps::DocumentCaptureStep'] = true
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do
@@ -184,12 +237,18 @@ describe Idv::SsnController do
         expect(response).to redirect_to idv_document_capture_url
       end
 
-      it 'redirects to FSM DocumentCaptureStep on hybrid flow' do
+      it 'redirects to LinkSentController on hybrid flow' do
         flow_session[:flow_path] = 'hybrid'
         put :update
-        expect(flow_session['Idv::Steps::DocumentCaptureStep']).to be_nil
         expect(response.status).to eq 302
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_link_sent_url
+      end
+
+      it 'redirects to hybrid_handoff if there is no flow_path' do
+        flow_session[:flow_path] = nil
+        put :update
+        expect(response.status).to eq 302
+        expect(response).to redirect_to idv_hybrid_handoff_url
       end
     end
   end

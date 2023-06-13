@@ -1,61 +1,140 @@
 import sinon from 'sinon';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
-import { request } from '.';
+import { request, ResponseError } from '.';
 
 describe('request', () => {
   const sandbox = useSandbox();
 
-  it('includes the CSRF token by default', async () => {
-    const csrf = 'TYsqyyQ66Y';
-    const mockGetCSRF = () => csrf;
+  describe('csrf token header', () => {
+    it('does not include the CSRF token', async () => {
+      const csrf = 'TYsqyyQ66Y';
+      const mockGetCSRF = () => csrf;
 
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
-      const headers = init.headers as Headers;
-      expect(headers.get('X-CSRF-Token')).to.equal(csrf);
+      sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+        const headers = init.headers as Headers;
+        expect(headers.has('X-CSRF-Token')).to.be.false();
 
-      return Promise.resolve(
-        new Response(JSON.stringify({}), {
-          status: 200,
-        }),
-      );
+        return Promise.resolve(
+          new Response(JSON.stringify({}), {
+            status: 200,
+          }),
+        );
+      });
+
+      await request('https://example.com', {
+        csrf: mockGetCSRF,
+      });
+
+      expect(window.fetch).to.have.been.calledOnce();
     });
 
-    await request('https://example.com', {
-      csrf: mockGetCSRF,
+    context('with a GET request', () => {
+      it('does not include the CSRF token', async () => {
+        const csrf = 'TYsqyyQ66Y';
+        const mockGetCSRF = () => csrf;
+
+        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+          const headers = init.headers as Headers;
+          expect(headers.has('X-CSRF-Token')).to.be.false();
+
+          return Promise.resolve(
+            new Response(JSON.stringify({}), {
+              status: 200,
+            }),
+          );
+        });
+
+        await request('https://example.com', {
+          csrf: mockGetCSRF,
+          method: 'GET',
+        });
+
+        expect(window.fetch).to.have.been.calledOnce();
+      });
     });
 
-    expect(window.fetch).to.have.been.calledOnce();
-  });
+    context('with a HEAD request', () => {
+      it('does not include the CSRF token', async () => {
+        const csrf = 'TYsqyyQ66Y';
+        const mockGetCSRF = () => csrf;
 
-  it('works even if the CSRF token is not found on the page', async () => {
-    sandbox.stub(window, 'fetch').callsFake(() =>
-      Promise.resolve(
-        new Response(JSON.stringify({}), {
-          status: 200,
-        }),
-      ),
-    );
+        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+          const headers = init.headers as Headers;
+          expect(headers.has('X-CSRF-Token')).to.be.false();
 
-    await request('https://example.com', {
-      csrf: () => undefined,
-    });
-  });
+          return Promise.resolve(
+            new Response(JSON.stringify({}), {
+              status: 200,
+            }),
+          );
+        });
 
-  it('does not try to send a csrf when csrf is false', async () => {
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
-      const headers = init.headers as Headers;
-      expect(headers.get('X-CSRF-Token')).to.be.null();
+        await request('https://example.com', {
+          csrf: mockGetCSRF,
+          method: 'HEAD',
+        });
 
-      return Promise.resolve(
-        new Response(JSON.stringify({}), {
-          status: 200,
-        }),
-      );
+        expect(window.fetch).to.have.been.calledOnce();
+      });
     });
 
-    await request('https://example.com', {
-      csrf: false,
+    context('with a request method other than exempt methods', () => {
+      it('includes the CSRF token', async () => {
+        const csrf = 'TYsqyyQ66Y';
+        const mockGetCSRF = () => csrf;
+
+        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+          const headers = init.headers as Headers;
+          expect(headers.get('X-CSRF-Token')).to.equal(csrf);
+
+          return Promise.resolve(
+            new Response(JSON.stringify({}), {
+              status: 200,
+            }),
+          );
+        });
+
+        await request('https://example.com', {
+          csrf: mockGetCSRF,
+          method: 'PUT',
+        });
+
+        expect(window.fetch).to.have.been.calledOnce();
+      });
+
+      it('works even if the CSRF token is not found on the page', async () => {
+        sandbox.stub(window, 'fetch').callsFake(() =>
+          Promise.resolve(
+            new Response(JSON.stringify({}), {
+              status: 200,
+            }),
+          ),
+        );
+
+        await request('https://example.com', {
+          csrf: () => undefined,
+          method: 'PUT',
+        });
+      });
+
+      it('does not try to send a csrf when csrf is false', async () => {
+        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+          const headers = init.headers as Headers;
+          expect(headers.get('X-CSRF-Token')).to.be.null();
+
+          return Promise.resolve(
+            new Response(JSON.stringify({}), {
+              status: 200,
+            }),
+          );
+        });
+
+        await request('https://example.com', {
+          csrf: false,
+          method: 'PUT',
+        });
+      });
     });
   });
 
@@ -162,13 +241,14 @@ describe('request', () => {
     });
 
     it('throws an error', async () => {
-      await request('https://example.com', { read: false })
-        .then(() => {
-          throw new Error('Unexpected promise resolution');
-        })
-        .catch((error) => {
-          expect(error).to.exist();
-        });
+      let didCatch = false;
+      await request('https://example.com').catch((error: ResponseError) => {
+        expect(error).to.exist();
+        expect(error.status).to.equal(400);
+        didCatch = true;
+      });
+
+      expect(didCatch).to.be.true();
     });
 
     context('with read=false option', () => {
@@ -213,7 +293,7 @@ describe('request', () => {
       it('uses response token for next request', async () => {
         await request('https://example.com', {});
         (window.fetch as SinonStub).resetHistory();
-        await request('https://example.com', {});
+        await request('https://example.com', { method: 'PUT' });
         expect(window.fetch).to.have.been.calledWith(
           sinon.match.string,
           sinon.match((init) => init!.headers!.get('x-csrf-token') === 'new-token'),

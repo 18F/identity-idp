@@ -5,10 +5,13 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include PhoneConfirmation
+    include FraudReviewConcern
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
+
+    helper_method :step_indicator_step
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
@@ -18,8 +21,9 @@ module Idv
 
       analytics.idv_review_complete(
         success: false,
-        fraud_review_pending: current_user.fraud_review_pending?,
-        fraud_rejection: current_user.fraud_rejection?,
+        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
+        fraud_review_pending: fraud_review_pending?,
+        fraud_rejection: fraud_rejection?,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
@@ -28,7 +32,6 @@ module Idv
     end
 
     def new
-      @applicant = idv_session.applicant
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
       analytics.idv_review_info_visited(address_verification_method: address_verification_method)
@@ -37,8 +40,10 @@ module Idv
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
-      else
-        flash_now[:success] = flash_message_content
+      elsif idv_session.phone_confirmed?
+        flash_now[:success] = t('idv.messages.review.phone_verified')
+      elsif address_verification_method == 'gpo'
+        flash_now[:info] = t('idv.messages.review.gpo_pending')
       end
     end
 
@@ -55,6 +60,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -63,6 +69,7 @@ module Idv
         success: true,
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
+        gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
       )
 
@@ -70,19 +77,15 @@ module Idv
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end
 
+    def step_indicator_step
+      return :secure_account unless address_verification_method == 'gpo'
+      :get_a_letter
+    end
+
     private
 
     def address_verification_method
-      user_session.dig('idv', 'address_verification_mechanism')
-    end
-
-    def flash_message_content
-      if idv_session.address_verification_mechanism != 'gpo'
-        phone_of_record_msg = ActionController::Base.helpers.content_tag(
-          :strong, t('idv.messages.phone.phone_of_record')
-        )
-        t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
-      end
+      user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
 
     def init_profile

@@ -1,0 +1,20 @@
+@use 'uswds-core' as *;
+@forward 'usa-tooltip';
+
+// Workaround for tooltip styles affecting icon button appearance.
+// See: https://github.com/uswds/uswds/pull/5263
+.usa-tooltip__trigger > svg {
+  display: inline;
+}
+
+// Workaround for tooltip issue preventing buttons from showing as full width at small screen sizes.
+// See: https://github.com/uswds/uswds/issues/5273
+.usa-tooltip {
+  @include at-media-max('mobile-lg') {
+    display: block;
+
+    .clipboard-button--unstyled & {
+      display: inline;
+    }
+  }
+}

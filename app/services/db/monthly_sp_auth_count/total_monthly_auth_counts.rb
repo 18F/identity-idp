@@ -3,10 +3,10 @@ module Db
     class TotalMonthlyAuthCounts
       # @return [Array<Hash>]
       def self.call
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
         oldest = ::SpReturnLog.where.not(returned_at: nil).first&.returned_at&.to_date&.beginning_of_month
         newest = ::SpReturnLog.where.not(returned_at: nil).last&.returned_at&.to_date&.end_of_month
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
 
         return [] if !oldest || !newest
 

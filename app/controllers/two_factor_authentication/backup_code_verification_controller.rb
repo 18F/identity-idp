@@ -61,7 +61,9 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
-        handle_valid_otp_for_authentication_context(auth_method: 'backup_code')
+        handle_valid_verification_for_authentication_context(
+          auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+        )
         return handle_last_code if all_codes_used?
         handle_valid_backup_code
       else
@@ -74,8 +76,7 @@ module TwoFactorAuthentication
     end
 
     def handle_valid_backup_code
-      redirect_to after_otp_verification_confirmation_url
-      reset_otp_session_data
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def check_sp_required_mfa

@@ -5,17 +5,20 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
+  let(:user) { create(:user) }
+  let(:profile_created_at) { Time.zone.now }
   let(:pending_profile) do
     create(
       :profile,
       :with_pii,
       user: user,
       proofing_components: proofing_components,
+      created_at: profile_created_at,
     )
   end
   let(:proofing_components) { nil }
-  let(:user) { create(:user) }
   let(:threatmetrix_enabled) { false }
+  let(:gpo_enabled) { true }
 
   before do
     stub_analytics
@@ -27,11 +30,12 @@ RSpec.describe Idv::GpoVerifyController do
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
-    allow(pending_user).to receive(:pending_profile_requires_verification?).
+    allow(pending_user).to receive(:gpo_verification_pending_profile?).
       and_return(has_pending_profile)
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
+    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
   end
 
   describe '#index' do
@@ -48,12 +52,25 @@ RSpec.describe Idv::GpoVerifyController do
         expect(response).to render_template('idv/gpo_verify/index')
       end
 
+      it 'sets @user_can_request_another_gpo_code to true' do
+        action
+        expect(assigns(:user_can_request_another_gpo_code)).to eql(true)
+      end
+
       it 'shows throttled page is user is throttled' do
         Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
 
         action
 
         expect(response).to render_template(:throttled)
+      end
+
+      context 'but that profile is > 30 days old' do
+        let(:profile_created_at) { 31.days.ago }
+        it 'sets @user_can_request_another_gpo_code to false' do
+          action
+          expect(assigns(:user_can_request_another_gpo_code)).to eql(false)
+        end
       end
     end
 
@@ -172,10 +189,12 @@ RSpec.describe Idv::GpoVerifyController do
 
       context 'threatmetrix disabled' do
         context 'with threatmetrix status of "reject"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'reject'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
 
@@ -206,10 +225,12 @@ RSpec.describe Idv::GpoVerifyController do
         let(:threatmetrix_enabled) { true }
 
         context 'with threatmetrix status of "reject"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'reject'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
 
@@ -241,12 +262,15 @@ RSpec.describe Idv::GpoVerifyController do
         end
 
         context 'with threatmetrix status of "review"' do
-          let(:proofing_components) do
-            ProofingComponent.create(
-              user: user, threatmetrix: true,
-              threatmetrix_review_status: 'review'
+          let(:pending_profile) do
+            create(
+              :profile,
+              :with_pii,
+              user: user,
+              fraud_review_pending_at: 1.day.ago,
             )
           end
+
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
               'IdV: GPO verification submitted',

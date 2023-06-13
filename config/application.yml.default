@@ -86,12 +86,11 @@ doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
-doc_auth_enable_presigned_s3_urls: false
 doc_auth_s3_request_timeout: 5
+doc_auth_agreement_controller_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_hybrid_mobile_controllers_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
@@ -116,6 +115,7 @@ good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
 good_job_queue_select_limit: 5_000
 gpo_designated_receiver_pii: '{}'
+gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
@@ -124,8 +124,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.1'
-idv_acuant_sdk_version_alternate: '11.8.0'
+idv_acuant_sdk_version_default: '11.8.2'
+idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
@@ -140,9 +140,18 @@ in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
 in_person_enrollment_validity_in_days: 30
+in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
+in_person_enrollments_ready_job_cron: '0/10 * * * *'
+in_person_enrollments_ready_job_enabled: false
+in_person_enrollments_ready_job_queue_url: ''
+in_person_enrollments_ready_job_max_number_of_messages: 10
+in_person_enrollments_ready_job_visibility_timeout_seconds: 30
+in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
+in_person_usps_outage_message_enabled: false
 in_person_verify_info_controller_enabled: false
+in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -154,6 +163,7 @@ irs_attempt_api_aws_s3_stream_buffer_size: 16_777_216
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+irs_attempt_api_idv_events_enabled: false
 irs_attempt_api_payload_size_logging_enabled: true
 irs_attempt_api_track_idv_fraud_review: false
 irs_attempt_api_track_tmx_fraud_check_event: false
@@ -167,6 +177,9 @@ lexisnexis_request_mode: testing
 lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
+lexisnexis_hmac_auth_enabled: false
+lexisnexis_hmac_key_id: pf_iv_hmac_key_id
+lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_instant_verify_timeout: 1.0
@@ -175,6 +188,8 @@ lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
+lexisnexis_trueid_hmac_key_id: trueid_hmac_key_id
+lexisnexis_trueid_hmac_secret_key: trueid_hmac_secret_key
 lexisnexis_trueid_timeout: 60.0
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow
 lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa2.trueid.workflow
@@ -265,10 +280,6 @@ redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
-redis_session_read_public_id: false
-redis_session_write_public_id: false
-redis_session_read_private_id: true
-redis_session_write_private_id: true
 redis_throttle_pool_size: 5
 redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
@@ -310,11 +321,11 @@ session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sign_up_mfa_selection_order_testing: '{ "default": 100, "authentication_app_priority": 0, "usability_priority": 0 }'
-sign_in_a_b_testing: '{ "default": 100,"tabbed" :0, "banner": 0 } '
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
+team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -344,7 +355,9 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
-get_usps_proofing_results_job_cron: '0/10 * * * *'
+get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
+get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
+get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'
@@ -391,6 +404,7 @@ development:
   irs_attempt_api_aws_s3_enabled: false
   irs_attempt_api_auth_tokens: 'abc123'
   irs_attempt_api_bucket_name: default-placeholder
+  irs_attempt_api_idv_events_enabled: false
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -481,10 +495,6 @@ production:
   reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
-  redis_session_read_public_id: true
-  redis_session_write_public_id: true
-  redis_session_read_private_id: false
-  redis_session_write_private_id: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000

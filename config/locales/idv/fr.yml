@@ -32,6 +32,12 @@ fr:
               votre compte, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
               supprimer votre compte sur %{account_page_text}.
+        gpo:
+          start_over: Si vous supprimez vos informations et recommencez
+          warnings:
+            - Le code à usage unique dans votre lettre ne fonctionnera plus
+            - Vous recommencerez la vérification de votre identité depuis le
+              début
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début.
@@ -52,8 +58,7 @@ fr:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
-        ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
-          ###-##-####'
+        ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
     failure:
       attempts:
@@ -83,6 +88,30 @@ fr:
           moment. Essayez de chercher à nouveau un bureau de poste. Si le
           problème persiste, revenez plus tard.
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
+        usps_outage_error_message:
+          post_cta:
+            body: En attendant, vous pouvez toujours commencer la procédure de vérification
+              en personne sur %{app_name} et vous pouvez visiter un bureau de
+              poste. Si vous avez un besoin urgent d’accès aux services,
+              veuillez contacter directement votre agence.
+            title: Nous travaillons sur un problème technique. Il se peut que les résultats
+              de votre vérification d’identité ne vous soient pas envoyés par
+              courrier électronique avant le mardi, May 30.
+          ready_to_verify:
+            body: Vous pouvez toujours vous rendre dans un bureau de poste pour finalisation
+              de la vérification de votre identité. Si vous avez un besoin
+              urgent d’accès aux services, veuillez contacter directement votre
+              agence.
+            contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
+              %{app_name}</a> si vous n’avez pas reçu de courrier électronique
+              contenant les résultats de votre vérification avant le jeudi, June
+              1.
+            title: Nous travaillons sur un problème technique. Il se peut que les résultats
+              de votre vérification d’identité ne vous soient pas envoyés par
+              courrier électronique avant le mardi, May 30.
+      exit:
+        with_sp: Quittez %{app_name} et retournez à %{sp_name}
+        without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
       phone:
         heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
           d’autres enregistrements
@@ -112,18 +141,18 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Veuillez réessayer avec <strong>un autre numéro</strong> que
-            vous utilisez souvent et depuis longtemps. Il peut s’agir d’un
-            numéro professionnel ou personnel.'
+          next_steps_html: 'Essayez <strtong>un autre<strong> numéro que vous utilisez
+            souvent et depuis longtemps. Il peut s’agir d’un numéro
+            professionnel ou personnel.'
           try_again_button: 'Essayez un autre numéro'
           you_entered: 'Tu as soumis:'
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.
-        fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
-          sécurité, nous limitons le nombre de fois où vous pouvez tenter de
-          vérifier des informations personnelles en ligne.'
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
+        fail_html: 'Pour votre sécurité, nous limitons le nombre de fois où vous pouvez
+          tenter de vérifier des informations personnelles en ligne.
+          <strong>Réessayer dans %{timeout}.</strong>'
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles téléphoniques.
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
@@ -188,7 +217,7 @@ fr:
         à usage unique figurant dans votre lettre ne correspondra plus et vous
         serez obligé de vérifier à nouveau votre identité.
       come_back_later_sp_html: Vous pouvez retourner à l’agence <strong>%{sp}</strong> pour le moment.
-      confirm: Vous avez crypté vos données vérifiées
+      confirm: Nous avons sécurisé vos informations vérifiées
       gpo:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
@@ -196,6 +225,12 @@ fr:
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
         resend: Envoyez-moi une autre lettre
+        resend_code_warning: Si vous demandez une nouvelle lettre maintenant, le code à
+          usage unique de votre lettre actuelle restera valable pendant une
+          période limitée. Vous pouvez toujours utiliser le code à usage unique
+          de l’une ou l’autre lettre.
+        resend_timeframe: Les lettres mettent généralement entre trois et sept jours
+          ouvrables pour arriver.
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
@@ -208,15 +243,17 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
-        phone_of_record: numéro de téléphone enregistré
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        info_verified_html: Nous avons trouvé des données qui correspondent à votre
-          %{phone_message}
-        intro: Vos informations vérifiées
+        gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez
+          réintroduit votre mot de passe.
+        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
+          signifie que vos informations sont sécurisées et que vous seul pourrez
+          y accéder ou les modifier.'
+        phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
         l’aurez pas activé en entrant votre code à usage unique.
@@ -226,26 +263,19 @@ fr:
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
-          informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
       verifying: Vérification…
-    review:
-      dob: Date de naissance
-      full_name: Nom complet
-      mailing_address: Adresse postale
-      ssn: Numéro de sécurité sociale (SSN)
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
       mail:
-        resend: Vous voulez une autre lettre?
+        resend: Envoyer une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
+        review: 'Saisissez à nouveau votre mot de passe %{app_name}'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:
@@ -254,14 +284,13 @@ fr:
           obtenir de l’aide:'
         still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
-        add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
-          par l’État.
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: Apprenez-en plus sur quel numéro de téléphone utiliser
+        learn_more_verify_by_phone_in_person: En savoir plus sur la vérification de votre numéro de téléphone
         learn_more_verify_in_person: En savoir plus sur la vérification en personne
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
@@ -278,6 +307,24 @@ fr:
       status_page_link: 'Obtenez des mises à jour sur notre page de statut'
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
+    warning:
+      attempts:
+        one: Pour des raisons de sécurité, il vous reste une tentative.
+        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      sessions:
+        heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
+          personnelles
+      state_id:
+        cancel_button: Quitter %{app_name}
+        explanation: |
+          Malheureusement, nous rencontrons des difficultés techniques avec les pièces d’identité de votre État et ne sommes pas en mesure de vérifier vos informations en ce moment.
+        heading: Nous travaillons à la résolution d’une erreur
+        next_steps:
+          items_html:
+            - Réessayer maintenant <strong>ou</strong>
+            - Quitter %{app_name} et réessayer plus tard
+          preamble: 'Vous pouvez:'
+        try_again_button: Réessayer
     welcome:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous

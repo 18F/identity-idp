@@ -1,5 +1,6 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
+    include AuthorizationCountConcern
     before_action :store_sp_metadata_in_session, only: [:edit]
     before_action :store_token_in_session, only: [:edit]
 
@@ -67,6 +68,7 @@ module Users
     def store_sp_metadata_in_session
       return if params[:request_id].blank?
       StoreSpMetadataInSession.new(session:, request_id: params[:request_id]).call
+      bump_auth_count
     end
 
     def forbidden_passwords(email_addresses)

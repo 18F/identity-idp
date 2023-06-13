@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -99,12 +100,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.integer "welcome_view_count", default: 0
     t.datetime "upload_view_at", precision: nil
     t.integer "upload_view_count", default: 0
-    t.datetime "send_link_view_at", precision: nil
-    t.integer "send_link_view_count", default: 0
     t.datetime "link_sent_view_at", precision: nil
     t.integer "link_sent_view_count", default: 0
-    t.datetime "email_sent_view_at", precision: nil
-    t.integer "email_sent_view_count", default: 0
     t.datetime "front_image_view_at", precision: nil
     t.integer "front_image_view_count", default: 0
     t.integer "front_image_submit_count", default: 0
@@ -312,7 +309,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.datetime "proofed_at", precision: nil, comment: "timestamp when user attempted to proof at a Post Office"
     t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
+    t.boolean "ready_for_status_check", default: false
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
@@ -444,13 +443,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.string "name_zip_birth_year_signature"
     t.date "reproof_at"
     t.string "initiating_service_provider_issuer"
-    t.boolean "fraud_review_pending", default: false
-    t.boolean "fraud_rejection", default: false
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.datetime "gpo_verification_pending_at"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
-    t.index ["fraud_review_pending"], name: "index_profiles_on_fraud_review_pending"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
@@ -595,6 +591,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_19_190148) do
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at", precision: nil
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
+    t.datetime "suspended_at"
+    t.datetime "reinstated_at"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end

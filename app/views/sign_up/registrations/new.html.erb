@@ -2,24 +2,20 @@
 
 <%= render 'shared/sp_alert', section: 'sign_up' %>
 
-<% if @sign_in_a_b_test_bucket == :tabbed %>
-  <% if decorated_session.sp_name %>
-    <%= render 'sign_up/registrations/sp_registration_heading' %>
-  <% end %>
-
-  <%= render TabNavigationComponent.new(
-        label: t('account.login.tab_navigation'),
-        routes: [
-          { text: t('links.next'), path: new_user_session_url },
-          { text: t('links.create_account'), path: sign_up_email_path },
-        ],
-        class: 'margin-bottom-4',
-      ) %>
-
-  <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
-<% else %>
-  <%= render PageHeadingComponent.new.with_content(t('titles.registrations.new')) %>
+<% if decorated_session.sp_name %>
+  <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% end %>
+
+<%= render TabNavigationComponent.new(
+      label: t('account.login.tab_navigation'),
+      routes: [
+        { text: t('links.next'), path: new_user_session_url },
+        { text: t('links.create_account'), path: sign_up_email_path },
+      ],
+      class: 'margin-bottom-4',
+    ) %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
 <%= simple_form_for(
       @register_user_email_form,
@@ -44,7 +40,7 @@
         as: :boolean,
         label: capture do %>
           <%= t('sign_up.terms', app_name: APP_NAME) %>
-          <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+          <%= new_tab_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
         <% end,
         label_html: { class: 'margin-y-0' },
         required: true,
@@ -56,14 +52,14 @@
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
 <p class='margin-top-2'>
-  <%= new_window_link_to(
+  <%= new_tab_link_to(
         t('notices.privacy.security_and_privacy_practices'),
         MarketingSite.security_and_privacy_practices_url,
       ) %>
 </p>
 
 <p>
-  <%= new_window_link_to(
+  <%= new_tab_link_to(
         t('notices.privacy.privacy_act_statement'),
         MarketingSite.privacy_act_statement_url,
       ) %>

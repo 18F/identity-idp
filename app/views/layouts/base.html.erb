@@ -17,7 +17,7 @@
 
   <%= content_tag(
         'title',
-        content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
+        content_for?(:title) ? raw("#{yield(:title)} | #{APP_NAME}") : APP_NAME,
       ) %>
 
   <%= javascript_tag(nonce: true) do %>
@@ -26,28 +26,29 @@
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= render_stylesheet_once_tags %>
   <%= csrf_meta_tags %>
 
   <%= favicon_link_tag(
-        design_system_asset_path('img/favicons/apple-touch-icon.png'),
+        asset_path('favicons/apple-touch-icon.png'),
         rel: 'apple-touch-icon',
         sizes: '180x180',
         type: 'image/png',
       ) %>
   <%= favicon_link_tag(
-        design_system_asset_path('img/favicons/favicon-40.png'),
+        asset_path('favicons/favicon-40.png'),
         rel: 'icon',
         sizes: '40x40',
         type: 'image/png',
       ) %>
   <%= favicon_link_tag(
-        design_system_asset_path('img/favicons/favicon-16.png'),
+        asset_path('favicons/favicon-16.png'),
         rel: 'icon',
         sizes: '16x16',
         type: 'image/png',
       ) %>
   <%= favicon_link_tag(
-        design_system_asset_path('img/favicons/safari-pinned-tab.svg'),
+        asset_path('favicons/safari-pinned-tab.svg'),
         rel: 'mask-icon',
         color: '#e21c3d',
         type: nil,
@@ -64,19 +65,17 @@
 <body class="site <%= yield(:background_cls) %>">
   <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
-  <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
+  <% if content_for?(:mobile_nav) %>
+    <div class="usa-header">
+      <%= yield(:mobile_nav) %>
+    </div>
+  <% end %>
   <%= render 'shared/banner' %>
   <%= content_tag(
         local_assigns[:user_main_tag] == false ? 'div' : 'main',
         class: 'site-wrap bg-primary-lighter',
         id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
-      ) do %>  
-    <% if @is_on_home_page && @sign_in_a_b_test_bucket == :banner %>
-      <div class="grid-container padding-y-2 card tablet:margin-bottom-1">
-        <%= render 'shared/create_account_banner' %>
-      </div>
-    <% end %>
-
+      ) do %>
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render FlashComponent.new(flash: flash) %>
@@ -88,7 +87,6 @@
   <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
-                 timeout_url: timeout_url,
                  warning: session_timeout_warning,
                  start: session_timeout_start,
                  frequency: session_timeout_frequency,
