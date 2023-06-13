@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/_warning.html.erb' do
+RSpec.describe 'idv/phone_errors/_warning.html.erb' do
   let(:sp_name) { nil }
   let(:text) { 'A problem occurred' }
   let(:assigns) { {} }

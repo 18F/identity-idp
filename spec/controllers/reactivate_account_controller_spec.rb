@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReactivateAccountController do
+RSpec.describe ReactivateAccountController do
   let(:user) { create(:user, profiles: profiles) }
   let(:profiles) { [] }
 
@@ -14,7 +14,7 @@ describe ReactivateAccountController do
 
   describe '#index' do
     context 'with a password reset profile' do
-      let(:profiles) { [create(:profile, :password_reset)] }
+      let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
       it 'renders the index template' do
         get :index
@@ -34,7 +34,7 @@ describe ReactivateAccountController do
   end
 
   describe '#update' do
-    let(:profiles) { [create(:profile, :password_reset)] }
+    let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
     it 'redirects user to idv_url' do
       put :update

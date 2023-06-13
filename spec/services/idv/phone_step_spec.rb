@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PhoneStep do
+RSpec.describe Idv::PhoneStep do
   include IdvHelper
 
   before { stub_attempts_tracker }

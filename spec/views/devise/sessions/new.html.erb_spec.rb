@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/sessions/new.html.erb' do
+RSpec.describe 'devise/sessions/new.html.erb' do
   before do
     allow(view).to receive(:resource).and_return(build_stubbed(:user))
     allow(view).to receive(:resource_name).and_return(:user)

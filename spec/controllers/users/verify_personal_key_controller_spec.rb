@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::VerifyPersonalKeyController do
+RSpec.describe Users::VerifyPersonalKeyController do
   let(:user) { create(:user, personal_key: personal_key) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }
@@ -22,7 +22,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with password reset profile' do
-      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       it 'renders the `new` template' do
         get :new
@@ -46,7 +46,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with throttle reached' do
-      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
+      let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
         Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
@@ -77,6 +77,7 @@ describe Users::VerifyPersonalKeyController do
       [
         create(
           :profile,
+          :verified,
           :password_reset,
           user: user,
           pii: { ssn: '123456789' },

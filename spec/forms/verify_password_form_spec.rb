@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe VerifyPasswordForm, type: :model do
+RSpec.describe VerifyPasswordForm, type: :model do
   describe '#submit' do
     context 'when the form is valid' do
       it 'is successful' do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        profile = create(:profile, :password_reset, user: user, pii: pii)
+        profile = create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: password,
@@ -28,7 +28,7 @@ describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        profile = create(:profile, :password_reset, user: user, pii: pii)
+        profile = create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: "#{password}a",

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
+RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCounts do
   subject { described_class }
 
   let(:issuer) { 'foo' }

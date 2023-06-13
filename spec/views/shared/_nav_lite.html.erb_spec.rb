@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_nav_lite.html.erb' do
+RSpec.describe 'shared/_nav_lite.html.erb' do
   context 'user is signed out' do
     before do
       allow(view).to receive(:signed_in?).and_return(false)

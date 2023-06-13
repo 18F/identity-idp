@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ReviewController do
+RSpec.describe Idv::ReviewController do
   include UspsIppHelper
 
   let(:user) do
@@ -666,6 +666,15 @@ describe Idv::ReviewController do
           profile.reload
 
           expect(profile).to_not be_active
+        end
+
+        it 'sends an email about the gpo letter' do
+          expect do
+            put :create,
+                params: {
+                  user: { password: ControllerHelper::VALID_PASSWORD },
+                }
+          end.to(change { ActionMailer::Base.deliveries.count }.by(1))
         end
 
         it 'redirects to come back later page' do

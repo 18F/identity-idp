@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth hybrid_handoff step' do
+RSpec.feature 'doc auth hybrid_handoff step' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper

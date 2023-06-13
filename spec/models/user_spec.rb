@@ -558,6 +558,7 @@ RSpec.describe User do
         user = User.new
         create(
           :profile,
+          :verified,
           :password_reset,
           created_at: 1.day.ago,
           user: user,
@@ -675,10 +676,10 @@ RSpec.describe User do
     end
 
     context 'the user has no active profile but has a previously verified profile' do
-      let!(:password_reset_profile) do
+      let!(:verified_profile) do
         create(
           :profile,
-          :password_reset,
+          :verified,
           user: user,
         )
       end
@@ -694,7 +695,7 @@ RSpec.describe User do
       it 'returns the date of the previously verified profile' do
         expect(
           user.personal_key_generated_at,
-        ).to be_within(1.second).of(password_reset_profile.verified_at)
+        ).to be_within(1.second).of(verified_profile.verified_at)
       end
     end
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::HybridHandoffController do
+RSpec.describe Idv::HybridHandoffController do
   include IdvHelper
 
   let(:user) { create(:user) }
@@ -55,7 +55,7 @@ describe Idv::HybridHandoffController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'updates DocAuthLog document_capture_view_count' do
+    it 'updates DocAuthLog upload_view_count' do
       doc_auth_log = DocAuthLog.create(user_id: user.id)
 
       expect { get :show }.to(
@@ -64,12 +64,23 @@ describe Idv::HybridHandoffController do
     end
 
     context 'agreement step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+      before do
         subject.user_session['idv/doc_auth']['Idv::Steps::AgreementStep'] = nil
+      end
 
+      it 'redirects to idv_doc_auth_url' do
         get :show
 
         expect(response).to redirect_to(idv_doc_auth_url)
+      end
+
+      it 'redirects to idv_agreement_url when feature flag is set' do
+        allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
+          and_return(true)
+
+        get :show
+
+        expect(response).to redirect_to(idv_agreement_url)
       end
     end
 
@@ -88,6 +99,40 @@ describe Idv::HybridHandoffController do
         get :show
 
         expect(response).to redirect_to(idv_link_sent_url)
+      end
+    end
+
+    context 'redo document capture' do
+      it 'does not redirect in standard flow' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+
+        get :show, params: { redo: true }
+
+        expect(response).to render_template :show
+      end
+
+      it 'does not redirect in hybrid flow' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+
+        get :show, params: { redo: true }
+
+        expect(response).to render_template :show
+      end
+
+      it 'redirects to document_capture on a mobile device' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+
+        get :show, params: { redo: true }
+
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      it 'adds redo_document_capture to analytics' do
+        get :show, params: { redo: true }
+
+        analytics_args[:redo_document_capture] = true
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
   end

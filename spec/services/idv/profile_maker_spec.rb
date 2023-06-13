@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ProfileMaker do
+RSpec.describe Idv::ProfileMaker do
   describe '#save_profile' do
     let(:applicant) { { first_name: 'Some', last_name: 'One' } }
     let(:user) { create(:user, :fully_registered) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
+RSpec.describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:presenter) do
     TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
