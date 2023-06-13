@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::VerifyPersonalKeyController do
+RSpec.describe Users::VerifyPersonalKeyController do
   let(:user) { create(:user, personal_key: personal_key) }
   let!(:profiles) { [] }
   let(:personal_key) { 'key' }

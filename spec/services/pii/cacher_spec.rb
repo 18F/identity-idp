@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::Cacher do
+RSpec.describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
   let(:user) { create(:user, :with_phone, password: password) }
   let(:profile) do

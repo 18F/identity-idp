@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Response::AuthenticationTokenResponse do
+RSpec.describe Proofing::Aamva::Response::AuthenticationTokenResponse do
   let(:status_code) { 200 }
   let(:response_body) { AamvaFixtures.authentication_token_response }
   let(:http_response) do

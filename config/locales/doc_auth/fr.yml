@@ -142,6 +142,7 @@ fr:
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
       front: Recto
+      hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
       review_issues: Vérifiez vos images et essayez à nouveau
@@ -149,7 +150,6 @@ fr:
       ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       text_message: Nous avons envoyé un message à votre téléphone
-      upload: Comment voulez-vous ajouter votre identifiant ?
       upload_from_computer: Continuer sur cet ordinateur
       upload_from_phone: Utilisez votre téléphone pour prendre des photos
       verify_identity: Vérifier votre identité
@@ -177,6 +177,8 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
+      hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
+        d’identité délivrée par l’État.
       image_loaded: Image chargée
       image_loading: Chargement de l’image
       image_updated: Image mise à jour
@@ -206,8 +208,6 @@ fr:
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour vérifier votre
         nom, date de naissance et adresse.
       tag: Recommandation
-      upload: Nous recueillons des informations sur vous en lisant votre carte
-        d’identité délivrée par l’État.
       upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de
         votre carte d’identité depuis cet ordinateur.
       upload_from_phone: Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet

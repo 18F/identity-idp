@@ -8,7 +8,7 @@ module Idv
     include StepUtilitiesConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_upload_step_complete
+    before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :extend_timeout_using_meta_refresh
     before_action :check_for_outage, only: :show
@@ -42,7 +42,7 @@ module Idv
 
     private
 
-    def confirm_upload_step_complete
+    def confirm_hybrid_handoff_complete
       return if flow_session[:flow_path] == 'hybrid'
 
       if flow_session[:flow_path] == 'standard'

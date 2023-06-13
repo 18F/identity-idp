@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserEventCreator do
+RSpec.describe UserEventCreator do
   let(:user_agent) { 'A computer on the internet' }
   let(:ip_address) { '4.4.4.4' }
   let(:existing_device_cookie) { 'existing_device_cookie' }

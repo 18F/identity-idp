@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::CancelVerificationAttempt do
+RSpec.describe Idv::CancelVerificationAttempt do
   let(:user) { create(:user, profiles: profiles) }
   let(:profiles) { [create(:profile, gpo_verification_pending_at: 1.day.ago)] }
 

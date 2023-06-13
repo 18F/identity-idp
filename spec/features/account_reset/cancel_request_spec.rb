@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Account Reset Request: Cancellation' do
+RSpec.describe 'Account Reset Request: Cancellation' do
   context 'user cancels from the second email after the request has been granted' do
     it 'cancels the request and does not delete the user', email: true do
       user = create(:user, :fully_registered)

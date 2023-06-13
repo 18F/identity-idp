@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MfaConfirmationController do
+RSpec.describe MfaConfirmationController do
   describe '#show' do
     it 'presents the mfa confirmation page.' do
       stub_sign_in

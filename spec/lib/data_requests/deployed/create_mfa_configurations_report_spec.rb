@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::CreateMfaConfigurationsReport do
+RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
   describe '#call' do
     it 'includes an array for phone numbers' do
       user = create(:user)

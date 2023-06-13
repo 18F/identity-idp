@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe VendorOutageController do
+RSpec.describe VendorOutageController do
   before do
     stub_analytics
   end

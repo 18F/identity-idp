@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe NewPhoneForm do
+RSpec.describe NewPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { build(:user, :fully_registered) }

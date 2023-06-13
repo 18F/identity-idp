@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnController do
+RSpec.describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do

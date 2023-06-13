@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PhoneController do
+RSpec.describe Idv::PhoneController do
   include IdvHelper
 
   let(:max_attempts) { Throttle.max_attempts(:proof_address) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/personal_key_verification/show.html.erb' do
+RSpec.describe 'two_factor_authentication/personal_key_verification/show.html.erb' do
   let(:user) { create(:user, :fully_registered) }
 
   before do
