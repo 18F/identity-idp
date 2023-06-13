@@ -49,6 +49,12 @@ class ActionAccount
   end
 
   class ReviewReject
+    def log_message(uuid, log, table, messages)
+      table << [uuid, log]
+      messages << uuid + ' : ' + log
+      return table, messages
+    end
+
     def run(args:, config:)
       uuids = args
 
@@ -60,28 +66,21 @@ class ActionAccount
       messages = []
 
       users.each do |user|
-        user_logs = []
         if !user.fraud_review_pending?
-          user_logs << 'Error: User does not have a pending fraud review'
+          table, messages = log_message(user.uuid, 'Error: User does not have a pending fraud review', table, messages)
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.reject_for_fraud(notify_user: true)
 
-          user_logs << "User's profile has been deactivated due to fraud rejection."
+          table, messages = log_message(user.uuid, "User's profile has been deactivated due to fraud rejection.", table, messages)
         else
-          user_logs << 'User is past the 30 day review eligibility'
-        end
-
-        user_logs.each do |log|
-          table << [user.uuid, log]
-          messages << user.uuid + ' : ' + log
+          table, messages = log_message(user.uuid, 'User is past the 30 day review eligibility', table, messages)
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, 'Error: Could not find user with that UUID']
-          messages << missing_uuid + ' : Error: Could not find user with that UUID'
+          table, messages = log_message(missing_uuid, 'Error: Could not find user with that UUID', table, messages)
         end
       end
 
@@ -95,6 +94,12 @@ class ActionAccount
   end
 
   class ReviewPass
+    def log_message(uuid, log, table, messages)
+      table << [uuid, log]
+      messages << uuid + ' : ' + log
+      return table, messages
+    end
+
     def run(args:, config:)
       uuids = args
 
@@ -105,9 +110,8 @@ class ActionAccount
 
       messages = []
       users.each do |user|
-        user_logs = []
         if !user.fraud_review_pending?
-          user_logs << 'Error: User does not have a pending fraud review'
+          table, messages = log_message(user.uuid, 'Error: User does not have a pending fraud review', table, messages)
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.activate_after_passing_review
@@ -122,24 +126,18 @@ class ActionAccount
               sp_name: nil,
             )
 
-            user_logs << "User's profile has been activated and the user has been emailed."
+            table, messages = log_message(user.uuid, "User's profile has been activated and the user has been emailed.", table, messages)
           else
-            user_logs << "There was an error activating the user's profile. Please try again."
+            table, messages = log_message(user.uuid, "There was an error activating the user's profile. Please try again.", table, messages)
           end
         else
-          user_logs << 'User is past the 30 day review eligibility.'
-        end
-
-        user_logs.each do |log|
-          table << [user.uuid, log]
-          messages << user.uuid + ' : ' + log
+          table, messages = log_message(user.uuid, 'User is past the 30 day review eligibility.', table, messages)
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, 'Error: Could not find user with that UUID']
-          messages << missing_uuid + ' : Error: Could not find user with that UUID.'
+          table, messages = log_message(missing_uuid, 'Error: Could not find user with that UUID', table, messages)
         end
       end
 
