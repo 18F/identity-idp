@@ -85,6 +85,10 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           }
         end
 
+        before do
+          session[:reset_password_token] = 'bar'
+        end
+
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
