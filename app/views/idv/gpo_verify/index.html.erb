@@ -12,8 +12,10 @@
 <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
   <p>
     <%= t('forms.verify_profile.alert_info') %>
-    <br>
-    <%= render 'shared/address', address: @gpo_verify_form.pii %>
+    <% if pii = @gpo_verify_form.pii %>
+      <br>
+      <%= render 'shared/address', address: pii %>
+    <% end %>
   </p>
   <p>
     <%= t('forms.verify_profile.wrong_address') %>
