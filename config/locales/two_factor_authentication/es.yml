@@ -20,6 +20,7 @@ es:
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
     backup_codes:
+      add_another_authentication_option: '‹ Añada otra opción de autenticación'
       instructions: Si no tiene acceso a otro dispositivo, guarde bien sus códigos de
         respaldo. No podrá iniciar sesión en Login.gov si pierde sus códigos de
         respaldo.
