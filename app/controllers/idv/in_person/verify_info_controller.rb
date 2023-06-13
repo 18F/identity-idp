@@ -73,11 +73,23 @@ module Idv
 
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: flow_session[:flow_path],
           step: 'verify',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(**acuant_sdk_ab_test_analytics_args).
+          merge(**extra_analytics_properties)
+      end
+
+      def extra_analytics_properties
+        extra = {
+          pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+        }
+        unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
+          extra[:same_address_as_id] =
+            flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
+        end
+        extra
       end
     end
   end
