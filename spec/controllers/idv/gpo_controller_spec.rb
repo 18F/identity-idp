@@ -214,7 +214,7 @@ RSpec.describe Idv::GpoController do
 
     expect(gpo_confirmation_maker).to receive(:perform)
     expect(gpo_confirmation_maker).to receive(:otp) if otp
-    expect { put :create }.to(change { ActionMailer::Base.deliveries.count }).by(1)
+    expect { put :create }.to change { ActionMailer::Base.deliveries.count }.by(1)
     expect(response).to redirect_to idv_come_back_later_path
   end
 end
