@@ -1,12 +1,16 @@
 require 'rails_helper'
-RSpec.feature 'Email language Preference' do
-  describe 'visitor signs up with email language preference' do
-    it 'defaults to the current locale' do
-      visit sign_up_email_path
 
-      field = page.find_field(
-        t('account.email_language.default', language: t("i18n.locale.#{I18n.default_locale}")),
-      )
+RSpec.describe 'visitor signs up with email language preference' do
+  it 'defaults to the current locale' do
+    visit sign_up_email_path
+
+    field = page.find_field(
+      t('account.email_language.default', language: t("i18n.locale.#{I18n.default_locale}")),
+    )
+    expect(field).to be_present
+    expect(field[:lang]).to eq(I18n.default_locale.to_s)
+    (I18n.available_locales - [I18n.default_locale]).each do |locale|
+      field = page.find_field(t("i18n.locale.#{locale}"))
       expect(field).to be_present
       expect(field[:lang]).to eq(I18n.default_locale.to_s)
       (I18n.available_locales - [I18n.default_locale]).each do |locale|
