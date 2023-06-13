@@ -9,101 +9,103 @@ RSpec.describe ActionAccount do
 
   subject(:action_account) { ActionAccount.new(argv:, stdout:, stderr:) }
 
-  describe 'command line flags' do
+  describe 'command line run' do
     let(:argv) { ['review-pass', user.uuid] }
     let(:user) { create(:user) }
 
-    describe '--help' do
-      before { argv << '--help' }
-      it 'prints a help message' do
-        action_account.run
+    context 'with command line flags' do
+      describe '--help' do
+        before { argv << '--help' }
+        it 'prints a help message' do
+          action_account.run
 
-        expect(stdout.string).to include('Options:')
+          expect(stdout.string).to include('Options:')
+        end
+
+        it 'prints help to stderr', aggregate_failures: true do
+          action_account.run
+
+          expect(stderr.string).to include('*Task*: `help`')
+          expect(stderr.string).to include('*UUIDs*: N/A')
+        end
       end
 
-      it 'prints help to stderr', aggregate_failures: true do
-        action_account.run
+      describe '--csv' do
+        before { argv << '--csv' }
+        it 'formats output as CSV' do
+          action_account.run
 
-        expect(stderr.string).to include('*Task*: `help`')
-        expect(stderr.string).to include('*UUIDs*: N/A')
+          expect(CSV.parse(stdout.string)).to eq(
+            [
+              ['uuid', 'status'],
+              [user.uuid, 'Error: User does not have a pending fraud review'],
+            ],
+          )
+        end
       end
-    end
 
-    describe '--csv' do
-      before { argv << '--csv' }
-      it 'formats output as CSV' do
-        action_account.run
+      describe '--table' do
+        before { argv << '--table' }
+        it 'formats output as an ASCII table' do
+          action_account.run
 
-        expect(CSV.parse(stdout.string)).to eq(
-          [
-            ['uuid', 'status'],
-            [user.uuid, 'Error: User does not have a pending fraud review'],
-          ],
-        )
+          expect(Tableparser.parse(stdout.string)).to eq(
+            [
+              ['uuid', 'status'],
+              [user.uuid, 'Error: User does not have a pending fraud review'],
+            ],
+          )
+        end
       end
-    end
 
-    describe '--table' do
-      before { argv << '--table' }
-      it 'formats output as an ASCII table' do
+      it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
         action_account.run
-
-        expect(Tableparser.parse(stdout.string)).to eq(
-          [
-            ['uuid', 'status'],
-            [user.uuid, 'Error: User does not have a pending fraud review'],
-          ],
-        )
+  
+        expect(stderr.string).to include('`review-pass`')
+        expect(stderr.string).to include("`#{user.uuid}`")
       end
-    end
+  
+      describe '--json' do
+        before { argv << '--json' }
+        it 'formats output as JSON' do
+          action_account.run
 
-    it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
-      action_account.run
-
-      expect(stderr.string).to include('`review-pass`')
-      expect(stderr.string).to include("`#{user.uuid}`")
-    end
-
-    describe '--json' do
-      before { argv << '--json' }
-      it 'formats output as JSON' do
-        action_account.run
-
-        expect(JSON.parse(stdout.string)).to eq(
-          [
-            {
-              'uuid' => user.uuid,
-              'status' => 'Error: User does not have a pending fraud review',
-            },
-          ],
-        )
+          expect(JSON.parse(stdout.string)).to eq(
+            [
+              {
+                'uuid' => user.uuid,
+                'status' => 'Error: User does not have a pending fraud review',
+              },
+            ],
+          )
+        end
       end
-    end
 
-    describe '--include-missing' do
-      let(:argv) { ['review-reject', 'does_not_exist@example.com', '--include-missing', '--json'] }
-      it 'adds rows for missing values' do
-        action_account.run
+      describe '--include-missing' do
+        let(:argv) { ['review-reject', 'does_not_exist@example.com', '--include-missing', '--json'] }
+        it 'adds rows for missing values' do
+          action_account.run
 
-        expect(JSON.parse(stdout.string)).to eq(
-          [
-            {
-              'uuid' => 'does_not_exist@example.com',
-              'status' => 'Error: Could not find user with that UUID',
-            },
-          ],
-        )
+          expect(JSON.parse(stdout.string)).to eq(
+            [
+              {
+                'uuid' => 'does_not_exist@example.com',
+                'status' => 'Error: Could not find user with that UUID',
+              },
+            ],
+          )
+        end
       end
-    end
 
-    describe '--no-include-missing' do
-      let(:argv) do
-        ['review-reject', 'does_not_exist@example.com', '--no-include-missing', '--json']
-      end
-      it 'does not add rows for missing values' do
-        action_account.run
+      describe '--no-include-missing' do
+        let(:argv) do
+          ['review-reject', 'does_not_exist@example.com', '--no-include-missing', '--json']
+        end
+        it 'does not add rows for missing values' do
+          action_account.run
 
-        expect(JSON.parse(stdout.string)).to be_empty
+          expect(JSON.parse(stdout.string)).to be_empty
+        end
       end
     end
   end
