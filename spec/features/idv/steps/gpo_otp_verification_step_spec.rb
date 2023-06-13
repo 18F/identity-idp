@@ -10,8 +10,13 @@ RSpec.feature 'idv gpo otp verification step' do
       deactivation_reason: 3,
       gpo_verification_pending_at: 2.days.ago,
       pii: {
-        address1: '1 Secure Way', address2: 'Unit #4', city: 'Loginville',
-        state: 'DC', zipcode: '11111', ssn: '123-45-6789', dob: '1970-01-01'
+        address1: '1 Secure Way',
+        address2: 'Unit #4',
+        city: 'Loginville',
+        state: 'DC',
+        zipcode: '11111',
+        ssn: '123-45-6789',
+        dob: '1970-01-01',
       },
       fraud_review_pending_at: fraud_review_pending_timestamp,
       fraud_rejection_at: fraud_rejection_timestamp,
