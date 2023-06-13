@@ -101,32 +101,39 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to redirect_to(idv_link_sent_url)
       end
     end
-  end
 
-  context 'redo document capture' do
-    it 'does not redirect in standard flow' do
-      subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+    context 'redo document capture' do
+      it 'does not redirect in standard flow' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
 
-      get :show, params: { redo: true }
+        get :show, params: { redo: true }
 
-      expect(response).to render_template :show
-    end
+        expect(response).to render_template :show
+      end
 
-    it 'does not redirect in hybrid flow' do
-      subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+      it 'does not redirect in hybrid flow' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
 
-      get :show, params: { redo: true }
+        get :show, params: { redo: true }
 
-      expect(response).to render_template :show
-    end
+        expect(response).to render_template :show
+      end
 
-    it 'redirects to document_capture on a mobile device' do
-      subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
-      subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+      it 'redirects to document_capture on a mobile device' do
+        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.user_session['idv/doc_auth'][:skip_upload_step] = true
 
-      get :show, params: { redo: true }
+        get :show, params: { redo: true }
 
-      expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+
+      it 'adds redo_document_capture to analytics' do
+        get :show, params: { redo: true }
+
+        analytics_args[:redo_document_capture] = true
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
     end
   end
 

@@ -15,6 +15,7 @@ RSpec.feature 'doc auth agreement step' do
     end
 
     it 'shows an inline error if the user clicks continue without giving consent' do
+      expect(page).to have_content(t('step_indicator.flows.idv.getting_started'))
       click_continue
 
       expect(page).to have_current_path(idv_agreement_url)

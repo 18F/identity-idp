@@ -8,7 +8,6 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
   let(:user) { create(:user, :fully_registered) }
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
-  let(:frozen_now) { Time.zone.local(2023, 'jun', 9, 9, 0) }
 
   let(:service_provider) do
     create(
@@ -51,7 +50,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
-      travel_to(frozen_now + 2.days + 1) do
+      travel_to(Time.zone.now + 2.days + 1) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
@@ -122,7 +121,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
-      travel_to(frozen_now + 2.days + 1) do
+      travel_to(2.days.from_now + 1) do
         request = stub_push_notification_request(
           sp_push_notification_endpoint: push_notification_url,
           event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,
@@ -235,7 +234,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       expect(events.count).to eq received_event_types.count
       expect(received_event_types).to match_array(expected_event_types)
 
-      travel_to(frozen_now + 2.days + 1.second) do
+      travel_to(Time.zone.now + 2.days + 1.second) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
