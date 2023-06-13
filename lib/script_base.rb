@@ -54,7 +54,7 @@ class ScriptBase
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
-    if result.table.length > 1
+    if result.table && result.table.length > 1
       stderr.puts "*Messages*: `#{result.table.filter_map do |row|
                                     "#{row[0]} : #{row[1]}" if row[0] != 'uuid'
                                   end.join('\n') }`"
