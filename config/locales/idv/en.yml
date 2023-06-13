@@ -237,6 +237,7 @@ en:
       activated: Your identity has already been verified
       come_back_later: Your letter is on the way
       mail:
+        resend: Send another letter?
         verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit

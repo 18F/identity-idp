@@ -43,7 +43,7 @@ RSpec.describe 'idv/gpo/index.html.erb' do
     let(:resend_requested) { true }
 
     it 'prompts to send another letter' do
-      expect(rendered).to have_content(I18n.t('idv.titles.mail.verify'))
+      expect(rendered).to have_content(I18n.t('idv.titles.mail.resend'))
       expect(rendered).to have_button(I18n.t('idv.buttons.mail.resend'))
     end
   end

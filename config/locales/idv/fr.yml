@@ -270,6 +270,7 @@ fr:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
       mail:
+        resend: Envoyer une autre lettre?
         verify: Vérifiez votre adresse
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
