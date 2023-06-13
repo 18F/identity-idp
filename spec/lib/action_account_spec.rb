@@ -13,6 +13,28 @@ RSpec.describe ActionAccount do
     let(:argv) { ['review-pass', user.uuid] }
     let(:user) { create(:user) }
 
+    it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
+      action_account.run
+
+      expect(stderr.string).to include('`review-pass`')
+      expect(stderr.string).to include("`#{user.uuid}`")
+    end
+
+    context 'when the command cannot be performed successfully' do
+      let(:user) { create(:user, :fraud_review_pending)}
+      it 'logs Messages to STDERR formatted for Slack' do
+        user.fraud_review_pending_profile.update!(fraud_review_pending_at: 31.days.ago) 
+
+        action_account.run
+
+        expect(stderr.string).to eq(<<~STR)
+          *Task*: `review-pass`
+          *UUIDs*: `#{user.uuid}`
+          *Messages*: `User is past the 30 day review eligibility : #{user.uuid}`
+        STR
+      end
+    end
+
     context 'with command line flags' do
       describe '--help' do
         before { argv << '--help' }
@@ -58,13 +80,6 @@ RSpec.describe ActionAccount do
         end
       end
 
-      it 'logs UUIDs and the command name to STDERR formatted for Slack', aggregate_failures: true do
-        action_account.run
-  
-        expect(stderr.string).to include('`review-pass`')
-        expect(stderr.string).to include("`#{user.uuid}`")
-      end
-  
       describe '--json' do
         before { argv << '--json' }
         it 'formats output as JSON' do
