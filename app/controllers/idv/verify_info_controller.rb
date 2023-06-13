@@ -36,7 +36,16 @@ module Idv
 
     def update
       success = shared_update
-      redirect_to idv_verify_info_url if success
+
+      if success
+        # Don't allow the user to go back to document capture after verifying
+        if flow_session['redo_document_capture']
+          flow_session.delete('redo_document_capture')
+          flow_session[:flow_path] ||= 'standard'
+        end
+
+        redirect_to idv_verify_info_url
+      end
     end
 
     private
