@@ -160,7 +160,8 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+        redo_document_capture: params[:redo] ? true : nil,
+      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def form_response(destination:)

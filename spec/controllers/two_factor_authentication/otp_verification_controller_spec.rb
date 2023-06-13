@@ -60,7 +60,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
         in_multi_mfa_selection_flow: true,
-        sign_up_mfa_priority_bucket: :default,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -133,7 +132,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_multi_mfa_selection_flow: true,
-          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -201,7 +199,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_multi_mfa_selection_flow: true,
-          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -265,7 +262,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_multi_mfa_selection_flow: true,
-          sign_up_mfa_priority_bucket: :default,
         }
 
         stub_analytics
@@ -446,7 +442,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: true,
-              sign_up_mfa_priority_bucket: :default,
             }
 
             expect(@analytics).to receive(:track_event).
@@ -532,7 +527,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
               in_multi_mfa_selection_flow: false,
-              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -616,7 +610,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
               in_multi_mfa_selection_flow: false,
-              sign_up_mfa_priority_bucket: nil,
             }
 
             expect(@analytics).to have_received(:track_event).

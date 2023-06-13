@@ -74,7 +74,8 @@ module Idv
         step: 'document_capture',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+        redo_document_capture: flow_session[:redo_document_capture],
+      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def handle_stored_result

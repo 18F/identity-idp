@@ -54,7 +54,6 @@ RSpec.describe Users::WebauthnSetupController do
             errors: {},
             enabled_mfa_methods_count: 0,
             in_multi_mfa_selection_flow: false,
-            sign_up_mfa_selection_order_bucket: nil,
             success: true,
           )
 
@@ -90,7 +89,6 @@ RSpec.describe Users::WebauthnSetupController do
           success: true,
           errors: {},
           in_multi_mfa_selection_flow: false,
-          sign_up_mfa_selection_order_bucket: nil,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
@@ -220,7 +218,6 @@ RSpec.describe Users::WebauthnSetupController do
               enabled_mfa_methods_count: 1,
               errors: {},
               in_multi_mfa_selection_flow: true,
-              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -278,7 +275,6 @@ RSpec.describe Users::WebauthnSetupController do
               enabled_mfa_methods_count: 1,
               errors: {},
               in_multi_mfa_selection_flow: true,
-              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: { webauthn_platform: 1 },
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -330,7 +326,6 @@ RSpec.describe Users::WebauthnSetupController do
                 link: MarketingSite.contact_url,
               )] },
               in_multi_mfa_selection_flow: true,
-              sign_up_mfa_selection_order_bucket: :default,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
