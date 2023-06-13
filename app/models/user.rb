@@ -300,11 +300,11 @@ class User < ApplicationRecord
     !active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 
+  # TODO: change this method's comment
   # This user's most recently activated profile that has also been deactivated
   # due to a password reset, or nil if there is no such profile
   def password_reset_profile
-    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
-    profile if profile&.password_reset?
+    profiles.where(active: false, deactivation_reason: 'password_reset').first
   end
 
   def qrcode(otp_secret_key)
