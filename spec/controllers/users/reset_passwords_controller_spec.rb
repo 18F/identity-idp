@@ -71,6 +71,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       before do
         allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
+        allow(User).to receive(:with_reset_password_token).with('bar').and_return(nil)
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
       end
 
