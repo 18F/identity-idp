@@ -12,8 +12,6 @@ module Reports
         name = report_hash['name']
         emails = report_hash['emails']
         issuer = report_hash['issuer']
-      
-        binding.pry
 
         user_counts = Db::Identity::SpUserCounts.with_issuer(issuer)
         
