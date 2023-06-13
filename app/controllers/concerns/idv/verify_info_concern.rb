@@ -54,7 +54,7 @@ module Idv
         flow_session[:flow_path] ||= 'standard'
       end
 
-      # for the 50/50 state
+      # Mark the FSM verify step completed. This is for the 50/50 state
       flow_session['Idv::Steps::InPerson::VerifyStep'] = true
       redirect_to after_update_url
     end
