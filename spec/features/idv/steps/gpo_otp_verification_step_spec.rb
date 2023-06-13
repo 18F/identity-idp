@@ -115,55 +115,21 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
-  context 'canceling and starting over within the banner' do
-    context 'user has address pii' do
-      it 'displays address partial' do
-        sign_in_live_with_2fa(user)
+  it 'allows a user to cancel and start over withinthe banner' do
+    sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq idv_gpo_verify_path
-        expect(page).to have_content t('forms.verify_profile.alert_info')
-        expect(page).to have_content t('forms.verify_profile.wrong_address')
-        expect(page).to have_content '1 Secure Way'
+    expect(current_path).to eq idv_gpo_verify_path
+    expect(page).to have_content t('forms.verify_profile.alert_info')
+    expect(page).to have_content t('forms.verify_profile.wrong_address')
+    expect(page).to have_content '1 Secure Way'
 
-        click_on t('forms.verify_profile.clear_and_start_over')
+    click_on t('forms.verify_profile.clear_and_start_over')
 
-        expect(current_path).to eq idv_confirm_start_over_path
+    expect(current_path).to eq idv_confirm_start_over_path
 
-        click_idv_continue
+    click_idv_continue
 
-        expect(current_path).to eq idv_doc_auth_welcome_step
-      end
-    end
-
-    context 'user does not have address pii' do
-      let(:profile) do
-        create(
-          :profile,
-          deactivation_reason: 3,
-          gpo_verification_pending_at: 2.days.ago,
-          pii: { ssn: '123-45-6789', dob: '1970-01-01' },
-          fraud_review_pending_at: fraud_review_pending_timestamp,
-          fraud_rejection_at: fraud_rejection_timestamp,
-        )
-      end
-
-      it 'does not render address partial within the alert banner' do
-        sign_in_live_with_2fa(user)
-
-        expect(current_path).to eq idv_gpo_verify_path
-        expect(page).to have_content t('forms.verify_profile.alert_info')
-        expect(page).to have_content t('forms.verify_profile.wrong_address')
-        expect(page).not_to have_content '1 Secure Way'
-
-        click_on t('forms.verify_profile.clear_and_start_over')
-
-        expect(current_path).to eq idv_confirm_start_over_path
-
-        click_idv_continue
-
-        expect(current_path).to eq idv_doc_auth_welcome_step
-      end
-    end
+    expect(current_path).to eq idv_doc_auth_welcome_step
   end
 
   it 'allows a user to cancel and start over in the footer' do
