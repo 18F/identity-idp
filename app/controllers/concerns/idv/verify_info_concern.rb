@@ -54,9 +54,6 @@ module Idv
         flow_session[:flow_path] ||= 'standard'
       end
 
-      # Mark the FSM verify step completed. This is for the 50/50 state
-      flow_session['Idv::Steps::InPerson::VerifyStep'] = true
-
       return true
     end
 

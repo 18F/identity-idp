@@ -38,7 +38,13 @@ module Idv
 
       def update
         success = shared_update
-        redirect_to idv_in_person_verify_info_url if success
+
+        if success
+          # Mark the FSM verify step completed. This is for the 50/50 state
+          flow_session['Idv::Steps::InPerson::VerifyStep'] = true
+
+          redirect_to idv_in_person_verify_info_url
+        end
       end
 
       private
