@@ -2,7 +2,7 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
-    def update
+    def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).

@@ -34,6 +34,10 @@ module Idv
       process_async_state(load_async_state)
     end
 
+    def update
+      shared_update
+    end
+
     private
 
     # state ID type isn't manually set for Idv::VerifyInfoController

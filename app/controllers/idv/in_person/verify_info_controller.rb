@@ -36,6 +36,10 @@ module Idv
         process_async_state(load_async_state)
       end
 
+      def update
+        shared_update
+      end
+
       private
 
       # state_id_type is hard-coded here because it's required for proofing against
