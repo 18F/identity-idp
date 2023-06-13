@@ -16,6 +16,19 @@ RSpec.describe Idv::GpoPresenter do
       end
     end
 
+    context 'a letter has been sent' do
+      before do
+        allow(user).to receive(:gpo_verification_pending_profile).and_return(true)
+      end
+      it 'provides text to resend' do
+        create_letter_send_event
+
+        expect(subject.title).to eq(
+          I18n.t('idv.titles.mail.resend'),
+        )
+      end
+    end
+
     context 'the user has verified with GPO before, but is re-proofing' do
       let(:user) { user_verified_with_gpo }
       it 'provides text to send' do

@@ -253,7 +253,7 @@ es:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
       mail:
-        resend: '¿Enviar otra carta?
+        resend: '¿Enviar otra carta?'
         verify: Verifique su dirección
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
