@@ -669,9 +669,12 @@ RSpec.describe Idv::ReviewController do
         end
 
         it 'sends an email about the gpo letter' do
-          expect { put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } } }.to(
-            change { ActionMailer::Base.deliveries.count }.by(1),
-          )
+          expect do
+            put :create,
+                params: {
+                  user: { password: ControllerHelper::VALID_PASSWORD },
+                }
+          end.to(change { ActionMailer::Base.deliveries.count }.by(1))
         end
 
         it 'redirects to come back later page' do
