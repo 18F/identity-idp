@@ -3864,6 +3864,42 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user reinstated
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_reinstated(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Reinstated',
+      {
+        success: success,
+        error_message: error_message,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user suspended
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_suspended(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Suspended',
+      {
+        success: success,
+        error_message: error_message,
+        **extra,
+      }.compact,
+    )
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id

@@ -700,6 +700,132 @@ RSpec.describe User do
     end
   end
 
+  describe 'user suspension' do
+    let(:user) { User.new }
+    let(:cannot_reinstate_message) { :user_is_not_suspended }
+    let(:cannot_suspend_message) { :user_already_suspended }
+
+    describe '#suspended?' do
+      context 'when suspended_at is after reinstated_at' do
+        before do
+          user.suspended_at = Time.zone.now
+          user.reinstated_at = Time.zone.now - 1.day
+        end
+        it 'returns true' do
+          expect(user.suspended?).to be true
+        end
+      end
+
+      context 'when suspended_at is before reinstated_at' do
+        before do
+          user.suspended_at = Time.zone.now - 1.day
+          user.reinstated_at = Time.zone.now
+        end
+
+        it 'returns false' do
+          expect(user.suspended?).to be false
+        end
+      end
+
+      context 'when suspended_at is nil' do
+        before do
+          user.suspended_at = nil
+          user.reinstated_at = nil
+        end
+
+        it 'returns false' do
+          expect(user.suspended?).to be false
+        end
+      end
+    end
+
+    describe '#reinstated?' do
+      context 'when reinstated_at is after suspended_at' do
+        before do
+          user.suspended_at = Time.zone.now - 1.day
+          user.reinstated_at = Time.zone.now
+        end
+
+        it 'returns true' do
+          expect(user.reinstated?).to be true
+        end
+      end
+
+      context 'when reinstated_at is before suspended_at' do
+        before do
+          user.suspended_at = Time.zone.now
+          user.reinstated_at = Time.zone.now - 1.day
+        end
+
+        it 'returns false' do
+          expect(user.reinstated?).to be false
+        end
+      end
+
+      context 'when reinstated_at is nil' do
+        before do
+          user.suspended_at = nil
+          user.reinstated_at = nil
+        end
+        it 'returns false' do
+          expect(user.reinstated?).to be false
+        end
+      end
+    end
+
+    describe '#suspend!' do
+      it 'updates the suspended_at attribute with the current time' do
+        expect do
+          user.suspend!
+        end.to change(user, :suspended_at).from(nil).to(be_within(1.second).of(Time.zone.now))
+      end
+
+      it 'tracks the user suspension' do
+        expect(user.analytics).to receive(:user_suspended).with(success: true)
+        user.suspend!
+      end
+
+      it 'raises an error if the user is already suspended' do
+        user.suspended_at = Time.zone.now
+        expect(user.analytics).to receive(:user_suspended).with(
+          success: false,
+          error_message: cannot_suspend_message,
+        )
+        expect do
+          user.suspend!
+        end.to raise_error(cannot_suspend_message.to_s)
+      end
+    end
+
+    describe '#reinstate!' do
+      before do
+        user.suspended_at = Time.zone.now
+        user.reinstated_at = nil
+      end
+      it 'updates the reinstated_at attribute with the current time' do
+        expect do
+          user.reinstate!
+        end.to change(user, :reinstated_at).from(nil).to(be_within(1.second).of(Time.zone.now))
+      end
+
+      it 'tracks the user reinstatement' do
+        expect(user.analytics).to receive(:user_reinstated).with(success: true)
+        user.reinstate!
+      end
+
+      it 'raises an error if the user is not currently suspended' do
+        user.suspended_at = nil
+        expect(user.analytics).to receive(:user_reinstated).with(
+          success: false,
+          error_message: cannot_reinstate_message,
+        )
+        expect do
+          user.reinstate!
+        end.to raise_error(cannot_reinstate_message.to_s)
+      end
+    end
+  end
+
   describe '#should_receive_in_person_completion_survey?' do
     let!(:user) { create(:user) }
     let(:service_provider) { create(:service_provider) }
