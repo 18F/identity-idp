@@ -57,31 +57,38 @@ class ActionAccount
       table = []
       table << %w[uuid status]
 
-      users.each do |user|
-        if !user.fraud_review_pending?
-          table << [user.uuid, 'Error: User does not have a pending fraud review']
-          next
-        end
+      messages = []
 
-        if FraudReviewChecker.new(user).fraud_review_eligible?
+      users.each do |user|
+        user_logs = []
+        if !user.fraud_review_pending?
+          user_logs << 'Error: User does not have a pending fraud review'
+        elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.reject_for_fraud(notify_user: true)
 
-          table << [user.uuid, "User's profile has been deactivated due to fraud rejection."]
+          user_logs << "User's profile has been deactivated due to fraud rejection."
         else
-          table << [user.uuid, 'User is past the 30 day review eligibility']
+          user_logs << 'User is past the 30 day review eligibility'
+        end
+
+        user_logs.each do |log|
+          table << [user.uuid, log]
+          messages << user.uuid + ' : ' + log
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, 'Error: Could not find user with that UUID']
+          messages << missing_uuid + ' : Error: Could not find user with that UUID'
         end
       end
 
       ScriptBase::Result.new(
         subtask: 'review-reject',
         uuids: users.map(&:uuid),
+        messages:,
         table:,
       )
     end
@@ -96,13 +103,12 @@ class ActionAccount
       table = []
       table << %w[uuid status]
 
+      messages = []
       users.each do |user|
+        user_logs = []
         if !user.fraud_review_pending?
-          table << [user.uuid, 'Error: User does not have a pending fraud review']
-          next
-        end
-
-        if FraudReviewChecker.new(user).fraud_review_eligible?
+          user_logs << 'Error: User does not have a pending fraud review'
+        elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.activate_after_passing_review
 
@@ -116,27 +122,31 @@ class ActionAccount
               sp_name: nil,
             )
 
-            table << [user.uuid, "User's profile has been activated and the user has been emailed."]
+            user_logs << "User's profile has been activated and the user has been emailed."
           else
-            table << [
-              user.uuid,
-              "There was an error activating the user's profile. Please try again",
-            ]
+            user_logs << "There was an error activating the user's profile. Please try again."
           end
         else
-          table << [user.uuid, 'User is past the 30 day review eligibility']
+          user_logs << 'User is past the 30 day review eligibility.'
+        end
+
+        user_logs.each do |log|
+          table << [user.uuid, log]
+          messages << user.uuid + ' : ' + log
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table << [missing_uuid, 'Error: Could not find user with that UUID']
+          messages << missing_uuid + ' : Error: Could not find user with that UUID.'
         end
       end
 
       ScriptBase::Result.new(
         subtask: 'review-pass',
         uuids: users.map(&:uuid),
+        messages:,
         table:,
       )
     end
