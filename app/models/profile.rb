@@ -88,23 +88,28 @@ class Profile < ApplicationRecord
       )
       activate
     end
+
     track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
   def activate_after_passing_in_person
-    update!(
-      deactivation_reason: nil,
-      fraud_review_pending_at: nil,
-    )
-    activate
+    transaction do
+      update!(
+        deactivation_reason: nil,
+        fraud_review_pending_at: nil,
+      )
+      activate
+    end
   end
 
   def activate_after_password_reset
     if password_reset?
-      update!(
-        deactivation_reason: nil,
-      )
-      activate(reason_deactivated: :password_reset)
+      transaction do
+        update!(
+          deactivation_reason: nil,
+        )
+        activate(reason_deactivated: :password_reset)
+      end
     end
   end
 
