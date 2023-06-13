@@ -403,6 +403,16 @@ class User < ApplicationRecord
 
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 
+  def send_email_to_all_addresses(user_mailer_template)
+    confirmed_email_addresses.each do |email_address|
+      UserMailer.with(
+        user: self,
+        email_address: email_address,
+      ).send(user_mailer_template).
+        deliver_now_or_later
+    end
+  end
+
   private
 
   def lockout_period
