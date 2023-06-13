@@ -3875,20 +3875,17 @@ module AnalyticsEvents
 
   # Tracks when user reinstated
   # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] user_id
+  # @param [String] error_message
   def user_reinstated(
     success:,
-    errors:,
-    user_id: nil,
+    error_message: nil,
     **extra
   )
     track_event(
-      'User: Reinstated',
+      'User Suspension: Reinstated',
       {
         success: success,
-        errors: errors,
-        user_id: user_id,
+        error_message: error_message,
         **extra,
       }.compact,
     )
@@ -3896,20 +3893,17 @@ module AnalyticsEvents
 
   # Tracks when user suspended
   # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [String] user_id
+  # @param [String] error_message
   def user_suspended(
     success:,
-    errors:,
-    user_id: nil,
+    error_message: nil,
     **extra
   )
     track_event(
-      'User: Suspended',
+      'User Suspension: Suspended',
       {
         success: success,
-        errors: errors,
-        user_id: user_id,
+        error_message: error_message,
         **extra,
       }.compact,
     )

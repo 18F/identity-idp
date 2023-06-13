@@ -107,47 +107,29 @@ class User < ApplicationRecord
   end
 
   def suspended?
-    suspended_at.present?
+    suspended_at.to_s > reinstated_at.to_s
   end
 
   def reinstated?
-    reinstated_at.present?
+    reinstated_at.to_s > suspended_at.to_s
   end
 
-  def suspend
-    confirm_that_user_can_be_suspended!
+  def suspend!
+    if suspended?
+      analytics.user_suspended(success: false, error_message: :user_already_suspended)
+      raise 'user_already_suspended'
+    end
     update!(suspended_at: Time.zone.now)
-    track_user_suspended(success: true)
+    analytics.user_suspended(success: true)
   end
 
-  def reinstate
-    confirm_that_user_can_be_reinstated!
-    update!(reinstated_at: Time.zone.now)
-    track_user_reinstated(success: true)
-  end
-
-  def confirm_that_user_can_be_suspended!
-    if reinstated?
-      error_message = 'Cannot suspend a user who has already been reinstated.'
-    elsif suspended?
-      error_message = 'Cannot suspend a user who is already suspended.'
-    end
-    if error_message
-      track_user_suspended(success: false, error_message: error_message)
-      raise error_message
-    end
-  end
-
-  def confirm_that_user_can_be_reinstated!
+  def reinstate!
     if !suspended?
-      error_message = 'Cannot reinstate user who is not currently suspended.'
-    elsif reinstated?
-      error_message = 'Cannot reinstate user who has already been reinstated.'
+      analytics.user_reinstated(success: false, error_message: :user_is_not_suspended)
+      raise 'user_is_not_suspended'
     end
-    if error_message
-      track_user_reinstated(success: false, error_message: error_message)
-      raise error_message
-    end
+    update!(reinstated_at: Time.zone.now)
+    analytics.user_reinstated(success: true)
   end
 
   def pending_profile
@@ -459,21 +441,5 @@ class User < ApplicationRecord
 
   def lockout_period_expired?
     lockout_time_expiration < Time.zone.now
-  end
-
-  def track_user_suspended(success:, error_message: nil)
-    analytics.user_suspended(
-      success: success,
-      errors: error_message.present? ? { user: [error_message] } : {},
-      user_id: self.uuid,
-    )
-  end
-
-  def track_user_reinstated(success:, error_message: nil)
-    analytics.user_reinstated(
-      success: success,
-      errors: error_message.present? ? { user: [error_message] } : {},
-      user_id: self.uuid,
-    )
   end
 end
