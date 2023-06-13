@@ -20,7 +20,7 @@ es:
         estos nuevos códigos la próxima vez que se registre.
       regenerate: Obtener nuevos códigos
       saved: TODO ADD TRANSLATION
-      subinfo_html: TODO ADD TRANSLATION
+      subinfo_html: TODO ADD %{app_name} TRANSLATION
       subtitle: TODO ADD TRANSLATION
       title: Códigos de respaldo
     backup_code_regenerate:

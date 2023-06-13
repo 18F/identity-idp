@@ -21,7 +21,7 @@ fr:
         utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
       saved: TODO ADD TRANSLATION
-      subinfo_html: TODO ADD TRANSLATION
+      subinfo_html: TODO ADD %{app_name} TRANSLATION
       subtitle: TODO ADD TRANSLATION
       title: Codes de sauvegarde
     backup_code_regenerate:
