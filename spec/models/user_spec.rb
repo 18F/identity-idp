@@ -558,6 +558,7 @@ RSpec.describe User do
         user = User.new
         create(
           :profile,
+          :verified,
           :password_reset,
           created_at: 1.day.ago,
           user: user,

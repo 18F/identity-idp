@@ -7,7 +7,7 @@ RSpec.describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        create(:profile, :password_reset, user: user, pii: pii)
+        create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: password,
@@ -25,7 +25,7 @@ RSpec.describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        create(:profile, :password_reset, user: user, pii: pii)
+        create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: "#{password}a",
