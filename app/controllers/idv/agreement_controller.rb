@@ -37,7 +37,6 @@ module Idv
 
         # for the 50/50 state
         flow_session['Idv::Steps::AgreementStep'] = true
-        flow_session['Idv::Steps::InPerson::VerifyStep'] = true
 
         redirect_to idv_hybrid_handoff_url
       else
