@@ -39,15 +39,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         :confirm_verify_info_step_needed,
       )
     end
-
-    it 'renders 404 if feature flag not set' do
-      allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
-        and_return(false)
-
-      get :show
-
-      expect(response).to be_not_found
-    end
   end
 
   context 'when in_person_verify_info_controller_enabled' do
