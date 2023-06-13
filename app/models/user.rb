@@ -433,6 +433,16 @@ class User < ApplicationRecord
     @analytics ||= Analytics.new(user: self, request: nil, session: {}, sp: nil)
   end
 
+  def send_email_to_all_addresses(user_mailer_template)
+    confirmed_email_addresses.each do |email_address|
+      UserMailer.with(
+        user: self,
+        email_address: email_address,
+      ).send(user_mailer_template).
+        deliver_now_or_later
+    end
+  end
+
   private
 
   def lockout_period
