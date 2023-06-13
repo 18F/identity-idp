@@ -3,7 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code.subtitle')) %>
 
 <p>
-  <%= t('forms.backup_code.subinfo_html') %>
+  <%= t('forms.backup_code.subinfo_html', app_name: APP_NAME) %>
 </p>
 
 <div class="margin-top-4 margin-bottom-5">
