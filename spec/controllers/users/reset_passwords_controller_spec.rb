@@ -91,7 +91,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             failure_reason: user_blank_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -123,7 +123,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             failure_reason: user_token_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -155,7 +155,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             success_properties,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(response).to render_template :edit
           expect(flash.keys).to be_empty
