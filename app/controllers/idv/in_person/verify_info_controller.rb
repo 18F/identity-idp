@@ -85,7 +85,7 @@ module Idv
         extra = {
           pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
         }
-        unless flow_session[:pii_from_user]&.[](:same_address_as_id).nil?
+        unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
           extra[:same_address_as_id] =
             flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
         end
