@@ -89,11 +89,6 @@ module Users
       user_session[:backup_codes] = @codes
     end
 
-    def sign_up_mfa_selection_order_bucket
-      return unless in_multi_mfa_selection_flow?
-      AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
-    end
-
     def set_backup_code_setup_presenter
       @presenter = SetupPresenter.new(
         current_user: current_user,

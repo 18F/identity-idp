@@ -147,11 +147,6 @@ module TwoFactorAuthentication
       end
     end
 
-    def sign_up_mfa_selection_order_bucket
-      return unless in_multi_mfa_selection_flow?
-      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
-    end
-
     def analytics_properties
       parsed_phone = Phonelib.parse(phone)
 
