@@ -35,17 +35,14 @@ module Idv
     end
 
     def update
-      shared_update
+      success = shared_update
+      redirect_to idv_verify_info_url if success
     end
 
     private
 
     # state ID type isn't manually set for Idv::VerifyInfoController
     def set_state_id_type; end
-
-    def after_update_url
-      idv_verify_info_url
-    end
 
     def prev_url
       idv_ssn_url

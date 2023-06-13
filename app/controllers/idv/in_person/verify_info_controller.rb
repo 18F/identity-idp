@@ -37,7 +37,8 @@ module Idv
       end
 
       def update
-        shared_update
+        success = shared_update
+        redirect_to idv_in_person_verify_info_url if success
       end
 
       private
@@ -52,10 +53,6 @@ module Idv
 
       def invalid_state?
         pii.blank?
-      end
-
-      def after_update_url
-        idv_in_person_verify_info_url
       end
 
       def prev_url
