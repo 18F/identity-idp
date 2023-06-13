@@ -21,16 +21,16 @@ RSpec.describe ActionAccount do
     end
 
     context 'when the command cannot be performed successfully' do
-      let(:user) { create(:user, :fraud_review_pending)}
+      let(:user) { create(:user, :fraud_review_pending) }
       it 'logs Messages to STDERR formatted for Slack' do
-        user.fraud_review_pending_profile.update!(fraud_review_pending_at: 31.days.ago) 
+        user.fraud_review_pending_profile.update!(fraud_review_pending_at: 31.days.ago)
 
         action_account.run
 
         expect(stderr.string).to eq(<<~STR)
           *Task*: `review-pass`
           *UUIDs*: `#{user.uuid}`
-          *Messages*: `User is past the 30 day review eligibility : #{user.uuid}`
+          *Messages*: `#{user.uuid} : User is past the 30 day review eligibility`
         STR
       end
     end
@@ -97,7 +97,9 @@ RSpec.describe ActionAccount do
       end
 
       describe '--include-missing' do
-        let(:argv) { ['review-reject', 'does_not_exist@example.com', '--include-missing', '--json'] }
+        let(:argv) do
+          ['review-reject', 'does_not_exist@example.com', '--include-missing', '--json']
+        end
         it 'adds rows for missing values' do
           action_account.run
 
