@@ -3,27 +3,17 @@ require 'rails_helper'
 RSpec.describe ArcgisApi::Geocoder do
   include ArcgisApiHelper
   let(:cache_key) { 'test_arcgis_geocoder_token' }
-
-  let(:subject) do
-    test_obj = ArcgisApi::Geocoder.new
-    test_obj.token_keeper.cache_key = (cache_key)
-    test_obj
-  end
+  let(:subject) { ArcgisApi::Geocoder.new }
 
   describe '#suggest' do
     before(:each) do
+      allow(IdentityConfig.store).to receive(:arcgis_api_token_cache_key_prefix).
+        and_return(cache_key)
       stub_generate_token_response
-      subject.token_keeper.remove_token
     end
-    after(:each) do
-      subject.token_keeper.remove_token
-    end
-
     it 'returns suggestions' do
       stub_request_suggestions
-
       suggestions = subject.suggest('100 Main')
-
       expect(suggestions.first.magic_key).to be_present
       expect(suggestions.first.text).to be_present
     end
@@ -40,7 +30,6 @@ RSpec.describe ArcgisApi::Geocoder do
 
     it 'returns an error with Status coded as 4** in HTML' do
       stub_request_suggestions_error_html
-
       expect { subject.suggest('100 Main') }.to raise_error(
         an_instance_of(Faraday::BadRequestError),
       )
@@ -49,6 +38,8 @@ RSpec.describe ArcgisApi::Geocoder do
 
   describe '#find_address_candidates' do
     before(:each) do
+      allow(IdentityConfig.store).to receive(:arcgis_api_token_cache_key_prefix).
+        and_return(cache_key)
       stub_generate_token_response
     end
 

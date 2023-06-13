@@ -157,7 +157,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
       it 'retry remote request multiple times as needed and emit analytics events' do
         stub_request(:post, %r{/generateToken}).to_return(
           {
-            status: 403,
+            status: 503,
           },
           {
             status: 200,
@@ -178,7 +178,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
             headers: { content_type: 'application/json;charset=UTF-8' } },
         )
         token = subject.retrieve_token
-        expect(token.fetch(:token)).to eq(expected)
+        expect(token&.token).to eq(expected)
         expect(analytics).to have_received(:idv_arcgis_token_failure).exactly(3).times
       end
     end

@@ -39,11 +39,12 @@ module ArcgisApi
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
     ]
 
-    attr_accessor :token_keeper, :connection_factory
+    private attr_accessor :token_keeper, :connection_factory
 
-    def initialize(connection_factory: ArcgisApi::ConnectionFactory.new)
+    def initialize(connection_factory: ArcgisApi::ConnectionFactory.new,
+                   token_keeper: TokenKeeper.new(connection_factory: connection_factory))
       @connection_factory = connection_factory
-      @token_keeper = TokenKeeper.new(connection_factory: connection_factory)
+      @token_keeper = token_keeper
     end
 
     # Makes an HTTP request to quickly find potential address matches. Each match that is found
@@ -97,9 +98,6 @@ module ArcgisApi
       )
     end
 
-    # Checks the cache for an unexpired token and returns that.
-    # If the cache has expired, retrieves a new token and returns it
-    # @return [String] Auth token
     def token
       token_keeper.token
     end
