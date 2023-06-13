@@ -2,6 +2,7 @@ class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :user
+  
   def initialize(user_agent:, user: nil,
                  phishing_resistant_required: false, piv_cac_required: false)
     @user_agent = user_agent
