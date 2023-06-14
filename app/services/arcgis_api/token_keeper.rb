@@ -154,7 +154,8 @@ module ArcgisApi
                      Faraday::ClientError, Faraday::RetriableResponse],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
-          notify_retry(env, options, exception, retry_count, will_retry_in)
+          exception_message = exception_message(exception, options, retry_count, will_retry_in)
+          notify_retry(env, exception_message)
         },
       }
       connection_factory.connection do |conn|
@@ -203,7 +204,7 @@ module ArcgisApi
       end
     end
 
-    def notify_retry(env, options, exception, retry_count, will_retry_in)
+    def notify_retry(env, exception_message)
       body = env.body
       case body
       when Hash
@@ -219,22 +220,26 @@ module ArcgisApi
       end
       http_status = env.status
       api_status_code = resp_body.is_a?(Hash) ? resp_body.dig('error', 'code') : http_status
-      # rubocop:disable Layout/LineLength
-      if options.max == retry_count + 1
-        excetption_message = "token request max retries(#{options.max}) reached, error : #{exception.message}"
-      else
-        excetption_message =
-          "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}"
-      end
-      # rubocop:enable Layout/LineLength
       analytics.idv_arcgis_token_failure(
         exception_class: 'ArcGIS',
-        exception_message: excetption_message,
+        exception_message: exception_message,
         response_body_present: resp_body.present?,
         response_body: resp_body,
         response_status_code: http_status,
         api_status_code: api_status_code,
       )
+    end
+
+    def exception_message(exception, options, retry_count, will_retry_in)
+      # rubocop:disable Layout/LineLength
+      if options.max == retry_count + 1
+        exception_message = "token request max retries(#{options.max}) reached, error : #{exception.message}"
+      else
+        exception_message =
+          "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}"
+      end
+      # rubocop:enable Layout/LineLength
+      exception_message
     end
   end
 end
