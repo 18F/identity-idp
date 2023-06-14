@@ -209,6 +209,7 @@ es:
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.
+        confirm: Verificamos tu información
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
         resend: Envíeme otra carta

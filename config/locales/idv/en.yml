@@ -197,6 +197,7 @@ en:
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
+        confirm: We verified your information
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
         resend: Send me another letter

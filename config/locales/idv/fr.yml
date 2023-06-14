@@ -222,6 +222,7 @@ fr:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
+        confirm: Nous avons vérifié vos informations
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
         resend: Envoyez-moi une autre lettre
