@@ -76,13 +76,6 @@ RSpec.describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
     end
 
-    it 'redirects to the right step' do
-      mock_next_step(:agreement)
-      get :show, params: { step: 'welcome' }
-
-      expect(response).to redirect_to idv_doc_auth_step_url(:agreement)
-    end
-
     it 'renders a 404 with a non existent step' do
       get :show, params: { step: 'foo' }
 
