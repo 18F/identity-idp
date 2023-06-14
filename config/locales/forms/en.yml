@@ -20,7 +20,7 @@ en:
       regenerate: Get new codes
       saved: I’ve put my backup codes in a safe place.
       subinfo_html: '<b>If you lose your device, you’ll need these codes to sign into
-        %{app_name}.</b>. Save or print them and put them somewhere safe.'
+        %{app_name}.</b> Save or print them and put them somewhere safe.'
       subtitle: Save these backup codes
       title: Backup codes
     backup_code_regenerate:
