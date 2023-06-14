@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::SpIssuerUserCountsReport do
-  let(:name) {'sp-issuer-user-counts-report'}
+  let(:name) { 'sp-issuer-user-counts-report' }
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
   let(:user) { create(:user) }
@@ -25,10 +25,9 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
     allow(ReportMailer).to receive(:sp_issuer_user_counts_report).and_call_original
 
     expect(ReportMailer).to receive(:sp_issuer_user_counts_report).with(
-     name: name, email: email, ial1_total: 1, ial2_total: 0,  issuer: issuer, total: 1,
+      name: name, email: email, ial1_total: 1, ial2_total: 0, issuer: issuer, total: 1,
     )
 
     subject.perform(Time.zone.today)
   end
-
 end

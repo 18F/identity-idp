@@ -3,14 +3,12 @@ require 'json'
 
 module Reports
   class SpIssuerUserCountsReport < BaseReport
-
     REPORT_NAME = 'sp-issuer-user-counts-report'.freeze
 
     def perform(_date)
       configs = IdentityConfig.store.sp_issuer_user_counts_report_configs
 
       configs.each do |report_hash|
-
         emails = report_hash['emails']
         issuer = report_hash['issuer']
 
