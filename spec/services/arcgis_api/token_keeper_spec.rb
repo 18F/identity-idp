@@ -20,9 +20,6 @@ RSpec.describe ArcgisApi::TokenKeeper do
   let(:expected_sec) { 'GFEDCBA' }
   let(:expires_at) { (Time.zone.now.to_f + 15) * 1000 }
   let(:cache) { Rails.cache }
-  # before do
-  #   allow(Rails).to receive(:cache).and_return(cache_store)
-  # end
 
   before(:each) do
     allow(Rails).to receive(:cache).and_return(cache_store)
@@ -32,9 +29,6 @@ RSpec.describe ArcgisApi::TokenKeeper do
   shared_examples 'acquire token test' do
     context 'token not expired and not in prefetch timeframe' do
       it 'get same token at second call' do
-        expected = 'ABCDEFG'
-        expected_sec = 'GFEDCBA'
-
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
             body: {
@@ -56,17 +50,17 @@ RSpec.describe ArcgisApi::TokenKeeper do
           and_call_original
         token = subject.token
         expect(token).to eq(expected)
-        sleep(1)
-        expect(Rails.cache).to receive(:read).with(kind_of(String)).
-          and_call_original
-        token = subject.token
-        expect(token).to eq(expected)
+
+        travel 1.second do
+          expect(Rails.cache).to receive(:read).with(kind_of(String)).
+            and_call_original
+          token = subject.token
+          expect(token).to eq(expected)
+        end
       end
     end
 
     context 'token not expired and but in prefetch timeframe' do
-      let(:expected) { 'ABCDEFG' }
-      let(:expected_sec) { 'GFEDCBA' }
       before(:each) do
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
@@ -94,29 +88,29 @@ RSpec.describe ArcgisApi::TokenKeeper do
             and_call_original
           token = subject.token
           expect(token).to eq(expected)
-          sleep(1)
-          expect(Rails.cache).to receive(:read).with(kind_of(String)).
-            and_call_original
-          token = subject.token
-          expect(token).to eq(expected)
+          travel 1.second do
+            expect(Rails.cache).to receive(:read).with(kind_of(String)).
+              and_call_original
+            token = subject.token
+            expect(token).to eq(expected)
+          end
         end
         it 'regenerates token when passed sliding_expires_at+prefetch_ttl' do
           expect(Rails.cache).to receive(:read).with(kind_of(String)).
             and_call_original
           token = subject.token
           expect(token).to eq(expected)
-          sleep(11)
-          expect(Rails.cache).to receive(:read).with(kind_of(String)).
-            and_call_original
-          token = subject.token
-          expect(token).to eq(expected_sec)
+          travel 11.seconds do
+            expect(Rails.cache).to receive(:read).with(kind_of(String)).
+              and_call_original
+            token = subject.token
+            expect(token).to eq(expected_sec)
+          end
         end
       end
     end
 
     context 'value only token in cache' do
-      let(:expected) { 'ABCDEFG' }
-      let(:expected_sec) { 'GFEDCBA' }
       before(:each) do
         stub_request(:post, %r{/generateToken}).to_return(
           { status: 200,
