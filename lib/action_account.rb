@@ -51,7 +51,7 @@ class ActionAccount
   class ReviewAction
     def log_message(uuid:, log:, table:, messages:)
       table << [uuid, log]
-      messages << '* `' + uuid + '` : `' + log + '`'
+      messages << uuid + ' : ' + log
       [table, messages]
     end
 
