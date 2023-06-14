@@ -344,7 +344,7 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
       expect(profile.initiating_service_provider).to eq nil
-      expect(profile.verified_at).to eq nil # formerly present
+      expect(profile.verified_at).to eq nil
     end
 
     it 'activates a previously verified profile after password reset' do
