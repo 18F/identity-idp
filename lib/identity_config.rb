@@ -10,20 +10,6 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    # Allows loading a string configuration from a system environment variable
-    # ex: To read DATABASE_HOST from system environment for the database_host key
-    # database_host: ['env', 'DATABASE_HOST']
-    # To use a string value directly, you can specify a string explicitly:
-    # database_host: 'localhost'
-    system_environment_or_string: proc do |value|
-      if value.is_a?(Array) && value.length == 2 && value.first == 'env'
-        ENV.fetch(value[1])
-      elsif value.is_a?(String)
-        value
-      else
-        raise 'invalid system environment configuration value'
-      end
-    end,
     string: proc { |value| value.to_s },
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
@@ -115,7 +101,7 @@ class IdentityConfig
     config.add(:acuant_create_document_timeout, type: :float)
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
-    config.add(:asset_host, type: :system_environment_or_string)
+    config.add(:asset_host, type: :string)
     config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:attribute_encryption_key, type: :string)
@@ -144,24 +130,24 @@ class IdentityConfig
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
-    config.add(:database_host, type: :system_environment_or_string)
-    config.add(:database_name, type: :system_environment_or_string)
+    config.add(:database_host, type: :string)
+    config.add(:database_name, type: :string)
     config.add(:database_readonly_password, type: :string)
     config.add(:database_readonly_username, type: :string)
     config.add(:database_read_replica_host, type: :string)
-    config.add(:database_password, type: :system_environment_or_string)
+    config.add(:database_password, type: :string)
     config.add(:database_pool_extra_connections_for_worker, type: :integer)
     config.add(:database_pool_idp, type: :integer)
     config.add(:database_socket, type: :string)
-    config.add(:database_sslmode, type: :system_environment_or_string)
+    config.add(:database_sslmode, type: :string)
     config.add(:database_statement_timeout, type: :integer)
     config.add(:database_timeout, type: :integer)
-    config.add(:database_username, type: :system_environment_or_string)
-    config.add(:database_worker_jobs_name, type: :system_environment_or_string)
-    config.add(:database_worker_jobs_username, type: :system_environment_or_string)
-    config.add(:database_worker_jobs_host, type: :system_environment_or_string)
-    config.add(:database_worker_jobs_password, type: :system_environment_or_string)
-    config.add(:database_worker_jobs_sslmode, type: :system_environment_or_string)
+    config.add(:database_username, type: :string)
+    config.add(:database_worker_jobs_name, type: :string)
+    config.add(:database_worker_jobs_username, type: :string)
+    config.add(:database_worker_jobs_host, type: :string)
+    config.add(:database_worker_jobs_password, type: :string)
+    config.add(:database_worker_jobs_sslmode, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
@@ -188,7 +174,7 @@ class IdentityConfig
     config.add(:doc_auth_vendor_randomize_alternate_vendor, type: :string)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
-    config.add(:domain_name, type: :system_environment_or_string)
+    config.add(:domain_name, type: :string)
     config.add(:email_registrations_per_ip_limit, type: :integer)
     config.add(:email_registrations_per_ip_period, type: :integer)
     config.add(:email_registrations_per_ip_track_only_mode, type: :boolean)
@@ -389,10 +375,10 @@ class IdentityConfig
     config.add(:recaptcha_secret_key_v3, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
-    config.add(:redis_irs_attempt_api_url, type: :system_environment_or_string)
+    config.add(:redis_irs_attempt_api_url, type: :string)
     config.add(:redis_irs_attempt_api_pool_size, type: :integer)
-    config.add(:redis_throttle_url, type: :system_environment_or_string)
-    config.add(:redis_url, type: :system_environment_or_string)
+    config.add(:redis_throttle_url, type: :string)
+    config.add(:redis_url, type: :string)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_session_pool_size, type: :integer)
     config.add(:redis_throttle_pool_size, type: :integer)
