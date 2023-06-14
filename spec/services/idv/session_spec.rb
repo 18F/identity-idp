@@ -107,22 +107,18 @@ RSpec.describe Idv::Session do
       end
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
-        freeze_time do
-          now = Time.zone.now
+        subject.user_phone_confirmation = nil
+        subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
-          subject.user_phone_confirmation = nil
-          subject.create_profile_from_applicant_with_password(user.password)
-          profile = subject.profile
-
-          expect(subject).not_to have_received(:move_pii_to_user_session)
-          expect(profile.activated_at).to eq now
-          expect(profile.active).to eq false
-          expect(profile.deactivation_reason).to eq nil
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq true
-          expect(profile.initiating_service_provider).to eq nil
-          expect(profile.verified_at).to eq now
-        end
+        expect(subject).not_to have_received(:move_pii_to_user_session)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
 
       context 'with establishing in person enrollment' do
@@ -181,21 +177,17 @@ RSpec.describe Idv::Session do
       end
 
       it 'sets profile to pending gpo verification' do
-        freeze_time do
-          now = Time.zone.now
+        subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
-          subject.create_profile_from_applicant_with_password(user.password)
-          profile = subject.profile
-
-          expect(subject).to have_received(:move_pii_to_user_session)
-          expect(profile.activated_at).to eq now
-          expect(profile.active).to eq false
-          expect(profile.deactivation_reason).to eq nil
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq true
-          expect(profile.initiating_service_provider).to eq nil
-          expect(profile.verified_at).to eq now
-        end
+        expect(subject).to have_received(:move_pii_to_user_session)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -207,21 +199,17 @@ RSpec.describe Idv::Session do
       end
 
       it 'does not complete the user profile' do
-        freeze_time do
-          now = Time.zone.now
+        subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
-          subject.create_profile_from_applicant_with_password(user.password)
-          profile = subject.profile
-
-          expect(subject).not_to have_received(:move_pii_to_user_session)
-          expect(profile.activated_at).to eq now
-          expect(profile.active).to eq false
-          expect(profile.deactivation_reason).to eq nil
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq true
-          expect(profile.initiating_service_provider).to eq nil
-          expect(profile.verified_at).to eq now
-        end
+        expect(subject).not_to have_received(:move_pii_to_user_session)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
     end
   end
