@@ -10,20 +10,20 @@
   <%= t('two_factor_authentication.backup_codes.instructions') %>
 </p>
 
-<div class="border-bottom border-primary-light margin-bottom-2 margin-y-5">
-<%= link_to(
-      sign_up_completed_path,
-      class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-    ) do %>
-  <%= t('two_factor_authentication.backup_codes.saved_backup_codes') %>
-<% end %>
+<div class="border-bottom border-primary-light margin-bottom-2">
+  <%= link_to(
+        sign_up_completed_path,
+        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+      ) do %>
+    <%= t('two_factor_authentication.backup_codes.saved_backup_codes') %>
+  <% end %>
 
-<%= link_to(
-      backup_code_regenerate_path,
-      class: 'usa-button usa-button--wide usa-button--big usa-button--outline margin-bottom-3',
-    ) do %>
-  <%= t('two_factor_authentication.backup_codes.new_backup_codes') %>
-<% end %>
+  <%= link_to(
+        backup_code_regenerate_path,
+        class: 'usa-button usa-button--wide usa-button--big usa-button--outline margin-bottom-5',
+      ) do %>
+    <%= t('two_factor_authentication.backup_codes.new_backup_codes') %>
+  <% end %>
 </div>
 
 
