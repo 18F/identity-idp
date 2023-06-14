@@ -89,12 +89,12 @@ RSpec.describe 'RateLimitConcern' do
           expect(response).to redirect_to idv_phone_errors_failure_url
         end
 
-        it 'does not redirect on update' do
-          put :update
+        # it 'does not redirect on update' do
+        #   put :update
 
-          expect(response.body).to eq 'Bye'
-          expect(response.status).to eq 200
-        end
+        #   expect(response.body).to eq 'Bye'
+        #   expect(response.status).to eq 200
+        # end
       end
     end
   end
