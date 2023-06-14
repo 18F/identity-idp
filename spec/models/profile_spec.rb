@@ -407,7 +407,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to eq nil
       expect(profile.active).to eq false
-      expect(profile.deactivation_reason).to_not eq nil
+      expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
       expect(profile.initiating_service_provider).to eq nil
