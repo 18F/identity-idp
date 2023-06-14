@@ -67,13 +67,13 @@ RSpec.describe Idv::DocAuthController do
         template: 'layouts/flow_step',
         locals: hash_including(
           :flow_session,
-          step_template: 'idv/doc_auth/agreement',
+          step_template: 'idv/doc_auth/welcome',
           flow_namespace: 'idv',
         ),
       ).and_call_original
 
-      mock_next_step(:agreement)
-      get :show, params: { step: 'agreement' }
+      mock_next_step(:welcome)
+      get :show, params: { step: 'welcome' }
     end
 
     it 'redirects to the right step' do
@@ -138,7 +138,7 @@ RSpec.describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_hybrid_handoff_url
+        expect(response).to redirect_to idv_agreement_url
       end
     end
   end
@@ -151,7 +151,7 @@ RSpec.describe Idv::DocAuthController do
       result = {
         success: true,
         errors: {},
-        step: 'agreement',
+        step: 'welcome',
         flow_path: 'standard',
         step_count: 1,
         irs_reproofing: false,
@@ -159,32 +159,10 @@ RSpec.describe Idv::DocAuthController do
         acuant_sdk_upgrade_ab_test_bucket: :default,
       }
 
-      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
+      put :update, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth agreement submitted', result
-      )
-    end
-
-    it 'increments the analytics step counts on subsequent submissions' do
-      mock_next_step(:back_image)
-      allow_any_instance_of(Flow::BaseFlow).to \
-        receive(:flow_session).and_return(pii_from_doc: {})
-
-      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
-      put :update, params: { step: 'agreement', doc_auth: { ial2_consent_given: '1' } }
-
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth agreement submitted',
-        hash_including(
-          step: 'agreement',
-          step_count: 1,
-          acuant_sdk_upgrade_ab_test_bucket: :default,
-        ),
-      )
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth agreement submitted',
-        hash_including(step: 'agreement', step_count: 2),
+        'IdV: doc auth welcome submitted', result
       )
     end
 
@@ -202,7 +180,7 @@ RSpec.describe Idv::DocAuthController do
       it 'finishes the flow' do
         put :update, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_hybrid_handoff_url
+        expect(response).to redirect_to idv_agreement_url
       end
     end
   end

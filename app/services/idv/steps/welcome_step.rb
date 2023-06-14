@@ -17,7 +17,7 @@ module Idv
         create_document_capture_session(document_capture_session_uuid_key)
         cancel_previous_in_person_enrollments
 
-        redirect_to idv_agreement_url if IdentityConfig.store.doc_auth_agreement_controller_enabled
+        redirect_to idv_agreement_url
       end
 
       private
