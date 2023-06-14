@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
