@@ -109,7 +109,6 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
-  gem 'puma'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.43.0', require: false
   gem 'rubocop-performance', '~> 1.15.0', require: false
