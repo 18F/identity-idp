@@ -80,12 +80,6 @@ class ServiceProviderSeeder
     extra_sp_error = ExtraServiceProviderError.new(
       "Extra service providers found in DB: #{extra_sps.join(', ')}",
     )
-
-    if IdentityConfig.store.team_ursula_email.present?
-      ReportMailer.warn_error(
-        email: IdentityConfig.store.team_ursula_email,
-        error: extra_sp_error,
-      ).deliver_now_or_later
-    end
+    NewRelic::Agent.notice_error(extra_sp_error)
   end
 end

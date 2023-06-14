@@ -12,7 +12,7 @@ fr:
       continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
-        send: Envoyer une lettre
+        send: Demander une lettre
     cancel:
       actions:
         account_page: Accéder à la page de votre compte
@@ -271,7 +271,7 @@ fr:
       come_back_later: Votre lettre est en route
       mail:
         resend: Envoyer une autre lettre?
-        verify: Vous voulez une lettre?
+        verify: Vérifiez votre adresse
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
