@@ -391,9 +391,8 @@ RSpec.describe Profile do
     it 'does not activate a profile with non password_reset deactivation_reason' do
       profile = create(
         :profile,
+        :encryption_error,
         user: user,
-        active: false,
-        deactivation_reason: :encryption_error,
       )
 
       profile.activate_after_password_reset
