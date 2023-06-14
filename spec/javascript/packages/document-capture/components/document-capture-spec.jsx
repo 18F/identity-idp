@@ -311,7 +311,6 @@ describe('document-capture/components/document-capture', () => {
                 <InPersonContext.Provider
                   value={{
                     inPersonURL: '/in_person',
-                    inPersonCtaVariantActive: 'in_person_variant_a',
                   }}
                 >
                   <DocumentCapture />

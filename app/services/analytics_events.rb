@@ -1026,28 +1026,24 @@ module AnalyticsEvents
   end
 
   # @param [String] selected_location Selected in-person location
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:,
+  def idv_in_person_location_submitted(selected_location:, flow_path:,
                                        **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, in_person_cta_variant:, **extra)
+  def idv_in_person_location_visited(flow_path:, **extra)
     track_event(
       'IdV: in person proofing location visited',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -1106,13 +1102,11 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, in_person_cta_variant:, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, **extra)
     track_event(
       'IdV: in person proofing prepare submitted',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -1424,14 +1418,12 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil,
+  def idv_in_person_ready_to_verify_visit(proofing_components: nil,
                                           **extra)
     track_event(
       'IdV: in person ready to verify visited',
-      in_person_cta_variant: in_person_cta_variant,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2210,14 +2202,12 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, in_person_cta_variant:,
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
                                                           **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
