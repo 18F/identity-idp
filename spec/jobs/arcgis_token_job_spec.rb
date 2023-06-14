@@ -2,11 +2,23 @@ require 'rails_helper'
 
 RSpec.describe ArcgisTokenJob, type: :job do
   let(:token_keeper) { instance_spy(ArcgisApi::TokenKeeper) }
-  let(:subject) { described_class.new(token_keeper: token_keeper) }
+  let(:job) { described_class.new(token_keeper: token_keeper) }
+  let(:analytics) { instance_spy(Analytics) }
   describe 'arcgis token job' do
     it 'fetches token successfully' do
-      subject.perform
+      allow(job).to receive(:analytics).and_return(analytics)
+      allow(job).to receive(:token_keeper).and_return(token_keeper)
+      expect(job.perform).to eq(true)
       expect(token_keeper).to have_received(:retrieve_token).once
+      expect(analytics).to have_received(
+        :idv_arcgis_token_job_started,
+      ).once
+      expect(analytics).to have_received(
+        :idv_arcgis_token_job_completed,
+      ).once
+      expect(analytics).not_to have_received(
+        :idv_arcgis_request_failure,
+      )
     end
   end
 end

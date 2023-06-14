@@ -40,6 +40,8 @@ module ArcgisApi
 
     RETRY_EXCEPTION = [404, 408, 409, 421, 429, 500, 502, 503, 504, 509]
 
+    TIMES_TTL = 3
+
     attr_accessor :connection_factory, :prefetch_ttl, :cache_key, :analytics
 
     # @param [String] cache_key token cache key
@@ -88,7 +90,7 @@ module ArcgisApi
       cache_entry = ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
       if IdentityConfig.store.arcgis_token_sliding_expiration_enabled == true
         cache_entry.sliding_expires_at = prefetch_ttl >= 0 ?
-                                           expires_at - 3 * prefetch_ttl : expires_at
+                                           expires_at - TIMES_TTL * prefetch_ttl : expires_at
       end
       save_token(cache_entry, expires_at)
       cache_entry
