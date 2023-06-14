@@ -22,11 +22,9 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
     allow(IdentityConfig.store).to receive(:sp_issuer_user_counts_report_configs).and_return(
       [{ 'issuer' => issuer, 'emails' => [email] }],
     )
-    allow(ReportMailer).to receive(:sp_issuer_user_counts_report).and_call_original
-
     expect(ReportMailer).to receive(:sp_issuer_user_counts_report).with(
       name: name, email: email, ial1_total: 1, ial2_total: 0, issuer: issuer, total: 1,
-    )
+    ).and_call_original
 
     subject.perform(Time.zone.today)
   end
