@@ -323,9 +323,8 @@ RSpec.describe Profile do
     it 'activates a profile after password reset' do
       profile = create(
         :profile,
+        :password_reset,
         user: user,
-        active: false,
-        deactivation_reason: :password_reset,
       )
 
       expect(profile.activated_at).to eq nil # to change
@@ -354,11 +353,10 @@ RSpec.describe Profile do
         :password_reset,
         user: user,
       )
-      activated_at = profile.activated_at
       verified_at = profile.verified_at
 
       # to change
-      expect(profile.activated_at).to eq activated_at
+      expect(profile.activated_at).to be_present
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to eq 'password_reset'
 
@@ -370,7 +368,7 @@ RSpec.describe Profile do
       profile.activate_after_password_reset
 
       # changed
-      expect(profile.activated_at).to eq activated_at
+      expect(profile.activated_at).to be_present
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to eq nil
 
