@@ -329,8 +329,8 @@ RSpec.describe Profile do
       )
 
       expect(profile.activated_at).to eq nil # to change
-      expect(profile.active).to eq false  # to change
-      expect(profile.deactivation_reason).to eq 'password_reset'  # to change
+      expect(profile.active).to eq false # to change
+      expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
       expect(profile.initiating_service_provider).to eq nil
