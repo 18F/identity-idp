@@ -53,6 +53,7 @@
         name: :backup_code_notice_accepted,
         as: :boolean,
         label: t('forms.backup_code.saved'),
+        label_html: { class: 'margin-y-2' },
         required: true,
       ) %>
   <%= f.submit t('forms.buttons.continue') %>
