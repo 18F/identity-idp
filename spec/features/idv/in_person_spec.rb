@@ -751,7 +751,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # click update address button on the verify page
       click_button t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      fill_out_address_form_ok(double_address_verification: true)
+      fill_out_address_form_ok(double_address_verification: true, same_address_as_id: true)
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_step_path(step: :verify))
