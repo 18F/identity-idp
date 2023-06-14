@@ -48,13 +48,26 @@ class ActionAccount
     }[name]
   end
 
-  class ReviewReject
-    def log_message(uuid, log, table, messages)
+  class ReviewAction
+    def log_message(uuid:, log:, table:, messages:)
       table << [uuid, log]
-      messages << uuid + ' : ' + log
-      return table, messages
+      messages << '* `' + uuid + '` : `' + log + '`'
+      [table, messages]
     end
 
+    def log_text
+      {
+        no_pending: 'Error: User does not have a pending fraud review',
+        rejected_for_fraud: "User's profile has been deactivated due to fraud rejection.",
+        profile_activated: "User's profile has been activated and the user has been emailed.",
+        error_activating: "There was an error activating the user's profile. Please try again.",
+        past_eligibility: 'User is past the 30 day review eligibility.',
+        missing_uuid: 'Error: Could not find user with that UUID',
+      }
+    end
+  end
+
+  class ReviewReject < ReviewAction
     def run(args:, config:)
       uuids = args
 
@@ -66,21 +79,33 @@ class ActionAccount
       messages = []
 
       users.each do |user|
+        log_texts = []
+
         if !user.fraud_review_pending?
-          table, messages = log_message(user.uuid, 'Error: User does not have a pending fraud review', table, messages)
+          log_texts << log_text[:no_pending]
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.reject_for_fraud(notify_user: true)
 
-          table, messages = log_message(user.uuid, "User's profile has been deactivated due to fraud rejection.", table, messages)
+          log_texts << log_text[:rejected_for_fraud]
         else
-          table, messages = log_message(user.uuid, 'User is past the 30 day review eligibility', table, messages)
+          log_texts << log_text[:past_eligibility]
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid, log: text, table: table,
+            messages: messages
+          )
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table, messages = log_message(missing_uuid, 'Error: Could not find user with that UUID', table, messages)
+          table, messages = log_message(
+            uuid: missing_uuid, log: log_text[:missing_uuid],
+            table: table, messages: messages
+          )
         end
       end
 
@@ -93,11 +118,13 @@ class ActionAccount
     end
   end
 
-  class ReviewPass
-    def log_message(uuid, log, table, messages)
-      table << [uuid, log]
-      messages << uuid + ' : ' + log
-      return table, messages
+  class ReviewPass < ReviewAction
+    def alert_verified(user:, date_time:)
+      UserAlerts::AlertUserAboutAccountVerified.call(
+        user: user,
+        date_time: date_time,
+        sp_name: nil,
+      )
     end
 
     def run(args:, config:)
@@ -110,8 +137,9 @@ class ActionAccount
 
       messages = []
       users.each do |user|
+        log_texts = []
         if !user.fraud_review_pending?
-          table, messages = log_message(user.uuid, 'Error: User does not have a pending fraud review', table, messages)
+          log_texts << log_text[:no_pending]
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile.activate_after_passing_review
@@ -120,24 +148,30 @@ class ActionAccount
             event, _disavowal_token = UserEventCreator.new(current_user: user).
               create_out_of_band_user_event(:account_verified)
 
-            UserAlerts::AlertUserAboutAccountVerified.call(
-              user: user,
-              date_time: event.created_at,
-              sp_name: nil,
-            )
+            alert_verified(user: user, date_time: event.created_at)
 
-            table, messages = log_message(user.uuid, "User's profile has been activated and the user has been emailed.", table, messages)
+            log_texts << log_text[:profile_activated]
           else
-            table, messages = log_message(user.uuid, "There was an error activating the user's profile. Please try again.", table, messages)
+            log_texts << log_text[:error_activating]
           end
         else
-          table, messages = log_message(user.uuid, 'User is past the 30 day review eligibility.', table, messages)
+          log_texts << log_text[:past_eligibility]
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid, log: text, table: table,
+            messages: messages
+          )
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table, messages = log_message(missing_uuid, 'Error: Could not find user with that UUID', table, messages)
+          table, messages = log_message(
+            uuid: missing_uuid, log: log_text[:missing_uuid],
+            table: table, messages: messages
+          )
         end
       end
 

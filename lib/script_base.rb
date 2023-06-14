@@ -55,8 +55,8 @@ class ScriptBase
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
-    if result.messages && result.messages.length > 0
-      stderr.puts "*Messages*: #{result.messages.map { |message| "`#{message}`" }.join('\n')}"
+    if result.messages.present?
+      stderr.puts "*Messages*: #{result.messages.map { |message| message.to_s }.join('\n')}"
     end
 
     if result.json
