@@ -355,11 +355,9 @@ RSpec.describe Profile do
       )
       verified_at = profile.verified_at
 
-      # to change
       expect(profile.activated_at).to be_present
-      expect(profile.active).to eq false
-      expect(profile.deactivation_reason).to eq 'password_reset'
-
+      expect(profile.active).to eq false # to change
+      expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
       expect(profile.initiating_service_provider).to eq nil
@@ -367,11 +365,9 @@ RSpec.describe Profile do
 
       profile.activate_after_password_reset
 
-      # changed
       expect(profile.activated_at).to be_present
-      expect(profile.active).to eq true
-      expect(profile.deactivation_reason).to eq nil
-
+      expect(profile.active).to eq true # changed
+      expect(profile.deactivation_reason).to eq nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
       expect(profile.initiating_service_provider).to eq nil
