@@ -5,7 +5,7 @@ module RateLimitConcern
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
       # next if throttle_and_controller_match(throttle_type) && action_name == 'update'
-byebug
+
       if rate_limit_redirect!(throttle_type)
         rate_limited = true
         break
