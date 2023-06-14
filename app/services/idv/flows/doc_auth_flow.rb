@@ -24,10 +24,7 @@ module Idv
 
       OPTIONAL_SHOW_STEPS = {}.freeze
 
-      ACTIONS = {
-        cancel_link_sent: Idv::Actions::CancelLinkSentAction,
-        redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
-      }.freeze
+      ACTIONS = {}.freeze
 
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow
 
