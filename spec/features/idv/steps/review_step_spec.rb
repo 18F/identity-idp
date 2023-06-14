@@ -14,6 +14,7 @@ RSpec.feature 'idv review step', :js do
     complete_idv_steps_before_review_step
 
     expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.review.phone_verified'))
 
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
