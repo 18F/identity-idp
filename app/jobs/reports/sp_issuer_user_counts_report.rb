@@ -1,6 +1,3 @@
-require 'identity/hostdata'
-require 'json'
-
 module Reports
   class SpIssuerUserCountsReport < BaseReport
     REPORT_NAME = 'sp-issuer-user-counts-report'.freeze
