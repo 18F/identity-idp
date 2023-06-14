@@ -93,23 +93,19 @@ RSpec.describe Idv::ProfileMaker do
 
     context 'as active' do
       it 'creates an active profile' do
-        freeze_time do
-          now = Time.zone.now
+        profile = subject.save_profile(
+          fraud_review_needed: false,
+          gpo_verification_needed: false,
+          deactivation_reason: nil,
+        )
 
-          profile = subject.save_profile(
-            fraud_review_needed: false,
-            gpo_verification_needed: false,
-            deactivation_reason: nil,
-          )
-
-          expect(profile.activated_at).to eq nil
-          expect(profile.active).to eq false
-          expect(profile.deactivation_reason).to be_nil
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq false
-          expect(profile.initiating_service_provider).to eq initiating_service_provider
-          expect(profile.verified_at).to eq nil
-        end
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq false
+        expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -117,23 +113,19 @@ RSpec.describe Idv::ProfileMaker do
       let(:initiating_service_provider) { create(:service_provider) }
 
       it 'creates a profile with the initiating sp recorded' do
-        freeze_time do
-          now = Time.zone.now
+        profile = subject.save_profile(
+          fraud_review_needed: false,
+          gpo_verification_needed: false,
+          deactivation_reason: nil,
+        )
 
-          profile = subject.save_profile(
-            fraud_review_needed: false,
-            gpo_verification_needed: false,
-            deactivation_reason: nil,
-          )
-
-          expect(profile.activated_at).to eq nil
-          expect(profile.active).to eq false
-          expect(profile.deactivation_reason).to eq nil
-          expect(profile.fraud_review_pending?).to eq(false)
-          expect(profile.gpo_verification_pending_at.present?).to eq false
-          expect(profile.initiating_service_provider).to eq initiating_service_provider
-          expect(profile.verified_at).to eq nil
-        end
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq false
+        expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.verified_at).to eq nil
       end
     end
   end
