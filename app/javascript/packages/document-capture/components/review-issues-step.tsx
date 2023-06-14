@@ -80,7 +80,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  const { inPersonURL, inPersonCtaVariantActive } = useContext(InPersonContext);
+  const { inPersonURL } = useContext(InPersonContext);
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -93,15 +93,6 @@ function ReviewIssuesStep({
   useEffect(() => {
     changeStepCanComplete(!!hasDismissed);
   }, [hasDismissed]);
-
-  useEffect(() => {
-    if (!inPersonURL || isFailedResult) {
-      return;
-    }
-    trackEvent('IdV: IPP CTA Variant Displayed', {
-      in_person_cta_variant: inPersonCtaVariantActive,
-    });
-  }, []);
 
   if (!hasDismissed) {
     if (pii) {

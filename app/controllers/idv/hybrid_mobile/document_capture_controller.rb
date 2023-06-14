@@ -44,7 +44,6 @@ module Idv
         }.merge(
           native_camera_ab_testing_variables,
           acuant_sdk_upgrade_a_b_testing_variables,
-          in_person_cta_variant_testing_variables,
         )
       end
 

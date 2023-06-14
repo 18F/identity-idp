@@ -14,7 +14,6 @@ interface InPersonCallToActionProps {
 function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPersonCallToActionProps) {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
-  const { inPersonCtaVariantActive } = useContext(InPersonContext);
 
   return (
     <section
@@ -33,9 +32,7 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          trackEvent('IdV: verify in person troubleshooting option clicked', {
-            in_person_cta_variant: inPersonCtaVariantActive,
-          });
+          trackEvent('IdV: verify in person troubleshooting option clicked');
         }}
       >
         {altButtonText || t('in_person_proofing.body.cta.button')}
