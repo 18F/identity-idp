@@ -13,7 +13,7 @@
   <p>
     <%= t('forms.verify_profile.alert_info') %>
     <br>
-    <%= render 'shared/address', address: pii %>
+    <%= render 'shared/address', address: @gpo_verify_form.pii %>
   </p>
   <p>
     <%= t('forms.verify_profile.wrong_address') %>
