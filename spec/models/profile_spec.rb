@@ -377,10 +377,9 @@ RSpec.describe Profile do
     it 'does not activate a profile if it has a pending reason' do
       profile = create(
         :profile,
+        :password_reset,
+        :fraud_review_pending,
         user: user,
-        active: false,
-        deactivation_reason: :password_reset,
-        fraud_review_pending_at: 1.day.ago,
       )
 
       expect { profile.activate_after_password_reset }.to raise_error(
