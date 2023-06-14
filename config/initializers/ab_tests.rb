@@ -18,9 +18,4 @@ module AbTests
         0,
     },
   )
-
-  SIGN_UP_MFA_SELECTION = AbTestBucket.new(
-    experiment_name: 'MFA selection order: Auth app first',
-    buckets: IdentityConfig.store.sign_up_mfa_selection_order_testing,
-  )
 end
