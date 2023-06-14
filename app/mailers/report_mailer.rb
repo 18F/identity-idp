@@ -20,12 +20,6 @@ class ReportMailer < ActionMailer::Base
     mail(to: email, subject: t('report_mailer.sp_issuer_user_counts_report.subject'))
   end
 
-  def sp_user_counts_report(email:, data:, name:)
-    @name = name
-    attachments['sp_user_counts.csv'] = data
-    mail(to: email, subject: t('report_mailer.system_demand_report.subject'))
-  end
-
   def system_demand_report(email:, data:, name:)
     @name = name
     attachments['system_demand.csv'] = data
