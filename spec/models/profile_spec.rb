@@ -348,14 +348,13 @@ RSpec.describe Profile do
     end
 
     it 'activates a previously verified profile after password reset' do
-      verified_at = Time.zone.now - 1.year
       profile = create(
         :profile,
+        :verified,
+        :password_reset,
         user: user,
-        active: false,
-        deactivation_reason: :password_reset,
-        verified_at: verified_at,
       )
+      verified_at = profile.verified_at
 
       # to change
       expect(profile.activated_at).to eq nil
