@@ -34,9 +34,6 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        # for the 50/50 state
-        flow_session['Idv::Steps::AgreementStep'] = true
-
         redirect_to idv_hybrid_handoff_url
       else
         redirect_to idv_agreement_url

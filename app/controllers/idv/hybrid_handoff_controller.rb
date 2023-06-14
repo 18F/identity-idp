@@ -136,7 +136,7 @@ module Idv
 
     def mobile_device?
       # See app/javascript/packs/document-capture-welcome.js
-      # And app/services/idv/steps/agreement_step.rb
+      # And app/controllers/idv/agreement_controller.rb
       !!flow_session[:skip_upload_step]
     end
 
