@@ -52,6 +52,7 @@ module Idv
 
       user_session[:need_personal_key_confirmation] = true
 
+      flash[:success] = t('idv.messages.confirm')
       redirect_to next_step
 
       analytics.idv_review_complete(
