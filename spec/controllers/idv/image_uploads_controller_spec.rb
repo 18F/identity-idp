@@ -319,6 +319,7 @@ RSpec.describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -468,6 +469,7 @@ RSpec.describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -547,6 +549,7 @@ RSpec.describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -626,6 +629,7 @@ RSpec.describe Idv::ImageUploadsController do
               },
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              vendor_request_time_in_ms: a_kind_of(Float),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -730,6 +734,7 @@ RSpec.describe Idv::ImageUploadsController do
           doc_auth_result: nil,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         action
@@ -794,6 +799,7 @@ RSpec.describe Idv::ImageUploadsController do
           },
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
 
         action
