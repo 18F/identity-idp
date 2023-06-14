@@ -6,14 +6,6 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
   config.force_ssl = true
 
-  if IdentityConfig.store.force_ssl
-    config.force_ssl = true
-    routes.default_url_options[:protocol] = :https
-  else
-    config.force_ssl = false
-  end
-
-
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.active_record.dump_schema_after_migration = false
