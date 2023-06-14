@@ -189,7 +189,6 @@ class IdentityConfig
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
-    config.add(:force_ssl, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:good_job_max_threads, type: :integer)
     config.add(:good_job_queues, type: :string)
