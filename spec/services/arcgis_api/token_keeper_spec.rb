@@ -181,6 +181,32 @@ RSpec.describe ArcgisApi::TokenKeeper do
         expect(token&.token).to eq(expected)
         expect(analytics).to have_received(:idv_arcgis_token_failure).exactly(3).times
       end
+
+      it 'raises exception after max retries and log event correctly' do
+        allow(IdentityConfig.store).to receive(:arcgis_get_token_retry_max).and_return(2)
+        stub_request(:post, %r{/generateToken}).to_return(
+          {
+            status: 503,
+          },
+          {
+            status: 429,
+          },
+          {
+            status: 504,
+          },
+        )
+        expect do
+          subject.retrieve_token
+        end.to raise_error(Faraday::Error)
+
+        msgs = []
+        expect(analytics).to have_received(:idv_arcgis_token_failure) { |method_args|
+          msg = method_args.fetch(:exception_message)
+          msgs << msg
+        }.exactly(2).times.ordered
+        expect(msgs[0]).to match(/retry count/)
+        expect(msgs[1]).to match(/max retries/)
+      end
     end
     context 'token sync request disabled' do
       it 'does not fetch token' do
