@@ -50,8 +50,8 @@ module ArcgisApi
                    prefetch_ttl: API_PREFETCH_TTL_SECONDS)
       @cache_key = cache_key
       @connection_factory = connection_factory
-      @prefetch_ttl = (prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS) +
-                      (rand - 0.5) / 10
+      @prefetch_ttl = (prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS)
+      @prefetch_ttl += (rand - 0.5) # random jitter
       @analytics = Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
     end
 
