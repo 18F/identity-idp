@@ -72,10 +72,10 @@ doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
+database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
-database_sslmode: ''
-database_worker_jobs_sslmode: ''
+database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
@@ -112,7 +112,6 @@ encrypted_document_storage_s3_bucket: 'test-bucket-changeme'
 event_disavowal_expiration_hours: 240
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
-force_ssl: false
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
@@ -452,7 +451,6 @@ production:
   database_host: ''
   database_name: ''
   database_password: ''
-  database_sslmode: 'verify-full'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
@@ -461,7 +459,6 @@ production:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  database_worker_jobs_sslmode: 'verify-full'
   disable_email_sending: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
@@ -474,7 +471,6 @@ production:
   enable_usps_verification: false
   encrypted_document_storage_enabled: false
   encrypted_document_storage_s3_bucket: ''
-  force_ssl: true
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
@@ -522,16 +518,6 @@ production:
   usps_upload_sftp_password: ''
   usps_upload_sftp_username: ''
 
-# review-app:
-#   asset_host: http://localhost:3000
-#   database_host: 'postgres'
-#   database_name: 'idp'
-#   database_password: 'postgres'
-#   database_username: 'postgres'
-#   database_worker_jobs_name: 'idp-worker-jobs'
-#   database_worker_jobs_username: 'postgres'
-#   database_worker_jobs_host: 'postgres-worker'
-#   database_worker_jobs_password: 'postgres'
 test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
