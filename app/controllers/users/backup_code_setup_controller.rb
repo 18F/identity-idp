@@ -40,7 +40,7 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
-      redirect_to next_setup_path || after_mfa_setup_path
+      backup_code_confirmation_needed?
     end
 
     def confirm_delete; end
@@ -98,6 +98,14 @@ module Users
     def sign_up_mfa_selection_order_bucket
       return unless in_multi_mfa_selection_flow?
       AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
+    end
+
+    def backup_code_confirmation_needed?
+      if !MfaPolicy.new(current_user).multiple_factors_enabled?
+        redirect_to confirm_backup_codes_path
+      else
+        redirect_to next_setup_path || after_mfa_setup_path
+      end
     end
 
     def set_backup_code_setup_presenter
