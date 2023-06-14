@@ -63,7 +63,9 @@ module Users
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 
-    def confirm_backup_codes; end
+    def confirm_backup_codes
+      account_already_confirmed?
+    end
 
     private
 
@@ -106,6 +108,10 @@ module Users
       else
         redirect_to next_setup_path || after_mfa_setup_path
       end
+    end
+
+    def account_already_confirmed?
+      redirect_to account_url if user_fully_authenticated?
     end
 
     def set_backup_code_setup_presenter
