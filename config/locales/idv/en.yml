@@ -11,7 +11,7 @@ en:
       continue_plain: Continue
       mail:
         resend: Send another letter
-        send: Send a letter
+        send: Request a letter
     cancel:
       actions:
         account_page: Go to account page
@@ -231,7 +231,7 @@ en:
       come_back_later: Your letter is on the way
       mail:
         resend: Send another letter?
-        verify: Want a letter?
+        verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:

@@ -12,7 +12,7 @@ es:
       continue_plain: Continuar
       mail:
         resend: Enviar otra carta
-        send: Enviar una carta
+        send: Solicitar una carta
     cancel:
       actions:
         account_page: Ir a la página de la cuenta
@@ -244,7 +244,7 @@ es:
       come_back_later: Su carta está en camino
       mail:
         resend: '¿Enviar otra carta?'
-        verify: '¿Desea una carta?'
+        verify: Verifique su dirección
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:

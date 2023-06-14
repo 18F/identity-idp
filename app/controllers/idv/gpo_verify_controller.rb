@@ -51,21 +51,26 @@ module Idv
         return
       end
 
-      if result.extra[:pending_in_person_enrollment]
-        redirect_to idv_in_person_ready_to_verify_url
-      else
-        prepare_for_personal_key
+      prepare_for_personal_key
 
-        redirect_to idv_personal_key_url
-      end
+      redirect_to idv_personal_key_url
     end
 
     private
 
-    def prepare_for_personal_key
-      event, _disavowal_token = create_user_event(:account_verified)
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      current_user.pending_in_person_enrollment.present?
+    end
 
-      if !fraud_check_failed?
+    def account_not_ready_to_be_activated?
+      fraud_check_failed? || pending_in_person_enrollment?
+    end
+
+    def prepare_for_personal_key
+      unless account_not_ready_to_be_activated?
+        event, _disavowal_token = create_user_event(:account_verified)
+
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
           date_time: event.created_at,

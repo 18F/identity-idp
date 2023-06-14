@@ -422,15 +422,10 @@ class IdentityConfig
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
-    config.add(
-      :sign_up_mfa_selection_order_testing, type: :json,
-                                            options: { symbolize_names: true }
-    )
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
-    config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
     config.add(:totp_code_interval, type: :integer)

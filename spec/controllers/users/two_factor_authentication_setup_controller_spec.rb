@@ -7,7 +7,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup visited', sign_up_mfa_priority_bucket: :default)
+        with('User Registration: 2FA Setup visited')
 
       get :index
     end
@@ -66,7 +66,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       }
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
-      analytics_hash = response.to_h.merge(sign_up_mfa_priority_bucket: :default)
+      analytics_hash = response.to_h
 
       form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
@@ -90,7 +90,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         selection: ['voice', 'auth_app'],
         success: true,
         selected_mfa_count: 2,
-        sign_up_mfa_priority_bucket: :default,
         errors: {},
       }
 
