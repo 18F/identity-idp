@@ -23,8 +23,7 @@ en:
         return_to_partner_link: sign out and return to %{sp_name}
         what_to_expect: What to expect at the Post Office
       cta:
-        button: Verify your ID in person
-        button_variant: Try in person
+        button: Try in person
         prompt_detail: You may be able to verify your ID in person at a participating
           Post Office near you.
       expect:
@@ -140,8 +139,7 @@ en:
       address: Enter your current residential address
       barcode: Show this barcode and your state‑issued ID at a Post Office to finish
         verifying your identity
-      cta: Having trouble verifying your ID online?
-      cta_variant: Try verifying your ID in person
+      cta: Try verifying your ID in person
       id_address: Address on your ID
       po_search:
         location: Find a participating Post Office

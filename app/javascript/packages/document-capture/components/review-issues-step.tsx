@@ -145,8 +145,6 @@ function ReviewIssuesStep({
             location="post_submission_warning"
             showAlternativeProofingOptions={!isFailedResult}
             heading={t('components.troubleshooting_options.ipp_heading')}
-            altInPersonCta={t('in_person_proofing.headings.cta_variant')}
-            altInPersonCtaButtonText={t('in_person_proofing.body.cta.button_variant')}
           />
         }
       >
