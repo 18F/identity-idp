@@ -383,7 +383,10 @@ RSpec.describe Profile do
         fraud_review_pending_at: 1.day.ago,
       )
 
-      expect { profile.activate_after_password_reset }.to raise_error
+      expect { profile.activate_after_password_reset }.to raise_error(
+        RuntimeError,
+        'Attempting to activate profile with pending reasons: fraud_check_pending',
+      )
     end
 
     it 'does not activate a profile with non password_reset deactivation_reason' do
