@@ -36,7 +36,7 @@ module ArcgisApi
     API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
     API_TOKEN_CACHE_KEY =
       "#{IdentityConfig.store.arcgis_api_token_cache_key_prefix}:#{API_TOKEN_HOST}"
-    API_PREFETCH_TTL_SECONDS = 10
+    API_PREFETCH_TTL_SECONDS = IdentityConfig.store.arcgis_api_token_prefetch_ttl
 
     RETRY_EXCEPTION = [404, 408, 409, 421, 429, 500, 502, 503, 504, 509]
 
@@ -50,7 +50,8 @@ module ArcgisApi
                    prefetch_ttl: API_PREFETCH_TTL_SECONDS)
       @cache_key = cache_key
       @connection_factory = connection_factory
-      @prefetch_ttl = prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS
+      @prefetch_ttl = (prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS) +
+                      (rand - 0.5) / 10
       @analytics = Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
     end
 
@@ -147,12 +148,13 @@ module ArcgisApi
         max: IdentityConfig.store.arcgis_get_token_retry_max,
         methods: %i[post],
         interval: IdentityConfig.store.arcgis_get_token_retry_interval,
+        interval_randomness: 0.25,
         backoff_factor: IdentityConfig.store.arcgis_get_token_retry_backoff_factor,
         exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
                      Faraday::ClientError, Faraday::RetriableResponse],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
-          notify_retry(env, exception, retry_count, will_retry_in)
+          notify_retry(env, options, exception, retry_count, will_retry_in)
         },
       }
       connection_factory.connection do |conn|
@@ -201,7 +203,7 @@ module ArcgisApi
       end
     end
 
-    def notify_retry(env, exception, retry_count, will_retry_in)
+    def notify_retry(env, options, exception, retry_count, will_retry_in)
       body = env.body
       case body
       when Hash
@@ -217,12 +219,17 @@ module ArcgisApi
       end
       http_status = env.status
       api_status_code = resp_body.is_a?(Hash) ? resp_body.dig('error', 'code') : http_status
-
+      # rubocop:disable Layout/LineLength
+      if options.max == retry_count + 1
+        excetption_message = "token request max retries(#{options.max}) reached, error : #{exception.message}"
+      else
+        excetption_message =
+          "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}"
+      end
+      # rubocop:enable Layout/LineLength
       analytics.idv_arcgis_token_failure(
         exception_class: 'ArcGIS',
-        # rubocop:disable Layout/LineLength
-        exception_message: "token request retry count : #{retry_count}, will retry in #{will_retry_in}, error : #{exception.message}",
-        # rubocop:enable Layout/LineLength
+        exception_message: excetption_message,
         response_body_present: resp_body.present?,
         response_body: resp_body,
         response_status_code: http_status,
