@@ -11,7 +11,7 @@ module Idv
       before_action :confirm_in_person_session
 
       def show
-        analytics.idv_in_person_ready_to_verify_visit(**extra_analytics_attributes)
+        analytics.idv_in_person_ready_to_verify_visit
         @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment)
       end
 
