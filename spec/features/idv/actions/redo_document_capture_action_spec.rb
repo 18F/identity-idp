@@ -27,6 +27,11 @@ RSpec.feature 'doc auth redo document capture action', js: true do
       end
 
       click_idv_continue
+    rescue
+      # rubocop:disable Rails/Output
+      print(page.html)
+      # rubocop:enable Rails/Output
+      raise
     end
 
     it 'shows a warning message to allow the user to return to upload new images' do
