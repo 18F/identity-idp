@@ -16,7 +16,7 @@ RSpec.feature 'idv phone step', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
     end
-    
+
     it 'selects sms delivery option by default' do
       expect(page).to have_checked_field(
         t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
