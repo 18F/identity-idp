@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PhoneForm do
+RSpec.describe Idv::PhoneForm do
   let(:user) { build_stubbed(:user, :fully_registered) }
   let(:phone) { '703-555-5000' }
   let(:params) { { phone: phone } }

@@ -164,7 +164,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'profile is reset' do
-            let(:user) { create(:profile, :password_reset).user }
+            let(:user) { create(:profile, :verified, :password_reset).user }
 
             it 'redirects to have the user enter their personal key' do
               action
@@ -278,7 +278,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'profile is reset' do
-            let(:user) { create(:profile, :password_reset).user }
+            let(:user) { create(:profile, :verified, :password_reset).user }
 
             it 'redirects to the redirect_uri immediately without proofing' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 1)

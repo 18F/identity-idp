@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::BackupCodeSetupController do
+RSpec.describe Users::BackupCodeSetupController do
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
       expect(subject).to have_actions(
@@ -32,7 +32,6 @@ describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
-        sign_up_mfa_selection_order_bucket: nil,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {

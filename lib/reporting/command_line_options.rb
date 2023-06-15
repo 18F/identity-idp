@@ -4,7 +4,7 @@ module Reporting
   class CommandLineOptions
     # rubocop:disable Rails/Exit
     # @return [Hash]
-    def parse!(argv, out: STDOUT)
+    def parse!(argv, out: STDOUT, require_issuer: true)
       date = nil
       issuer = nil
       verbose = false
@@ -89,7 +89,7 @@ module Reporting
 
       parser.parse!(argv)
 
-      if !date || !issuer
+      if !date || (require_issuer && !issuer)
         out.puts parser
         exit 1
       else

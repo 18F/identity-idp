@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AttributeAsserter do
+RSpec.describe AttributeAsserter do
   include SamlAuthHelper
 
   let(:ial1_user) { create(:user, :fully_registered) }

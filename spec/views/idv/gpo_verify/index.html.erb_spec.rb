@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/gpo_verify/index.html.erb' do
+RSpec.describe 'idv/gpo_verify/index.html.erb' do
   let(:user) do
     create(:user)
   end

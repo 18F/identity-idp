@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountResetRequest do
+RSpec.describe AccountResetRequest do
   it { is_expected.to belong_to(:user) }
 
   let(:subject) { AccountResetRequest.new }

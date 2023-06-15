@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe GpoConfirmationMaker do
+RSpec.describe GpoConfirmationMaker do
   let(:otp) { '123ABC' }
   let(:issuer) { 'this-is-an-issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }

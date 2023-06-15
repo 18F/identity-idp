@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::TwoFactorAuthenticationController do
+RSpec.describe Users::TwoFactorAuthenticationController do
   include ActionView::Helpers::DateHelper
 
   let(:otp_preference_sms) { { otp_delivery_preference: 'sms' } }

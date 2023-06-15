@@ -330,7 +330,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       perform_in_browser(:desktop) do
         user = sign_in_and_2fa_user
-        complete_doc_auth_steps_before_upload_step
+        complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, '415-555-0199')
         click_send_link
 
@@ -401,6 +401,11 @@ RSpec.describe 'In Person Proofing', js: true do
       click_on t('account.index.verification.reactivate_button')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       click_button t('forms.verify_profile.submit')
+
+      # personal key
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('titles.idv.personal_key'))
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect_in_person_gpo_step_indicator_current_step(

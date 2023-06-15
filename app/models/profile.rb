@@ -67,11 +67,11 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def confirm_that_profile_can_be_activated!
+  def reason_not_to_activate
     if pending_reasons.any?
-      raise "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+      "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
     elsif deactivation_reason.present?
-      raise "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
     end
   end
 
@@ -92,6 +92,7 @@ class Profile < ApplicationRecord
   def activate_after_passing_in_person
     update!(
       deactivation_reason: nil,
+      fraud_review_pending_at: nil,
     )
     activate
   end
@@ -216,6 +217,10 @@ class Profile < ApplicationRecord
   end
 
   private
+
+  def confirm_that_profile_can_be_activated!
+    raise reason_not_to_activate if reason_not_to_activate
+  end
 
   def track_fraud_review_adjudication(decision:)
     if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review

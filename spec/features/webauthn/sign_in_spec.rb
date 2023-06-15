@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'webauthn sign in' do
+RSpec.feature 'webauthn sign in' do
   include WebAuthnHelper
 
   before do

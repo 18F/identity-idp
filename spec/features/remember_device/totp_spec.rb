@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Remembering a TOTP device' do
+RSpec.describe 'Remembering a TOTP device' do
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end

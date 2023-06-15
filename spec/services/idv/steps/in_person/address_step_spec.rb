@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::AddressStep do
+RSpec.describe Idv::Steps::InPerson::AddressStep do
   include InPersonHelper
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }

@@ -751,6 +751,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -764,6 +765,7 @@ module AnalyticsEvents
     flow_path:,
     billed: nil,
     doc_auth_result: nil,
+    vendor_request_time_in_ms: nil,
     **extra
   )
     track_event(
@@ -780,6 +782,7 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
+      vendor_request_time_in_ms: vendor_request_time_in_ms,
       **extra,
     )
   end
@@ -3366,14 +3369,12 @@ module AnalyticsEvents
 
   # @param [String] flash
   # @param [String] stored_location
-  # @param [String] sign_in_a_b_test_bucket
   # tracks when a user visits the sign in page
-  def sign_in_page_visit(flash:, stored_location:, sign_in_a_b_test_bucket:, **extra)
+  def sign_in_page_visit(flash:, stored_location:, **extra)
     track_event(
       'Sign in page visited',
       flash: flash,
       stored_location: stored_location,
-      sign_in_a_b_test_bucket:,
       **extra,
     )
   end
@@ -3583,18 +3584,23 @@ module AnalyticsEvents
 
   # User was shown an "Are you sure you want to navigate away from this page?" message from their
   # browser (via onbeforeunload). (This is a frontend event.)
-  def user_prompted_before_navigation
+  # @param [String] path Path where this event was encountered.
+  def user_prompted_before_navigation(path:, **extra)
     track_event(
       'User prompted before navigation',
+      path: path,
+      **extra,
     )
   end
 
   # User was shown an "Are you sure you want to navigate away from this page?" prompt via
   # onbeforeunload and was still on the page <seconds> later. (This is a frontend event.)
+  # @param [String] path Path where this event was encountered.
   # @param [Integer] seconds Amount of time user has been on page since prompt.
-  def user_prompted_before_navigation_and_still_on_page(seconds:, **extra)
+  def user_prompted_before_navigation_and_still_on_page(path:, seconds:, **extra)
     track_event(
       'User prompted before navigation and still on page',
+      path: path,
       seconds: seconds,
       **extra,
     )
@@ -3602,17 +3608,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [String] sign_up_mfa_priority_bucket
   # Tracks when the the user has selected and submitted additional MFA methods on user registration
   def user_registration_2fa_additional_setup(success:,
-                                             sign_up_mfa_priority_bucket:,
                                              errors: nil,
                                              **extra)
     track_event(
       'User Registration: Additional 2FA Setup',
       {
         success: success,
-        sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
         errors: errors,
         **extra,
       }.compact,
@@ -3620,12 +3623,9 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits additional MFA selection page
-  # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_additional_setup_visit(sign_up_mfa_priority_bucket:, **extra)
+  def user_registration_2fa_additional_setup_visit
     track_event(
       'User Registration: Additional 2FA Setup visited',
-      sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
-      **extra,
     )
   end
 
@@ -3634,11 +3634,9 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
-  # @param [String] sign_up_mfa_priority_bucket
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
-    sign_up_mfa_priority_bucket:,
     errors: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
@@ -3652,7 +3650,6 @@ module AnalyticsEvents
         errors: errors,
         selected_mfa_count: selected_mfa_count,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
-        sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
         selection: selection,
         **extra,
       }.compact,
@@ -3660,12 +3657,9 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits MFA selection page
-  # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_setup_visit(sign_up_mfa_priority_bucket:, **extra)
+  def user_registration_2fa_setup_visit
     track_event(
       'User Registration: 2FA Setup visited',
-      sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
-      **extra,
     )
   end
 
@@ -3716,7 +3710,6 @@ module AnalyticsEvents
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
-  # @param [String] sign_in_a_b_test_bucket
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_complete(
@@ -3724,7 +3717,6 @@ module AnalyticsEvents
     service_provider_name:,
     page_occurence:,
     needs_completion_screen_reason:,
-    sign_in_a_b_test_bucket:,
     sp_session_requested_attributes:,
     sp_request_requested_attributes: nil,
     ialmax: nil,
@@ -3737,7 +3729,6 @@ module AnalyticsEvents
       service_provider_name: service_provider_name,
       page_occurence: page_occurence,
       needs_completion_screen_reason: needs_completion_screen_reason,
-      sign_in_a_b_test_bucket:,
       sp_request_requested_attributes: sp_request_requested_attributes,
       sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,
@@ -3797,15 +3788,8 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits enter email page
-  # @param [String] sign_in_a_b_test_bucket
-  # @param [Boolean] from_sign_in
-  def user_registration_enter_email_visit(sign_in_a_b_test_bucket:, from_sign_in:, **extra)
-    track_event(
-      'User Registration: enter email visited',
-      sign_in_a_b_test_bucket:,
-      from_sign_in:,
-      **extra,
-    )
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
   end
 
   # @param [Boolean] success
@@ -3875,6 +3859,42 @@ module AnalyticsEvents
       'User Registration: User Fully Registered',
       {
         mfa_method: mfa_method,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user reinstated
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_reinstated(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Reinstated',
+      {
+        success: success,
+        error_message: error_message,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user suspended
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_suspended(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Suspended',
+      {
+        success: success,
+        error_message: error_message,
         **extra,
       }.compact,
     )

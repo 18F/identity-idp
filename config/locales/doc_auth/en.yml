@@ -111,6 +111,7 @@ en:
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
       front: Front
+      hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
       review_issues: Check your images and try again
@@ -118,7 +119,6 @@ en:
       ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       text_message: We sent a message to your phone
-      upload: How would you like to add your ID?
       upload_from_computer: Continue on this computer
       upload_from_phone: Use your phone to take photos
       verify_identity: Verify your identity
@@ -144,6 +144,7 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state‑issued ID. We use this information to verify your
         identity.
+      hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading
       image_updated: Image updated
@@ -168,7 +169,6 @@ en:
       ssn: We need your Social Security number to verify your name, date of birth and
         address.
       tag: Recommended
-      upload: We’ll collect information about you by reading your state‑issued ID.
       upload_from_computer: Don’t have a phone? Upload photos of your ID from this computer.
       upload_from_phone: You won’t have to sign in again, and you’ll switch back to
         this computer after you take photos. Your mobile phone must have a

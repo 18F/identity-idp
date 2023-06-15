@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/jobfail.html.erb' do
+RSpec.describe 'idv/phone_errors/jobfail.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:gpo_letter_available) { false }
 

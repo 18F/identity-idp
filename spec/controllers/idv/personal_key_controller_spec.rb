@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PersonalKeyController do
+RSpec.describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 
@@ -13,7 +13,6 @@ describe Idv::PersonalKeyController do
       user_password: password,
     )
     profile = profile_maker.save_profile(
-      active: false,
       fraud_review_needed: false,
       gpo_verification_needed: false,
     )

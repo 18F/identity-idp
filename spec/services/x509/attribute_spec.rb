@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe X509::Attribute do
+RSpec.describe X509::Attribute do
   let(:x509_subject) { 'O=US, OU=DoD, CN=John.Doe.1234' }
 
   subject { described_class.new(raw: x509_subject) }
