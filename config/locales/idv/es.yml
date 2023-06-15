@@ -64,8 +64,8 @@ es:
         other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>
           para añadir su documento de identidad en línea.
       button:
+        try_online: Vuelva a intentarlo en línea
         warning: Inténtelo de nuevo
-        warning_variant: Vuelva a intentarlo en línea
       exceptions:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.

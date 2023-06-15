@@ -67,8 +67,8 @@ fr:
         other: Pour des raisons de sécurité, il vous reste <strong>%{count}
           tentatives</strong> pour ajouter votre pièce d’identité en ligne.
       button:
+        try_online: Réessayer en ligne
         warning: Essayez à nouveau
-        warning_variant: Réessayer en ligne
       exceptions:
         internal_error: Une erreur interne s’est produite lors du traitement de votre
           demande. Veuillez réessayer.

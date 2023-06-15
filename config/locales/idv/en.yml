@@ -63,8 +63,8 @@ en:
         other: For security reasons, you have <strong>%{count} attempts<strong>
           remaining to add your ID online.
       button:
+        try_online: Try again online
         warning: Try again
-        warning_variant: Try again online
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
