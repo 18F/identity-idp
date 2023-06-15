@@ -37,7 +37,7 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
-      backup_code_confirmation_needed?
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def confirm_delete; end
@@ -60,9 +60,7 @@ module Users
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 
-    def confirm_backup_codes
-      account_already_confirmed?
-    end
+    def confirm_backup_codes; end
 
     private
 
@@ -91,14 +89,6 @@ module Users
       revoke_remember_device(current_user)
       @codes = generator.generate
       user_session[:backup_codes] = @codes
-    end
-
-    def backup_code_confirmation_needed?
-      if !MfaPolicy.new(current_user).multiple_factors_enabled?
-        redirect_to confirm_backup_codes_path
-      else
-        redirect_to next_setup_path || after_mfa_setup_path
-      end
     end
 
     def account_already_confirmed?

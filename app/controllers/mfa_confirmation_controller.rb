@@ -17,7 +17,7 @@ class MfaConfirmationController < ApplicationController
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       success: true,
     )
-    redirect_to after_mfa_setup_path
+    backup_code_confirmation_needed?
   end
 
   def new
@@ -73,5 +73,13 @@ class MfaConfirmationController < ApplicationController
 
   def mfa_context
     @mfa_context ||= MfaContext.new(current_user)
+  end
+
+  def backup_code_confirmation_needed?
+    if !MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to confirm_backup_codes_path
+    else
+      redirect_to after_mfa_setup_path
+    end
   end
 end
