@@ -3,18 +3,10 @@ import { Button } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import AnalyticsContext from '../context/analytics';
-import { InPersonContext } from '../context';
 
-interface InPersonCallToActionProps {
-  altHeading?: string;
-  altPrompt?: string;
-  altButtonText?: string;
-}
-
-function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPersonCallToActionProps) {
+function InPersonCallToAction() {
   const instanceId = useInstanceId();
   const { trackEvent } = useContext(AnalyticsContext);
-  const { inPersonCtaVariantActive } = useContext(InPersonContext);
 
   return (
     <section
@@ -23,9 +15,9 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
     >
       <hr className="margin-y-5" />
       <h2 id={`in-person-cta-heading-${instanceId}`} className="margin-y-2">
-        {altHeading || t('in_person_proofing.headings.cta')}
+        {t('in_person_proofing.headings.cta')}
       </h2>
-      <p>{altPrompt || t('in_person_proofing.body.cta.prompt_detail')}</p>
+      <p>{t('in_person_proofing.body.cta.prompt_detail')}</p>
       <Button
         type="submit"
         isBig
@@ -33,12 +25,10 @@ function InPersonCallToAction({ altHeading, altPrompt, altButtonText }: InPerson
         isWide
         className="margin-top-3 margin-bottom-1"
         onClick={() => {
-          trackEvent('IdV: verify in person troubleshooting option clicked', {
-            in_person_cta_variant: inPersonCtaVariantActive,
-          });
+          trackEvent('IdV: verify in person troubleshooting option clicked');
         }}
       >
-        {altButtonText || t('in_person_proofing.body.cta.button')}
+        {t('in_person_proofing.body.cta.button')}
       </Button>
     </section>
   );
