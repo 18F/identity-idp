@@ -30,7 +30,8 @@ RSpec.describe ActionAccount do
         expect(stderr.string).to eq(<<~STR)
           *Task*: `review-pass`
           *UUIDs*: `#{user.uuid}`
-          *Messages*: * `#{user.uuid} : User is past the 30 day review eligibility.`
+          *Messages*: 
+          * `#{user.uuid} : User is past the 30 day review eligibility.`
         STR
       end
     end
