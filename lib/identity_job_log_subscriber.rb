@@ -118,7 +118,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def self.worker_logger
-    @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    return @worker_logger if defined?(@worker_logger)
+
+    if FeatureManagement.log_to_stdout?
+      @worker_logger = ActiveSupport::Logger.new(STDOUT)
+    else
+      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    end
   end
 
   private
