@@ -9,6 +9,10 @@ module TwoFactorAuthentication
       @user = user
     end
 
+    def render_in(_view_context, &block)
+      yield block
+    end
+
     def type
       method.to_s
     end
@@ -37,10 +41,6 @@ module TwoFactorAuthentication
         'two_factor_authentication.two_factor_choice_options.configurations_added',
         count: mfa_configuration_count,
       )
-    end
-
-    def html_class
-      ''
     end
 
     def disabled?
