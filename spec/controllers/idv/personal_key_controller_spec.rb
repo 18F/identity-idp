@@ -163,6 +163,17 @@ RSpec.describe Idv::PersonalKeyController do
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
 
+    context 'when user is gpo confirmed' do
+      before do
+        subject.idv_session.gpo_code_verified = true
+      end
+
+      it 'sets flash.now[:success]' do
+        get :show
+        expect(flash[:success]).to eq t('idv.messages.gpo.confirm')
+      end
+    end
+
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
