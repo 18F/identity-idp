@@ -1,14 +1,16 @@
 class WebauthnInputComponent < BaseComponent
-  attr_reader :platform
+  attr_reader :platform, :tag_options
 
-  def initialize(platform: false)
+  def initialize(platform: false, **tag_options)
     @platform = platform
+    @tag_options = tag_options
   end
 
   def call
     content_tag(
       :'lg-webauthn-input',
       content,
+      **tag_options,
       hidden: true,
       platform: platform.presence,
     )
