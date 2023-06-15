@@ -27,13 +27,9 @@ fr:
         return_to_partner_link: maintenant vous déconnecter et retourner à %{sp_name}
         what_to_expect: À quoi s’attendre au bureau de poste
       cta:
-        button: Vérifiez votre identité en personne
-        button_variant: Essayer en personne
+        button: Essayer en personne
         prompt_detail: Vous pourrez peut-être faire vérifier votre pièce d’identité en
           personne dans un bureau de poste participant près de chez vous.
-        prompt_detail_b: Ou, si vous rencontrez des difficultés pour ajouter votre pièce
-          d’identité en ligne, vous pourrez peut-être essayer de le faire en
-          personne dans certains bureaux de poste.
       expect:
         heading: Que faire après votre visite
         info: Dans les 24 heures suivant votre visite au bureau de poste, nous vous
@@ -157,8 +153,7 @@ fr:
       address: Indiquez votre adresse résidentielle actuelle
       barcode: Présentez ce code-barres et votre pièce d’identité délivrée par l’État
         à un bureau de poste pour terminer la vérification de votre identité
-      cta: Vous avez des difficultés à vérifier votre identité en ligne?
-      cta_variant: Essayez de vérifier votre identité en personne
+      cta: Essayez de vérifier votre identité en personne
       id_address: Adresse sur votre pièce d’identité
       po_search:
         location: Trouver un bureau de poste participant

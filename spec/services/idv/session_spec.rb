@@ -130,9 +130,7 @@ RSpec.describe Idv::Session do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
-          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-            same_address_as_id: true,
-          ).with_indifferent_access
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
         end
 
         it 'sets profile to pending in person verification' do
