@@ -17,9 +17,11 @@ RSpec.feature 'doc auth redo document capture action', js: true do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_document_capture_step
       mock_doc_auth_attention_with_barcode
+      output_dom('BEFORE ATTACH AND SUBMIT IMAGES')
       attach_and_submit_images
+      output_dom('BEFORE CONTINUE ON WARNING')
       click_idv_continue
-
+      output_dom("BEFORE SSN use_bad_ssn=#{use_bad_ssn}")
       if use_bad_ssn
         fill_out_ssn_form_with_ssn_that_fails_resolution
       else
@@ -28,10 +30,15 @@ RSpec.feature 'doc auth redo document capture action', js: true do
 
       click_idv_continue
     rescue
+      output_dom('FROM RESCUE')
+      raise
+    end
+
+    def output_dom(label)
       # rubocop:disable Rails/Output
+      puts label
       print(page.html)
       # rubocop:enable Rails/Output
-      raise
     end
 
     it 'shows a warning message to allow the user to return to upload new images' do
