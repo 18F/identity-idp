@@ -34,6 +34,7 @@ ActiveSupport::Notifications.subscribe('request_metric.faraday') do |name, start
     status: env.status,
     service: service,
     name: 'request_metric.faraday',
+    log_filename: 'rails.log',
   }
   Rails.logger.info(
     metadata.to_json,
@@ -53,6 +54,7 @@ ActiveSupport::Notifications.subscribe('request_log.faraday') do |name, starts, 
     status: env.status,
     service: service,
     name: 'request_log.faraday',
+    log_filename: 'rails.log',
   }
   Rails.logger.info(
     metadata.to_json,

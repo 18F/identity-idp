@@ -4,6 +4,8 @@
 require 'active_job/log_subscriber'
 
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
+  LOG_FILENAME = 'workers.log'
+
   def enqueue(event)
     job = event.payload[:job]
     ex = event.payload[:exception_object]
@@ -125,7 +127,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if FeatureManagement.log_to_stdout?
       @worker_logger = ActiveSupport::Logger.new(STDOUT)
     else
-      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', LOG_FILENAME))
     end
   end
 
@@ -173,6 +175,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       trace_id: trace_id(job),
       queue_name: queue_name(event),
       job_id: job.job_id,
+      log_filename: LOG_FILENAME,
     }
   end
 
