@@ -177,15 +177,15 @@ module Idv
     end
 
     def is_req_from_frontend?
-      return request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
+      request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
     end
 
     def is_req_from_verify_step?
-      return request.referer == idv_verify_info_url
+      request.referer == idv_verify_info_url
     end
 
     def should_keep_flash_success?
-      return is_req_from_frontend? && is_req_from_verify_step?
+      is_req_from_frontend? && is_req_from_verify_step?
     end
 
     def new_phone_added?
