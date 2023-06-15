@@ -69,7 +69,7 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
 
   const trackVisitEvent: TrackVisitEvent = (stepName) => {
     if (LOGGED_STEPS.includes(stepName)) {
-      trackEvent(`IdV: ${stepName} visited`, {});
+      trackEvent(`IdV: ${stepName} visited`);
     }
   };
 

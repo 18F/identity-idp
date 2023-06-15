@@ -32,7 +32,7 @@ describe('AnalyticsContextProvider', () => {
 
     result.current.trackVisitEvent(stepName);
 
-    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} visited`, {});
+    expect(trackEvent).to.have.been.calledWith(`IdV: ${stepName} visited`);
   });
 
   it('calls trackEvent with submit event', () => {
