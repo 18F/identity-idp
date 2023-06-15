@@ -185,6 +185,7 @@ Rails.application.routes.draw do
         as: :risc_configuration
 
     get '/account' => 'accounts#show'
+    post '/account/reverify_to_show_pii' => 'accounts/reverify_to_show_pii#create', as: :reverify_to_show_pii
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
