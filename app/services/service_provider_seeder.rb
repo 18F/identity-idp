@@ -85,7 +85,7 @@ class ServiceProviderSeeder
       ReportMailer.warn_error(
         email: IdentityConfig.store.team_ursula_email,
         error: extra_sp_error,
-      ).deliver_now_or_later
+      ).deliver_now
     end
   end
 end
