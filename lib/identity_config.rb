@@ -423,6 +423,7 @@ class IdentityConfig
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
+    config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
