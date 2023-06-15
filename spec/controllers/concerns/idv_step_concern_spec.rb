@@ -46,8 +46,8 @@ RSpec.describe 'IdvStepConcern' do
       it 'redirects to activated page' do
         get :show
 
-        expect(subject.current_user.profiles.size).to eq 0 # ?
         expect(response).to redirect_to idv_activated_url
+        expect(subject.current_user.profiles.size).to eq 0 # ?
       end
     end
 
@@ -59,10 +59,10 @@ RSpec.describe 'IdvStepConcern' do
       it 'does not redirect to activated page' do
         get :show
 
-        expect(subject.current_user.profiles.size).to eq 0 # ?
         expect(response.body).to eq 'Hello'
         expect(response).to_not redirect_to idv_activated_url
         expect(response.status).to eq 200
+        expect(subject.current_user.profiles.size).to eq 0
       end
     end
   end
