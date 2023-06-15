@@ -2,10 +2,15 @@ require 'rails_helper'
 
 RSpec.describe WebauthnInputComponent, type: :component do
   let(:options) { {} }
-  subject(:rendered) { render_inline WebauthnInputComponent.new(**options) }
+  let(:component) { WebauthnInputComponent.new(**options) }
+  subject(:rendered) { render_inline component }
 
   it 'renders element with expected attributes' do
     expect(rendered).to have_css('lg-webauthn-input[hidden]:not([platform])', visible: false)
+  end
+
+  it 'exposes boolean alias for platform option' do
+    expect(component.platform?).to eq(false)
   end
 
   context 'with platform option' do

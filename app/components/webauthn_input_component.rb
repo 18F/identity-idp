@@ -1,6 +1,8 @@
 class WebauthnInputComponent < BaseComponent
   attr_reader :platform, :tag_options
 
+  alias_method :platform?, :platform
+
   def initialize(platform: false, **tag_options)
     @platform = platform
     @tag_options = tag_options
