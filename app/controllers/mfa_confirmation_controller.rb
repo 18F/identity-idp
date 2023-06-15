@@ -76,7 +76,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def backup_code_confirmation_needed?
-    if !MfaPolicy.new(current_user).multiple_factors_enabled?
+    if !MfaPolicy.new(current_user).multiple_factors_enabled? && user_backup_codes_configured?
       redirect_to confirm_backup_codes_path
     else
       redirect_to after_mfa_setup_path
