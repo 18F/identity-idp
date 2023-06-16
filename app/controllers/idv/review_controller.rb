@@ -40,8 +40,6 @@ module Idv
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
-      elsif idv_session.phone_confirmed?
-        flash_now[:success] = t('idv.messages.review.phone_verified')
       elsif address_verification_method == 'gpo'
         flash_now[:info] = t('idv.messages.review.gpo_pending')
       end
@@ -54,6 +52,7 @@ module Idv
 
       user_session[:need_personal_key_confirmation] = true
 
+      flash[:success] = t('idv.messages.confirm')
       redirect_to next_step
 
       analytics.idv_review_complete(
