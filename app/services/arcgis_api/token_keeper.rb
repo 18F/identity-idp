@@ -161,7 +161,7 @@ module ArcgisApi
         retry_statuses: RETRY_HTTP_STATUS,
         max: IdentityConfig.store.arcgis_get_token_retry_max,
         methods: %i[post],
-        interval: IdentityConfig.store.arcgis_get_token_retry_interval,
+        interval: IdentityConfig.store.arcgis_get_token_retry_interval_seconds,
         interval_randomness: 0.25,
         backoff_factor: IdentityConfig.store.arcgis_get_token_retry_backoff_factor,
         exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
