@@ -21,17 +21,6 @@ describe('WebAuthn', () => {
     global.navigator.credentials = originalCredentials;
   });
 
-  describe('isWebAuthnEnabled', () => {
-    it('returns true if webauthn is enabled', () => {
-      expect(WebAuthn.isWebAuthnEnabled()).to.equal(true);
-    });
-
-    it('returns false if webauthn is disabled', () => {
-      global.navigator.credentials = undefined;
-      expect(WebAuthn.isWebAuthnEnabled()).to.equal(false);
-    });
-  });
-
   describe('extractCredentials', () => {
     it('returns [] if credentials are empty string', () => {
       expect(WebAuthn.extractCredentials('')).to.eql([]);

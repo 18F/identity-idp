@@ -54,8 +54,6 @@ const extractCredentials = (credentials: string): PublicKeyCredentialDescriptor[
   }));
 };
 
-const isWebAuthnEnabled = (): boolean => !!navigator.credentials;
-
 const enrollWebauthnDevice = async ({
   userId,
   userEmail,
@@ -157,4 +155,4 @@ async function verifyWebauthnDevice({
   };
 }
 
-export { extractCredentials, isWebAuthnEnabled, enrollWebauthnDevice, verifyWebauthnDevice };
+export { extractCredentials, enrollWebauthnDevice, verifyWebauthnDevice };
