@@ -334,7 +334,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq false # to change
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -344,7 +344,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq true # changed
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
@@ -362,7 +362,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq false # to change
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
 
@@ -372,7 +372,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq true # changed
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
     end
@@ -402,7 +402,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -412,7 +412,7 @@ RSpec.describe Profile do
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at.present?).to eq false
+      expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
