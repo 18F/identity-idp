@@ -22,7 +22,6 @@ module Idv
     end
 
     def submit
-      increment_throttle!
       form_response = validate_form
 
       client_response = nil
@@ -31,7 +30,10 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
-        doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
+        if client_response.success?
+          doc_pii_response = validate_pii_from_doc(client_response)
+          throttle.reset! # re: ratelimitconcern - can proceed to next step even if no remaining attempts
+        end
       end
 
       response = determine_response(
@@ -57,8 +59,11 @@ module Idv
     end
 
     def validate_form
+      success = valid?
+      increment_throttle!
+
       response = Idv::DocAuthFormResponse.new(
-        success: valid?,
+        success: success,
         errors: errors,
         extra: extra_attributes,
       )

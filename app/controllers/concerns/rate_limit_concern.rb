@@ -4,7 +4,7 @@ module RateLimitConcern
   def confirm_not_rate_limited
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
-      # next if throttle_and_controller_match(throttle_type) && action_name == 'update'
+      next if throttle_and_controller_match(throttle_type)# && action_name == 'update' don't think this line is needed ...remove or refactor?
 
       if rate_limit_redirect!(throttle_type)
         rate_limited = true
