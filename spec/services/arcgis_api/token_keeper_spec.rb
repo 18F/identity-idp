@@ -18,7 +18,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
 
   let(:expected) { 'ABCDEFG' }
   let(:expected_sec) { 'GFEDCBA' }
-  let(:expires_at) { (Time.zone.now.to_f + 15) * 1000 }
+  let(:expires_at) { (Time.zone.now + 15.seconds).to_f * 1000 }
   let(:cache) { Rails.cache }
 
   before(:each) do
@@ -33,14 +33,14 @@ RSpec.describe ArcgisApi::TokenKeeper do
           { status: 200,
             body: {
               token: expected,
-              expires: (Time.zone.now.to_f + 5) * 1000,
+              expires: (Time.zone.now + 15.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
           { status: 200,
             body: {
               token: expected_sec,
-              expires: (Time.zone.now.to_f + 3600) * 1000,
+              expires: (Time.zone.now + 1.hour).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
@@ -69,14 +69,14 @@ RSpec.describe ArcgisApi::TokenKeeper do
           { status: 200,
             body: {
               token: expected,
-              expires: (Time.zone.now.to_f + 15) * 1000,
+              expires: (Time.zone.now + 15.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
           { status: 200,
             body: {
               token: expected_sec,
-              expires: (Time.zone.now.to_f + 3600) * 1000,
+              expires: (Time.zone.now + 1.hour).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
@@ -120,7 +120,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
           { status: 200,
             body: {
               token: expected,
-              expires: (Time.zone.now.to_f + 15) * 1000,
+              expires: (Time.zone.now + 15.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
@@ -146,7 +146,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
       include_examples 'acquire token test'
     end
     context 'sync request enabled and sliding expiration disabled' do
-      let(:original_token) { ArcgisApi::TokenInfo.new('12345', Time.zone.now.to_f + 15) }
+      let(:original_token) { ArcgisApi::TokenInfo.new('12345', (Time.zone.now + 15.seconds).to_f) }
       before(:each) do
         allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).
@@ -155,16 +155,14 @@ RSpec.describe ArcgisApi::TokenKeeper do
           { status: 200,
             body: {
               token: expected,
-              expires: (Time.zone.now.to_f + 15) * 1000,
+              expires: (Time.zone.now + 15.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
         )
         subject.save_token(original_token, expires_at)
       end
-      let(:prefetch_ttl) do
-        5
-      end
+      let(:prefetch_ttl) { 5 }
       it 'should get token after existing one expired' do
         token = subject.token
         expect(token).to eq(original_token.token)
@@ -199,7 +197,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
           { status: 200,
             body: {
               token: expected,
-              expires: (Time.zone.now.to_f + 3600) * 1000,
+              expires: (Time.zone.now + 1.hour).to_f * 1000,
               ssl: true,
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
