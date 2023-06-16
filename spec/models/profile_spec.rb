@@ -327,6 +327,9 @@ RSpec.describe Profile do
         user: user,
       )
 
+      # profile.initiating_service_provider is nil before and after because
+      # the user is coming from a password reset email
+
       expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq false # to change
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
