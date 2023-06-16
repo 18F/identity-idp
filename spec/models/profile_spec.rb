@@ -327,23 +327,23 @@ RSpec.describe Profile do
         user: user,
       )
 
-      expect(profile.activated_at).to eq nil # to change
+      expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq false # to change
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
-      expect(profile.verified_at).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
 
       profile.activate_after_password_reset
 
       expect(profile.activated_at).to be_present # changed
       expect(profile.active).to eq true # changed
-      expect(profile.deactivation_reason).to eq nil # changed
+      expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
-      expect(profile.verified_at).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
     end
 
     it 'activates a previously verified profile after password reset' do
@@ -360,17 +360,17 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
 
       profile.activate_after_password_reset
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq true # changed
-      expect(profile.deactivation_reason).to eq nil # changed
+      expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
     end
 
@@ -395,23 +395,23 @@ RSpec.describe Profile do
         user: user,
       )
 
-      expect(profile.activated_at).to eq nil
+      expect(profile.activated_at).to be_nil
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
-      expect(profile.verified_at).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
 
       profile.activate_after_password_reset
 
-      expect(profile.activated_at).to eq nil
+      expect(profile.activated_at).to be_nil
       expect(profile.active).to eq false
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at.present?).to eq false
-      expect(profile.initiating_service_provider).to eq nil
-      expect(profile.verified_at).to eq nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
     end
   end
 
