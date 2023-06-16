@@ -45,6 +45,9 @@ RSpec.describe ArcgisApi::TokenKeeper do
             }.to_json,
             headers: { content_type: 'application/json;charset=UTF-8' } },
         )
+        # verify configuration
+        expect(subject.sliding_expiration_enabled).to be(true)
+        expect(IdentityConfig.store.arcgis_token_sync_request_enabled).to be(true)
 
         expect(Rails.cache).to receive(:read).with(kind_of(String)).
           and_call_original
@@ -100,6 +103,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
             and_call_original
           token = subject.token
           expect(token).to eq(expected)
+
           travel 11.seconds do
             expect(Rails.cache).to receive(:read).with(kind_of(String)).
               and_call_original
@@ -140,6 +144,35 @@ RSpec.describe ArcgisApi::TokenKeeper do
           and_return(true)
       end
       include_examples 'acquire token test'
+    end
+    context 'sync request enabled and sliding expiration disabled' do
+      let(:original_token) { ArcgisApi::TokenInfo.new('12345', Time.zone.now.to_f + 15) }
+      before(:each) do
+        allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).
+          and_return(false)
+        stub_request(:post, %r{/generateToken}).to_return(
+          { status: 200,
+            body: {
+              token: expected,
+              expires: (Time.zone.now.to_f + 15) * 1000,
+              ssl: true,
+            }.to_json,
+            headers: { content_type: 'application/json;charset=UTF-8' } },
+        )
+        subject.save_token(original_token, expires_at)
+      end
+      let(:prefetch_ttl) do
+        5
+      end
+      it 'should get token after existing one expired' do
+        token = subject.token
+        expect(token).to eq(original_token.token)
+        travel 20.seconds do
+          token = subject.token
+          expect(token).to eq(expected)
+        end
+      end
     end
   end
   context 'with redis store' do
@@ -207,6 +240,58 @@ RSpec.describe ArcgisApi::TokenKeeper do
         allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).
           and_return(false)
         expect(subject.token).to be(nil)
+      end
+    end
+  end
+end
+
+RSpec.describe ArcgisApi::TokenExpirationStrategy do
+  let(:subject) { ArcgisApi::TokenExpirationStrategy.new(sliding_expiration_enabled: true) }
+  describe 'when sliding_expiration_enabled is true' do
+    it 'checks token expiration when now passed expires_at' do
+      prefetch_ttl = 3
+      expect(subject.expired?(token_info: nil, prefetch_ttl: prefetch_ttl)).to be(true)
+      token_info = ArcgisApi::TokenInfo.new(token: 'ABCDE')
+      # missing expires_at assume the token is valid
+      expect(subject.expired?(token_info: token_info, prefetch_ttl: prefetch_ttl)).to be(false)
+      freeze_time do
+        now = Time.zone.now.to_f
+        token_info.expires_at = now
+        expect(subject.expired?(token_info: token_info, prefetch_ttl: prefetch_ttl)).to be(true)
+        token_info.expires_at = now + 0.0001
+        expect(subject.expired?(token_info: token_info, prefetch_ttl: prefetch_ttl)).to be(false)
+      end
+    end
+
+    context 'when sliding_expires_at < now <= sliding_expires_at + prefetch_ttl' do
+      it 'should not expired' do
+        freeze_time do
+          now = Time.zone.now.to_f
+          prefetch_ttl = 3
+          token_info = ArcgisApi::TokenInfo.new(
+            token: 'ABCDE',
+            expires_at: now + 2 * prefetch_ttl,
+            sliding_expires_at: now - prefetch_ttl + (prefetch_ttl / 3),
+          )
+          expect(subject.expired?(token_info: token_info, prefetch_ttl: prefetch_ttl)).to be(false)
+        end
+      end
+    end
+    context 'when sliding_expires_at + prefetch_ttl < now <= sliding_expires_at + 2*prefetch_ttl' do
+      it 'should expired and extend sliding_expires_at' do
+        freeze_time do
+          now = Time.zone.now.to_f
+          prefetch_ttl = 3
+          token_info = ArcgisApi::TokenInfo.new(
+            token: 'ABCDE',
+            expires_at: now + 2 * prefetch_ttl,
+            sliding_expires_at: now - prefetch_ttl - (prefetch_ttl / 3),
+          )
+          expect(subject.expired?(token_info: token_info, prefetch_ttl: prefetch_ttl)).to be(true)
+          existing_sliding_expires = token_info.sliding_expires_at
+          subject.extend_sliding_expires_at(token_info: token_info, prefetch_ttl: prefetch_ttl)
+          expect(token_info.sliding_expires_at - existing_sliding_expires).to eq(prefetch_ttl)
+        end
       end
     end
   end

@@ -559,20 +559,6 @@ module AnalyticsEvents
     )
   end
 
-  # Track when token job started
-  def idv_arcgis_token_job_started
-    track_event(
-      'ArcgisTokenJob: Started',
-    )
-  end
-
-  # Track when token job ended
-  def idv_arcgis_token_job_completed
-    track_event(
-      'ArcgisTokenJob: Completed',
-    )
-  end
-
   # Tracks if request to get auth token from ArcGIS fails
   # @param [String] exception_class
   # @param [String] exception_message
@@ -595,6 +581,20 @@ module AnalyticsEvents
       response_body: response_body,
       response_status_code: response_status_code,
       **extra,
+    )
+  end
+
+  # Track when token job started
+  def idv_arcgis_token_job_started
+    track_event(
+      'ArcgisTokenJob: Started',
+    )
+  end
+
+  # Track when token job ended
+  def idv_arcgis_token_job_completed
+    track_event(
+      'ArcgisTokenJob: Completed',
     )
   end
 
