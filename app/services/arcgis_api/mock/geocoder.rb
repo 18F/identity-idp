@@ -26,7 +26,7 @@ module ArcgisApi
             { 'Content-Type': 'application/json' },
             {
               token: '1234',
-              expires: (Time.zone.now.to_f + 30) * 1000,
+              expires: (Time.zone.now + 30.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
           ]
