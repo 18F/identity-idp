@@ -208,7 +208,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
       end
 
       it 'raises exception after max retries and log event correctly' do
-        allow(IdentityConfig.store).to receive(:arcgis_get_token_retry_max).and_return(2)
+        allow(IdentityConfig.store).to receive(:arcgis_get_token_max_retries).and_return(2)
         stub_request(:post, %r{/generateToken}).to_return(
           {
             status: 503,
