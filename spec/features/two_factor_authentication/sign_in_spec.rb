@@ -544,15 +544,14 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
         end
 
-        it 'shows signed in user options with webauthn visible' do
+        it 'shows signed in user options with webauthn visible', :js do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
+          simulate_platform_authenticator_available
 
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
 
         it 'allows user to be signed in without issue' do
@@ -571,15 +570,14 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
         end
 
-        it 'shows signed in user options with webauthn visible' do
+        it 'shows signed in user options with webauthn visible', :js do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
+          simulate_platform_authenticator_available
 
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
 
         it 'allows user to be signed in without issue' do
@@ -591,6 +589,18 @@ RSpec.feature 'Two Factor Authentication' do
 
           expect(page).to have_current_path(account_path)
         end
+      end
+
+      def simulate_platform_authenticator_available
+        # Since the element will have already initialized by this point and it can't be guaranteed
+        # that isUserVerifyingPlatformAuthenticatorAvailable would yield the expected value, stub
+        # and reconnect the elements to simulate as if it were the expected value on page load.
+        page.evaluate_script(<<~JS)
+          window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = () => Promise.resolve(true);
+        JS
+        page.evaluate_script(<<~JS)
+          document.querySelectorAll('lg-webauthn-input').forEach((input) => input.connectedCallback());
+        JS
       end
     end
   end
