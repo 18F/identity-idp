@@ -2,9 +2,10 @@ module ArcgisApi
   # Struct to store token information, this allows us to track
   # real expiration time with various rails cache backends many of them
   # do not support entry expiration.
-  # @member token the token string
-  # @member expires_at hard expiration timestamp in epoch seconds
-  # @member sliding_expires_at optional the token keeper to maintain for
+  # Attributes
+  #  token: the token string
+  #  expires_at: hard expiration timestamp in epoch seconds
+  #  sliding_expires_at: optional the token keeper to maintain for
   #   sliding expiration when sliding expiration enabled.
   #   A time that the token does not actually expire
   #   but used to control the timing of requesting a new token before it expires.
@@ -14,6 +15,52 @@ module ArcgisApi
     :expires_at,
     :sliding_expires_at,
   )
+
+  class TokenCache
+    API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
+    API_TOKEN_CACHE_KEY =
+      "#{IdentityConfig.store.arcgis_api_token_cache_key_prefix}:#{API_TOKEN_HOST}"
+
+    attr_accessor :cache_key
+
+    def initialize(cache_key: API_TOKEN_CACHE_KEY)
+      @cache_key = cache_key
+    end
+
+    # @return [String|nil] auth token
+    def token
+      token_entry&.token
+    end
+
+    # @return [ArcgisApi:TokenInfo|nil] fetch cache entry and wrap it necessary, if miss return nil
+    def token_entry
+      cache_entry = Rails.cache.read(cache_key)
+      # return what we get from cache
+      return nil unless cache_entry
+      cache_entry = wrap_raw_token(cache_entry) unless cache_entry.is_a?(ArcgisApi::TokenInfo)
+      cache_entry
+    end
+
+    def save_token(cache_value, expires_at)
+      Rails.cache.write(cache_key, cache_value, expires_at: expires_at)
+      # If using a redis cache we have to manually set the expires_at. This is because we aren't
+      # using a dedicated Redis cache and instead are just using our existing Redis server with
+      # mixed usage patterns. Without this cache entries don't expire.
+      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
+      Rails.cache.try(:redis)&.expireat(cache_key, expires_at.to_i)
+    end
+
+    def remove_token
+      Rails.cache.delete(cache_key)
+    end
+
+    def wrap_raw_token(token, expires_at = nil)
+      ArcgisApi::TokenInfo.new(
+        token: token,
+        expires_at: expires_at,
+      )
+    end
+  end
 
   # Class for retrieve, refresh and manage caching of Arcgis API token.
   # If token synchronous fetching is disabled, a token will be fetched from
@@ -29,20 +76,18 @@ module ArcgisApi
   #
   # Optimistically, the token in cache will NOT expire
   # when accessed by multi-threaded/distributed clients,
-  # since there is about prefetch_ttl - 2*prefetch_ttl
+  # since there is about expires_at - 2*prefetch_ttl
   # length of time to generate a new API token.
 
-  class TokenKeeper
-    API_TOKEN_HOST = URI(IdentityConfig.store.arcgis_api_generate_token_url).host
-    API_TOKEN_CACHE_KEY =
-      "#{IdentityConfig.store.arcgis_api_token_cache_key_prefix}:#{API_TOKEN_HOST}"
+  class TokenKeeper < TokenCache
     API_PREFETCH_TTL_SECONDS = IdentityConfig.store.arcgis_api_token_prefetch_ttl
 
-    RETRY_EXCEPTION = [404, 408, 409, 421, 429, 500, 502, 503, 504, 509]
+    RETRY_HTTP_STATUS = [404, 408, 409, 421, 429, 500, 502, 503, 504, 509]
 
     TIMES_TTL = 3
 
-    attr_accessor :connection_factory, :prefetch_ttl, :cache_key, :analytics
+    attr_accessor :connection_factory, :prefetch_ttl, :analytics, :sliding_expiration_enabled,
+                  :expiration_strategy
 
     # @param [String] cache_key token cache key
     # @param [ArcgisApi::ConnectionFactory] connection_factory
@@ -50,81 +95,48 @@ module ArcgisApi
     def initialize(cache_key: API_TOKEN_CACHE_KEY,
                    connection_factory: ArcgisApi::ConnectionFactory.new,
                    prefetch_ttl: API_PREFETCH_TTL_SECONDS)
-      @cache_key = cache_key
+      super(cache_key: cache_key)
       @connection_factory = connection_factory
       @prefetch_ttl = (prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS)
       @prefetch_ttl += (rand - 0.5) # random jitter
       @analytics = Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
+      @sliding_expiration_enabled =
+        IdentityConfig.store.arcgis_token_sliding_expiration_enabled
+      @expiration_strategy =
+        TokenExpirationStrategy.new(sliding_expiration_enabled: sliding_expiration_enabled)
     end
 
     # Checks the cache for an unexpired token and returns that.
     # If the cache has expired, retrieves a new token and returns it
-    # @return [String] Auth token
-    def token
-      cache_value = Rails.cache.read(cache_key)
-      return cache_value&.token unless IdentityConfig.store.arcgis_token_sync_request_enabled
+    # @return [ArcgisApi::TokenInfo] Auth token
+    def token_entry
+      cache_value = super
+      return cache_value unless IdentityConfig.store.arcgis_token_sync_request_enabled
+      # go get new token if needed and sync request enabled
       if cache_value.nil?
-        retrieve_token&.token
+        cache_entry = retrieve_token
+        expires_at = cache_entry.expires_at
+        if sliding_expiration_enabled
+          cache_entry.sliding_expires_at = prefetch_ttl >= 0 ?
+                                             expires_at - TIMES_TTL * prefetch_ttl : expires_at
+        end
+        save_token(cache_entry, expires_at)
+        cache_entry
       else
-        handle_expired_token(cache_value)&.token
+        process_expired_token(cache_value)
       end
-    end
-
-    # @param [Object] cache_value the entry to save in cache
-    # @param [Number] expires_at the unix time cache entry should expire
-    def save_token(cache_value, expires_at)
-      Rails.cache.write(cache_key, cache_value, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(cache_key, expires_at.to_i)
     end
 
     # Makes a request to retrieve a new token
     # it expires after 1 hour
-    # @return [String] Auth token
+    # @return [ArcgisApi::TokenInfo] Auth token
     def retrieve_token
       token, expires = request_token.fetch_values('token', 'expires')
       expires_at = Time.zone.at(expires / 1000).to_f
-      cache_entry = ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
-      if IdentityConfig.store.arcgis_token_sliding_expiration_enabled == true
-        cache_entry.sliding_expires_at = prefetch_ttl >= 0 ?
-                                           expires_at - TIMES_TTL * prefetch_ttl : expires_at
-      end
-      save_token(cache_entry, expires_at)
-      cache_entry
-    end
-
-    def remove_token
-      Rails.cache.delete(cache_key)
+      return ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
     end
 
     private
-
-    def handle_expired_token(cache_value)
-      cache_value = wrap_raw_token(cache_value) if cache_value.is_a?(String)
-      expires_at = cache_value&.expires_at
-      sliding_expires_at = cache_value&.sliding_expires_at
-      # start fetch new token before actual expires time
-      if IdentityConfig.store.arcgis_token_sliding_expiration_enabled
-        now = Time.zone.now.to_f
-        if sliding_expires_at && now >= sliding_expires_at
-          # if passed sliding expiration time(exp-3*prefetch_ttl)
-          # but not 2*prefetch_ttl from hard expiration time
-          if now > (sliding_expires_at + prefetch_ttl)
-            cache_value = retrieve_token
-          else
-            # extend sliding expiration time
-            cache_value.sliding_expires_at = sliding_expires_at + prefetch_ttl
-            save_token(cache_value, expires_at)
-          end
-        end
-      elsif expires_at && expires_at <= now
-        cache_value = retrieve_token
-      end
-      cache_value
-    end
 
     # Makes HTTP request to authentication endpoint and
     # returns the token and when it expires (1 hour).
@@ -146,7 +158,7 @@ module ArcgisApi
 
     def connection
       faraday_retry_options = {
-        retry_statuses: RETRY_EXCEPTION,
+        retry_statuses: RETRY_HTTP_STATUS,
         max: IdentityConfig.store.arcgis_get_token_retry_max,
         methods: %i[post],
         interval: IdentityConfig.store.arcgis_get_token_retry_interval,
@@ -166,44 +178,38 @@ module ArcgisApi
       end
     end
 
-    def wrap_raw_token(token, expires_at = nil)
-      ArcgisApi::TokenInfo.new(
-        token: token,
-        expires_at: expires_at,
+    # @param [ArcgisApi::TokenInfo] cache_value existing cache_entry, non nil value
+    # @return [ArcgisApi::TokenInfo] retrieve and save a new token if expired,
+    #   or extend sliding_expires_at if needed
+    def process_expired_token(cache_value)
+      return cache_value unless expiration_strategy.expired?(
+        token_info: cache_value,
+        prefetch_ttl: prefetch_ttl,
       )
-    end
-
-    def token_expired(cache_entry)
-      expires_at = cache_entry.fetch(:expires_at, nil)
-      sliding_expires_at = cache_entry.fetch(:sliding_expires_at, expires_at)
-      check = IdentityConfig.store.arcgis_token_sliding_expiration_enabled ?
-                sliding_expires_at : expires_at
-      return check && Time.zone.now.to_f >= check
-    end
-
-    def handle_api_errors(response_body)
-      if response_body['error']
-        # response_body is in this format:
-        # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
-        error_code = response_body.dig('error', 'code')
-        error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
-        # log an error
-        analytics.idv_arcgis_request_failure(
-          exception_class: 'ArcGIS',
-          exception_message: error_message,
-          response_body_present: false,
-          response_body: '',
-          response_status_code: error_code,
-          api_status_code: error_code,
-        )
-        raise Faraday::RetriableResponse.new(
-          RuntimeError.new(error_message),
-          {
-            status: error_code,
-            body: { details: response_body.dig('error', 'details')&.join(', ') },
-          },
+      # process expired cache_value
+      # extend the sliding_expires_at value if needed
+      current_sliding_expires_at = cache_value.sliding_expires_at
+      expiration_strategy.
+        extend_sliding_expires_at(token_info: cache_value, prefetch_ttl: prefetch_ttl)
+      if current_sliding_expires_at != cache_value.sliding_expires_at
+        save_token(
+          cache_value,
+          cache_value.expires_at,
         )
       end
+
+      # now retrieve new token
+      update_value = retrieve_token
+      expires_at = update_value&.expires_at
+      if sliding_expiration_enabled
+        update_value.sliding_expires_at = prefetch_ttl >= 0 ?
+                                            expires_at - TIMES_TTL * prefetch_ttl : expires_at
+      end
+      save_token(
+        update_value,
+        update_value.expires_at,
+      )
+      return update_value
     end
 
     def notify_retry(env, exception_message)
@@ -242,6 +248,36 @@ module ArcgisApi
       end
       # rubocop:enable Layout/LineLength
       exception_message
+    end
+  end
+
+  class TokenExpirationStrategy
+    attr_accessor :sliding_expiration_enabled
+
+    def initialize(sliding_expiration_enabled:)
+      @sliding_expiration_enabled = sliding_expiration_enabled
+    end
+
+    def expired?(token_info:, prefetch_ttl:)
+      return true unless token_info
+      expires_at = token_info&.expires_at
+      now = Time.zone.now.to_f
+      # hard expired
+      return true if expires_at && expires_at <= now
+      # sliding expired
+      if sliding_expiration_enabled
+        sliding_expires_at = token_info&.sliding_expires_at
+        return true if sliding_expires_at && now > (sliding_expires_at + prefetch_ttl)
+      end
+      return false
+    end
+
+    # update sliding_expires_at if necessary
+    def extend_sliding_expires_at(token_info:, prefetch_ttl:)
+      if sliding_expiration_enabled && token_info&.sliding_expires_at
+        token_info.sliding_expires_at += prefetch_ttl
+      end
+      token_info
     end
   end
 end

@@ -3,17 +3,9 @@ class ArcgisTokenJob < ApplicationJob
 
   def perform
     analytics.idv_arcgis_token_job_started
-    token_keeper.retrieve_token
+    token_entry = token_keeper.retrieve_token
+    token_keeper.save_token(token_entry, token_entry.expires_at)
     return true
-  rescue StandardError => e
-    analytics.idv_arcgis_token_failure(
-      exception_class: 'ArcGIS',
-      exception_message: e.message,
-      response_body_present: false,
-      response_body: '',
-      response_status_code: '',
-      api_status_code: '',
-    )
   ensure
     analytics.idv_arcgis_token_job_completed
   end
