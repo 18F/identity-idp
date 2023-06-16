@@ -159,7 +159,7 @@ module ArcgisApi
     def connection
       faraday_retry_options = {
         retry_statuses: RETRY_HTTP_STATUS,
-        max: IdentityConfig.store.arcgis_get_token_retry_max,
+        max: IdentityConfig.store.arcgis_get_token_max_retries,
         methods: %i[post],
         interval: IdentityConfig.store.arcgis_get_token_retry_interval_seconds,
         interval_randomness: 0.25,
