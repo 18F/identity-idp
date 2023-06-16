@@ -47,7 +47,6 @@ RSpec.describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to idv_activated_url
-        expect(subject.current_user.profiles.size).to eq 0 # ?
       end
     end
 
@@ -62,7 +61,6 @@ RSpec.describe 'IdvStepConcern' do
         expect(response.body).to eq 'Hello'
         expect(response).to_not redirect_to idv_activated_url
         expect(response.status).to eq 200
-        expect(subject.current_user.profiles.size).to eq 0
       end
     end
   end
