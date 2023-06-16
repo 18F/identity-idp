@@ -584,17 +584,17 @@ module AnalyticsEvents
     )
   end
 
-  # Track when token job started
-  def idv_arcgis_token_job_started
-    track_event(
-      'ArcgisTokenJob: Started',
-    )
-  end
-
   # Track when token job ended
   def idv_arcgis_token_job_completed
     track_event(
       'ArcgisTokenJob: Completed',
+    )
+  end
+
+  # Track when token job started
+  def idv_arcgis_token_job_started
+    track_event(
+      'ArcgisTokenJob: Started',
     )
   end
 
