@@ -160,7 +160,8 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+        redo_document_capture: params[:redo] ? true : nil,
+      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def form_response(destination:)
@@ -218,6 +219,8 @@ module Idv
 
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
+
+      flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
 
       return if !flow_session[:flow_path]
 

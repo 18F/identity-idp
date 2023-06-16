@@ -16,7 +16,7 @@
     ) do |f| %>
   <div role="group" aria-label="<%= @presenter.heading %>">
     <% @presenter.options.each_with_index do |option, index| %>
-      <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
+      <%= render(option) do %>
         <%= radio_button_tag(
               'two_factor_options_form[selection]',
               option.type,
@@ -33,7 +33,7 @@
                 <%= option.info %>
               </span>
             <% end %>
-      </div>
+      <% end %>
     <% end %>
   </div>
 
@@ -45,5 +45,3 @@
 </p>
 
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
-
-<%= javascript_packs_tag_once 'webauthn-unhide' %>

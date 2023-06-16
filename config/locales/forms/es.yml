@@ -142,6 +142,8 @@ es:
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
+      alert_info: 'Enviamos una carta con su código único a:'
+      clear_and_start_over: Borrar su información y empezar de nuevo
       instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
       name: Código único
       return_to_profile: Regrese a su perfil
@@ -152,6 +154,7 @@ es:
         único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
         paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
         en llegar</strong>. Gracias por su paciencia.</p>'
+      wrong_address: ¿La dirección no es correcta?
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta %{app_name}.

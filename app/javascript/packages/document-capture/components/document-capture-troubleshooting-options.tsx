@@ -33,10 +33,6 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    * help at SP
    */
   showSPOption?: boolean;
-
-  altInPersonCta?: string;
-  altInPersonPrompt?: string;
-  altInPersonCtaButtonText?: string;
 }
 
 function DocumentCaptureTroubleshootingOptions({
@@ -45,9 +41,6 @@ function DocumentCaptureTroubleshootingOptions({
   showDocumentTips = true,
   showAlternativeProofingOptions,
   showSPOption = true,
-  altInPersonCta,
-  altInPersonPrompt,
-  altInPersonCtaButtonText,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
@@ -56,13 +49,7 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <>
-      {showAlternativeProofingOptions && inPersonURL && (
-        <InPersonCallToAction
-          altHeading={altInPersonCta}
-          altPrompt={altInPersonPrompt}
-          altButtonText={altInPersonCtaButtonText}
-        />
-      )}
+      {showAlternativeProofingOptions && inPersonURL && <InPersonCallToAction />}
       <TroubleshootingOptions
         heading={heading}
         options={

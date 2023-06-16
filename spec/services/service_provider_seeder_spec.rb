@@ -83,10 +83,6 @@ RSpec.describe ServiceProviderSeeder do
       let(:prod_issuer) { 'urn:gov:login:test-providers:fake-prod-sp' }
       let(:unrestricted_issuer) { 'urn:gov:login:test-providers:fake-unrestricted-sp' }
 
-      before do
-        allow(IdentityConfig.store).to receive(:team_ursula_email).and_return('team@example.com')
-      end
-
       context 'when %{env} is present in the config file' do
         let(:deploy_env) { 'dev' }
 
@@ -110,10 +106,12 @@ RSpec.describe ServiceProviderSeeder do
           expect(ServiceProvider.find_by(issuer: unrestricted_issuer)).not_to be_present
         end
 
-        it 'sends an email an error if the DB has an SP not in the config' do
+        it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
           create(:service_provider, issuer: 'missing_issuer')
+          run
 
-          expect { run }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          expect(NewRelic::Agent).to have_received(:notice_error)
         end
       end
 
@@ -130,9 +128,11 @@ RSpec.describe ServiceProviderSeeder do
         end
 
         it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
           create(:service_provider, issuer: 'missing_issuer')
+          run
 
-          expect { run }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          expect(NewRelic::Agent).to have_received(:notice_error)
         end
       end
 
