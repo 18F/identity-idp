@@ -13,10 +13,10 @@
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
-        <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-        <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                   locals: { option: option } %>
-        </div>
+        <%= render(option) do %>
+          <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                     locals: { option: option } %>
+        <% end %>
       <% end %>
     </fieldset>
   </div>
@@ -27,5 +27,3 @@
 <%= render PageFooterComponent.new do %>
   <%= link_to t('mfa.skip'), @after_setup_path, method: :get %>
 <% end %>
-
-<%= javascript_packs_tag_once('webauthn-unhide') %>

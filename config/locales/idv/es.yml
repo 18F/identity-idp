@@ -58,24 +58,14 @@ es:
         ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
     failure:
-      attempts:
-        one: Por motivos de seguridad, le quedan un intento para añadir su documento de
-          identidad en línea.
-        one_variant_a_html: Por motivos de seguridad, le quedan <strong>un
-          intento</strong> para añadir su documento de identidad en línea.
-        one_variant_b_html: Intente tomar nuevas fotografías. Por motivos de seguridad,
-          le quedan <strong>un intento</strong> para añadir su documento de
-          identidad en línea.
-        other: Por motivos de seguridad, le quedan %{count} intentos para añadir su
-          documento de identidad en línea.
-        other_variant_a_html: Por motivos de seguridad, le quedan <strong>%{count}
-          intentos</strong> para añadir su documento de identidad en línea.
-        other_variant_b_html: Intente tomar nuevas fotografías. Por motivos de
-          seguridad, le quedan <strong>%{count} intentos</strong> para añadir su
-          documento de identidad en línea.
+      attempts_html:
+        one: Por motivos de seguridad, le quedan <strong>un intento</strong> para añadir
+          su documento de identidad en línea.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>
+          para añadir su documento de identidad en línea.
       button:
+        try_online: Vuelva a intentarlo en línea
         warning: Inténtelo de nuevo
-        warning_variant: Vuelva a intentarlo en línea
       exceptions:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
           inténtalo de nuevo.

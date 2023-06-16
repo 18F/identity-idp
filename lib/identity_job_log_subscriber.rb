@@ -1,6 +1,8 @@
 # ActiveJob events documentation:
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb
+require 'active_job/log_subscriber'
+
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def enqueue(event)
     job = event.payload[:job]
@@ -206,4 +208,5 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 end
 
+ActiveJob::LogSubscriber.detach_from :active_job
 IdentityJobLogSubscriber.attach_to :active_job

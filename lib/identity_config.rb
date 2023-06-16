@@ -225,8 +225,6 @@ class IdentityConfig
     config.add(:idv_sp_required, type: :boolean)
     config.add(:ie11_support_end_date, type: :timestamp)
     config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_percents, type: :json)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
