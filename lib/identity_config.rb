@@ -127,7 +127,7 @@ class IdentityConfig
     config.add(:arcgis_api_find_address_candidates_url, type: :string)
     config.add(:arcgis_api_request_timeout_seconds, type: :integer)
     config.add(:arcgis_api_token_cache_key_prefix, type: :string)
-    config.add(:arcgis_api_token_prefetch_ttl, type: :integer)
+    config.add(:arcgis_api_token_prefetch_ttl_seconds, type: :integer)
     config.add(:arcgis_get_token_retry_max, type: :integer)
     config.add(:arcgis_get_token_retry_interval, type: :integer)
     config.add(:arcgis_get_token_retry_backoff_factor, type: :integer)

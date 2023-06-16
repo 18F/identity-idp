@@ -80,7 +80,7 @@ module ArcgisApi
   # length of time to generate a new API token.
 
   class TokenKeeper < TokenCache
-    API_PREFETCH_TTL_SECONDS = IdentityConfig.store.arcgis_api_token_prefetch_ttl
+    API_PREFETCH_TTL_SECONDS = IdentityConfig.store.arcgis_api_token_prefetch_ttl_seconds
 
     RETRY_HTTP_STATUS = [404, 408, 409, 421, 429, 500, 502, 503, 504, 509]
 
