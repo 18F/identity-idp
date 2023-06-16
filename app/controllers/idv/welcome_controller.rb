@@ -27,7 +27,7 @@ module Idv
 
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
-      # TEMP create_document_capture_session(document_capture_session_uuid_key)
+      create_document_capture_session
       cancel_previous_in_person_enrollments
 
       idv_session.welcome_visited = true
@@ -46,6 +46,14 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }
+    end
+
+    def create_document_capture_session
+      document_capture_session = DocumentCaptureSession.create(
+        user_id: current_user.id,
+        issuer: sp_session[:issuer],
+      )
+      flow_session[:document_capture_session_uuid] = document_capture_session.uuid
     end
 
     def cancel_previous_in_person_enrollments

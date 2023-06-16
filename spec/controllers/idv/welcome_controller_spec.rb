@@ -85,6 +85,11 @@ RSpec.describe Idv::WelcomeController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
+    it 'creates a document capture session' do
+      expect { put :update }.
+        to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
+    end
+
     context 'with previous establishing in-person enrollments' do
       let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 
