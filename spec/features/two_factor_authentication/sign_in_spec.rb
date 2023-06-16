@@ -595,14 +595,12 @@ RSpec.feature 'Two Factor Authentication' do
         # Since the element will have already initialized by this point and it can't be guaranteed
         # that isUserVerifyingPlatformAuthenticatorAvailable would yield the expected value, stub
         # and reconnect the elements to simulate as if it were the expected value on page load.
-        stub_platform_auth_available_js = <<~JS
+        page.evaluate_script(<<~JS)
           window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = () => Promise.resolve(true);
         JS
-        page.evaluate_script(stub_platform_auth_available_js)
-        reconnect_webauthn_input_js = <<~JS
+        page.evaluate_script(<<~JS)
           document.querySelectorAll('lg-webauthn-input').forEach((input) => input.connectedCallback());
         JS
-        page.evaluate_script(reconnect_webauthn_input_js)
       end
     end
   end
