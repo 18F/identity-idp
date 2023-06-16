@@ -7,7 +7,7 @@ module ArcgisApi
       return unless body.fetch('error', false)
       handle_api_errors(body)
     rescue => e
-      raise e if e.is_a?(Faraday::ServerError)
+      raise e if e.is_a?(Faraday::RetriableResponse)
     end
 
     def handle_api_errors(response_body)
@@ -16,7 +16,7 @@ module ArcgisApi
       error_code = response_body.dig('error', 'code')
       error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
       # log an error
-      raise Faraday::ServerError.new(
+      raise Faraday::RetriableResponse.new(
         RuntimeError.new(error_message),
         {
           status: error_code,
