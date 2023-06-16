@@ -79,10 +79,25 @@ RSpec.describe Idv::WelcomeController do
         irs_reproofing: false }
     end
 
-    it 'sends analytics_submitted event with consent given' do
-      put :update, params: { doc_auth: { ial2_consent_given: 1 } }
+    it 'sends analytics_submitted event' do
+      put :update
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
+    context 'with previous establishing in-person enrollments' do
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'cancels all previous establishing enrollments' do
+        put :update
+
+        expect(enrollment.reload.status).to eq('cancelled')
+        expect(user.establishing_in_person_enrollment).to be_blank
+      end
     end
   end
 
