@@ -8,7 +8,9 @@ describe 'Account Reset Request: Delete Account', email: true do
   let(:user) { create(:user, :fully_registered) }
   let(:user_email) { user.email_addresses.first.email }
   let(:push_notification_url) { 'http://localhost/push_notifications' }
-  let(:frozen_now) { Time.zone.local(2023, 'jun', 9, 9, 0) }
+
+  # Force hour so that running this near midnight UTC doesn't fail
+  let(:frozen_now) { Time.zone.now.change(hour: 9) }
 
   let(:service_provider) do
     create(
