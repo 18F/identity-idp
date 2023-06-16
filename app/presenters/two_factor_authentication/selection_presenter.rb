@@ -9,8 +9,8 @@ module TwoFactorAuthentication
       @user = user
     end
 
-    def render_in(_view_context, &block)
-      yield block
+    def render_in(view_context, &block)
+      view_context.capture(&block)
     end
 
     def type
