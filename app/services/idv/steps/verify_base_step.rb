@@ -50,8 +50,7 @@ module Idv
             # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
           elsif stage == :state_id
-            # mawagner: Do we need to update this as well, or is this flow functionally obsolete?
-            next if hash[:vendor_name] == 'UnsupportedJurisdiction'
+            next if hash[:exception].present?
             process_aamva(hash[:transaction_id])
           elsif stage == :threatmetrix
             # transaction_id comes from request_id

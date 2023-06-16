@@ -329,7 +329,7 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'records the cost as billable' do
-          expect { put :show }.to(change { SpCost.where(cost_type: 'aamva').count }.by(1))
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
         end
       end
 
@@ -337,17 +337,16 @@ RSpec.describe Idv::VerifyInfoController do
         let(:success) { false }
 
         it 'logs a cost' do
-          expect { put :show }.to(change { SpCost.where(cost_type: 'aamva').count }.by(1))
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
         end
       end
 
       context 'when the jurisdiction is unsupported' do
-        let(:success) { false }
+        let(:success) { true }
         let(:vendor_name) { 'UnsupportedJurisdiction' }
 
-        # FIXME: This logic is questionable. I think AAMVA does charge us here.
-        it 'does not consider the request billable' do
-          expect { put :show }.to(change { SpCost.where(cost_type: 'aamva').count }.by(0))
+        it 'considers the request billable' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
         end
       end
 
@@ -371,7 +370,7 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         it 'does not log a cost' do
-          expect { put :show }.to(change { SpCost.where(cost_type: 'aamva').count }.by(0))
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(0)
         end
       end
     end
