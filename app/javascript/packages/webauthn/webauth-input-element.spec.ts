@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/dom';
 import type { IsWebauthnSupported } from './is-webauthn-supported';
 import type { IsWebauthnPlatformSupported } from './is-webauthn-platform-supported';
 
-describe('getDefaultLoadPaths', () => {
+describe('WebauthnInputElement', () => {
   const isWebauthnSupported = sinon.stub<
     Parameters<IsWebauthnSupported>,
     ReturnType<IsWebauthnSupported>
