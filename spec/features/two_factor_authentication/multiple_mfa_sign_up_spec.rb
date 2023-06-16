@@ -136,6 +136,31 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
   end
 
+  scenario 'when backup codes are the only selected option' do
+    sign_in_before_2fa
+
+    expect(current_path).to eq authentication_methods_setup_path
+
+    click_2fa_option('backup_code')
+
+    click_continue
+
+    expect(current_path).to eq backup_code_setup_path
+
+    click_continue
+
+    expect(page).to have_link(t('components.download_button.label'))
+
+    click_continue
+
+    expect(page).to have_current_path(
+      auth_method_confirmation_path,
+    )
+
+    click_button t('mfa.skip')
+    expect(page).to have_current_path(confirm_backup_codes_path)
+  end
+
   def click_2fa_option(option)
     find("label[for='two_factor_options_form_selection_#{option}']").click
   end
