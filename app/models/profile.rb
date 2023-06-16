@@ -45,36 +45,6 @@ class Profile < ApplicationRecord
     ]
   end
 
-  # rubocop:disable Rails/SkipsModelValidations
-  def activate(reason_deactivated: nil)
-    confirm_that_profile_can_be_activated!
-
-    now = Time.zone.now
-    is_reproof = Profile.find_by(user_id: user_id, active: true)
-
-    attrs = {
-      active: true,
-      activated_at: now,
-    }
-
-    attrs[:verified_at] = now unless reason_deactivated == :password_reset
-
-    transaction do
-      Profile.where(user_id: user_id).update_all(active: false)
-      update!(attrs)
-    end
-    send_push_notifications if is_reproof
-  end
-  # rubocop:enable Rails/SkipsModelValidations
-
-  def reason_not_to_activate
-    if pending_reasons.any?
-      "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
-    elsif deactivation_reason.present?
-      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
-    end
-  end
-
   def remove_gpo_deactivation_reason
     update!(gpo_verification_pending_at: nil)
     update!(deactivation_reason: nil) if gpo_verification_pending_NO_LONGER_USED?
@@ -218,6 +188,28 @@ class Profile < ApplicationRecord
 
   private
 
+  # rubocop:disable Rails/SkipsModelValidations
+  def activate(reason_deactivated: nil)
+    confirm_that_profile_can_be_activated!
+
+    now = Time.zone.now
+    is_reproof = Profile.find_by(user_id: user_id, active: true)
+
+    attrs = {
+      active: true,
+      activated_at: now,
+    }
+
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset
+
+    transaction do
+      Profile.where(user_id: user_id).update_all(active: false)
+      update!(attrs)
+    end
+    send_push_notifications if is_reproof
+  end
+  # rubocop:enable Rails/SkipsModelValidations
+
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
   end
@@ -230,6 +222,14 @@ class Profile < ApplicationRecord
         cached_irs_session_id: fraud_review_request&.irs_session_id,
         cached_login_session_id: fraud_review_request&.login_session_id,
       )
+    end
+  end
+
+  def reason_not_to_activate
+    if pending_reasons.any?
+      "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+    elsif deactivation_reason.present?
+      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
     end
   end
 
