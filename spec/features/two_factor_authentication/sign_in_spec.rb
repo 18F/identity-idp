@@ -544,7 +544,7 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
         end
 
-        it 'shows signed in user options with webauthn visible', :js do
+        it 'shows options with webauthn visible', :js, driver: :headless_chrome_mobile do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
@@ -570,7 +570,7 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
         end
 
-        it 'shows signed in user options with webauthn visible', :js do
+        it 'shows options with webauthn visible', :js, driver: :headless_chrome_mobile do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
