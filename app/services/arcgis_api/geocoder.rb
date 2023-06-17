@@ -97,7 +97,7 @@ module ArcgisApi
     end
 
     def token
-      token_keeper.token
+      token_keeper&.token
     end
 
     private

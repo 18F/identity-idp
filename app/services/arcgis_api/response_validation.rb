@@ -6,8 +6,6 @@ module ArcgisApi
       body = env.body.is_a?(String) ? JSON.parse(env.body) : env.body
       return unless body.fetch('error', false)
       handle_api_errors(body)
-    rescue => e
-      raise e if e.is_a?(Faraday::RetriableResponse)
     end
 
     def handle_api_errors(response_body)
@@ -16,8 +14,8 @@ module ArcgisApi
       error_code = response_body.dig('error', 'code')
       error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
       # log an error
-      raise Faraday::RetriableResponse.new(
-        RuntimeError.new(error_message),
+      raise ArcgisApi::InvalidResponseError.new(
+        Faraday::Error.new(error_message),
         {
           status: error_code,
           body: { details: response_body.dig('error', 'details')&.join(', ') },

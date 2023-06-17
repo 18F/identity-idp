@@ -166,7 +166,8 @@ module ArcgisApi
         interval_randomness: 0.25,
         backoff_factor: IdentityConfig.store.arcgis_get_token_retry_backoff_factor,
         exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
-                     Faraday::ClientError, Faraday::RetriableResponse],
+                     Faraday::ClientError, Faraday::RetriableResponse,
+                     ArcgisApi::InvalidResponseError],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
           exception_message = exception_message(exception, options, retry_count, will_retry_in)
@@ -307,5 +308,8 @@ module ArcgisApi
       end
       token_info
     end
+  end
+
+  class InvalidResponseError < Faraday::Error
   end
 end
