@@ -35,14 +35,18 @@ module ArcgisApi
     # @return [ArcgisApi:TokenInfo|nil] fetch cache entry and wrap it necessary, if miss return nil
     def token_entry
       cache_entry = Rails.cache.read(cache_key)
-      # return what we get from cache
+      # return what we get from cache if found
       return nil unless cache_entry
       cache_entry = wrap_raw_token(cache_entry) unless cache_entry.is_a?(ArcgisApi::TokenInfo)
       cache_entry
     end
 
+    # @param [ArcgisApi::TokenInfo] cache_value the value to write to cache
+    # @param [Number] expires_at the hard expiration time in unix time
     def save_token(cache_value, expires_at)
-      Rails.cache.write(cache_key, cache_value, expires_at: expires_at)
+      entry_to_write = IdentityConfig.store.arcgis_token_sliding_expiration_enabled ?
+                         cache_value : cache_value.token
+      Rails.cache.write(cache_key, entry_to_write, expires_at: expires_at)
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
       # using a dedicated Redis cache and instead are just using our existing Redis server with
       # mixed usage patterns. Without this cache entries don't expire.
@@ -86,17 +90,14 @@ module ArcgisApi
 
     TIMES_TTL = 3
 
-    attr_accessor :connection_factory, :prefetch_ttl, :analytics, :sliding_expiration_enabled,
+    attr_accessor :prefetch_ttl, :analytics, :sliding_expiration_enabled,
                   :expiration_strategy
 
     # @param [String] cache_key token cache key
-    # @param [ArcgisApi::ConnectionFactory] connection_factory
     # @param [Number] prefetch_ttl number of seconds used to calculate a sliding_expires_at time
     def initialize(cache_key: API_TOKEN_CACHE_KEY,
-                   connection_factory: ArcgisApi::ConnectionFactory.new,
                    prefetch_ttl: API_PREFETCH_TTL_SECONDS)
       super(cache_key: cache_key)
-      @connection_factory = connection_factory
       @prefetch_ttl = (prefetch_ttl && prefetch_ttl > 0 ? prefetch_ttl : API_PREFETCH_TTL_SECONDS)
       @prefetch_ttl += (rand - 0.5) # random jitter
       @analytics = Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
@@ -172,25 +173,43 @@ module ArcgisApi
           notify_retry(env, exception_message)
         },
       }
-      connection_factory.connection do |conn|
+      Faraday.new do |conn|
+        # Log request metrics
+        conn.request :instrumentation, name: 'request_metric.faraday'
+        conn.options.timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
+        # Parse JSON responses
+        conn.response :json, content_type: 'application/json'
+        # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
+        # Note: The order of this matters for parsing the error response body.
+        conn.response :raise_error
         conn.request :retry, faraday_retry_options
         conn.use ArcgisApi::ResponseValidation
+        yield conn if block_given?
       end
     end
 
+    # Core logic on what to do  when a token sliding-expired (very close to expiration time).
+    # Ideally this wont be invoked when there is a cache miss(already hard expired).
+    # Sliding expiration gives the application a buffer to preemptively get new token and
+    # avoid affecting large number of workers near the real expiration time.
+    # When it's sliding expired. the current worker first extend the sliding_expires_at
+    # time with an additional prefetch_ttl seconds (to mitigate chances other workers
+    # doing the same thing, not bullet proof, unless we have a single locking mechanism),
+    # then go ahead request a new token from arcgis and save it to cache.
+    #
     # @param [ArcgisApi::TokenInfo] cache_value existing cache_entry, non nil value
     # @return [ArcgisApi::TokenInfo] retrieve and save a new token if expired,
     #   or extend sliding_expires_at if needed
     def process_expired_token(cache_value)
       return cache_value unless expiration_strategy.expired?(
         token_info: cache_value,
-        prefetch_ttl: prefetch_ttl,
       )
-      # process expired cache_value
-      # extend the sliding_expires_at value if needed
+      # process sliding expired cache_value
+      # extend the sliding_expires_at with additional prefetch_ttl seconds value if needed
       current_sliding_expires_at = cache_value.sliding_expires_at
       expiration_strategy.
         extend_sliding_expires_at(token_info: cache_value, prefetch_ttl: prefetch_ttl)
+      # avoid extra call if needed when nothing changes
       if current_sliding_expires_at != cache_value.sliding_expires_at
         save_token(
           cache_value,
@@ -258,21 +277,30 @@ module ArcgisApi
       @sliding_expiration_enabled = sliding_expiration_enabled
     end
 
-    def expired?(token_info:, prefetch_ttl:)
+    # Check whether a token_info expired or not. It's considered not expired
+    # when has no expires_at field.
+    # If expires_at time is past, then it's expired. Otherwise, check sliding_expires_at when
+    # sliding expiration is enabled, and it's considered expired when sliding_expires_at time
+    # is over prefetch_ttl seconds.
+    #
+    # @param [ArcgisApi::TokenInfo] token_info
+    # @return [true|false] whether it's considered expired
+    def expired?(token_info:)
       return true unless token_info
       expires_at = token_info&.expires_at
+      return false unless expires_at
       now = Time.zone.now.to_f
       # hard expired
       return true if expires_at && expires_at <= now
       # sliding expired
       if sliding_expiration_enabled
         sliding_expires_at = token_info&.sliding_expires_at
-        return true if sliding_expires_at && now > (sliding_expires_at + prefetch_ttl)
+        return true if sliding_expires_at && now >= sliding_expires_at
       end
       return false
     end
 
-    # update sliding_expires_at if necessary
+    # update sliding_expires_at if necessary and extend it prefetch_ttl seconds
     def extend_sliding_expires_at(token_info:, prefetch_ttl:)
       if sliding_expiration_enabled && token_info&.sliding_expires_at
         token_info.sliding_expires_at += prefetch_ttl
