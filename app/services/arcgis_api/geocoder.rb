@@ -39,11 +39,9 @@ module ArcgisApi
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
     ]
 
-    private attr_accessor :token_keeper, :connection_factory
+    private attr_accessor :token_keeper
 
-    def initialize(connection_factory: ArcgisApi::ConnectionFactory.new,
-                   token_keeper: TokenKeeper.new(connection_factory: connection_factory))
-      @connection_factory = connection_factory
+    def initialize(token_keeper: TokenKeeper.new)
       @token_keeper = token_keeper
     end
 
@@ -61,7 +59,7 @@ module ArcgisApi
       }
 
       parse_suggestions(
-        connection_factory.connection.
+        connection.
           get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
           req.options.context = { service_name: 'arcgis_geocoder_suggest' }
         end.body,
@@ -105,8 +103,16 @@ module ArcgisApi
     private
 
     def connection
-      connection_factory.connection do |conn|
-        yield(conn) if block_given?
+      Faraday.new do |conn|
+        # Log request metrics
+        conn.request :instrumentation, name: 'request_metric.faraday'
+        conn.options.timeout = IdentityConfig.store.arcgis_api_request_timeout_seconds
+        # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
+        # Note: The order of this matters for parsing the error response body.
+        conn.response :raise_error
+        # Parse JSON responses
+        conn.response :json, content_type: 'application/json'
+        yield conn if block_given?
       end
     end
 
