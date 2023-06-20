@@ -697,6 +697,16 @@ RSpec.describe Profile do
     end
   end
 
+  describe 'When a profile already has a verified_at timesamp' do
+    it 'does not update the timestamp when #activate is called' do
+      original_timestamp = 1.day.ago
+      profile = user.profiles.create(active: false, verified_at: original_timestamp)
+      expect(profile.reason_not_to_activate).to be_nil
+      profile.activate
+      expect(profile.verified_at).to eq(original_timestamp)
+    end
+  end
+
   describe 'scopes' do
     describe '#active' do
       it 'returns only active Profiles' do
