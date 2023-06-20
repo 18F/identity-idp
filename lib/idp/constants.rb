@@ -99,6 +99,7 @@ module Idp
       state_id_number: '1111111111111',
       state_id_type: 'drivers_license',
       zipcode: '59010',
+      same_address_as_id: nil,
     }.freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze

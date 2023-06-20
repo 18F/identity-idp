@@ -422,6 +422,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     context 'when double address verification is not enabled' do
       let(:double_address_verification) { false }
       let(:applicant_pii) do
+        # test ensures same_address_as_id value has no effect
         Idp::Constants::MOCK_IDV_APPLICANT.merge(same_address_as_id: 'true')
       end
       let(:residential_instant_verify_proof) do

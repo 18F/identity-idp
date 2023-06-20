@@ -30,8 +30,6 @@
       failure_to_proof_url: failure_to_proof_url,
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
-      in_person_cta_variant_testing_enabled: IdentityConfig.store.in_person_cta_variant_testing_enabled,
-      in_person_cta_variant_active: in_person_cta_variant_active,
       in_person_usps_outage_message_enabled: IdentityConfig.store.in_person_usps_outage_message_enabled,
     } %>
   <%= simple_form_for(

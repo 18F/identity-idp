@@ -30,6 +30,7 @@ module Idv
           call('document_capture', :update, true)
 
         if result.success?
+          flash[:success] = t('doc_auth.headings.capture_complete')
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
           redirect_to idv_hybrid_mobile_document_capture_url
@@ -44,7 +45,6 @@ module Idv
         }.merge(
           native_camera_ab_testing_variables,
           acuant_sdk_upgrade_a_b_testing_variables,
-          in_person_cta_variant_testing_variables,
         )
       end
 

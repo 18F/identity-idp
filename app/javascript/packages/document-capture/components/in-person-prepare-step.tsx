@@ -1,11 +1,10 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { Link, PageHeading, ProcessList, ProcessListItem } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
-import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
@@ -14,14 +13,8 @@ import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
-  const { setSubmitEventMetadata } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonCtaVariantActive, inPersonUspsOutageMessageEnabled } =
-    useContext(InPersonContext);
-
-  useEffect(() => {
-    setSubmitEventMetadata({ in_person_cta_variant: inPersonCtaVariantActive });
-  }, []);
+  const { inPersonURL, inPersonUspsOutageMessageEnabled } = useContext(InPersonContext);
 
   return (
     <>
