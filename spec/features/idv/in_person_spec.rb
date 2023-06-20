@@ -744,7 +744,7 @@ RSpec.describe 'In Person Proofing', js: true do
       )
     end
 
-    it 'can redo the address page form' do
+    it 'can redo the address page form even if that page is skipped' do
       complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
       # skip address step
       complete_ssn_step(user)
