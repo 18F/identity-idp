@@ -133,6 +133,7 @@ RSpec.describe Idv::GpoVerifyController do
           threatmetrix_check_failed: false,
           enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+          pii_missing: be_in([true, false]),
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
           with(success_properties)
@@ -180,6 +181,7 @@ RSpec.describe Idv::GpoVerifyController do
             threatmetrix_check_failed: false,
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+            pii_missing: be_in([true, false]),
           )
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
             with(success_properties)
@@ -216,6 +218,7 @@ RSpec.describe Idv::GpoVerifyController do
               threatmetrix_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+              pii_missing: be_in([true, false]),
             )
             expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
               with(success_properties)
@@ -252,6 +255,7 @@ RSpec.describe Idv::GpoVerifyController do
               threatmetrix_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+              pii_missing: be_in([true, false]),
             )
 
             action
@@ -289,6 +293,7 @@ RSpec.describe Idv::GpoVerifyController do
               threatmetrix_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+              pii_missing: be_in([true, false]),
             )
 
             action
@@ -312,6 +317,7 @@ RSpec.describe Idv::GpoVerifyController do
           enqueued_at: nil,
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+          pii_missing: be_in([true, false]),
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
           with(success: false, failure_reason: otp_code_incorrect)
@@ -343,6 +349,7 @@ RSpec.describe Idv::GpoVerifyController do
           enqueued_at: nil,
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+          pii_missing: be_in([true, false]),
         ).exactly(max_attempts - 1).times
 
         expect(@analytics).to receive(:track_event).with(

@@ -959,12 +959,14 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account verification submitted
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Hash] pii_missing
   # @param [Hash] pii_like_keypaths
   # GPO verification submitted
   def idv_gpo_verification_submitted(
     success:,
     errors:,
     pii_like_keypaths:,
+    pii_missing: nil,
     **extra
   )
     track_event(
@@ -972,6 +974,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       pii_like_keypaths: pii_like_keypaths,
+      pii_missing: pii_missing,
       **extra,
     )
   end

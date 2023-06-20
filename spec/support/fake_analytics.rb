@@ -13,7 +13,12 @@ class FakeAnalytics < Analytics
 
       string_payload = attributes.to_json
 
-      if string_payload.include?('pii') && !pii_like_keypaths.include?([:pii])
+      event_says_pii = string_payload.gsub(
+        'pii_missing',
+        '',
+      ).include?('pii') && !pii_like_keypaths.include?([:pii])
+
+      if event_says_pii
         raise PiiDetected, <<~ERROR
           track_event string 'pii' detected in attributes
           event: #{event} (#{constant_name})

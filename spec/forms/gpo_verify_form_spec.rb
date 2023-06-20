@@ -118,6 +118,19 @@ RSpec.describe GpoVerifyForm do
         expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
       end
 
+      it 'reports pii not missing' do
+        result = subject.submit
+        expect(result.to_h[:pii_missing]).to eq(false)
+      end
+
+      context 'pii is nil' do
+        let(:applicant) { nil }
+        it 'reports pii not missing' do
+          result = subject.submit
+          expect(result.to_h[:pii_missing]).to eq(true)
+        end
+      end
+
       context 'pending in person enrollment' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
