@@ -5,8 +5,9 @@ import isWebauthnSupported from './is-webauthn-supported';
 export class WebauthnInputElement extends HTMLElement {
   isInitialized = false;
 
-  connectedCallback() {
-    this.toggleVisibleIfSupported();
+  async connectedCallback() {
+    await this.toggleVisibleIfSupported();
+    this.isInitialized = true;
   }
 
   get isPlatform(): boolean {
@@ -37,8 +38,6 @@ export class WebauthnInputElement extends HTMLElement {
     if (await this.isSupported()) {
       this.removeAttribute('hidden');
     }
-
-    this.isInitialized = true;
   }
 }
 
