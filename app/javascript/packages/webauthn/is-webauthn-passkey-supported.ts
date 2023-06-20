@@ -1,4 +1,4 @@
-type IsWebauthnPasskeySupported = () => boolean;
+export type IsWebauthnPasskeySupported = () => boolean;
 
 const MINIMUM_IOS_VERSION = 16;
 
