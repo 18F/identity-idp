@@ -186,6 +186,7 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    post '/account/reauthentication' => 'accounts/reauthentication#create'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
@@ -202,7 +203,6 @@ Rails.application.routes.draw do
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
     get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
-    post '/reauthentication' => 'reauthentication#create', as: :reauthentication
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
         as: :sp_inactive_error

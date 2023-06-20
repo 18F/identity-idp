@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ReauthenticationController do
+RSpec.describe Accounts::ReauthenticationController do
   let(:user) { create(:user, :fully_registered) }
 
   describe '#create' do

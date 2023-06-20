@@ -194,7 +194,7 @@ RSpec.feature 'User profile' do
         fill_in_code_with_last_phone_otp
         click_submit_default
         visit account_path
-        expect(page).to_not have_link(t('account.re_verify.footer'))
+        expect(page).to_not have_button(t('account.re_verify.footer'))
 
         dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
         parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
@@ -221,9 +221,9 @@ RSpec.feature 'User profile' do
         travel_to((timeout_in_minutes + 1).minutes.from_now) do
           sign_in_user(user)
           visit account_path
-          expect(page).to have_link(t('account.re_verify.footer'))
+          expect(page).to have_button(t('account.re_verify.footer'))
           expect(page).to_not have_content(parsed_date)
-          click_link t('account.re_verify.footer')
+          click_button t('account.re_verify.footer')
           expect(page).
             to have_content t('two_factor_authentication.login_options.sms')
           click_button t('forms.buttons.continue')
