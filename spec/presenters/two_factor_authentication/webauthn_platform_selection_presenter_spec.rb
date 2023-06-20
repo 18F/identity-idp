@@ -23,14 +23,31 @@ RSpec.describe TwoFactorAuthentication::WebauthnPlatformSelectionPresenter do
 
       expect(view_context).to receive(:render) do |component, &block|
         expect(component).to be_instance_of(WebauthnInputComponent)
+        expect(component.passkey_supported_only?).to be(true)
         expect(block.call).to eq('content')
       end
 
       presenter_without_mfa.render_in(view_context) { 'content' }
     end
+
+    context 'with configured authenticator' do
+      let(:configuration) do
+        create(:webauthn_configuration, platform_authenticator: true, user: user_with_mfa)
+      end
+
+      it 'renders a WebauthnInputComponent with passkey_supported_only false' do
+        view_context = ActionController::Base.new.view_context
+
+        expect(view_context).to receive(:render) do |component, &block|
+          expect(component.passkey_supported_only?).to be(false)
+        end
+
+        presenter_without_mfa.render_in(view_context)
+      end
+    end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     it 'returns an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end
