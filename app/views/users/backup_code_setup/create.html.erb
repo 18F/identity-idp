@@ -6,7 +6,7 @@
   <%= t('forms.backup_code.subinfo_html', app_name: APP_NAME) %>
 </p>
 
-<div class="margin-top-4 margin-bottom-5">
+<div class="margin-y-4">
   <div class="grid-row">
     <% [@codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
       <div class="grid-col-12 tablet:grid-col-6">
@@ -53,7 +53,6 @@
         name: :backup_code_notice_accepted,
         as: :boolean,
         label: t('forms.backup_code.saved'),
-        label_html: { class: 'margin-y-2' },
         required: true,
       ) %>
   <%= f.submit t('forms.buttons.continue') %>
