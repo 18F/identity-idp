@@ -163,7 +163,6 @@ ecr-scan:
     entrypoint: [""] 
   script:
     - IMAGE_DIGEST=$(aws ecr describe-images --repository-name identity-idp/review --image-ids imageTag=$CI_COMMIT_SHA --query 'imageDetails[0].imageDigest' --output text)
-    - aws ecr start-image-scan --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
     - aws ecr wait image-scan-complete --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
     - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST)
     - echo $SCAN_FINDINGS
