@@ -89,13 +89,21 @@ class ActionAccount
       users = User.where(uuid: uuids).order(:uuid)
       users.each do |user|
         log_texts = []
-        if action == :suspend && user.suspended?
-          log_texts << log_text[:user_already_suspended]
-        elsif action == :reinstate && !user.suspended?
-          log_texts << log_text[:user_is_not_suspended]
-        else
-          user.public_send("#{action}!")
-          log_texts << (action == :suspend ? log_text[:user_suspended] : log_text[:user_reinstated])
+        case action
+        when :suspend
+          if user.suspended?
+            log_texts << log_text[:user_already_suspended]
+          else
+            user.suspend!
+            log_texts << log_text[:user_suspended]
+          end
+        when :reinstate
+          if user.suspended?
+            user.reinstate!
+            log_texts << log_text[:user_reinstated]
+          else
+            log_texts << log_text[:user_is_not_suspended]
+          end
         end
 
         log_texts.each do |text|
