@@ -76,6 +76,15 @@ RSpec.feature 'idv gpo step' do
         gpo_confirmation_code
 
         signin_with_piv(user)
+        fill_in t('account.index.password'), with: user.password
+        click_button t('forms.buttons.submit.default')
+
+        fill_in t('forms.verify_profile.name'), with: otp
+        click_button t('forms.verify_profile.submit')
+
+        expect(user.identity_verified?).to be(true)
+
+        expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
       end
     end
 
