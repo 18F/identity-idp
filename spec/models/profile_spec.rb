@@ -292,7 +292,7 @@ RSpec.describe Profile do
       end
     end
 
-    describe 'When a profile already has a verified_at timesamp' do
+    context 'When a profile already has a verified_at timesamp' do
       it 'does not update the timestamp when #activate is called' do
         profile = create(:profile, :verified, user: user)
         original_timestamp = profile.verified_at
