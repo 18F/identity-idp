@@ -1,5 +1,4 @@
-class Accounts::ReverifyToShowPiiController < ApplicationController
-  include RememberDeviceConcern
+class ReauthenticationController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def create
@@ -8,4 +7,4 @@ class Accounts::ReverifyToShowPiiController < ApplicationController
 
     redirect_to login_two_factor_options_path(reauthn: true)
   end
-  end
+end

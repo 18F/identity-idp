@@ -184,7 +184,7 @@ RSpec.feature 'User profile' do
 
   context 'allows verified user to see their information' do
     context 'time between sign in and remember device' do
-      it 'does not have prompt to authenticate device' do
+      it 'shows PII when timeout hasnt expired' do
         profile = create(
           :profile, :active, :verified,
           pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
@@ -203,7 +203,7 @@ RSpec.feature 'User profile' do
     end
 
     context 'when time expired' do
-      it 'has a prompt to authenticate device' do
+      it 'has a prompt to authenticate device and pii isnt visible until reauthenticate' do
         profile = create(
           :profile, :active, :verified,
           pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
@@ -224,7 +224,8 @@ RSpec.feature 'User profile' do
           expect(page).to have_link(t('account.re_verify.footer'))
           expect(page).to_not have_content(parsed_date)
           click_link t('account.re_verify.footer')
-          fill_in t('account.index.password'), with: user.password
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.sms')
           click_button t('forms.buttons.continue')
           fill_in_code_with_last_phone_otp
           click_submit_default

@@ -6,7 +6,7 @@
           <%= t('account.re_verify.banner') %>
           <%= render ButtonComponent.new(
               action: ->(**tag_options, &block) do
-                button_to(reverify_to_show_pii_path, **tag_options, &block)
+                button_to(reauthentication_path, **tag_options, &block)
               end,
               method: :post,
               class: 'usa-button usa-button--unstyled',

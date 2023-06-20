@@ -185,7 +185,6 @@ Rails.application.routes.draw do
         as: :risc_configuration
 
     get '/account' => 'accounts#show'
-    post '/account/reverify_to_show_pii' => 'accounts/reverify_to_show_pii#create', as: :reverify_to_show_pii
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
@@ -203,6 +202,7 @@ Rails.application.routes.draw do
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
     get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
+    post '/reauthentication' => 'reauthentication#create', as: :reauthentication
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
         as: :sp_inactive_error
