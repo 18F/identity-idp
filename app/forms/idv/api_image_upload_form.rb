@@ -8,7 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
-    validate :throttle_if_rate_limited
+    # validate :throttle_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
@@ -33,7 +33,11 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
           throttle.reset! # re: ratelimitconcern - can proceed to next step even if no remaining attempts
+        else
+          throttle_if_rate_limited
         end
+      else
+        throttle_if_rate_limited
       end
 
       response = determine_response(
