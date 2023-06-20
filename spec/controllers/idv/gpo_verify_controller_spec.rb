@@ -45,6 +45,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'user has pending profile' do
       it 'renders page' do
+        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
 
         action
