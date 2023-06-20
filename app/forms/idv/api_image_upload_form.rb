@@ -33,11 +33,7 @@ module Idv
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
           throttle.reset! # re: ratelimitconcern - can proceed to next step even if no remaining attempts
-        else
-          throttle_if_rate_limited
         end
-      else
-        throttle_if_rate_limited
       end
 
       response = determine_response(
@@ -190,7 +186,8 @@ module Idv
     end
 
     def throttle_if_rate_limited
-      return unless throttle.throttled?
+      return unless document_capture_session
+      return unless @throttled = throttle.throttled?
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
