@@ -158,7 +158,9 @@ deploy-job:
 
 ecr-scan:
   stage: scan
-  image: amazon/aws-cli
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""] 
   script:
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
     - IMAGE_DIGEST=$(aws ecr describe-images --repository-name identity-idp/review --image-ids imageTag=$CI_COMMIT_SHA --query 'imageDetails[0].imageDigest' --output text)
