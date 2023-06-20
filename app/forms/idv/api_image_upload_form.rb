@@ -8,7 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
-    # validate :throttle_if_rate_limited
+    validate :throttle_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
@@ -59,7 +59,7 @@ module Idv
     def increment_throttle!
       return unless document_capture_session
       throttle.increment!
-      @throttled = throttle.throttled?
+      # @throttled = throttle.throttled?
     end
 
     def validate_form
@@ -190,7 +190,7 @@ module Idv
     end
 
     def throttle_if_rate_limited
-      return unless @throttled
+      return unless throttle.throttled?
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
