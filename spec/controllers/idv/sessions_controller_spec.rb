@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SessionsController do
+RSpec.describe Idv::SessionsController do
   let(:user) { build(:user) }
   let(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
 

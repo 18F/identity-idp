@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'A user with a UAK passwords attempts IdV' do
+RSpec.feature 'A user with a UAK passwords attempts IdV' do
   include IdvStepHelper
 
   it 'allows the user to continue to the SP', js: true do

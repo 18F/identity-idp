@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-describe GpoVerifyForm do
+RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
 
   let(:user) { create(:user, :fully_registered) }
-  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }

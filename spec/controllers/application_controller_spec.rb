@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   describe '#disable_caching' do
     controller do
       def index

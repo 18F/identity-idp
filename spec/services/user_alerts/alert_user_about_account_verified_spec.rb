@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserAlerts::AlertUserAboutAccountVerified do
+RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
   describe '#call' do
     let(:user) { create(:user, :fully_registered) }
     let(:device) { create(:device, user: user) }

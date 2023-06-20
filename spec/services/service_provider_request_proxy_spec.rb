@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderRequestProxy do
+RSpec.describe ServiceProviderRequestProxy do
   before do
     ServiceProviderRequestProxy.flush
   end
@@ -13,30 +13,6 @@ describe ServiceProviderRequestProxy do
           issuer: 'foo',
           url: 'http://bar.com', ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         )
-        expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
-      end
-
-      it 'both loa1 and ial1 values return the same thing' do
-        sp_request = ServiceProviderRequestProxy.create(
-          uuid: '123',
-          issuer: 'foo',
-          url: 'http://bar.com',
-          ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        )
-
-        expect(sp_request.loa).to eq(sp_request.ial)
-        expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
-      end
-
-      it 'both loa3 and ial2 values return the same thing' do
-        sp_request = ServiceProviderRequestProxy.create(
-          uuid: '123',
-          issuer: 'foo',
-          url: 'http://bar.com',
-          ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        )
-
-        expect(sp_request.loa).to eq(sp_request.ial)
         expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
       end
     end

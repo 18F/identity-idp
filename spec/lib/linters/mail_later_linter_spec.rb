@@ -3,7 +3,7 @@ require 'rubocop/rspec/support'
 require 'rails_helper'
 require_relative '../../../lib/linters/mail_later_linter'
 
-describe RuboCop::Cop::IdentityIdp::MailLaterLinter do
+RSpec.describe RuboCop::Cop::IdentityIdp::MailLaterLinter do
   include CopHelper
   include RuboCop::RSpec::ExpectOffense
 

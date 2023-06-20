@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::GpoMail do
+RSpec.describe Idv::GpoMail do
   let(:user) { create(:user) }
   let(:subject) { Idv::GpoMail.new(user) }
 

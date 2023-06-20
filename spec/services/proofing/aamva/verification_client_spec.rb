@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::VerificationClient do
+RSpec.describe Proofing::Aamva::VerificationClient do
   let(:applicant) do
     applicant = Proofing::Aamva::Applicant.from_proofer_applicant(
       uuid: '1234-4567-abcd-efgh',

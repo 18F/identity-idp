@@ -176,4 +176,18 @@ module InPersonHelper
 
     expect_in_person_step_indicator_current_step(text)
   end
+
+  def make_pii(same_address_as_id: 'true')
+    pii_from_user[:same_address_as_id] = same_address_as_id
+    pii_from_user[:identity_doc_address1] = identity_doc_address1
+    pii_from_user[:identity_doc_address2] = identity_doc_address2
+    pii_from_user[:identity_doc_city] = identity_doc_city
+    pii_from_user[:identity_doc_address_state] = identity_doc_address_state
+    pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
+    pii_from_user[:address1] = address1
+    pii_from_user[:address2] = address2
+    pii_from_user[:city] = city
+    pii_from_user[:state] = state
+    pii_from_user[:zipcode] = zipcode
+  end
 end

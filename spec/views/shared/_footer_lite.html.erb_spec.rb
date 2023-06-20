@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_footer_lite.html.erb' do
+RSpec.describe 'shared/_footer_lite.html.erb' do
   context 'user is signed out' do
     before do
       controller.request.path_parameters[:controller] = 'users/sessions'

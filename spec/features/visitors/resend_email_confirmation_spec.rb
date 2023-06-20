@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'email_spec'
 
-feature 'Visit requests confirmation instructions again during sign up' do
+RSpec.feature 'Visit requests confirmation instructions again during sign up' do
   include(EmailSpec::Helpers)
   include(EmailSpec::Matchers)
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReportMailer, type: :mailer do
+RSpec.describe ReportMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Add a new phone number' do
+RSpec.describe 'Add a new phone number' do
   scenario 'Adding and confirming a new phone number allows the phone number to be used for MFA' do
     user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'

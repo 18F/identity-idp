@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'multiple saml endpoints' do
+RSpec.describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
 

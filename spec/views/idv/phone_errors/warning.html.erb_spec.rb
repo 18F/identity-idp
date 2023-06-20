@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/warning.html.erb' do
+RSpec.describe 'idv/phone_errors/warning.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:sp_name) { 'Example SP' }

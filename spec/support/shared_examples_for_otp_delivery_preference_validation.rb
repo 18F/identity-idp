@@ -1,4 +1,4 @@
-shared_examples 'an otp delivery preference form' do
+RSpec.shared_examples 'an otp delivery preference form' do
   let(:phone) { '+1 (703) 555-5000' }
   let(:params) do
     {

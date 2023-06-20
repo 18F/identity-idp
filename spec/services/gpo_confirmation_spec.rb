@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe GpoConfirmation do
+RSpec.describe GpoConfirmation do
   let(:attributes) do
     {
       first_name: 'Homer',
