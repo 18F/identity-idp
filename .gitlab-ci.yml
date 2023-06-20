@@ -8,6 +8,7 @@ stages:
 - build
 - test
 - review
+- scan-ecr
 - approval
 - deploy
 
@@ -152,5 +153,19 @@ deploy-job:
   script:
   - echo "Deploying application..."
   - echo "Application successfully deployed."
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+ecr-scan:
+  stage: scan-ecr
+  image: amazon/aws-cli
+  script:
+    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
+    - IMAGE_DIGEST=$(aws ecr describe-images --repository-name identity-idp/review --image-ids imageTag=$CI_COMMIT_SHA --query 'imageDetails[0].imageDigest' --output text)
+    - aws ecr start-image-scan --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
+    - aws ecr wait image-scan-complete --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST)
+    - echo $SCAN_FINDINGS
+    - if [[ $SCAN_FINDINGS == *"CRITICAL"* ]]; then exit 1; fi
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

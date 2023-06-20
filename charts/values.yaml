@@ -51,7 +51,7 @@ idp:
     repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: latest
+    tag: 0.0.7
   imagePullSecrets: []
   nameOverride: ""
   nodeSelector: {}
@@ -161,7 +161,7 @@ worker:
     repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: latest
+    tag: 0.0.7
   imagePullSecrets: []
   nameOverride: ""
   nodeSelector: {}
@@ -211,8 +211,8 @@ worker:
     # targetMemoryUtilizationPercentage: 80
 
 postgresql:
-  image: postgres
-  tag: "14"
+  image: postgis/postgis
+  tag: "14-3.3"
   enabled: true
   username: postgres
   password: postgres
