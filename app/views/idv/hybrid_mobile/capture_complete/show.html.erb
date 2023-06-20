@@ -9,10 +9,6 @@
 
 <% title t('titles.doc_auth.switch_back') %>
 
-<%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
-  <%= t('doc_auth.headings.capture_complete') %>
-<% end %>
-
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.instructions.switch_back')) %>
 
 <%= image_tag(asset_url('idv/switch.png'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>
