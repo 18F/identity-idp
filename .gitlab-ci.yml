@@ -8,7 +8,7 @@ stages:
 - build
 - test
 - review
-- scan-ecr
+- scan
 - approval
 - deploy
 
@@ -157,7 +157,7 @@ deploy-job:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 ecr-scan:
-  stage: scan-ecr
+  stage: scan
   image: amazon/aws-cli
   script:
     - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
