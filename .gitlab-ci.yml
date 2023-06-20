@@ -73,6 +73,7 @@ install:
   stage: build
   variables:
     RAILS_ENV: test
+    SKIP_YARN_INSTALL: true
   cache:
     - <<: *ruby_cache
       policy: pull-push
