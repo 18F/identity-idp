@@ -168,4 +168,6 @@ ecr-scan:
     - echo $SCAN_FINDINGS
     - if [[ $SCAN_FINDINGS == *"CRITICAL"* ]]; then exit 1; fi
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
