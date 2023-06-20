@@ -291,6 +291,16 @@ RSpec.describe Profile do
         expect(profile).to_not be_active
       end
     end
+
+    describe 'When a profile already has a verified_at timesamp' do
+      it 'does not update the timestamp when #activate is called' do
+        profile = create(:profile, :verified, user: user)
+        original_timestamp = profile.verified_at
+        expect(profile.reason_not_to_activate).to be_nil
+        profile.activate
+        expect(profile.verified_at).to eq(original_timestamp)
+      end
+    end
   end
 
   describe '#deactivate' do
@@ -694,16 +704,6 @@ RSpec.describe Profile do
 
         profile.reject_for_fraud(notify_user: true)
       end
-    end
-  end
-
-  describe 'When a profile already has a verified_at timesamp' do
-    it 'does not update the timestamp when #activate is called' do
-      original_timestamp = 1.day.ago
-      profile = user.profiles.create(active: false, verified_at: original_timestamp)
-      expect(profile.reason_not_to_activate).to be_nil
-      profile.activate
-      expect(profile.verified_at).to eq(original_timestamp)
     end
   end
 
