@@ -55,12 +55,13 @@ module Idv
     def increment_throttle!
       return unless document_capture_session
       throttle.increment!
-      # @throttled = throttle.throttled?
+      @throttled = throttle.throttled?
     end
 
     def validate_form
       success = valid?
       increment_throttle!
+      track_rate_limited if @throttled
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -69,7 +70,6 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
-
       response
     end
 
@@ -188,9 +188,14 @@ module Idv
     def throttle_if_rate_limited
       return unless document_capture_session
       return unless @throttled = throttle.throttled?
+      # analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      # irs_attempts_api_tracker.idv_document_upload_rate_limited
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
+    end
+
+    def track_rate_limited
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
     def document_capture_session_uuid
