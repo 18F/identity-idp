@@ -2,7 +2,7 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
-    def update
+    def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
@@ -48,13 +48,7 @@ module Idv
         double_address_verification: capture_secondary_id_enabled,
       )
 
-      # Don't allow the user to go back to document capture after verifying
-      if flow_session['redo_document_capture']
-        flow_session.delete('redo_document_capture')
-        flow_session[:flow_path] ||= 'standard'
-      end
-
-      redirect_to after_update_url
+      return true
     end
 
     private
@@ -215,6 +209,8 @@ module Idv
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
+
+        flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       else
         idv_session.invalidate_verify_info_step!

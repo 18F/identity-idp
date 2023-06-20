@@ -88,21 +88,37 @@ RSpec.describe Idv::Session do
       end
 
       it 'completes the profile if the user has completed OTP phone confirmation' do
-        subject.user_phone_confirmation = true
-        subject.create_profile_from_applicant_with_password(user.password)
+        freeze_time do
+          now = Time.zone.now
 
-        expect(subject).to have_received(:move_pii_to_user_session)
-        expect(subject.profile.active?).to eq(true)
-        expect(subject.profile.deactivation_reason).to be_nil
+          subject.user_phone_confirmation = true
+          subject.create_profile_from_applicant_with_password(user.password)
+          profile = subject.profile
+
+          expect(subject).to have_received(:move_pii_to_user_session)
+          expect(profile.activated_at).to eq now
+          expect(profile.active).to eq true
+          expect(profile.deactivation_reason).to eq nil
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq false
+          expect(profile.initiating_service_provider).to eq nil
+          expect(profile.verified_at).to eq now
+        end
       end
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
         subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
         expect(subject).not_to have_received(:move_pii_to_user_session)
-        expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.gpo_verification_pending?).to eq(true)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
 
       context 'with establishing in person enrollment' do
@@ -114,17 +130,22 @@ RSpec.describe Idv::Session do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
-          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-            same_address_as_id: true,
-          ).with_indifferent_access
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.with_indifferent_access
         end
 
         it 'sets profile to pending in person verification' do
           subject.create_profile_from_applicant_with_password(user.password)
+          profile = subject.profile
 
           expect(subject).not_to have_received(:move_pii_to_user_session)
-          expect(subject.profile.active?).to eq(false)
-          expect(subject.profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(profile.activated_at).to eq nil
+          expect(profile.active).to eq false
+          expect(profile.deactivation_reason).to_not eq :in_person_verification_pending
+          expect(profile.deactivation_reason).to eq 'in_person_verification_pending'
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq false
+          expect(profile.initiating_service_provider).to eq nil
+          expect(profile.verified_at).to eq nil
         end
 
         it 'creates a USPS enrollment' do
@@ -134,7 +155,16 @@ RSpec.describe Idv::Session do
 
           subject.create_profile_from_applicant_with_password(user.password)
 
-          expect(enrollment.reload.profile).to eq(user.profiles.last)
+          profile = enrollment.reload.profile
+          expect(profile).to eq(user.profiles.last)
+          expect(profile.activated_at).to eq nil
+          expect(profile.active).to eq false
+          expect(profile.deactivation_reason).to_not eq :in_person_verification_pending
+          expect(profile.deactivation_reason).to eq 'in_person_verification_pending'
+          expect(profile.fraud_review_pending?).to eq(false)
+          expect(profile.gpo_verification_pending_at.present?).to eq false
+          expect(profile.initiating_service_provider).to eq nil
+          expect(profile.verified_at).to eq nil
         end
       end
     end
@@ -148,10 +178,16 @@ RSpec.describe Idv::Session do
 
       it 'sets profile to pending gpo verification' do
         subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
         expect(subject).to have_received(:move_pii_to_user_session)
-        expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.gpo_verification_pending?).to eq(true)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
     end
 
@@ -164,10 +200,16 @@ RSpec.describe Idv::Session do
 
       it 'does not complete the user profile' do
         subject.create_profile_from_applicant_with_password(user.password)
+        profile = subject.profile
 
         expect(subject).not_to have_received(:move_pii_to_user_session)
-        expect(subject.profile.active?).to eq(false)
-        expect(subject.profile.gpo_verification_pending?).to eq(true)
+        expect(profile.activated_at).to eq nil
+        expect(profile.active).to eq false
+        expect(profile.deactivation_reason).to eq nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.initiating_service_provider).to eq nil
+        expect(profile.verified_at).to eq nil
       end
     end
   end

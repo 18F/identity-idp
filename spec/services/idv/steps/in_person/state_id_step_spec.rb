@@ -89,7 +89,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       let(:params) { ActionController::Parameters.new({ state_id: submitted_values }) }
       let(:capture_secondary_id_enabled) { true }
       let(:dob) { InPersonHelper::GOOD_DOB }
-      # let(:same_address_as_id) { 'false' } # value on submission
       # residential
       let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
       let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -132,18 +131,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
 
-          # User picks "Yes, I live at the address on my state-issued ID" on state ID
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission
-          pii_from_user[:identity_doc_address1] = identity_doc_address1
-          pii_from_user[:identity_doc_address2] = identity_doc_address2
-          pii_from_user[:identity_doc_city] = identity_doc_city
-          pii_from_user[:identity_doc_address_state] = identity_doc_address_state
-          pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-          pii_from_user[:address1] = address1
-          pii_from_user[:address2] = address2
-          pii_from_user[:city] = city
-          pii_from_user[:state] = state
-          pii_from_user[:zipcode] = zipcode
+          make_pii
 
           # On Verify, user changes response from "Yes,..." to
           # "No, I live at a different address", see submitted_values above
@@ -197,6 +185,9 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
+
+          make_pii(same_address_as_id: 'false')
+
           # On Verify, user changes response from "No,..." to
           # "Yes, I live at the address on my state-issued ID
           step.call
@@ -233,17 +224,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
           end
 
           # User picks "No, I live at a different address" on state ID
-          pii_from_user[:same_address_as_id] = 'false' # on form before submission
-          pii_from_user[:identity_doc_address1] = identity_doc_address1
-          pii_from_user[:identity_doc_address2] = identity_doc_address2
-          pii_from_user[:identity_doc_city] = identity_doc_city
-          pii_from_user[:identity_doc_address_state] = identity_doc_address_state
-          pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-          pii_from_user[:address1] = address1
-          pii_from_user[:address2] = address2
-          pii_from_user[:city] = city
-          pii_from_user[:state] = state
-          pii_from_user[:zipcode] = zipcode
+          make_pii(same_address_as_id: 'false')
 
           # On Verify, user does not changes response "No,..."
           step.call
@@ -277,7 +258,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
         let(:submitted_values) do
           {
             dob:,
-            same_address_as_id: 'false',
             address1:,
             address2:,
             city:,
@@ -296,7 +276,6 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
             expect(flow.flow_session[:pii_from_user]).to_not have_key attr
           end
 
-          pii_from_user[:same_address_as_id] = 'true' # on form before submission
           pii_from_user[:identity_doc_address1] = identity_doc_address1
           pii_from_user[:identity_doc_address2] = identity_doc_address2
           pii_from_user[:identity_doc_city] = identity_doc_city
