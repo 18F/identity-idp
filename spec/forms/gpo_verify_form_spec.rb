@@ -125,7 +125,7 @@ RSpec.describe GpoVerifyForm do
 
       context 'pii is nil' do
         let(:applicant) { nil }
-        it 'reports pii not missing' do
+        it 'reports pii missing' do
           result = subject.submit
           expect(result.to_h[:pii_missing]).to eq(true)
         end
