@@ -162,7 +162,6 @@ ecr-scan:
     name: amazon/aws-cli
     entrypoint: [""] 
   script:
-    - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
     - IMAGE_DIGEST=$(aws ecr describe-images --repository-name identity-idp/review --image-ids imageTag=$CI_COMMIT_SHA --query 'imageDetails[0].imageDigest' --output text)
     - aws ecr start-image-scan --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
     - aws ecr wait image-scan-complete --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
