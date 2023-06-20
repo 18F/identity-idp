@@ -43,6 +43,7 @@ gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 8.0'
+gem 'puma'
 gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.12.0'
@@ -108,7 +109,6 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
-  gem 'puma'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.43.0', require: false
   gem 'rubocop-performance', '~> 1.15.0', require: false
