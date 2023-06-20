@@ -45,27 +45,6 @@ module ArcgisApi
       @token_keeper = token_keeper
     end
 
-    # Makes an HTTP request to quickly find potential address matches. Each match that is found
-    # will include an associated magic_key value which can later be used to get more details about
-    # the address using the #find_address_candidates method
-    # Requests text input and will only match possible addresses
-    # A maximum of 5 suggestions are included in the suggestions array.
-    # @param text [String]
-    # @return [Array<Suggestion>] Suggestions
-    def suggest(text)
-      params = {
-        text: text,
-        **COMMON_DEFAULT_PARAMETERS,
-      }
-
-      parse_suggestions(
-        connection.
-          get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
-          req.options.context = { service_name: 'arcgis_geocoder_suggest' }
-        end.body,
-      )
-    end
-
     # Makes HTTP request to find a full address record using a magic key or single text line
     # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
     #   or 'SingleLine', which should be a single string address that includes at least city
@@ -113,17 +92,6 @@ module ArcgisApi
         # Parse JSON responses
         conn.response :json, content_type: 'application/json'
         yield conn if block_given?
-      end
-    end
-
-    def parse_suggestions(response_body)
-      handle_api_errors(response_body)
-
-      response_body['suggestions'].map do |suggestion|
-        Suggestion.new(
-          text: suggestion['text'],
-          magic_key: suggestion['magicKey'],
-        )
       end
     end
 
