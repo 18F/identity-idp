@@ -10,6 +10,18 @@ RSpec.feature 'doc auth redo document capture', js: true do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
 
+  around do |example|
+    example.run
+  rescue
+    # rubocop:disable Rails/Output
+    puts '-----------------------------------------------------------------------------------------'
+    puts 'HERE IS THE HTML'
+    puts page.html
+    puts '-----------------------------------------------------------------------------------------'
+    # rubocop:enable Rails/Output
+    raise
+  end
+
   context 'when barcode scan returns a warning', allow_browser_log: true do
     before do
       sign_in_and_2fa_user
