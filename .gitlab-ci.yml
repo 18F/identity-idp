@@ -1,260 +1,116 @@
-# Jobs defined here use the idp/ci docker image from ECR by default. To find
-# other available images:
-#   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
-# Images are built via the identity-devops GitLab pipeline.
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+stages:
+- build
+- test
+- review
+- approval
+- deploy
 
 variables:
-  GITLAB_CI: 'true'
-  FF_SCRIPT_SECTIONS: 'true'
-  JUNIT_OUTPUT: 'true'
-  ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:e846ed99aa3c8f9083731105b8ef25536c7ab3ed5e9f2b781b63431badcb091b'
+  ECR_REGISTRY: "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+  CI_DEBUG_TRACE: "true"
 
-default:
-  image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
-
-.bundle_install: &bundle_install
-  - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
-
-.yarn_install: &yarn_install
-  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
-
-.yarn_production_install: &yarn_production_install
-  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
-
-.build_cache:
-  - &ruby_cache
-    key:
-      files:
-        - Gemfile.lock
-    paths:
-      - vendor/ruby
-    policy: pull
-
-  - &yarn_cache
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - .yarn-cache/
-    policy: pull
-
-  - &yarn_production_cache
-    key:
-      files:
-        - yarn.lock
-    paths:
-      - .yarn-cache/
-    policy: pull
-
-  - &assets_cache
-    key: $CI_COMMIT_SHA
-    paths:
-      - tmp/cache/assets
-      - public/assets
-      - public/packs
-    policy: pull
-
-stages:
-  - build
-  - test
-  - after_test
-
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
-    - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
-
-install:
+build-job:
   stage: build
-  variables:
-    RAILS_ENV: test
-  cache:
-    - <<: *ruby_cache
-      policy: pull-push
-    - <<: *yarn_cache
-      policy: pull-push
-    - <<: *assets_cache
-      policy: push
-
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bundle exec rake assets:precompile
-
-check_changelog:
-  stage: test
-  variables:
-    GIT_DEPTH: 100
-  script:
-    - echo "$CI_PIPELINE_SOURCE"
-    - |
-      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
-      then
-        git fetch origin --quiet
-        ./scripts/changelog_check.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
-      elif [ "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" == "main" ]
-      then
-        git fetch origin --quiet
-        ./scripts/changelog_check.rb -b origin/"${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME}"
-      else
-        echo "Skipping because this is not a PR or is not targeting main"
-        exit 0
-      fi
-
-specs:
-  stage: test
-  parallel: 22
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  variables:
-    AWS_ACCESS_KEY_ID: test
-    AWS_DEFAULT_REGION: us-west-2
-    AWS_REGION: us-west-2
-    AWS_SECRET_ACCESS_KEY: test
-    CAPYBARA_WAIT_TIME_SECONDS: 5
-    COVERAGE: 'true'
-    DOCKER_DB_HOST: db-postgres
-    POSTGRES_DB: identity_idp_test
-    POSTGRES_USER: postgres_user
-    POSTGRES_PASSWORD: postgres_password
-    POSTGRES_HOST_AUTH_METHOD: trust
-    RAILS_ENV: test
-  services:
-    - name: postgis/postgis:13-3.3
-      alias: db-postgres
-      command: ['--fsync=false', '--synchronous_commit=false', '--full_page_writes=false']
-    - name: redis:7.0
-      alias: db-redis
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-      - rspec.xml
-      - rspec_json/
-    reports:
-      junit: rspec.xml
-  script:
-    - *bundle_install
-    - *yarn_install
-    - cp config/application.yml.default config/application.yml
-    - cp config/service_providers.localdev.yml config/service_providers.yml
-    - cp config/agencies.localdev.yml config/agencies.yml
-    - cp config/iaa_gtcs{.localdev,}.yml
-    - cp config/iaa_orders{.localdev,}.yml
-    - cp config/iaa_statuses{.localdev,}.yml
-    - cp config/integration_statuses{.localdev,}.yml
-    - cp config/integrations{.localdev,}.yml
-    - cp config/partner_account_statuses{.localdev,}.yml
-    - cp config/partner_accounts{.localdev,}.yml
-    - cp -a keys.example keys
-    - cp -a certs.example certs
-    - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
-    - bundle exec rake db:create db:migrate --trace
-    - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec["--format documentation --format RspecJunitFormatter --out rspec.xml --format json --out rspec_json/${CI_NODE_INDEX}.json"]
-
-lint:
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - rubocop.xml
-    reports:
-      junit: rubocop.xml
-
-js_build:
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_production_cache
-  variables:
-    NODE_ENV: 'production'
-  script:
-    - *bundle_install
-    - *yarn_production_install
-    - bundle exec rake assets:precompile
-
-js_tests:
-  stage: test
-  cache:
-    - <<: *yarn_cache
-  script:
-    - *yarn_install
-    - yarn test
-
-pinpoint-check:
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint_country_dialing_codes
-
-prepare_deploy:
-  # Runs in parallel with tests so we can deploy more quickly after passing
-  stage: test
+  interruptible: true
   tags:
     - build-pool
-  variables:
-    NODE_ENV: 'production'
-    RAILS_ENV: 'production'
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
   script:
-    - cp config/application.yml.default.ci config/application.yml
-    - ./deploy/build
-    - ./deploy/build-post-config
-    - bundle exec rails zeitwerk:check
-    - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
-    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
-
-coverage:
-  stage: after_test
-  cache:
-    - <<: *ruby_cache
-  script:
-    - *bundle_install
-    - bundle exec spec/simplecov_merger.rb
-    - mv coverage/coverage/* coverage/
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/coverage.xml
-    name: coverage
-    expire_in: 31d
-    paths:
-      - rspec_json/rspec.json
-      - knapsack_rspec_report.json
-      - coverage/index.html
-      - coverage/assets/
-      - coverage/coverage.xml
-
-# Triggers devops CD to deploy to dev
-trigger_devops:
-  stage: after_test
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-  trigger: lg/identity-devops
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+- template: Security/SAST.gitlab-ci.yml
+
+sast:
+  stage: test
+  needs: []
+
+review-app:
+  stage: review
+  resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+  image:
+    name: dtzar/helm-kubectl:latest
+  script:
+    - kubectl config get-contexts
+    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - kubectl config use-context "$CONTEXT"
+    - >-
+      helm upgrade --install --namespace review-apps
+      --debug
+      --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
+      --set idp.image.tag="${CI_COMMIT_SHA}"
+      --set idp.ingress.enabled=true
+      --set-json idp.env="[{\"name\":\"POSTGRES_SSLMODE\",\"value\":\"prefer\"},{\"name\":\"POSTGRES_NAME\",\"value\":\"idp\"},{\"name\":\"POSTGRES_HOST\",\"value\":\"$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps\"},{\"name\":\"POSTGRES_USERNAME\",\"value\":\"postgres\"},{\"name\":\"POSTGRES_PASSWORD\",\"value\":\"postgres\"},{\"name\":\"POSTGRES_WORKER_SSLMODE\",\"value\":\"prefer\"},{\"name\":\"POSTGRES_WORKER_NAME\",\"value\":\"idp-worker-jobs\"},{\"name\":\"POSTGRES_WORKER_HOST\",\"value\":\"$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps\"},{\"name\":\"POSTGRES_WORKER_USERNAME\",\"value\":\"postgres\"},{\"name\":\"POSTGRES_WORKER_PASSWORD\",\"value\":\"postgres\"},{\"name\":\"LOGIN_ENV\",\"value\":\"dev\"},{\"name\":\"RAILS_OFFLINE\",\"value\":\"true\"},{\"name\":\"REDIS_IRS_ATTEMPTS_API_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2\"},{\"name\":\"REDIS_THROTTLE_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1\"},{\"name\":\"REDIS_URL\",\"value\":\"redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379\"},{\"name\":\"ASSET_HOST\",\"value\":\"https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"},{\"name\":\"DOMAIN_NAME\",\"value\":\"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\"}]"
+      --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
+      $CI_ENVIRONMENT_SLUG ./charts
+    - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+    on_stop: stop-review-app
+    auto_stop_in: 2 days
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  
+stop-review-app:
+  resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
+  script:
+    - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
+    - kubectl config use-context "$CONTEXT"
+    - helm uninstall --namespace review-apps $CI_ENVIRONMENT_SLUG
+  stage: review
+  image:
+    name: dtzar/helm-kubectl:latest
+  needs:
+    - job: review-app
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+
+approve:
+  stage: approval
+  script:
+    - echo "approved!"
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: verify
+  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy-job:
+  environment: production
+  stage: deploy
+  script:
+  - echo "Deploying application..."
+  - echo "Application successfully deployed."
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
