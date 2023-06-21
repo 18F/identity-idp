@@ -14,6 +14,7 @@ module Idv
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
     # rubocop:enable Rails/LexicallyScopedActionFilter
+    skip_before_action :confirm_not_rate_limited, only: :new
 
     def new
       flash.keep(:success) if should_keep_flash_success?
@@ -25,7 +26,9 @@ module Idv
       # throttle maxed out. Check for success before checking throttle.
       return async_state_done(async_state) if async_state.done?
 
-      redirect_to failure_url(:fail) and return if throttle.throttled?
+      render 'shared/wait' and return if async_state.in_progress?
+
+      confirm_not_rate_limited
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -33,8 +36,6 @@ module Idv
 
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
-      elsif async_state.in_progress?
-        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
