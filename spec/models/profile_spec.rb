@@ -236,6 +236,7 @@ RSpec.describe Profile do
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
       active_profile = user.profiles.create(active: true)
+      # active_profile = create(:profile, :active, user: user)
 
       # profile before
       expect(profile.activated_at).to be_nil
@@ -247,7 +248,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
       # active_profile before
-      expect(active_profile.activated_at).to be_nil
+      expect(active_profile.activated_at).to be_nil # TODO: active factory will change this
       expect(active_profile.active).to eq true # to change
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
