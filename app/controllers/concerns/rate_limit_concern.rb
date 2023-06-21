@@ -37,7 +37,7 @@ module RateLimitConcern
     when :idv_doc_auth
       redirect_to idv_session_errors_throttled_url
     when :proof_address
-      redirect_to idv_phone_errors_failure_url if self.class != Idv::PhoneController
+      redirect_to idv_phone_errors_failure_url# if self.class != Idv::PhoneController
     end
   end
 
