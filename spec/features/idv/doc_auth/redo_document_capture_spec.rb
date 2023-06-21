@@ -29,7 +29,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
         text: t(
           'doc_auth.headings.capture_scan_warning_html',
           link: warning_link_text,
-        ).tr(' ', ' '),
+        ).tr(' ', ' '), # Convert non-breaking spaces to regular spaces
       )
       click_link warning_link_text
 
@@ -49,7 +49,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(current_path).to eq(idv_verify_info_path)
       check t('forms.ssn.show')
       expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
-      expect(page).to have_css('[role="status"]')  # We verified your ID
+      expect(page).to have_css('[role="status"]') # We verified your ID
     end
 
     it 'shows a troubleshooting option to allow the user to cancel and return to SP' do
@@ -74,7 +74,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
           text: t(
             'doc_auth.headings.capture_scan_warning_html',
             link: warning_link_text,
-          ).tr(' ', ' '),
+          ).tr(' ', ' '), # Convert non-breaking spaces to regular spaces
         )
         click_link warning_link_text
 
