@@ -93,4 +93,59 @@ RSpec.feature 'doc auth redo document capture', js: true do
       end
     end
   end
+
+  context 'after verify info step', allow_browser_log: true do
+    it 'document capture can no longer be reached' do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_attention_with_barcode
+      attach_and_submit_images
+      click_idv_continue
+      fill_out_ssn_form_ok
+      click_idv_continue
+
+      warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
+
+      expect(page).to have_css(
+        '[role="status"]',
+        text: t(
+          'doc_auth.headings.capture_scan_warning_html',
+          link: warning_link_text,
+        ).tr(' ', ' '), # Convert non-breaking spaces to regular spaces
+      )
+
+      click_link warning_link_text
+
+      expect(current_path).to eq(idv_hybrid_handoff_path)
+
+      complete_hybrid_handoff_step
+
+      visit idv_verify_info_url
+
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_phone_path)
+
+      fill_out_phone_form_fail
+
+      click_idv_send_security_code
+
+      expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+
+      visit idv_url
+      expect(current_path).to eq(idv_phone_path)
+
+      visit idv_hybrid_handoff_url
+      expect(current_path).to eq(idv_phone_path)
+
+      visit idv_document_capture_url
+      expect(current_path).to eq(idv_phone_path)
+
+      visit idv_ssn_url
+      expect(current_path).to eq(idv_phone_path)
+
+      visit idv_verify_info_url
+      expect(current_path).to eq(idv_phone_path)
+    end
+  end
 end
