@@ -181,7 +181,6 @@ RSpec.describe ArcgisApi::TokenKeeper do
             headers: { content_type: 'application/json;charset=UTF-8' } },
         )
         token = subject.retrieve_token
-        puts "token #{token}"
         expect(token&.token).to eq(expected)
         expect(analytics).to have_received(:idv_arcgis_token_failure).exactly(3).times
       end
