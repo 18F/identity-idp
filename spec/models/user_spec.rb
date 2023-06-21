@@ -774,15 +774,42 @@ RSpec.describe User do
     end
 
     describe '#suspend!' do
-      it 'updates the suspended_at attribute with the current time' do
-        expect do
-          user.suspend!
-        end.to change(user, :suspended_at).from(nil).to(be_within(1.second).of(Time.zone.now))
-      end
+      context 'user is not already supsended' do
+        let(:mock_session_id) { SecureRandom.uuid }
+        before do
+          UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
+        end
 
-      it 'tracks the user suspension' do
-        expect(user.analytics).to receive(:user_suspended).with(success: true)
-        user.suspend!
+        it 'updates the suspended_at attribute with the current time' do
+          expect do
+            user.suspend!
+          end.to change(user, :suspended_at).from(nil).to(be_within(1.second).of(Time.zone.now))
+        end
+
+        it 'updates the unique_session_id attribute to be nil' do
+          expect do
+            user.suspend!
+          end.to change(user, :unique_session_id).from(mock_session_id).to(nil)
+        end
+
+        it 'tracks the user suspension' do
+          expect(user.analytics).to receive(:user_suspended).with(success: true)
+          user.suspend!
+        end
+
+        it 'logs out the suspended user from the active session' do
+          # Add information to session store to allow `exists?` check to work as desired
+          OutOfBandSessionAccessor.new(mock_session_id).put_pii(
+            { first_name: 'Mario' },
+            5.minutes.to_i,
+          )
+
+          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true
+
+          user.suspend!
+
+          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq false
+        end
       end
 
       it 'raises an error if the user is already suspended' do
@@ -794,42 +821,6 @@ RSpec.describe User do
         expect do
           user.suspend!
         end.to raise_error(cannot_suspend_message.to_s)
-      end
-
-      context 'with active identities' do
-        let(:user) { create(:user, :fully_registered) }
-        let(:active_identity_1) do
-          ServiceProviderIdentity.create(
-            service_provider: 'Mario_Bros',
-            session_uuid: SecureRandom.uuid,
-          )
-        end
-        let(:active_identity_2) do
-          ServiceProviderIdentity.create(
-            service_provider: 'Mario_Kart',
-            session_uuid: SecureRandom.uuid,
-          )
-        end
-        let(:session_accessor_1) { OutOfBandSessionAccessor.new(active_identity_1.session_uuid) }
-        let(:session_accessor_2) { OutOfBandSessionAccessor.new(active_identity_2.session_uuid) }
-
-        before do
-          user.identities << [active_identity_1, active_identity_2]
-          session_accessor_1.put_pii({ first_name: 'Mario' }, 5.minutes.to_i)
-          session_accessor_2.put_pii({ first_name: 'Luigi' }, 5.minutes.to_i)
-        end
-
-        it 'logs out the suspended user from any active sessions' do
-          user.identities.each do |identity|
-            expect(OutOfBandSessionAccessor.new(identity.session_uuid).exists?).to eq true
-          end
-
-          user.suspend!
-
-          user.identities.each do |identity|
-            expect(OutOfBandSessionAccessor.new(identity.session_uuid).exists?).to eq false
-          end
-        end
       end
     end
 
