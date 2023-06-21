@@ -1,7 +1,7 @@
 module RateLimitConcern
   extend ActiveSupport::Concern
 
-  def confirm_not_rate_limited
+  def confirm_not_rate_limited # confusing returns false if not rate_limited
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
       next unless throttle_and_controller_match(throttle_type)# && action_name == 'update' needed w/o update ... needs a refactor?
