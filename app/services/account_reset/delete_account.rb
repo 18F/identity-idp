@@ -71,6 +71,7 @@ module AccountReset
         user_id: user.uuid,
         email: user.email_addresses.take&.email,
         account_age_in_days: account_age,
+        account_created_at: user.created_at,
         mfa_method_counts: mfa_method_counts,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }

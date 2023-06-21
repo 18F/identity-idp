@@ -1,5 +1,5 @@
 require 'rails_helper'
-
+require 'pp'
 RSpec.describe AccountReset::DeleteAccountController do
   include AccountResetHelper
 
@@ -25,6 +25,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
+        account_created_at: user.created_at
       }
       expect(@analytics).
         to receive(:track_event).with('Account Reset: delete', properties)
@@ -53,6 +54,7 @@ RSpec.describe AccountReset::DeleteAccountController do
       expect(response).to redirect_to(root_url)
       expect(flash[:error]).to eq(invalid_token_message)
     end
+
 
     it 'displays a flash and redirects to root if the token is missing' do
       stub_analytics
@@ -92,6 +94,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
+        account_created_at: user.created_at
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
