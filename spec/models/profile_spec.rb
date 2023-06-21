@@ -236,10 +236,45 @@ RSpec.describe Profile do
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
       active_profile = user.profiles.create(active: true)
+
+      # profile before
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
+      # active_profile before
+      expect(active_profile.activated_at).to be_nil
+      expect(active_profile.active).to eq true # to change
+      expect(active_profile.deactivation_reason).to be_nil
+      expect(active_profile.fraud_review_pending?).to eq(false)
+      expect(active_profile.gpo_verification_pending_at).to be_nil
+      expect(active_profile.initiating_service_provider).to be_nil
+      expect(active_profile.verified_at).to be_nil
+
       profile.activate
       active_profile.reload
-      expect(active_profile).to_not be_active
-      expect(profile).to be_active
+
+      # profile after
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to_not be_nil # pending fix
+
+      # active_profile after
+      expect(active_profile.activated_at).to be_nil
+      expect(active_profile.active).to eq false # changed
+      expect(active_profile.deactivation_reason).to be_nil
+      expect(active_profile.fraud_review_pending?).to eq(false)
+      expect(active_profile.gpo_verification_pending_at).to be_nil
+      expect(active_profile.initiating_service_provider).to be_nil
+      expect(active_profile.verified_at).to be_nil
     end
 
     it 'sends a reproof completed push event' do
