@@ -74,7 +74,7 @@ RSpec.describe Profile do
 
       encrypt_pii
 
-      expect(profile.encrypted_pii).to_not be_nil
+      expect(profile.encrypted_pii).to be_present
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match(ssn)
       expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
@@ -87,7 +87,7 @@ RSpec.describe Profile do
 
       encrypt_pii
 
-      expect(profile.encrypted_pii_recovery).to_not be_nil
+      expect(profile.encrypted_pii_recovery).to be_present
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
 
@@ -152,7 +152,7 @@ RSpec.describe Profile do
 
       profile.encrypt_recovery_pii(pii)
 
-      expect(profile.encrypted_pii_recovery).to_not be_nil
+      expect(profile.encrypted_pii_recovery).to be_present
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
       expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
     end
@@ -225,9 +225,9 @@ RSpec.describe Profile do
 
       # Now, existing_profile should be deactivated
       expect(existing_profile.active).to be_falsey
-      expect(existing_profile.activated_at).to_not be_nil
+      expect(existing_profile.activated_at).to be_present
       expect(profile.active).to be_truthy
-      expect(profile.activated_at).to_not be_nil
+      expect(profile.activated_at).to be_present
 
       expect(profile.has_proofed_before?).to be_truthy
     end
@@ -247,7 +247,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
       # active_profile before
-      expect(active_profile.activated_at).to_not be_nil # should this go to nil?
+      expect(active_profile.activated_at).to be_present # should this go to nil?
       expect(active_profile.active).to eq true # to change
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -265,10 +265,10 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to_not be_nil # pending fix
+      expect(profile.verified_at).to be_present # pending fix
 
       # active_profile after
-      expect(active_profile.activated_at).to_not be_nil # unchanged, but should be nil?
+      expect(active_profile.activated_at).to be_present # unchanged, but should be nil?
       expect(active_profile.active).to eq false # changed
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -278,11 +278,27 @@ RSpec.describe Profile do
     end
 
     it 'sends a reproof completed push event' do
-      user.profiles.create(active: true)
+      profile = create(:profile, :active, user: user)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::ReproofCompletedEvent.new(user: user))
 
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
       profile.activate
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # pending fix
     end
 
     it 'does not send a reproof event when there is a non active profile' do
@@ -607,7 +623,7 @@ RSpec.describe Profile do
       profile.deactivate_for_gpo_verification
 
       expect(profile).to_not be_active
-      expect(profile.gpo_verification_pending_at).to_not be_nil
+      expect(profile.gpo_verification_pending_at).to be_present
     end
   end
 
@@ -650,7 +666,7 @@ RSpec.describe Profile do
       end
 
       it 'sets the fraud_rejection_at timestamp' do
-        expect(profile.fraud_rejection_at).to_not be_nil
+        expect(profile.fraud_rejection_at).to be_present
       end
     end
 
