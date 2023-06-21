@@ -93,18 +93,6 @@ module Idv
         end
         extra
       end
-
-      def warning_url
-        idv_session_errors_warning_url(flow: 'in_person')
-      end
-
-      def exception_url
-        idv_session_errors_exception_url(flow: 'in_person')
-      end
-
-      def state_id_warning_url
-        idv_session_errors_state_id_warning_url(flow: 'in_person')
-      end
     end
   end
 end
