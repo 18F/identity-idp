@@ -795,6 +795,42 @@ RSpec.describe User do
           user.suspend!
         end.to raise_error(cannot_suspend_message.to_s)
       end
+
+      context 'with active identities' do
+        let(:user) { create(:user, :fully_registered) }
+        let(:active_identity_1) do
+          ServiceProviderIdentity.create(
+            service_provider: 'Mario_Bros',
+            session_uuid: SecureRandom.uuid,
+          )
+        end
+        let(:active_identity_2) do
+          ServiceProviderIdentity.create(
+            service_provider: 'Mario_Kart',
+            session_uuid: SecureRandom.uuid,
+          )
+        end
+        let(:session_accessor_1) { OutOfBandSessionAccessor.new(active_identity_1.session_uuid) }
+        let(:session_accessor_2) { OutOfBandSessionAccessor.new(active_identity_2.session_uuid) }
+
+        before do
+          user.identities << [active_identity_1, active_identity_2]
+          session_accessor_1.put_pii({ first_name: 'Mario' }, 5.minutes.to_i)
+          session_accessor_2.put_pii({ first_name: 'Luigi' }, 5.minutes.to_i)
+        end
+
+        it 'logs out the suspended user from any active sessions' do
+          user.identities.each do |identity|
+            expect(OutOfBandSessionAccessor.new(identity.session_uuid).exists?).to eq true
+          end
+
+          user.suspend!
+
+          user.identities.each do |identity|
+            expect(OutOfBandSessionAccessor.new(identity.session_uuid).exists?).to eq false
+          end
+        end
+      end
     end
 
     describe '#reinstate!' do

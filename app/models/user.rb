@@ -120,6 +120,9 @@ class User < ApplicationRecord
       raise 'user_already_suspended'
     end
     update!(suspended_at: Time.zone.now)
+    active_identities.each do |identity|
+      OutOfBandSessionAccessor.new(identity.session_uuid).destroy
+    end
     analytics.user_suspended(success: true)
   end
 
