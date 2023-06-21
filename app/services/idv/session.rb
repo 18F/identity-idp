@@ -19,6 +19,7 @@ module Idv
       personal_key
       resolution_successful
       threatmetrix_review_status
+      welcome_visited
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider

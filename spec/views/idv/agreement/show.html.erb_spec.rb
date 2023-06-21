@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/doc_auth/agreement' do
+RSpec.describe 'idv/agreement/show' do
   let(:flow_session) { {} }
 
   before do

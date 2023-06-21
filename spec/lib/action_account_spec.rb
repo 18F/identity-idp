@@ -183,4 +183,60 @@ RSpec.describe ActionAccount do
       end
     end
   end
+
+  describe ActionAccount::SuspendUser do
+    subject(:subtask) { ActionAccount::SuspendUser.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:suspended_user) { create(:user, :suspended) }
+      let(:reinstated_user) { create(:user, :reinstated) }
+      let(:args) { [user.uuid, suspended_user.uuid, reinstated_user.uuid, 'uuid-does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'Suspend a user that is not suspended already', aggregate_failures: true do
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'status'],
+            [user.uuid, 'User has been suspended'],
+            [suspended_user.uuid, 'User has already been suspended'],
+            [reinstated_user.uuid, 'User has been suspended'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+          ],
+        )
+
+        expect(result.subtask).to eq('suspend-user')
+        expect(result.uuids).to match_array([user.uuid, suspended_user.uuid, reinstated_user.uuid])
+      end
+    end
+  end
+
+  describe ActionAccount::ReinstateUser do
+    subject(:subtask) { ActionAccount::ReinstateUser.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:suspended_user) { create(:user, :suspended) }
+      let(:args) { [user.uuid, suspended_user.uuid, 'uuid-does-not-exist'] }
+      let(:include_missing) { true }
+      let(:config) { ScriptBase::Config.new(include_missing:) }
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'Suspend a user that is not suspended already', aggregate_failures: true do
+        expect(result.table).to match_array(
+          [
+            ['uuid', 'status'],
+            [user.uuid, 'User is not suspended'],
+            [suspended_user.uuid, 'User has been reinstated'],
+            ['uuid-does-not-exist', 'Error: Could not find user with that UUID'],
+          ],
+        )
+
+        expect(result.subtask).to eq('reinstate-user')
+        expect(result.uuids).to match_array([user.uuid, suspended_user.uuid])
+      end
+    end
+  end
 end
