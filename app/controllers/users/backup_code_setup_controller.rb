@@ -60,7 +60,9 @@ module Users
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 
-    def confirm_backup_codes; end
+    def confirm_backup_codes
+      confirm_user_in_account_setup
+    end
 
     private
 
@@ -121,6 +123,12 @@ module Users
     def authorize_backup_code_disable
       return if MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to account_two_factor_authentication_path
+    end
+
+    def confirm_user_in_account_setup
+      return if user_fully_authenticated? && in_multi_mfa_selection_flow?
+      return unless MfaPolicy.new(current_user).two_factor_enabled?
+      redirect_to account_url
     end
 
     def analytics_properties
