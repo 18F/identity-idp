@@ -193,15 +193,46 @@ RSpec.describe Profile do
 
   describe 'allows only one active Profile per user' do
     it 'prevents create! via ActiveRecord uniqueness validation' do
-      profile.active = true
-      profile.save!
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
+      profile.activate
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # pending fix
+
       expect { user.profiles.create!(active: true) }.
         to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
-      profile.active = true
-      profile.save!
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
+      profile.activate
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # pending fix
       expect do
         another_profile = user.profiles.new(active: true)
         another_profile.save!(validate: false)
