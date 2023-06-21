@@ -247,6 +247,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.has_proofed_before?).to eq(false)
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
@@ -257,10 +258,9 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.has_proofed_before?).to eq(false)
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # pending fix
-
-      expect(profile.has_proofed_before?).to be_falsey
     end
 
     it 'is true when the user is re-activated' do
