@@ -264,7 +264,7 @@ RSpec.describe Profile do
     end
 
     it 'is true when the user is re-activated' do
-      existing_profile = user.profiles.create
+      existing_profile = create(:profile, user: user)
       existing_profile.activate
       profile.activate
 
