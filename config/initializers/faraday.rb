@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Instruments Faraday requests using ActiveSupport::Notifications and Faraday's
 # instrumentation middleware. This file subscribes to both 'request_metric.faraday' and
 # 'request_log.faraday' events. 'request_metric.faraday' is for requests which we
