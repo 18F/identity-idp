@@ -12,6 +12,7 @@ class PinpointSupportedCountries
   # The list of countries where we have our sender ID registered
   SENDER_ID_COUNTRIES = %w[
     BY
+    CY
     EG
     FR
     JO
