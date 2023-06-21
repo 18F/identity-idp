@@ -74,7 +74,7 @@ es:
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: Mientras tanto, todavía puedes iniciar el proceso de verificación
               presencial en %{app_name} y luego acudir a una oficina de correos.

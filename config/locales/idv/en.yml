@@ -72,7 +72,7 @@ en:
           Try searching for a Post Office again. If this issue continues, come
           back later.
         text_html: Please try again. If you keep getting these errors, %{link}.
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: In the meantime, you can still begin the in-person verification process on
               %{app_name} and then visit a Post Office. If you urgently need

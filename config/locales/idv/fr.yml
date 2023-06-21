@@ -77,7 +77,7 @@ fr:
           moment. Essayez de chercher à nouveau un bureau de poste. Si le
           problème persiste, revenez plus tard.
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
               en personne sur %{app_name} et vous pouvez visiter un bureau de

@@ -114,7 +114,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       render
 
       expect(rendered).to have_content(
-        t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
       )
     end
 
@@ -125,7 +125,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
       render
 
       expect(rendered).not_to have_content(
-        t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
       )
     end
   end

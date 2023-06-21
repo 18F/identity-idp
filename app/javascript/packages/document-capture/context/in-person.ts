@@ -9,11 +9,11 @@ export interface InPersonContextProps {
   /**
    * Whether the message indicating a USPS outage should be displayed
    */
-  inPersonUspsOutageMessageEnabled: boolean;
+  inPersonOutageMessageEnabled: boolean;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
-  inPersonUspsOutageMessageEnabled: false,
+  inPersonOutageMessageEnabled: false,
 });
 
 InPersonContext.displayName = 'InPersonContext';
