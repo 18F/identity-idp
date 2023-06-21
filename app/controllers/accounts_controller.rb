@@ -16,6 +16,5 @@ class AccountsController < ApplicationController
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )
-    @use_reauthentication_route = FeatureManagement.use_reauthentication_route?
   end
 end

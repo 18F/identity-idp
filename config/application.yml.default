@@ -346,7 +346,6 @@ verify_personal_key_max_attempts: 5
 use_dashboard_service_providers: false
 use_clean_edit_password_url: true
 use_kms: false
-use_reauthentication_route: true
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -429,7 +428,6 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_reauthentication_route: true
   usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
@@ -513,7 +511,6 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_clean_edit_password_url: false
-  use_reauthentication_route: false
   use_kms: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
@@ -602,7 +599,6 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_reauthentication_route: true
   verify_gpo_key_attempt_window_in_minutes: 3
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
