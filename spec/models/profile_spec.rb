@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Profile do
   let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :fully_registered) }
-  let(:profile) { user.profiles.create }
+  let(:profile) { create(:profile, user: user) }
 
   let(:dob) { '1920-01-01' }
   let(:ssn) { '666-66-1234' }
