@@ -1,8 +1,14 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth redo document capture action', js: true do
+RSpec.feature 'doc auth redo document capture', js: true do
   include IdvStepHelper
   include DocAuthHelper
+
+  let(:fake_analytics) { FakeAnalytics.new }
+
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+  end
 
   context 'when barcode scan returns a warning', allow_browser_log: true do
     before do
@@ -28,7 +34,15 @@ RSpec.feature 'doc auth redo document capture action', js: true do
       click_link warning_link_text
 
       expect(current_path).to eq(idv_hybrid_handoff_path)
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth upload visited',
+        hash_including(redo_document_capture: true),
+      )
       complete_hybrid_handoff_step
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth document_capture visited',
+        hash_including(redo_document_capture: true),
+      )
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
 
@@ -65,6 +79,10 @@ RSpec.feature 'doc auth redo document capture action', js: true do
         click_link warning_link_text
 
         expect(current_path).to eq(idv_document_capture_path)
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth document_capture visited',
+          hash_including(redo_document_capture: true),
+        )
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
