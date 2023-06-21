@@ -4,10 +4,10 @@
       <div class="usa-alert__body">
         <div class="usa-alert__text">
           <%= t('account.re_verify.banner') %>
-          <% if verify_banner_reauthentication_redirect do %>
+          <% if use_reauthentication_route %>
             <%= render ButtonComponent.new(
                   action: ->(**tag_options, &block) do
-                    button_to(reauthentication_path, **tag_options, &block)
+                    button_to(account_reauthentication_path, **tag_options, &block)
                   end,
                   method: :post,
                   class: 'usa-button usa-button--unstyled',
