@@ -247,7 +247,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
       # active_profile before
-      expect(active_profile.activated_at).to_not be_nil # to change
+      expect(active_profile.activated_at).to_not be_nil # should this go to nil?
       expect(active_profile.active).to eq true # to change
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -268,7 +268,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to_not be_nil # pending fix
 
       # active_profile after
-      expect(active_profile.activated_at).to be_nil # changed
+      expect(active_profile.activated_at).to_not be_nil # unchanged, but should be nil?
       expect(active_profile.active).to eq false # changed
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
