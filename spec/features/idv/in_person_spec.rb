@@ -245,7 +245,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
     # confirm that user cannot visit other IdV pages before completing in-person proofing
-    visit idv_doc_auth_agreement_step
+    visit idv_agreement_path
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     visit idv_ssn_url
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
@@ -744,7 +744,7 @@ RSpec.describe 'In Person Proofing', js: true do
       )
     end
 
-    it 'can redo the address page form' do
+    it 'can redo the address page form even if that page is skipped' do
       complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
       # skip address step
       complete_ssn_step(user)

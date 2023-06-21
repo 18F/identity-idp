@@ -47,6 +47,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
       phone: nil,
+      same_address_as_id: nil,
     )
   end
 

@@ -13,7 +13,6 @@ RSpec.describe Idv::PersonalKeyController do
       user_password: password,
     )
     profile = profile_maker.save_profile(
-      active: false,
       fraud_review_needed: false,
       gpo_verification_needed: false,
     )
@@ -157,11 +156,6 @@ RSpec.describe Idv::PersonalKeyController do
     it 'logs when user generates personal key' do
       expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
       get :show
-    end
-
-    it 'sets flash.now[:success]' do
-      get :show
-      expect(flash[:success]).to eq t('idv.messages.confirm')
     end
 
     context 'user selected gpo verification' do

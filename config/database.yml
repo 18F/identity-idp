@@ -83,7 +83,7 @@ production:
     pool: <%= primary_pool %>
     advisory_locks: <%= !IdentityConfig.store.database_socket.present? %>
     prepared_statements: <%= !IdentityConfig.store.database_socket.present? %>
-    sslmode: 'verify-full'
+    sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
   read_replica:
@@ -93,7 +93,7 @@ production:
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
     pool: <%= primary_pool %>
-    sslmode: 'verify-full'
+    sslmode: <%= IdentityConfig.store.database_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
   worker_jobs:
@@ -103,6 +103,6 @@ production:
     host: <%= IdentityConfig.store.database_worker_jobs_host %>
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
     pool: <%= worker_pool %>
-    sslmode: 'verify-full'
+    sslmode: <%= IdentityConfig.store.database_worker_jobs_sslmode %>
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate
