@@ -45,7 +45,7 @@ idp:
     seed: false # db:seed
     annotations: # Annotations to add to the job
       helm.sh/hook: post-install,post-upgrade
-      #helm.sh/hook-delete-policy: hook-succeeded
+      helm.sh/hook-delete-policy: hook-succeeded
   replicaCount: 1
   image:
     repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp
@@ -209,8 +209,8 @@ worker:
     # targetMemoryUtilizationPercentage: 80
 
 postgresql:
-  image: postgres
-  tag: "14"
+  image: postgis/postgis
+  tag: "14-3.3"
   enabled: true
   username: postgres
   password: postgres
