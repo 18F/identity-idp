@@ -23,7 +23,7 @@ en:
       add_another_authentication_option: '‹ Add another authentication option'
       instructions: If you don’t have access to another device, keep your backup codes
         safe. If you lose your backup codes, you won’t be able to sign into
-        Login.gov.
+        %{app_name}.
       new_backup_codes: I need new backup codes
       saved_backup_codes: I’ve saved my backup codes
       warning_html: <strong>You’ve only set up backup codes on your account.
