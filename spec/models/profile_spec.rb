@@ -477,11 +477,14 @@ RSpec.describe Profile do
     it 'activates a profile if it passes fraud review' do
       profile = create(
         :profile, user: user, active: false,
+                  fraud_pending_reason: :threatmetrix_review,
                   fraud_review_pending_at: 1.day.ago
       )
       profile.activate_after_passing_review
 
       expect(profile).to be_active
+      expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.fraud_pending_reason).to be_nil
     end
 
     it 'does not activate a profile if transaction raises an error' do

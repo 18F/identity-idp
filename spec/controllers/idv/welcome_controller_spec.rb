@@ -68,6 +68,16 @@ RSpec.describe Idv::WelcomeController do
         expect(response).to redirect_to(idv_agreement_url)
       end
     end
+
+    it 'redirects to please call page if fraud review is pending' do
+      profile = create(:profile, :fraud_review_pending)
+
+      stub_sign_in(profile.user)
+
+      get :show
+
+      expect(response).to redirect_to(idv_please_call_url)
+    end
   end
 
   describe '#update' do
