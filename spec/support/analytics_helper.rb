@@ -1,6 +1,6 @@
 module AnalyticsHelper
-  def stub_analytics(user: nil)
-    controller.analytics = FakeAnalytics.new(user:)
+  def stub_analytics
+    controller.analytics = FakeAnalytics.new
     @analytics = controller.analytics
   end
 
