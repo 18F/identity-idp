@@ -265,17 +265,48 @@ RSpec.describe Profile do
 
     it 'is true when the user is re-activated' do
       existing_profile = create(:profile, user: user)
+
+      # profile before
+      expect(profile.activated_at).to be_nil # to change
+      expect(profile.active).to eq false # to change
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
+      # existing_profile before
+      expect(existing_profile.activated_at).to be_nil # will change !!!
+      expect(existing_profile.active).to eq(false) # won't change
+      expect(existing_profile.deactivation_reason).to be_nil
+      expect(existing_profile.fraud_review_pending?).to eq(false)
+      expect(existing_profile.gpo_verification_pending_at).to be_nil
+      expect(existing_profile.initiating_service_provider).to be_nil
+      expect(existing_profile.verified_at).to be_nil # will change but shouldn't
+
       existing_profile.activate
       profile.activate
 
       existing_profile.reload
       profile.reload
 
-      # Now, existing_profile should be deactivated
-      expect(existing_profile.active).to be_falsey
-      expect(existing_profile.activated_at).to be_present
-      expect(profile.active).to be_truthy
-      expect(profile.activated_at).to be_present
+      # profile after
+      expect(profile.activated_at).to be_present # changed
+      expect(profile.active).to eq(true) # changed
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # fix pending
+
+      # existing_profile after
+      expect(existing_profile.activated_at).to be_present # Now, existing_profile should be deactivated
+      expect(existing_profile.active).to eq(false) # Now, existing_profile should be deactivated
+      expect(existing_profile.deactivation_reason).to be_nil
+      expect(existing_profile.fraud_review_pending?).to eq(false)
+      expect(existing_profile.gpo_verification_pending_at).to be_nil
+      expect(existing_profile.initiating_service_provider).to be_nil
+      expect(existing_profile.verified_at).to be_present # fix pending
 
       expect(profile.has_proofed_before?).to be_truthy
     end
