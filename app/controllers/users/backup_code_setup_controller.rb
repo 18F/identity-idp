@@ -61,7 +61,7 @@ module Users
     end
 
     def confirm_backup_codes
-      confirm_user_in_account_setup
+      skip_backup_code_confirmation
     end
 
     private
@@ -125,9 +125,8 @@ module Users
       redirect_to account_two_factor_authentication_path
     end
 
-    def confirm_user_in_account_setup
-      return if user_fully_authenticated? && in_multi_mfa_selection_flow?
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
+    def skip_backup_code_confirmation
+      return if mfa_user.enabled_mfa_methods_count < 0
       redirect_to account_url
     end
 
