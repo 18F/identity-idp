@@ -28,7 +28,8 @@ module Idv
 
       render 'shared/wait' and return if async_state.in_progress?
 
-      redirect_to failure_url(:fail) and return if throttle.throttled?
+      # redirect_to failure_url(:fail) and return if throttle.throttled?
+      return if confirm_not_rate_limited
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
