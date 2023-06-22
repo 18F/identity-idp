@@ -9,6 +9,18 @@
 
 <% title t('forms.verify_profile.title') %>
 
+<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
+  <p>
+    <%= t('forms.verify_profile.alert_info') %>
+    <br>
+    <%= render 'shared/address', address: @gpo_verify_form.pii %>
+  </p>
+  <p>
+    <%= t('forms.verify_profile.wrong_address') %>
+    <%= link_to t('forms.verify_profile.clear_and_start_over'), idv_confirm_start_over_path %>
+  </p>
+<% end %>
+
 <%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.welcome_back')) %>
 <%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %w[p strong] %>
 <hr class="margin-y-4" />

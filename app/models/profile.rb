@@ -23,6 +23,11 @@ class Profile < ApplicationRecord
     in_person_verification_pending: 5,
   }
 
+  enum fraud_pending_reason: {
+    threatmetrix_review: 1,
+    threatmetrix_reject: 2,
+  }
+
   attr_reader :personal_key
 
   def fraud_review_pending?
@@ -67,11 +72,11 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Rails/SkipsModelValidations
 
-  def confirm_that_profile_can_be_activated!
+  def reason_not_to_activate
     if pending_reasons.any?
-      raise "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
+      "Attempting to activate profile with pending reasons: #{pending_reasons.join(',')}"
     elsif deactivation_reason.present?
-      raise "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
+      "Attempting to activate profile with deactivation reason: #{deactivation_reason}"
     end
   end
 
@@ -81,28 +86,36 @@ class Profile < ApplicationRecord
   end
 
   def activate_after_passing_review
-    update!(
-      fraud_review_pending_at: nil,
-      fraud_rejection_at: nil,
-    )
-    track_fraud_review_adjudication(decision: 'pass')
-    activate
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+
+    track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
   def activate_after_passing_in_person
-    update!(
-      deactivation_reason: nil,
-      fraud_review_pending_at: nil,
-    )
-    activate
+    transaction do
+      update!(
+        deactivation_reason: nil,
+        fraud_review_pending_at: nil,
+      )
+      activate
+    end
   end
 
   def activate_after_password_reset
     if password_reset?
-      update!(
-        deactivation_reason: nil,
-      )
-      activate(reason_deactivated: :password_reset)
+      transaction do
+        update!(
+          deactivation_reason: nil,
+        )
+        activate(reason_deactivated: :password_reset)
+      end
     end
   end
 
@@ -217,6 +230,10 @@ class Profile < ApplicationRecord
   end
 
   private
+
+  def confirm_that_profile_can_be_activated!
+    raise reason_not_to_activate if reason_not_to_activate
+  end
 
   def track_fraud_review_adjudication(decision:)
     if IdentityConfig.store.irs_attempt_api_track_idv_fraud_review

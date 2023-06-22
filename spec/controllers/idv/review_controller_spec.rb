@@ -151,14 +151,6 @@ RSpec.describe Idv::ReviewController do
         expect(response).to render_template :new
       end
 
-      it 'displays a helpful flash message to the user' do
-        get :new
-
-        expect(flash.now[:success]).to eq(
-          t('idv.messages.review.phone_verified'),
-        )
-      end
-
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
@@ -174,7 +166,6 @@ RSpec.describe Idv::ReviewController do
         it 'displays info message about sending letter' do
           get :new
 
-          expect(flash.now[:success]).to be_nil
           expect(flash.now[:info]).to eq(
             t('idv.messages.review.gpo_pending'),
           )
@@ -224,7 +215,6 @@ RSpec.describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
-        expect(flash.now[:success]).to be_nil
       end
     end
 
@@ -365,9 +355,7 @@ RSpec.describe Idv::ReviewController do
             stub_request_enroll
           end
           let(:applicant) do
-            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-              same_address_as_id: true,
-            )
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
           end
 
           before do
@@ -593,7 +581,7 @@ RSpec.describe Idv::ReviewController do
                   let(:review_status) { review_status }
                   let(:proofing_device_profiling_state) { proofing_device_profiling_state }
                   let(:applicant) do
-                    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+                    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
                   end
                   let(:stub_idv_session) do
                     stub_user_with_applicant_data(user, applicant)
@@ -666,6 +654,15 @@ RSpec.describe Idv::ReviewController do
           profile.reload
 
           expect(profile).to_not be_active
+        end
+
+        it 'sends an email about the gpo letter' do
+          expect do
+            put :create,
+                params: {
+                  user: { password: ControllerHelper::VALID_PASSWORD },
+                }
+          end.to(change { ActionMailer::Base.deliveries.count }.by(1))
         end
 
         it 'redirects to come back later page' do
