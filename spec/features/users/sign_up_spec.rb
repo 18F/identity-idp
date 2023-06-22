@@ -386,4 +386,16 @@ RSpec.feature 'Sign Up' do
     visit second_mfa_setup_path
     expect(page).to have_current_path second_mfa_setup_path
   end
+
+  it 'denies revist to confirm_backup_codes' do
+    sign_in_user
+    set_up_2fa_with_backup_codes
+    skip_second_mfa_prompt
+
+    expect(page).to have_current_path confirm_backup_codes_path
+    click_on(t('two_factor_authentication.backup_codes.saved_backup_codes'))
+    expect(page).to have_current_path account_path
+    visit confirm_backup_codes_path
+    expect(page).to have_current_path account_path
+  end
 end

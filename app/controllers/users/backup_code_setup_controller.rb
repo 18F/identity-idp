@@ -126,7 +126,7 @@ module Users
     end
 
     def skip_backup_code_confirmation
-      return if mfa_user.enabled_mfa_methods_count < 0
+      return if mfa_user.enabled_mfa_methods_count > 0
       redirect_to account_url
     end
 
