@@ -6,11 +6,9 @@ module Idv
       include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
-      include OutageConcern
 
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
-      before_action :check_for_outage, only: :show
 
       def show
         @step_indicator_steps = step_indicator_steps
