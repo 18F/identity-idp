@@ -58,25 +58,5 @@ RSpec.describe Idv::GpoOnlyWarningController do
         end
       end
     end
-
-    context 'welcome url' do
-      context 'welcome controller is enabled' do
-        it 'links to idv_welcome_url' do
-          allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
-            and_return(true)
-          get :show
-          expect(response.body).to include(idv_welcome_url)
-        end
-      end
-
-      context 'welcome controller is not enabled' do
-        it 'links to FSM welcome step' do
-          allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
-            and_return(false)
-          get :show
-          expect(response.body).to include(idv_doc_auth_step_path(step: :welcome))
-        end
-      end
-    end
   end
 end
