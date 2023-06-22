@@ -52,13 +52,13 @@ These instructions will allow you to debug your phone browser with Chrome DevToo
 
 1. In your Android phone, turn on USB debugging. This will allow your development computer to connect to your phone.
 
-   **USB debugging** is a setting the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 7 times.
+   **USB debugging** is a setting in the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 7 times.
 
 2. Plug your Android phone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
 
 3. Visit `chrome://inspect` in the Chrome browser of your development computer. (It may already be open from the previous set of instructions.) Below the "Remote Target" heading, you should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
 
-If you don't see any tabs under the "Remote Target" heading, you may need to try a different method of connecting your phone to your computer. In your terminal, you can run the command `ioreg -p IOUSB` to see what is connected to your USB ports. If your phone is connected to a USB hub but is not listed in the output, try connecting your phone directly to the computer.
+If you don't see any tabs under the "Remote Target" heading, you may need to try a different method of connecting your phone to your computer. In your terminal, you can run the command `ioreg -p IOUSB` to see what is connected to your USB ports. If your phone is connected to a USB hub but is not listed in the output, try connecting your phone directly to the computer. You could also try using a different USB cable.
 
 4. Click to **inspect** this tab. You should see browser DevTools and a representation of your phone's screen on your development computer, as in this illustration:
 
@@ -68,7 +68,7 @@ If you don't see any tabs under the "Remote Target" heading, you may need to try
 
 These instructions work only if your development computer is an Apple product. You will need a USB cable with the appropriate "lightning" connector to plug into an iPhone.
 
-1. On your development Apple machine, open the Safari web browser. Go to menu items **Safari → Settings → Advanced** and check **Show Develop menu in menu bar**. A screenshot:
+1. On your development Apple machine, open the Safari web browser. Go to menu items **Safari → Settings → Advanced** and check **Show Develop menu in menu bar**. (For some OS versions, it may be **Safari → Preferences → Advanced**.) A screenshot:
 
    ![show_develop_menu](https://user-images.githubusercontent.com/546123/232129916-3c68d950-1145-4af6-9a1a-c8e7c3dea7a1.png)
 
