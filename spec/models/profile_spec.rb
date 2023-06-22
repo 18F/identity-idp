@@ -272,6 +272,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.has_proofed_before?).to eq(false) # to change
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
@@ -296,6 +297,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.has_proofed_before?).to eq(true) # changed
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # fix pending
 
@@ -307,8 +309,6 @@ RSpec.describe Profile do
       expect(existing_profile.gpo_verification_pending_at).to be_nil
       expect(existing_profile.initiating_service_provider).to be_nil
       expect(existing_profile.verified_at).to be_present # fix pending
-
-      expect(profile.has_proofed_before?).to be_truthy
     end
   end
 
