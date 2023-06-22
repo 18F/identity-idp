@@ -125,11 +125,6 @@ module Users
       redirect_to account_two_factor_authentication_path
     end
 
-    def skip_backup_code_confirmation
-      return if mfa_user.enabled_mfa_methods_count > 0
-      redirect_to account_url
-    end
-
     def analytics_properties
       {
         success: true,
