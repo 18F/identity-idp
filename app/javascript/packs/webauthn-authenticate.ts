@@ -1,4 +1,5 @@
 import { isWebauthnSupported, verifyWebauthnDevice } from '@18f/identity-webauthn';
+import type { VerifyCredentialDescriptor } from '@18f/identity-webauthn';
 
 function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress')!;
@@ -15,6 +16,10 @@ function webauthn() {
   const spinner = document.getElementById('spinner')!;
   spinner.classList.remove('display-none');
 
+  const credentials: VerifyCredentialDescriptor[] = JSON.parse(
+    (document.getElementById('credentials') as HTMLInputElement).value,
+  );
+
   if (
     !isWebauthnSupported() ||
     (webauthnPlatformRequested && !isPlatformAvailable && !multipleFactorsEnabled)
@@ -25,7 +30,7 @@ function webauthn() {
     // if platform auth is not supported on device, we should take user to the error screen if theres no additional methods.
     verifyWebauthnDevice({
       userChallenge: (document.getElementById('user_challenge') as HTMLInputElement).value,
-      credentialIds: (document.getElementById('credential_ids') as HTMLInputElement).value,
+      credentials,
     })
       .then((result) => {
         (document.getElementById('credential_id') as HTMLInputElement).value = result.credentialId;
