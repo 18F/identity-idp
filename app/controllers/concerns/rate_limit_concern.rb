@@ -4,7 +4,6 @@ module RateLimitConcern
   def confirm_not_rate_limited
     rate_limited = false
     %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
-
       if rate_limit_redirect!(throttle_type)
         rate_limited = true
         break

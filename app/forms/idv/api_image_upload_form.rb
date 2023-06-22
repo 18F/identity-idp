@@ -187,7 +187,7 @@ module Idv
 
     def throttle_if_rate_limited
       return unless document_capture_session
-      return unless @throttled = throttle.throttled?
+      return unless (@throttled = throttle.throttled?)
 
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
