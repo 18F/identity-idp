@@ -326,7 +326,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil # will change but shouldn't
 
       # active_profile before
-      expect(active_profile.activated_at).to be_present # should this go to nil?
+      expect(active_profile.activated_at).to be_nil
       expect(active_profile.active).to eq true # to change
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -347,7 +347,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # pending fix
 
       # active_profile after
-      expect(active_profile.activated_at).to be_present # unchanged, but should be nil?
+      expect(active_profile.activated_at).to be_nil
       expect(active_profile.active).to eq false # changed
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -361,7 +361,7 @@ RSpec.describe Profile do
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::ReproofCompletedEvent.new(user: user))
 
-      expect(profile.activated_at).to be_present
+      expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
@@ -371,7 +371,7 @@ RSpec.describe Profile do
 
       profile.activate
 
-      expect(profile.activated_at).to be_present
+      expect(profile.activated_at).to be_present # changed
       expect(profile.active).to eq true
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)

@@ -8,7 +8,6 @@ FactoryBot.define do
 
     trait :active do
       active { true }
-      activated_at { Time.zone.now }
     end
 
     trait :verified do
