@@ -26,8 +26,6 @@ module Idv
       # throttle maxed out. Check for success before checking throttle.
       return async_state_done(async_state) if async_state.done?
 
-      render 'shared/wait' and return if async_state.in_progress?
-
       return if confirm_not_rate_limited
 
       if async_state.none?
@@ -36,6 +34,8 @@ module Idv
 
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
+      elsif async_state.in_progress?
+        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
