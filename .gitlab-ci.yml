@@ -86,9 +86,11 @@ install:
     - *bundle_install
     - *yarn_install
     - bundle exec rake assets:precompile
-      
+
+# Build a container image async, and don't block CI tests
 build-idp-image:
-  stage: build
+  stage: review
+  needs: []
   interruptible: true
   tags:
     - build-pool
