@@ -304,8 +304,8 @@ RSpec.describe Profile do
       # existing_profile after
 
       # Now, existing_profile should be deactivated
-      expect(existing_profile.activated_at).to be_present 
-      expect(existing_profile.active).to eq(false) 
+      expect(existing_profile.activated_at).to be_present
+      expect(existing_profile.active).to eq(false)
 
       expect(existing_profile.deactivation_reason).to be_nil
       expect(existing_profile.fraud_review_pending?).to eq(false)
