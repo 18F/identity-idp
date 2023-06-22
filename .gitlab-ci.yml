@@ -282,6 +282,8 @@ trigger_devops:
 
 review-app:
   stage: review
+  needs:
+    - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
   image:
     name: dtzar/helm-kubectl:latest
