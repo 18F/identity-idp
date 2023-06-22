@@ -6,7 +6,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
 
     def show
-      user_session['idv/doc_auth'][:skip_vendor_outage] = true
+      user_session.fetch('idv/doc_auth', {})[:skip_vendor_outage] = true
       render :show, locals: { current_sp:, exit_url: }
     end
 
