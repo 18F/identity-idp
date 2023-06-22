@@ -43,6 +43,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
           success: true,
           errors: {},
           client_id: client_id,
+          prompt: 'select_account',
+          allow_prompt_login: true,
           redirect_uri: nil,
           unauthorized_scope: true,
           acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
@@ -62,6 +64,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
             errors: { response_type: ['is not included in the list'] },
             error_details: { response_type: [:inclusion] },
             client_id: client_id,
+            prompt: 'select_account',
+            allow_prompt_login: true,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
