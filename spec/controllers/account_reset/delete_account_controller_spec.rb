@@ -8,6 +8,7 @@ RSpec.describe AccountReset::DeleteAccountController do
   end
   let(:invalid_token_error) { { token: [invalid_token_message] } }
 
+  before { stub_analytics }
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :fully_registered, :with_backup_code)
@@ -17,7 +18,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       grant_request(user)
 
       session[:granted_token] = AccountResetRequest.first.granted_token
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: true,
@@ -37,7 +37,6 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -57,7 +56,6 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -84,7 +82,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: false,
@@ -113,7 +110,6 @@ RSpec.describe AccountReset::DeleteAccountController do
 
   describe '#show' do
     it 'redirects to root if the token does not match one in the DB' do
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -134,7 +130,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: false,
