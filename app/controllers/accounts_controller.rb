@@ -18,4 +18,11 @@ class AccountsController < ApplicationController
     )
     @use_reauthentication_route = FeatureManagement.use_reauthentication_route?
   end
+
+  def reauthentication
+    user_session[:stored_location] = account_url
+    user_session[:context] = 'reauthentication'
+
+    redirect_to login_two_factor_options_path(reauthn: true)
+  end
 end
