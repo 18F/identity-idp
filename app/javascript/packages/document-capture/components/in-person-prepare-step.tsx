@@ -8,7 +8,7 @@ import MarketingSiteContext from '../context/marketing-site';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
-import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
+import InPersonUspsOutageAlert from './in-person-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();

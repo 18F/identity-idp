@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
+import InPersonUspsOutageAlert from './in-person-outage-alert';
 
 describe('InPersonUspsOutageAlert', () => {
   let getByText;
