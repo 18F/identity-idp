@@ -429,7 +429,6 @@ development:
   state_tracking_enabled: true
   telephony_adapter: test
   use_dashboard_service_providers: true
-  use_reauthentication_route: true
   usps_ipp_transliteration_enabled: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
@@ -602,7 +601,6 @@ test:
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
   totp_code_interval: 3
-  use_reauthentication_route: true
   verify_gpo_key_attempt_window_in_minutes: 3
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
