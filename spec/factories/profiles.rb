@@ -8,6 +8,14 @@ FactoryBot.define do
 
     trait :active do
       active { true }
+      # `activated_at` will be always defined for active profiles,
+      # but it is not defined here so tests will not rely on it
+      # instead of the `active` boolean above as they should
+    end
+
+    trait :deactivated do
+      active { false }
+      activated_at { Time.zone.now }
     end
 
     trait :verified do

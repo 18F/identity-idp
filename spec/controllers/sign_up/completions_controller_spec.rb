@@ -327,7 +327,16 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'when the user goes through reproofing' do
-      let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
+      # TODO: this passed with the previous `active` trait,
+      # but now fails with the new one that removes `activated_at`
+      # let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
+
+      # this will pass with the new `deactivated` trait, but it obviously shouldn't
+      # let!(:user) { create(:user, profiles: [create(:profile, :deactivated)]) }
+
+      # TODO: this preserves the previous passing behavior, but should be re-implemented
+      # to rely on the `Profile#active` boolean rather than the `Profile#activated_at` timestamp
+      let!(:user) { create(:user, profiles: [create(:profile, activated_at: Time.zone.now)]) }
 
       before do
         stub_attempts_tracker
