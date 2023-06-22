@@ -30,6 +30,13 @@ RSpec.describe Idv::SsnController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'checks that the previous step is complete' do
       expect(subject).to have_actions(
         :before,
@@ -74,16 +81,6 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to(
         change { doc_auth_log.reload.ssn_view_count }.from(0).to(1),
       )
-    end
-
-    context 'without a flow session' do
-      let(:flow_session) { nil }
-
-      it 'redirects to hybrid_handoff' do
-        get :show
-
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
     end
 
     context 'with an ssn in session' do
