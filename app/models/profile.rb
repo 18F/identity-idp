@@ -23,6 +23,11 @@ class Profile < ApplicationRecord
     in_person_verification_pending: 5,
   }
 
+  enum fraud_pending_reason: {
+    threatmetrix_review: 1,
+    threatmetrix_reject: 2,
+  }
+
   attr_reader :personal_key
 
   def fraud_review_pending?
@@ -85,6 +90,7 @@ class Profile < ApplicationRecord
       update!(
         fraud_review_pending_at: nil,
         fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
       )
       activate
     end
