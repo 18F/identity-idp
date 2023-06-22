@@ -447,7 +447,6 @@ class IdentityConfig
     config.add(:totp_code_interval, type: :integer)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
-    config.add(:use_clean_edit_password_url, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:usps_mock_fallback, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
