@@ -55,13 +55,12 @@ module Idv
     def increment_throttle!
       return unless document_capture_session
       throttle.increment!
-      @throttled = throttle.throttled?
     end
 
     def validate_form
       success = valid?
       increment_throttle!
-      track_rate_limited if @throttled
+      track_rate_limited if throttled?
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -187,7 +186,7 @@ module Idv
 
     def throttle_if_rate_limited
       return unless document_capture_session
-      return unless (@throttled = throttle.throttled?)
+      return unless throttled?
 
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
@@ -312,6 +311,10 @@ module Idv
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )
+    end
+
+    def throttled?
+      @throttled = throttle.throttled? if document_capture_session
     end
 
     def track_event(response)
