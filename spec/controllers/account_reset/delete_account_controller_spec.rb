@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'pp'
 RSpec.describe AccountReset::DeleteAccountController do
   include AccountResetHelper
 
@@ -8,16 +7,20 @@ RSpec.describe AccountReset::DeleteAccountController do
   end
   let(:invalid_token_error) { { token: [invalid_token_message] } }
 
+  let(:user) { create(:user, :fully_registered, :with_backup_code) }
+
+  before do
+     stub_sign_in(user) 
+     stub_analytics(user:)
+  end 
   describe '#delete' do
     it 'logs a good token to the analytics' do
-      user = create(:user, :fully_registered, :with_backup_code)
       create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
 
       session[:granted_token] = AccountResetRequest.first.granted_token
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: true,
@@ -25,7 +28,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
-        account_created_at: user.created_at
+        account_confirmed_at: user.confirmed_at
       }
       expect(@analytics).
         to receive(:track_event).with('Account Reset: delete', properties)
@@ -37,7 +40,6 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -46,6 +48,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
+        account_confirmed_at: kind_of(Time)
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
@@ -57,7 +60,6 @@ RSpec.describe AccountReset::DeleteAccountController do
 
 
     it 'displays a flash and redirects to root if the token is missing' do
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -66,6 +68,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
+        account_confirmed_at: kind_of(Time)
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
@@ -83,7 +86,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: false,
@@ -94,7 +96,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
-        account_created_at: user.created_at
+        account_confirmed_at: user.confirmed_at
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
@@ -112,7 +114,6 @@ RSpec.describe AccountReset::DeleteAccountController do
 
   describe '#show' do
     it 'redirects to root if the token does not match one in the DB' do
-      stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
         success: false,
@@ -133,7 +134,6 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      stub_analytics
       properties = {
         user_id: user.uuid,
         success: false,

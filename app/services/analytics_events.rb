@@ -70,7 +70,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     account_age_in_days:,
-    account_created_at:, 
+    account_confirmed_at:, 
     mfa_method_counts:,
     errors: nil,
     **extra
@@ -80,7 +80,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       account_age_in_days: account_age_in_days,
-      account_created_at: account_created_at,
+      account_confirmed_at: account_confirmed_at,
       mfa_method_counts: mfa_method_counts,
       errors: errors,
       **extra,
