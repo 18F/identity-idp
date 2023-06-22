@@ -3,15 +3,27 @@ module RateLimitConcern
 
   def confirm_not_rate_limited # confusing returns false if not rate_limited
     rate_limited = false
-    %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
-      next unless throttle_and_controller_match(throttle_type)# && action_name == 'update' needed w/o update ... needs a refactor?
 
+    throttle_types.each do |throttle_type|
       if rate_limit_redirect!(throttle_type)
         rate_limited = true
         break
       end
     end
     rate_limited
+  end
+
+  def throttle_types
+    case self.class
+    when Idv::PhoneController
+      [:proof_address]
+    when Idv::InPerson::VerifyInfoController, Idv::VerifyInfoController
+      [:idv_resolution]#, :proof_ssn]
+    when Idv::DocumentCaptureController
+      [:idv_doc_auth]
+    else
+      [:proof_address, :idv_resolution, :idv_doc_auth] #, :proof_ssn] default or for spec?
+    end
   end
 
   def rate_limit_redirect!(throttle_type)
@@ -38,18 +50,6 @@ module RateLimitConcern
       redirect_to idv_session_errors_throttled_url
     when :proof_address
       redirect_to idv_phone_errors_failure_url# if self.class != Idv::PhoneController
-    end
-  end
-
-  def throttle_and_controller_match(throttle_type)
-    case throttle_type
-    when :idv_resolution
-      self.instance_of?(Idv::VerifyInfoController) ||
-        self.instance_of?(Idv::InPerson::VerifyInfoController)
-    when :idv_doc_auth
-      self.instance_of?(Idv::DocumentCaptureController)
-    when :proof_address
-      self.instance_of?(Idv::PhoneController)
     end
   end
 
