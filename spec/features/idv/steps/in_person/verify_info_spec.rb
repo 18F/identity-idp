@@ -217,5 +217,22 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
       expect(page).to have_current_path(idv_in_person_verify_info_path)
     end
+
+    it 'proceeds to the next page if resolution passes',
+       allow_browser_log: true do
+      sign_in_and_2fa_user
+      begin_in_person_proofing(user)
+      complete_prepare_step(user)
+      complete_location_step(user)
+      complete_state_id_step(
+        user, same_address_as_id: same_address_as_id,
+              double_address_verification: double_address_verification
+      )
+      click_idv_continue
+      complete_ssn_step(user)
+      complete_verify_step(user)
+
+      expect(page).to have_content(t('titles.idv.phone'))
+    end
   end
 end
