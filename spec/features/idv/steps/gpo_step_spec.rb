@@ -52,7 +52,7 @@ RSpec.feature 'idv gpo step' do
       expect(page).to have_current_path(idv_come_back_later_path)
 
       # Confirm that user cannot visit other IdV pages while unverified
-      visit idv_doc_auth_agreement_step
+      visit idv_agreement_path
       expect(page).to have_current_path(idv_gpo_verify_path)
       visit idv_ssn_url
       expect(page).to have_current_path(idv_gpo_verify_path)

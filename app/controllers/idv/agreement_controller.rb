@@ -34,9 +34,6 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        # for the 50/50 state
-        flow_session['Idv::Steps::AgreementStep'] = true
-
         redirect_to idv_hybrid_handoff_url
       else
         redirect_to idv_agreement_url
@@ -64,8 +61,13 @@ module Idv
 
     def confirm_welcome_step_complete
       return if flow_session['Idv::Steps::WelcomeStep']
+      return if idv_session.welcome_visited
 
-      redirect_to idv_doc_auth_url
+      if IdentityConfig.store.doc_auth_welcome_controller_enabled
+        redirect_to idv_welcome_url
+      else
+        redirect_to idv_doc_auth_url
+      end
     end
 
     def confirm_agreement_needed

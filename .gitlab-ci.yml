@@ -73,6 +73,7 @@ install:
   stage: build
   variables:
     RAILS_ENV: test
+    SKIP_YARN_INSTALL: 'true'
   cache:
     - <<: *ruby_cache
       policy: pull-push
@@ -187,6 +188,7 @@ js_build:
     - <<: *yarn_production_cache
   variables:
     NODE_ENV: 'production'
+    SKIP_YARN_INSTALL: 'true'
   script:
     - *bundle_install
     - *yarn_production_install
