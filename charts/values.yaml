@@ -43,9 +43,10 @@ idp:
     create: true # db:create
     migrate: true # db:migrate
     seed: false # db:seed
+    backoffLimit: 5
     annotations: # Annotations to add to the job
       helm.sh/hook: post-install,post-upgrade
-      helm.sh/hook-delete-policy: hook-succeeded
+      helm.sh/hook-delete-policy: hook-succeeded,hook-failed
   replicaCount: 1
   image:
     repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp

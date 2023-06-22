@@ -9,6 +9,7 @@ metadata:
   annotations:
     {{- toYaml .Values.idp.hooks.annotations | nindent 4 }}
 spec:
+  backoffLimit: {{ .Values.idp.hooks.backoffLimit }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
