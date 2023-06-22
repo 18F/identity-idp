@@ -302,8 +302,11 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # fix pending
 
       # existing_profile after
-      expect(existing_profile.activated_at).to be_present # Now, existing_profile should be deactivated
-      expect(existing_profile.active).to eq(false) # Now, existing_profile should be deactivated
+
+      # Now, existing_profile should be deactivated
+      expect(existing_profile.activated_at).to be_present 
+      expect(existing_profile.active).to eq(false) 
+
       expect(existing_profile.deactivation_reason).to be_nil
       expect(existing_profile.fraud_review_pending?).to eq(false)
       expect(existing_profile.gpo_verification_pending_at).to be_nil
