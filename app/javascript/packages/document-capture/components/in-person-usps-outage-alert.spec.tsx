@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
-import InPersonUspsOutageAlert from './in-person-outage-alert';
+import InPersonOutageAlert from './in-person-outage-alert';
 
-describe('InPersonUspsOutageAlert', () => {
+describe('InPersonOutageAlert', () => {
   let getByText;
   beforeEach(() => {
-    getByText = render(<InPersonUspsOutageAlert />).getByText;
+    getByText = render(<InPersonOutageAlert />).getByText;
   });
 
   it('renders the title', () => {

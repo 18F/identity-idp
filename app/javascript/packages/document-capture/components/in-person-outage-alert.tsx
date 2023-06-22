@@ -2,7 +2,7 @@ import { t } from '@18f/identity-i18n';
 import { Alert } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 
-function InPersonUspsOutageAlert() {
+function InPersonOutageAlert() {
   return (
     <Alert type="warning" className="margin-bottom-4">
       <>
@@ -18,4 +18,4 @@ function InPersonUspsOutageAlert() {
   );
 }
 
-export default InPersonUspsOutageAlert;
+export default InPersonOutageAlert;
