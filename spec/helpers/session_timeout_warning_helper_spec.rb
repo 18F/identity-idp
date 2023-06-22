@@ -1,26 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe SessionTimeoutWarningHelper do
-  describe '#expires_at' do
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
-    it 'returns time before now' do
-      expect(helper.expires_at).to be < Time.zone.now
-    end
-
-    context 'with session expiration' do
-      before do
-        allow(helper).to receive(:session).and_return(session_expires_at: Time.zone.now + 1)
-      end
-
-      it 'returns time remaining in user session' do
-        expect(helper.expires_at).to be > Time.zone.now
-      end
-    end
-  end
-
   describe '#timeout_refresh_path' do
     let(:http_host) { 'example.com' }
     before do

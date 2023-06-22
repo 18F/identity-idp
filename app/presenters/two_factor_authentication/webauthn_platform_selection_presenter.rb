@@ -4,8 +4,11 @@ module TwoFactorAuthentication
       :webauthn_platform
     end
 
-    def html_class
-      'display-none'
+    def render_in(view_context, &block)
+      view_context.render(
+        WebauthnInputComponent.new(platform: true, passkey_supported_only: configuration.blank?),
+        &block
+      )
     end
 
     def disabled?

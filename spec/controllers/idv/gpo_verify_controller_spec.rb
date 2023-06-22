@@ -45,6 +45,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'user has pending profile' do
       it 'renders page' do
+        controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
 
         action
@@ -152,6 +153,15 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       context 'with establishing in person enrollment' do
+        let!(:enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            user: user,
+            profile: pending_profile,
+          )
+        end
+
         let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
@@ -162,7 +172,7 @@ RSpec.describe Idv::GpoVerifyController do
             and_return(user.pending_profile.decrypt_pii(user.password).to_h)
         end
 
-        it 'redirects to ready to verify screen' do
+        it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
             'IdV: GPO verification submitted',
             success: true,
@@ -177,7 +187,7 @@ RSpec.describe Idv::GpoVerifyController do
 
           action
 
-          expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+          expect(response).to redirect_to(idv_personal_key_url)
         end
 
         it 'does not dispatch account verified alert' do

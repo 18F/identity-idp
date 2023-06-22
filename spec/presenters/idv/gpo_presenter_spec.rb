@@ -67,7 +67,7 @@ RSpec.describe Idv::GpoPresenter do
     context 'when the user has a pending profile' do
       it 'returns the verify account path' do
         create(:profile, user: user, gpo_verification_pending_at: 1.day.ago)
-        expect(subject.fallback_back_path).to eq('/account/verify')
+        expect(subject.fallback_back_path).to eq('/verify/by_mail')
       end
     end
 

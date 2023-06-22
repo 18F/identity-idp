@@ -20,9 +20,9 @@ Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
-  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \
-                      'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                      'HeadlessChrome/88.0.4324.150 Safari/537.36'
+  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) ' \
+                      'AppleWebKit/603.1.23 (KHTML, like Gecko) ' \
+                      'HeadlessChrome/88.0.4324.150 Safari/602.1'
 
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_argument('--headless') if !ENV['SHOW_BROWSER']

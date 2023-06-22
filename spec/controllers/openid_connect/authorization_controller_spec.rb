@@ -53,6 +53,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with('OpenID Connect: authorization request',
                  success: true,
                  client_id: client_id,
+                 prompt: 'select_account',
+                 allow_prompt_login: true,
                  errors: {},
                  unauthorized_scope: true,
                  user_fully_authenticated: true,
@@ -113,6 +115,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
+                     prompt: 'select_account',
+                     allow_prompt_login: true,
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
@@ -164,7 +168,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'profile is reset' do
-            let(:user) { create(:profile, :password_reset).user }
+            let(:user) { create(:profile, :verified, :password_reset).user }
 
             it 'redirects to have the user enter their personal key' do
               action
@@ -211,6 +215,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
+                     prompt: 'select_account',
+                     allow_prompt_login: true,
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
@@ -253,6 +259,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
+                     prompt: 'select_account',
+                     allow_prompt_login: true,
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
@@ -278,7 +286,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           end
 
           context 'profile is reset' do
-            let(:user) { create(:profile, :password_reset).user }
+            let(:user) { create(:profile, :verified, :password_reset).user }
 
             it 'redirects to the redirect_uri immediately without proofing' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 1)
@@ -296,6 +304,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
+                     prompt: 'select_account',
+                     allow_prompt_login: true,
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
@@ -374,6 +384,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with('OpenID Connect: authorization request',
                  success: false,
                  client_id: client_id,
+                 prompt: '',
+                 allow_prompt_login: true,
                  unauthorized_scope: true,
                  errors: hash_including(:prompt),
                  error_details: hash_including(:prompt),
@@ -403,6 +415,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with('OpenID Connect: authorization request',
                  success: false,
                  client_id: nil,
+                 prompt: 'select_account',
+                 allow_prompt_login: nil,
                  unauthorized_scope: true,
                  errors: hash_including(:client_id),
                  error_details: hash_including(:client_id),

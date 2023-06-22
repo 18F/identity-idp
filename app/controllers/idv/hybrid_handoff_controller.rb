@@ -136,7 +136,7 @@ module Idv
 
     def mobile_device?
       # See app/javascript/packs/document-capture-welcome.js
-      # And app/services/idv/steps/agreement_step.rb
+      # And app/controllers/idv/agreement_controller.rb
       !!flow_session[:skip_upload_step]
     end
 
@@ -206,19 +206,15 @@ module Idv
     end
 
     def confirm_agreement_step_complete
-      # delete when removing doc_auth_agreement_controller_enabled flag
-      return if flow_session['Idv::Steps::AgreementStep']
       return if idv_session.idv_consent_given
 
-      if IdentityConfig.store.doc_auth_agreement_controller_enabled
-        redirect_to idv_agreement_url
-      else
-        redirect_to idv_doc_auth_url
-      end
+      redirect_to idv_agreement_url
     end
 
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
+
+      flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
 
       return if !flow_session[:flow_path]
 
