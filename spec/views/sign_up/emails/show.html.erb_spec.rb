@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/emails/show.html.erb' do
+RSpec.describe 'sign_up/emails/show.html.erb' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
     @resend_email_confirmation_form = ResendEmailConfirmationForm.new

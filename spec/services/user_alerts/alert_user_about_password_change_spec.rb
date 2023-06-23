@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserAlerts::AlertUserAboutPasswordChange do
+RSpec.describe UserAlerts::AlertUserAboutPasswordChange do
   describe '#call' do
     it 'sends an email to all of the users confirmed email addresses' do
       user = create(:user)

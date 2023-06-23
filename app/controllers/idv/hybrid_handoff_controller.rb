@@ -1,16 +1,12 @@
 module Idv
   class HybridHandoffController < ApplicationController
     include ActionView::Helpers::DateHelper
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
@@ -45,7 +41,6 @@ module Idv
       throttle.increment!
       return throttled_failure if throttle.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
-      flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
       flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
@@ -63,9 +58,6 @@ module Idv
 
       if !failure_reason
         redirect_to idv_link_sent_url
-
-        # for the 50/50 state
-        flow_session['Idv::Steps::UploadStep'] = true
       else
         redirect_to idv_hybrid_handoff_url
         flow_session[:flow_path] = nil
@@ -124,9 +116,6 @@ module Idv
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
-      # for the 50/50 state
-      flow_session['Idv::Steps::UploadStep'] = true
-
       analytics.idv_doc_auth_upload_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
@@ -143,7 +132,7 @@ module Idv
 
     def mobile_device?
       # See app/javascript/packs/document-capture-welcome.js
-      # And app/services/idv/steps/agreement_step.rb
+      # And app/controllers/idv/agreement_controller.rb
       !!flow_session[:skip_upload_step]
     end
 
@@ -167,7 +156,8 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+        redo_document_capture: params[:redo] ? true : nil,
+      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
     end
 
     def form_response(destination:)
@@ -212,18 +202,31 @@ module Idv
     end
 
     def confirm_agreement_step_complete
-      return if flow_session['Idv::Steps::AgreementStep']
+      return if idv_session.idv_consent_given
 
-      redirect_to idv_doc_auth_url
+      redirect_to idv_agreement_url
     end
 
     def confirm_hybrid_handoff_needed
+      setup_for_redo if params[:redo]
+
+      flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
+
       return if !flow_session[:flow_path]
 
       if flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
       elsif flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
+      end
+    end
+
+    def setup_for_redo
+      flow_session[:redo_document_capture] = true
+      if flow_session[:skip_upload_step]
+        flow_session[:flow_path] = 'standard'
+      else
+        flow_session[:flow_path] = nil
       end
     end
 

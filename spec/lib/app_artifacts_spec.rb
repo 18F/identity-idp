@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AppArtifacts::Store do
+RSpec.describe AppArtifacts::Store do
   subject(:instance) { AppArtifacts::Store.new }
 
   describe '#add_artifact' do

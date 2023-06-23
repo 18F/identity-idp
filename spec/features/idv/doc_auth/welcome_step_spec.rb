@@ -1,12 +1,8 @@
 require 'rails_helper'
 
-feature 'doc auth welcome step' do
+RSpec.feature 'doc auth welcome step' do
   include IdvHelper
   include DocAuthHelper
-
-  def expect_doc_auth_upload_step
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
-  end
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:maintenance_window) { [] }

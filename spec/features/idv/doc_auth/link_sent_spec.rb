@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth link sent step' do
+RSpec.feature 'doc auth link sent step' do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -13,7 +13,7 @@ feature 'doc auth link sent step' do
       to(receive(:doc_capture_polling_enabled?).and_return(false))
 
     user
-    complete_doc_auth_steps_before_upload_step
+    complete_doc_auth_steps_before_hybrid_handoff_step
     clear_and_fill_in(:doc_auth_phone, phone_number)
     click_send_link
   end
@@ -26,5 +26,9 @@ feature 'doc auth link sent step' do
     # does not allow skipping ahead to ssn step
     visit(idv_ssn_url)
     expect(page).to have_current_path(idv_link_sent_url)
+
+    # back link works
+    click_doc_auth_back_link
+    expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
   end
 end

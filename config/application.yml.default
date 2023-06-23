@@ -72,8 +72,10 @@ doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
+database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
@@ -90,11 +92,11 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_hybrid_handoff_controller_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
 doc_auth_max_submission_attempts_before_native_camera: 2
+doc_auth_welcome_controller_enabled: false
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -130,11 +132,11 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_tmx_test_csp_disabled_emails: '[]'
+idv_tmx_test_js_disabled_emails: '[]'
 ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
-in_person_cta_variant_testing_enabled: true
-in_person_cta_variant_testing_percents: '{"B":100}'
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
@@ -320,12 +322,12 @@ session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
-sign_up_mfa_selection_order_testing: '{ "default": 100, "authentication_app_priority": 0, "usability_priority": 0 }'
-sign_in_a_b_testing: '{ "default": 100,"tabbed" :0, "banner": 0 } '
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
+sp_issuer_user_counts_report_configs: '[]'
+team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -343,8 +345,8 @@ verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
+version_headers_enabled: false
 use_dashboard_service_providers: false
-use_clean_edit_password_url: true
 use_kms: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
@@ -393,7 +395,6 @@ development:
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
   enable_rate_limiting: false
-  use_clean_edit_password_url: true
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
@@ -415,6 +416,7 @@ development:
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   recurring_jobs_disabled_names: "[]"
@@ -490,7 +492,6 @@ production:
   password_pepper:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
-  platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
   reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
@@ -510,7 +511,6 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_clean_edit_password_url: false
   use_kms: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DocumentCaptureSessionResult do
+RSpec.describe DocumentCaptureSessionResult do
   let(:id) { SecureRandom.uuid }
   let(:success) { true }
   let(:pii) { { 'first_name' => 'Testy', 'last_name' => 'Testerson' } }

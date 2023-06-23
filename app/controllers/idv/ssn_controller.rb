@@ -1,8 +1,6 @@
 module Idv
   class SsnController < ApplicationController
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
@@ -12,7 +10,8 @@ module Idv
     before_action :confirm_document_capture_complete
     before_action :confirm_repeat_ssn, only: :show
     before_action :override_csp_for_threat_metrix_no_fsm
-    before_action :check_for_outage, only: :show
+
+    helper_method :should_render_threatmetrix_js?
 
     attr_accessor :error_message
 
@@ -49,6 +48,23 @@ module Idv
         @error_message = form_response.first_error_message
         render :show, locals: threatmetrix_view_variables
       end
+    end
+
+    ##
+    # In order to test the behavior without the threatmetrix JS, we do not load the threatmetrix
+    # JS if the user's email is on a list of JS disabled emails.
+    #
+    def should_render_threatmetrix_js?
+      return false unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+      current_user.email_addresses.each do |email_address|
+        no_csp_email = IdentityConfig.store.idv_tmx_test_js_disabled_emails.include?(
+          email_address.email,
+        )
+        return false if no_csp_email
+      end
+
+      true
     end
 
     private

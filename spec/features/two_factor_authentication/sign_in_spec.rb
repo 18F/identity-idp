@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Two Factor Authentication' do
+RSpec.feature 'Two Factor Authentication' do
   describe 'When the user has not set up 2FA' do
     scenario 'user is prompted to set up two factor authentication at account creation' do
       user = sign_in_before_2fa
@@ -75,7 +75,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         fill_in 'new_phone_form_phone', with: ''
 
@@ -87,7 +87,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'IE'
 
         fill_in 'new_phone_form_phone', with: ''
@@ -99,7 +99,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
@@ -544,15 +544,14 @@ feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
         end
 
-        it 'shows signed in user options with webauthn visible' do
+        it 'shows options with webauthn visible', :js, driver: :headless_chrome_mobile do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
+          simulate_platform_authenticator_available
 
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
 
         it 'allows user to be signed in without issue' do
@@ -571,15 +570,14 @@ feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
         end
 
-        it 'shows signed in user options with webauthn visible' do
+        it 'shows options with webauthn visible', :js, driver: :headless_chrome_mobile do
           sign_in_user(webauthn_configuration.user)
 
           click_link t('two_factor_authentication.login_options_link_text')
+          simulate_platform_authenticator_available
 
           expect(page).
             to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
         end
 
         it 'allows user to be signed in without issue' do
@@ -591,6 +589,18 @@ feature 'Two Factor Authentication' do
 
           expect(page).to have_current_path(account_path)
         end
+      end
+
+      def simulate_platform_authenticator_available
+        # Since the element will have already initialized by this point and it can't be guaranteed
+        # that isUserVerifyingPlatformAuthenticatorAvailable would yield the expected value, stub
+        # and reconnect the elements to simulate as if it were the expected value on page load.
+        page.evaluate_script(<<~JS)
+          window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = () => Promise.resolve(true);
+        JS
+        page.evaluate_script(<<~JS)
+          document.querySelectorAll('lg-webauthn-input').forEach((input) => input.connectedCallback());
+        JS
       end
     end
   end

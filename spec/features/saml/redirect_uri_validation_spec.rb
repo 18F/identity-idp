@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'redirect_uri validation' do
+RSpec.describe 'redirect_uri validation' do
   include SamlAuthHelper
 
   context 'when redirect_uri param is included in SAML request' do

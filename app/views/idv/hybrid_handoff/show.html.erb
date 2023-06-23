@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.upload') %>
+<% title t('titles.doc_auth.hybrid_handoff') %>
 
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
@@ -12,11 +12,11 @@
 <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.upload') %>
+  <%= t('doc_auth.headings.hybrid_handoff') %>
 <% end %>
 
 <p>
-  <%= t('doc_auth.info.upload') %>
+  <%= t('doc_auth.info.hybrid_handoff') %>
 </p>
 
 <div class="grid-row grid-gap grid-gap-2">

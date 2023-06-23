@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RecaptchaEnterpriseValidator do
+RSpec.describe RecaptchaEnterpriseValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
@@ -124,7 +124,6 @@ describe RecaptchaEnterpriseValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
-          exception_class: nil,
         )
       end
     end
@@ -159,7 +158,6 @@ describe RecaptchaEnterpriseValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
-          exception_class: nil,
         )
       end
     end
@@ -178,7 +176,6 @@ describe RecaptchaEnterpriseValidator do
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
-          recaptcha_result: nil,
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           recaptcha_version: 3,
@@ -221,7 +218,6 @@ describe RecaptchaEnterpriseValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
-          exception_class: nil,
         )
       end
     end
@@ -259,7 +255,6 @@ describe RecaptchaEnterpriseValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaEnterpriseValidator',
-          exception_class: nil,
         )
       end
 
@@ -297,7 +292,6 @@ describe RecaptchaEnterpriseValidator do
             score_threshold: score_threshold,
             recaptcha_version: 3,
             validator_class: 'RecaptchaEnterpriseValidator',
-            exception_class: nil,
             extra: true,
           )
         end

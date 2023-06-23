@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Add a new phone number' do
+RSpec.describe 'Add a new phone number' do
   scenario 'Adding and confirming a new phone number allows the phone number to be used for MFA' do
     user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'
@@ -77,7 +77,7 @@ describe 'Add a new phone number' do
     expect(error_message_id).to_not be_empty
 
     error_message = page.find_by_id(error_message_id)
-    expect(error_message).to have_content(t('errors.messages.invalid_phone_number'))
+    expect(error_message).to have_content(t('errors.messages.invalid_phone_number.us'))
 
     # Unsupported country should prompt as invalid and hide delivery options immediately
     page.find('div[aria-label="Country code"]').click
@@ -115,7 +115,7 @@ describe 'Add a new phone number' do
     expect(hidden_select.value).to eq('US')
     click_continue
     expect(page.find(':focus')).to match_css('.phone-input__number')
-    expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+    expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
 
     # Entering valid number should allow submission
     input = fill_in :new_phone_form_phone, with: '+81543543643'
@@ -236,7 +236,6 @@ describe 'Add a new phone number' do
         evaluated_as_valid: false,
         score_threshold: 0.6,
         recaptcha_version: 3,
-        exception_class: nil,
         phone_country_code: 'CA',
       ),
     )

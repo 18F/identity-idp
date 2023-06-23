@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::VerifyPasswordController do
+RSpec.describe Users::VerifyPasswordController do
   let(:key) { 'key' }
   let(:profiles) { [] }
   let(:recovery_hash) { { personal_key: key } }
@@ -21,7 +21,7 @@ describe Users::VerifyPasswordController do
   end
 
   context 'with password reset profile' do
-    let(:profiles) { [create(:profile, :password_reset)] }
+    let(:profiles) { [create(:profile, :verified, :password_reset)] }
 
     context 'without personal key flag set' do
       describe '#new' do

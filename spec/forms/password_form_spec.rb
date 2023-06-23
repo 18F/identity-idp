@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PasswordForm, type: :model do
+RSpec.describe PasswordForm, type: :model do
   subject(:form) { described_class.new(user) }
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }

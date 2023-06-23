@@ -3,6 +3,8 @@ module IdvStepConcern
 
   include IdvSession
   include RateLimitConcern
+  include FraudReviewConcern
+  include Idv::OutageConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -10,6 +12,8 @@ module IdvStepConcern
     before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
+    before_action :handle_fraud
+    before_action :check_for_outage
   end
 
   def confirm_no_pending_gpo_profile
@@ -48,8 +52,8 @@ module IdvStepConcern
       redirect_to idv_document_capture_url
     elsif flow_path == 'hybrid'
       redirect_to idv_link_sent_url
-    else # no flow_path, go to UploadStep via FSM
-      redirect_to idv_doc_auth_url
+    else # no flow_path
+      redirect_to idv_hybrid_handoff_path
     end
   end
 

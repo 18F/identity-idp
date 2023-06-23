@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserAlerts::AlertUserAboutPersonalKeySignIn do
+RSpec.describe UserAlerts::AlertUserAboutPersonalKeySignIn do
   describe '#call' do
     it 'sends sms and emails to confirmed addresses' do
       user = create(:user)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::CompletionSurveySender do
+RSpec.describe Idv::InPerson::CompletionSurveySender do
   describe '.send_completion_survey' do
     let(:user) { create(:user) }
     let(:issuer) { 'test_issuer' }

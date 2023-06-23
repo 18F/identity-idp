@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::KmsClient do
+RSpec.describe Encryption::KmsClient do
   before do
     # rubocop:disable Layout/LineLength
     stub_mapped_aws_kms_client(

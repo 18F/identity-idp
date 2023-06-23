@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CompletionsDecider do
+RSpec.describe CompletionsDecider do
   let(:desktop_user_agent) do
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ' \
     'AppleWebKit/537.36 (KHTML, like Gecko) ' \

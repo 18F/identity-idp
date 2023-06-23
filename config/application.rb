@@ -14,6 +14,7 @@ require_relative '../lib/identity_job_log_subscriber'
 require_relative '../lib/email_delivery_observer'
 require_relative '../lib/good_job_connection_pool_size'
 require_relative '../lib/identity_cors'
+require_relative '../lib/version_headers'
 
 Bundler.require(*Rails.groups)
 
@@ -108,6 +109,7 @@ module Identity
     config.middleware.use Utf8Sanitizer
     require 'secure_cookies'
     config.middleware.insert_after ActionDispatch::Static, SecureCookies
+    config.middleware.use VersionHeaders if IdentityConfig.store.version_headers_enabled
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserAlerts::AlertUserAboutNewDevice do
+RSpec.describe UserAlerts::AlertUserAboutNewDevice do
   describe '#call' do
     let(:user) { create(:user, :fully_registered) }
     let(:disavowal_token) { 'the_disavowal_token' }

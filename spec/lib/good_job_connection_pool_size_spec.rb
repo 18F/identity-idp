@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe GoodJobConnectionPoolSize do
+RSpec.describe GoodJobConnectionPoolSize do
   describe '.calculate_worker_pool_size' do
     it 'calculates pool size based and returns an integer' do
       connections = GoodJobConnectionPoolSize.calculate_worker_pool_size(

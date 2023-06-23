@@ -7,29 +7,23 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
-    include SignInABTestConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
-    skip_before_action :session_expires_at, only: %i[active keepalive]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new, :create]
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
-    after_action :add_csrf_token_header_to_response, only: [:keepalive]
 
     def new
       override_csp_for_google_analytics
 
       @ial = sp_session_ial
       @browser_is_ie11 = browser_is_ie11?
-      @is_on_home_page = true
-      @sign_in_a_b_test_bucket = sign_in_a_b_test_bucket
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
-        sign_in_a_b_test_bucket: @sign_in_a_b_test_bucket,
       )
       super
     end
@@ -52,31 +46,6 @@ module Users
         success: true,
       )
       super
-    end
-
-    def active
-      session[:pinged_at] = now
-      Rails.logger.debug(alive?: alive?, expires_at: expires_at)
-      render json: { live: alive?, timeout: expires_at }
-    end
-
-    def keepalive
-      session[:session_expires_at] = now + Devise.timeout_in if alive?
-      analytics.session_kept_alive if alive?
-
-      render json: { live: alive?, timeout: expires_at }
-    end
-
-    def timeout
-      analytics.session_timed_out
-      request_id = sp_session[:request_id]
-      sign_out
-      flash[:info] = t(
-        'notices.session_timedout',
-        app_name: APP_NAME,
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
-      )
-      redirect_to root_url(request_id: request_id)
     end
 
     private
@@ -147,22 +116,8 @@ module Users
       redirect_to next_url_after_valid_authentication
     end
 
-    def now
-      @now ||= Time.zone.now
-    end
-
-    def expires_at
-      session[:session_expires_at]&.to_datetime || (now - 1)
-    end
-
     def browser_is_ie11?
       BrowserCache.parse(request.user_agent).ie?(11)
-    end
-
-    def alive?
-      return false unless session && expires_at
-      session_alive = expires_at > now
-      current_user.present? && session_alive
     end
 
     def track_authentication_attempt(email)

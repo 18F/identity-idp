@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::VoiceSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::VoiceSelectionPresenter do
   let(:subject) { described_class.new(configuration: phone) }
 
   describe '#type' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe CancellationPresenter do
+RSpec.describe CancellationPresenter do
   let(:good_url) { 'http://example.com/asdf/qwerty' }
   let(:good_url_with_path) { 'http://example.com/asdf?qwerty=123' }
   let(:bad_url) { 'http://evil.com/asdf/qwerty' }

@@ -1,7 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
-    include OutageConcern
     include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
@@ -9,7 +8,6 @@ module Idv
 
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
-    before_action :check_for_outage, only: :show
 
     def show
       @step_indicator_steps = step_indicator_steps
@@ -34,14 +32,26 @@ module Idv
       process_async_state(load_async_state)
     end
 
+    def update
+      success = shared_update
+
+      if success
+        # Don't allow the user to go back to document capture after verifying
+        if flow_session['redo_document_capture']
+          flow_session.delete('redo_document_capture')
+          flow_session[:flow_path] ||= 'standard'
+        end
+
+        redirect_to idv_verify_info_url
+      end
+    end
+
     private
+
+    def flow_param; end
 
     # state ID type isn't manually set for Idv::VerifyInfoController
     def set_state_id_type; end
-
-    def after_update_url
-      idv_verify_info_url
-    end
 
     def prev_url
       idv_ssn_url

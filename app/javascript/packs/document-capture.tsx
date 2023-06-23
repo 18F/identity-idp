@@ -14,8 +14,8 @@ import {
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
-import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 import { extendSession } from '@18f/identity-session';
+import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
  * @see MarketingSiteContextProvider
@@ -33,8 +33,6 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
-  inPersonCtaVariantTestingEnabled: boolean;
-  inPersonCtaVariantActive: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -82,8 +80,6 @@ const {
   cancelUrl: cancelURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonCtaVariantTestingEnabled,
-  inPersonCtaVariantActive,
   inPersonUspsOutageMessageEnabled,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
@@ -94,8 +90,6 @@ const App = composeComponents(
     InPersonContext.Provider,
     {
       value: {
-        inPersonCtaVariantTestingEnabled: inPersonCtaVariantTestingEnabled === true,
-        inPersonCtaVariantActive,
         inPersonURL,
         inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
       },
