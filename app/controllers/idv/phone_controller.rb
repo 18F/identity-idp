@@ -173,7 +173,11 @@ module Idv
           new_phone_added: new_phone_added?,
         ),
       )
-      redirect_to_next_step and return if async_state.result[:success]
+
+      if async_state.result[:success]
+        throttle.reset!
+        redirect_to_next_step and return
+      end
       handle_proofing_failure
     end
 
