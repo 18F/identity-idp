@@ -123,7 +123,6 @@ class IdentityConfig
     config.add(:arcgis_api_password, type: :string)
     config.add(:arcgis_mock_fallback, type: :boolean)
     config.add(:arcgis_api_generate_token_url, type: :string)
-    config.add(:arcgis_api_suggest_url, type: :string)
     config.add(:arcgis_api_find_address_candidates_url, type: :string)
     config.add(:arcgis_api_request_timeout_seconds, type: :integer)
     config.add(:arcgis_api_token_cache_key_prefix, type: :string)

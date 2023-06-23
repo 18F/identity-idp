@@ -32,7 +32,6 @@ module ArcgisApi
       #   super do |conn|
       #     conn.adapter :test do |stub|
       #       stub_generate_token(stub)
-      #       stub_suggestions(stub)
       #       stub_address_candidates(stub)
       #     end
       #   end
@@ -46,7 +45,6 @@ module ArcgisApi
       def connection
         stubs = Faraday::Adapter::Test::Stubs.new do |stub|
           stub_generate_token(stub)
-          stub_suggestions(stub)
           stub_address_candidates(stub)
         end
         super do |con|
@@ -66,16 +64,6 @@ module ArcgisApi
               expires: (Time.zone.now + 30.seconds).to_f * 1000,
               ssl: true,
             }.to_json,
-          ]
-        end
-      end
-
-      def stub_suggestions(stub)
-        stub.get(IdentityConfig.store.arcgis_api_suggest_url) do |env|
-          [
-            200,
-            { 'Content-Type': 'application/json' },
-            ArcgisApi::Mock::Fixtures.request_suggestions_response,
           ]
         end
       end
