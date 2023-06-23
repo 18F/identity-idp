@@ -29,7 +29,6 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    user_session['idv/doc_auth'] ||= {}
     redirect_to idv_welcome_url
   end
 
