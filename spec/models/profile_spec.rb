@@ -731,10 +731,12 @@ RSpec.describe Profile do
 
   describe '#activate_after_passing_in_person' do
     it 'activates a profile if it passes in person proofing' do
-      profile = user.profiles.create
-      profile.active = false
-      profile.fraud_review_pending_at = 1.day.ago
-      profile.deactivation_reason = :in_person_verification_pending
+      profile = create(
+        :profile,
+        :fraud_review_pending,
+        :in_person_verification_pending,
+        user: user,
+      )
 
       expect(profile.activated_at).to be_nil # to change
       expect(profile.active).to eq(false) # to change
