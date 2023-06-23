@@ -99,7 +99,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       click_idv_continue
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
 
       complete_welcome_step
       complete_agreement_step
@@ -142,7 +142,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       click_idv_continue
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
     end
   end
 
@@ -205,7 +205,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       click_idv_continue
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
     end
 
     it 'still allows the hybrid handoff screen' do
@@ -225,7 +225,7 @@ RSpec.feature 'IdV Outage Spec' do
     it 'does not show the mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
     end
 
     it 'does not show the hybrid handoff screen' do

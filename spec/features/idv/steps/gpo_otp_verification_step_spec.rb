@@ -135,7 +135,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
     click_idv_continue
 
-    expect(current_path).to eq idv_doc_auth_welcome_step
+    expect(current_path).to eq idv_welcome_path
   end
 
   it 'allows a user to cancel and start over in the footer' do
@@ -148,6 +148,6 @@ RSpec.feature 'idv gpo otp verification step' do
 
     click_idv_continue
 
-    expect(current_path).to eq idv_doc_auth_welcome_step
+    expect(current_path).to eq idv_welcome_path
   end
 end

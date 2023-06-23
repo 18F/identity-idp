@@ -53,10 +53,6 @@ module DocAuthHelper
     click_on t('forms.buttons.upload_photos')
   end
 
-  def idv_doc_auth_welcome_step
-    idv_doc_auth_step_path(step: :welcome)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_welcome_url unless current_path == idv_welcome_url
     click_idv_continue if current_path == idv_mail_only_warning_path
