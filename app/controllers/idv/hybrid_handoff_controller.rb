@@ -1,16 +1,12 @@
 module Idv
   class HybridHandoffController < ApplicationController
     include ActionView::Helpers::DateHelper
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
