@@ -1,11 +1,11 @@
-module ArcgisApi::Token::Refresh
+module ArcgisApi::Auth::Refresh
 
   # Refreshes a token when it's expired
   class OnExpireRefreshStrategy < RefreshStrategy
 
-    # @param [ArcgisApi::Token::Authentication] auth
-    # @param [ArcgisApi::Token::Cache::TokenCacheWriter] cache
-    # @return [ArcgisApi::Token::TokenInfo]
+    # @param [ArcgisApi::Auth::Authentication] auth
+    # @param [ArcgisApi::Auth::Cache::TokenCacheWriter] cache
+    # @return [ArcgisApi::Auth::Token]
     def call(auth:, cache:)
       token_entry = cache.token_entry
       if token_entry.nil? || token_entry.expired?

@@ -39,11 +39,11 @@ module ArcgisApi
 
     # Makes a request to retrieve a new token
     # it expires after 1 hour
-    # @return [ArcgisApi::TokenInfo] Auth token
+    # @return [ArcgisApi::Auth::Token] Auth token
     def retrieve_token
       token, expires = request_token.fetch_values('token', 'expires')
       expires_at = Time.zone.at(expires / 1000).to_f
-      return ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
+      return ArcgisApi::Auth::Token.new(token: token, expires_at: expires_at)
     end
 
     def save_token
@@ -56,7 +56,7 @@ module ArcgisApi
 
     # Checks the cache for an unexpired token and returns that.
     # If the cache has expired, retrieves a new token and returns it
-    # @return [ArcgisApi::TokenInfo] Auth token
+    # @return [ArcgisApi::Auth::Token] Auth token
     def token_entry
       cache_value = super
       return cache_value unless IdentityConfig.store.arcgis_token_sync_request_enabled
@@ -84,8 +84,8 @@ module ArcgisApi
     # doing the same thing, not bullet proof, unless we have a single locking mechanism),
     # then go ahead request a new token from arcgis and save it to cache.
     #
-    # @param [ArcgisApi::TokenInfo] cache_value existing cache_entry, non nil value
-    # @return [ArcgisApi::TokenInfo] retrieve and save a new token if expired,
+    # @param [ArcgisApi::Auth::Token] cache_value existing cache_entry, non nil value
+    # @return [ArcgisApi::Auth::Token] retrieve and save a new token if expired,
     #   or extend sliding_expires_at if needed
     def process_expired_token(cache_value)
       return cache_value unless expiration_strategy.expired?(
@@ -132,7 +132,7 @@ module ArcgisApi
     # sliding expiration is enabled, and it's considered expired when sliding_expires_at time
     # is over prefetch_ttl seconds.
     #
-    # @param [ArcgisApi::TokenInfo] token_info
+    # @param [ArcgisApi::Auth::Token] token_info
     # @return [true|false] whether it's considered expired
     def expired?(token_info:)
       return true unless token_info

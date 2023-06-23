@@ -1,13 +1,13 @@
-module ArcgisApi::Token
+module ArcgisApi::Auth
   # Authenticate with the ArcGIS API
   class Authentication
     # Makes a request to retrieve a new token
     # it expires after 1 hour
-    # @return [ArcgisApi::Token::TokenInfo] Auth token
+    # @return [ArcgisApi::Auth::Token] Auth token
     def retrieve_token
       token, expires = request_token.fetch_values('token', 'expires')
       expires_at = Time.zone.at(expires / 1000).to_f
-      return ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
+      return ArcgisApi::Auth::Token.new(token: token, expires_at: expires_at)
     end
 
     private
@@ -40,7 +40,7 @@ module ArcgisApi::Token
         backoff_factor: arcgis_get_token_retry_backoff_factor,
         exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
                      Faraday::ClientError, Faraday::RetriableResponse,
-                     ArcgisApi::Token::InvalidResponseError],
+                     ArcgisApi::Auth::InvalidResponseError],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
           exception_message = exception_message(exception, options, retry_count, will_retry_in)

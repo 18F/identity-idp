@@ -219,7 +219,7 @@ RSpec.describe ArcgisApi::TokenKeeper do
       end
     end
     context 'sync request enabled and sliding expiration disabled' do
-      let(:original_token) { ArcgisApi::TokenInfo.new('12345', (Time.zone.now + 15.seconds).to_f) }
+      let(:original_token) { ArcgisApi::Auth::Token.new('12345', (Time.zone.now + 15.seconds).to_f) }
       before(:each) do
         allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).
@@ -260,7 +260,7 @@ RSpec.describe ArcgisApi::TokenExpirationStrategy do
     let(:subject) { ArcgisApi::TokenExpirationStrategy.new(sliding_expiration_enabled: true) }
     it 'checks token expiration when now passed expires_at' do
       expect(subject.expired?(token_info: nil)).to be(true)
-      token_info = ArcgisApi::TokenInfo.new(token: 'ABCDE')
+      token_info = ArcgisApi::Auth::Token.new(token: 'ABCDE')
       # missing expires_at assume the token is valid
       expect(subject.expired?(token_info: token_info)).to be(false)
       freeze_time do
@@ -276,7 +276,7 @@ RSpec.describe ArcgisApi::TokenExpirationStrategy do
         freeze_time do
           now = Time.zone.now.to_f
           prefetch_ttl = 3
-          token_info = ArcgisApi::TokenInfo.new(
+          token_info = ArcgisApi::Auth::Token.new(
             token: 'ABCDE',
             expires_at: now + 2 * prefetch_ttl,
             sliding_expires_at: now - prefetch_ttl,

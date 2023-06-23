@@ -1,4 +1,4 @@
-module ArcgisApi::Token
+module ArcgisApi::Auth
   # Struct to store token information, this allows us to track
   # real expiration time with various rails cache backends many of them
   # do not support entry expiration.
@@ -10,7 +10,7 @@ module ArcgisApi::Token
   #   A time that the token does not actually expire
   #   but used to control the timing of requesting a new token before it expires.
   #   It's initially set to expires_at - 3*prefetch_ttl.
-  class TokenInfo < Struct.new(
+  class Token < Struct.new(
     :token,
     :expires_at,
     :sliding_expires_at,

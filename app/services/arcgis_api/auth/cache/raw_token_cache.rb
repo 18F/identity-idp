@@ -1,4 +1,4 @@
-module ArcgisApi::Token::Cache
+module ArcgisApi::Auth::Cache
   class RawTokenCache
 
     def initialize(

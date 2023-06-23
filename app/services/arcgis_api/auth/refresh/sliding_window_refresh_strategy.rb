@@ -1,4 +1,4 @@
-module ArcgisApi::Token::Refresh
+module ArcgisApi::Auth::Refresh
 
   # Applies a sliding window strategy to reduce contention
   # related to refreshing the token
@@ -20,9 +20,9 @@ module ArcgisApi::Token::Refresh
       @sliding_increment_seconds += (rand - 0.5)
     end
 
-    # @param [ArcgisApi::Token::Authentication] auth
-    # @param [ArcgisApi::Token::Cache::TokenCacheWriter] cache
-    # @return [ArcgisApi::Token::TokenInfo]
+    # @param [ArcgisApi::Auth::Authentication] auth
+    # @param [ArcgisApi::Auth::Cache::TokenCacheWriter] cache
+    # @return [ArcgisApi::Auth::Token]
     def call(auth:, cache:)
       token_entry = cache.token_entry
       if token_entry.present? 
