@@ -137,29 +137,41 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
   end
 
-  scenario 'when backup codes are the only selected option' do
-    sign_in_before_2fa
+  context 'when backup codes are the only selected option' do
+    before do
+      sign_in_before_2fa
 
-    expect(current_path).to eq authentication_methods_setup_path
+      expect(current_path).to eq authentication_methods_setup_path
 
-    click_2fa_option('backup_code')
+      click_2fa_option('backup_code')
 
-    click_continue
+      click_continue
 
-    expect(current_path).to eq backup_code_setup_path
+      expect(current_path).to eq backup_code_setup_path
 
-    click_continue
+      click_continue
 
-    expect(page).to have_link(t('components.download_button.label'))
+      expect(page).to have_link(t('components.download_button.label'))
 
-    click_continue
+      click_continue
 
-    expect(page).to have_current_path(
-      auth_method_confirmation_path,
-    )
+      expect(page).to have_current_path(
+        auth_method_confirmation_path,
+      )
 
-    click_button t('mfa.skip')
-    expect(page).to have_current_path(confirm_backup_codes_path)
+      click_button t('mfa.skip')
+      expect(page).to have_current_path(confirm_backup_codes_path)
+    end
+
+    it 'goes to the next page after user confirms that they have saved their backup codes' do
+      click_link t('two_factor_authentication.backup_codes.saved_backup_codes')
+      expect(page).to have_current_path account_path
+    end
+
+    it 'goes to the regenerate backup codes path if a user clicks that they need new backup codes' do
+      click_link t('two_factor_authentication.backup_codes.new_backup_codes')
+      expect(page).to have_current_path backup_code_regenerate_path
+    end
   end
 
   def click_2fa_option(option)
