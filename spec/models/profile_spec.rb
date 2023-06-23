@@ -553,10 +553,7 @@ RSpec.describe Profile do
 
   describe '#remove_gpo_deactivation_reason' do
     it 'removes the gpo_verification_pending_at deactivation reason' do
-      profile = create(
-        :profile, user: user, active: false,
-                  gpo_verification_pending_at: 1.day.ago
-      )
+      profile = create(:profile, :verify_by_mail_pending)
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq false
