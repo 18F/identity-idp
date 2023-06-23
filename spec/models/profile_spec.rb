@@ -413,7 +413,23 @@ RSpec.describe Profile do
     it 'does not send a reproof event when there is no active profile' do
       expect(PushNotification::HttpPush).to_not receive(:deliver)
 
+      expect(profile.activated_at).to be_nil # to change
+      expect(profile.active).to eq false # to change
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
       profile.activate
+
+      expect(profile.activated_at).to be_present # changed
+      expect(profile.active).to eq true # changed
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # pending fix
     end
 
     context 'activation guards against deactivation reasons' do
