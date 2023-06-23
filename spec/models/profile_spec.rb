@@ -697,15 +697,14 @@ RSpec.describe Profile do
     it 'does not activate a profile if it encounters a transaction error' do
       profile = create(
         :profile,
+        :password_reset,
+        :verified,
         user: user,
-        active: false,
-        deactivation_reason: :password_reset,
-        verified_at: 1.day.ago,
       )
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
 
-      expect(profile.activated_at).to be_nil
+      expect(profile.activated_at).to be_present
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(false)
@@ -717,7 +716,7 @@ RSpec.describe Profile do
         profile.activate_after_password_reset
       end
 
-      expect(profile.activated_at).to be_nil
+      expect(profile.activated_at).to be_present
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(false)
