@@ -93,7 +93,7 @@ considering adding individuals or groups as requested reviewers on your pull req
 product teams have a team handle which can be used to notify everyone on that team, or you can
 request reviews from one of the available interest group teams:
 
-- `identity-frontend` for developers interested in frontend development
+- `18f/identity-frontend` for developers interested in frontend development
 
 ## Public domain
 
