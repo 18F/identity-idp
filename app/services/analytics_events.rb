@@ -1717,6 +1717,14 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
+  def idv_mail_only_warning_visited(**extra)
+    track_event(
+      'IdV: Mail only warning visited',
+      **extra,
+    )
+  end
+
   # Tracks whether the user's device appears to be mobile device with a camera attached.
   # @param [Boolean] is_camera_capable_mobile Whether we think the device _could_ have a camera.
   # @param [Boolean,nil] camera_present Whether the user's device _actually_ has a camera available.
