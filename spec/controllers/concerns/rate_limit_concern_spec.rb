@@ -15,6 +15,12 @@ RSpec.describe 'RateLimitConcern' do
       def update
         render plain: 'Bye'
       end
+
+      private
+
+      def flow_session
+        {}
+      end
     end
   end
 
@@ -75,19 +81,6 @@ RSpec.describe 'RateLimitConcern' do
         get :show
 
         expect(response).to redirect_to idv_phone_errors_failure_url
-      end
-
-      context 'controller and throttle match' do
-        before do
-          allow(subject).to receive(:throttle_and_controller_match).
-            and_return(true)
-        end
-
-        it 'redirects on show' do
-          get :show
-
-          expect(response).to redirect_to idv_phone_errors_failure_url
-        end
       end
     end
   end

@@ -3,7 +3,7 @@ module RateLimitConcern
 
   def confirm_not_rate_limited
     rate_limited = false
-    %i[idv_resolution idv_doc_auth proof_address].each do |throttle_type|
+    %i[idv_resolution idv_doc_auth proof_address proof_ssn].each do |throttle_type|
       if rate_limit_redirect!(throttle_type)
         rate_limited = true
         break
@@ -24,7 +24,13 @@ module RateLimitConcern
     analytics_args = { throttle_type: throttle_type }
     analytics_args[:step_name] = :phone if throttle_type == :proof_address
 
-    irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
+    if throttle_type == :proof_ssn
+      analytics_args[:step_name] = 'verify_info'
+      throttle_context = 'multi-session'
+    else
+      throttle_context = 'single-session'
+    end
+    irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: throttle_context)
     analytics.throttler_rate_limit_triggered(**analytics_args)
   end
 
@@ -36,25 +42,24 @@ module RateLimitConcern
       redirect_to idv_session_errors_throttled_url
     when :proof_address
       redirect_to idv_phone_errors_failure_url
-    end
-  end
-
-  def throttle_and_controller_match(throttle_type)
-    case throttle_type
-    when :idv_resolution
-      self.instance_of?(Idv::VerifyInfoController) ||
-        self.instance_of?(Idv::InPerson::VerifyInfoController)
-    when :idv_doc_auth
-      self.instance_of?(Idv::DocumentCaptureController)
-    when :proof_address
-      self.instance_of?(Idv::PhoneController)
+    when :proof_ssn
+      redirect_to idv_session_errors_ssn_failure_url
     end
   end
 
   def idv_attempter_rate_limited?(throttle_type)
-    Throttle.new(
-      user: idv_session_user,
-      throttle_type: throttle_type,
-    ).throttled?
+    if throttle_type == :proof_ssn
+      pii_ssn = flow_session[:pii_from_doc]&.[](:ssn)
+      return unless pii_ssn
+      Throttle.new(
+        target: Pii::Fingerprinter.fingerprint(pii_ssn),
+        throttle_type: :proof_ssn,
+      ).throttled?
+    else
+      Throttle.new(
+        user: idv_session_user,
+        throttle_type: throttle_type,
+      ).throttled?
+    end
   end
 end
