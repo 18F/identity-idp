@@ -468,7 +468,27 @@ RSpec.describe Profile do
 
       it 'does not activate a profile if under fraud review' do
         profile.update(fraud_review_pending_at: 1.day.ago)
-        expect { profile.activate }.to raise_error(RuntimeError)
+
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(true)
+        expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.initiating_service_provider).to be_nil
+        expect(profile.verified_at).to be_nil
+
+        expect { profile.activate }.to raise_error(
+          RuntimeError,
+          'Attempting to activate profile with pending reasons: fraud_check_pending',
+        )
+
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(true)
+        expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.initiating_service_provider).to be_nil
+        expect(profile.verified_at).to be_nil
 
         expect(profile).to_not be_active
       end
