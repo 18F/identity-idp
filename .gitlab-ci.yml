@@ -325,6 +325,8 @@ review-app:
       --debug
       --set idp.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set idp.image.tag="${CI_COMMIT_SHA}"
+      --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
+      --set worker.image.tag="${CI_COMMIT_SHA}"
       --set idp.ingress.enabled=true
       --set-json idp.env="$IDP_ENV"
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
