@@ -1,7 +1,8 @@
 module ArcgisApi::Auth::Cache
   class TokenCacheReader
-    def initialize(token_cache: ArcgisApi::Auth::Cache::RawTokenCache.new)
-      @token_cache = token_cache
+    # @param [ArcgisApi::Auth::Cache::RawTokenCache] token_cache
+    def initialize(token_cache: nil)
+      @token_cache = token_cache || ArcgisApi::Auth::Cache::RawTokenCache.new
     end
 
     # @return [String,nil] auth token

@@ -1,22 +1,16 @@
 module ArcgisApi::Auth::Cache
   class RawTokenCache
-
-    def initialize(
-      cache: Cache::CacheWrapper.new,
-      cache_key: DEFAULT_API_TOKEN_CACHE_KEY,
-    )
-      @cache = cache
-      @cache_key = cache_key
+    # @param [Cache::CacheWrapper] cache
+    # @param [String] cache_key
+    def initialize(cache: nil, cache_key: nil)
+      @cache = cache || Cache::CacheWrapper.new
+      @cache_key = cache_key || default_api_token_cache_key
     end
 
     # @return [Object,nil] Cached auth token
     def token
       raw_token = cache.read(cache_key)
-      if raw_token
-        raw_token
-      else
-        nil
-      end
+      raw_token || nil
     end
 
     # @param [Object,nil] cache_value the value to write to cache
@@ -27,9 +21,13 @@ module ArcgisApi::Auth::Cache
 
     private
 
-    API_TOKEN_CACHE_KEY = "#{IdentityConfig.store.arcgis_api_token_cache_key_prefix}:#{
-      URI(IdentityConfig.store.arcgis_api_generate_token_url).host
-    }"
+    def default_api_token_cache_key
+      "#{arcgis_api_token_cache_key_prefix}:#{URI(arcgis_api_generate_token_url).host}"
+    end
+
+    delegate :arcgis_api_token_cache_key_prefix,
+             :arcgis_api_generate_token_url,
+             to: IdentityConfig.store
 
     attr_accessor :cache_key
   end

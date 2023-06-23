@@ -219,7 +219,9 @@ RSpec.describe ArcgisApi::TokenKeeper do
       end
     end
     context 'sync request enabled and sliding expiration disabled' do
-      let(:original_token) { ArcgisApi::Auth::Token.new('12345', (Time.zone.now + 15.seconds).to_f) }
+      let(:original_token) do
+        ArcgisApi::Auth::Token.new('12345', (Time.zone.now + 15.seconds).to_f)
+      end
       before(:each) do
         allow(IdentityConfig.store).to receive(:arcgis_token_sync_request_enabled).and_return(true)
         allow(IdentityConfig.store).to receive(:arcgis_token_sliding_expiration_enabled).

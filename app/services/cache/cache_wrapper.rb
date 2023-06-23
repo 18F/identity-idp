@@ -1,9 +1,7 @@
 module Cache
-
   # Wrapper to simplify and encapsulate access for commonly
   # used cache operations
   class CacheWrapper
-
     # @param [ActiveSupport::Cache::Store] cache
     def initialize(cache: Rails.cache)
       @cache = cache
@@ -18,7 +16,7 @@ module Cache
     # @param [String] key Cache key
     # @param [Object,nil] entry Cached value
     # @param [Number] expires_at Unix time in milliseconds
-    def write(key, entry, expires_at:)
+    def write(_key, entry, expires_at:)
       cache.write(cache_key, entry, expires_at: expires_at)
 
       # If using a redis cache we have to manually set the expires_at. This is because we aren't
