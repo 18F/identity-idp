@@ -356,7 +356,7 @@ RSpec.describe SignUp::CompletionsController do
 
       it 'logs a reproofing event upon reproofing' do
         profile1 = user.profiles.first
-        profile2 = create(:profile, :verified, :active, user: user)
+        profile2 = create(:profile, :verified, user: user)
 
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -374,7 +374,7 @@ RSpec.describe SignUp::CompletionsController do
         expect(profile1.verified_at).to be_nil
 
         expect(profile2.activated_at).to be_present
-        expect(profile2.active).to eq true
+        expect(profile2.active).to eq false
         expect(profile2.deactivation_reason).to be_nil
         expect(profile2.fraud_review_pending?).to eq(false)
         expect(profile2.gpo_verification_pending_at).to be_nil
