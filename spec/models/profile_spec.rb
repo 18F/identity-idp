@@ -937,10 +937,29 @@ RSpec.describe Profile do
     end
   end
 
+  # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
+  # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_fraud_review' do
     it 'sets fraud_review_pending to true' do
       profile = create(:profile, user: user)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false) # ???
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false) # to change
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
       profile.deactivate_for_fraud_review
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(true) # changed
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
 
       expect(profile).to_not be_active
       expect(profile.fraud_review_pending?).to eq(true)
