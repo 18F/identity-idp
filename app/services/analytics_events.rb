@@ -3109,13 +3109,15 @@ module AnalyticsEvents
   )
     track_event(
       'reCAPTCHA verify result received',
-      recaptcha_result:,
-      score_threshold:,
-      evaluated_as_valid:,
-      validator_class:,
-      exception_class:,
-      phone_country_code:,
-      **extra,
+      {
+        recaptcha_result:,
+        score_threshold:,
+        evaluated_as_valid:,
+        validator_class:,
+        exception_class:,
+        phone_country_code:,
+        **extra,
+      }.compact,
     )
   end
 
