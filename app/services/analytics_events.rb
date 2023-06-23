@@ -565,12 +565,18 @@ module AnalyticsEvents
   # @param [Boolean] response_body_present
   # @param [Hash] response_body
   # @param [Integer] response_status_code
+  # @param [Integer,nil] retry_count
+  # @param [Integer,nil] retry_max
+  # @param [Float,nil] will_retry_in
   def idv_arcgis_token_failure(
     exception_class:,
     exception_message:,
     response_body_present:,
     response_body:,
     response_status_code:,
+    retry_count: nil,
+    retry_max: nil,
+    will_retry_in: nil,
     **extra
   )
     track_event(
@@ -580,6 +586,9 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
+      retry_count: retry_count,
+      retry_max: retry_max,
+      will_retry_in: will_retry_in,
       **extra,
     )
   end

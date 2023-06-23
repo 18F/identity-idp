@@ -1,49 +1,10 @@
-module ArcgisApi::Auth
-  # Authenticate with the ArcGIS API
-  class Authentication
+module ArcgisApi::Faraday
+  # Log retries from the Faraday retry middleware
+  class RetryLogger
     def initialize(analytics:)
       @analytics = analytics || Analytics.new(
         user: AnonymousUser.new,
       )
-    end
-
-    # Makes a request to retrieve a new token
-    # it expires after 1 hour
-    # @return [ArcgisApi::Auth::Token] Auth token
-    def retrieve_token
-      token, expires = request_token.fetch_values('token', 'expires')
-      expires_at = Time.zone.at(expires / 1000).to_f
-      return ArcgisApi::Auth::Token.new(token: token, expires_at: expires_at)
-    end
-
-    private
-
-    # Makes HTTP request to authentication endpoint and
-    # returns the token and when it expires (1 hour).
-    # @return [Hash] API response
-    def request_token
-      body = {
-        username: arcgis_api_username,
-        password: arcgis_api_password,
-        referer: domain_name,
-        f: 'json',
-      }
-
-      connection.post(
-        arcgis_api_generate_token_url, URI.encode_www_form(body)
-      ) do |req|
-        req.options.context = { service_name: 'arcgis_token' }
-      end.body
-    end
-
-    def connection
-      Faraday.new do |conn|
-        ArcgisApi::Faraday::Configuration.setup(conn)
-        ArcgisApi::Faraday::Configuration.add_retry(conn) do |**args|
-          log_retry(**args)
-        end
-        yield conn if block_given?
-      end
     end
 
     # @param [Faraday::Env] env Request environment
@@ -84,8 +45,5 @@ module ArcgisApi::Auth
     end
 
     attr_accessor :analytics
-  end
-
-  class InvalidResponseError < Faraday::Error
   end
 end
