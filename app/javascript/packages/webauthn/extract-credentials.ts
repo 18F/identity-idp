@@ -7,7 +7,7 @@ import { base64ToArrayBuffer } from './converters';
  * @return Converted credentials.
  */
 const extractCredentials = (credentials: string[]): PublicKeyCredentialDescriptor[] =>
-  credentials.filter(Boolean).map((credential) => ({
+  credentials.map((credential) => ({
     type: 'public-key',
     id: base64ToArrayBuffer(credential),
   }));

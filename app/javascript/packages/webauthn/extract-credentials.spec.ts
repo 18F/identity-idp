@@ -1,10 +1,6 @@
 import extractCredentials from './extract-credentials';
 
 describe('extractCredentials', () => {
-  it('filters empty values', () => {
-    expect(extractCredentials([''])).to.deep.equal([]);
-  });
-
   it('returns an array of converted credential descriptors', () => {
     const result = extractCredentials(['Y3JlZGVudGlhbDEyMw==', 'Y3JlZGVudGlhbDQ1Ng==']);
 

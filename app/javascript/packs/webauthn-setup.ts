@@ -43,7 +43,9 @@ function webauthn() {
         JSON.parse((document.getElementById('user_challenge') as HTMLInputElement).value),
       ),
       excludeCredentials: extractCredentials(
-        (document.getElementById('exclude_credentials') as HTMLInputElement).value.split(','),
+        (document.getElementById('exclude_credentials') as HTMLInputElement).value
+          .split(',')
+          .filter(Boolean),
       ),
       authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
     })

@@ -21,7 +21,7 @@ async function verifyWebauthnDevice({
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
       rpId: window.location.hostname,
-      allowCredentials: extractCredentials(credentialIds.split(',')),
+      allowCredentials: extractCredentials(credentialIds.split(',').filter(Boolean)),
       timeout: 800000,
     },
   };
