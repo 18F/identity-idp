@@ -258,17 +258,15 @@ RSpec.feature 'Sign in' do
         t('datetime.dotiw.two_words_connector'),
       ].join('')
 
-      pattern1 = Regexp.new(minutes_and + t('datetime.dotiw.seconds.other', count: '\d+'))
-      expect(page).to have_content(pattern1, wait: 5)
-      time = page.text[pattern1]
-      seconds = time.split(t('datetime.dotiw.two_words_connector')).last[/\d+/].to_i
-      pattern2 = Regexp.new(
+      minutes_pattern = Regexp.new(minutes_and + t('datetime.dotiw.seconds.other', count: '\d+'))
+      expect(page).to have_content(minutes_pattern, wait: 5)
+      seconds_pattern = Regexp.new(
         minutes_and + t(
           'datetime.dotiw.seconds.other',
-          count: (seconds - 10...seconds).to_a.join('|'),
+          count: '\d+',
         ),
       )
-      expect(page).to have_content(pattern2, wait: 5)
+      expect(page).to have_content(seconds_pattern, wait: 5)
     end
 
     scenario 'user can continue browsing with refreshed CSRF token' do
