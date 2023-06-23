@@ -44,15 +44,15 @@ Started at:  $STARTED_AT" | tee "$OUT_FILE" "$ERR_FILE"
 
     echo "Finished at: $(date '+%Y-%m-%d %H:%M:%S')"
 
-    SUCCESS_RATE=$(($SUCCESSES / $ITERATION))
-    FAILURE_RATE=$(($FAILURES / $ITERATION))
+    SUCCESS_PCT=$((($SUCCESSES * 100) / $ITERATION))
+    FAILURE_PCT=$((($FAILURES * 100) / $ITERATION))
 
     echo ""
-    echo "Successes:    $SUCCESSES ($(($SUCCESS_RATE * 100))%)"
-    echo "Failures:     $FAILURES ($(($FAILURE_RATE * 100))%)"
+    echo "Successes:    $SUCCESSES (${SUCCESS_PCT}%)"
+    echo "Failures:     $FAILURES (${FAILURE_PCT}%)"
     
     if [[ "$ITERATION" == "$RUNS" ]]; then
-        exit
+        exit $FAILURES
     fi
 
 done    
