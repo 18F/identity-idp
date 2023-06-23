@@ -26,8 +26,7 @@ fr:
       subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes
         pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les
         et placez-les en lieu sûr.'
-      heading: Enregistrer ces codes de sauvegarde
-      title: Codes de sauvegarde
+      title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
