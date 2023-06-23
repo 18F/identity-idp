@@ -383,11 +383,31 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # pending fix
     end
 
+    # this spec will pass for a deactivated profile which is non-active,
+    # but will fail for password_reset and encryption_error profiles,
+    # which are non-active, but are not activate-able
     it 'does not send a reproof event when there is a non active profile' do
       expect(PushNotification::HttpPush).to_not receive(:deliver)
 
-      Profile.create(user: user, active: false)
+      profile = create(:profile, :deactivated)
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq false # to change
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # will change but shouldn't
+
       profile.activate
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq true # changed
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # pending fix
     end
 
     it 'does not send a reproof event when there is no active profile' do
