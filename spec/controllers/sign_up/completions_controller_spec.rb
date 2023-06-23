@@ -355,13 +355,32 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'logs a reproofing event upon reproofing' do
-        user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        profile1 = user.profiles.first
+        profile2 = user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+
         stub_sign_in(user)
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
           request_url: 'http://example.com',
         }
+
+        expect(profile1.activated_at).to be_present
+        expect(profile1.active).to eq false
+        expect(profile1.deactivation_reason).to be_nil
+        expect(profile1.fraud_review_pending?).to eq(false)
+        expect(profile1.gpo_verification_pending_at).to be_nil
+        expect(profile1.initiating_service_provider).to be_nil
+        expect(profile1.verified_at).to be_nil
+
+        expect(profile2.activated_at).to be_present
+        expect(profile2.active).to eq true
+        expect(profile2.deactivation_reason).to be_nil
+        expect(profile2.fraud_review_pending?).to eq(false)
+        expect(profile2.gpo_verification_pending_at).to be_nil
+        expect(profile2.initiating_service_provider).to be_nil
+        expect(profile2.verified_at).to be_present
+
         expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
       end
