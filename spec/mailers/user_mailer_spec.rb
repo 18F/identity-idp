@@ -578,7 +578,7 @@ RSpec.describe UserMailer, type: :mailer do
 
       context 'USPS outage message' do
         it 'renders a warning when the flag is enabled' do
-          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(true)
 
           expect(mail.html_part.body).
@@ -587,7 +587,7 @@ RSpec.describe UserMailer, type: :mailer do
             )
         end
         it 'does not renders a warning when the flag is disabled' do
-          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(false)
 
           expect(mail.html_part.body).

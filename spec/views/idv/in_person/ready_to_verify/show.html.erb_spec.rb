@@ -108,7 +108,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
 
     it 'renders the USPS outage alert when flag is enabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true)
 
       render
@@ -119,7 +119,7 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
 
     it 'does not render the USPS outage alert when flag is disabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(false)
 
       render

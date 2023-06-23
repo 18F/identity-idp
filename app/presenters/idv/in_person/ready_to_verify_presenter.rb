@@ -46,8 +46,8 @@ module Idv
         sp_return_url_resolver.homepage_url if service_provider
       end
 
-      def usps_outage_message_enabled
-        IdentityConfig.store.in_person_usps_outage_message_enabled
+      def outage_message_enabled
+        IdentityConfig.store.in_person_outage_message_enabled
       end
 
       private

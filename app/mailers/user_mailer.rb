@@ -278,7 +278,7 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     with_user_locale(user) do
-      @hide_title = IdentityConfig.store.in_person_usps_outage_message_enabled
+      @hide_title = IdentityConfig.store.in_person_outage_message_enabled
       @header = t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
