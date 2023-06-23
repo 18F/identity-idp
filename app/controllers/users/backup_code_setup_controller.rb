@@ -91,10 +91,6 @@ module Users
       user_session[:backup_codes] = @codes
     end
 
-    def account_already_confirmed?
-      redirect_to account_url if user_fully_authenticated?
-    end
-
     def set_backup_code_setup_presenter
       @presenter = SetupPresenter.new(
         current_user: current_user,
