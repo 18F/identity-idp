@@ -736,12 +736,28 @@ RSpec.describe Profile do
       profile.fraud_review_pending_at = 1.day.ago
       profile.deactivation_reason = :in_person_verification_pending
 
+      expect(profile.activated_at).to be_nil # to change
+      expect(profile.active).to eq(false) # to change
+      expect(profile.deactivation_reason).to eq 'in_person_verification_pending' # to change
+      expect(profile.fraud_review_pending?).to eq(true) # to change
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # to change
+
       profile.activate_after_passing_in_person
+
+      expect(profile.activated_at).to be_present # changed
+      expect(profile.active).to eq(true) # changed
+      expect(profile.deactivation_reason).to be_nil # changed
+      expect(profile.fraud_review_pending?).to eq(false) # changed
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # changed
 
       expect(profile.fraud_review_pending_at).to be_nil
       expect(profile.activated_at).not_to be_nil
       expect(profile.deactivation_reason).to be_nil
-      expect(profile).to be_active
+      expect(profile).to be_active # changed
     end
 
     it 'does not activate a profile if transaction raises an error' do
