@@ -49,7 +49,7 @@ module RateLimitConcern
 
   def idv_attempter_rate_limited?(throttle_type)
     if throttle_type == :proof_ssn
-      return unless defined?(flow_session)
+      return unless defined?(flow_session) && user_session
       pii_ssn = flow_session[:pii_from_doc]&.[](:ssn)
       return unless pii_ssn
       Throttle.new(
