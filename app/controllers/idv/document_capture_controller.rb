@@ -27,7 +27,12 @@ module Idv
     def update
       flow_session['redo_document_capture'] = nil # done with this redo
       result = handle_stored_result
-      analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
+      args = result.to_h.merge(analytics_arguments)
+      puts '---------------------------------------------------------------------------------------'
+      puts 'idv_doc_auth_document_capture_submitted'
+      puts args.inspect
+      puts '---------------------------------------------------------------------------------------'
+      analytics.idv_doc_auth_document_capture_submitted(**args)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
