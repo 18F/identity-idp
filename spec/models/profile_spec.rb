@@ -494,7 +494,7 @@ RSpec.describe Profile do
       end
 
       it 'does not activate a profile if rejected for fraud' do
-        profile.update(fraud_rejection_at: Time.zone.now - 1.day)
+        profile = create(:profile, :fraud_rejection)
 
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
