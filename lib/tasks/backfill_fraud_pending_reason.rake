@@ -2,6 +2,8 @@ namespace :profiles do
   desc 'If a profile is in review or rejected, store the reason it was marked for fraud'
 
   task backfill_fraud_pending_reason: :environment do |_task, _args|
+    ActiveRecord::Base.connection.execute('SET statement_timeout = 60000')
+
     profiles = Profile.where(
       fraud_pending_reason: nil,
     ).where(
@@ -22,6 +24,8 @@ namespace :profiles do
   end
 
   task validate_backfill_fraud_pending_reason: :environment do |_task, _args|
+    ActiveRecord::Base.connection.execute('SET statement_timeout = 60000')
+
     profiles = Profile.where(
       fraud_pending_reason: nil,
     ).where(
