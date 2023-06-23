@@ -804,7 +804,24 @@ RSpec.describe Profile do
         :profile, user: user, active: false,
                   fraud_review_pending_at: 1.day.ago
       )
+
+      expect(profile.activated_at).to be_nil # to change
+      expect(profile.active).to eq(false) # to change
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(true) # to change
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # to change
+
       profile.activate_after_passing_review
+
+      expect(profile.activated_at).to be_present # changed
+      expect(profile.active).to eq(true) # changed
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false) # changed
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # changed
 
       expect(profile).to be_active
     end
