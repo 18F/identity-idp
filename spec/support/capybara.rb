@@ -1,4 +1,5 @@
 require 'capybara/rspec'
+require 'capybara-screenshot/rspec'
 require 'rack_session_access/capybara'
 require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
@@ -61,3 +62,7 @@ Capybara.register_driver(:desktop_rack_test) do |app|
 end
 
 Capybara.default_driver = :desktop_rack_test
+
+Capybara::Screenshot.register_driver(:headless_chrome) do |driver, path|
+  driver.browser.save_screenshot(path)
+end

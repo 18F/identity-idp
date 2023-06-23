@@ -118,6 +118,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
+  gem 'capybara-screenshot'
   gem 'simplecov', '~> 0.21.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
