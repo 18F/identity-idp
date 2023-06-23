@@ -467,7 +467,7 @@ RSpec.describe Profile do
       end
 
       it 'does not activate a profile if under fraud review' do
-        profile.update(fraud_review_pending_at: 1.day.ago)
+        profile = create(:profile, :fraud_review_pending)
 
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
