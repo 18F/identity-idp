@@ -16,7 +16,22 @@ namespace :profiles do
                              else
                                'threatmetrix_review'
                              end
+      warn "#{profile.id},#{fraud_pending_reason}"
       profile.update!(fraud_pending_reason: fraud_pending_reason)
+    end
+  end
+
+  task validate_backfill_fraud_pending_reason: :environment do |_task, _args|
+    profiles = Profile.where(
+      fraud_pending_reason: nil,
+    ).where(
+      'fraud_review_pending_at IS NOT NULL OR fraud_rejection_at IS NOT NULL',
+    )
+
+    if profiles.empty?
+      warn 'fraud_pending_reason backfill was successful'
+    else
+      warn "fraud_pending_reason backfill left #{profile.count} rows"
     end
   end
 end
