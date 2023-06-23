@@ -20,11 +20,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       attach_and_submit_images
       click_idv_continue
 
-      if use_bad_ssn
-        fill_out_ssn_form_with_ssn_that_fails_resolution
-      else
-        fill_out_ssn_form_ok
-      end
+      handle_ssn_page
 
       click_idv_continue
     end
@@ -146,6 +142,21 @@ RSpec.feature 'doc auth redo document capture', js: true do
         expect(page).to have_content(DocAuthHelper::GOOD_SSN)
         expect(page).to have_css('[role="status"]') # We verified your ID
       end
+    end
+  end
+
+  def handle_ssn_page
+    # we don't know why it might still be on document capture, but handle it anyway
+    if current_url == idv_document_capture_url
+      mock_doc_auth_attention_with_barcode
+      attach_and_submit_images
+      click_idv_continue
+    end
+
+    if use_bad_ssn
+      fill_out_ssn_form_with_ssn_that_fails_resolution
+    else
+      fill_out_ssn_form_ok
     end
   end
 end
