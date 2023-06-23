@@ -7,6 +7,7 @@ RSpec.describe Idv::GpoOnlyWarningController do
 
   before do
     stub_sign_in(user)
+    stub_analytics
     subject.user_session['idv/doc_auth'] = {}
   end
 
@@ -20,14 +21,25 @@ RSpec.describe Idv::GpoOnlyWarningController do
   end
 
   describe '#show' do
+    let(:analytics_name) { 'IdV: Mail only warning visited' }
+    let(:analytics_args) do
+      { analytics_id: 'Doc Auth' }
+    end
+
     it 'renders the show template' do
       get :show
 
       expect(response).to render_template :show
     end
 
+    it 'sends analytics_visited event' do
+      get :show
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+    end
+
     context 'flow_session is nil' do
-      it 'sends analytics_visited event' do
+      it 'renders the show template' do
         subject.user_session.delete('idv/doc_auth')
 
         get :show
