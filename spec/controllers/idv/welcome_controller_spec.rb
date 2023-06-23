@@ -5,11 +5,7 @@ RSpec.describe Idv::WelcomeController do
 
   let(:user) { create(:user) }
 
-  let(:feature_flag_enabled) { true }
-
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
-      and_return(feature_flag_enabled)
     stub_sign_in(user)
     stub_analytics
     subject.user_session['idv/doc_auth'] = {}
@@ -113,16 +109,6 @@ RSpec.describe Idv::WelcomeController do
         expect(enrollment.reload.status).to eq('cancelled')
         expect(user.establishing_in_person_enrollment).to be_blank
       end
-    end
-  end
-
-  context 'when doc_auth_welcome_controller_enabled is false' do
-    let(:feature_flag_enabled) { false }
-
-    it 'returns 404' do
-      get :show
-
-      expect(response.status).to eq(404)
     end
   end
 end
