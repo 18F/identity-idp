@@ -1,7 +1,6 @@
 @use 'uswds-core' as *;
-@import 'variables/app';
-@import 'variables/email';
-@import 'foundation-emails/scss/foundation-emails';
+@use 'variables/app' as *;
+@use 'variables/email' as *;
 
 .gray {
   &:active,
