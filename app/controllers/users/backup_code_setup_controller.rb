@@ -60,9 +60,7 @@ module Users
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 
-    def confirm_backup_codes
-      skip_backup_code_confirmation
-    end
+    def confirm_backup_codes; end
 
     private
 
