@@ -49,10 +49,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.mts', '.cts'],
-    alias: {
-      'react/jsx-dev-runtime': 'react/jsx-dev-runtime.js',
-      'react/jsx-runtime': 'react/jsx-runtime.js',
-    },
   },
   module: {
     rules: [
