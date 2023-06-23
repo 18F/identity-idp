@@ -23,6 +23,11 @@ class Profile < ApplicationRecord
     in_person_verification_pending: 5,
   }
 
+  enum fraud_pending_reason: {
+    threatmetrix_review: 1,
+    threatmetrix_reject: 2,
+  }
+
   attr_reader :personal_key
 
   def fraud_review_pending?
@@ -57,7 +62,7 @@ class Profile < ApplicationRecord
       activated_at: now,
     }
 
-    attrs[:verified_at] = now unless reason_deactivated == :password_reset
+    attrs[:verified_at] = now unless (reason_deactivated == :password_reset || verified_at)
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
@@ -81,28 +86,36 @@ class Profile < ApplicationRecord
   end
 
   def activate_after_passing_review
-    update!(
-      fraud_review_pending_at: nil,
-      fraud_rejection_at: nil,
-    )
-    track_fraud_review_adjudication(decision: 'pass')
-    activate
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+
+    track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
   def activate_after_passing_in_person
-    update!(
-      deactivation_reason: nil,
-      fraud_review_pending_at: nil,
-    )
-    activate
+    transaction do
+      update!(
+        deactivation_reason: nil,
+        fraud_review_pending_at: nil,
+      )
+      activate
+    end
   end
 
   def activate_after_password_reset
     if password_reset?
-      update!(
-        deactivation_reason: nil,
-      )
-      activate(reason_deactivated: :password_reset)
+      transaction do
+        update!(
+          deactivation_reason: nil,
+        )
+        activate(reason_deactivated: :password_reset)
+      end
     end
   end
 

@@ -25,4 +25,9 @@ class ReportMailer < ActionMailer::Base
     attachments['system_demand.csv'] = data
     mail(to: email, subject: t('report_mailer.system_demand_report.subject'))
   end
+
+  def warn_error(email:, error:, env: Rails.env)
+    @error = error
+    mail(to: email, subject: "[#{env}] identity-idp error: #{error.class.name}")
+  end
 end

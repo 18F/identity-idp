@@ -344,6 +344,8 @@ Rails.application.routes.draw do
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
       put '/verify_info' => 'verify_info#update'
+      get '/welcome' => 'welcome#show'
+      put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'
