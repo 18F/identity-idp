@@ -911,7 +911,24 @@ RSpec.describe Profile do
   describe '#deactivate_for_gpo_verification' do
     it 'sets a timestamp for gpo_verification_pending_at' do
       profile = create(:profile, user: user)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil # to change
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
       profile.deactivate_for_gpo_verification
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_present # changed
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
 
       expect(profile).to_not be_active
       expect(profile.gpo_verification_pending_at).to be_present
