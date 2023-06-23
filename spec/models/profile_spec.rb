@@ -705,9 +705,25 @@ RSpec.describe Profile do
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
 
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('password_reset')
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present
+
       suppress(RuntimeError) do
         profile.activate_after_password_reset
       end
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('password_reset')
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present
 
       expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile).to_not be_active
