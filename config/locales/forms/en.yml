@@ -21,8 +21,7 @@ en:
       saved: I’ve put my backup codes in a safe place.
       subinfo_html: '<strong>If you lose your device, you’ll need these codes to sign into
         %{app_name}.</strong> Save or print them and put them somewhere safe.'
-      heading: Save these backup codes
-      title: Backup codes
+      title: Save these backup codes
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of
         backup codes. Your original backup codes will no longer be valid.

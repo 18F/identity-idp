@@ -24,8 +24,7 @@ es:
       subinfo_html: '<strong>Si pierdes tu dispositivo, necesitarás estos códigos para
         iniciar sesión en %{app_name}.</strong> Guárdalos o imprímelos y consérvalos
         en un lugar seguro.'
-      heading: Guarda estos códigos de seguridad
-      title: Códigos de respaldo
+      title: Guarda estos códigos de seguridad
     backup_code_regenerate:
       caution: Si vuelve a generar sus códigos de respaldo, recibirá un nuevo conjunto
         de códigos de respaldo. Sus códigos de copia de seguridad originales ya
