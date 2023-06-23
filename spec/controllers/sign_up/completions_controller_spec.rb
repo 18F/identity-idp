@@ -356,7 +356,7 @@ RSpec.describe SignUp::CompletionsController do
 
       it 'logs a reproofing event upon reproofing' do
         profile1 = user.profiles.first
-        profile2 = user.profiles.create(verified_at: Time.zone.now, active: true, activated_at: Time.zone.now)
+        profile2 = create(:profile, :verified, :active, user: user)
 
         stub_sign_in(user)
         subject.session[:sp] = {
