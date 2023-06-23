@@ -1,7 +1,16 @@
-module ArcgisApi
-
+module ArcgisApi::Token
   # Authenticate with the ArcGIS API
   class Authentication
+    # Makes a request to retrieve a new token
+    # it expires after 1 hour
+    # @return [ArcgisApi::Token::TokenInfo] Auth token
+    def retrieve_token
+      token, expires = request_token.fetch_values('token', 'expires')
+      expires_at = Time.zone.at(expires / 1000).to_f
+      return ArcgisApi::TokenInfo.new(token: token, expires_at: expires_at)
+    end
+
+    private
 
     # Makes HTTP request to authentication endpoint and
     # returns the token and when it expires (1 hour).
@@ -21,8 +30,6 @@ module ArcgisApi
       end.body
     end
 
-    private
-
     def connection
       faraday_retry_options = {
         retry_statuses: RETRY_HTTP_STATUS,
@@ -33,7 +40,7 @@ module ArcgisApi
         backoff_factor: arcgis_get_token_retry_backoff_factor,
         exceptions: [Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ServerError,
                      Faraday::ClientError, Faraday::RetriableResponse,
-                     ArcgisApi::InvalidResponseError],
+                     ArcgisApi::Token::InvalidResponseError],
         retry_block: ->(env:, options:, retry_count:, exception:, will_retry_in:) {
           # log analytics event
           exception_message = exception_message(exception, options, retry_count, will_retry_in)
@@ -102,5 +109,8 @@ module ArcgisApi
              :arcgis_get_token_retry_backoff_factor,
              :arcgis_api_request_timeout_seconds,
              to: IdentityConfig.store
+  end
+
+  class InvalidResponseError < Faraday::Error
   end
 end

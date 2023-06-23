@@ -1,38 +1,30 @@
-module ArcgisApi::Cache
+module ArcgisApi::Token::Cache
   class TokenCacheReader
-    def initialize(token_cache: ArcgisApi::Cache::RawTokenCache.new)
+    def initialize(token_cache: ArcgisApi::Token::Cache::RawTokenCache.new)
       @token_cache = token_cache
     end
 
-    # @return [String|nil] auth token
+    # @return [String,nil] auth token
     def token
       token_entry&.token
     end
 
-    # @return [ArcgisApi:TokenInfo|nil] fetch cache entry and wrap it necessary, if miss return nil
+    # Fetch, wrap, and return cache entry for ArcGIS API token
+    # @return [ArcgisApi::Token::TokenInfo,nil] token, or nil if not present in cache
     def token_entry
       cache_entry = token_cache.token
 
       if cache_entry.is_a?(String)
-        wrap_raw_token(cache_entry)
+        ArcgisApi::TokenInfo.new(
+          token: token,
+        )
       elsif cache_entry.is_a?(ArcgisApi::TokenInfo)
         cache_entry
-      else
-        nil
       end
     end
 
     protected
 
     attr_accessor :token_cache
-
-    private
-
-    def wrap_raw_token(token, expires_at = nil)
-      ArcgisApi::TokenInfo.new(
-        token: token,
-        expires_at: expires_at,
-      )
-    end
   end
 end

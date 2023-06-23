@@ -1,5 +1,4 @@
 module ArcgisApi
-
   # Class for retrieve, refresh and manage caching of Arcgis API token.
   # If token synchronous fetching is disabled, a token will be fetched from
   # cache directly or it will be a cache miss.
@@ -48,11 +47,9 @@ module ArcgisApi
     end
 
     def save_token
-
     end
 
     def token
-
     end
 
     private
@@ -159,8 +156,5 @@ module ArcgisApi
       end
       token_info
     end
-  end
-
-  class InvalidResponseError < Faraday::Error
   end
 end
