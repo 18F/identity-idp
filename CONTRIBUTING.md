@@ -95,6 +95,8 @@ request reviews from one of the available interest group teams:
 
 - `18f/identity-frontend` for developers interested in frontend development
 
+To request to join any of these teams, you can contact any existing member and ask to be added.
+
 ## Public domain
 
 This project is in the public domain within the United States, and
