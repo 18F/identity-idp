@@ -525,9 +525,27 @@ RSpec.describe Profile do
   describe '#deactivate' do
     let(:deactivation_reason) { :password_reset }
 
-    it 'sets active flag to false' do
+    it 'sets active flag to false and assigns deactivation_reason' do
       profile = create(:profile, :active, user: user)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq true # to change
+      expect(profile.deactivation_reason).to be_nil # to change
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
       profile.deactivate(deactivation_reason)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq false # changed
+      expect(profile.deactivation_reason).to eq('password_reset') # changed
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
       expect(profile).to_not be_active
       expect(profile).to be_password_reset
     end
