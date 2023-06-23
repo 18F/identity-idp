@@ -12,21 +12,6 @@ module Idv
       set_state_id_type
 
       ssn_throttle.increment!
-      if ssn_throttle.throttled?
-        idv_failure_log_throttled(:proof_ssn)
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :proof_ssn,
-          step_name: 'verify_info',
-        )
-        redirect_to idv_session_errors_ssn_failure_url
-        return
-      end
-
-      if resolution_throttle.throttled?
-        idv_failure_log_throttled(:idv_resolution)
-        redirect_to throttled_url
-        return
-      end
 
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
@@ -100,7 +85,10 @@ module Idv
 
       resolution_throttle.increment! if proofing_results_exception.blank?
 
-      if resolution_throttle.throttled?
+      if ssn_throttle.throttled?
+        idv_failure_log_throttled(:proof_ssn)
+        redirect_to idv_session_errors_ssn_failure_url
+      elsif resolution_throttle.throttled?
         idv_failure_log_throttled(:idv_resolution)
         redirect_to throttled_url
       elsif proofing_results_exception.present? && is_mva_exception
@@ -116,14 +104,18 @@ module Idv
     end
 
     def idv_failure_log_throttled(throttle_type)
-      if throttle_type == :idv_resolution
+      if throttle_type == :proof_ssn
+        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
+        analytics.throttler_rate_limit_triggered(
+          throttle_type: :proof_ssn,
+          step_name: 'verify_info',
+        )
+      elsif throttle_type == :idv_resolution
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
           step_name: self.class.name,
         )
-      elsif throttle_type == :proof_ssn
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
       end
     end
 
@@ -232,7 +224,8 @@ module Idv
     def summarize_result_and_throttle_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        summary_result
+        ssn_throttle.reset!
+        summary_result # is this line needed? not consumed
       else
         idv_failure(summary_result)
       end
