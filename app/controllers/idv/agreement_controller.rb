@@ -56,7 +56,6 @@ module Idv
     end
 
     def confirm_welcome_step_complete
-      return if flow_session['Idv::Steps::WelcomeStep']
       return if idv_session.welcome_visited
 
       redirect_to idv_welcome_url

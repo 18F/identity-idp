@@ -57,7 +57,7 @@ RSpec.describe Idv::WelcomeController do
 
     context 'welcome already visited' do
       it 'redirects to agreement' do
-        allow(subject.idv_session).to receive(:welcome_visited).and_return(true)
+        subject.idv_session.welcome_visited = true
 
         get :show
 
