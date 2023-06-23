@@ -38,6 +38,10 @@ FactoryBot.define do
       proofing_components { { threatmetrix_review_status: 'review' } }
     end
 
+    trait :verify_by_mail_pending do
+      gpo_verification_pending_at { 1.day.ago }
+    end
+
     trait :fraud_rejection do
       fraud_rejection_at { 15.days.ago }
     end

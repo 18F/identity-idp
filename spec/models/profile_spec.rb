@@ -440,7 +440,7 @@ RSpec.describe Profile do
       end
 
       it 'does not activate a profile with gpo verification pending' do
-        profile.update(gpo_verification_pending_at: 1.day.ago)
+        profile = create(:profile, :verify_by_mail_pending)
 
         expect(profile.activated_at).to be_nil
         expect(profile.active).to eq(false)
