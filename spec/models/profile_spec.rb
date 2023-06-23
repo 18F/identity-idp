@@ -765,10 +765,9 @@ RSpec.describe Profile do
     it 'does not activate a profile if transaction raises an error' do
       profile = create(
         :profile,
+        :in_person_verification_pending,
+        :fraud_review_pending,
         user: user,
-        active: false,
-        deactivation_reason: :in_person_verification_pending,
-        fraud_review_pending_at: 1.day.ago,
       )
 
       allow(profile).to receive(:update!).and_raise(RuntimeError)
@@ -801,8 +800,9 @@ RSpec.describe Profile do
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
       profile = create(
-        :profile, user: user, active: false,
-                  fraud_review_pending_at: 1.day.ago
+        :profile,
+        :fraud_review_pending,
+        user: user,
       )
 
       expect(profile.activated_at).to be_nil # to change
