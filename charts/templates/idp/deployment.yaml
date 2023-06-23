@@ -1,0 +1,79 @@
+{{- if .Values.idp.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "identity-idp-chart.idp.fullname" . }}
+  labels:
+    {{- include "identity-idp-chart.idp.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.idp.autoscaling.enabled }}
+  replicas: {{ .Values.idp.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "identity-idp-chart.idp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "identity-idp-chart.idp.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "identity-idp-chart.idp.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.idp.image.repository }}:{{ .Values.idp.image.tag | default .Chart.AppVersion }}"
+          env:
+            {{- toYaml .Values.idp.env | nindent 12 }}
+          imagePullPolicy: {{ .Values.idp.image.pullPolicy }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.idp.service.port }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - curl -k -f https://localhost:{{ .Values.idp.service.port }}/api/health # Need custom exec command to ignore self-signed cert
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - curl -k -f https://localhost:{{ .Values.idp.service.port }}/api/health # Need custom exec command to ignore self-signed cert
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          resources:
+            {{- toYaml .Values.idp.resources | nindent 12 }}
+      {{- with .Values.idp.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.idp.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.idp.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
