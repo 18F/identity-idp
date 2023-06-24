@@ -1,6 +1,18 @@
 module ArcgisApi::Auth::Refresh
   # Applies a sliding window strategy to reduce contention
-  # related to refreshing the token
+  # related to refreshing the token.
+  #
+  # When sliding_expires_at<= current time <= sliding_expires_at + prefetch_ttl,
+  # the entry's sliding_expires_at time is updated to
+  # sliding_expires_at + prefetch_ttl and a new token is requested and saved to cache.
+  #
+  # When sliding_expires_at + prefetch_ttl < current time,
+  # a new token is requested and saved to cache.
+  #
+  # Optimistically, the token in cache will NOT expire
+  # when accessed by multi-threaded/distributed clients,
+  # since there is about expires_at - 2*prefetch_ttl
+  # length of time to generate a new API token.
   class SlidingWindowRefreshStrategy < RefreshStrategy
     # @param [Number] sliding_increment_seconds size of increment to use for the sliding window
     # @param [Number] sliding_times times to move the window by sliding_increment_seconds

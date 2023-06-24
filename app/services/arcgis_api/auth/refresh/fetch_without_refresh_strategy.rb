@@ -1,12 +1,12 @@
 module ArcgisApi::Auth::Refresh
-  # Does nothing, returns a blank token
-  class BlankRefreshStrategy < RefreshStrategy
+  # Does not attempt to refresh a token when it's expired
+  class FetchWithoutRefreshStrategy < RefreshStrategy
     # rubocop:disable Lint/UnusedMethodArgument
     # @param [ArcgisApi::Auth::Authentication] auth
     # @param [ArcgisApi::Auth::Cache::TokenCacheWriter] cache
-    # @return [ArcgisApi::Auth::Token]
+    # @return [ArcgisApi::Auth::Token,nil]
     def call(auth:, cache:)
-      ArcgisApi::Auth::Token.new
+      cache.token_entry
     end
     # rubocop:enable Lint/UnusedMethodArgument
   end

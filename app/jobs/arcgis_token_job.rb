@@ -3,8 +3,7 @@ class ArcgisTokenJob < ApplicationJob
 
   def perform
     analytics.idv_arcgis_token_job_started
-    token_entry = token_keeper.retrieve_token
-    token_keeper.save_token(token_entry, token_entry.expires_at)
+    token_keeper.refresh_token
     return true
   ensure
     analytics.idv_arcgis_token_job_completed

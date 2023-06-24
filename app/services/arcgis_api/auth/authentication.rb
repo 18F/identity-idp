@@ -85,7 +85,4 @@ module ArcgisApi::Auth
 
     attr_accessor :analytics
   end
-
-  class InvalidResponseError < Faraday::Error
-  end
 end

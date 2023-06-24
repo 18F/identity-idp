@@ -4,7 +4,7 @@ module ArcgisApi::Auth::Refresh
     # rubocop:disable Lint/UnusedMethodArgument
     # @param [ArcgisApi::Auth::Authentication] auth
     # @param [ArcgisApi::Auth::Cache::TokenCacheWriter] cache
-    # @return [ArcgisApi::Auth::Token]
+    # @return [ArcgisApi::Auth::Token,nil]
     def call(auth:, cache:)
       raise 'Method not implemented'
     end
