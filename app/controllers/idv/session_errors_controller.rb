@@ -80,7 +80,11 @@ module Idv
 
     def set_try_again_path
       if in_person_flow?
-        @try_again_path = idv_in_person_path
+        if IdentityConfig.store.in_person_verify_info_controller_enabled
+          @try_again_path = idv_in_person_verify_info_url
+        else
+          @try_again_path = idv_in_person_path
+         end
       else
         @try_again_path = idv_verify_info_url
       end

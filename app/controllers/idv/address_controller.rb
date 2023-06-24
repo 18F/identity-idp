@@ -1,6 +1,5 @@
 module Idv
   class AddressController < ApplicationController
-    include IdvSession
     include IdvStepConcern
 
     before_action :confirm_document_capture_complete
