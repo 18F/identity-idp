@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
     before_action :check_for_outage, only: :show
+    skip_before_action :confirm_not_rate_limited, only: :show
 
     def show
       @step_indicator_steps = step_indicator_steps

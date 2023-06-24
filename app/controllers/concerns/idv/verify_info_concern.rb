@@ -150,11 +150,21 @@ module Idv
     end
 
     def process_async_state(current_async_state)
+      if current_async_state.done?
+        async_state_done(current_async_state)
+        return
+      end
+
+      if current_async_state.in_progress?
+        render 'shared/wait'
+        return
+      end
+
+      return if confirm_not_rate_limited
+
       if current_async_state.none?
         idv_session.invalidate_verify_info_step!
         render :show
-      elsif current_async_state.in_progress?
-        render 'shared/wait'
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -167,8 +177,6 @@ module Idv
           success: false,
           failure_reason: { idv_verification: [:timeout] },
         )
-      elsif current_async_state.done?
-        async_state_done(current_async_state)
       end
     end
 
