@@ -49,8 +49,6 @@ module RateLimitConcern
 
   def idv_attempter_rate_limited?(throttle_type)
     if throttle_type == :proof_ssn
-      return unless defined?(flow_session) && user_session
-      pii_ssn = flow_session[:pii_from_doc]&.[](:ssn)
       return unless pii_ssn
       Throttle.new(
         target: Pii::Fingerprinter.fingerprint(pii_ssn),
@@ -62,5 +60,11 @@ module RateLimitConcern
         throttle_type: throttle_type,
       ).throttled?
     end
+  end
+
+  def pii_ssn
+    return unless defined?(flow_session) && user_session
+    return pii_from_doc[:ssn] if pii_from_doc
+    flow_session[:pii_from_user]&.[](:ssn)
   end
 end
