@@ -105,7 +105,7 @@ endif
 	make lint_migrations
 
 audit_yarn_packages:
-	npx -y audit-ci@6.6.1 --config ./audit-ci.jsonc
+	yarn run audit-ci --config ./audit-ci.jsonc
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
