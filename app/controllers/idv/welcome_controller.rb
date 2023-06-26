@@ -4,7 +4,6 @@ module Idv
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :render_404_if_welcome_controller_disabled
     before_action :confirm_welcome_needed
 
     def show
@@ -62,10 +61,6 @@ module Idv
       return unless idv_session.welcome_visited
 
       redirect_to idv_agreement_url
-    end
-
-    def render_404_if_welcome_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_welcome_controller_enabled
     end
   end
 end
