@@ -15,7 +15,6 @@ module AccountReset::TrackIrsEvent
 
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: nil,
       request: request,
       user: user,
       sp: sp,

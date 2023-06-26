@@ -212,7 +212,6 @@ class Profile < ApplicationRecord
 
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: nil,
       request: nil,
       user: user,
       sp: initiating_service_provider,
