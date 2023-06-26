@@ -1,5 +1,14 @@
 module ArcgisApi::Faraday
-  # Faraday middleware to raise exception when response status is 200 but with error in body
+  # Faraday middleware to handle ArcGIS errors
+  #
+  # The ArcGIS API returns errors that use a 2xx status code,
+  # where it's necessary to parse the request body in order to
+  # determine whether and what type of error has occurred.
+  #
+  # The error handling strategy isn't well-documented on a REST
+  # API level, only at the level of ArcGIS's SDKs. However the
+  # source for esri/arcgis-rest-request suggests what types of
+  # errors we can expect.
   class ResponseValidation < Faraday::Middleware
     # @param [Faraday::Env] env
     def on_complete(env)
@@ -21,8 +30,5 @@ module ArcgisApi::Faraday
         env[:response],
       )
     end
-  end
-
-  class Error < Faraday::Error
   end
 end

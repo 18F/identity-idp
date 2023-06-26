@@ -54,8 +54,9 @@ arcgis_api_token_cache_key_prefix: arcgis_api_token
 arcgis_get_token_max_retries: 5
 arcgis_get_token_retry_interval_seconds: 1
 arcgis_get_token_retry_backoff_factor: 2
-arcgis_token_sliding_expiration_enabled: true
-arcgis_token_sync_request_enabled: false
+arcgis_token_sliding_expiration_enabled: false
+arcgis_token_sync_request_enabled: true
+arcgis_token_refresh_job_enabled: true
 asset_host: ''
 async_wait_timeout_seconds: 60
 async_stale_job_timeout_seconds: 300

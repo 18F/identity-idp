@@ -84,5 +84,11 @@ module ArcgisApi::Auth
     end
 
     attr_accessor :analytics
+
+    delegate :arcgis_api_username,
+             :arcgis_api_password,
+             :domain_name,
+             :arcgis_api_generate_token_url,
+             to: IdentityConfig.store
   end
 end

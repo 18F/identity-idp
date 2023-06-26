@@ -39,11 +39,7 @@ module ArcgisApi::Faraday::Configuration
 
   private
 
-  delegate :arcgis_api_username,
-           :arcgis_api_password,
-           :domain_name,
-           :arcgis_api_generate_token_url,
-           :arcgis_get_token_max_retries,
+  delegate :arcgis_get_token_max_retries,
            :arcgis_get_token_retry_interval_seconds,
            :arcgis_get_token_retry_backoff_factor,
            :arcgis_api_request_timeout_seconds,

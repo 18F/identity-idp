@@ -1,5 +1,5 @@
 module ArcgisApi
-  # Class for retrieve, refresh and manage caching of Arcgis API token.
+  # Class to retrieve, refresh and manage caching of Arcgis API token.
   # If token synchronous fetching is disabled, a token will be fetched from
   # cache directly or it will be a cache miss.
   # Otherwise the thread will try to fetch/refresh the token on demand as needed.
@@ -22,7 +22,7 @@ module ArcgisApi
       refresh_strategy.call(auth, cache)
     end
 
-    # Refresh the token with needed, then return the token. For
+    # Refresh the token when needed, then return the token. For
     # use when calling through from another request to refresh
     # the token.
     #
@@ -35,8 +35,8 @@ module ArcgisApi
 
     def refresh_strategy
       @refresh_strategy ||= begin
-        if arcgis_token_sliding_expiration_enabled
-          ArcgisApi::Auth::Refresh::SlidingWindowRefreshStrategy.new
+        if arcgis_token_refresh_job_enabled
+          ArcgisApi::Auth::Refresh::AlwaysRefreshStrategy.new
         else
           ArcgisApi::Auth::Refresh::NoopRefreshStrategy.new
         end
@@ -59,6 +59,7 @@ module ArcgisApi
 
     delegate :arcgis_token_sliding_expiration_enabled,
              :arcgis_token_sync_request_enabled,
+             :arcgis_token_refresh_job_enabled,
              to: IdentityConfig.store
     attr_accessor :auth, :cache
   end

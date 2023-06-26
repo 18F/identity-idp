@@ -132,6 +132,7 @@ class IdentityConfig
     config.add(:arcgis_get_token_retry_interval_seconds, type: :integer)
     config.add(:arcgis_get_token_retry_backoff_factor, type: :integer)
     config.add(:arcgis_token_sync_request_enabled, type: :boolean)
+    config.add(:arcgis_token_refresh_job_enabled, type: :boolean)
     config.add(:arcgis_token_sliding_expiration_enabled, type: :boolean)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
