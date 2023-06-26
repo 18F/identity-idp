@@ -11,9 +11,9 @@
   },
   "exports": {
     ".": {
-      "default": "./index.tsx"
-    },
-    "./dist": "./dist/index.js"
+      "source": "./index.tsx",
+      "default": "./dist/main.js"
+    }
   },
   "license": "CC0-1.0",
   "bugs": {
