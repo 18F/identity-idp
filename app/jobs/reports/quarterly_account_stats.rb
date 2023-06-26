@@ -3,30 +3,35 @@ require 'csv'
 
 module Reports
   class QuarterlyAccountStats < BaseReport
-    REPORT_NAME = 'quarterly-account-stats'
+    REPORT_NAME = 'quarterly-account-stats'.freeze
 
     # put this in job_configurations.rb
 
     def perform(report_date)
       report = report_body(report_date - 90.days, report_date)
-      puts report
+      save_report(REPORT_NAME, report, extension: 'csv')
       # call save_report
     end
 
     def report_body(start_date, end_date)
       report = {}
 
-      report[:start_date] = start_date.to_s
-      report[:end_date] = end_date.to_s
+      transaction_with_timeout do
+        report[:start_date] = start_date.to_s
+        report[:end_date] = end_date.to_s
 
-      report[:deleted_users_all_time] = deleted_user_count
-      report[:deleted_users_for_period] = deleted_user_count(start_date:, end_date:)
+        report[:deleted_users_all_time] = DeletedUser.count
+        report[:deleted_users_for_period] = deleted_user_count(start_date:, end_date:)
 
-      report[:users_all_time] = user_count
-      report[:users_for_period] = user_count(start_date:, end_date:)
+        report[:users_all_time] = User.count
+        report[:users_for_period] = user_count(start_date:, end_date:)
 
-      report[:proofed_all_time] = idv_user_count
-      report[:proofed_for_period] = idv_user_count(start_date:, end_date:)
+        report[:users_and_deleted_all_time] = report[:deleted_users_all_time] + report[:users_all_time]
+        report[:users_and_deleted_for_period] = report[:deleted_users_for_period] + report[:users_for_period]
+
+        report[:proofed_all_time] = Profile.where(active: true).count
+        report[:proofed_for_period] = idv_user_count(start_date:, end_date:)
+      end
 
       CSV.generate do |csv|
         csv << report.keys
@@ -36,52 +41,28 @@ module Reports
 
     private
 
-    # MAW: The all-time ones can probably look at cardinality and not need
-    # transaction_with_timeout, but might as well do it anyway?
-    def deleted_user_count(start_date: nil, end_date: nil)
-      if !start_date && !end_date
-        transaction_with_timeout do
-          DeletedUser.count
-        end
-      else
-        transaction_with_timeout do
-          DeletedUser.where(
-            'user_created_at >= ? and user_created_at < ?',
-            start_date,
-            end_date
-          ).count
-        end
-      end
+    def deleted_user_count(start_date:, end_date:)
+      DeletedUser.where(
+        'user_created_at >= ? and user_created_at < ?',
+        start_date,
+        end_date,
+      ).count
     end
 
-    def user_count(start_date: nil, end_date: nil)
-      if !start_date && !end_date
-        transaction_with_timeout do
-          User.count
-        end
-      else
-        User.where(
-          'created_at >= ? and created_at < ?',
-          start_date,
-          end_date
-        ).count
-      end
+    def user_count(start_date:, end_date:)
+      User.where(
+        'created_at >= ? and created_at < ?',
+        start_date,
+        end_date,
+      ).count
     end
 
-    def idv_user_count(start_date: nil, end_date: nil)
-      if !start_date && !end_date
-        transaction_with_timeout do
-          Profile.where(active: true).count
-        end
-      else
-        transaction_with_timeout do
-          Profile.where(active: true).where(
-            'activated_at >= ? and activated_at < ?',
-            start_date,
-            end_date
-          ).count
-        end
-      end
+    def idv_user_count(start_date:, end_date:)
+      Profile.where(active: true).where(
+        'activated_at >= ? and activated_at < ?',
+        start_date,
+        end_date,
+      ).count
     end
   end
 end
