@@ -12,7 +12,7 @@
   "exports": {
     ".": {
       "source": "./index.tsx",
-      "default": "./dist/main.js"
+      "default": "./dist/index.js"
     }
   },
   "license": "CC0-1.0",
