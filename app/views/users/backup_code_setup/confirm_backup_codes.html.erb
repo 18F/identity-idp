@@ -14,7 +14,7 @@
       action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
       big: true,
       wide: true,
-      class: 'margin-y-3'
+      class: 'margin-y-3',
     ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
 
 <%= render ButtonComponent.new(
