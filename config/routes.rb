@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
   namespace :api do
     namespace :internal do

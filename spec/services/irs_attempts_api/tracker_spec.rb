@@ -63,56 +63,6 @@ RSpec.describe IrsAttemptsApi::Tracker do
         expect(event.event_metadata).to have_key(:success)
       end
     end
-    it 'records the event in redis' do
-      freeze_time do
-        subject.track_event(:test_event, foo: :bar)
-
-        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-        expect(events.values.length).to eq(1)
-      end
-    end
-
-    it 'records an idv event in redis' do
-      freeze_time do
-        subject.track_event(:idv_test_event, foo: :bar)
-
-        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-        expect(events.values.length).to eq(1)
-      end
-    end
-
-    it 'does not store events in plaintext in redis' do
-      freeze_time do
-        subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-
-        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-        expect(events.keys.first).to_not include('first_name')
-        expect(events.values.first).to_not include(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-      end
-    end
-
-    context 'with idv events disabled' do
-      let(:irs_attempts_api_idv_events_enabled) { false }
-
-      it 'does not log or track anything about the event' do
-        expect(analytics).to_not receive(:irs_attempts_api_event_metadata).with(
-          event_type: :idv_test_event,
-          unencrypted_payload_num_bytes: kind_of(Integer),
-          recorded: true,
-        )
-
-        freeze_time do
-          subject.track_event(:idv_test_event, foo: :bar)
-
-          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-          expect(events.values.length).to eq(0)
-        end
-      end
-    end
 
     context 'without a service provider' do
       let(:service_provider) { nil }
@@ -134,16 +84,6 @@ RSpec.describe IrsAttemptsApi::Tracker do
     context 'the current session is not an IRS attempt API session' do
       let(:enabled_for_session) { false }
 
-      it 'does not record any events in redis' do
-        freeze_time do
-          subject.track_event(:test_event, foo: :bar)
-
-          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-          expect(events.values.length).to eq(0)
-        end
-      end
-
       it 'does not log metadata about the event' do
         expect(analytics).to_not receive(:irs_attempts_api_event_metadata)
 
@@ -153,16 +93,6 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
     context 'the IRS attempts API is not enabled' do
       let(:irs_attempts_api_enabled) { false }
-
-      it 'does not record any events in redis' do
-        freeze_time do
-          subject.track_event(:test_event, foo: :bar)
-
-          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
-
-          expect(events.values.length).to eq(0)
-        end
-      end
 
       it 'does not log metadata about the event' do
         expect(analytics).to_not receive(:irs_attempts_api_event_metadata)

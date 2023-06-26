@@ -51,12 +51,6 @@ module IrsAttemptsApi
         )
       end
 
-      redis_client.write_event(
-        event_key: event.event_key,
-        jwe: event.to_jwe,
-        timestamp: event.occurred_at,
-      )
-
       event
     end
 
@@ -85,10 +79,6 @@ module IrsAttemptsApi
     def ignore_idv_event?(event_type)
       !IdentityConfig.store.irs_attempt_api_idv_events_enabled &&
         (event_type.to_s.starts_with? 'idv_')
-    end
-
-    def redis_client
-      @redis_client ||= IrsAttemptsApi::RedisClient.new
     end
   end
 end
