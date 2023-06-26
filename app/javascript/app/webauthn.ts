@@ -1,4 +1,5 @@
 interface EnrollResult {
+  response: AuthenticatorAttestationResponse; 
   webauthnId: string;
 
   webauthnPublicKey: string;
@@ -120,6 +121,7 @@ const enrollWebauthnDevice = async ({
   const response = newCred.response as AuthenticatorAttestationResponse;
 
   return {
+    response: response,
     webauthnId: arrayBufferToBase64(newCred.rawId),
     webauthnPublicKey: newCred.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
@@ -146,7 +148,6 @@ async function verifyWebauthnDevice({
   const newCred = (await navigator.credentials.get(getOptions)) as PublicKeyCredential;
 
   const response = newCred.response as AuthenticatorAssertionResponse;
-
   return {
     credentialId: arrayBufferToBase64(newCred.rawId),
     authenticatorData: arrayBufferToBase64(response.authenticatorData),

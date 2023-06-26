@@ -1,4 +1,4 @@
-import { isWebauthnSupported } from '@18f/identity-webauthn';
+import { isWebauthnSupported, getAuthenticatorDataFlags } from '@18f/identity-webauthn';
 import { enrollWebauthnDevice } from '../app/webauthn';
 
 /**
