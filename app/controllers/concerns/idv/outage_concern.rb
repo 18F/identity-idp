@@ -13,9 +13,7 @@ module Idv
 
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
-      unless FeatureManagement.idv_allow_hybrid_flow?
-        flow_session[:skip_upload_step] = true
-      end
+      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
       redirect_to idv_mail_only_warning_url
     end
