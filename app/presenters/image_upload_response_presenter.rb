@@ -35,7 +35,7 @@ class ImageUploadResponsePresenter
       { success: true }
     else
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
-      json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
+      # json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
       json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?

@@ -32,7 +32,10 @@ module Idv
         if result.success?
           flash[:success] = t('doc_auth.headings.capture_complete')
           redirect_to idv_hybrid_mobile_capture_complete_url
+        elsif throttled
+          redirect_to idv_hybrid_mobile_capture_complete_url
         else
+
           redirect_to idv_hybrid_mobile_document_capture_url
         end
       end
