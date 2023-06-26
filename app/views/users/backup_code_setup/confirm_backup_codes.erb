@@ -2,29 +2,30 @@
 
 <%= render PageHeadingComponent.new.with_content(t('titles.backup_codes')) %>
 
-<p class='margin-top-1 margin-bottom-4'>
+<p>
   <%= t('two_factor_authentication.backup_codes.warning_html') %>
 </p>
 
-<p class='margin-top-1 margin-bottom-7'>
+<p>
   <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
 </p>
 
-<div class="border-bottom border-primary-light margin-bottom-2">
+<div>
   <%= link_to(
         sign_up_completed_path,
-        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3 margin-top-4',
       ) do %>
     <%= t('two_factor_authentication.backup_codes.saved_backup_codes') %>
   <% end %>
 
   <%= link_to(
         backup_code_regenerate_path,
-        class: 'usa-button usa-button--wide usa-button--big usa-button--outline margin-bottom-5',
+        class: 'usa-button usa-button--wide usa-button--big usa-button--outline',
       ) do %>
     <%= t('two_factor_authentication.backup_codes.new_backup_codes') %>
   <% end %>
 </div>
 
-
-<%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
+<% end %>
