@@ -12,22 +12,18 @@ describe('enrollWebauthnDevice', () => {
     name: 'test@test.com',
   };
   const challenge = new Uint8Array(JSON.parse('[1, 2, 3, 4, 5, 6, 7, 8]'));
-  const excludeCredentials = extractCredentials(
-    'Y3JlZGVudGlhbDEyMw==,Y3JlZGVudGlhbDQ1Ng=='.split(','),
-  ); // Base64-encoded 'credential123,credential456'
+  const excludeCredentials = extractCredentials([btoa('credential123'), btoa('credential456')]);
 
   beforeEach(() => {
     defineProperty(navigator, 'credentials', {
       configurable: true,
       value: {
         create: sandbox.stub().resolves({
-          rawId: Buffer.from([214, 109]), // encodes to '123'
+          rawId: Buffer.from('123', 'utf-8'),
           id: '123',
           response: {
-            // decodes to 'attest'
-            attestationObject: Buffer.from([97, 116, 116, 101, 115, 116]),
-            // decodes to 'json'
-            clientDataJSON: Buffer.from([106, 115, 111, 110]),
+            attestationObject: Buffer.from('attest', 'utf-8'),
+            clientDataJSON: Buffer.from('json', 'utf-8'),
           },
         }),
       },
@@ -80,10 +76,10 @@ describe('enrollWebauthnDevice', () => {
     });
 
     expect(result).to.deep.equal({
-      webauthnId: '1m0=', // Base64.encode64('123'),
+      webauthnId: btoa('123'),
       webauthnPublicKey: '123',
-      attestationObject: 'YXR0ZXN0', // Base64.encode('attest')
-      clientDataJSON: 'anNvbg==', // Base64.encode('json')
+      attestationObject: btoa('attest'),
+      clientDataJSON: btoa('json'),
     });
   });
 
