@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::AddressStep do
+RSpec.describe Idv::Steps::InPerson::AddressStep do
   include InPersonHelper
   let(:submitted_values) { {} }
   let(:pii_from_user) { flow.flow_session[:pii_from_user] }
@@ -108,7 +108,7 @@ describe Idv::Steps::InPerson::AddressStep do
               flow.flow_session[:pii_from_user][:same_address_as_id] = 'true'
             end
 
-            it 'sets the "same_address_as_id" in the flow session to false' do
+            it 'infers and sets the "same_address_as_id" in the flow session to false' do
               step.call
               expect(flow.flow_session[:pii_from_user][:same_address_as_id]).to eq('false')
             end

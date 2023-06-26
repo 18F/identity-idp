@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/otp_verification/show.html.erb' do
+RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
   let(:presenter_data) do
     {
       otp_delivery_preference: 'sms',

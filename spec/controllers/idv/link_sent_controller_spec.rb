@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::LinkSentController do
+RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
   let(:flow_session) do
@@ -24,6 +24,13 @@ describe Idv::LinkSentController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
 

@@ -1,6 +1,8 @@
 # ActiveJob events documentation:
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb
+require 'active_job/log_subscriber'
+
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def enqueue(event)
     job = event.payload[:job]
@@ -118,7 +120,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def self.worker_logger
-    @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    return @worker_logger if defined?(@worker_logger)
+
+    if FeatureManagement.log_to_stdout?
+      @worker_logger = ActiveSupport::Logger.new(STDOUT)
+    else
+      @worker_logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    end
   end
 
   private
@@ -200,4 +208,5 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 end
 
+ActiveJob::LogSubscriber.detach_from :active_job
 IdentityJobLogSubscriber.attach_to :active_job

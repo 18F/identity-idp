@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RecaptchaValidator do
+RSpec.describe RecaptchaValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
@@ -103,7 +103,6 @@ describe RecaptchaValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
-          exception_class: nil,
         )
       end
 
@@ -133,7 +132,6 @@ describe RecaptchaValidator do
               score_threshold: score_threshold,
               recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
-              exception_class: nil,
             )
           end
         end
@@ -163,7 +161,6 @@ describe RecaptchaValidator do
               score_threshold: score_threshold,
               recaptcha_version: 3,
               validator_class: 'RecaptchaValidator',
-              exception_class: nil,
             )
           end
         end
@@ -184,7 +181,6 @@ describe RecaptchaValidator do
 
         expect(analytics).to have_logged_event(
           'reCAPTCHA verify result received',
-          recaptcha_result: nil,
           evaluated_as_valid: true,
           score_threshold: score_threshold,
           recaptcha_version: 3,
@@ -219,7 +215,6 @@ describe RecaptchaValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
-          exception_class: nil,
         )
       end
     end
@@ -249,7 +244,6 @@ describe RecaptchaValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaValidator',
-          exception_class: nil,
         )
       end
 
@@ -271,7 +265,6 @@ describe RecaptchaValidator do
             score_threshold: score_threshold,
             recaptcha_version: 3,
             validator_class: 'RecaptchaValidator',
-            exception_class: nil,
             extra: true,
           )
         end
@@ -315,7 +308,6 @@ describe RecaptchaValidator do
             score_threshold: score_threshold,
             recaptcha_version: 2,
             validator_class: 'RecaptchaValidator',
-            exception_class: nil,
           )
         end
       end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth hybrid_handoff step' do
+RSpec.feature 'doc auth hybrid_handoff step' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -26,7 +26,7 @@ feature 'doc auth hybrid_handoff step' do
     expect(page).to have_current_path(idv_doc_auth_welcome_step)
     complete_welcome_step
     visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    expect(page).to have_current_path(idv_agreement_path)
     complete_agreement_step
     expect(page).to have_current_path(idv_hybrid_handoff_path)
   end

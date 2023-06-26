@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Password recovery via personal key' do
+RSpec.feature 'Password recovery via personal key' do
   include PersonalKeyHelper
   include IdvStepHelper
   include SamlAuthHelper

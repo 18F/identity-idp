@@ -10,7 +10,20 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    string: proc { |value| value.to_s },
+    # Allows loading a string configuration from a system environment variable
+    # ex: To read DATABASE_HOST from system environment for the database_host key
+    # database_host: ['env', 'DATABASE_HOST']
+    # To use a string value directly, you can specify a string explicitly:
+    # database_host: 'localhost'
+    string: proc do |value|
+      if value.is_a?(Array) && value.length == 2 && value.first == 'env'
+        ENV.fetch(value[1])
+      elsif value.is_a?(String)
+        value
+      else
+        raise 'invalid system environment configuration value'
+      end
+    end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
       value.split(',')
@@ -139,6 +152,7 @@ class IdentityConfig
     config.add(:database_pool_extra_connections_for_worker, type: :integer)
     config.add(:database_pool_idp, type: :integer)
     config.add(:database_socket, type: :string)
+    config.add(:database_sslmode, type: :string)
     config.add(:database_statement_timeout, type: :integer)
     config.add(:database_timeout, type: :integer)
     config.add(:database_username, type: :string)
@@ -146,6 +160,7 @@ class IdentityConfig
     config.add(:database_worker_jobs_username, type: :string)
     config.add(:database_worker_jobs_host, type: :string)
     config.add(:database_worker_jobs_password, type: :string)
+    config.add(:database_worker_jobs_sslmode, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
@@ -164,6 +179,7 @@ class IdentityConfig
     config.add(:doc_auth_max_capture_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_submission_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_tips, type: :integer)
+    config.add(:doc_auth_welcome_controller_enabled, type: :boolean)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_randomize, type: :boolean)
@@ -209,10 +225,10 @@ class IdentityConfig
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
+    config.add(:idv_tmx_test_csp_disabled_emails, type: :json)
+    config.add(:idv_tmx_test_js_disabled_emails, type: :json)
     config.add(:ie11_support_end_date, type: :timestamp)
     config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_percents, type: :json)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
@@ -371,10 +387,10 @@ class IdentityConfig
     config.add(:recaptcha_secret_key_v3, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
-    config.add(:redis_irs_attempt_api_url)
+    config.add(:redis_irs_attempt_api_url, type: :string)
     config.add(:redis_irs_attempt_api_pool_size, type: :integer)
-    config.add(:redis_throttle_url)
-    config.add(:redis_url)
+    config.add(:redis_throttle_url, type: :string)
+    config.add(:redis_url, type: :string)
     config.add(:redis_pool_size, type: :integer)
     config.add(:redis_session_pool_size, type: :integer)
     config.add(:redis_throttle_pool_size, type: :integer)
@@ -422,22 +438,18 @@ class IdentityConfig
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
+    config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
-    config.add(
-      :sign_up_mfa_selection_order_testing, type: :json,
-                                            options: { symbolize_names: true }
-    )
-    config.add(:sign_in_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:system_demand_report_email, type: :string)
+    config.add(:team_ursula_email, type: :string)
     config.add(:telephony_adapter, type: :string)
     config.add(:test_ssn_allowed_list, type: :comma_separated_string_list)
     config.add(:totp_code_interval, type: :integer)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
-    config.add(:use_clean_edit_password_url, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:usps_mock_fallback, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
@@ -471,6 +483,7 @@ class IdentityConfig
     config.add(:verify_gpo_key_max_attempts, type: :integer)
     config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_personal_key_max_attempts, type: :integer)
+    config.add(:version_headers_enabled, type: :boolean)
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)

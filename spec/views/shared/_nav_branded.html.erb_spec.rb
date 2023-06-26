@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_nav_branded.html.erb' do
+RSpec.describe 'shared/_nav_branded.html.erb' do
   let(:view_context) { ActionController::Base.new.view_context }
 
   context 'with a SP-logo configured' do

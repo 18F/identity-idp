@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/shared/_password_strength.html.erb' do
+RSpec.describe 'devise/shared/_password_strength.html.erb' do
   describe 'forbidden attributes' do
     context 'when local is unassigned' do
       before do

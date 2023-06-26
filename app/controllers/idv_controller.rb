@@ -29,7 +29,12 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    redirect_to idv_doc_auth_url
+    if IdentityConfig.store.doc_auth_welcome_controller_enabled
+      user_session['idv/doc_auth'] ||= {}
+      redirect_to idv_welcome_url
+    else
+      redirect_to idv_doc_auth_url
+    end
   end
 
   def profile_needs_reactivation?

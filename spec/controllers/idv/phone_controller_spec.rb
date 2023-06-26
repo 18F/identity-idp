@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PhoneController do
+RSpec.describe Idv::PhoneController do
   include IdvHelper
 
   let(:max_attempts) { Throttle.max_attempts(:proof_address) }
@@ -18,6 +18,13 @@ describe Idv::PhoneController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_verify_info_step_complete,
+      )
+    end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
   end

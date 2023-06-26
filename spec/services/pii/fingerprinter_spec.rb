@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::Fingerprinter do
+RSpec.describe Pii::Fingerprinter do
   before do
     allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key_queue).and_return(
       ['old-key-one', 'old-key-two'],

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IdvStepConcern' do
+RSpec.describe 'IdvStepConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
@@ -21,6 +21,20 @@ describe 'IdvStepConcern' do
       expect(Idv::StepController).to have_actions(
         :before,
         :confirm_not_rate_limited,
+      )
+    end
+
+    it 'includes handle_fraud' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :handle_fraud,
+      )
+    end
+
+    it 'includes check_for_outage before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
   end

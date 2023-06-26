@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Remembering a webauthn device' do
+RSpec.describe 'Remembering a webauthn device' do
   include WebAuthnHelper
 
   before do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'cancel IdV' do
+RSpec.describe 'cancel IdV' do
   include IdvStepHelper
   include DocAuthHelper
   include InteractionHelper

@@ -12,7 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-feature 'IdV Outage Spec' do
+RSpec.feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
@@ -172,6 +172,19 @@ feature 'IdV Outage Spec' do
           click_idv_continue
 
           expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+        end
+
+        it 'goes to idv_welcome_url when welcome controller is enabled' do
+          allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
+            and_return(true)
+
+          sign_in_with_idv_required(user: user, sms_or_totp: :totp)
+
+          expect(current_path).to eq idv_mail_only_warning_path
+
+          click_idv_continue
+
+          expect(current_path).to eq idv_welcome_path
         end
 
         it 'returns to the correct page when clicking to exit' do

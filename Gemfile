@@ -5,6 +5,7 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 
 gem 'rails', '~> 7.0.0'
 
+gem 'activerecord-postgis-adapter'
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-pinpoint'
@@ -30,7 +31,7 @@ gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.2'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
-gem 'jsbundling-rails', '~> 1.0.0'
+gem 'jsbundling-rails', '~> 1.1.2'
 gem 'jwe'
 gem 'jwt'
 gem 'lograge', '>= 0.11.2'
@@ -42,6 +43,7 @@ gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 8.0'
+gem 'puma'
 gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.12.0'
@@ -107,7 +109,6 @@ group :development, :test do
   gem 'pry-doc'
   gem 'pry-rails'
   gem 'psych'
-  gem 'puma'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.43.0', require: false
   gem 'rubocop-performance', '~> 1.15.0', require: false

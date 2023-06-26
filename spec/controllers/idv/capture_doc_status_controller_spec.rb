@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::CaptureDocStatusController do
+RSpec.describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
 
   before do

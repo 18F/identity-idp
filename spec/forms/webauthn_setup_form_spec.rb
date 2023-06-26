@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthnSetupForm do
+RSpec.describe WebauthnSetupForm do
   include WebAuthnHelper
 
   let(:user) { create(:user) }

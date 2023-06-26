@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPivCacLoginForm do
+RSpec.describe UserPivCacLoginForm do
   let(:user) { create(:user) }
   let(:piv_cac_configuration) do
     create(:piv_cac_configuration, user_id: user.id, x509_dn_uuid: 'random-uuid-for-x509-subject')

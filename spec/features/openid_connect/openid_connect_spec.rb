@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'query_tracker'
 
-describe 'OpenID Connect' do
+RSpec.describe 'OpenID Connect' do
   include IdvHelper
   include OidcAuthHelper
   include DocAuthHelper

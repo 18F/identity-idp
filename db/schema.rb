@@ -10,11 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_22_142018) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+  enable_extension "postgis"
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -445,6 +446,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.datetime "gpo_verification_pending_at"
+    t.integer "fraud_pending_reason"
+    t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"

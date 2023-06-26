@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
+RSpec.describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
   let(:plaintext) { '{ "foo": "bar" }' }
 
   describe '#encrypt' do

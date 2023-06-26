@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
+RSpec.describe 'user_mailer/unconfirmed_email_instructions.html.erb' do
   it 'states that the email is not associated with a user account' do
     user = build_stubbed(:user, confirmed_at: nil)
     assign(:resource, user)
