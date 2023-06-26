@@ -18,8 +18,6 @@ module IrsAttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
-      return if ignore_idv_event?(event_type)
-
       if metadata.has_key?(:failure_reason) &&
          (metadata[:failure_reason].blank? ||
           metadata[:success].present?)
@@ -74,11 +72,6 @@ module IrsAttemptsApi
 
     def enabled?
       IdentityConfig.store.irs_attempt_api_enabled && @enabled_for_session
-    end
-
-    def ignore_idv_event?(event_type)
-      !IdentityConfig.store.irs_attempt_api_idv_events_enabled &&
-        (event_type.to_s.starts_with? 'idv_')
     end
   end
 end

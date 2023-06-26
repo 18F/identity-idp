@@ -12,8 +12,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
       and_return(true)
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_idv_events_enabled).
-      and_return(true)
   end
 
   let(:service_provider) do
