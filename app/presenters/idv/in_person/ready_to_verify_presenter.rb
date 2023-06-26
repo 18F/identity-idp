@@ -50,6 +50,22 @@ module Idv
         IdentityConfig.store.in_person_outage_message_enabled
       end
 
+      def day_of_week
+        IdentityConfig.store.in_person_outage_expected_update_day_of_week
+      end
+
+      def date
+        IdentityConfig.store.in_person_outage_expected_update_date
+      end
+
+      def email_day_of_week
+        IdentityConfig.store.in_person_outage_emailed_by_day_of_week
+      end
+
+      def email_date
+        IdentityConfig.store.in_person_outage_emailed_by_date
+      end
+
       private
 
       attr_reader :enrollment

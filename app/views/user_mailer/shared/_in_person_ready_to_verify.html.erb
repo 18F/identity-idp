@@ -5,7 +5,7 @@
       <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
-      <%= render 'shared/outage_alert' %>
+      <%= render 'shared/outage_alert', day_of_week: @presenter.day_of_week, date: @presenter.date %>
     </td>
   </tr>
 </table>
