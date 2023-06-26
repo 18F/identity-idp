@@ -34,14 +34,7 @@ module IrsAttemptsApi
         client_port: CloudFrontHeaderParser.new(request).client_port,
       }.merge(metadata)
 
-      event = AttemptEvent.new(
-        event_type: event_type,
-        session_id: session_id,
-        occurred_at: Time.zone.now,
-        event_metadata: event_metadata,
-      )
-
-      event
+      nil
     end
 
     def parse_failure_reason(result)
