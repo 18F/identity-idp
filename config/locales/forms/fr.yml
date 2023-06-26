@@ -23,9 +23,9 @@ fr:
         utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
       saved: J’ai placé mes codes de sauvegarde en lieu sûr.
-      subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces codes
-        pour vous connecter à %{app_name}.</strong> Enregistrez-les ou imprimez-les
-        et placez-les en lieu sûr.'
+      subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces
+        codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou
+        imprimez-les et placez-les en lieu sûr.'
       title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel

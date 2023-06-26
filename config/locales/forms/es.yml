@@ -22,8 +22,8 @@ es:
       regenerate: Obtener nuevos códigos
       saved: He guardado mis códigos de seguridad en un lugar seguro.
       subinfo_html: '<strong>Si pierdes tu dispositivo, necesitarás estos códigos para
-        iniciar sesión en %{app_name}.</strong> Guárdalos o imprímelos y consérvalos
-        en un lugar seguro.'
+        iniciar sesión en %{app_name}.</strong> Guárdalos o imprímelos y
+        consérvalos en un lugar seguro.'
       title: Guarda estos códigos de seguridad
     backup_code_regenerate:
       caution: Si vuelve a generar sus códigos de respaldo, recibirá un nuevo conjunto
