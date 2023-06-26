@@ -1,5 +1,9 @@
-import { isWebauthnSupported } from '@18f/identity-webauthn';
-import { enrollWebauthnDevice } from '../app/webauthn';
+import {
+  isWebauthnSupported,
+  enrollWebauthnDevice,
+  extractCredentials,
+  longToByteArray,
+} from '@18f/identity-webauthn';
 
 /**
  * Reloads the current page, presenting the message corresponding to the given error key.
@@ -30,12 +34,20 @@ function webauthn() {
       (document.getElementById('platform_authenticator') as HTMLInputElement).value === 'true';
 
     enrollWebauthnDevice({
-      userId: (document.getElementById('user_id') as HTMLInputElement).value,
-      userEmail: (document.getElementById('user_email') as HTMLInputElement).value,
-      userChallenge: (document.getElementById('user_challenge') as HTMLInputElement).value,
-      excludeCredentials: (document.getElementById('exclude_credentials') as HTMLInputElement)
-        .value,
-      platformAuthenticator,
+      user: {
+        id: longToByteArray(Number((document.getElementById('user_id') as HTMLInputElement).value)),
+        name: (document.getElementById('user_email') as HTMLInputElement).value,
+        displayName: (document.getElementById('user_email') as HTMLInputElement).value,
+      },
+      challenge: new Uint8Array(
+        JSON.parse((document.getElementById('user_challenge') as HTMLInputElement).value),
+      ),
+      excludeCredentials: extractCredentials(
+        (document.getElementById('exclude_credentials') as HTMLInputElement).value
+          .split(',')
+          .filter(Boolean),
+      ),
+      authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;
