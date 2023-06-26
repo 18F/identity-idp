@@ -9,9 +9,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('test_org')
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
-      and_return(true)
   end
 
   let(:service_provider) do
@@ -114,7 +111,6 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       user = create(:user, :fully_registered)
       visit_idp_from_ial1_oidc_sp(
         client_id: service_provider.issuer,
-        irs_attempts_api_session_id: 'test-session-id',
       )
       visit root_path
       sign_in_and_2fa_user(user)

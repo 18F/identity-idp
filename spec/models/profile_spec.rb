@@ -534,7 +534,6 @@ RSpec.describe Profile do
         end
 
         it 'logs an attempt event' do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
           expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
 
           expect(profile.irs_attempts_api_tracker).to receive(:fraud_review_adjudicated).
@@ -543,38 +542,6 @@ RSpec.describe Profile do
             )
           profile.activate_after_passing_review
         end
-      end
-
-      context 'when the feature flag is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
-            and_return(false)
-        end
-
-        it 'does not log an attempt event' do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
-          expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_truthy
-
-          expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
-          profile.activate_after_passing_review
-        end
-      end
-    end
-
-    context 'when the initiating_sp is not the IRS' do
-      it 'does not log an attempt event' do
-        sp = create(:service_provider)
-        profile = create(
-          :profile,
-          user: user,
-          active: false,
-          fraud_review_pending_at: 1.day.ago,
-          initiating_service_provider: sp,
-        )
-        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
-
-        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
-        profile.activate_after_passing_review
       end
     end
   end
@@ -658,7 +625,6 @@ RSpec.describe Profile do
 
       context 'and notify_user is true' do
         it 'logs an event with manual_reject' do
-          allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
           allow(IdentityConfig.store).to receive(:irs_attempt_api_track_idv_fraud_review).
             and_return(true)
 
@@ -688,24 +654,6 @@ RSpec.describe Profile do
 
           profile.reject_for_fraud(notify_user: false)
         end
-      end
-    end
-
-    context 'when the SP is not the IRS' do
-      it 'does not log an event' do
-        sp = create(:service_provider)
-        profile = user.profiles.create(
-          active: false,
-          fraud_review_pending_at: 1.day.ago,
-          initiating_service_provider: sp,
-        )
-        allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
-
-        expect(profile.initiating_service_provider.irs_attempts_api_enabled?).to be_falsey
-
-        expect(profile.irs_attempts_api_tracker).not_to receive(:fraud_review_adjudicated)
-
-        profile.reject_for_fraud(notify_user: true)
       end
     end
   end

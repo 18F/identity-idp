@@ -37,7 +37,6 @@ RSpec.describe Analytics do
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
   let(:success_state) { 'GET|fake_path|Trackable Event' }
-  let(:irs_session_id) { nil }
 
   subject(:analytics) do
     Analytics.new(
@@ -46,7 +45,6 @@ RSpec.describe Analytics do
       sp: 'http://localhost:3000',
       session: {},
       ahoy: ahoy,
-      irs_session_id: irs_session_id,
     )
   end
 
@@ -83,31 +81,6 @@ RSpec.describe Analytics do
       )
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
-    end
-
-    context 'with an irs_session_id' do
-      let(:irs_session_id) { 'abc123' }
-
-      it 'includes irs_session_id' do
-        expect(ahoy).to receive(:track).with(
-          'Trackable Event',
-          analytics_attributes.merge(irs_session_id: irs_session_id),
-        )
-
-        analytics.track_event('Trackable Event')
-      end
-    end
-
-    context 'without an irs_session_id' do
-      let(:irs_session_id) { nil }
-
-      it 'omits the irs_session_id key entirely' do
-        expect(ahoy).to receive(:track).with(
-          'Trackable Event',
-          hash_excluding(irs_session_id: irs_session_id),
-        )
-        analytics.track_event('Trackable Event')
-      end
     end
 
     context 'tracing headers' do
