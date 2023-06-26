@@ -41,14 +41,6 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      if IdentityConfig.store.irs_attempt_api_payload_size_logging_enabled
-        analytics.irs_attempts_api_event_metadata(
-          event_type: event_type,
-          unencrypted_payload_num_bytes: event.payload_json.bytesize,
-          recorded: true,
-        )
-      end
-
       event
     end
 

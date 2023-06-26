@@ -249,7 +249,6 @@ class IdentityConfig
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_enabled, type: :boolean)
-    config.add(:irs_attempt_api_payload_size_logging_enabled, type: :boolean)
     config.add(:irs_attempt_api_track_idv_fraud_review, type: :boolean)
     config.add(:irs_attempt_api_track_tmx_fraud_check_event, type: :boolean)
     config.add(:lexisnexis_base_url, type: :string)

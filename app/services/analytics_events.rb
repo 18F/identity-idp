@@ -2228,24 +2228,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] event_type
-  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
-  # @param [Boolean] recorded if the full event was recorded or not
-  def irs_attempts_api_event_metadata(
-    event_type:,
-    unencrypted_payload_num_bytes:,
-    recorded:,
-    **extra
-  )
-    track_event(
-      'IRS Attempt API: Event metadata',
-      event_type: event_type,
-      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
-      recorded: recorded,
-      **extra,
-    )
-  end
-
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [Boolean] authenticated whether the request was successfully authenticated
   # @param [Float] elapsed_time the amount of time the function took to run

@@ -157,7 +157,6 @@ in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_enabled: false
-irs_attempt_api_payload_size_logging_enabled: true
 irs_attempt_api_track_idv_fraud_review: false
 irs_attempt_api_track_tmx_fraud_check_event: false
 key_pair_generation_percent: 0
