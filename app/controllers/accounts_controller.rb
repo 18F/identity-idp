@@ -19,6 +19,9 @@ class AccountsController < ApplicationController
     @use_reauthentication_route = FeatureManagement.use_reauthentication_route?
   end
 
+  # This action is used to re-authenticate when PII on the account page is locked on `show` action
+  # This allows users to view their PII after reauthenticating their MFA.
+
   def reauthentication
     user_session[:stored_location] = account_url
     user_session[:context] = 'reauthentication'
