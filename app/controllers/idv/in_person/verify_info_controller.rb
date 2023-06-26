@@ -6,11 +6,9 @@ module Idv
       include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
-      include OutageConcern
 
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
-      before_action :check_for_outage, only: :show
       skip_before_action :confirm_not_rate_limited, only: :show
 
       def show
@@ -36,6 +34,10 @@ module Idv
       end
 
       private
+
+      def flow_param
+        'in_person'
+      end
 
       # state_id_type is hard-coded here because it's required for proofing against
       # AAMVA. We're sticking with driver's license because most states don't discern

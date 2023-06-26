@@ -1,7 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
-    include OutageConcern
     include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
@@ -9,7 +8,6 @@ module Idv
 
     before_action :confirm_ssn_step_complete
     before_action :confirm_verify_info_step_needed
-    before_action :check_for_outage, only: :show
     skip_before_action :confirm_not_rate_limited, only: :show
 
     def show
@@ -38,6 +36,8 @@ module Idv
     end
 
     private
+
+    def flow_param; end
 
     # state ID type isn't manually set for Idv::VerifyInfoController
     def set_state_id_type; end
