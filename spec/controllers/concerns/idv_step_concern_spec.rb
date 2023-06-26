@@ -30,6 +30,13 @@ RSpec.describe 'IdvStepConcern' do
         :handle_fraud,
       )
     end
+
+    it 'includes check_for_outage before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
   end
 
   describe '#confirm_idv_needed' do
