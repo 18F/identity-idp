@@ -25,7 +25,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
-        account_confirmed_at: user.confirmed_at
+        account_confirmed_at: user.confirmed_at,
       }
       expect(@analytics).
         to receive(:track_event).with('Account Reset: delete', properties)
@@ -45,7 +45,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
-        account_confirmed_at: kind_of(Time)
+        account_confirmed_at: kind_of(Time),
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
@@ -64,7 +64,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
-        account_confirmed_at: kind_of(Time)
+        account_confirmed_at: kind_of(Time),
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
@@ -92,7 +92,7 @@ RSpec.describe AccountReset::DeleteAccountController do
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
-        account_confirmed_at: kind_of(Time)
+        account_confirmed_at: kind_of(Time),
       }
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
