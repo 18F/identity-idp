@@ -20,3 +20,7 @@
     @include set-text-and-bg('primary-darker', $context: 'Button');
   }
 }
+
+.usa-button--row {
+  width: 50%;
+}

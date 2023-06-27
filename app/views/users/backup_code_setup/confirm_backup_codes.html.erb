@@ -10,19 +10,25 @@
   <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
 </p>
 
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
-      big: true,
-      wide: true,
-      class: 'margin-y-3',
-    ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
-
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) { link_to(backup_code_regenerate_path, **tag_options, &block) },
-      big: true,
-      wide: true,
-      outline: true,
-    ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes')) %>
+<div class="padding-left-0 grid-container">
+  <div class="grid-row usa-button--row">
+    <div class="margin-bottom-205">
+      <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
+        big: true,
+        wide: true,
+      ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
+    </div>
+    <div>
+      <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) { link_to(backup_code_regenerate_path, **tag_options, &block) },
+        big: true,
+        wide: true,
+        outline: true,
+      ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes')) %>
+    </div>
+  </div>
+</div>
 
 <%= render PageFooterComponent.new do %>
   <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
