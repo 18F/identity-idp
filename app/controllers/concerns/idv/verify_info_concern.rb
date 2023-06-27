@@ -233,7 +233,6 @@ module Idv
       if summary_result.success?
         add_proofing_components
         ssn_throttle.reset!
-        summary_result # is this line needed? not consumed
       else
         idv_failure(summary_result)
       end
