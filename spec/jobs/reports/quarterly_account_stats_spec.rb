@@ -15,7 +15,7 @@ RSpec.describe Reports::QuarterlyAccountStats do
       expect(subject).to receive(:save_report).with(
         'quarterly-account-stats',
         'csv text',
-        extension: 'csv'
+        extension: 'csv',
       )
       report.perform(Time.zone.today)
     end
@@ -42,7 +42,7 @@ RSpec.describe Reports::QuarterlyAccountStats do
 
       # This is too new for our interval, so it should only show up in
       # the grand total, and even that's debatable.
-      travel_to(Time.zone.today + 1.days) do
+      travel_to(Time.zone.today + 1.day) do
         create_accounts
       end
     end

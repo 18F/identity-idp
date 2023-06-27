@@ -174,7 +174,7 @@ else
         class: 'Reports::QuarterlyAccountStats',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
-      }
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength
