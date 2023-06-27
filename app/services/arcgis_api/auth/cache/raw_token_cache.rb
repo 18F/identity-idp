@@ -27,8 +27,8 @@ module ArcgisApi::Auth::Cache
 
     delegate :arcgis_api_token_cache_key_prefix,
              :arcgis_api_generate_token_url,
-             to: IdentityConfig.store
+             to: :"IdentityConfig.store"
 
-    attr_accessor :cache_key
+    attr_accessor :cache, :cache_key
   end
 end

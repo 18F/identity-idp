@@ -13,22 +13,23 @@ module ArcgisApi::Faraday
     # @param [Faraday::Env] env
     def on_complete(env)
       return unless (200..299).cover?(env.status)
-      parsed_body = begin
+      response_body = begin
         JSON.parse(env.body)
       rescue
         nil
       end
-      return unless parsed_body.is_a?(Hash)
-      return unless body.fetch('error', false)
+      return unless response_body.is_a?(Hash)
+      return unless response_body.fetch('error', false)
 
       # response_body is in this format:
       # {"error"=>{"code"=>400, "message"=>"", "details"=>[""]}}
       error_code = response_body.dig('error', 'code')
       error_message = response_body.dig('error', 'message') || "Received error code #{error_code}"
-      raise ArcgisApi::Faraday::Error.new(
+      err = ArcgisApi::Faraday::Error.new(
         "Error received from ArcGIS API: #{error_code}:#{error_message}",
         env[:response],
       )
+      raise err
     end
   end
 end

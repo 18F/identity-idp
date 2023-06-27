@@ -82,7 +82,7 @@ module ArcgisApi
     private
 
     def connection
-      Faraday.new do |conn|
+      ::Faraday.new do |conn|
         ArcgisApi::Faraday::Configuration.setup(conn)
         yield conn if block_given?
       end

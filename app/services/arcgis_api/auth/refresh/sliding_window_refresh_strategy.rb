@@ -62,7 +62,7 @@ module ArcgisApi::Auth::Refresh
 
     delegate :arcgis_api_token_prefetch_ttl_sliding_increment_seconds,
              :arcgis_api_token_prefetch_ttl_sliding_times,
-             to: IdentityConfig.store
+             to: :"IdentityConfig.store"
     attr_accessor :sliding_increment_seconds, :sliding_times
   end
 end

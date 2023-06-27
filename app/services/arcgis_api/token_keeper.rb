@@ -4,7 +4,7 @@ module ArcgisApi
   # cache directly or it will be a cache miss.
   # Otherwise the thread will try to fetch/refresh the token on demand as needed.
   class TokenKeeper
-    def initialize(auth, cache)
+    def initialize(auth: nil, cache: nil)
       @auth = auth || ArcgisApi::Auth::Authentication.new
 
       if arcgis_token_sliding_expiration_enabled
@@ -19,7 +19,7 @@ module ArcgisApi
     # Refresh the token if needed. For use when deliberately trying
     # to refresh the token without attempting an additional request.
     def refresh_token
-      refresh_strategy.call(auth, cache)
+      refresh_strategy.call(auth:, cache:)
     end
 
     # Refresh the token when needed, then return the token. For
@@ -28,7 +28,7 @@ module ArcgisApi
     #
     # @return [String] token
     def token
-      thru_strategy.call(auth, cache)&.token
+      thru_strategy.call(auth:, cache:)&.token
     end
 
     private
@@ -60,7 +60,8 @@ module ArcgisApi
     delegate :arcgis_token_sliding_expiration_enabled,
              :arcgis_token_sync_request_enabled,
              :arcgis_token_refresh_job_enabled,
-             to: IdentityConfig.store
+             to: :"IdentityConfig.store"
+
     attr_accessor :auth, :cache
   end
 end

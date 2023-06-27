@@ -1,9 +1,12 @@
 module ArcgisApi::Auth
   # Authenticate with the ArcGIS API
   class Authentication
-    def initialize(analytics:)
+    def initialize(analytics: nil)
       @analytics = analytics || Analytics.new(
         user: AnonymousUser.new,
+        request: nil,
+        session: {},
+        sp: nil,
       )
     end
 
@@ -37,7 +40,7 @@ module ArcgisApi::Auth
     end
 
     def connection
-      Faraday.new do |conn|
+      ::Faraday.new do |conn|
         ArcgisApi::Faraday::Configuration.setup(conn)
         ArcgisApi::Faraday::Configuration.add_retry(conn) do |**args|
           log_retry(**args)
@@ -89,6 +92,6 @@ module ArcgisApi::Auth
              :arcgis_api_password,
              :domain_name,
              :arcgis_api_generate_token_url,
-             to: IdentityConfig.store
+             to: :"IdentityConfig.store"
   end
 end

@@ -22,7 +22,7 @@ module ArcgisApi::Faraday::Configuration
   #
   # @param [Faraday::Connection] conn
   # @yield [env:, options:, retry_count:, exception:, will_retry_in:]
-  def self.add_retry(conn)
+  def self.add_retry(conn, &block)
     faraday_retry_options = {
       max: arcgis_get_token_max_retries,
       methods: %i[post],
@@ -32,16 +32,18 @@ module ArcgisApi::Faraday::Configuration
     }
 
     # If a block was given, then run it before each retry
-    faraday_retry_options[:retry_block] = Proc.new if block_given?
+    faraday_retry_options[:retry_block] = Proc.new(&block) if block
 
     conn.request :retry, faraday_retry_options
   end
 
-  private
+  class << self
+    private
 
-  delegate :arcgis_get_token_max_retries,
-           :arcgis_get_token_retry_interval_seconds,
-           :arcgis_get_token_retry_backoff_factor,
-           :arcgis_api_request_timeout_seconds,
-           to: IdentityConfig.store
+    delegate :arcgis_get_token_max_retries,
+             :arcgis_get_token_retry_interval_seconds,
+             :arcgis_get_token_retry_backoff_factor,
+             :arcgis_api_request_timeout_seconds,
+             to: :"IdentityConfig.store"
+  end
 end
