@@ -11,6 +11,9 @@ fr:
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
       are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde?
+      caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous
+        donnerons de nouveaux codes une fois que vous aurez utilisé les dix
+        fournis.
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
@@ -19,12 +22,11 @@ fr:
         imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
         utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
-      subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
-        copiez-les. Chaque code ne peut être utilisé qu’une seule fois. Une fois
-        que vous avez utilisé les 10 codes, nous vous en donnons 10 nouveaux.
-        Gardez vos codes aussi sûr qu’un mot de passe.'
-      subtitle: Vos codes de sauvegarde
-      title: Codes de sauvegarde
+      saved: J’ai placé mes codes de sauvegarde en lieu sûr.
+      subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces
+        codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou
+        imprimez-les et placez-les en lieu sûr.'
+      title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
