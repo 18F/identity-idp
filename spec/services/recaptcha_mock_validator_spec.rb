@@ -34,7 +34,6 @@ RSpec.describe RecaptchaMockValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
-          exception_class: nil,
         )
       end
     end
@@ -60,7 +59,6 @@ RSpec.describe RecaptchaMockValidator do
           score_threshold: score_threshold,
           recaptcha_version: 3,
           validator_class: 'RecaptchaMockValidator',
-          exception_class: nil,
         )
       end
 

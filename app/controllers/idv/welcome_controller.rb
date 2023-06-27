@@ -1,15 +1,10 @@
 module Idv
   class WelcomeController < ApplicationController
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
-    before_action :render_404_if_welcome_controller_disabled
     before_action :confirm_welcome_needed
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
@@ -66,10 +61,6 @@ module Idv
       return unless idv_session.welcome_visited
 
       redirect_to idv_agreement_url
-    end
-
-    def render_404_if_welcome_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_welcome_controller_enabled
     end
   end
 end
