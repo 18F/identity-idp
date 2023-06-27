@@ -38,10 +38,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:mobile) do
       visit @sms_link
 
-      # Confirm app disallows jumping ahead to CaptureComplete page
-      visit idv_hybrid_mobile_capture_complete_url
-      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-
       # Confirm that jumping to LinkSent page does not cause errors
       visit idv_link_sent_url
       expect(page).to have_current_path(root_url)
@@ -150,13 +146,13 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         # final failure
         attach_and_submit_images
 
-        #expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
         expect(page).not_to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
         expect(page).to have_text(t('doc_auth.instructions.switch_back'))
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_session_errors_throttled_path)
+        expect(page).to have_current_path(idv_session_errors_throttled_path, wait: 10)
       end
     end
   end

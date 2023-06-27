@@ -29,10 +29,9 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
           call('document_capture', :update, true)
 
+        # rate limiting redirect is in ImageUploadResponsePresenter
         if result.success?
           flash[:success] = t('doc_auth.headings.capture_complete')
-          redirect_to idv_hybrid_mobile_capture_complete_url
-        elsif rate_limited?
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
           redirect_to idv_hybrid_mobile_document_capture_url
@@ -70,13 +69,6 @@ module Idv
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
-      end
-
-      def rate_limited?
-        Throttle.new(
-          user: idv_session_user,
-          throttle_type: :idv_doc_auth,
-        ).throttled?
       end
 
       def native_camera_ab_testing_variables
