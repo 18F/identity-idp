@@ -2,12 +2,23 @@ require 'rails_helper'
 require 'csv'
 
 RSpec.describe Reports::QuarterlyAccountStats do
-  let(:report_date) { Date.new(2020, 1, 1) }
-
   subject(:report) { described_class.new }
 
   describe '#perform' do
-    # test that it calls save_report
+    let(:end_date) { Time.zone.today }
+    let(:ninety_days_ago) { end_date - 90.days }
+
+    it 'saves the report' do
+      expect(subject).to receive(:report_body).
+        with(ninety_days_ago, end_date).
+        and_return('csv text')
+      expect(subject).to receive(:save_report).with(
+        'quarterly-account-stats',
+        'csv text',
+        extension: 'csv'
+      )
+      report.perform(Time.zone.today)
+    end
   end
 
   describe '#report_body' do
@@ -17,20 +28,26 @@ RSpec.describe Reports::QuarterlyAccountStats do
     let(:end_date) { Time.zone.today - 1.day }
 
     before do
+      # These are older than 90 days and should go to grand totals,
+      # but not counts for the period.
       travel_to(Time.zone.today - 6.months) do
         create_accounts
       end
 
+      # These are recent and should be included in both the period and
+      # grand totals.
       travel_to(Time.zone.today - 1.week) do
         create_accounts
       end
 
-      travel_to(Time.zone.today) do
+      # This is too new for our interval, so it should only show up in
+      # the grand total, and even that's debatable.
+      travel_to(Time.zone.today + 1.days) do
         create_accounts
       end
     end
 
-    it 'does a thing' do
+    it 'returns the appropriate counts' do
       # convert our CSV to a hash for a more readable test
       lines = CSV.parse(report_body.chomp)
       params = lines[0].zip(lines[1]).to_h
@@ -41,7 +58,7 @@ RSpec.describe Reports::QuarterlyAccountStats do
         deleted_users_all_time: '3',
         deleted_users_for_period: '1',
         users_all_time: '6',
-        users_for_period: '2',
+        users_for_period: '2', # verified + non-verified
         users_and_deleted_all_time: '9',
         users_and_deleted_for_period: '3',
         proofed_all_time: '3',

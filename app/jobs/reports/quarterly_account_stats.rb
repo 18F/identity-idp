@@ -6,8 +6,6 @@ module Reports
   class QuarterlyAccountStats < BaseReport
     REPORT_NAME = 'quarterly-account-stats'
 
-    # put this in job_configurations.rb
-
     def perform(report_date)
       report = report_body(report_date - 90.days, report_date)
       save_report(REPORT_NAME, report, extension: 'csv')

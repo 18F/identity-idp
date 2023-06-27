@@ -169,6 +169,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Account creation/deletion stats for OKRs
+      quarterly_account_stats: {
+        class: 'Reports::QuarterlyAccountStats',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      }
     }
   end
   # rubocop:enable Metrics/BlockLength
