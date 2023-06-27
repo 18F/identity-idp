@@ -7,12 +7,10 @@ module Idv
     def create
       image_upload_form_response = image_upload_form.submit
 
-      flow_path = user_session&.dig('idv/doc_auth', :flow_path)
-
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,
         url_options: url_options,
-        flow_path: flow_path,
+        flow_path: params[:flow_path],
       )
 
       render json: presenter, status: presenter.status
