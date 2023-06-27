@@ -31,16 +31,6 @@
         <% if @gpo_letter_available %>
           <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
         <% end %>
-        <li>
-         <%= t(
-               'idv.failure.phone.rate_limited.option_cancel',
-               time_left: distance_of_time_in_words(
-                 Time.zone.now,
-                 [@expires_at, Time.zone.now].compact.max,
-                 except: :seconds,
-               ),
-             ) %>
-        </li>
       </ul>
 
       <% if @gpo_letter_available %>
@@ -53,3 +43,6 @@
         </div>
       <% end %>
     <% end %>
+    <%= link_to(t('idv.failure.phone.rate_limited.option_cancel'),
+                return_to_sp_cancel_url) %>
+
