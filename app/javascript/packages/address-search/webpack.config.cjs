@@ -9,7 +9,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   output: {
     module: true,
-    chunkFormat: 'commonjs',
+    chunkFormat: false,
     filename: '[name].js',
     library: {
       type: 'module',
