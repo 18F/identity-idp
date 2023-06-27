@@ -31,6 +31,7 @@
   
   function getAuthenticatorDataFlags(authenticatorData: ArrayBuffer): AuthenticatorDataFlags {
     const flagsBitfield = new Uint8Array(authenticatorData)[32];
+    console.log(flagsBitfield)
     return {
       up: !!(flagsBitfield & (1 << 0)),
       uv: !!(flagsBitfield & (1 << 2)),

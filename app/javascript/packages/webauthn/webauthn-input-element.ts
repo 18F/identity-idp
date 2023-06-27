@@ -26,11 +26,10 @@ export class WebauthnInputElement extends HTMLElement {
     if (!this.isPlatform) {
       return true;
     }
-
     if (!(await isWebauthnPlatformSupported())) {
       return false;
     }
-
+    console.log(isWebauthnPasskeySupported())
     return !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
   }
 

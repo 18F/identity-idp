@@ -45,6 +45,9 @@ function webauthn() {
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
+          (document.getElementById('webauthn_form') as HTMLFormElement).textContent = JSON.stringify(
+            getAuthenticatorDataFlags(result.response.getAuthenticatorData()),
+          );
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => reloadWithError(err.name, { force: true }));
