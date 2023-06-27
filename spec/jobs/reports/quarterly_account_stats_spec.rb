@@ -40,10 +40,10 @@ RSpec.describe Reports::QuarterlyAccountStats do
         end_date: end_date.to_s,
         deleted_users_all_time: '3',
         deleted_users_for_period: '1',
-        users_all_time: '9', # I would expect 6
-        users_for_period: '3',
-        users_and_deleted_all_time: '12', # seems too high
-        users_and_deleted_for_period: '4', # seems 1 too high
+        users_all_time: '6',
+        users_for_period: '2',
+        users_and_deleted_all_time: '9',
+        users_and_deleted_for_period: '3',
         proofed_all_time: '3',
         proofed_for_period: '1',
       }.stringify_keys
@@ -55,11 +55,10 @@ RSpec.describe Reports::QuarterlyAccountStats do
     create(:user, :proofed) # Proofed user
     create(:user) # Basic user
 
-    # Deleted user
-    # FIXME: I think `user` isn't getting deleted properly, so it counts
-    # towards the number of active users.
+    # Deleted user:
     user = create(:user)
     DeletedUser.create_from_user(user)
     DeletedUser.find_by(user_id: user.id)
+    user.destroy!
   end
 end
