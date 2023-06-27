@@ -4,7 +4,7 @@ require 'csv'
 RSpec.describe Reports::QuarterlyAccountStats do
   let(:report_date) { Date.new(2020, 1, 1) }
 
-    subject(:report) { described_class.new }
+  subject(:report) { described_class.new }
 
   describe '#perform' do
     # test that it calls save_report
@@ -13,19 +13,19 @@ RSpec.describe Reports::QuarterlyAccountStats do
   describe '#report_body' do
     subject(:report_body) { report.report_body(start_date, end_date) }
 
-    let(:start_date) { Date.today - 90.days }
-    let(:end_date) { Date.today - 1.day }
+    let(:start_date) { Time.zone.today - 90.days }
+    let(:end_date) { Time.zone.today - 1.day }
 
     before do
-      travel_to(Date.today - 6.months) do
+      travel_to(Time.zone.today - 6.months) do
         create_accounts
       end
 
-      travel_to(Date.today - 1.week) do
+      travel_to(Time.zone.today - 1.week) do
         create_accounts
       end
 
-      travel_to(Date.today) do
+      travel_to(Time.zone.today) do
         create_accounts
       end
     end
@@ -62,5 +62,4 @@ RSpec.describe Reports::QuarterlyAccountStats do
     DeletedUser.create_from_user(user)
     DeletedUser.find_by(user_id: user.id)
   end
-
 end

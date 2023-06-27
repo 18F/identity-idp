@@ -1,9 +1,10 @@
 # frozen_string_literal: true
+
 require 'csv'
 
 module Reports
   class QuarterlyAccountStats < BaseReport
-    REPORT_NAME = 'quarterly-account-stats'.freeze
+    REPORT_NAME = 'quarterly-account-stats'
 
     # put this in job_configurations.rb
 
@@ -25,8 +26,10 @@ module Reports
         report[:users_all_time] = User.count
         report[:users_for_period] = user_count(start_date:, end_date:)
 
-        report[:users_and_deleted_all_time] = report[:deleted_users_all_time] + report[:users_all_time]
-        report[:users_and_deleted_for_period] = report[:deleted_users_for_period] + report[:users_for_period]
+        report[:users_and_deleted_all_time] =
+report[:deleted_users_all_time] + report[:users_all_time]
+        report[:users_and_deleted_for_period] =
+report[:deleted_users_for_period] + report[:users_for_period]
 
         report[:proofed_all_time] = Profile.where(active: true).count
         report[:proofed_for_period] = idv_user_count(start_date:, end_date:)
