@@ -1,10 +1,9 @@
 class ImageUploadResponsePresenter
   include Rails.application.routes.url_helpers
 
-  def initialize(form_response:, url_options:, flow_path:)
+  def initialize(form_response:, url_options:)
     @form_response = form_response
     @url_options = url_options
-    @flow_path = flow_path
   end
 
   def success?
@@ -37,7 +36,7 @@ class ImageUploadResponsePresenter
     else
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
       if remaining_attempts&.zero?
-        if @flow_path == 'standard'
+        if @form_response.extra[:flow_path] == 'standard'
           json[:redirect] = idv_session_errors_throttled_url
         else # hybrid flow on mobile
           json[:redirect] = idv_hybrid_mobile_capture_complete_url

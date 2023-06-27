@@ -3,8 +3,12 @@ require 'rails_helper'
 RSpec.describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
+  let(:extra_attributes) do
+    { remaining_attempts: 3, flow_path: 'standard' }
+  end
+
   let(:form_response) do
-    FormResponse.new(success: true, errors: {}, extra: { remaining_attempts: 3 })
+    FormResponse.new(success: true, errors: {}, extra: extra_attributes)
   end
   let(:presenter) { described_class.new(form_response: form_response, url_options: {}) }
 
@@ -123,6 +127,24 @@ RSpec.describe ImageUploadResponsePresenter do
         }
 
         expect(presenter.as_json).to eq expected
+      end
+
+      context 'hybrid flow' do
+        let(:extra_attributes) do
+          { remaining_attempts: 3, flow_path: 'hybrid' }
+        end
+
+        it 'returns hash of properties redirecting to capture_complete' do
+          expected = {
+            success: false,
+            result_failed: false,
+            errors: [{ field: :limit, message: t('errors.doc_auth.throttled_heading') }],
+            redirect: idv_hybrid_mobile_capture_complete_url,
+            remaining_attempts: 0,
+            ocr_pii: nil,
+          }
+
+          expect(presenter.as_json).to eq expected
       end
     end
 
