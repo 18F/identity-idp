@@ -314,7 +314,7 @@ module Idv
     end
 
     def throttled?
-      @throttled = throttle.throttled? if document_capture_session
+      throttle.throttled? if document_capture_session
     end
 
     def track_event(response)
