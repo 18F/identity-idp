@@ -1,9 +1,9 @@
 module ArcgisApi::Auth::Cache
   class RawTokenCache
-    # @param [Cache::CacheWrapper] cache
+    # @param [ActiveSupport::Cache::Store] cache
     # @param [String] cache_key
     def initialize(cache: nil, cache_key: nil)
-      @cache = cache || Cache::CacheWrapper.new
+      @cache = cache || Rails.cache
       @cache_key = cache_key || default_api_token_cache_key
     end
 

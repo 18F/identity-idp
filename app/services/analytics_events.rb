@@ -593,17 +593,19 @@ module AnalyticsEvents
     )
   end
 
-  # Track when token job ended
-  def idv_arcgis_token_job_completed
+  # Track when ArcGIS auth token refresh job completed
+  def idv_arcgis_token_job_completed(**extra)
     track_event(
       'ArcgisTokenJob: Completed',
+      **extra,
     )
   end
 
-  # Track when token job started
-  def idv_arcgis_token_job_started
+  # Track when ArcGIS auth token refresh job started
+  def idv_arcgis_token_job_started(**extra)
     track_event(
       'ArcgisTokenJob: Started',
+      **extra,
     )
   end
 
