@@ -3,6 +3,8 @@ module IdvStepConcern
 
   include IdvSession
   include RateLimitConcern
+  include FraudReviewConcern
+  include Idv::OutageConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -10,6 +12,8 @@ module IdvStepConcern
     before_action :confirm_not_rate_limited
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
+    before_action :handle_fraud
+    before_action :check_for_outage
   end
 
   def confirm_no_pending_gpo_profile
@@ -19,10 +23,6 @@ module IdvStepConcern
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
-  end
-
-  def flow_session
-    user_session['idv/doc_auth'] || {}
   end
 
   def pii_from_doc

@@ -88,6 +88,15 @@ reading.
 - Once a pull request is good to go, the person who opened it squashes related
 commits together, merges it, then deletes the branch.
 
+Everyone is encouraged to participate in code review. To solicit feedback from specific people,
+consider adding individuals or groups as requested reviewers on your pull request. Most internal
+product teams have a team handle which can be used to notify everyone on that team, or you can
+request reviews from one of the available interest group teams:
+
+- `18f/identity-frontend` for developers interested in frontend development
+
+To request to join any of these teams, you can contact any existing member and ask to be added.
+
 ## Public domain
 
 This project is in the public domain within the United States, and
