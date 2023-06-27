@@ -10,7 +10,6 @@ module Reports
     def perform(report_date)
       report = report_body(report_date - 90.days, report_date)
       save_report(REPORT_NAME, report, extension: 'csv')
-      # call save_report
     end
 
     def report_body(start_date, end_date)
@@ -43,7 +42,7 @@ module Reports
 
     def deleted_user_count(start_date:, end_date:)
       DeletedUser.where(
-        'user_created_at >= ? and user_created_at < ?',
+        'user_created_at between ? and ?',
         start_date,
         end_date,
       ).count
@@ -51,7 +50,7 @@ module Reports
 
     def user_count(start_date:, end_date:)
       User.where(
-        'created_at >= ? and created_at < ?',
+        'created_at between ? and ?',
         start_date,
         end_date,
       ).count
@@ -59,7 +58,7 @@ module Reports
 
     def idv_user_count(start_date:, end_date:)
       Profile.where(active: true).where(
-        'activated_at >= ? and activated_at < ?',
+        'activated_at between ? and ?',
         start_date,
         end_date,
       ).count
