@@ -3,6 +3,7 @@ import {
   enrollWebauthnDevice,
   extractCredentials,
   longToByteArray,
+  getAuthenticatorDataFlags,
 } from '@18f/identity-webauthn';
 
 /**
@@ -60,7 +61,6 @@ function webauthn() {
           (document.getElementById('webauthn_form') as HTMLFormElement).textContent = JSON.stringify(
             getAuthenticatorDataFlags(result.response.getAuthenticatorData()),
           );
-        (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => reloadWithError(err.name, { force: true }));
   });

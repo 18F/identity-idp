@@ -11,6 +11,7 @@ interface EnnrollOptions {
 }
 
 interface EnrollResult {
+  response: AuthenticatorAttestationResponse,
   webauthnId: string;
 
   webauthnPublicKey: string;
@@ -75,6 +76,7 @@ async function enrollWebauthnDevice({
   const response = credential.response as AuthenticatorAttestationResponse;
 
   return {
+    response:, 
     webauthnId: arrayBufferToBase64(credential.rawId),
     webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
