@@ -580,6 +580,7 @@ module Features
 
       expect(page).to have_current_path backup_code_setup_path
 
+      check t('forms.backup_code.saved')
       click_button 'Continue'
     end
 
