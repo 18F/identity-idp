@@ -35,7 +35,7 @@ module Idv
            end
           end
 
-          redirect_to idv_in_person_verify_info_url if flow_session[steps[:address].to_s]
+          redirect_to idv_in_person_verify_info_url if flow_session['Idv::Steps::InPerson::AddressStep']
         end
 
         def extra_view_variables
