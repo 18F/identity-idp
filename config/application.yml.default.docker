@@ -28,3 +28,4 @@ production:
   ruby_workers_idv_enabled: false
   idv_sp_required: false
   telephony_adapter: test
+  doc_auth_vendor: 'mock'
