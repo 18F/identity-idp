@@ -117,6 +117,7 @@ build-idp-image:
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
       --cache=true
+      --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 check_changelog:
