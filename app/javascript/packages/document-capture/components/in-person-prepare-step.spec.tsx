@@ -18,7 +18,7 @@ describe('InPersonPrepareStep', () => {
     ).not.to.exist();
   });
 
-  context('USPS outage message', () => {
+  context('Outage message', () => {
     it('renders a warning when the flag is enabled', () => {
       const { queryByText } = render(
         <InPersonContext.Provider value={{ inPersonOutageMessageEnabled: true }}>
