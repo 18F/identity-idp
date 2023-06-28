@@ -52,16 +52,16 @@ RSpec.feature 'webauthn sign in' do
 
   it 'does not show error after successful challlenge/secret reattempt' do
     mock_webauthn_verification_challenge
-  
+
     sign_in_user(webauthn_configuration.user)
     # click the next button or cancel from the browser dialog
     click_button t('forms.buttons.continue')
-  
+
     expect(page).to have_content(t('errors.general'))
-  
+
     mock_press_button_on_hardware_key_on_verification
     click_button t('forms.buttons.continue')
-  
+
     expect(page).to_not have_content(t('errors.general'))
   end
 end
