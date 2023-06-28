@@ -2,6 +2,8 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
+    STEP_NAME = 'verify_info'.freeze
+
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
@@ -108,27 +110,27 @@ module Idv
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :proof_ssn,
-          step_name: step_name,
+          step_name: STEP_NAME,
         )
       elsif throttle_type == :idv_resolution
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
-          step_name: step_name,
+          step_name: STEP_NAME,
         )
       end
     end
 
     def idv_failure_log_error
       analytics.idv_doc_auth_exception_visited(
-        step_name: step_name,
+        step_name: STEP_NAME,
         remaining_attempts: resolution_throttle.remaining_count,
       )
     end
 
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
-        step_name: step_name,
+        step_name: STEP_NAME,
         remaining_attempts: resolution_throttle.remaining_count,
       )
     end
@@ -345,10 +347,6 @@ module Idv
 
     def add_cost(token, transaction_id: nil)
       Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
-    end
-
-    def step_name
-      'verify_info'
     end
   end
 end
