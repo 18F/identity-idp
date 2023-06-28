@@ -4,7 +4,7 @@ module Flow
 
     included do
       before_action :initialize_flow_state_machine
-      before_action :ensure_correct_step, only: [:show, :update]
+      before_action :ensure_correct_step, only: :show
     end
 
     attr_accessor :flow
@@ -20,11 +20,14 @@ module Flow
 
     def update
       step = current_step
+
+      return render_not_found unless flow.step_handler_instance(step).present?
+
       result = flow.handle(step)
 
       increment_step_name_counts
       analytics.public_send(
-        flow.step_handler_instance(step).analytics_submitted_event,
+        flow.step_handler_instance(step).analytics_submitted_event || '',
         **result.to_h.merge(analytics_properties),
       )
 
