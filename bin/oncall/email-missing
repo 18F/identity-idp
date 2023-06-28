@@ -123,14 +123,16 @@ class EmailMissing
       to: Time.now,
     )
 
-    email_events.group_by { |event| event['ses_message_id'] }.map do |message_id, events|
-      Result.new(
-        user_id: sends_by_message_id[message_id]['user_id'],
-        timestamp: sends_by_message_id[message_id]['@timestamp'],
-        message_id: message_id,
-        events: events.map { |e| e['event_type'] }
-      )
-    end
+    email_events.
+      group_by { |event| event['ses_message_id'] }.
+      map do |message_id, events|
+        Result.new(
+          user_id: sends_by_message_id[message_id]['user_id'],
+          timestamp: sends_by_message_id[message_id]['@timestamp'],
+          message_id: message_id,
+          events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },
+        )
+      end
   ensure
     thread&.kill
     bar&.stop
