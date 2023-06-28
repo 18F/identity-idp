@@ -81,6 +81,7 @@ module Idv
         flash[:success] = t('account.index.verification.success')
       end
 
+      idv_session.address_verification_mechanism = 'gpo'
       idv_session.address_confirmed!
     end
 

@@ -171,7 +171,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           subject.idv_session.verify_info_step_document_capture_session_uuid = nil
           put :update
           subject.idv_session.verify_info_step_document_capture_session_uuid = nil
-
+          put :update
           put :update
           expect_any_instance_of(Idv::Agent).to_not receive(:proof_resolution)
           expect(response).to redirect_to(idv_session_errors_ssn_failure_url)
