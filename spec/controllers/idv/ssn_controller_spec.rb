@@ -176,7 +176,7 @@ RSpec.describe Idv::SsnController do
       end
 
       context 'with a Puerto Rico address' do
-        it 'redirects to address controller after enters their SSN' do
+        it 'redirects to address controller after user enters their SSN' do
           flow_session['pii_from_doc'][:state] = 'PR'
 
           put :update, params: params
