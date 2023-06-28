@@ -23,6 +23,7 @@ module Idv
 
           idv_session.delete('applicant')
 
+          # save the flow path so it's recorded in analytics, eg standard or hybrid flow
           flow_session[:flow_path] = @flow.flow_path
           redirect_to idv_in_person_verify_info_url
         end
