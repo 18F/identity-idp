@@ -4,7 +4,7 @@ function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress')!;
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
 
-  const webauthAlertContainer = document.getElementsByClassName('usa-alert--error')[0];
+  const webauthAlertContainer = document.querySelector('.usa-alert--error');
   const webauthnPlatformRequested =
     webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
   const multipleFactorsEnabled =

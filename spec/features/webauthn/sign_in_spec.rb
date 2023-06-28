@@ -50,7 +50,7 @@ RSpec.feature 'webauthn sign in' do
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
-  it 'does not show error after successful challlenge/secret reattempt' do
+  it 'does not show error after successful challenge/secret reattempt' do
     mock_webauthn_verification_challenge
 
     sign_in_user(webauthn_configuration.user)
