@@ -46,7 +46,6 @@ arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
-arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
