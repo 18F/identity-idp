@@ -33,6 +33,8 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
+  inPersonOutageMessageEnabled: string;
+  inPersonOutageExpectedUpdateDate: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -81,6 +83,7 @@ const {
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   inPersonOutageMessageEnabled,
+  inPersonOutageExpectedUpdateDate,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 const App = composeComponents(
@@ -92,6 +95,7 @@ const App = composeComponents(
       value: {
         inPersonURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
+        inPersonOutageExpectedUpdateDate,
       },
     },
   ],
