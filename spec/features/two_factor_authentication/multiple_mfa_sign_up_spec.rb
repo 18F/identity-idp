@@ -164,7 +164,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
-      click_link t('two_factor_authentication.backup_codes.saved_backup_codes')
+      acknowledge_backup_code_confirmation
       expect(page).to have_current_path account_path
     end
 

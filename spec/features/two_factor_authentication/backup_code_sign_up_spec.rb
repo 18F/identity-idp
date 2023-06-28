@@ -60,7 +60,7 @@ RSpec.feature 'sign up with backup code' do
     skip_second_mfa_prompt
 
     expect(page).to have_current_path(confirm_backup_codes_path)
-    click_link t('two_factor_authentication.backup_codes.saved_backup_codes')
+    acknowledge_backup_code_confirmation
 
     expect(current_path).to eq(sign_up_completed_path)
   end
