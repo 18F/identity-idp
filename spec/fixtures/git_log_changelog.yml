@@ -118,3 +118,15 @@ commit_changelog_whitespace:
   pr_number: '7000'
   commit_messages:
     - 'changelog:Internal,Changelog,Improve changelog tool flexibility for commit messages'
+commit_changelog_with_commas_in_change:
+  commit_log: |
+    title: Improve changelog tool flexibility for commit messages (#7000)
+    body:changelog:Internal,Changelog,Allow listing one, two, and more items with commas
+    DELIMITER
+  title: Improve changelog tool flexibility for commit messages (#7000)
+  category: Internal
+  subcategory: Changelog
+  change: Allow listing one, two, and more items with commas
+  pr_number: '7000'
+  commit_messages:
+    - 'changelog:Internal,Changelog,Allow listing one, two, and more items with commas'

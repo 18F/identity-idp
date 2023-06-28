@@ -22,7 +22,6 @@ module Idv
     end
 
     def submit
-      increment_throttle!
       form_response = validate_form
 
       client_response = nil
@@ -31,7 +30,10 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
-        doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
+        if client_response.success?
+          doc_pii_response = validate_pii_from_doc(client_response)
+          throttle.reset!
+        end
       end
 
       response = determine_response(
@@ -53,18 +55,20 @@ module Idv
     def increment_throttle!
       return unless document_capture_session
       throttle.increment!
-      @throttled = throttle.throttled?
     end
 
     def validate_form
+      success = valid?
+      increment_throttle!
+      track_rate_limited if throttled?
+
       response = Idv::DocAuthFormResponse.new(
-        success: valid?,
+        success: success,
         errors: errors,
         extra: extra_attributes,
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
-
       response
     end
 
@@ -181,10 +185,15 @@ module Idv
     end
 
     def throttle_if_rate_limited
-      return unless @throttled
+      return unless document_capture_session
+      return unless throttled?
+
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
+    end
+
+    def track_rate_limited
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
     def document_capture_session_uuid
@@ -302,6 +311,10 @@ module Idv
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )
+    end
+
+    def throttled?
+      throttle.throttled? if document_capture_session
     end
 
     def track_event(response)

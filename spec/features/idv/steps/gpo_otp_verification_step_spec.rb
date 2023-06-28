@@ -93,6 +93,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(page).to have_current_path(idv_personal_key_path)
       expect(page).to have_content(t('account.index.verification.success'))
+      expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
 
       expect(profile.active).to be(true)
       expect(profile.deactivation_reason).to be(nil)
