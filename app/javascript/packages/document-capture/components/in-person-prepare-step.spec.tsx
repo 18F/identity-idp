@@ -21,7 +21,12 @@ describe('InPersonPrepareStep', () => {
   context('Outage message', () => {
     it('renders a warning when the flag is enabled', () => {
       const { queryByText } = render(
-        <InPersonContext.Provider value={{ inPersonOutageMessageEnabled: true }}>
+        <InPersonContext.Provider
+          value={{
+            inPersonOutageMessageEnabled: true,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          }}
+        >
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
