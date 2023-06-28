@@ -17,7 +17,7 @@ module ArcgisApi::Auth::Cache
 
       if cache_entry.is_a?(String)
         ArcgisApi::Auth::Token.new(
-          token: token,
+          token: cache_entry,
         )
       elsif cache_entry.is_a?(ArcgisApi::Auth::Token)
         cache_entry
