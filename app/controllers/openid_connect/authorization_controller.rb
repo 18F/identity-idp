@@ -30,13 +30,12 @@ module OpenidConnect
       link_identity_to_service_provider
 
       result = @authorize_form.submit
-      # track successful forms, see pre_validate_authorize_form for unsuccessful
-      # this needs to be after link_identity_to_service_provider so that "code" is present
-      track_authorize_analytics(result)
-
+      referer = request.referer
       if auth_count == 1 && first_visit_for_sp?
+        track_authorize_analytics(result, authorized: false, referer: referer)
         return redirect_to(user_authorization_confirmation_url)
       end
+      track_authorize_analytics(result, authorized: true, referer: referer)
       handle_successful_handoff
     end
 
@@ -77,9 +76,9 @@ module OpenidConnect
       delete_branded_experience
     end
 
-    def track_authorize_analytics(result)
+    def track_authorize_analytics(result, extra = {})
       analytics_attributes = result.to_h.except(:redirect_uri).
-        merge(user_fully_authenticated: user_fully_authenticated?)
+        merge(user_fully_authenticated: user_fully_authenticated?).merge(extra)
 
       analytics.openid_connect_request_authorization(**analytics_attributes)
     end
@@ -109,10 +108,10 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+      track_authorize_analytics(result, referer: request.referer)
       return if result.success?
 
       # track forms with errors
-      track_authorize_analytics(result)
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri, allow_other_host: true
