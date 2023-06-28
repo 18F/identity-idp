@@ -3,7 +3,6 @@ cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_1w = '0 0 * * 0'
-cron_55m = '0/55 * * * *'
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -173,7 +172,7 @@ else
       arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
                        {
                          class: 'ArcgisTokenJob',
-                         cron: cron_55m,
+                         cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
                        }
                      end),
     }.compact
