@@ -382,8 +382,10 @@ RSpec.feature 'Sign Up' do
     set_up_2fa_with_backup_codes
     skip_second_mfa_prompt
 
-    expect(page).to have_current_path confirm_backup_codes_path
-    visit second_mfa_setup_path
-    expect(page).to have_current_path second_mfa_setup_path
+    acknowledge_backup_code_confirmation
+
+    expect(page).to have_current_path account_path
+    visit add_phone_path
+    expect(page).to have_current_path add_phone_path
   end
 end
