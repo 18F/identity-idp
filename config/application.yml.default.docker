@@ -24,5 +24,8 @@ production:
   use_kms: false
   email_from: no-reply@identitysandbox.gov
   aws_kms_key_id: alias/dev-login-dot-gov-keymaker
-  log_to_stdout: false
+  log_to_stdout: true
+  ruby_workers_idv_enabled: false
+  idv_sp_required: false
   telephony_adapter: test
+  doc_auth_vendor: 'mock'

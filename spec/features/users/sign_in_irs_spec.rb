@@ -67,7 +67,7 @@ RSpec.feature 'Sign in to the IRS' do
       end
 
       it 'forces the user to re-verify their identity' do
-        expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
+        expect(current_path).to eq(idv_welcome_path)
       end
     end
   end
@@ -112,7 +112,7 @@ RSpec.feature 'Sign in to the IRS' do
       end
 
       it 'forces the user to re-verify their identity' do
-        expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
+        expect(current_path).to eq(idv_welcome_path)
       end
     end
   end
