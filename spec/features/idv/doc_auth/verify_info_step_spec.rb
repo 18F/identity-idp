@@ -158,7 +158,7 @@ RSpec.feature 'doc auth verify_info step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
-      step_name: 'Idv::VerifyInfoController',
+      step_name: 'verify_info',
       remaining_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
@@ -202,7 +202,7 @@ RSpec.feature 'doc auth verify_info step', :js do
       expect(fake_analytics).to have_logged_event(
         'Throttler Rate Limit Triggered',
         throttle_type: :idv_resolution,
-        step_name: 'Idv::VerifyInfoController',
+        step_name: 'verify_info',
       )
 
       visit idv_verify_info_url
