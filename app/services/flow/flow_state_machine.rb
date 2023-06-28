@@ -4,7 +4,7 @@ module Flow
 
     included do
       before_action :initialize_flow_state_machine
-      before_action :ensure_correct_step, only: :show
+      before_action :ensure_correct_step, only: [:show, :update]
     end
 
     attr_accessor :flow
