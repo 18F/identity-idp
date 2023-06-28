@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'idv/come_back_later/show.html.erb' do
   let(:sp_name) { '🔒🌐💻' }
-  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO }
+  let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO }
 
   before do
     @decorated_session = instance_double(ServiceProviderSessionDecorator)
