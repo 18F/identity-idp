@@ -77,7 +77,8 @@ en:
         header: You need your personal key if you forget your password. Keep it safe and
           don’t share it with anyone.
         help_link_text: Learn more about the personal key
-        text: If you reset your password without your personal key, you’ll need to verify your identity again.
+        text: If you reset your password without your personal key, you’ll need to
+          verify your identity again.
       header: Save your personal key
     phone:
       buttons:

@@ -77,14 +77,15 @@ fr:
       download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
-      required_checkbox: J'ai conservé ma clé personnelle en lieu sûr.
+      required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
       title: Entrez votre clé personnelle
     personal_key_partial:
       acknowledgement:
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
         help_link_text: En savoir plus sur la clé personnelle
-        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous devrez à nouveau vérifier votre identité.
+        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous
+          devrez à nouveau vérifier votre identité.
       header: Sauvegardez votre clé personnelle
     phone:
       buttons:

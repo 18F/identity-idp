@@ -82,7 +82,8 @@ es:
         header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
           lugar seguro y no la compartas con nadie.
         help_link_text: Más información sobre la clave personal
-        text: 'Si restableces tu contraseña sin tu clave personal, tendrás que volver a verificar tu identidad.'
+        text: 'Si restableces tu contraseña sin tu clave personal, tendrás que volver a
+          verificar tu identidad.'
       header: Guarda tu clave personal
     phone:
       buttons:
