@@ -588,7 +588,8 @@ RSpec.describe Profile do
   end
 
   describe '#activate_after_password_reset' do
-    it 'activates a profile after password reset' do
+    it 'activates a non-verified, non-active, non-activated profile after password reset' do
+      # TODO: this profile scenario shouldn't be possible
       profile = create(
         :profile,
         :password_reset,
@@ -598,19 +599,20 @@ RSpec.describe Profile do
       # profile.initiating_service_provider is nil before and after because
       # the user is coming from a password reset email
 
-      expect(profile.activated_at).to be_nil # to change
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to eq 'password_reset' # to change
+      expect(profile.activated_at).to be_nil # will change but shouldn't
+      expect(profile.active).to eq(false) # will change but shouldn't
+      expect(profile.deactivation_reason).to eq 'password_reset' # will change but shouldn't
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
+      # TODO: this should raise an error
       profile.activate_after_password_reset
 
-      expect(profile.activated_at).to be_present # changed
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil # changed
+      expect(profile.activated_at).to be_present # !!! changed
+      expect(profile.active).to eq(true) # !!! changed
+      expect(profile.deactivation_reason).to be_nil # !!! changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
