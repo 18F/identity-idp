@@ -13,18 +13,18 @@
   <div class="grid-row usa-button--row">
     <div class="margin-bottom-205">
       <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
-        big: true,
-        wide: true,
-      ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
+            action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
+            big: true,
+            wide: true,
+          ).with_content(t('two_factor_authentication.backup_codes.saved_backup_codes')) %>
     </div>
     <div>
       <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) { link_to(backup_code_regenerate_path, **tag_options, &block) },
-        big: true,
-        wide: true,
-        outline: true,
-      ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes')) %>
+            action: ->(**tag_options, &block) { link_to(backup_code_regenerate_path, **tag_options, &block) },
+            big: true,
+            wide: true,
+            outline: true,
+          ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes')) %>
     </div>
   </div>
 </div>
