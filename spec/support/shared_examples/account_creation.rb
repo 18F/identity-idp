@@ -45,7 +45,7 @@ RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA'
   it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true, js: true do
     visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
-    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    expect(page).to have_current_path(idv_welcome_path)
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
     choose_idv_otp_delivery_method_sms
@@ -96,7 +96,7 @@ RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     fill_in_nickname_and_click_continue
     mock_press_button_on_hardware_key_on_setup
     skip_second_mfa_prompt
-    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    expect(page).to have_current_path(idv_welcome_path)
     complete_all_doc_auth_steps
     fill_out_phone_form_ok
     choose_idv_otp_delivery_method_sms

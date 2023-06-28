@@ -24,6 +24,44 @@ RSpec.describe 'OpenID Connect' do
     expect(certs_response[:keys].find { |key| key[:kid] == kid }).to be
   end
 
+  context 'with client_secret_jwt and disabling rewrite_oidc_request_prompt' do
+    before do
+      allow(IdentityConfig.store).to receive(:rewrite_oidc_request_prompt).
+        and_return(false)
+    end
+
+    it 'succeeds with prompt login and no prior session' do
+      oidc_end_client_secret_jwt(prompt: 'login')
+    end
+
+    it 'succeeds in forcing login with prompt login and prior session' do
+      user = oidc_end_client_secret_jwt(prompt: 'login')
+      travel_to((IdentityConfig.store.sp_handoff_bounce_max_seconds + 1).seconds.from_now) do
+        oidc_end_client_secret_jwt(prompt: 'login', user: user)
+      end
+    end
+
+    it 'succeeds with prompt select_account no prior session and bad Referer' do
+      Capybara.current_session.driver.header 'Referer', 'bad'
+      oidc_end_client_secret_jwt(prompt: 'select_account')
+    end
+
+    it 'succeeds with prompt login no prior session and bad Referer' do
+      Capybara.current_session.driver.header 'Referer', 'bad'
+      oidc_end_client_secret_jwt(prompt: 'login')
+    end
+
+    it 'fails with prompt login if not allowed for SP' do
+      visit_idp_from_ial1_oidc_sp(
+        prompt: 'login',
+        client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
+      )
+
+      expect(current_path).to eq(openid_connect_authorize_path)
+      expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
+    end
+  end
+
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
       oidc_end_client_secret_jwt(prompt: 'select_account')

@@ -34,7 +34,7 @@ RSpec.feature 'doc auth verify_info step', :js do
     sign_in_and_2fa_user
     visit idv_verify_info_path
 
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
   end
 
   it 'displays the expected content' do
