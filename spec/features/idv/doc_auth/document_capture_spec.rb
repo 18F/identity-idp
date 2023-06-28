@@ -20,7 +20,7 @@ RSpec.feature 'doc auth document capture step', :js do
 
   it 'does not skip ahead in standard desktop flow' do
     visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_agreement_path)

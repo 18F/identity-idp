@@ -1,9 +1,7 @@
 module Idv
   module Flows
     class DocAuthFlow < Flow::BaseFlow
-      STEPS = {
-        welcome: Idv::Steps::WelcomeStep,
-      }.freeze
+      STEPS = {}.freeze
 
       STEP_INDICATOR_STEPS = [
         { name: :getting_started },
