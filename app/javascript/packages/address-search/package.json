@@ -1,6 +1,6 @@
 {
   "name": "@18f/identity-address-search",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "private": false,
   "files": [
