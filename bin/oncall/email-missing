@@ -15,7 +15,7 @@ class EmailMissing
   include Reporting::CloudwatchQueryQuoting
 
   # @return [EmailMissing]
-  def self.parse!(argv: ARGV)
+  def self.parse!(argv: ARGV, out: STDOUT)
     show_help = false
 
     parser = OptionParser.new do |opts|
@@ -35,7 +35,7 @@ class EmailMissing
     uuids = parser.order(argv)
 
     if uuids.empty? || show_help
-      puts parser
+      out.puts parser
       exit 1
     end
 
@@ -44,8 +44,13 @@ class EmailMissing
 
   attr_reader :uuids
 
-  def initialize(uuids:)
+  def initialize(uuids:, progress_bar: true)
     @uuids = uuids
+    @progress_bar = progress_bar
+  end
+
+  def progress_bar?
+    @progress_bar
   end
 
   def run(out: STDOUT)
@@ -77,20 +82,22 @@ class EmailMissing
 
   # @return [Array<Result>]
   def query_data(uuids)
-    bar = ProgressBar.create(
-      title: 'Querying logs',
-      total: nil,
-      format: '[ %t ] %B %a',
-      output: STDERR,
-    )
-    thread = Thread.new do
-      loop do
-        sleep 0.1
-        bar.increment
+    if progress_bar?
+      bar = ProgressBar.create(
+        title: 'Querying logs',
+        total: nil,
+        format: '[ %t ] %B %a',
+        output: STDERR,
+      )
+      thread = Thread.new do
+        loop do
+          sleep 0.1
+          bar.increment
+        end
       end
     end
 
-    email_sends = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
+    event_log = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
       query: <<~EOS,
         fields
           @timestamp
@@ -104,9 +111,9 @@ class EmailMissing
       to: Time.now,
     )
 
-    sends_by_message_id = email_sends.index_by { |sent| sent['ses_message_id'] }
+    events_by_message_id = event_log.index_by { |event| event['ses_message_id'] }
 
-    message_id_filters = sends_by_message_id.keys.map do |message_id|
+    message_id_filters = events_by_message_id.keys.map do |message_id|
       "@message LIKE /#{message_id}/"
     end.join(' OR ')
 
@@ -127,8 +134,8 @@ class EmailMissing
       group_by { |event| event['ses_message_id'] }.
       map do |message_id, events|
         Result.new(
-          user_id: sends_by_message_id[message_id]['user_id'],
-          timestamp: sends_by_message_id[message_id]['@timestamp'],
+          user_id: events_by_message_id[message_id]['user_id'],
+          timestamp: events_by_message_id[message_id]['@timestamp'],
           message_id: message_id,
           events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },
         )
