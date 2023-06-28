@@ -123,8 +123,12 @@ module OpenidConnect
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
+      return if session[:oidc_state_for_login_prompt] == @authorize_form.state
       return if check_sp_handoff_bounced
-      sign_out unless sp_session[:request_url] == request.original_url
+      unless sp_session[:request_url] == request.original_url
+        sign_out
+        session[:oidc_state_for_login_prompt] = @authorize_form.state
+      end
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked
