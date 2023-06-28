@@ -40,21 +40,6 @@ RSpec.feature 'webauthn sign in' do
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
-  it 'does not show error after successful challlenge/secret reattempt' do
-    mock_webauthn_verification_challenge
-
-    sign_in_user(webauthn_configuration.user)
-    # simulate clicking the next button or cancel from the browser dialog
-    click_button t('forms.buttons.continue')
-
-    expect(page).to have_content(t('errors.general'))
-
-    mock_press_button_on_hardware_key_on_verification
-    click_button t('forms.buttons.continue')
-
-    expect(page).to_not have_content(t('errors.general'))
-  end
-
   it 'does not allow the user to sign in if the hardware button has not been pressed' do
     mock_webauthn_verification_challenge
 
@@ -64,4 +49,19 @@ RSpec.feature 'webauthn sign in' do
     expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
+end
+
+it 'does not show error after successful challlenge/secret reattempt' do
+  mock_webauthn_verification_challenge
+
+  sign_in_user(webauthn_configuration.user)
+  # click the next button or cancel from the browser dialog
+  click_button t('forms.buttons.continue')
+
+  expect(page).to have_content(t('errors.general'))
+
+  mock_press_button_on_hardware_key_on_verification
+  click_button t('forms.buttons.continue')
+
+  expect(page).to_not have_content(t('errors.general'))
 end
