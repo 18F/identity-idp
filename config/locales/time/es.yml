@@ -11,6 +11,7 @@ es:
       - domingo
     formats:
       long: '%-d de %B de %Y'
+      short: '%A, %-d de %B'
     month_names:
       -
       - enero

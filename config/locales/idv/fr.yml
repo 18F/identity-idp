@@ -70,13 +70,6 @@ fr:
         try_online: Réessayer en ligne
         warning: Essayez à nouveau
       exceptions:
-        internal_error: Une erreur interne s’est produite lors du traitement de votre
-          demande. Veuillez réessayer.
-        link: contactez-nous
-        post_office_search_error: Nous connaissons des difficultés techniques en ce
-          moment. Essayez de chercher à nouveau un bureau de poste. Si le
-          problème persiste, revenez plus tard.
-        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
         in_person_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
@@ -85,7 +78,7 @@ fr:
               veuillez contacter directement votre agence.
             title: Nous travaillons sur un problème technique. Il se peut que les résultats
               de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le mardi, May 30.
+              courrier électronique avant le %{date}.
           ready_to_verify:
             body: Vous pouvez toujours vous rendre dans un bureau de poste pour finalisation
               de la vérification de votre identité. Si vous avez un besoin
@@ -93,11 +86,17 @@ fr:
               agence.
             contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
               %{app_name}</a> si vous n’avez pas reçu de courrier électronique
-              contenant les résultats de votre vérification avant le jeudi, June
-              1.
+              contenant les résultats de votre vérification avant le %{date}.
             title: Nous travaillons sur un problème technique. Il se peut que les résultats
               de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le mardi, May 30.
+              courrier électronique avant le %{date}.
+        internal_error: Une erreur interne s’est produite lors du traitement de votre
+          demande. Veuillez réessayer.
+        link: contactez-nous
+        post_office_search_error: Nous connaissons des difficultés techniques en ce
+          moment. Essayez de chercher à nouveau un bureau de poste. Si le
+          problème persiste, revenez plus tard.
+        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
