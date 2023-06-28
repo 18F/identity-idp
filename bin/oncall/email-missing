@@ -114,8 +114,6 @@ class EmailMissing
       query: <<~EOS,
         fields
           eventType AS event_type
-        , mail.commonHeaders.to AS recipient_domain
-        , @timestamp
         | filter #{message_id_filters}
         | parse '"messageId": "*"' as ses_message_id
         | display @timestamp, event_type, ses_message_id
