@@ -27,7 +27,7 @@ module Flow
 
       increment_step_name_counts
       analytics.public_send(
-        flow.step_handler_instance(step).analytics_submitted_event || '',
+        flow.step_handler_instance(step).analytics_submitted_event,
         **result.to_h.merge(analytics_properties),
       )
 
