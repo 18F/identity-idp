@@ -9,7 +9,7 @@ class InPersonEnrollment < ApplicationRecord
              inverse_of: :in_person_enrollments,
              optional: true
 
-  has_one :notification_phone_configurations, dependent: :destroy, inverse_of: :in_person_enrollment
+  has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
   enum status: {
     establishing: 0,
