@@ -118,6 +118,7 @@ export function useDocumentCaptureForm() {
       event.preventDefault();
       onSubmit();
     });
+    sinon.stub(form, 'submit').callsFake(onSubmit);
     document.body.appendChild(form);
   });
 
@@ -125,6 +126,7 @@ export function useDocumentCaptureForm() {
     if ([...document.body.childNodes].includes(form)) {
       document.body.removeChild(form);
     }
+    form.submit.restore();
   });
 
   return onSubmit;
