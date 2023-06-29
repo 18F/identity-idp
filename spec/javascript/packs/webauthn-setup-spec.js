@@ -4,43 +4,45 @@ import { reloadWithError } from '../../../app/javascript/packs/webauthn-setup';
 describe('webauthn-setup', () => {
   describe('reloadWithError', () => {
     it('reloads with error', () => {
-      const setSearch = sinon.stub();
+      const navigate = sinon.stub();
 
-      reloadWithError('BadThingHappened', { search: '', setSearch });
+      reloadWithError('BadThingHappened', { search: '', navigate });
 
-      expect(setSearch).to.have.been.calledWith('error=BadThingHappened');
+      const navigateURL = new URL(navigate.getCall(0).args[0]);
+      expect(navigateURL.search).to.equal('?error=BadThingHappened');
     });
 
     context('existing params', () => {
       it('reloads with error and retains existing params', () => {
-        const setSearch = sinon.stub();
+        const navigate = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?foo=bar', setSearch });
+        reloadWithError('BadThingHappened', { search: '?foo=bar', navigate });
 
-        expect(setSearch).to.have.been.calledWith('foo=bar&error=BadThingHappened');
+        const navigateURL = new URL(navigate.getCall(0).args[0]);
+        expect(navigateURL.search).to.equal('?foo=bar&error=BadThingHappened');
       });
     });
 
     context('existing error', () => {
       it('does not reload with error', () => {
-        const setSearch = sinon.stub();
+        const navigate = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?error=BadThingHappened', setSearch });
+        reloadWithError('BadThingHappened', { search: '?error=BadThingHappened', navigate });
 
-        expect(setSearch).not.to.have.been.called();
+        expect(navigate).not.to.have.been.called();
       });
 
       context('force', () => {
         it('reloads with error', () => {
-          const setSearch = sinon.stub();
+          const navigate = sinon.stub();
 
           reloadWithError('BadThingHappened', {
             search: '?error=BadThingHappened',
-            setSearch,
+            navigate,
             force: true,
           });
 
-          expect(setSearch).to.have.been.called();
+          expect(navigate).to.have.been.called();
         });
       });
     });
