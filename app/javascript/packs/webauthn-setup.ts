@@ -13,22 +13,20 @@ import type { Navigate } from '@18f/identity-url';
  * @param error Error key for which to show message.
  * @param options Optional options.
  * @param options.force If true, reload the page even if that error is already shown.
- * @param options.search Initial search value.
+ * @param options.initialURL Initial URL value.
  * @param options.navigate Navigate implementation.
  */
 export function reloadWithError(
   error: string,
   {
     force = false,
-    search = window.location.search,
+    initialURL = window.location.href,
     navigate = forceRedirect,
-  }: { force?: boolean; search?: string; navigate?: Navigate } = {},
+  }: { force?: boolean; initialURL?: string; navigate?: Navigate } = {},
 ) {
-  const params = new URLSearchParams(search);
-  if (force || params.get('error') !== error) {
-    params.set('error', error);
-    const url = new URL(window.location.href);
-    url.search = params.toString();
+  const url = new URL(initialURL);
+  if (force || url.searchParams.get('error') !== error) {
+    url.searchParams.set('error', error);
     navigate(url.toString());
   }
 }

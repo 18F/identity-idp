@@ -6,7 +6,7 @@ describe('webauthn-setup', () => {
     it('reloads with error', () => {
       const navigate = sinon.stub();
 
-      reloadWithError('BadThingHappened', { search: '', navigate });
+      reloadWithError('BadThingHappened', { initialURL: 'http://example.com', navigate });
 
       const navigateURL = new URL(navigate.getCall(0).args[0]);
       expect(navigateURL.search).to.equal('?error=BadThingHappened');
@@ -16,7 +16,7 @@ describe('webauthn-setup', () => {
       it('reloads with error and retains existing params', () => {
         const navigate = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?foo=bar', navigate });
+        reloadWithError('BadThingHappened', { initialURL: 'http://example.com?foo=bar', navigate });
 
         const navigateURL = new URL(navigate.getCall(0).args[0]);
         expect(navigateURL.search).to.equal('?foo=bar&error=BadThingHappened');
@@ -27,7 +27,10 @@ describe('webauthn-setup', () => {
       it('does not reload with error', () => {
         const navigate = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?error=BadThingHappened', navigate });
+        reloadWithError('BadThingHappened', {
+          initialURL: 'http://example.com?error=BadThingHappened',
+          navigate,
+        });
 
         expect(navigate).not.to.have.been.called();
       });
