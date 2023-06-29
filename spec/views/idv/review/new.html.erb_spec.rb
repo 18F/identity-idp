@@ -10,7 +10,7 @@ RSpec.describe 'idv/review/new.html.erb' do
       user = build_stubbed(:user, :fully_registered)
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:step_indicator_steps).
-        and_return(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+        and_return(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
       allow(view).to receive(:step_indicator_step).and_return(:secure_account)
 
       render
