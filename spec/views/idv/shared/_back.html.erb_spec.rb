@@ -26,14 +26,14 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
   end
 
   context 'with step URL in locals' do
-    let(:step_url) { :idv_doc_auth_step_url }
+    let(:step_url) { :idv_in_person_step_url }
 
     context 'with action' do
       let(:action) { 'redo_ssn' }
 
       it 'renders' do
         expect(subject).to have_selector(
-          "form[action='#{send(:idv_doc_auth_step_url, step: 'redo_ssn')}']",
+          "form[action='#{send(:idv_in_person_step_url, step: 'redo_ssn')}']",
         )
         expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
         expect(subject).to have_selector("[type='submit']")
@@ -49,7 +49,7 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
       it 'renders' do
         expect(subject).to have_selector(
           "a[href='#{send(
-            :idv_doc_auth_step_url,
+            :idv_in_person_step_url,
             step: 'verify',
           )}']",
         )
@@ -62,7 +62,7 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
 
   context 'with step URL in instance variable' do
     before do
-      assign(:step_url, :idv_doc_auth_step_url)
+      assign(:step_url, :idv_in_person_step_url)
     end
 
     context 'with action' do
@@ -70,7 +70,7 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
 
       it 'renders' do
         expect(subject).to have_selector(
-          "form[action='#{send(:idv_doc_auth_step_url, step: 'redo_ssn')}']",
+          "form[action='#{send(:idv_in_person_step_url, step: 'redo_ssn')}']",
         )
         expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
         expect(subject).to have_selector("[type='submit']")
@@ -86,7 +86,7 @@ RSpec.describe 'idv/doc_auth/_back.html.erb' do
       it 'renders' do
         expect(subject).to have_selector(
           "a[href='#{send(
-            :idv_doc_auth_step_url,
+            :idv_in_person_step_url,
             step: 'verify',
           )}']",
         )
