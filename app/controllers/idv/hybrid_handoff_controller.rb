@@ -63,7 +63,7 @@ module Idv
         idv_session.flow_path = nil
       end
 
-      analytics.idv_doc_auth_hybrid_handoff(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(telephony_form_response.to_h),
       )
     end
@@ -116,7 +116,7 @@ module Idv
       idv_session.flow_path = 'standard'
       redirect_to idv_document_capture_url
 
-      analytics.idv_doc_auth_hybrid_handoff(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
