@@ -25,6 +25,7 @@ module AwsKmsClientHelper
       config = configs.find do |c|
         c[:ciphertext] == context.params[:ciphertext_blob]
       end
+      #binding.pry
       { plaintext: config[:plaintext], key_id: config[:key_id] }
     end
 

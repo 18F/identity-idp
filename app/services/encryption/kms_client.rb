@@ -14,6 +14,15 @@ module Encryption
     KMS_KEY_REGEX = /\A#{KEY_TYPE[:KMS]}/
     LOCAL_KEY_REGEX = /\A#{KEY_TYPE[:LOCAL_KEY]}/
 
+    # Lazily-loaded per-region client factory
+    KMS_CLIENT_POOL = ConnectionPool.new(size: IdentityConfig.store.aws_kms_client_multi_pool_size) do
+      Aws::KMS::Client.new(
+        instance_profile_credentials_timeout: 1, # defaults to 1 second
+        instance_profile_credentials_retries: 5, # defaults to 0 retries
+        region: IdentityConfig.store.aws_region, # The region in which the client is being instantiated
+      )
+    end
+
     def encrypt(plaintext, encryption_context)
       KmsLogger.log(:encrypt, encryption_context)
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
@@ -55,7 +64,14 @@ module Encryption
 
     def encrypt_raw_kms(plaintext, encryption_context)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      multi_aws_client.encrypt(IdentityConfig.store.aws_kms_key_id, plaintext, encryption_context)
+
+      KMS_CLIENT_POOL.with do |client|
+        client.encrypt(
+          key_id: IdentityConfig.store.aws_kms_key_id,
+          plaintext: plaintext,
+          encryption_context: encryption_context,
+        ).ciphertext_blob
+      end
     end
 
     def decrypt_kms(ciphertext, encryption_context)
@@ -72,7 +88,12 @@ module Encryption
     end
 
     def decrypt_raw_kms(ciphertext, encryption_context)
-      multi_aws_client.decrypt(ciphertext, encryption_context)
+      KMS_CLIENT_POOL.with do |client|
+        client.decrypt(
+          ciphertext_blob: ciphertext,
+          encryption_context: encryption_context,
+        ).plaintext
+      end
     rescue Aws::KMS::Errors::InvalidCiphertextException
       raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
@@ -121,10 +142,6 @@ module Encryption
 
     def encryptor
       @encryptor ||= Encryptors::AesEncryptor.new
-    end
-
-    def multi_aws_client
-      @multi_aws_client ||= MultiRegionKmsClient.new
     end
 
     add_method_tracer :decrypt, "Custom/#{name}/decrypt"
