@@ -14,6 +14,7 @@ module Encryption
     KMS_KEY_REGEX = /\A#{KEY_TYPE[:KMS]}/
     LOCAL_KEY_REGEX = /\A#{KEY_TYPE[:LOCAL_KEY]}/
 
+    # rubocop:disable Layout/LineLength
     # Lazily-loaded per-region client factory
     KMS_CLIENT_POOL = ConnectionPool.new(size: IdentityConfig.store.aws_kms_client_multi_pool_size) do
       Aws::KMS::Client.new(
@@ -22,6 +23,7 @@ module Encryption
         region: IdentityConfig.store.aws_region, # The region in which the client is being instantiated
       )
     end
+    # rubocop:enable Layout/LineLength
 
     def encrypt(plaintext, encryption_context)
       KmsLogger.log(:encrypt, encryption_context)
