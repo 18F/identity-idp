@@ -290,6 +290,7 @@ trigger_devops:
 
 review-app:
   stage: review
+  allow_failure: true
   needs:
     - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
