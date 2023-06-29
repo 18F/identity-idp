@@ -39,7 +39,8 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !valid_authn_context? ||
-       (ial2_context_requested? && service_provider&.ial != 2)
+       (ial2_context_requested? && service_provider&.ial != 2) ||
+       (ial_max_requested? && !Idp::Constants::ALLOWED_IALMAX_PROVIDERS.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -68,6 +69,17 @@ class SamlRequestValidator
       end
     else
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
+    end
+  end
+
+  def ial_max_requested?
+    case authn_context
+    when Array
+      authn_context.any? do |classref|
+        Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == classref
+      end
+    else
+      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == classref
     end
   end
 

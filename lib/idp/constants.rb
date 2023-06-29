@@ -127,5 +127,10 @@ module Idp
     MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION = 'North Dakota'
     MOCK_IDV_APPLICANT_FULL_STATE = 'Montana'
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
+
+    ALLOWED_IALMAX_PROVIDERS = %w[
+      https://eauth.va.gov/isam/sps/saml20sp/saml20
+      https://myttbaccount.ttb.gov/realms/myTTB
+    ]
   end
 end
