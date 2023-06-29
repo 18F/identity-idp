@@ -20,6 +20,7 @@ module AwsKmsClientHelper
       end
 
       raise "KMS stub is not configured to encrypt #{context.params[:plaintext]}." if config.nil?
+
       { ciphertext_blob: config[:ciphertext], key_id: config[:key_id] }
     end
 
@@ -29,7 +30,7 @@ module AwsKmsClientHelper
       end
 
       if config.nil?
-        raise "KMS stub is not configured to encrypt #{context.params[:ciphertext_blob]}."
+        raise "KMS stub is not configured to decrypt #{context.params[:ciphertext_blob]}."
       end
 
       { plaintext: config[:plaintext], key_id: config[:key_id] }
