@@ -27,8 +27,7 @@
           ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes')) %>
     </div>
   </div>
+  <%= render PageFooterComponent.new do %>
+    <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
+  <% end %> 
 </div>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
-<% end %>
