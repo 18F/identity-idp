@@ -40,7 +40,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
       expect(page).to have_current_path(idv_link_sent_path)
       expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth hybrids handoff submitted',
+        'IdV: doc auth hybrid handoff submitted',
         hash_including(step: 'hybrid_handoff', destination: :link_sent),
       )
 
