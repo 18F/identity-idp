@@ -320,7 +320,7 @@ RSpec.describe Profile do
 
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
-      # should also be verified
+      # TODO: should also be verified
       active_profile = create(:profile, :active, user: user)
 
       # profile before
@@ -333,7 +333,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_nil # to change
 
       # active_profile before
-      expect(active_profile.activated_at).to be_nil
+      expect(active_profile.activated_at).to be_nil # should be set
       expect(active_profile.active).to eq(true) # to change
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
@@ -354,7 +354,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # changed
 
       # active_profile after
-      expect(active_profile.activated_at).to be_nil # !!! TODO: should change
+      expect(active_profile.activated_at).to be_nil # should not change
       expect(active_profile.active).to eq(false) # changed
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
