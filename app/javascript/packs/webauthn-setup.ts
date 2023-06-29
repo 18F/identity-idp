@@ -4,8 +4,12 @@ import {
   extractCredentials,
   longToByteArray,
 } from '@18f/identity-webauthn';
-import { forceRedirect } from '@18f/identity-url';
-import type { Navigate } from '@18f/identity-url';
+
+type SetSearch = (search: string) => void;
+
+const DEFAULT_SET_SEARCH: SetSearch = (search) => {
+  window.location.search = search;
+};
 
 /**
  * Reloads the current page, presenting the message corresponding to the given error key.
@@ -21,13 +25,13 @@ export function reloadWithError(
   {
     force = false,
     search = window.location.search,
-    navigate = forceRedirect,
-  }: { force?: boolean; search?: string; navigate?: Navigate } = {},
+    setSearch = DEFAULT_SET_SEARCH,
+  }: { force?: boolean; search?: string; setSearch?: SetSearch } = {},
 ) {
   const params = new URLSearchParams(search);
   if (force || params.get('error') !== error) {
     params.set('error', error);
-    navigate(`?${params}`);
+    setSearch(params.toString());
   }
 }
 

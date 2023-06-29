@@ -4,43 +4,43 @@ import { reloadWithError } from '../../../app/javascript/packs/webauthn-setup';
 describe('webauthn-setup', () => {
   describe('reloadWithError', () => {
     it('reloads with error', () => {
-      const navigate = sinon.stub();
+      const setSearch = sinon.stub();
 
-      reloadWithError('BadThingHappened', { search: '', navigate });
+      reloadWithError('BadThingHappened', { search: '', setSearch });
 
-      expect(navigate).to.have.been.calledWith('?error=BadThingHappened');
+      expect(setSearch).to.have.been.calledWith('error=BadThingHappened');
     });
 
     context('existing params', () => {
       it('reloads with error and retains existing params', () => {
-        const navigate = sinon.stub();
+        const setSearch = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?foo=bar', navigate });
+        reloadWithError('BadThingHappened', { search: '?foo=bar', setSearch });
 
-        expect(navigate).to.have.been.calledWith('?foo=bar&error=BadThingHappened');
+        expect(setSearch).to.have.been.calledWith('foo=bar&error=BadThingHappened');
       });
     });
 
     context('existing error', () => {
       it('does not reload with error', () => {
-        const navigate = sinon.stub();
+        const setSearch = sinon.stub();
 
-        reloadWithError('BadThingHappened', { search: '?error=BadThingHappened', navigate });
+        reloadWithError('BadThingHappened', { search: '?error=BadThingHappened', setSearch });
 
-        expect(navigate).not.to.have.been.called();
+        expect(setSearch).not.to.have.been.called();
       });
 
       context('force', () => {
         it('reloads with error', () => {
-          const navigate = sinon.stub();
+          const setSearch = sinon.stub();
 
           reloadWithError('BadThingHappened', {
             search: '?error=BadThingHappened',
-            navigate,
+            setSearch,
             force: true,
           });
 
-          expect(navigate).to.have.been.called();
+          expect(setSearch).to.have.been.called();
         });
       });
     });
