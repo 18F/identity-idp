@@ -7,14 +7,11 @@ class NotificationPhoneConfiguration < ApplicationRecord
   encrypted_attribute(name: :phone)
 
   def formatted_phone
-    Phonelib.parse(phone).international
+    PhoneFormatter.format(phone)
   end
 
   def masked_phone
-    return '' if phone.blank?
-
-    formatted = Phonelib.parse(phone).national
-    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
+    PhoneFormatter.mask(phone)
   end
 
   def friendly_name
