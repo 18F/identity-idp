@@ -1,15 +1,11 @@
 module Idv
   class AgreementController < ApplicationController
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -60,14 +56,9 @@ module Idv
     end
 
     def confirm_welcome_step_complete
-      return if flow_session['Idv::Steps::WelcomeStep']
       return if idv_session.welcome_visited
 
-      if IdentityConfig.store.doc_auth_welcome_controller_enabled
-        redirect_to idv_welcome_url
-      else
-        redirect_to idv_doc_auth_url
-      end
+      redirect_to idv_welcome_url
     end
 
     def confirm_agreement_needed

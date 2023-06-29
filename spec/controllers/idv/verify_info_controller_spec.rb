@@ -36,6 +36,13 @@ RSpec.describe Idv::VerifyInfoController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'confirms ssn step complete' do
       expect(subject).to have_actions(
         :before,

@@ -6,11 +6,10 @@ module Idv
       include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
-      include OutageConcern
 
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
-      before_action :check_for_outage, only: :show
+      skip_before_action :confirm_not_rate_limited, only: :show
 
       def show
         @step_indicator_steps = step_indicator_steps
@@ -19,18 +18,6 @@ module Idv
         analytics.idv_doc_auth_verify_visited(**analytics_arguments)
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('verify', :view, true) # specify in_person?
-
-        if ssn_throttle.throttled?
-          idv_failure_log_throttled(:proof_ssn)
-          redirect_to idv_session_errors_ssn_failure_url
-          return
-        end
-
-        if resolution_throttle.throttled?
-          idv_failure_log_throttled(:idv_resolution)
-          redirect_to throttled_url
-          return
-        end
 
         process_async_state(load_async_state)
       end
@@ -47,6 +34,10 @@ module Idv
       end
 
       private
+
+      def flow_param
+        'in_person'
+      end
 
       # state_id_type is hard-coded here because it's required for proofing against
       # AAMVA. We're sticking with driver's license because most states don't discern
