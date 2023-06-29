@@ -373,8 +373,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_213457) do
 
   create_table "notification_phone_configurations", force: :cascade do |t|
     t.bigint "in_person_enrollment_id", null: false
-    t.text "encrypted_phone", comment: "Encrypted phone number to send notifications to. Will be NULL after a notification is sent"
-    t.datetime "notification_sent_at", precision: nil, comment: "Timestamp when a notification was sent to the phone number"
+    t.text "encrypted_phone", null: false, comment: "Encrypted phone number to send notifications to"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["in_person_enrollment_id"], name: "index_notification_phone_configurations_on_enrollment_id"

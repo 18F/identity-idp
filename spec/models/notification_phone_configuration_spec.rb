@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe NotificationPhoneConfiguration do
   describe 'Associations' do
     it { is_expected.to belong_to(:in_person_enrollment) }
+    it { is_expected.to validate_presence_of(:encrypted_phone) }
   end
 
   let(:phone) { '+1 703 555 1212' }
@@ -12,7 +13,6 @@ RSpec.describe NotificationPhoneConfiguration do
   describe 'creation' do
     it 'stores an encrypted form of the phone number' do
       expect(notification_phone_configuration.encrypted_phone).to_not be_blank
-      expect(notification_phone_configuration.notification_sent_at).to be_nil
     end
   end
 
@@ -57,15 +57,6 @@ RSpec.describe NotificationPhoneConfiguration do
       it 'keeps the groupings and leaves the last 4 digits' do
         expect(masked_phone).to eq('****-**3853')
       end
-    end
-  end
-
-  describe '#erase_phone_number_and_mark_notification_sent' do
-    it 'erases the phone number' do
-      notification_phone_configuration.erase_phone_number_and_mark_notification_sent
-
-      expect(notification_phone_configuration.encrypted_phone).to be_nil
-      expect(notification_phone_configuration.notification_sent_at).to_not be_blank
     end
   end
 end
