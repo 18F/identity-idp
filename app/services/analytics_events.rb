@@ -675,11 +675,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth link_sent visited', **extra)
   end
 
-  # @identity.idp.previous_event_name IdV: in person proofing optional verify_wait submitted
-  def idv_doc_auth_optional_verify_wait_submitted(**extra)
-    track_event('IdV: doc auth optional verify_wait submitted', **extra)
-  end
-
   def idv_doc_auth_randomizer_defaulted
     track_event(
       'IdV: doc_auth random vendor error',
@@ -823,7 +818,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth upload visited', **extra)
   end
 
-  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end
@@ -836,11 +830,6 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   def idv_doc_auth_verify_visited(**extra)
     track_event('IdV: doc auth verify visited', **extra)
-  end
-
-  # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
-  def idv_doc_auth_verify_wait_step_visited(**extra)
-    track_event('IdV: doc auth verify_wait visited', **extra)
   end
 
   # @param [String] step_name
