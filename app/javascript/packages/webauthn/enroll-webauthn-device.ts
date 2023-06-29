@@ -1,6 +1,6 @@
 import { arrayBufferToBase64 } from './converters';
 
-interface EnnrollOptions {
+interface EnrollOptions {
   user: PublicKeyCredentialUserEntity;
 
   challenge: BufferSource;
@@ -25,7 +25,7 @@ async function enrollWebauthnDevice({
   challenge,
   excludeCredentials,
   authenticatorAttachment,
-}: EnnrollOptions): Promise<EnrollResult> {
+}: EnrollOptions): Promise<EnrollResult> {
   const credential = (await navigator.credentials.create({
     publicKey: {
       challenge,

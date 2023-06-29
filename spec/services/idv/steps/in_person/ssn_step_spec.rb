@@ -22,6 +22,7 @@ RSpec.describe Idv::Steps::InPerson::SsnStep do
       current_user: user,
       analytics: FakeAnalytics.new,
       irs_attempts_api_tracker: attempts_api,
+      url_options: {},
     )
   end
 
