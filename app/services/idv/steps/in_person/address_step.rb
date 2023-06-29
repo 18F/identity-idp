@@ -4,6 +4,8 @@ module Idv
       class AddressStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
+        include TempMaybeRedirectToVerifyInfoHelper
+
         def self.analytics_visited_event
           :idv_in_person_proofing_address_visited
         end
@@ -28,7 +30,7 @@ module Idv
             flow_session[:pii_from_user][attr] = flow_params[attr]
           end
 
-          redirect_to idv_in_person_verify_info_url if updating_address?
+          maybe_redirect_to_verify_info if updating_address?
         end
 
         def extra_view_variables

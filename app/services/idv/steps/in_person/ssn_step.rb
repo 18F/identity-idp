@@ -5,6 +5,7 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         include ThreatMetrixStepHelper
+        include TempMaybeRedirectToVerifyInfoHelper
 
         def self.analytics_visited_event
           :idv_doc_auth_ssn_visited
@@ -23,9 +24,7 @@ module Idv
 
           idv_session.delete('applicant')
 
-          # save the flow path so it's recorded in analytics, eg standard or hybrid flow
-          flow_session[:flow_path] = @flow.flow_path
-          redirect_to idv_in_person_verify_info_url
+          maybe_redirect_to_verify_info
         end
 
         def extra_view_variables

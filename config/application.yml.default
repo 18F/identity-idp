@@ -150,6 +150,7 @@ in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
 in_person_usps_outage_message_enabled: false
+in_person_verify_info_controller_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'

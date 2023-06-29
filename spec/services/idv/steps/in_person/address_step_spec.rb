@@ -15,7 +15,6 @@ RSpec.describe Idv::Steps::InPerson::AddressStep do
       session: { sp: { issuer: service_provider.issuer } },
       params: params,
       current_user: user,
-      url_options: {},
     )
   end
 
