@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Encryption::KmsClient do
   before do
+    stub_const(
+      'Encryption::KmsClient::KMS_CLIENT_POOL',
+      FakeConnectionPool.new { Aws::KMS::Client.new(region: aws_region) },
+    )
+
     # rubocop:disable Layout/LineLength
     stub_mapped_aws_kms_client(
       [
