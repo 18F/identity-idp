@@ -124,6 +124,8 @@ class IdentityConfig
     config.add(:arcgis_mock_fallback, type: :boolean)
     config.add(:arcgis_api_generate_token_url, type: :string)
     config.add(:arcgis_api_find_address_candidates_url, type: :string)
+    config.add(:arcgis_api_refresh_token_job_cron, type: :string)
+    config.add(:arcgis_api_refresh_token_job_enabled, type: :boolean)
     config.add(:arcgis_api_request_timeout_seconds, type: :integer)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
