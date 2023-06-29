@@ -686,6 +686,7 @@ module AnalyticsEvents
   # either continue via desktop ("document_capture" destination) or switch
   # to mobile phone ("send_link" destination) to perform document upload.
   # Mobile users still log this event but with skip_upload_step = true
+  # @identity.idp.previous_event_name IdV: doc auth upload submitted
   def idv_doc_auth_hybrid_handoff_submitted(**extra)
     track_event('IdV: doc auth hybrid handoff submitted', **extra)
   end
@@ -848,6 +849,7 @@ module AnalyticsEvents
   end
 
   # Desktop user has reached the above "hybrid handoff" view
+  # @identity.idp.previous_event_name IdV: doc auth upload visited
   def idv_doc_auth_hybrid_handoff_visited(**extra)
     track_event('IdV: doc auth hybrid handoff visited', **extra)
   end
