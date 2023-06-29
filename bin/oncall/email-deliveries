@@ -11,10 +11,10 @@ $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
 
-class EmailMissing
+class EmailDeliveries
   include Reporting::CloudwatchQueryQuoting
 
-  # @return [EmailMissing]
+  # @return [EmailDeliveries]
   def self.parse!(argv: ARGV, out: STDOUT)
     show_help = false
 
@@ -157,5 +157,5 @@ class EmailMissing
 end
 
 if $PROGRAM_NAME == __FILE__
-  EmailMissing.parse!.run
+  EmailDeliveries.parse!.run
 end

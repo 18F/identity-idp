@@ -1,17 +1,17 @@
 require 'rails_helper'
-load Rails.root.join('bin/oncall/email-missing')
+load Rails.root.join('bin/oncall/email-deliveries')
 require 'tableparser'
 
-RSpec.describe EmailMissing do
+RSpec.describe EmailDeliveries do
   describe '.parse!' do
     let(:out) { StringIO.new }
-    subject(:parse!) { EmailMissing.parse!(argv: argv, out: out) }
+    subject(:parse!) { EmailDeliveries.parse!(argv: argv, out: out) }
 
     context 'with --help' do
       let(:argv) { %w[--help] }
 
       it 'prints help and exits uncleanly' do
-        expect(EmailMissing).to receive(:exit).with(1)
+        expect(EmailDeliveries).to receive(:exit).with(1)
 
         parse!
 
@@ -23,7 +23,7 @@ RSpec.describe EmailMissing do
       let(:argv) { [] }
 
       it 'prints help and exits uncleanly' do
-        expect(EmailMissing).to receive(:exit).with(1)
+        expect(EmailDeliveries).to receive(:exit).with(1)
 
         parse!
 
@@ -41,7 +41,7 @@ RSpec.describe EmailMissing do
   end
 
   describe '#run' do
-    let(:instance) { EmailMissing.new(uuids: %w[abc123 def456], progress_bar: false) }
+    let(:instance) { EmailDeliveries.new(uuids: %w[abc123 def456], progress_bar: false) }
     let(:stdout) { StringIO.new }
     subject(:run) { instance.run(out: stdout) }
 
