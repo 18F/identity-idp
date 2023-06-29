@@ -93,7 +93,7 @@ export class FormStepsWait {
 
   options: FormStepsWaitOptions;
 
-  constructor(form: HTMLFormElement, options: Partial<FormStepsWaitOptions>) {
+  constructor(form: HTMLFormElement, options?: Partial<FormStepsWaitOptions>) {
     this.elements = { form };
 
     this.options = {
@@ -232,5 +232,5 @@ export class FormStepsWait {
   }
 }
 
-const forms = Array.from(document.querySelectorAll('[data-form-steps-wait]'));
+const forms = Array.from(document.querySelectorAll<HTMLFormElement>('[data-form-steps-wait]'));
 forms.forEach((form) => new FormStepsWait(form).bind());
