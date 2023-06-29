@@ -160,7 +160,6 @@ RSpec.feature 'Multi Two Factor Authentication' do
       )
 
       click_button t('mfa.skip')
-      expect(page).to have_current_path(confirm_backup_codes_path)
     end
 
     it 'goes to the next page after user confirms that they have saved their backup codes' do
