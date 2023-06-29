@@ -19,7 +19,7 @@ RSpec.describe Idv::ProfileMaker do
     it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
       profile = subject.save_profile(
-        fraud_review_needed: false,
+        fraud_pending_reason: nil,
         gpo_verification_needed: false,
       )
       pii = subject.pii_attributes
@@ -40,7 +40,7 @@ RSpec.describe Idv::ProfileMaker do
     context 'with deactivation reason' do
       it 'creates an inactive profile with deactivation reason' do
         profile = subject.save_profile(
-          fraud_review_needed: false,
+          fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: :encryption_error,
         )
@@ -58,7 +58,7 @@ RSpec.describe Idv::ProfileMaker do
     context 'with fraud review needed' do
       it 'deactivates a profile for fraud review' do
         profile = subject.save_profile(
-          fraud_review_needed: true,
+          fraud_pending_reason: 'threatmetrix_review',
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )
@@ -76,7 +76,7 @@ RSpec.describe Idv::ProfileMaker do
     context 'with gpo_verification_needed' do
       it 'deactivates a profile for gpo verification' do
         profile = subject.save_profile(
-          fraud_review_needed: false,
+          fraud_pending_reason: nil,
           gpo_verification_needed: true,
           deactivation_reason: nil,
         )
@@ -94,7 +94,7 @@ RSpec.describe Idv::ProfileMaker do
     context 'as active' do
       it 'creates an active profile' do
         profile = subject.save_profile(
-          fraud_review_needed: false,
+          fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )
@@ -114,7 +114,7 @@ RSpec.describe Idv::ProfileMaker do
 
       it 'creates a profile with the initiating sp recorded' do
         profile = subject.save_profile(
-          fraud_review_needed: false,
+          fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )

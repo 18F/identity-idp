@@ -62,6 +62,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
+  # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
   # @param [Hash] errors
@@ -70,6 +71,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     account_age_in_days:,
+    account_confirmed_at:,
     mfa_method_counts:,
     errors: nil,
     **extra
@@ -79,6 +81,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       account_age_in_days: account_age_in_days,
+      account_confirmed_at: account_confirmed_at,
       mfa_method_counts: mfa_method_counts,
       errors: errors,
       **extra,
