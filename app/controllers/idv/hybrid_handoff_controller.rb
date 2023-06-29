@@ -9,7 +9,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      analytics.idv_doc_auth_upload_visited(**analytics_arguments)
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
