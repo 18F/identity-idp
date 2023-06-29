@@ -18,6 +18,7 @@ class WebauthnSetupForm
     @attestation_response = nil
     @name = nil
     @platform_authenticator = false
+    @authenticator_data_flags = nil
   end
 
   def submit(protocol, params)
@@ -48,8 +49,10 @@ class WebauthnSetupForm
                 :name, :platform_authenticator
 
   def consume_parameters(params)
+    binding.pry
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
+    authenticator_data_flags = params[:authenticator_data_flags]
     @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
   end

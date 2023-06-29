@@ -2,8 +2,7 @@ import {
   isWebauthnSupported,
   enrollWebauthnDevice,
   extractCredentials,
-  longToByteArray,
-  getAuthenticatorDataFlags,
+  longToByteArray
 } from '@18f/identity-webauthn';
 
 /**
@@ -58,9 +57,11 @@ function webauthn() {
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
-          (document.getElementById('webauthn_form') as HTMLFormElement).textContent = JSON.stringify(
-            getAuthenticatorDataFlags(result.response.getAuthenticatorData()),
-          );
+        (document.getElementById('authenticator_data_flags') as HTMLInputElement).value = 
+          result.authenticatorDataFlags;
+        (document.getElementById('webauthn_form') as HTMLFormElement).textContent = 
+          result.authenticatorDataFlags;
+        (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => reloadWithError(err.name, { force: true }));
   });

@@ -30,7 +30,7 @@ export class WebauthnInputElement extends HTMLElement {
       return false;
     }
     console.log(isWebauthnPasskeySupported())
-    return !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
+    return !this.isOnlyPasskeySupported || true;
   }
 
   async toggleVisibleIfSupported() {

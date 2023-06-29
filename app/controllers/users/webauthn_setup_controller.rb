@@ -196,7 +196,11 @@ module Users
     end
 
     def confirm_params
-      params.permit(:attestation_object, :client_data_json, :name, :platform_authenticator)
+      params.permit(:attestation_object, 
+        :client_data_json, 
+        :name, 
+        :platform_authenticator, 
+        :authenticator_data_flags)
     end
 
     def delete_params
