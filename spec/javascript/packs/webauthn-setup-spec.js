@@ -40,7 +40,7 @@ describe('webauthn-setup', () => {
           const navigate = sinon.stub();
 
           reloadWithError('BadThingHappened', {
-            search: '?error=BadThingHappened',
+            initialURL: 'http://example.com?error=BadThingHappened',
             navigate,
             force: true,
           });
