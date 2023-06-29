@@ -12,6 +12,8 @@ Ahoy.track_bots = true
 
 module Ahoy
   class Store < Ahoy::BaseStore
+    EVENT_FILENAME = 'events.log'
+
     def track_visit(data)
       log_visit(data)
     end
@@ -21,6 +23,7 @@ module Ahoy
       data[:id] = data.delete(:event_id)
       data[:visitor_id] = ahoy.visitor_token
       data[:visit_id] = data.delete(:visit_token)
+      data[:log_filename] = EVENT_FILENAME
 
       log_event(data)
     end
@@ -57,7 +60,7 @@ module Ahoy
       @event_logger ||= if FeatureManagement.log_to_stdout?
                           ActiveSupport::Logger.new(STDOUT)
                         else
-                          ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
+                          ActiveSupport::Logger.new(Rails.root.join('log', EVENT_FILENAME))
                         end
     end
 
