@@ -55,12 +55,14 @@ RSpec.describe Idv::DocAuthController do
     end
 
     it 'logs that it was visited' do
+      referer = '/surprise/referer'
+      request.env['HTTP_REFERER'] = referer
       put :update, params: { step: 'foo' }
 
       expect(@analytics).to have_received(:track_event).with(
         'DocAuthController update',
         step: 'foo',
-        referer: nil,
+        referer: referer,
       )
     end
   end
