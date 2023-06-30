@@ -4,7 +4,7 @@ namespace :users do
     DEFAULT_WINDOW_IN_SECONDS = 60
     DEFAULT_EXTRA_ATTRIBUTES = 'created_at,activated_at'
 
-    if STDIN.isatty
+    if STDIN.tty?
       puts <<~HOWTOUSE
         This task requires CSV data be piped into it, for example:
 
