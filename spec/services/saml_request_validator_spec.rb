@@ -35,7 +35,7 @@ RSpec.describe SamlRequestValidator do
       context 'ialmax authncontext and ialmax provider' do
         let(:authn_context) { [Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF] }
         before do
-          expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp.issuer]}
+          expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp.issuer] }
         end
 
         it 'returns FormResponse with success: true' do

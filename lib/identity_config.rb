@@ -95,11 +95,7 @@ class IdentityConfig
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
-<<<<<<< HEAD
-=======
-    config.add(:allow_otp_countdown_expired_redirect, type: :boolean)
     config.add(:allowed_ialmax_providers, type: :json)
->>>>>>> 514fb7d9e (Changelog: Internal, IALMAX, Create allowlise of service providers that can utilize the IALMax flow)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_suspended_support_code, type: :string)

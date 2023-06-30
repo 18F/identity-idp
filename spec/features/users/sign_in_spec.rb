@@ -26,7 +26,7 @@ RSpec.feature 'Sign in' do
       visit_idp_from_oidc_sp_with_ialmax
 
       expect(page).to_not have_content t('devise.registrations.start.accordion')
-      expect(page).to_not have_content "The page you were looking for doesn’t exist"
+      expect(page).to_not have_content 'The page you were looking for doesn’t exist'
     end
   end
 
@@ -848,7 +848,9 @@ RSpec.feature 'Sign in' do
   context 'oidc sp requests ialmax' do
     context 'the service_provider is on the allow list' do
       before do
-        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { ['urn:gov:gsa:openidconnect:sp:server']}
+        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) {
+                                         ['urn:gov:gsa:openidconnect:sp:server']
+                                       }
       end
 
       it 'returns ial1 info for a non-verified user' do
@@ -887,10 +889,10 @@ RSpec.feature 'Sign in' do
 
     context 'the service provider is not on the allow list' do
       it 'returns an error' do
-        user = create(:user, :fully_registered)
+        create(:user, :fully_registered)
         visit_idp_from_oidc_sp_with_ialmax
 
-        expect(page).to have_content "The page you were looking for doesn’t exist"
+        expect(page).to have_content 'The page you were looking for doesn’t exist'
       end
     end
   end
@@ -898,7 +900,7 @@ RSpec.feature 'Sign in' do
   context 'saml sp requests ialmax' do
     context 'the service provider is on the allow list' do
       before do
-        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp1_issuer]}
+        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp1_issuer] }
       end
 
       it 'returns ial1 info for a non-verified user' do
@@ -908,7 +910,8 @@ RSpec.feature 'Sign in' do
             issuer: sp1_issuer,
             authn_context: [
               Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
+               'first_name:last_name email, ssn',
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
             ],
           },
@@ -935,7 +938,8 @@ RSpec.feature 'Sign in' do
             issuer: sp1_issuer,
             authn_context: [
               Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
+              'first_name:last_name email, ssn',
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
             ],
           },
@@ -956,22 +960,23 @@ RSpec.feature 'Sign in' do
 
     context 'the service provider is not on the allow list' do
       it 'redirects to an error page for ial1 user' do
-        user = create(:user, :fully_registered)
+        create(:user, :fully_registered)
         visit_saml_authn_request_url(
           overrides: {
             issuer: sp1_issuer,
             authn_context: [
               Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
+              'first_name:last_name email, ssn',
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
             ],
           },
         )
-        expect(page).to_not have_content "The page you were looking for doesn’t exist"
+        expect(page).to_not have_content 'The page you were looking for doesn’t exist'
       end
 
       it 'redirects to an error page for ial2 user' do
-        user = create(
+        create(
           :profile, :active, :verified,
           pii: { first_name: 'John', ssn: '111223333' }
         ).user
@@ -980,12 +985,13 @@ RSpec.feature 'Sign in' do
             issuer: sp1_issuer,
             authn_context: [
               Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
+                'first_name:last_name email, ssn',
               "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
             ],
           },
         )
-        expect(page).to_not have_content "The page you were looking for doesn’t exist"
+        expect(page).to_not have_content 'The page you were looking for doesn’t exist'
       end
     end
   end

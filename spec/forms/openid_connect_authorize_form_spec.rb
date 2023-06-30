@@ -132,7 +132,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       context 'with a service provider on the allow list' do
         before do
-          expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id]}
+          expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id] }
         end
 
         it 'has no errors' do
