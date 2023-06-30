@@ -48,7 +48,7 @@ module Rack
       end
     end
 
-    ### RateLimit Spammy Clients ###
+    ### Throttle Spammy Clients ###
 
     # If any single client IP is making tons of requests, then they're
     # probably malicious or a poorly-configured scraper. Either way, they
@@ -58,7 +58,7 @@ module Rack
     # counted by rack-attack and this throttle may be activated too
     # quickly. If so, enable the condition to exclude them from tracking.
 
-    # RateLimit all requests by IP
+    # Throttle all requests by IP
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.remote_ip}"
     if IdentityConfig.store.requests_per_ip_track_only_mode
@@ -104,7 +104,7 @@ module Rack
     # Another common method of attack is to use a swarm of computers with
     # different IPs to try brute-forcing a password for a specific account.
 
-    # RateLimit sign in attempts by IP address
+    # Throttle sign in attempts by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.remote_ip}"
     if IdentityConfig.store.logins_per_ip_track_only_mode
@@ -129,7 +129,7 @@ module Rack
 
     # A user can use the registration path to spam email addresses.
 
-    # RateLimit email registration transactions by IP address
+    # Throttle email registration transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:email_registration/ip:#{req.remote_ip}"
     if IdentityConfig.store.email_registrations_per_ip_track_only_mode
@@ -155,7 +155,7 @@ module Rack
     # A user can use the `/otp/send` path to spam phone numbers with SMSs and
     # voice calls.
 
-    # RateLimit SMS and voice transactions by IP address
+    # Throttle SMS and voice transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
     if IdentityConfig.store.otps_per_ip_track_only_mode
@@ -182,7 +182,7 @@ module Rack
     # a phone number is a VOIP number. We rate limit these endpoints to reduce
     # misuse of that form and charges from our phone classification vendor.
 
-    # RateLimit new phone addition
+    # Throttle new phone addition
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:phone_setups/ip:#{req.remote_ip}"
     if IdentityConfig.store.phone_setups_per_ip_track_only_mode
@@ -229,7 +229,7 @@ module Rack
       end
     end
 
-    ### Custom RateLimit Response ###
+    ### Custom Throttle Response ###
 
     # By default, Rack::Attack returns an HTTP 429 for throttled responses,
     # which is just fine.
