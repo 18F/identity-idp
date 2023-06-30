@@ -373,10 +373,6 @@ Rails.application.routes.draw do
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      get '/doc_auth' => 'doc_auth#index'
-      get '/doc_auth/return_to_sp' => 'doc_auth#return_to_sp'
-      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-      put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
       get '/capture_doc' => 'hybrid_mobile/entry#show'
       get '/capture-doc' => 'hybrid_mobile/entry#show',
