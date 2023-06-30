@@ -6,8 +6,7 @@ RSpec.describe Idv::SsnController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-    }
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
