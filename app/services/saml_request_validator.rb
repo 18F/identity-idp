@@ -74,14 +74,7 @@ class SamlRequestValidator
   end
 
   def ial_max_requested?
-    case authn_context
-    when Array
-      authn_context.any? do |classref|
-        Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == classref
-      end
-    else
-      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF == classref
-    end
+    Array(authn_context).include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
   end
 
   def authorized_email_nameid_format
