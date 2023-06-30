@@ -109,7 +109,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= RateLimit.new(user: idv_session.current_user, rate_limit_type: :proof_address)
+      @rate_limiter ||= RateLimit.new(user: idv_session.current_user, rate_limit_type: :proof_address)
     end
 
     def throttled_result

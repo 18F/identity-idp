@@ -64,7 +64,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= RateLimit.new(
+      @rate_limiter ||= RateLimit.new(
         user: document_capture_session.user,
         rate_limit_type: :idv_doc_auth,
       )
