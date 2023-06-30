@@ -586,7 +586,10 @@ RSpec.describe UserMailer, type: :mailer do
 
           expect(mail.html_part.body).
             to have_content(
-              t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title', date: formatted_date),
+              t(
+                'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+                date: formatted_date,
+              ),
             )
         end
         it 'does not render a warning when the flag is disabled' do
