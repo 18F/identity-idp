@@ -1,14 +1,42 @@
 {
   "name": "@18f/identity-normalize-yaml",
-  "private": true,
+  "private": false,
+  "description": "Normalizes YAML files to ensure consistency and typographical quality",
   "version": "1.0.0",
   "type": "module",
+  "main": "./index.js",
+  "types": "./types/index.d.ts",
   "bin": {
     "normalize-yaml": "./cli.js"
   },
+  "scripts": {
+    "prebuild:types": "rm -rf types",
+    "build:types": "tsc",
+    "prepublishOnly": "npm run build:types"
+  },
+  "files": [
+    "cli.js",
+    "index.js",
+    "visitors/index.js",
+    "visitors/smart-punctuation.js",
+    "visitors/sort-keys.js",
+    "types"
+  ],
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/18f/identity-idp/issues"
+  },
+  "homepage": "https://github.com/18f/identity-idp",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18f/identity-idp.git",
+    "directory": "app/javascript/packages/normalize-yaml"
+  },
   "dependencies": {
-    "prettier": "^2.6.0",
     "smartquotes": "^2.3.2",
-    "yaml": "^2.2.2"
+    "yaml": "^2.3.1"
+  },
+  "peerDependencies": {
+    "prettier": "*"
   }
 }

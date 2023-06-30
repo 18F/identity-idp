@@ -166,10 +166,10 @@ RSpec.describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to doc auth url' do
+      it 'redirects to review url' do
         get :show
 
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_review_url
       end
     end
   end
@@ -226,10 +226,10 @@ RSpec.describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to doc auth url' do
+      it 'redirects to review url' do
         patch :update
 
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_review_url
       end
     end
 

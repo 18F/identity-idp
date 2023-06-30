@@ -2,17 +2,17 @@ require 'rails_helper'
 
 RSpec.describe Encryption::KmsClient do
   before do
+    stub_const(
+      'Encryption::KmsClient::KMS_CLIENT_POOL',
+      FakeConnectionPool.new { Aws::KMS::Client.new(region: aws_region) },
+    )
+
     # rubocop:disable Layout/LineLength
     stub_mapped_aws_kms_client(
       [
         { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'a' * 3000, ciphertext: 'us-south-1:kms1', key_id: key_id, region: 'us-south-1' },
-
         { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'b' * 3000, ciphertext: 'us-south-1:kms2', key_id: key_id, region: 'us-south-1' },
-
         { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: key_id, region: 'us-north-1' },
-        { plaintext: 'c' * 3000, ciphertext: 'us-south-1:kms3', key_id: key_id, region: 'us-south-1' },
       ],
     )
     # rubocop:enable Layout/LineLength
@@ -31,9 +31,7 @@ RSpec.describe Encryption::KmsClient do
         and_return(plaintext)
     end
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
-    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
-    allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)
     allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
     allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
   end
@@ -51,23 +49,8 @@ RSpec.describe Encryption::KmsClient do
   end
 
   let(:aws_region) { 'us-north-1' }
-  let(:aws_kms_regions) { %w[us-north-1 us-south-1] }
 
-  let(:kms_multi_region_enabled) { true }
-
-  let(:kms_regionalized_ciphertext) do
-    'KMSc' + %w[kms1 kms2 kms3].map do |kms|
-      payload = {
-        regions: {
-          'us-north-1' => Base64.strict_encode64("us-north-1:#{kms}"),
-          'us-south-1' => Base64.strict_encode64("us-south-1:#{kms}"),
-        },
-      }
-      Base64.strict_encode64(payload.to_json)
-    end.to_json
-  end
-
-  let(:kms_legacy_ciphertext) do
+  let(:kms_ciphertext) do
     'KMSc' + %w[
       us-north-1:kms1
       us-north-1:kms2
@@ -83,19 +66,9 @@ RSpec.describe Encryption::KmsClient do
 
   describe '#encrypt' do
     context 'with KMS enabled' do
-      context 'with multi region enabled' do
-        it 'encrypts with KMS multi region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_regionalized_ciphertext)
-        end
-      end
-      context 'with multi region disabled' do
-        let(:kms_multi_region_enabled) { false }
-
-        it 'encrypts with KMS legacy single region' do
-          result = subject.encrypt(plaintext, encryption_context)
-          expect(result).to eq(kms_legacy_ciphertext)
-        end
+      it 'encrypts with KMS' do
+        result = subject.encrypt(plaintext, encryption_context)
+        expect(result).to eq(kms_ciphertext)
       end
     end
 
@@ -117,10 +90,9 @@ RSpec.describe Encryption::KmsClient do
   end
 
   describe '#decrypt' do
-    context 'with a ciphertext encrypted with KMS multi region' do
-      let(:kms_multi_region_enabled) { true }
+    context 'with a ciphertext encrypted with KMS' do
       it 'decrypts the ciphertext with KMS' do
-        result = subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+        result = subject.decrypt(kms_ciphertext, encryption_context)
         expect(result).to eq(plaintext)
       end
     end
@@ -164,7 +136,7 @@ RSpec.describe Encryption::KmsClient do
 
     it 'logs the context' do
       expect(Encryption::KmsLogger).to receive(:log).with(:decrypt, encryption_context)
-      subject.decrypt(kms_regionalized_ciphertext, encryption_context)
+      subject.decrypt(kms_ciphertext, encryption_context)
     end
   end
 end
