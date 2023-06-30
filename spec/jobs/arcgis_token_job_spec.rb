@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe ArcgisTokenJob, type: :job do
   let(:job) { described_class.new }
   let(:geocoder) { instance_double(ArcgisApi::Geocoder) }
+  let(:geocoder_factory) { instance_double(ArcgisApi::GeocoderFactory) }
   let(:analytics) { instance_double(Analytics) }
   describe 'arcgis token job' do
     before do
@@ -13,7 +14,8 @@ RSpec.describe ArcgisTokenJob, type: :job do
           session: {},
           sp: nil,
         ).and_return(analytics)
-      allow(ArcgisApi::Geocoder).to receive(:new).and_return(geocoder)
+      allow(ArcgisApi::GeocoderFactory).to receive(:new).and_return(geocoder_factory)
+      allow(geocoder_factory).to receive(:create).and_return(geocoder)
     end
 
     it 'fetches token and logs analytics' do
