@@ -75,7 +75,6 @@ RSpec.describe Reports::QuarterlyAccountStats do
     # Deleted user:
     user = create(:user)
     DeletedUser.create_from_user(user)
-    DeletedUser.find_by(user_id: user.id)
     user.destroy!
   end
 end
