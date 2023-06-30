@@ -64,7 +64,10 @@ module Idv
     end
 
     def throttle
-      @throttle ||= RateLimit.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+      @throttle ||= RateLimit.new(
+        user: document_capture_session.user,
+        rate_limit_type: :idv_doc_auth,
+      )
     end
 
     def user_has_establishing_in_person_enrollment?
