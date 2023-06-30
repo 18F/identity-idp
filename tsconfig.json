@@ -18,7 +18,6 @@
   },
   "include": [
     "app/components",
-    "app/javascript/app",
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascript/spec_helper.d.ts",

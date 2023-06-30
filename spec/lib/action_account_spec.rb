@@ -31,7 +31,7 @@ RSpec.describe ActionAccount do
           *Task*: `review-pass`
           *UUIDs*: `#{user.uuid}`
           *Messages*:
-          * `#{user.uuid}`: User is past the 30 day review eligibility.
+              • `#{user.uuid}`: User is past the 30 day review eligibility.
         STR
       end
     end

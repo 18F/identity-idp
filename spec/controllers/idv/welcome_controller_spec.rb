@@ -6,8 +6,6 @@ RSpec.describe Idv::WelcomeController do
   let(:user) { create(:user) }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
-      and_return(true)
     stub_sign_in(user)
     stub_analytics
     subject.user_session['idv/doc_auth'] = {}
@@ -59,7 +57,7 @@ RSpec.describe Idv::WelcomeController do
 
     context 'welcome already visited' do
       it 'redirects to agreement' do
-        allow(subject.idv_session).to receive(:welcome_visited).and_return(true)
+        subject.idv_session.welcome_visited = true
 
         get :show
 

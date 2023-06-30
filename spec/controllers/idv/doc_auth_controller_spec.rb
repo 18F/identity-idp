@@ -42,7 +42,7 @@ RSpec.describe Idv::DocAuthController do
     it 'redirects to the first step' do
       get :index
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+      expect(response).to redirect_to idv_welcome_url
     end
 
     context 'with pending in person enrollment' do
@@ -61,59 +61,10 @@ RSpec.describe Idv::DocAuthController do
   end
 
   describe '#show' do
-    it 'renders the correct template' do
-      expect(subject).to receive(:render).with(
-        template: 'layouts/flow_step',
-        locals: hash_including(
-          :flow_session,
-          step_template: 'idv/doc_auth/welcome',
-          flow_namespace: 'idv',
-        ),
-      ).and_call_original
-
-      mock_next_step(:welcome)
-      get :show, params: { step: 'welcome' }
-    end
-
     it 'renders a 404 with a non existent step' do
       get :show, params: { step: 'foo' }
 
       expect(response).to_not be_not_found
-    end
-
-    it 'tracks analytics' do
-      result = {
-        step: 'welcome',
-        flow_path: 'standard',
-        irs_reproofing: false,
-        step_count: 1,
-        analytics_id: 'Doc Auth',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
-
-      get :show, params: { step: 'welcome' }
-
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth welcome visited', result
-      )
-    end
-
-    it 'increments the analytics step counts on subsequent submissions' do
-      get :show, params: { step: 'welcome' }
-      get :show, params: { step: 'welcome' }
-
-      expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: doc auth welcome visited',
-        hash_including(
-          step: 'welcome',
-          step_count: 1,
-          acuant_sdk_upgrade_ab_test_bucket: :default,
-        ),
-      )
-      expect(@analytics).to have_received(:track_event).ordered.with(
-        'IdV: doc auth welcome visited',
-        hash_including(step: 'welcome', step_count: 2),
-      )
     end
 
     context 'with an existing applicant' do
@@ -130,34 +81,12 @@ RSpec.describe Idv::DocAuthController do
       it 'finishes the flow' do
         get :show, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_agreement_url
+        expect(response).to redirect_to idv_welcome_url
       end
     end
   end
 
   describe '#update' do
-    it 'tracks analytics' do
-      mock_next_step(:back_image)
-      allow_any_instance_of(Flow::BaseFlow).to \
-        receive(:flow_session).and_return(pii_from_doc: {})
-      result = {
-        success: true,
-        errors: {},
-        step: 'welcome',
-        flow_path: 'standard',
-        step_count: 1,
-        irs_reproofing: false,
-        analytics_id: 'Doc Auth',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
-
-      put :update, params: { step: 'welcome' }
-
-      expect(@analytics).to have_received(:track_event).with(
-        'IdV: doc auth welcome submitted', result
-      )
-    end
-
     context 'with an existing applicant' do
       before do
         idv_session = Idv::Session.new(
@@ -170,9 +99,9 @@ RSpec.describe Idv::DocAuthController do
       end
 
       it 'finishes the flow' do
-        put :update, params: { step: 'ssn' }
+        put :update, params: { step: 'welcome' }
 
-        expect(response).to redirect_to idv_agreement_url
+        expect(response).to redirect_to idv_welcome_url
       end
     end
   end

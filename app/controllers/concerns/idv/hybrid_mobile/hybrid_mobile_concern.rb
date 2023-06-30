@@ -19,12 +19,6 @@ module Idv
         return handle_invalid_document_capture_session if document_capture_session.expired?
       end
 
-      def confirm_document_capture_session_complete
-        return if document_capture_session&.load_result&.success?
-
-        redirect_to idv_hybrid_mobile_document_capture_url
-      end
-
       def document_capture_session
         return @document_capture_session if defined?(@document_capture_session)
         @document_capture_session =

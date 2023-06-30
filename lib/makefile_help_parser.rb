@@ -111,10 +111,8 @@ class MakefileHelpParser
   end
 end
 
-# rubocop:disable Style/IfUnlessModifier
 # rubocop:disable Rails/Output
 if $PROGRAM_NAME == __FILE__
   puts MakefileHelpParser.new.pretty_rules
 end
 # rubocop:enable Rails/Output
-# rubocop:enable Style/IfUnlessModifier

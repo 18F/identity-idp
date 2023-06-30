@@ -145,7 +145,6 @@ const EXCEPTIONS = {
     'app/javascript/packages/form-steps/package.json',
     'app/javascript/packages/masked-text-toggle/package.json',
     'app/javascript/packages/memorable-date/package.json',
-    'app/javascript/packages/normalize-yaml/package.json',
     'app/javascript/packages/password-toggle/package.json',
     'app/javascript/packages/phone-input/package.json',
     'app/javascript/packages/spinner-button/package.json',

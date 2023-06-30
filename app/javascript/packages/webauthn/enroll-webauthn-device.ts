@@ -1,7 +1,7 @@
 import { arrayBufferToBase64 } from './converters';
 import { getAuthenticatorDataFlags } from '@18f/identity-webauthn';
 
-interface EnnrollOptions {
+interface EnrollOptions {
   user: PublicKeyCredentialUserEntity;
 
   challenge: BufferSource;
@@ -28,7 +28,7 @@ async function enrollWebauthnDevice({
   challenge,
   excludeCredentials,
   authenticatorAttachment,
-}: EnnrollOptions): Promise<EnrollResult> {
+}: EnrollOptions): Promise<EnrollResult> {
   const credential = (await navigator.credentials.create({
     publicKey: {
       challenge,

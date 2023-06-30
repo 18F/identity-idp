@@ -4,22 +4,28 @@ RSpec.feature 'sign up with backup code' do
   include DocAuthHelper
   include SamlAuthHelper
 
-  it 'allows backup code only MFA configurations' do
-    user = sign_up_and_set_password
-    expect(page).to_not \
-      have_content t('two_factor_authentication.login_options.backup_code_info')
-    select_2fa_option('backup_code')
+  context 'with js', js: true do
+    it 'allows backup code only MFA configurations' do
+      user = sign_up_and_set_password
+      expect(page).to_not \
+        have_content t('two_factor_authentication.login_options.backup_code_info')
+      select_2fa_option('backup_code')
 
-    expect(page).to have_link(t('components.download_button.label'))
-    expect(current_path).to eq backup_code_setup_path
+      expect(page).to have_link(t('components.download_button.label'))
+      expect(current_path).to eq backup_code_setup_path
 
-    click_on 'Continue'
-    click_continue
+      click_continue
+      click_continue
 
-    expect(page).to have_content(t('notices.backup_codes_configured'))
+      expect(page).to have_content(t('forms.validation.required_checkbox'))
 
-    expect(current_path).to eq auth_method_confirmation_path
-    expect(user.backup_code_configurations.count).to eq(10)
+      check t('forms.backup_code.saved')
+      click_continue
+
+      expect(page).to have_content(t('notices.backup_codes_configured'))
+      expect(current_path).to eq auth_method_confirmation_path
+      expect(user.backup_code_configurations.count).to eq(10)
+    end
   end
 
   it 'works for each code and refreshes the codes on the last one' do
@@ -37,7 +43,7 @@ RSpec.feature 'sign up with backup code' do
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
         expect(current_path).to eq backup_code_refreshed_path
-        expect(page).to have_content(t('forms.backup_code.subtitle'))
+        expect(page).to have_content(t('forms.backup_code.title'))
         expect(page).to have_content(t('forms.backup_code.last_code'))
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
