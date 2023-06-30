@@ -7,7 +7,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_user => pii_from_user,
-      :flow_path => 'standard' }
+    }
   end
 
   let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
@@ -16,6 +16,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do

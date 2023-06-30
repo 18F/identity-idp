@@ -24,7 +24,8 @@ module Idv
           idv_session.delete('applicant')
 
           # save the flow path so it's recorded in analytics, eg standard or hybrid flow
-          idv_session.flow_path = @flow.flow_path
+          # flow_session[:flow_path] = @flow.flow_path does flow_path need to be initialized in in person verify_info
+          current_user
           redirect_to idv_in_person_verify_info_url
         end
 
