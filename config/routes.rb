@@ -404,6 +404,7 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
+      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
     end
 
     # Old paths to GPO outside of IdV.
