@@ -1,10 +1,20 @@
 import { render } from '@testing-library/react';
 import InPersonOutageAlert from './in-person-outage-alert';
+import { InPersonContext } from '../context';
 
 describe('InPersonOutageAlert', () => {
   let getByText;
   beforeEach(() => {
-    getByText = render(<InPersonOutageAlert />).getByText;
+    getByText = render(
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonOutageMessageEnabled: true,
+        }}
+      >
+        <InPersonOutageAlert />
+      </InPersonContext.Provider>,
+    ).getByText;
   });
 
   it('renders the title', () => {

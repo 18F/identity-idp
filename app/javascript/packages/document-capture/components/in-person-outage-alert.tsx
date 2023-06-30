@@ -17,7 +17,7 @@ function InPersonOutageAlert() {
                 weekday: 'long',
                 month: 'long',
                 day: 'numeric',
-              }).format(new Date(inPersonOutageExpectedUpdateDate)),
+              }).format(new Date(`${inPersonOutageExpectedUpdateDate}`)),
             })}
           </strong>
         </p>

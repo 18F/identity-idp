@@ -14,12 +14,11 @@ export interface InPersonContextProps {
   /**
    * Date communicated to users regarding expected update about their enrollment after an outage
    */
-  inPersonOutageExpectedUpdateDate: string;
+  inPersonOutageExpectedUpdateDate?: string;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
   inPersonOutageMessageEnabled: false,
-  inPersonOutageExpectedUpdateDate: '',
 });
 
 InPersonContext.displayName = 'InPersonContext';
