@@ -303,7 +303,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
             'components.countdown_alert.time_remaining_html',
             countdown_html: distance_of_time_in_words(
               Time.zone.now,
-              Time.zone.now + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS,
+              TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS.seconds.from_now,
               true,
             ),
           ),
