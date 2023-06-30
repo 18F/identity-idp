@@ -159,6 +159,28 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
+  describe '#date' do
+    let(:in_person_outage_expected_update_date) { 'January 1, 2024' }
+    subject(:date) { presenter.date }
+
+    it 'returns a formatted date for expected update after an outage' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return(in_person_outage_expected_update_date)
+      expect(date).to eq 'Monday, January 1'
+    end
+  end
+
+  describe '#email_date' do
+    let(:in_person_outage_emailed_by_date) { 'January 2, 2024' }
+    subject(:email_date) { presenter.email_date }
+
+    it 'returns a formatted email date' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return(in_person_outage_emailed_by_date)
+      expect(email_date).to eq 'Tuesday, January 2'
+    end
+  end
+
   describe '#outage_message_enabled' do
     subject(:outage_message_enabled) { presenter.outage_message_enabled }
     it 'returns true when the flag is enabled' do

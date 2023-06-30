@@ -118,7 +118,10 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
 
       puts rendered
       expect(rendered).to have_content(
-        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title', date: formatted_date),
+        t(
+          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+          date: formatted_date,
+        ),
       )
     end
 
