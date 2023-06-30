@@ -36,6 +36,13 @@ RSpec.describe Idv::VerifyInfoController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'confirms ssn step complete' do
       expect(subject).to have_actions(
         :before,
@@ -364,7 +371,7 @@ RSpec.describe Idv::VerifyInfoController do
 
           expect(@analytics).to have_logged_event(
             'IdV: doc auth warning visited',
-            step_name: 'Idv::VerifyInfoController',
+            step_name: 'verify_info',
             remaining_attempts: kind_of(Numeric),
           )
         end

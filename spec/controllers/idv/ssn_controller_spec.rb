@@ -30,6 +30,13 @@ RSpec.describe Idv::SsnController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'checks that the previous step is complete' do
       expect(subject).to have_actions(
         :before,
@@ -74,16 +81,6 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to(
         change { doc_auth_log.reload.ssn_view_count }.from(0).to(1),
       )
-    end
-
-    context 'without a flow session' do
-      let(:flow_session) { nil }
-
-      it 'redirects to hybrid_handoff' do
-        get :show
-
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
     end
 
     context 'with an ssn in session' do
@@ -131,6 +128,29 @@ RSpec.describe Idv::SsnController do
         expect(csp.directives['img-src']).to include('*.online-metrix.net')
       end
     end
+
+    it 'does not override the Content Security for CSP disabled test users' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:idv_tmx_test_csp_disabled_emails).
+        and_return([user.email_addresses.first.email])
+
+      get :show
+
+      csp = response.request.content_security_policy
+
+      aggregate_failures do
+        expect(csp.directives['script-src']).to_not include('h.online-metrix.net')
+
+        expect(csp.directives['style-src']).to_not include("'unsafe-inline'")
+
+        expect(csp.directives['child-src']).to_not include('h.online-metrix.net')
+
+        expect(csp.directives['connect-src']).to_not include('h.online-metrix.net')
+
+        expect(csp.directives['img-src']).to_not include('*.online-metrix.net')
+      end
+    end
   end
 
   describe '#update' do
@@ -155,12 +175,23 @@ RSpec.describe Idv::SsnController do
         expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
       end
 
-      it 'redirects to address controller for Puerto Rico addresses' do
-        flow_session['pii_from_doc'][:state] = 'PR'
+      context 'with a Puerto Rico address' do
+        it 'redirects to address controller after user enters their SSN' do
+          flow_session['pii_from_doc'][:state] = 'PR'
 
-        put :update, params: params
+          put :update, params: params
 
-        expect(response).to redirect_to(idv_address_url)
+          expect(response).to redirect_to(idv_address_url)
+        end
+
+        it 'redirects to the verify info controller if a user is updating their SSN' do
+          flow_session['pii_from_doc'][:ssn] = ssn
+          flow_session['pii_from_doc'][:state] = 'PR'
+
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
       end
 
       it 'logs attempts api event' do
@@ -250,6 +281,31 @@ RSpec.describe Idv::SsnController do
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_hybrid_handoff_url
       end
+    end
+  end
+
+  describe '#should_render_threatmetrix_js?' do
+    it 'returns true if the JS should be disabled for the user' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:idv_tmx_test_js_disabled_emails).
+        and_return([user.email_addresses.first.email])
+
+      expect(controller.should_render_threatmetrix_js?).to eq(false)
+    end
+
+    it 'returns true if the JS should not be disabled for the user' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:enabled)
+
+      expect(controller.should_render_threatmetrix_js?).to eq(true)
+    end
+
+    it 'returns false if TMx profiling is disabled' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
+        and_return(:disabled)
+
+      expect(controller.should_render_threatmetrix_js?).to eq(false)
     end
   end
 end

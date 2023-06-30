@@ -35,7 +35,13 @@ class ImageUploadResponsePresenter
       { success: true }
     else
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
-      json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
+      if remaining_attempts&.zero?
+        if @form_response.extra[:flow_path] == 'standard'
+          json[:redirect] = idv_session_errors_throttled_url
+        else # hybrid flow on mobile
+          json[:redirect] = idv_hybrid_mobile_capture_complete_url
+        end
+      end
       json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?

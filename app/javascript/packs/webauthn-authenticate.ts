@@ -1,10 +1,10 @@
-import { isWebauthnSupported } from '@18f/identity-webauthn';
-import * as WebAuthn from '../app/webauthn';
+import { isWebauthnSupported, verifyWebauthnDevice } from '@18f/identity-webauthn';
 
 function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress')!;
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
 
+  const webauthAlertContainer = document.querySelector('.usa-alert--error')!;
   const webauthnPlatformRequested =
     webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
   const multipleFactorsEnabled =
@@ -23,7 +23,7 @@ function webauthn() {
     window.location.href = href;
   } else {
     // if platform auth is not supported on device, we should take user to the error screen if theres no additional methods.
-    WebAuthn.verifyWebauthnDevice({
+    verifyWebauthnDevice({
       userChallenge: (document.getElementById('user_challenge') as HTMLInputElement).value,
       credentialIds: (document.getElementById('credential_ids') as HTMLInputElement).value,
     })
@@ -36,6 +36,10 @@ function webauthn() {
         (document.getElementById('signature') as HTMLInputElement).value = result.signature;
         webauthnInProgressContainer.classList.add('display-none');
         webauthnSuccessContainer.classList.remove('display-none');
+        // Check if alert container is shown and remove when device passes successfully.
+        if (webauthAlertContainer) {
+          webauthAlertContainer.remove();
+        }
       })
       .catch((error: Error) => {
         (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;

@@ -80,7 +80,7 @@ module Idv
 
     def set_try_again_path
       if in_person_flow?
-        @try_again_path = idv_in_person_path
+        @try_again_path = idv_in_person_verify_info_url
       else
         @try_again_path = idv_verify_info_url
       end

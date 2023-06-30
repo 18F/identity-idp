@@ -1,5 +1,7 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
+import { forceRedirect } from '@18f/identity-url';
+import type { Navigate } from '@18f/identity-url';
 
 interface FormStepsWaitElements {
   form: HTMLFormElement;
@@ -25,6 +27,11 @@ interface FormStepsWaitOptions {
    * DOM selector of HTML element to which alert should render.
    */
   alertTarget?: string;
+
+  /**
+   * Optional navigation implementation, useful for stubbing navigation in tests.
+   */
+  navigate?: Navigate;
 }
 
 const DEFAULT_OPTIONS: FormStepsWaitOptions = {
@@ -86,12 +93,13 @@ export class FormStepsWait {
 
   options: FormStepsWaitOptions;
 
-  constructor(form) {
+  constructor(form: HTMLFormElement, options?: Partial<FormStepsWaitOptions>) {
     this.elements = { form };
 
     this.options = {
       ...DEFAULT_OPTIONS,
       ...this.elements.form.dataset,
+      ...options,
     };
 
     this.options.pollIntervalMs = Number(this.options.pollIntervalMs);
@@ -144,7 +152,7 @@ export class FormStepsWait {
           this.renderError(message);
           this.stopSpinner();
         } else {
-          window.location.href = redirectURL;
+          forceRedirect(redirectURL, this.options.navigate);
         }
       }
     }
@@ -224,5 +232,5 @@ export class FormStepsWait {
   }
 }
 
-const forms = Array.from(document.querySelectorAll('[data-form-steps-wait]'));
+const forms = Array.from(document.querySelectorAll<HTMLFormElement>('[data-form-steps-wait]'));
 forms.forEach((form) => new FormStepsWait(form).bind());
