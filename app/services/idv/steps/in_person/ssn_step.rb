@@ -25,7 +25,6 @@ module Idv
 
           # save the flow path so it's recorded in analytics, eg standard or hybrid flow
           flow_session[:flow_path] = @flow.flow_path
-          current_user
           redirect_to idv_in_person_verify_info_url
         end
 
