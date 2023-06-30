@@ -169,7 +169,13 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
-    }
+      arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
+                       {
+                         class: 'ArcgisTokenJob',
+                         cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
+                       }
+                     end),
+    }.compact
   end
   # rubocop:enable Metrics/BlockLength
 

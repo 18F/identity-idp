@@ -9,6 +9,7 @@ RSpec.describe Encryption::KmsLogger do
             action: 'encrypt',
             encryption_context: { context: 'pii-encryption', user_uuid: '1234-abc' },
           },
+          log_filename: Encryption::KmsLogger::LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)
@@ -24,6 +25,7 @@ RSpec.describe Encryption::KmsLogger do
             action: 'decrypt',
             encryption_context: nil,
           },
+          log_filename: Encryption::KmsLogger::LOG_FILENAME,
         }.to_json
 
         expect(described_class.logger).to receive(:info).with(log)
