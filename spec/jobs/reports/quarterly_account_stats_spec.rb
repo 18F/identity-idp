@@ -17,7 +17,7 @@ RSpec.describe Reports::QuarterlyAccountStats do
         'csv text',
         extension: 'csv',
       )
-      report.perform(Time.zone.today)
+      report.perform(end_date)
     end
   end
 
