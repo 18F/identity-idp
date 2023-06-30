@@ -9,14 +9,6 @@ RSpec.describe Idv::DocumentCaptureController do
     }
   end
 
-  let(:idv_session) do
-    Idv::Session.new(
-      user_session: subject.user_session,
-      current_user: user,
-      service_provider: nil,
-    )
-  end
-
   let(:user) { create(:user) }
   let(:service_provider) do
     create(
@@ -31,8 +23,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
-    idv_session.flow_path = 'standard'
-    allow(subject).to receive(:idv_session).and_return(idv_session)
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do
@@ -109,7 +100,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        idv_session.flow_path = nil
+        subject.idv_session.flow_path = nil
 
         get :show
 
