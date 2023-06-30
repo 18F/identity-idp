@@ -43,9 +43,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
-          result = { context: 'authentication',
-                     multi_factor_auth_method: 'webauthn_platform',
-                     webauthn_configuration_id: nil }
+          result = {
+            context: 'authentication',
+            multi_factor_auth_method: 'webauthn_platform',
+            webauthn_configuration_id: nil,
+            multi_factor_auth_method_created_at: nil,
+          }
           expect(@analytics).to have_received(:track_event).with(
             'Multi-Factor Authentication: enter webAuthn authentication visited',
             result,
@@ -76,10 +79,13 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           credential_public_key: credential_public_key,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        result = { context: 'authentication',
-                   multi_factor_auth_method: 'webauthn',
-                   success: true,
-                   webauthn_configuration_id: webauthn_configuration.id }
+        result = {
+          context: 'authentication',
+          multi_factor_auth_method: 'webauthn',
+          success: true,
+          webauthn_configuration_id: webauthn_configuration.id,
+          multi_factor_auth_method_created_at: webauthn_configuration.created_at,
+        }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
@@ -107,10 +113,14 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           platform_authenticator: true,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-        result = { context: 'authentication',
-                   multi_factor_auth_method: 'webauthn_platform',
-                   success: true,
-                   webauthn_configuration_id: WebauthnConfiguration.first.id }
+        webauthn_configuration = WebauthnConfiguration.first
+        result = {
+          context: 'authentication',
+          multi_factor_auth_method: 'webauthn_platform',
+          success: true,
+          webauthn_configuration_id: webauthn_configuration.id,
+          multi_factor_auth_method_created_at: webauthn_configuration.created_at,
+        }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
@@ -140,7 +150,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
                    multi_factor_auth_method: 'webauthn',
                    success: false,
                    error_details: { authenticator_data: [:invalid_authenticator_data] },
-                   webauthn_configuration_id: webauthn_configuration.id }
+                   webauthn_configuration_id: webauthn_configuration.id,
+                   multi_factor_auth_method_created_at: webauthn_configuration.created_at }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 

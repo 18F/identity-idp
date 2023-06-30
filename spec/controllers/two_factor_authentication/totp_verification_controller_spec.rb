@@ -97,14 +97,12 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa(user)
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
-        cfg = subject.current_user.auth_app_configurations.first
 
         attributes = {
           success: false,
           errors: {},
           multi_factor_auth_method: 'totp',
-          # TODO: Review
-          multi_factor_auth_method_created_at: cfg.created_at,
+          multi_factor_auth_method_created_at: nil,
           auth_app_configuration_id: nil,
         }
 
