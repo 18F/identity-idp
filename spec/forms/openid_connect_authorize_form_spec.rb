@@ -139,9 +139,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           expect(valid?).to eq true
           expect(form.errors).to be_blank
         end
-
       end
-
     end
 
     context 'with aal but not ial requested via acr_values' do

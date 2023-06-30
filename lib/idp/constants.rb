@@ -131,6 +131,6 @@ module Idp
     ALLOWED_IALMAX_PROVIDERS = %w[
       https://eauth.va.gov/isam/sps/saml20sp/saml20
       https://myttbaccount.ttb.gov/realms/myTTB
-    ]
+    ].freeze
   end
 end

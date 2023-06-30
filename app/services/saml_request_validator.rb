@@ -40,7 +40,8 @@ class SamlRequestValidator
   def authorized_authn_context
     if !valid_authn_context? ||
        (ial2_context_requested? && service_provider&.ial != 2) ||
-       (ial_max_requested? && !Idp::Constants::ALLOWED_IALMAX_PROVIDERS.include?(service_provider&.issuer))
+       (ial_max_requested? &&
+        !Idp::Constants::ALLOWED_IALMAX_PROVIDERS.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end

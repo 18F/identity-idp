@@ -5,7 +5,7 @@ RSpec.describe SamlRequestValidator do
     let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
     let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
     let(:authn_context) { [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF] }
-    let(:comparison) { 'exact'}
+    let(:comparison) { 'exact' }
     let(:extra) do
       {
         authn_context: authn_context,
@@ -65,7 +65,7 @@ RSpec.describe SamlRequestValidator do
     end
 
     context 'valid authn context and unauthorized nameid format' do
-      let(:name_id_format) {  Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
+      let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL }
       it 'returns FormResponse with success: false' do
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
