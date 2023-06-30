@@ -576,17 +576,20 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      context 'USPS outage message' do
+      context 'Outage message' do
+        let(:formatted_date) { 'Saturday, November 1' }
+
         it 'renders a warning when the flag is enabled' do
           allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(true)
+          allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).and_return(formatted_date)
 
           expect(mail.html_part.body).
             to have_content(
-              t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
+              t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title', date: formatted_date),
             )
         end
-        it 'does not renders a warning when the flag is disabled' do
+        it 'does not render a warning when the flag is disabled' do
           allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(false)
 
