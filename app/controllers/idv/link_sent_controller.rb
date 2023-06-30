@@ -40,8 +40,9 @@ module Idv
 
     def confirm_hybrid_handoff_complete
       return if idv_session.flow_path == 'hybrid'
+      return if flow_session[:flow_path] == 'hybrid'
 
-      if idv_session.flow_path == 'standard'
+      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
       else
         redirect_to idv_hybrid_handoff_url

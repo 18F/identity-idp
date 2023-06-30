@@ -214,9 +214,9 @@ module Idv
 
       return if !idv_session.flow_path
 
-      if idv_session.flow_path == 'standard'
+      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
-      elsif idv_session.flow_path == 'hybrid'
+      elsif idv_session.flow_path == 'hybrid' || flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
       end
     end
