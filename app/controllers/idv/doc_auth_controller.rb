@@ -1,46 +1,36 @@
 module Idv
   class DocAuthController < ApplicationController
-    before_action :confirm_two_factor_authenticated
-    before_action :redirect_if_pending_gpo
-    before_action :redirect_if_pending_in_person_enrollment
+    def index
+      log_unexpected_visit('DocAuthController index')
 
-    include IdvSession
-    include Flow::FlowStateMachine
-    include FraudReviewConcern
-    include Idv::OutageConcern
+      redirect_to idv_welcome_url
+    end
 
-    before_action :redirect_if_flow_completed
-    before_action :handle_fraud
-    # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :check_for_outage, only: :show
-    # rubocop:enable Rails/LexicallyScopedActionFilter
+    def show
+      log_unexpected_visit('DocAuthController show')
 
-    FLOW_STATE_MACHINE_SETTINGS = {
-      step_url: :idv_doc_auth_step_url,
-      final_url: :idv_welcome_url,
-      flow: Idv::Flows::DocAuthFlow,
-      analytics_id: 'Doc Auth',
-    }.freeze
+      redirect_to idv_welcome_url
+    end
+
+    def update
+      log_unexpected_visit('DocAuthController update')
+
+      redirect_to idv_welcome_url
+    end
 
     def return_to_sp
-      redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
+      log_unexpected_visit('DocAuthController return_to_sp', location: params[:location])
+      redirect_to return_to_sp_failure_to_proof_url(
+        step: params[:step],
+        location: params[:location],
+      )
     end
 
-    def redirect_if_pending_gpo
-      redirect_to idv_gpo_verify_url if current_user.gpo_verification_pending_profile?
-    end
-
-    def redirect_if_flow_completed
-      flow_finish if idv_session.applicant
-    end
-
-    def redirect_if_pending_in_person_enrollment
-      return if !IdentityConfig.store.in_person_proofing_enabled
-      redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
-    end
-
-    def flow_session
-      user_session['idv/doc_auth']
+    # Temporary logging to see if we're using these routes anywhere
+    def log_unexpected_visit(from, **extra)
+      extra[:referer] = request.referer
+      extra[:step] = params[:step]
+      analytics.track_event(from, **extra)
     end
   end
 end

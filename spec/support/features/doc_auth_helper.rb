@@ -11,15 +11,6 @@ module DocAuthHelper
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
-  def session_from_completed_flow_steps(finished_step)
-    session = { doc_auth: {} }
-    Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
-      session[:doc_auth][klass.to_s] = true
-      return session if step == finished_step
-    end
-    session
-  end
-
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
     fill_in field_name, with: text
