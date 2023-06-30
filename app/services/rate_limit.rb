@@ -158,11 +158,11 @@ class RateLimit
     if Rails.env.production?
       CACHED_THROTTLE_CONFIG
     else
-      load_throttle_config
+      load_rate_limit_config
     end
   end
 
-  def self.load_throttle_config
+  def self.load_rate_limit_config
     {
       idv_doc_auth: {
         max_attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -215,5 +215,5 @@ class RateLimit
     }.with_indifferent_access
   end
 
-  CACHED_THROTTLE_CONFIG = self.load_throttle_config.with_indifferent_access.freeze
+  CACHED_THROTTLE_CONFIG = self.load_rate_limit_config.with_indifferent_access.freeze
 end
