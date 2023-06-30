@@ -10,7 +10,7 @@
   <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
 </p>
 
-<div class="grid-row">
+<div class="grid-row margin-top-5">
   <div class="tablet:grid-col-6">
     <%= render ButtonComponent.new(
           action: ->(**tag_options, &block) { link_to(sign_up_completed_path, **tag_options, &block) },
