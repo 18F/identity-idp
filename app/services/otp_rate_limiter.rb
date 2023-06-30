@@ -15,15 +15,15 @@ class OtpRateLimiter
   end
 
   def max_requests_reached?
-    throttle.throttled?
+    rate_limiter.throttled?
   end
 
   def rate_limit_period_expired?
-    throttle.expired?
+    rate_limiter.expired?
   end
 
   def reset_count_and_otp_last_sent_at
-    throttle.reset!
+    rate_limiter.reset!
   end
 
   def lock_out_user
@@ -31,14 +31,14 @@ class OtpRateLimiter
   end
 
   def increment
-    throttle.increment!
+    rate_limiter.increment!
   end
 
   def otp_last_sent_at
-    throttle.attempted_at
+    rate_limiter.attempted_at
   end
 
-  def throttle
+  def rate_limiter
     @rate_limiter ||= RateLimit.new(rate_limit_type: :phone_otp, target: throttle_key)
   end
 

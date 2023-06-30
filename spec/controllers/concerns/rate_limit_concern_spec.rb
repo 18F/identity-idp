@@ -44,10 +44,10 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with idv_doc_auth throttle (DocumentCapture)' do
+    context 'with idv_doc_auth rate_limiter (DocumentCapture)' do
       it 'redirects to idv_doc_auth throttled error page' do
-        throttle = RateLimit.new(user: user, rate_limit_type: :idv_doc_auth)
-        throttle.increment_to_throttled!
+        rate_limiter = RateLimit.new(user: user, rate_limit_type: :idv_doc_auth)
+        rate_limiter.increment_to_throttled!
 
         get :show
 
@@ -55,10 +55,10 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with idv_resolution throttle (VerifyInfo)' do
+    context 'with idv_resolution rate_limiter (VerifyInfo)' do
       it 'redirects to idv_resolution throttled error page' do
-        throttle = RateLimit.new(user: user, rate_limit_type: :idv_resolution)
-        throttle.increment_to_throttled!
+        rate_limiter = RateLimit.new(user: user, rate_limit_type: :idv_resolution)
+        rate_limiter.increment_to_throttled!
 
         get :show
 
@@ -66,10 +66,10 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with proof_address throttle (PhoneStep)' do
+    context 'with proof_address rate_limiter (PhoneStep)' do
       before do
-        throttle = RateLimit.new(user: user, rate_limit_type: :proof_address)
-        throttle.increment_to_throttled!
+        rate_limiter = RateLimit.new(user: user, rate_limit_type: :proof_address)
+        rate_limiter.increment_to_throttled!
       end
 
       it 'redirects to proof_address throttled error page' do

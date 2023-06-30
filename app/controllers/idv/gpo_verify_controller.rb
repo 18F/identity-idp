@@ -18,7 +18,7 @@ module Idv
         !gpo_mail.mail_spammed? &&
         !gpo_mail.profile_too_old?
 
-      if throttle.throttled?
+      if rate_limiter.throttled?
         render_throttled
       elsif pii_locked?
         redirect_to capture_password_url
@@ -34,8 +34,8 @@ module Idv
     def create
       @gpo_verify_form = build_gpo_verify_form
 
-      throttle.increment!
-      if throttle.throttled?
+      rate_limiter.increment!
+      if rate_limiter.throttled?
         render_throttled
         return
       end
@@ -85,7 +85,7 @@ module Idv
       idv_session.address_confirmed!
     end
 
-    def throttle
+    def rate_limiter
       @rate_limiter ||= RateLimit.new(
         user: current_user,
         rate_limit_type: :verify_gpo_key,
@@ -98,7 +98,7 @@ module Idv
         throttle_type: :verify_gpo_key,
       )
 
-      @expires_at = throttle.expires_at
+      @expires_at = rate_limiter.expires_at
       render :throttled
     end
 

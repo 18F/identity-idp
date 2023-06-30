@@ -38,8 +38,8 @@ module Idv
     end
 
     def handle_phone_submission
-      throttle.increment!
-      return throttled_failure if throttle.throttled?
+      rate_limiter.increment!
+      return throttled_failure if rate_limiter.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
@@ -144,7 +144,7 @@ module Idv
       )
     end
 
-    def throttle
+    def rate_limiter
       @rate_limiter ||= RateLimit.new(
         user: current_user,
         rate_limit_type: :idv_send_link,
@@ -180,7 +180,7 @@ module Idv
         'errors.doc_auth.send_link_throttle',
         timeout: distance_of_time_in_words(
           Time.zone.now,
-          [throttle.expires_at, Time.zone.now].compact.max,
+          [rate_limiter.expires_at, Time.zone.now].compact.max,
           except: :seconds,
         ),
       )

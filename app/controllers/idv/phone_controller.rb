@@ -19,7 +19,7 @@ module Idv
       async_state = step.async_state
 
       # It's possible that create redirected here after a success and left the
-      # throttle maxed out. Check for success before checking throttle.
+      # rate_limiter maxed out. Check for success before checking rate_limiter.
       return async_state_done(async_state) if async_state.done?
 
       render 'shared/wait' and return if async_state.in_progress?
@@ -58,7 +58,7 @@ module Idv
 
     private
 
-    def throttle
+    def rate_limiter
       @rate_limiter ||= RateLimit.new(user: current_user, rate_limit_type: :proof_address)
     end
 
@@ -171,7 +171,7 @@ module Idv
       )
 
       if async_state.result[:success]
-        throttle.reset!
+        rate_limiter.reset!
         redirect_to_next_step and return
       end
       handle_proofing_failure

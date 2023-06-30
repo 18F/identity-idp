@@ -48,45 +48,45 @@ RSpec.describe RateLimit do
   end
 
   describe '.attempt_window_in_minutes' do
-    it 'returns configured attempt window for throttle type' do
+    it 'returns configured attempt window for rate_limiter type' do
       expect(RateLimit.attempt_window_in_minutes(rate_limit_type)).to eq(attempt_window)
     end
 
-    it 'is indifferent to throttle type stringiness' do
+    it 'is indifferent to rate_limiter type stringiness' do
       expect(RateLimit.attempt_window_in_minutes(rate_limit_type.to_s)).to eq(attempt_window)
     end
   end
 
   describe '.max_attempts' do
-    it 'returns configured attempt window for throttle type' do
+    it 'returns configured attempt window for rate_limiter type' do
       expect(RateLimit.max_attempts(rate_limit_type)).to eq(max_attempts)
     end
 
-    it 'is indifferent to throttle type stringiness' do
+    it 'is indifferent to rate_limiter type stringiness' do
       expect(RateLimit.max_attempts(rate_limit_type.to_s)).to eq(max_attempts)
     end
   end
 
   describe '#increment!' do
-    subject(:throttle) { RateLimit.new(target: 'aaa', rate_limit_type: :idv_doc_auth) }
+    subject(:rate_limiter) { RateLimit.new(target: 'aaa', rate_limit_type: :idv_doc_auth) }
     let(:max_attempts) { 1 } # Picked up by before block at top of test file
 
     it 'increments attempts' do
-      expect(throttle.attempts).to eq 0
-      throttle.increment!
-      expect(throttle.attempts).to eq 1
+      expect(rate_limiter.attempts).to eq 0
+      rate_limiter.increment!
+      expect(rate_limiter.attempts).to eq 1
     end
 
     it 'does nothing if already throttled' do
-      expect(throttle.attempts).to eq 0
-      throttle.increment!
-      expect(throttle.attempts).to eq 1
-      expect(throttle.throttled?).to eq(true)
-      current_expiration = throttle.expires_at
+      expect(rate_limiter.attempts).to eq 0
+      rate_limiter.increment!
+      expect(rate_limiter.attempts).to eq 1
+      expect(rate_limiter.throttled?).to eq(true)
+      current_expiration = rate_limiter.expires_at
       travel 5.minutes do # move within 10 minute expiration window
-        throttle.increment!
-        expect(throttle.attempts).to eq 1
-        expect(throttle.expires_at).to eq current_expiration
+        rate_limiter.increment!
+        expect(rate_limiter.attempts).to eq 1
+        expect(rate_limiter.expires_at).to eq current_expiration
       end
     end
   end
@@ -96,65 +96,65 @@ RSpec.describe RateLimit do
     let(:max_attempts) { RateLimit.max_attempts(rate_limit_type) }
     let(:attempt_window_in_minutes) { RateLimit.attempt_window_in_minutes(rate_limit_type) }
 
-    subject(:throttle) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
 
     it 'returns true if throttled' do
       max_attempts.times do
-        throttle.increment!
+        rate_limiter.increment!
       end
 
-      expect(throttle.throttled?).to eq(true)
+      expect(rate_limiter.throttled?).to eq(true)
     end
 
     it 'returns false if the attempts < max_attempts' do
       (max_attempts - 1).times do
-        expect(throttle.throttled?).to eq(false)
-        throttle.increment!
+        expect(rate_limiter.throttled?).to eq(false)
+        rate_limiter.increment!
       end
 
-      expect(throttle.throttled?).to eq(false)
+      expect(rate_limiter.throttled?).to eq(false)
     end
 
     it 'returns false if the attempts <= max_attempts but the window is expired' do
       max_attempts.times do
-        throttle.increment!
+        rate_limiter.increment!
       end
 
       travel(attempt_window_in_minutes.minutes + 1) do
-        expect(throttle.throttled?).to eq(false)
+        expect(rate_limiter.throttled?).to eq(false)
       end
     end
   end
 
   describe '#expires_at' do
     let(:attempted_at) { nil }
-    let(:throttle) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
+    let(:rate_limiter) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
 
     context 'without having attempted' do
       it 'returns current time' do
         freeze_time do
-          expect(throttle.expires_at).to eq(Time.zone.now)
+          expect(rate_limiter.expires_at).to eq(Time.zone.now)
         end
       end
     end
 
-    context 'with expired throttle' do
+    context 'with expired rate_limiter' do
       it 'returns expiration time' do
-        throttle.increment!
+        rate_limiter.increment!
 
-        travel_to(throttle.attempted_at + 3.days) do
-          expect(throttle.expires_at).to be_within(1.second).
-            of(throttle.attempted_at + attempt_window.minutes)
+        travel_to(rate_limiter.attempted_at + 3.days) do
+          expect(rate_limiter.expires_at).to be_within(1.second).
+            of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
     end
 
-    context 'with active throttle' do
+    context 'with active rate_limiter' do
       it 'returns expiration time' do
         freeze_time do
-          throttle.increment!
-          expect(throttle.expires_at).to be_within(1.second).
-            of(throttle.attempted_at + attempt_window.minutes)
+          rate_limiter.increment!
+          expect(rate_limiter.expires_at).to be_within(1.second).
+            of(rate_limiter.attempted_at + attempt_window.minutes)
         end
       end
     end
@@ -164,12 +164,12 @@ RSpec.describe RateLimit do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:throttle) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
 
     it 'resets attempt count to 0' do
-      throttle.increment!
+      rate_limiter.increment!
 
-      expect { throttle.reset! }.to change { throttle.attempts }.to(0)
+      expect { rate_limiter.reset! }.to change { rate_limiter.attempts }.to(0)
     end
   end
 
@@ -177,15 +177,15 @@ RSpec.describe RateLimit do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:throttle) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
+    subject(:rate_limiter) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
 
     it 'returns maximium remaining attempts with zero attempts' do
-      expect(throttle.remaining_count).to eq(RateLimit.max_attempts(rate_limit_type))
+      expect(rate_limiter.remaining_count).to eq(RateLimit.max_attempts(rate_limit_type))
     end
 
-    it 'returns zero when throttle limit is reached' do
-      throttle.increment_to_throttled!
-      expect(throttle.remaining_count).to eq(0)
+    it 'returns zero when rate_limiter limit is reached' do
+      rate_limiter.increment_to_throttled!
+      expect(rate_limiter.remaining_count).to eq(0)
     end
   end
 end

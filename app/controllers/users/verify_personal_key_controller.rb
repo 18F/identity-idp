@@ -13,7 +13,7 @@ module Users
         personal_key: '',
       )
 
-      if throttle.throttled?
+      if rate_limiter.throttled?
         render_throttled
       else
         render :new
@@ -21,8 +21,8 @@ module Users
     end
 
     def create
-      throttle.increment!
-      if throttle.throttled?
+      rate_limiter.increment!
+      if rate_limiter.throttled?
         render_throttled
       else
         result = personal_key_form.submit
@@ -45,7 +45,7 @@ module Users
 
     private
 
-    def throttle
+    def rate_limiter
       @rate_limiter ||= RateLimit.new(
         user: current_user,
         rate_limit_type: :verify_personal_key,
@@ -59,7 +59,7 @@ module Users
 
       irs_attempts_api_tracker.personal_key_reactivation_rate_limited
 
-      @expires_at = throttle.expires_at
+      @expires_at = rate_limiter.expires_at
       render :throttled
     end
 

@@ -32,7 +32,7 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          throttle.reset!
+          rate_limiter.reset!
         end
       end
 
@@ -54,7 +54,7 @@ module Idv
 
     def increment_throttle!
       return unless document_capture_session
-      throttle.increment!
+      rate_limiter.increment!
     end
 
     def validate_form
@@ -130,11 +130,11 @@ module Idv
     end
 
     def remaining_attempts
-      throttle.remaining_count if document_capture_session
+      rate_limiter.remaining_count if document_capture_session
     end
 
     def attempts
-      throttle.attempts if document_capture_session
+      rate_limiter.attempts if document_capture_session
     end
 
     def determine_response(form_response:, client_response:, doc_pii_response:)
@@ -306,7 +306,7 @@ module Idv
       document_capture_session&.user&.uuid
     end
 
-    def throttle
+    def rate_limiter
       @rate_limiter ||= RateLimit.new(
         user: document_capture_session.user,
         rate_limit_type: :idv_doc_auth,
@@ -314,7 +314,7 @@ module Idv
     end
 
     def throttled?
-      throttle.throttled? if document_capture_session
+      rate_limiter.throttled? if document_capture_session
     end
 
     def track_event(response)
