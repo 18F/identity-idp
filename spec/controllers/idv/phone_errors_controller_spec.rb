@@ -133,7 +133,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
     context 'with throttle attempts' do
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -164,7 +164,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -185,7 +185,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -216,7 +216,7 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       it 'assigns expiration time' do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
@@ -225,7 +225,7 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'logs an event' do
         freeze_time do
           attempted_at = Time.zone.now.utc
-          RateLimit.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+          RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
           throttle_window = RateLimit.attempt_window_in_minutes(:proof_address).minutes
 
           get action

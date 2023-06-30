@@ -37,7 +37,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        RateLimit.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
 
         get :new
 
@@ -49,7 +49,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
-        RateLimit.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do

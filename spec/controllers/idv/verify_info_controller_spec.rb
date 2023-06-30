@@ -132,7 +132,7 @@ RSpec.describe Idv::VerifyInfoController do
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
+          rate_limit_type: :proof_ssn,
         ).increment_to_throttled!
       end
 
@@ -154,7 +154,7 @@ RSpec.describe Idv::VerifyInfoController do
       before do
         RateLimit.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
+          rate_limit_type: :idv_resolution,
         ).increment_to_throttled!
       end
 
@@ -430,7 +430,7 @@ RSpec.describe Idv::VerifyInfoController do
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
+          rate_limit_type: :proof_ssn,
         ).increment_to_throttled!
       end
 
@@ -452,7 +452,7 @@ RSpec.describe Idv::VerifyInfoController do
       before do
         RateLimit.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
+          rate_limit_type: :idv_resolution,
         ).increment_to_throttled!
       end
 

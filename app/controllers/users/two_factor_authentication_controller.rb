@@ -267,7 +267,7 @@ module Users
     def phone_confirmation_throttle
       @phone_confirmation_throttle ||= RateLimit.new(
         user: current_user,
-        throttle_type: :phone_confirmation,
+        rate_limit_type: :phone_confirmation,
       )
     end
 

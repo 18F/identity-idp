@@ -309,7 +309,7 @@ module Idv
     def throttle
       @throttle ||= RateLimit.new(
         user: document_capture_session.user,
-        throttle_type: :idv_doc_auth,
+        rate_limit_type: :idv_doc_auth,
       )
     end
 

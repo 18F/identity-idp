@@ -213,7 +213,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
 
       # Manual expiration is needed for now since the RateLimit uses
       # Redis ttl instead of expiretime
-      RateLimit.new(throttle_type: :idv_send_link, user: user).reset!
+      RateLimit.new(rate_limit_type: :idv_send_link, user: user).reset!
       travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link

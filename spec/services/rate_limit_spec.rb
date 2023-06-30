@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe RateLimit do
-  let(:throttle_type) { :idv_doc_auth }
+  let(:rate_limit_type) { :idv_doc_auth }
   let(:max_attempts) { 3 }
   let(:attempt_window) { 10 }
   before(:each) do
@@ -12,18 +12,18 @@ RSpec.describe RateLimit do
 
   describe '.new' do
     context 'when target is a string' do
-      subject(:for_target) { RateLimit.new(target: target, throttle_type: throttle_type) }
+      subject(:for_target) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
 
       context 'target is not a string' do
         it 'raises an error' do
-          expect { RateLimit.new(target: 3, throttle_type: throttle_type) }.
+          expect { RateLimit.new(target: 3, rate_limit_type: rate_limit_type) }.
             to raise_error(ArgumentError)
         end
       end
     end
 
     it 'throws an error when neither user nor target are provided' do
-      expect { RateLimit.new(throttle_type: throttle_type) }.
+      expect { RateLimit.new(rate_limit_type: rate_limit_type) }.
         to raise_error(
           ArgumentError,
           'RateLimit must have a user or a target, but neither were provided',
@@ -31,44 +31,44 @@ RSpec.describe RateLimit do
     end
 
     it 'throws an error when both user and target are provided' do
-      expect { RateLimit.new(throttle_type: throttle_type) }.
+      expect { RateLimit.new(rate_limit_type: rate_limit_type) }.
         to raise_error(
           ArgumentError,
           'RateLimit must have a user or a target, but neither were provided',
         )
     end
 
-    it 'throws an error for an invalid throttle_type' do
-      expect { RateLimit.new(throttle_type: :abc_123, target: '1') }.
+    it 'throws an error for an invalid rate_limit_type' do
+      expect { RateLimit.new(rate_limit_type: :abc_123, target: '1') }.
         to raise_error(
           ArgumentError,
-          'throttle_type is not valid',
+          'rate_limit_type is not valid',
         )
     end
   end
 
   describe '.attempt_window_in_minutes' do
     it 'returns configured attempt window for throttle type' do
-      expect(RateLimit.attempt_window_in_minutes(throttle_type)).to eq(attempt_window)
+      expect(RateLimit.attempt_window_in_minutes(rate_limit_type)).to eq(attempt_window)
     end
 
     it 'is indifferent to throttle type stringiness' do
-      expect(RateLimit.attempt_window_in_minutes(throttle_type.to_s)).to eq(attempt_window)
+      expect(RateLimit.attempt_window_in_minutes(rate_limit_type.to_s)).to eq(attempt_window)
     end
   end
 
   describe '.max_attempts' do
     it 'returns configured attempt window for throttle type' do
-      expect(RateLimit.max_attempts(throttle_type)).to eq(max_attempts)
+      expect(RateLimit.max_attempts(rate_limit_type)).to eq(max_attempts)
     end
 
     it 'is indifferent to throttle type stringiness' do
-      expect(RateLimit.max_attempts(throttle_type.to_s)).to eq(max_attempts)
+      expect(RateLimit.max_attempts(rate_limit_type.to_s)).to eq(max_attempts)
     end
   end
 
   describe '#increment!' do
-    subject(:throttle) { RateLimit.new(target: 'aaa', throttle_type: :idv_doc_auth) }
+    subject(:throttle) { RateLimit.new(target: 'aaa', rate_limit_type: :idv_doc_auth) }
     let(:max_attempts) { 1 } # Picked up by before block at top of test file
 
     it 'increments attempts' do
@@ -92,11 +92,11 @@ RSpec.describe RateLimit do
   end
 
   describe '#throttled?' do
-    let(:throttle_type) { :idv_doc_auth }
-    let(:max_attempts) { RateLimit.max_attempts(throttle_type) }
-    let(:attempt_window_in_minutes) { RateLimit.attempt_window_in_minutes(throttle_type) }
+    let(:rate_limit_type) { :idv_doc_auth }
+    let(:max_attempts) { RateLimit.max_attempts(rate_limit_type) }
+    let(:attempt_window_in_minutes) { RateLimit.attempt_window_in_minutes(rate_limit_type) }
 
-    subject(:throttle) { RateLimit.new(target: '1', throttle_type: throttle_type) }
+    subject(:throttle) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
 
     it 'returns true if throttled' do
       max_attempts.times do
@@ -128,7 +128,7 @@ RSpec.describe RateLimit do
 
   describe '#expires_at' do
     let(:attempted_at) { nil }
-    let(:throttle) { RateLimit.new(target: '1', throttle_type: throttle_type) }
+    let(:throttle) { RateLimit.new(target: '1', rate_limit_type: rate_limit_type) }
 
     context 'without having attempted' do
       it 'returns current time' do
@@ -164,7 +164,7 @@ RSpec.describe RateLimit do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:throttle) { RateLimit.new(target: target, throttle_type: throttle_type) }
+    subject(:throttle) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
 
     it 'resets attempt count to 0' do
       throttle.increment!
@@ -177,10 +177,10 @@ RSpec.describe RateLimit do
     let(:target) { '1' }
     let(:subject) { described_class }
 
-    subject(:throttle) { RateLimit.new(target: target, throttle_type: throttle_type) }
+    subject(:throttle) { RateLimit.new(target: target, rate_limit_type: rate_limit_type) }
 
     it 'returns maximium remaining attempts with zero attempts' do
-      expect(throttle.remaining_count).to eq(RateLimit.max_attempts(throttle_type))
+      expect(throttle.remaining_count).to eq(RateLimit.max_attempts(rate_limit_type))
     end
 
     it 'returns zero when throttle limit is reached' do

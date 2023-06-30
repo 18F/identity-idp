@@ -62,7 +62,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
 
         RateLimit.new(
-          throttle_type: :idv_doc_auth,
+          rate_limit_type: :idv_doc_auth,
           user: document_capture_session.user,
         ).increment_to_throttled!
         form.submit

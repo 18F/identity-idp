@@ -39,7 +39,7 @@ class OtpRateLimiter
   end
 
   def throttle
-    @throttle ||= RateLimit.new(throttle_type: :phone_otp, target: throttle_key)
+    @throttle ||= RateLimit.new(rate_limit_type: :phone_otp, target: throttle_key)
   end
 
   private

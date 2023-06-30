@@ -159,7 +159,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -235,7 +235,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'assigns expiration time' do
@@ -281,7 +281,7 @@ RSpec.describe Idv::SessionErrorsController do
 
       before do
         RateLimit.new(
-          throttle_type: :proof_ssn,
+          rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_throttled!
         controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
@@ -316,7 +316,7 @@ RSpec.describe Idv::SessionErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RateLimit.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
       end
 
       it 'assigns expiration time' do

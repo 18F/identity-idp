@@ -2,16 +2,16 @@
 # the throttle period begins once the maximum number of allowed
 # attempts has been reached.
 class RateLimit
-  attr_reader :throttle_type
+  attr_reader :rate_limit_type
 
-  def initialize(throttle_type:, user: nil, target: nil)
-    @throttle_type = throttle_type
+  def initialize(rate_limit_type:, user: nil, target: nil)
+    @rate_limit_type = rate_limit_type
     @user = user
     @target = target
 
-    unless RateLimit.throttle_config.key?(throttle_type)
+    unless RateLimit.throttle_config.key?(rate_limit_type)
       raise ArgumentError,
-            'throttle_type is not valid'
+            'rate_limit_type is not valid'
     end
     if @user.blank? && @target.blank?
       raise ArgumentError, 'RateLimit must have a user or a target, but neither were provided'
@@ -49,13 +49,13 @@ class RateLimit
 
   def expires_at
     return Time.zone.now if attempted_at.blank?
-    attempted_at + RateLimit.attempt_window_in_minutes(throttle_type).minutes
+    attempted_at + RateLimit.attempt_window_in_minutes(rate_limit_type).minutes
   end
 
   def remaining_count
     return 0 if throttled?
 
-    RateLimit.max_attempts(throttle_type) - attempts
+    RateLimit.max_attempts(rate_limit_type) - attempts
   end
 
   def expired?
@@ -63,7 +63,7 @@ class RateLimit
   end
 
   def maxed?
-    attempts && attempts >= RateLimit.max_attempts(throttle_type)
+    attempts && attempts >= RateLimit.max_attempts(rate_limit_type)
   end
 
   def increment!
@@ -75,7 +75,7 @@ class RateLimit
         multi.incr(key)
         multi.expire(
           key,
-          RateLimit.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+          RateLimit.attempt_window_in_minutes(rate_limit_type).minutes.seconds.to_i,
         )
       end
     end
@@ -105,7 +105,7 @@ class RateLimit
     else
       @redis_attempted_at =
         ActiveSupport::TimeZone['UTC'].at(expiretime).in_time_zone(Time.zone) -
-        RateLimit.attempt_window_in_minutes(throttle_type).minutes
+        RateLimit.attempt_window_in_minutes(rate_limit_type).minutes
     end
 
     self
@@ -121,14 +121,14 @@ class RateLimit
   end
 
   def increment_to_throttled!
-    value = RateLimit.max_attempts(throttle_type)
+    value = RateLimit.max_attempts(rate_limit_type)
     now = Time.zone.now
 
     REDIS_THROTTLE_POOL.with do |client|
       client.set(
         key,
         value,
-        exat: now.to_i + RateLimit.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+        exat: now.to_i + RateLimit.attempt_window_in_minutes(rate_limit_type).minutes.seconds.to_i,
       )
     end
 
@@ -140,18 +140,18 @@ class RateLimit
 
   def key
     if @user
-      "throttle:throttle:#{@user.id}:#{throttle_type}"
+      "throttle:throttle:#{@user.id}:#{rate_limit_type}"
     else
-      "throttle:throttle:#{@target}:#{throttle_type}"
+      "throttle:throttle:#{@target}:#{rate_limit_type}"
     end
   end
 
-  def self.attempt_window_in_minutes(throttle_type)
-    throttle_config.dig(throttle_type, :attempt_window)
+  def self.attempt_window_in_minutes(rate_limit_type)
+    throttle_config.dig(rate_limit_type, :attempt_window)
   end
 
-  def self.max_attempts(throttle_type)
-    throttle_config.dig(throttle_type, :max_attempts)
+  def self.max_attempts(rate_limit_type)
+    throttle_config.dig(rate_limit_type, :max_attempts)
   end
 
   def self.throttle_config

@@ -37,7 +37,7 @@ module Idv
     private
 
     def throttle
-      RateLimit.new(user: idv_session.current_user, throttle_type: :proof_address)
+      RateLimit.new(user: idv_session.current_user, rate_limit_type: :proof_address)
     end
 
     def confirm_idv_phone_step_needed

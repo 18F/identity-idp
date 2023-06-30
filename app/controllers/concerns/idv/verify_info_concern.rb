@@ -64,14 +64,14 @@ module Idv
     def resolution_throttle
       @resolution_throttle ||= RateLimit.new(
         user: current_user,
-        throttle_type: :idv_resolution,
+        rate_limit_type: :idv_resolution,
       )
     end
 
     def ssn_throttle
       @ssn_throttle ||= RateLimit.new(
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
-        throttle_type: :proof_ssn,
+        rate_limit_type: :proof_ssn,
       )
     end
 
@@ -105,14 +105,14 @@ module Idv
       end
     end
 
-    def idv_failure_log_throttled(throttle_type)
-      if throttle_type == :proof_ssn
+    def idv_failure_log_throttled(rate_limit_type)
+      if rate_limit_type == :proof_ssn
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :proof_ssn,
           step_name: STEP_NAME,
         )
-      elsif throttle_type == :idv_resolution
+      elsif rate_limit_type == :idv_resolution
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,

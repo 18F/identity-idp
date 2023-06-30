@@ -99,7 +99,7 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user is throttled' do
       before do
-        RateLimit.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'redirects to fail' do
@@ -491,7 +491,7 @@ RSpec.describe Idv::PhoneController do
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
 
-          throttle = RateLimit.new(throttle_type: :proof_address, user: user)
+          throttle = RateLimit.new(rate_limit_type: :proof_address, user: user)
           throttle.increment_to_throttled!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
