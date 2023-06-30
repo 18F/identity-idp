@@ -62,14 +62,14 @@ module Idv
     end
 
     def resolution_throttle
-      @resolution_throttle ||= Throttle.new(
+      @resolution_throttle ||= RateLimit.new(
         user: current_user,
         throttle_type: :idv_resolution,
       )
     end
 
     def ssn_throttle
-      @ssn_throttle ||= Throttle.new(
+      @ssn_throttle ||= RateLimit.new(
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
         throttle_type: :proof_ssn,
       )

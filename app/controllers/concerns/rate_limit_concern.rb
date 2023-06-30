@@ -51,12 +51,12 @@ module RateLimitConcern
   def idv_attempter_rate_limited?(throttle_type)
     if throttle_type == :proof_ssn
       return unless pii_ssn
-      Throttle.new(
+      RateLimit.new(
         target: Pii::Fingerprinter.fingerprint(pii_ssn),
         throttle_type: :proof_ssn,
       ).throttled?
     else
-      Throttle.new(
+      RateLimit.new(
         user: idv_session_user,
         throttle_type: throttle_type,
       ).throttled?

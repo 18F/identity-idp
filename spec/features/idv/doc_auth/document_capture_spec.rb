@@ -98,7 +98,7 @@ RSpec.feature 'doc auth document capture step', :js do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+            RateLimit.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
           message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
           expect(page).to have_content(message)

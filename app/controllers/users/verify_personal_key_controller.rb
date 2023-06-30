@@ -46,7 +46,7 @@ module Users
     private
 
     def throttle
-      @throttle ||= Throttle.new(
+      @throttle ||= RateLimit.new(
         user: current_user,
         throttle_type: :verify_personal_key,
       )

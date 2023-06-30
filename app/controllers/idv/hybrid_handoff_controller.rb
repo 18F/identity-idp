@@ -145,7 +145,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= Throttle.new(
+      @throttle ||= RateLimit.new(
         user: current_user,
         throttle_type: :idv_send_link,
       )

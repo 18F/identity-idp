@@ -13,7 +13,7 @@ module Idv
     end
 
     def warning
-      throttle = Throttle.new(
+      throttle = RateLimit.new(
         user: idv_session_user,
         throttle_type: :idv_resolution,
       )
@@ -27,7 +27,7 @@ module Idv
     end
 
     def failure
-      throttle = Throttle.new(
+      throttle = RateLimit.new(
         user: idv_session_user,
         throttle_type: :idv_resolution,
       )
@@ -40,7 +40,7 @@ module Idv
       throttle = nil
 
       if ssn_from_doc
-        throttle = Throttle.new(
+        throttle = RateLimit.new(
           target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
           throttle_type: :proof_ssn,
         )
@@ -52,7 +52,7 @@ module Idv
     end
 
     def throttled
-      throttle = Throttle.new(user: idv_session_user, throttle_type: :idv_doc_auth)
+      throttle = RateLimit.new(user: idv_session_user, throttle_type: :idv_doc_auth)
       log_event(based_on_throttle: throttle)
       @expires_at = throttle.expires_at
     end

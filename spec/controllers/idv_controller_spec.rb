@@ -54,7 +54,7 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
+        RateLimit.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
 
         stub_sign_in(profile.user)
       end
@@ -81,7 +81,7 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimit.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         stub_sign_in(profile.user)
       end
@@ -100,7 +100,7 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimit.new(throttle_type: :proof_address, user: user).increment_to_throttled!
 
         stub_sign_in(profile.user)
       end

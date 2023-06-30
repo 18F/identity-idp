@@ -59,7 +59,7 @@ module Idv
     private
 
     def throttle
-      @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)
+      @throttle ||= RateLimit.new(user: current_user, throttle_type: :proof_address)
     end
 
     def redirect_to_next_step
