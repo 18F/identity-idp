@@ -131,8 +131,6 @@ class IdentityConfig
     config.add(:aws_http_retry_max_delay, type: :integer)
     config.add(:aws_http_timeout, type: :integer)
     config.add(:aws_kms_key_id, type: :string)
-    config.add(:aws_kms_multi_region_enabled, type: :boolean)
-    config.add(:aws_kms_regions, type: :json)
     config.add(:aws_kms_client_contextless_pool_size, type: :integer)
     config.add(:aws_kms_client_multi_pool_size, type: :integer)
     config.add(:aws_logo_bucket, type: :string)
