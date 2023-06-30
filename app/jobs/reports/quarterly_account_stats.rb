@@ -42,27 +42,15 @@ module Reports
     private
 
     def deleted_user_count(start_date:, end_date:)
-      DeletedUser.where(
-        'user_created_at between ? and ?',
-        start_date,
-        end_date,
-      ).count
+      DeletedUser.where(user_created_at: start_date..end_date).count
     end
 
     def user_count(start_date:, end_date:)
-      User.where(
-        'created_at between ? and ?',
-        start_date,
-        end_date,
-      ).count
+      User.where(created_at: start_date..end_date).count
     end
 
     def idv_user_count(start_date:, end_date:)
-      Profile.where(active: true).where(
-        'activated_at between ? and ?',
-        start_date,
-        end_date,
-      ).count
+      Profile.where(active: true).where(activated_at: start_date..end_date).count
     end
   end
 end
