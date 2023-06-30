@@ -2818,18 +2818,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user is redirected to OTP expired page
-  # @param [String] otp_sent_at
-  # @param [String] otp_expiration
-  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
-    track_event(
-      'OTP Expired Page Visited',
-      otp_sent_at: otp_sent_at,
-      otp_expiration: otp_expiration,
-      **extra,
-    )
-  end
-
   # Tracks if otp phone validation failed
   # @identity.idp.previous_event_name Twilio Phone Validation Failed
   # @param [String] error

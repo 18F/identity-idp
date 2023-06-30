@@ -3,10 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::OtpExpiredController do
   let(:direct_otp_sent_at) { Time.zone.now }
   let(:delivery_preference) { 'voice' }
-  before do
-    allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
-      and_return(true)
-  end
+
   describe '#show' do
     it 'global otp_delivery_preference variable properly defined' do
       user = create(
@@ -59,17 +56,6 @@ RSpec.describe TwoFactorAuthentication::OtpExpiredController do
     context 'user is signed out' do
       it 'does not render template' do
         allow(controller).to receive(:user_signed_in?).and_return(false)
-
-        get :show
-
-        expect(response).to_not render_template(:show)
-      end
-    end
-
-    context 'otp expired redirect feature is turned off' do
-      it 'does not redirect' do
-        allow(IdentityConfig.store).to receive(:allow_otp_countdown_expired_redirect).
-          and_return(false)
 
         get :show
 
