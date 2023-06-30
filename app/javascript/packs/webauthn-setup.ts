@@ -4,6 +4,8 @@ import {
   extractCredentials,
   longToByteArray,
 } from '@18f/identity-webauthn';
+import { forceRedirect } from '@18f/identity-url';
+import type { Navigate } from '@18f/identity-url';
 
 /**
  * Reloads the current page, presenting the message corresponding to the given error key.
@@ -11,12 +13,21 @@ import {
  * @param error Error key for which to show message.
  * @param options Optional options.
  * @param options.force If true, reload the page even if that error is already shown.
+ * @param options.initialURL Initial URL value.
+ * @param options.navigate Navigate implementation.
  */
-export function reloadWithError(error: string, { force = false }: { force?: boolean } = {}) {
-  const params = new URLSearchParams(window.location.search);
-  if (force || params.get('error') !== error) {
-    params.set('error', error);
-    window.location.search = params.toString();
+export function reloadWithError(
+  error: string,
+  {
+    force = false,
+    initialURL = window.location.href,
+    navigate = forceRedirect,
+  }: { force?: boolean; initialURL?: string; navigate?: Navigate } = {},
+) {
+  const url = new URL(initialURL);
+  if (force || url.searchParams.get('error') !== error) {
+    url.searchParams.set('error', error);
+    navigate(url.toString());
   }
 }
 

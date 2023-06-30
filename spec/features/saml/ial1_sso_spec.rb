@@ -71,23 +71,23 @@ RSpec.feature 'IAL1 Single Sign On' do
     end
 
     it 'after session timeout, signing in takes user back to SP', :js, allow_browser_log: true do
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
-
       user = create(:user, :fully_registered)
       request_url = saml_authn_request_url
 
       visit request_url
       sp_request_id = ServiceProviderRequestProxy.last.uuid
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       fill_in_credentials_and_submit(user.email, user.password)
 
       Warden.on_next_request do |proxy|
-        proxy.env['devise.skip_trackable'] = true
         session = proxy.env['rack.session']
         session['warden.user.user.session']['last_request_at'] = 30.minutes.ago.to_i
       end
 
       expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id), wait: 5)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_call_original
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_call_original
 
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp

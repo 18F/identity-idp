@@ -46,8 +46,9 @@ arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
-arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
+arcgis_api_refresh_token_job_cron: '0/55 * * * *'
+arcgis_api_refresh_token_job_enabled: false
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
@@ -60,7 +61,6 @@ aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
-aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
@@ -315,7 +315,6 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v3_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
@@ -374,7 +373,6 @@ development:
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   component_previews_enabled: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
@@ -444,9 +442,9 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
+  arcgis_api_refresh_token_job_enabled: true
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
-  aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
@@ -527,7 +525,6 @@ test:
   acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''

@@ -3,22 +3,6 @@ module Idv
     class DocAuthFlow < Flow::BaseFlow
       STEPS = {}.freeze
 
-      STEP_INDICATOR_STEPS = [
-        { name: :getting_started },
-        { name: :verify_id },
-        { name: :verify_info },
-        { name: :verify_phone_or_address },
-        { name: :secure_account },
-      ].freeze
-
-      STEP_INDICATOR_STEPS_GPO = [
-        { name: :getting_started },
-        { name: :verify_id },
-        { name: :verify_info },
-        { name: :get_a_letter },
-        { name: :secure_account },
-      ].freeze
-
       OPTIONAL_SHOW_STEPS = {}.freeze
 
       ACTIONS = {}.freeze

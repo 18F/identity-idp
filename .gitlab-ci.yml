@@ -89,6 +89,7 @@ install:
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
+# Cache intermediate images for 1 week (168 hours)
 build-idp-image:
   stage: review
   needs: []
@@ -116,6 +117,10 @@ build-idp-image:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
+      --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
+      --cache-ttl=168h
+      --cache=true
+      --compressed-caching=false
       --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
 
 check_changelog:
@@ -290,6 +295,7 @@ trigger_devops:
 
 review-app:
   stage: review
+  allow_failure: true
   needs:
     - job: build-idp-image
   resource_group: $CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
