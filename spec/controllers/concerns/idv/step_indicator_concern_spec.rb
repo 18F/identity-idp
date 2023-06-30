@@ -122,7 +122,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
       context 'when user is not signed in' do
         let(:user) { nil }
         it 'returns doc auth flow steps and does not crash' do
-          expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+          expect(steps).to eq(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
         end
 
         context 'when idv_session method is not present' do
@@ -130,7 +130,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
             include Idv::StepIndicatorConcern
           end
           it 'returns doc auth flow steps and does not crash' do
-            expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+            expect(steps).to eq(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
           end
         end
 
@@ -144,7 +144,7 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
           end
 
           it 'returns doc auth flow steps and does not crash' do
-            expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
+            expect(steps).to eq(Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS)
           end
         end
       end

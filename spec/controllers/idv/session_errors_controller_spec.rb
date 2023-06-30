@@ -191,7 +191,7 @@ RSpec.describe Idv::SessionErrorsController do
         it 'assigns URL to try again' do
           response
 
-          expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+          expect(assigns(:try_again_path)).to eq(idv_in_person_verify_info_url)
         end
       end
     end
@@ -219,7 +219,7 @@ RSpec.describe Idv::SessionErrorsController do
 
         it 'assigns URL to try again' do
           response
-          expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+          expect(assigns(:try_again_path)).to eq(idv_in_person_verify_info_url)
         end
       end
     end

@@ -1,5 +1,5 @@
 import { fireEvent, findByRole } from '@testing-library/dom';
-import { useDefineProperty, useSandbox } from '@18f/identity-test-helpers';
+import { useSandbox } from '@18f/identity-test-helpers';
 import {
   FormStepsWait,
   getDOMFromHTML,
@@ -74,9 +74,8 @@ describe('getPageErrorMessage', () => {
 
 describe('FormStepsWait', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
-  const defineProperty = useDefineProperty();
 
-  function createForm({ action, method, options }) {
+  function createForm({ action, method, options, navigate = sandbox.stub() }) {
     document.body.innerHTML = `
       <form
         action="${action}"
@@ -92,18 +91,14 @@ describe('FormStepsWait', () => {
 
     const form = document.body.firstElementChild;
     Object.assign(form.dataset, options);
+    new FormStepsWait(form, { navigate }).bind();
     return form;
   }
-
-  beforeEach(() => {
-    sandbox.stub(window.fetch, 'polyfill').value(undefined);
-  });
 
   it('submits form via fetch', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method });
-    new FormStepsWait(form).bind();
     const mock = sandbox
       .mock(window)
       .expects('fetch')
@@ -137,7 +132,6 @@ describe('FormStepsWait', () => {
 
       it('stops spinner', (done) => {
         const form = createForm({ action, method });
-        new FormStepsWait(form).bind();
         fireEvent.submit(form);
         form.addEventListener('spinner.stop', () => done());
       });
@@ -148,9 +142,7 @@ describe('FormStepsWait', () => {
         /** @type {HTMLFormElement} */
         let form;
         beforeEach(() => {
-          form = createForm({ action, method });
-          form.setAttribute('data-error-message', errorMessage);
-          new FormStepsWait(form).bind();
+          form = createForm({ action, method, options: { errorMessage } });
         });
 
         it('shows message', async () => {
@@ -176,25 +168,13 @@ describe('FormStepsWait', () => {
             });
         });
 
-        it('redirects', (done) => {
-          const form = createForm({ action, method });
-          new FormStepsWait(form).bind();
+        it('redirects', async () => {
+          const navigate = sandbox.stub();
+          const form = createForm({ action, method, navigate });
 
           fireEvent.submit(form);
 
-          const { pathname } = window.location;
-
-          defineProperty(window, 'location', {
-            value: {
-              get pathname() {
-                return pathname;
-              },
-              set href(url) {
-                expect(url).to.equal(redirect);
-                done();
-              },
-            },
-          });
+          await expect(navigate).to.eventually.be.calledWith(redirect);
         });
       });
 
@@ -229,7 +209,6 @@ describe('FormStepsWait', () => {
 
           it('shows message', async () => {
             const form = createForm({ action, method });
-            new FormStepsWait(form).bind();
 
             fireEvent.submit(form);
 
@@ -239,7 +218,6 @@ describe('FormStepsWait', () => {
 
           it('replaces previous message', async () => {
             const form = createForm({ action, method });
-            new FormStepsWait(form).bind();
 
             fireEvent.submit(form);
 
@@ -289,7 +267,6 @@ describe('FormStepsWait', () => {
               method,
               options: { waitStepPath, pollIntervalMs: 0 },
             });
-            new FormStepsWait(form).bind();
             sandbox.clock.restore(); // Disable fake clock since we'll poll instantly
 
             fireEvent.submit(form);
@@ -302,12 +279,12 @@ describe('FormStepsWait', () => {
     });
   });
 
-  it('navigates on redirected response', (done) => {
+  it('navigates on redirected response', async () => {
     const action = new URL('/', window.location).toString();
     const redirect = new URL('/next', window.location).toString();
     const method = 'post';
-    const form = createForm({ action, method });
-    new FormStepsWait(form).bind();
+    const navigate = sandbox.stub();
+    const form = createForm({ action, method, navigate });
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
@@ -325,26 +302,24 @@ describe('FormStepsWait', () => {
             </div>`,
           ),
       });
-    defineProperty(window, 'location', {
-      value: {
-        set href(url) {
-          expect(url).to.equal(redirect);
-          done();
-        },
-      },
-    });
 
     fireEvent.submit(form);
+    await expect(navigate).to.eventually.be.calledWith(redirect);
   });
 
-  it('polls for completion', (done) => {
+  it('polls for completion', async () => {
     const action = new URL('/', window.location).toString();
     const pollIntervalMs = 1000;
     const waitStepPath = '/wait';
     const redirect = new URL('/next', window.location).toString();
     const method = 'post';
-    const form = createForm({ action, method, options: { waitStepPath, pollIntervalMs } });
-    new FormStepsWait(form).bind();
+    const navigate = sandbox.stub();
+    const form = createForm({
+      action,
+      method,
+      options: { waitStepPath, pollIntervalMs },
+      navigate,
+    });
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
@@ -362,19 +337,11 @@ describe('FormStepsWait', () => {
         text: () => Promise.resolve(NON_POLL_PAGE_MARKUP),
       });
 
-    defineProperty(window, 'location', {
-      value: {
-        set href(url) {
-          expect(url).to.equal(redirect);
-          done();
-        },
-      },
-    });
-
     fireEvent.submit(form);
     sandbox.stub(global, 'setTimeout').callsFake((callback, timeout) => {
       expect(timeout).to.equal(pollIntervalMs);
       callback();
     });
+    await expect(navigate).to.eventually.be.calledWith(redirect);
   });
 });

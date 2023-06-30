@@ -20,6 +20,13 @@ RSpec.describe Idv::PhoneController do
         :confirm_verify_info_step_complete,
       )
     end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
   end
 
   describe 'before_actions' do
@@ -488,6 +495,10 @@ RSpec.describe Idv::PhoneController do
           throttle.increment_to_throttled!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
+        end
+
+        it 'redirects to fail' do
+          expect(response).to redirect_to idv_phone_errors_failure_url
         end
 
         it 'tracks throttled event' do

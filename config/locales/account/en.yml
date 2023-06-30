@@ -55,7 +55,7 @@ en:
       verification:
         instructions: Your account requires a one-time code to be verified.
         reactivate_button: Enter the code you received via US mail
-        success: Your account has been verified.
+        success: We verified your information
       webauthn: Security key
       webauthn_add: Add security key
       webauthn_confirm_delete: Yes, remove key

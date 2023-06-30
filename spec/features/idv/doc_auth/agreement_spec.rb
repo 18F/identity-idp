@@ -3,11 +3,6 @@ require 'rails_helper'
 RSpec.feature 'doc auth agreement step' do
   include DocAuthHelper
 
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
-      and_return(true)
-  end
-
   context 'when JS is enabled', :js do
     before do
       sign_in_and_2fa_user

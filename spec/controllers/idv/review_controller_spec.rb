@@ -151,14 +151,6 @@ RSpec.describe Idv::ReviewController do
         expect(response).to render_template :new
       end
 
-      it 'displays a helpful flash message to the user' do
-        get :new
-
-        expect(flash.now[:success]).to eq(
-          t('idv.messages.review.phone_verified'),
-        )
-      end
-
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
@@ -174,7 +166,6 @@ RSpec.describe Idv::ReviewController do
         it 'displays info message about sending letter' do
           get :new
 
-          expect(flash.now[:success]).to be_nil
           expect(flash.now[:info]).to eq(
             t('idv.messages.review.gpo_pending'),
           )
@@ -224,7 +215,6 @@ RSpec.describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
-        expect(flash.now[:success]).to be_nil
       end
     end
 

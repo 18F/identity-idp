@@ -29,7 +29,9 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer]).
           call('document_capture', :update, true)
 
+        # rate limiting redirect is in ImageUploadResponsePresenter
         if result.success?
+          flash[:success] = t('doc_auth.headings.capture_complete')
           redirect_to idv_hybrid_mobile_capture_complete_url
         else
           redirect_to idv_hybrid_mobile_document_capture_url

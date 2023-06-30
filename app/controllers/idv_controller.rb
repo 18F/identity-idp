@@ -29,7 +29,7 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    redirect_to idv_doc_auth_url
+    redirect_to idv_welcome_url
   end
 
   def profile_needs_reactivation?

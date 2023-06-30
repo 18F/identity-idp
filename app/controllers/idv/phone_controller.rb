@@ -2,7 +2,6 @@ module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include OutageConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 
@@ -11,11 +10,10 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_step_needed
     before_action :set_idv_form
-    # rubocop:disable Rails/LexicallyScopedActionFilter
-    before_action :check_for_outage, only: :show
-    # rubocop:enable Rails/LexicallyScopedActionFilter
+    skip_before_action :confirm_not_rate_limited, only: :new
 
     def new
+      flash.keep(:success) if should_keep_flash_success?
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
       async_state = step.async_state
@@ -24,7 +22,9 @@ module Idv
       # throttle maxed out. Check for success before checking throttle.
       return async_state_done(async_state) if async_state.done?
 
-      redirect_to failure_url(:fail) and return if throttle.throttled?
+      render 'shared/wait' and return if async_state.in_progress?
+
+      return if confirm_not_rate_limited
 
       if async_state.none?
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -32,8 +32,6 @@ module Idv
 
         analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
-      elsif async_state.in_progress?
-        render 'shared/wait'
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -171,8 +169,24 @@ module Idv
           new_phone_added: new_phone_added?,
         ),
       )
-      redirect_to_next_step and return if async_state.result[:success]
+
+      if async_state.result[:success]
+        throttle.reset!
+        redirect_to_next_step and return
+      end
       handle_proofing_failure
+    end
+
+    def is_req_from_frontend?
+      request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
+    end
+
+    def is_req_from_verify_step?
+      request.referer == idv_verify_info_url
+    end
+
+    def should_keep_flash_success?
+      is_req_from_frontend? && is_req_from_verify_step?
     end
 
     def new_phone_added?

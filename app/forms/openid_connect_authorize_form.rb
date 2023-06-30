@@ -226,6 +226,8 @@ class OpenidConnectAuthorizeForm
   def extra_analytics_attributes
     {
       client_id: client_id,
+      prompt: prompt,
+      allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),

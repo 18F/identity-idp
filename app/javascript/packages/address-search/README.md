@@ -12,6 +12,8 @@ You can install this module using npm:
 npm install @18f/identity-address-search
 ```
 
+Requires React version 17 or greater.
+
 ## Usage
 
 To use this component, provide callbacks to it for desired behaviors.

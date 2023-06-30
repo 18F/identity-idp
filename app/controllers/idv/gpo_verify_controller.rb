@@ -20,6 +20,8 @@ module Idv
 
       if throttle.throttled?
         render_throttled
+      elsif pii_locked?
+        redirect_to capture_password_url
       else
         render :index
       end
@@ -79,6 +81,7 @@ module Idv
         flash[:success] = t('account.index.verification.success')
       end
 
+      idv_session.address_verification_mechanism = 'gpo'
       idv_session.address_confirmed!
     end
 
@@ -118,6 +121,10 @@ module Idv
 
     def threatmetrix_enabled?
       FeatureManagement.proofing_device_profiling_decisioning_enabled?
+    end
+
+    def pii_locked?
+      !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
   end
 end

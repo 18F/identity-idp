@@ -147,7 +147,7 @@ RSpec.feature 'IAL2 Single Sign On' do
       )
       visit sign_up_completed_path
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
     end
   end
 end

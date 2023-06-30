@@ -2,44 +2,13 @@ require 'rails_helper'
 
 RSpec.describe ArcgisApi::Geocoder do
   include ArcgisApiHelper
-
+  let(:cache_key) { 'test_arcgis_geocoder_token' }
   let(:subject) { ArcgisApi::Geocoder.new }
-
-  describe '#suggest' do
-    before(:each) do
-      stub_generate_token_response
-    end
-
-    it 'returns suggestions' do
-      stub_request_suggestions
-
-      suggestions = subject.suggest('100 Main')
-
-      expect(suggestions.first.magic_key).to be_present
-      expect(suggestions.first.text).to be_present
-    end
-
-    it 'returns an error response body but with Status coded as 200' do
-      stub_request_suggestions_error
-
-      expect { subject.suggest('100 Main') }.to raise_error do |error|
-        expect(error).to be_instance_of(Faraday::ClientError)
-        expect(error.message).to eq('Unable to complete operation.')
-        expect(error.response).to be_kind_of(Hash)
-      end
-    end
-
-    it 'returns an error with Status coded as 4** in HTML' do
-      stub_request_suggestions_error_html
-
-      expect { subject.suggest('100 Main') }.to raise_error(
-        an_instance_of(Faraday::BadRequestError),
-      )
-    end
-  end
 
   describe '#find_address_candidates' do
     before(:each) do
+      allow(IdentityConfig.store).to receive(:arcgis_api_token_cache_key_prefix).
+        and_return(cache_key)
       stub_generate_token_response
     end
 
@@ -105,18 +74,17 @@ RSpec.describe ArcgisApi::Geocoder do
     end
   end
 
-  describe '#retrieve_token!' do
+  describe '#token!' do
     it 'sets token and token_expires_at' do
       stub_generate_token_response
-      subject.retrieve_token!
-
-      expect(subject.token).to be_present
+      token = subject.token
+      expect(token).to be_present
     end
 
     it 'attempts to generate a token with invalid credentials' do
       stub_invalid_token_credentials_response
 
-      expect { subject.suggest('100 Main') }.to raise_error do |error|
+      expect { subject.find_address_candidates(SingleLine: 'abc123') }.to raise_error do |error|
         expect(error.message).to eq('Unable to generate token.')
       end
     end
@@ -124,7 +92,7 @@ RSpec.describe ArcgisApi::Geocoder do
     it 'calls the token service with no response' do
       stub_token_service_unreachable_response
 
-      expect { subject.suggest('100 Main') }.to raise_error do |error|
+      expect { subject.find_address_candidates(SingleLine: 'abc123') }.to raise_error do |error|
         expect(error.message).to eq('Failed to open TCP connection')
       end
     end
@@ -139,7 +107,7 @@ RSpec.describe ArcgisApi::Geocoder do
       allow(IdentityConfig.store).to receive(:arcgis_api_password).
         and_return(password)
 
-      subject.retrieve_token!
+      subject.token
 
       expect(WebMock).to have_requested(:post, %r{/generateToken}).
         with(
@@ -149,16 +117,16 @@ RSpec.describe ArcgisApi::Geocoder do
 
     it 'reuses the cached token on subsequent requests' do
       stub_generate_token_response
-      stub_request_suggestions
-      stub_request_suggestions
-      stub_request_suggestions
+      stub_request_candidates_response
+      stub_request_candidates_response
+      stub_request_candidates_response
 
-      subject.suggest('1')
-      subject.suggest('100')
-      subject.suggest('100 Main')
+      subject.find_address_candidates(SingleLine: 'abc1')
+      subject.find_address_candidates(SingleLine: 'abc12')
+      subject.find_address_candidates(SingleLine: 'abc123')
 
       expect(WebMock).to have_requested(:post, %r{/generateToken}).once
-      expect(WebMock).to have_requested(:get, %r{/suggest}).times(3)
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).times(3)
     end
 
     it 'implicitly refreshes the token when expired' do
@@ -167,50 +135,32 @@ RSpec.describe ArcgisApi::Geocoder do
         and_return(root_url)
 
       stub_generate_token_response(expires_at: 1.hour.from_now.to_i * 1000, token: 'token1')
-      stub_request_suggestions
-      subject.suggest('100 Main')
+      stub_request_candidates_response
+      subject.find_address_candidates(SingleLine: 'abc123')
 
       travel 2.hours
 
       stub_generate_token_response(token: 'token2')
-      stub_request_suggestions
-      subject.suggest('100 Main')
+      stub_request_candidates_response
+      subject.find_address_candidates(SingleLine: 'abc123')
 
       expect(WebMock).to have_requested(:post, %r{/generateToken}).twice
-      expect(WebMock).to have_requested(:get, %r{/suggest}).
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
         with(headers: { 'Authorization' => 'Bearer token1' }).once
-      expect(WebMock).to have_requested(:get, %r{/suggest}).
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
         with(headers: { 'Authorization' => 'Bearer token1' }).once
     end
 
     it 'reuses the cached token across instances' do
       stub_generate_token_response(token: 'token1')
-      stub_request_suggestions
-      stub_request_suggestions
+      stub_request_candidates_response
+      stub_request_candidates_response
 
-      client1 = ArcgisApi::Geocoder.new
-      client2 = ArcgisApi::Geocoder.new
+      subject.find_address_candidates(SingleLine: 'abc12')
+      subject.find_address_candidates(SingleLine: 'abc123')
 
-      client1.suggest('1')
-      client2.suggest('100')
-
-      expect(WebMock).to have_requested(:get, %r{/suggest}).
+      expect(WebMock).to have_requested(:get, %r{/findAddressCandidates}).
         with(headers: { 'Authorization' => 'Bearer token1' }).twice
-    end
-
-    context 'when using redis as a backing store' do
-      before do |ex|
-        allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
-        )
-      end
-
-      it 'manually sets the expiration' do
-        stub_generate_token_response
-        subject.retrieve_token!
-        ttl = Rails.cache.redis.ttl(ArcgisApi::Geocoder::API_TOKEN_CACHE_KEY)
-        expect(ttl).to be > 0
-      end
     end
   end
 end

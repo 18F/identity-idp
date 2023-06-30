@@ -183,6 +183,7 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
@@ -344,6 +345,8 @@ Rails.application.routes.draw do
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
       put '/verify_info' => 'verify_info#update'
+      get '/welcome' => 'welcome#show'
+      put '/welcome' => 'welcome#update'
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'

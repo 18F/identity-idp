@@ -62,6 +62,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
+  # @param [Time] account_confirmed_at date that account creation was confirmed
   # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
   # @param [Hash] errors
@@ -70,6 +71,7 @@ module AnalyticsEvents
     success:,
     user_id:,
     account_age_in_days:,
+    account_confirmed_at:,
     mfa_method_counts:,
     errors: nil,
     **extra
@@ -79,6 +81,7 @@ module AnalyticsEvents
       success: success,
       user_id: user_id,
       account_age_in_days: account_age_in_days,
+      account_confirmed_at: account_confirmed_at,
       mfa_method_counts: mfa_method_counts,
       errors: errors,
       **extra,
@@ -555,6 +558,22 @@ module AnalyticsEvents
       response_body_present: response_body_present,
       response_body: response_body,
       response_status_code: response_status_code,
+      **extra,
+    )
+  end
+
+  # Track when ArcGIS auth token refresh job completed
+  def idv_arcgis_token_job_completed(**extra)
+    track_event(
+      'ArcgisTokenJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when ArcGIS auth token refresh job started
+  def idv_arcgis_token_job_started(**extra)
+    track_event(
+      'ArcgisTokenJob: Started',
       **extra,
     )
   end
@@ -1715,6 +1734,14 @@ module AnalyticsEvents
   # User visits IdV
   def idv_intro_visit
     track_event('IdV: intro visited')
+  end
+
+  # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
+  def idv_mail_only_warning_visited(**extra)
+    track_event(
+      'IdV: Mail only warning visited',
+      **extra,
+    )
   end
 
   # Tracks whether the user's device appears to be mobile device with a camera attached.
@@ -3097,22 +3124,27 @@ module AnalyticsEvents
   # @param [Boolean] evaluated_as_valid Whether result was considered valid
   # @param [String] validator_class Class name of validator
   # @param [String, nil] exception_class Class name of exception, if error occurred
+  # @param [String, nil] phone_country_code Country code associated with reCAPTCHA phone result
   def recaptcha_verify_result_received(
     recaptcha_result:,
     score_threshold:,
     evaluated_as_valid:,
     validator_class:,
     exception_class:,
+    phone_country_code: nil,
     **extra
   )
     track_event(
       'reCAPTCHA verify result received',
-      recaptcha_result:,
-      score_threshold:,
-      evaluated_as_valid:,
-      validator_class:,
-      exception_class:,
-      **extra,
+      {
+        recaptcha_result:,
+        score_threshold:,
+        evaluated_as_valid:,
+        validator_class:,
+        exception_class:,
+        phone_country_code:,
+        **extra,
+      }.compact,
     )
   end
 

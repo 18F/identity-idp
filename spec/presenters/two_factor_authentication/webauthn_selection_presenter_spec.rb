@@ -17,13 +17,20 @@ RSpec.describe TwoFactorAuthentication::WebauthnSelectionPresenter do
     end
   end
 
-  describe '#html_class' do
-    it 'returns display-none' do
-      expect(presenter_without_mfa.html_class).to eq 'display-none'
+  describe '#render_in' do
+    it 'renders a WebauthnInputComponent' do
+      view_context = ActionController::Base.new.view_context
+
+      expect(view_context).to receive(:render) do |component, &block|
+        expect(component).to be_instance_of(WebauthnInputComponent)
+        expect(block.call).to eq('content')
+      end
+
+      presenter_without_mfa.render_in(view_context) { 'content' }
     end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     it 'returns an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end
