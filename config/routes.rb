@@ -341,6 +341,7 @@ Rails.application.routes.draw do
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
+      get '/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -373,7 +374,6 @@ Rails.application.routes.draw do
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
       get '/capture_doc' => 'hybrid_mobile/entry#show'
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
