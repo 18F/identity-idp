@@ -24,47 +24,45 @@ RSpec.describe Reports::QuarterlyAccountStats do
   describe '#report_body' do
     subject(:report_body) { report.report_body(start_date, end_date) }
 
-    let(:start_date) { Time.zone.today - 90.days }
-    let(:end_date) { Time.zone.today - 1.day }
+    let(:today) { Time.zone.today }
+    let(:start_date) { today - 90.days }
+    let(:end_date) { today - 1.day }
 
     before do
       # These are older than 90 days and should go to grand totals,
       # but not counts for the period.
-      travel_to(Time.zone.today - 6.months) do
+      travel_to(today - 6.months) do
         create_accounts
       end
 
       # These are recent and should be included in both the period and
       # grand totals.
-      travel_to(Time.zone.today - 1.week) do
+      travel_to(today - 1.week) do
         create_accounts
       end
 
       # This is too new for our interval, so it should only show up in
       # the grand total, and even that's debatable.
-      travel_to(Time.zone.today + 1.day) do
+      travel_to(today + 1.day) do
         create_accounts
       end
     end
 
     it 'returns the appropriate counts' do
-      # convert our CSV to a hash for a more readable test
-      lines = CSV.parse(report_body.chomp)
-      params = lines[0].zip(lines[1]).to_h
+      row = CSV.parse(report_body, headers: true).first
 
-      expected = {
-        start_date: start_date.to_s,
-        end_date: end_date.to_s,
-        deleted_users_all_time: '3',
-        deleted_users_for_period: '1',
-        users_all_time: '6',
-        users_for_period: '2', # verified + non-verified
-        users_and_deleted_all_time: '9',
-        users_and_deleted_for_period: '3',
-        proofed_all_time: '3',
-        proofed_for_period: '1',
-      }.stringify_keys
-      expect(params).to eq(expected)
+      aggregate_failures do
+        expect(row['start_date']).to eq(start_date.to_s)
+        expect(row['end_date']).to eq(end_date.to_s)
+        expect(row['deleted_users_all_time']).to eq('3')
+        expect(row['deleted_users_for_period']).to eq('1')
+        expect(row['users_all_time']).to eq('6')
+        expect(row['users_for_period']).to eq('2') # verified + non-verified
+        expect(row['users_and_deleted_all_time']).to eq('9')
+        expect(row['users_and_deleted_for_period']).to eq('3')
+        expect(row['proofed_all_time']).to eq('3')
+        expect(row['proofed_for_period']).to eq('1')
+      end
     end
   end
 
