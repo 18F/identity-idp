@@ -9,7 +9,7 @@ class RateLimit
     @user = user
     @target = target
 
-    unless RateLimit.throttle_config.key?(rate_limit_type)
+    unless RateLimit.rate_limit_config.key?(rate_limit_type)
       raise ArgumentError,
             'rate_limit_type is not valid'
     end
@@ -147,14 +147,14 @@ class RateLimit
   end
 
   def self.attempt_window_in_minutes(rate_limit_type)
-    throttle_config.dig(rate_limit_type, :attempt_window)
+    rate_limit_config.dig(rate_limit_type, :attempt_window)
   end
 
   def self.max_attempts(rate_limit_type)
-    throttle_config.dig(rate_limit_type, :max_attempts)
+    rate_limit_config.dig(rate_limit_type, :max_attempts)
   end
 
-  def self.throttle_config
+  def self.rate_limit_config
     if Rails.env.production?
       CACHED_THROTTLE_CONFIG
     else
