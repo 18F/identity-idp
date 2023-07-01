@@ -327,16 +327,7 @@ RSpec.describe SignUp::CompletionsController do
     end
 
     context 'when the user goes through reproofing' do
-      # TODO: this passed with the previous `active` trait,
-      # but now fails with the new one that removes `activated_at`
-      # let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
-
-      # this will pass with the new `deactivated` trait, but it obviously shouldn't
-      # let!(:user) { create(:user, profiles: [create(:profile, :deactivated)]) }
-
-      # TODO: this preserves the previous passing behavior, but should be re-implemented
-      # to rely on the `Profile#active` boolean rather than the `Profile#activated_at` timestamp
-      let!(:user) { create(:user, profiles: [create(:profile, activated_at: Time.zone.now)]) }
+      let!(:user) { create(:user, profiles: [create(:profile, :active)]) }
 
       before do
         stub_attempts_tracker
@@ -355,8 +346,8 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'logs a reproofing event upon reproofing' do
-        unverified_profile = user.profiles.first
-        verified_profile = create(:profile, :verified, user: user)
+        verified_profile = user.profiles.first
+        unverified_profile = create(:profile, :verified, user: user)
 
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -365,21 +356,21 @@ RSpec.describe SignUp::CompletionsController do
           request_url: 'http://example.com',
         }
 
-        expect(unverified_profile.activated_at).to be_present
-        expect(unverified_profile.active).to eq false
-        expect(unverified_profile.deactivation_reason).to be_nil
-        expect(unverified_profile.fraud_review_pending?).to eq(false)
-        expect(unverified_profile.gpo_verification_pending_at).to be_nil
-        expect(unverified_profile.initiating_service_provider).to be_nil
-        expect(unverified_profile.verified_at).to be_nil
-
         expect(verified_profile.activated_at).to be_present
-        expect(verified_profile.active).to eq false
+        expect(verified_profile.active).to eq true
         expect(verified_profile.deactivation_reason).to be_nil
         expect(verified_profile.fraud_review_pending?).to eq(false)
         expect(verified_profile.gpo_verification_pending_at).to be_nil
         expect(verified_profile.initiating_service_provider).to be_nil
         expect(verified_profile.verified_at).to be_present
+
+        expect(unverified_profile.activated_at).to be_nil
+        expect(unverified_profile.active).to eq false
+        expect(unverified_profile.deactivation_reason).to be_nil
+        expect(unverified_profile.fraud_review_pending?).to eq(false)
+        expect(unverified_profile.gpo_verification_pending_at).to be_nil
+        expect(unverified_profile.initiating_service_provider).to be_nil
+        expect(unverified_profile.verified_at).to be_present
 
         expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
