@@ -132,7 +132,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_tmx_test_csp_disabled_emails: '[]'
 idv_tmx_test_js_disabled_emails: '[]'
-ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
 in_person_email_reminder_early_benchmark_in_days: 11
