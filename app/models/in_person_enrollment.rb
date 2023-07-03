@@ -8,6 +8,9 @@ class InPersonEnrollment < ApplicationRecord
              primary_key: 'issuer',
              inverse_of: :in_person_enrollments,
              optional: true
+
+  has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
+
   enum status: {
     establishing: 0,
     pending: 1,

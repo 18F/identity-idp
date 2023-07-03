@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_25_143140) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_27_213457) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -360,6 +360,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_25_143140) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
+  end
+
+  create_table "notification_phone_configurations", force: :cascade do |t|
+    t.bigint "in_person_enrollment_id", null: false
+    t.text "encrypted_phone", null: false, comment: "Encrypted phone number to send notifications to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["in_person_enrollment_id"], name: "index_notification_phone_configurations_on_enrollment_id", unique: true
   end
 
   create_table "partner_account_statuses", force: :cascade do |t|
