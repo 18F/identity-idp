@@ -123,8 +123,8 @@ namespace :users do
       profiles.each do |profile|
         uuid = profile.user.uuid
 
-        closest_timestamp = timestamps_by_user_id[uuid]&.sort do |a, b|
-          (profile.created_at - a).abs <=> (profile.created_at - b).abs
+        closest_timestamp = timestamps_by_user_id[uuid]&.sort_by do |timestamp|
+          (profile.created_at - timestamp).abs
         end&.first
 
         timestamp_in_window = closest_timestamp.present? &&
