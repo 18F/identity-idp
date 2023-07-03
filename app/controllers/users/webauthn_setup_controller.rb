@@ -69,6 +69,10 @@ module Users
       end
     end
 
+    def passkey_not_supported
+      @continue_path = next_setup_path || after_mfa_setup_path
+    end
+
     def delete
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
@@ -160,6 +164,10 @@ module Users
         )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
+        if form.passkey_not_backed_up? && FeatureManagement.platform_backup_state_redirect?
+          redirect_to webauthn_setup_passkey_not_supported_path
+          return
+        end
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -196,11 +204,13 @@ module Users
     end
 
     def confirm_params
-      params.permit(:attestation_object, 
-        :client_data_json, 
-        :name, 
-        :platform_authenticator, 
-        :authenticator_data_flags)
+      params.permit(
+        :attestation_object,
+        :client_data_json,
+        :name,
+        :platform_authenticator,
+        :authenticator_data_flags,
+      )
     end
 
     def delete_params

@@ -82,6 +82,10 @@ class FeatureManagement
     IdentityConfig.store.use_reauthentication_route
   end
 
+  def self.platform_backup_state_redirect?
+    IdentityConfig.store.platform_backup_state_redirect
+  end
+
   def self.enable_saml_cert_rotation?
     IdentityConfig.store.saml_secret_rotation_enabled
   end

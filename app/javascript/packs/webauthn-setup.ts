@@ -61,7 +61,6 @@ function webauthn() {
       authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
     })
       .then((result) => {
-        debugger
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;
         (document.getElementById('webauthn_public_key') as HTMLInputElement).value =
           result.webauthnPublicKey;
@@ -74,7 +73,6 @@ function webauthn() {
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => {
-        debugger
         reloadWithError(err.name, { force: true })
       });
   });
