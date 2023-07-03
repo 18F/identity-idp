@@ -226,14 +226,14 @@ RSpec.describe Idv::PhoneErrorsController do
         freeze_time do
           attempted_at = Time.zone.now.utc
           RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
-          throttle_window = RateLimiter.attempt_window_in_minutes(:proof_address).minutes
+          rate_limit_window = RateLimiter.attempt_window_in_minutes(:proof_address).minutes
 
           get action
 
           expect(@analytics).to have_received(:track_event).with(
             'IdV: phone error visited',
             type: action,
-            throttle_expires_at: attempted_at + throttle_window,
+            throttle_expires_at: attempted_at + rate_limit_window,
           )
         end
       end

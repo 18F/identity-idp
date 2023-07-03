@@ -203,7 +203,7 @@ module Idv
       )
 
       form_response = form_response.merge(check_ssn) if form_response.success?
-      summarize_result_and_throttle_failures(form_response)
+      summarize_result_and_rate_limit_failures(form_response)
       delete_async
 
       if form_response.success?
@@ -231,7 +231,7 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
-    def summarize_result_and_throttle_failures(summary_result)
+    def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
         ssn_throttle.reset!

@@ -39,7 +39,7 @@ class OtpRateLimiter
   end
 
   def rate_limiter
-    @rate_limiter ||= RateLimiter.new(rate_limit_type: :phone_otp, target: throttle_key)
+    @rate_limiter ||= RateLimiter.new(rate_limit_type: :phone_otp, target: rate_limit_key)
   end
 
   private
@@ -58,7 +58,7 @@ class OtpRateLimiter
     @phone_fingerprint ||= Pii::Fingerprinter.fingerprint(PhoneFormatter.format(phone))
   end
 
-  def throttle_key
+  def rate_limit_key
     "#{phone_fingerprint}:#{phone_confirmed}"
   end
 end
