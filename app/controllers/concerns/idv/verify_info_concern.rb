@@ -88,11 +88,11 @@ module Idv
       resolution_throttle.increment! if proofing_results_exception.blank?
 
       if ssn_throttle.limited?
-        idv_failure_log_throttled(:proof_ssn)
+        idv_failure_log_rate_limited(:proof_ssn)
         redirect_to idv_session_errors_ssn_failure_url
       elsif resolution_throttle.limited?
-        idv_failure_log_throttled(:idv_resolution)
-        redirect_to throttled_url
+        idv_failure_log_rate_limited(:idv_resolution)
+        redirect_to rate_limited_url
       elsif proofing_results_exception.present? && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
@@ -105,7 +105,7 @@ module Idv
       end
     end
 
-    def idv_failure_log_throttled(rate_limit_type)
+    def idv_failure_log_rate_limited(rate_limit_type)
       if rate_limit_type == :proof_ssn
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
         analytics.throttler_rate_limit_triggered(
@@ -135,7 +135,7 @@ module Idv
       )
     end
 
-    def throttled_url
+    def rate_limited_url
       idv_session_errors_failure_url
     end
 

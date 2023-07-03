@@ -202,7 +202,7 @@ RSpec.describe Idv::ImageUploadsController do
         )
       end
 
-      context 'when throttled' do
+      context 'when rate limited' do
         let(:redirect_url) { idv_session_errors_throttled_url }
         let(:error_json) do
           {
@@ -216,7 +216,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         before do
-          RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
+          RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
 
           action
         end
@@ -238,7 +238,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       it 'tracks events' do
-        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
 
         stub_analytics
         stub_attempts_tracker

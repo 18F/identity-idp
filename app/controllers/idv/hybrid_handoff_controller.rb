@@ -39,7 +39,7 @@ module Idv
 
     def handle_phone_submission
       rate_limiter.increment!
-      return throttled_failure if rate_limiter.limited?
+      return rate_limited_failure if rate_limiter.limited?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
@@ -172,7 +172,7 @@ module Idv
       )
     end
 
-    def throttled_failure
+    def rate_limited_failure
       analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_send_link,
       )

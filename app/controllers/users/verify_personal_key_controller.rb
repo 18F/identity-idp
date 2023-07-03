@@ -14,7 +14,7 @@ module Users
       )
 
       if rate_limiter.limited?
-        render_throttled
+        render_rate_limited
       else
         render :new
       end
@@ -23,7 +23,7 @@ module Users
     def create
       rate_limiter.increment!
       if rate_limiter.limited?
-        render_throttled
+        render_rate_limited
       else
         result = personal_key_form.submit
 
@@ -52,7 +52,7 @@ module Users
       )
     end
 
-    def render_throttled
+    def render_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_personal_key,
       )

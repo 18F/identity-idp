@@ -77,7 +77,7 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.attempts).to eq 1
     end
 
-    it 'does nothing if already throttled' do
+    it 'does nothing if already rate limited' do
       expect(rate_limiter.attempts).to eq 0
       rate_limiter.increment!
       expect(rate_limiter.attempts).to eq 1
@@ -98,7 +98,7 @@ RSpec.describe RateLimiter do
 
     subject(:rate_limiter) { RateLimiter.new(target: '1', rate_limit_type: rate_limit_type) }
 
-    it 'returns true if throttled' do
+    it 'returns true if rate limited' do
       max_attempts.times do
         rate_limiter.increment!
       end
@@ -184,7 +184,7 @@ RSpec.describe RateLimiter do
     end
 
     it 'returns zero when rate_limiter limit is reached' do
-      rate_limiter.increment_to_throttled!
+      rate_limiter.increment_to_limited!
       expect(rate_limiter.remaining_count).to eq(0)
     end
   end

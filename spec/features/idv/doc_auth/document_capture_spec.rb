@@ -94,7 +94,7 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'redirects to the throttled error page' do
+      it 'redirects to the rate limited error page' do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
@@ -106,7 +106,7 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'logs the throttled analytics event for doc_auth' do
+      it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',

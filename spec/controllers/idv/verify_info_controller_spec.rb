@@ -126,14 +126,14 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to(idv_ssn_url)
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
         RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
           rate_limit_type: :proof_ssn,
-        ).increment_to_throttled!
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -150,15 +150,15 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
         RateLimiter.new(
           user: subject.current_user,
           rate_limit_type: :idv_resolution,
-        ).increment_to_throttled!
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -424,14 +424,14 @@ RSpec.describe Idv::VerifyInfoController do
       )
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
         RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
           rate_limit_type: :proof_ssn,
-        ).increment_to_throttled!
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -448,15 +448,15 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
         RateLimiter.new(
           user: subject.current_user,
           rate_limit_type: :idv_resolution,
-        ).increment_to_throttled!
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url

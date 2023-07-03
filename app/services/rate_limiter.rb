@@ -120,7 +120,7 @@ class RateLimiter
     @redis_attempted_at = nil
   end
 
-  def increment_to_throttled!
+  def increment_to_limited!
     value = RateLimiter.max_attempts(rate_limit_type)
     now = Time.zone.now
 

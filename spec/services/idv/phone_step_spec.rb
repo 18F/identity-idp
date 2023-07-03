@@ -133,8 +133,8 @@ RSpec.describe Idv::PhoneStep do
       end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
-    it 'logs a throttled attempts_tracker event' do
-      rate_limiter.increment_to_throttled!
+    it 'logs a rate limited attempts_tracker event' do
+      rate_limiter.increment_to_limited!
 
       expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
       subject.submit(phone: bad_phone)
@@ -198,7 +198,7 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)

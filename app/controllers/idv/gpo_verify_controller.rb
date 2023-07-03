@@ -19,7 +19,7 @@ module Idv
         !gpo_mail.profile_too_old?
 
       if rate_limiter.limited?
-        render_throttled
+        render_rate_limited
       elsif pii_locked?
         redirect_to capture_password_url
       else
@@ -36,7 +36,7 @@ module Idv
 
       rate_limiter.increment!
       if rate_limiter.limited?
-        render_throttled
+        render_rate_limited
         return
       end
 
@@ -92,7 +92,7 @@ module Idv
       )
     end
 
-    def render_throttled
+    def render_rate_limited
       irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,

@@ -8,7 +8,7 @@ module Idv
     end
 
     def submit(step_params)
-      return throttled_result if rate_limiter.limited?
+      return rate_limited_result if rate_limiter.limited?
       rate_limiter.increment!
 
       self.step_params = step_params
@@ -115,7 +115,7 @@ module Idv
       )
     end
 
-    def throttled_result
+    def rate_limited_result
       @attempts_tracker.idv_phone_otp_sent_rate_limited
       @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
       FormResponse.new(success: false)
