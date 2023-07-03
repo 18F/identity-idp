@@ -7,12 +7,6 @@ module Idv
         state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
         address: Idv::Steps::InPerson::AddressStep,  # entering the address
         ssn: Idv::Steps::InPerson::SsnStep, # enter SSN
-        verify: Idv::Steps::InPerson::VerifyStep, # verify entered info
-        verify_wait: Idv::Steps::InPerson::VerifyWaitStep,
-      }.freeze
-
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::InPerson::VerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {

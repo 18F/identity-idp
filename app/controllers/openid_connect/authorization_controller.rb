@@ -32,11 +32,13 @@ module OpenidConnect
       result = @authorize_form.submit
       # track successful forms, see pre_validate_authorize_form for unsuccessful
       # this needs to be after link_identity_to_service_provider so that "code" is present
-      track_authorize_analytics(result)
 
+      referer = request.referer
       if auth_count == 1 && first_visit_for_sp?
+        track_authorize_analytics(result, user_sp_authorized: false, referer: referer)
         return redirect_to(user_authorization_confirmation_url)
       end
+      track_authorize_analytics(result, user_sp_authorized: true, referer: referer)
       handle_successful_handoff
     end
 
@@ -77,9 +79,9 @@ module OpenidConnect
       delete_branded_experience
     end
 
-    def track_authorize_analytics(result)
-      analytics_attributes = result.to_h.except(:redirect_uri).
-        merge(user_fully_authenticated: user_fully_authenticated?)
+    def track_authorize_analytics(result, extra = {})
+      extra[:user_fully_authenticated] = user_fully_authenticated?
+      analytics_attributes = result.to_h.except(:redirect_uri).merge(extra)
 
       analytics.openid_connect_request_authorization(**analytics_attributes)
     end
@@ -112,7 +114,7 @@ module OpenidConnect
       return if result.success?
 
       # track forms with errors
-      track_authorize_analytics(result)
+      track_authorize_analytics(result, referer: request.referer)
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri, allow_other_host: true
@@ -123,8 +125,12 @@ module OpenidConnect
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
       return unless user_signed_in? && @authorize_form.prompt == 'login'
+      return if session[:oidc_state_for_login_prompt] == @authorize_form.state
       return if check_sp_handoff_bounced
-      sign_out unless sp_session[:request_url] == request.original_url
+      unless sp_session[:request_url] == request.original_url
+        sign_out
+        session[:oidc_state_for_login_prompt] = @authorize_form.state
+      end
     end
 
     def prompt_for_password_if_ial2_request_and_pii_locked

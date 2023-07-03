@@ -4,7 +4,6 @@ module Idv
       include HybridMobileConcern
 
       before_action :check_valid_document_capture_session
-      before_action :confirm_document_capture_session_complete
 
       def show
         analytics.idv_doc_auth_capture_complete_visited(**analytics_arguments)

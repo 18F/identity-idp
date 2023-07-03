@@ -13,7 +13,7 @@ RSpec.describe Idv::PersonalKeyController do
       user_password: password,
     )
     profile = profile_maker.save_profile(
-      fraud_review_needed: false,
+      fraud_pending_reason: nil,
       gpo_verification_needed: false,
     )
     idv_session.pii = profile_maker.pii_attributes
@@ -90,7 +90,7 @@ RSpec.describe Idv::PersonalKeyController do
       context 'profile is pending from a different session' do
         context 'profile is pending due to fraud review' do
           before do
-            profile.deactivate_for_fraud_review
+            profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
             subject.idv_session.profile_id = nil
           end
 
@@ -166,10 +166,10 @@ RSpec.describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to doc auth url' do
+      it 'redirects to review url' do
         get :show
 
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_review_url
       end
     end
   end
@@ -226,10 +226,10 @@ RSpec.describe Idv::PersonalKeyController do
         subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
-      it 'redirects to doc auth url' do
+      it 'redirects to review url' do
         patch :update
 
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_review_url
       end
     end
 
@@ -290,7 +290,7 @@ RSpec.describe Idv::PersonalKeyController do
 
       context 'profile is in fraud_review' do
         before do
-          profile.deactivate_for_fraud_review
+          profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
         end
 
         it 'redirects to idv please call path' do

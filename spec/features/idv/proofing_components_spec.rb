@@ -16,7 +16,7 @@ RSpec.describe 'proofing components' do
       visit_idp_from_sp_with_ial2(:oidc)
       register_user(email)
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD

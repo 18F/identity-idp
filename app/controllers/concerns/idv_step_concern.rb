@@ -25,10 +25,6 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
-  def flow_session
-    user_session['idv/doc_auth'] || {}
-  end
-
   def pii_from_doc
     flow_session['pii_from_doc']
   end

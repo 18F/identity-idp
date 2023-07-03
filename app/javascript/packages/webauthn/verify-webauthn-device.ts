@@ -1,4 +1,11 @@
-import { extractCredentials, arrayBufferToBase64 } from '@18f/identity-webauthn';
+import { arrayBufferToBase64 } from './converters';
+import extractCredentials from './extract-credentials';
+
+interface VerifyOptions {
+  userChallenge: string;
+
+  credentialIds: string;
+}
 
 interface VerifyResult {
   credentialId: string;
@@ -13,29 +20,24 @@ interface VerifyResult {
 async function verifyWebauthnDevice({
   userChallenge,
   credentialIds,
-}: {
-  userChallenge: string;
-  credentialIds: string;
-}): Promise<VerifyResult> {
-  const getOptions = {
+}: VerifyOptions): Promise<VerifyResult> {
+  const credential = (await navigator.credentials.get({
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
       rpId: window.location.hostname,
       allowCredentials: extractCredentials(credentialIds.split(',').filter(Boolean)),
       timeout: 800000,
     },
-  };
+  })) as PublicKeyCredential;
 
-  const newCred = (await navigator.credentials.get(getOptions)) as PublicKeyCredential;
-
-  const response = newCred.response as AuthenticatorAssertionResponse;
+  const response = credential.response as AuthenticatorAssertionResponse;
 
   return {
-    credentialId: arrayBufferToBase64(newCred.rawId),
+    credentialId: arrayBufferToBase64(credential.rawId),
     authenticatorData: arrayBufferToBase64(response.authenticatorData),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
     signature: arrayBufferToBase64(response.signature),
   };
 }
 
-export { verifyWebauthnDevice };
+export default verifyWebauthnDevice;

@@ -135,9 +135,17 @@ class Profile < ApplicationRecord
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
-  def deactivate_for_fraud_review
+  def deactivate_for_fraud_review(fraud_pending_reason:)
     update!(
       active: false,
+      fraud_pending_reason: fraud_pending_reason,
+      fraud_review_pending_at: Time.zone.now,
+      fraud_rejection_at: nil,
+    )
+  end
+
+  def bump_fraud_review_pending_timestamps
+    update!(
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )

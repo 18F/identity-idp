@@ -17,7 +17,6 @@ en:
     add_email: Add a new email address
     add_info:
       phone: Add a phone number
-    address: Address
     cancellations:
       prompt: Are you sure you want to cancel?
     confirmations:
@@ -29,7 +28,6 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
-    otp_expired: Your one-time code has expired
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue

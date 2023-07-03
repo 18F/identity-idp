@@ -18,10 +18,9 @@ describe('FormLinkElement', () => {
     const element = createElement();
     const link = getByRole(element, 'link');
 
-    const onSubmit = sinon.stub().callsFake((event) => event.preventDefault());
-    window.addEventListener('submit', onSubmit);
+    const onSubmit = sinon.stub();
+    element.form.submit = onSubmit;
     const didPreventDefault = !fireEvent.click(link);
-    window.removeEventListener('submit', onSubmit);
 
     expect(onSubmit).to.have.been.called();
     expect(didPreventDefault).to.be.true();

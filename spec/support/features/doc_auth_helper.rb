@@ -11,15 +11,6 @@ module DocAuthHelper
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
-  def session_from_completed_flow_steps(finished_step)
-    session = { doc_auth: {} }
-    Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
-      session[:doc_auth][klass.to_s] = true
-      return session if step == finished_step
-    end
-    session
-  end
-
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
     fill_in field_name, with: text
@@ -53,16 +44,8 @@ module DocAuthHelper
     click_on t('forms.buttons.upload_photos')
   end
 
-  def idv_doc_auth_welcome_step
-    idv_doc_auth_step_path(step: :welcome)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
-    if IdentityConfig.store.doc_auth_welcome_controller_enabled
-      visit idv_welcome_url unless current_path == idv_welcome_url
-    else
-      visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    end
+    visit idv_welcome_url unless current_path == idv_welcome_url
     click_idv_continue if current_path == idv_mail_only_warning_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible

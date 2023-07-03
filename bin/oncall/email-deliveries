@@ -1,0 +1,161 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'active_support'
+require 'active_support/core_ext/enumerable' # index_by
+require 'active_support/core_ext/integer/time'
+require 'optparse'
+require 'terminal-table'
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
+
+class EmailDeliveries
+  include Reporting::CloudwatchQueryQuoting
+
+  # @return [EmailDeliveries]
+  def self.parse!(argv: ARGV, out: STDOUT)
+    show_help = false
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~EOM
+        Usage: #{$PROGRAM_NAME} uuid1 [uuid2...]
+
+        Looks up email deliveries by user UUID, within the last week
+
+        Options:
+      EOM
+
+      opts.on('--help', 'Show this help message') do
+        show_help = true
+      end
+    end
+
+    uuids = parser.order(argv)
+
+    if uuids.empty? || show_help
+      out.puts parser
+      exit 1
+    end
+
+    new(uuids: uuids)
+  end
+
+  attr_reader :uuids
+
+  def initialize(uuids:, progress_bar: true)
+    @uuids = uuids
+    @progress_bar = progress_bar
+  end
+
+  def progress_bar?
+    @progress_bar
+  end
+
+  def run(out: STDOUT)
+    results = query_data(uuids)
+
+    table = Terminal::Table.new
+    table << %w[user_id timestamp message_id events]
+    table << :separator
+
+    results.each do |result|
+      table << [
+        result.user_id,
+        result.timestamp,
+        result.message_id,
+        result.events.join(', '),
+      ]
+    end
+
+    out.puts table
+  end
+
+  Result = Struct.new(
+    :user_id,
+    :timestamp,
+    :message_id,
+    :events,
+    keyword_init: true,
+  )
+
+  # @return [Array<Result>]
+  def query_data(uuids)
+    if progress_bar?
+      bar = ProgressBar.create(
+        title: 'Querying logs',
+        total: nil,
+        format: '[ %t ] %B %a',
+        output: STDERR,
+      )
+      thread = Thread.new do
+        loop do
+          sleep 0.1
+          bar.increment
+        end
+      end
+    end
+
+    event_log = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
+      query: <<~EOS,
+        fields
+          @timestamp
+        , properties.user_id AS user_id
+        , properties.event_properties.ses_message_id AS ses_message_id
+        | filter name = 'Email Sent'
+        | filter properties.user_id IN #{quote(uuids)}
+        | limit 10000
+      EOS
+      from: 1.week.ago,
+      to: Time.now,
+    )
+
+    events_by_message_id = event_log.index_by { |event| event['ses_message_id'] }
+
+    message_id_filters = events_by_message_id.keys.map do |message_id|
+      "@message LIKE /#{message_id}/"
+    end.join(' OR ')
+
+    email_events = cloudwatch_client('/aws/lambda/SESAllEvents_Lambda').fetch(
+      query: <<~EOS,
+        fields
+          eventType AS event_type
+        | filter #{message_id_filters}
+        | parse '"messageId": "*"' as ses_message_id
+        | display @timestamp, event_type, ses_message_id
+        | limit 10000
+      EOS
+      from: 1.week.ago,
+      to: Time.now,
+    )
+
+    email_events.
+      group_by { |event| event['ses_message_id'] }.
+      map do |message_id, events|
+        Result.new(
+          user_id: events_by_message_id[message_id]['user_id'],
+          timestamp: events_by_message_id[message_id]['@timestamp'],
+          message_id: message_id,
+          events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },
+        )
+      end
+  ensure
+    thread&.kill
+    bar&.stop
+  end
+
+
+  def cloudwatch_client(log_group_name)
+    Reporting::CloudwatchClient.new(
+      ensure_complete_logs: false,
+      slice_interval: nil,
+      progress: false,
+      log_group_name: log_group_name,
+    )
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  EmailDeliveries.parse!.run
+end

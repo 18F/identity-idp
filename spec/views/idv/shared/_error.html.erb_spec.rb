@@ -184,7 +184,7 @@ RSpec.describe 'idv/shared/_error.html.erb' do
       end
 
       context 'step_indicator_steps helper available' do
-        let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
+        let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
         it 'renders a step indicator' do
           expect(view.content_for(:pre_flash_content)).to have_css('lg-step-indicator')
         end

@@ -16,7 +16,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
-      final_url: :idv_phone_url,
+      final_url: :idv_in_person_verify_info_url,
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze

@@ -20,6 +20,9 @@ module Flow
 
     def update
       step = current_step
+
+      return render_not_found unless flow.step_handler_instance(step).present?
+
       result = flow.handle(step)
 
       increment_step_name_counts
