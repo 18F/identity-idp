@@ -168,7 +168,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
     end
 
     it 'regenerates backup codes path if a user clicks that they need new backup codes' do
-      click_link t('two_factor_authentication.backup_codes.new_backup_codes')
+      click_link t('two_factor_authentication.backup_codes.new_backup_codes_html')
       expect(page).to have_current_path backup_code_regenerate_path
     end
   end
