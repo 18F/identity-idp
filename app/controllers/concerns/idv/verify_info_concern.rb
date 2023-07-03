@@ -13,7 +13,7 @@ module Idv
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
       set_state_id_type
 
-      ssn_throttle.increment!
+      ssn_rate_limiter.increment!
 
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
@@ -61,15 +61,15 @@ module Idv
       banlist.include?(sp_session[:issuer])
     end
 
-    def resolution_throttle
-      @resolution_throttle ||= RateLimiter.new(
+    def resolution_rate_limiter
+      @resolution_rate_limiter ||= RateLimiter.new(
         user: current_user,
         rate_limit_type: :idv_resolution,
       )
     end
 
-    def ssn_throttle
-      @ssn_throttle ||= RateLimiter.new(
+    def ssn_rate_limiter
+      @ssn_rate_limiter ||= RateLimiter.new(
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
         rate_limit_type: :proof_ssn,
       )
@@ -85,12 +85,12 @@ module Idv
         :mva_exception,
       )
 
-      resolution_throttle.increment! if proofing_results_exception.blank?
+      resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
-      if ssn_throttle.limited?
+      if ssn_rate_limiter.limited?
         idv_failure_log_rate_limited(:proof_ssn)
         redirect_to idv_session_errors_ssn_failure_url
-      elsif resolution_throttle.limited?
+      elsif resolution_rate_limiter.limited?
         idv_failure_log_rate_limited(:idv_resolution)
         redirect_to rate_limited_url
       elsif proofing_results_exception.present? && is_mva_exception
@@ -124,14 +124,14 @@ module Idv
     def idv_failure_log_error
       analytics.idv_doc_auth_exception_visited(
         step_name: STEP_NAME,
-        remaining_attempts: resolution_throttle.remaining_count,
+        remaining_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
         step_name: STEP_NAME,
-        remaining_attempts: resolution_throttle.remaining_count,
+        remaining_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 
@@ -234,7 +234,7 @@ module Idv
     def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        ssn_throttle.reset!
+        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end

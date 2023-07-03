@@ -52,14 +52,14 @@ module Idv
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
                 :irs_attempts_api_tracker
 
-    def increment_throttle!
+    def increment_rate_limiter!
       return unless document_capture_session
       rate_limiter.increment!
     end
 
     def validate_form
       success = valid?
-      increment_throttle!
+      increment_rate_limiter!
       track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(

@@ -264,8 +264,8 @@ module Users
       return otp_rate_limiter.lock_out_user if otp_rate_limiter.exceeded_otp_send_limit?
     end
 
-    def phone_confirmation_throttle
-      @phone_confirmation_throttle ||= RateLimiter.new(
+    def phone_confirmation_rate_limiter
+      @phone_confirmation_rate_limiter ||= RateLimiter.new(
         user: current_user,
         rate_limit_type: :phone_confirmation,
       )
@@ -273,8 +273,8 @@ module Users
 
     def exceeded_phone_confirmation_limit?
       return false unless UserSessionContext.confirmation_context?(context)
-      phone_confirmation_throttle.increment!
-      phone_confirmation_throttle.limited?
+      phone_confirmation_rate_limiter.increment!
+      phone_confirmation_rate_limiter.limited?
     end
 
     def send_user_otp(method)
@@ -369,7 +369,7 @@ module Users
         'errors.messages.phone_confirmation_throttled',
         timeout: distance_of_time_in_words(
           Time.zone.now,
-          [phone_confirmation_throttle.expires_at, Time.zone.now].compact.max,
+          [phone_confirmation_rate_limiter.expires_at, Time.zone.now].compact.max,
           except: :seconds,
         ),
       )
