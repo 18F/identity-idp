@@ -1,18 +1,6 @@
 module ReauthenticationRequiredConcern
   include MfaSetupConcern
 
-  def confirm_recently_authenticated
-    if IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-      confirm_recently_authenticated_2fa
-    else
-      @reauthn = reauthn?
-      return unless user_signed_in?
-      return if recently_authenticated?
-
-      prompt_for_current_password
-    end
-  end
-
   def confirm_recently_authenticated_2fa
     @reauthn = reauthn?
     return unless user_fully_authenticated?
