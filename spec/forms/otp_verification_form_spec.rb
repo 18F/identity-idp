@@ -3,10 +3,11 @@ require 'rails_helper'
 RSpec.describe OtpVerificationForm do
   let(:user) { build_stubbed(:user) }
   let(:code) { nil }
+  let(:phone_configuration) { nil }
   let(:user_otp) { nil }
   let(:user_otp_sent_at) { nil }
 
-  subject(:form) { described_class.new(user, code) }
+  subject(:form) { described_class.new(user, code, phone_configuration) }
 
   before do
     allow(user).to receive(:direct_otp).and_return(user_otp)
@@ -25,6 +26,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: true,
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
@@ -46,6 +48,7 @@ RSpec.describe OtpVerificationForm do
             code: [:blank],
           },
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
@@ -67,6 +70,7 @@ RSpec.describe OtpVerificationForm do
             code: [:user_otp_missing],
           },
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
@@ -88,6 +92,7 @@ RSpec.describe OtpVerificationForm do
             code: [:incorrect_length, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
@@ -109,6 +114,7 @@ RSpec.describe OtpVerificationForm do
             code: [:pattern_mismatch, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
@@ -133,6 +139,7 @@ RSpec.describe OtpVerificationForm do
             code: [:user_otp_expired],
           },
           multi_factor_auth_method: 'otp_code',
+          multi_factor_auth_method_created_at: nil,
         )
       end
 
