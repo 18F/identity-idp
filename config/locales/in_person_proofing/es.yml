@@ -21,8 +21,8 @@ es:
         questions: '¿Tiene alguna pregunta?'
         retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
-        return_to_partner_html: Ahora puede %{link} para completar los pasos siguientes
-          a los que tenga acceso hasta que se verifique su identidad.
+        return_to_partner_html: Ahora puede %{link_html} para completar los pasos
+          siguientes a los que tenga acceso hasta que se verifique su identidad.
         return_to_partner_link: cerrar sesión y regresar a %{sp_name}
         what_to_expect: Qué esperar en la oficina de correos
       cta:

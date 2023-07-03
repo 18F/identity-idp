@@ -17,12 +17,12 @@ fr:
       already_authenticated: ''
       inactive: Votre compte n’est pas encore activé.
       invalid_html: L’adresse courriel ou le mot de passe que vous avez entré est
-        erroné. Essayez de %{link}.
+        erroné. Essayez de %{link_html}.
       invalid_link_text: réinitialiser votre mot de passe
       last_attempt: Il vous reste un essai avant que votre compte ne soit verrouillé.
       locked: Votre compte est maintenant verrouillé.
       not_found_in_database_html: L’adresse courriel ou le mot de passe que vous avez
-        entré est erroné. Essayez de %{link}.
+        entré est erroné. Essayez de %{link_html}.
       not_found_in_database_link_text: réinitialiser votre mot de passe
       session_limited: Vos authentifiants ont été utilisés dans un autre navigateur.
         Veuillez vous connecter de nouveau pour continuer avec ce navigateur.

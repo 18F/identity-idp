@@ -108,7 +108,7 @@ RSpec.describe 'I18n' do
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
-  Dir[File.join(root_dir, '/config/locales/**/*.yml')].each do |full_path|
+  Dir[File.join(root_dir, '/config/locales/**/*.yml')].sort.each do |full_path|
     i18n_file = full_path.sub("#{root_dir}/", '')
 
     describe i18n_file do
@@ -157,6 +157,36 @@ RSpec.describe 'I18n' do
         end
 
         expect(bad_keys).to be_empty
+      end
+
+      it 'has all HTML strings suffixed with .html or _html' do
+        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |key, value|
+          next if value.blank?
+
+          key.include?('html') ^ contains_html?(value)
+        end
+
+        expect(bad_keys).to be_empty
+      end
+
+      def contains_html?(value)
+        Array(value).compact.any? do |str|
+          html_tags?(str) || html_entities?(str) || likely_html_interpolation?(str)
+        end
+      end
+
+      def html_tags?(str)
+        str.scan(/<.+?>/).present?
+      end
+
+      def html_entities?(str)
+        str.scan(/&[^;]+?;/).present?
+      end
+
+      def likely_html_interpolation?(str)
+        str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
+          key =~ /html/
+        end
       end
     end
   end

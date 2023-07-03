@@ -37,12 +37,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     let(:piv_cac_required) { false }
 
     it 'returns help text' do
-      expected_help_text = t(
-        'instructions.mfa.piv_cac.confirm_piv_cac_html',
-        email: content_tag(:strong, user_email),
-        app_name: content_tag(:strong, APP_NAME),
-      )
-      expect(presenter.piv_cac_help).to eq expected_help_text
+      expect(presenter.piv_cac_help).to eq(t('instructions.mfa.piv_cac.confirm_piv_cac'))
     end
 
     context 'with PIV/CAC only requested' do

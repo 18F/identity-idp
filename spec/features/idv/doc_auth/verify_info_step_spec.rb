@@ -83,7 +83,7 @@ RSpec.feature 'doc auth verify_info step', :js do
     expect(page).to have_current_path(idv_ssn_path)
     expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
     expect(
-      find_field(t('idv.form.ssn_label_html')).value,
+      find_field(t('idv.form.ssn_label')).value,
     ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
 
     fill_in t('idv.form.ssn_label_html'), with: '900456789'

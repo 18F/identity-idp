@@ -115,7 +115,7 @@
     <%= render ClickObserverComponent.new(event_name: 'IdV: user clicked sp link on ready to verify page') do %>
       <%= t(
             'in_person_proofing.body.barcode.return_to_partner_html',
-            link: link_to(
+            link_html: link_to(
               t(
                 'in_person_proofing.body.barcode.return_to_partner_link',
                 sp_name: @presenter.sp_name,

@@ -699,9 +699,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_address_step(user, double_address_verification: true)
 
       # Ensure the page submitted successfully
-      expect(page).to have_content(
-        t('idv.form.ssn_label_html'),
-      )
+      expect(page).to have_content(t('idv.form.ssn_label'))
     end
   end
 

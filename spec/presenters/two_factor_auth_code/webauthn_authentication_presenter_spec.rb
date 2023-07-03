@@ -68,7 +68,10 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'returns the help text for a platform authenticator' do
         expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME),
+          t(
+            'instructions.mfa.webauthn.confirm_webauthn_platform_html',
+            app_name_html: APP_NAME,
+          ),
         )
       end
     end

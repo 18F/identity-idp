@@ -24,7 +24,7 @@ RSpec.feature 'doc auth ssn step', :js do
 
     select 'Review', from: 'mock_profiling_result'
 
-    expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('false')
+    expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
     click_idv_continue
 
     expect(page).to have_current_path(idv_verify_info_url)
