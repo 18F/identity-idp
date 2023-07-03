@@ -1,5 +1,5 @@
 # This class is similar to RedisRateLimiter, but differs in that
-# the throttle period begins once the maximum number of allowed
+# the rate limit period begins once the maximum number of allowed
 # attempts has been reached.
 class RateLimiter
   attr_reader :rate_limit_type
@@ -86,7 +86,7 @@ class RateLimiter
     attempts
   end
 
-  # Retrieve the current state of the throttle from Redis
+  # Retrieve the current state of the rate limit from Redis
   # We use EXPIRETIME to calculate when the action was last attempted.
   def fetch_state!
     value = nil
