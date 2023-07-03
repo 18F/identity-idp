@@ -16,7 +16,7 @@ module TwoFactorAuthentication
       result = @personal_key_form.submit
       analytics_hash = result.to_h.merge(
         multi_factor_auth_method: 'personal-key',
-        multi_factor_auth_method_created_at: current_user.encrypted_recovery_code_digest_generated_at,
+        multi_factor_auth_method_created_at: current_user&.encrypted_recovery_code_digest_generated_at,
       )
 
       analytics.track_mfa_submit_event(analytics_hash)
