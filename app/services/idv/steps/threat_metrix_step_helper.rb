@@ -48,7 +48,6 @@ module Idv
       end
 
       def log_irs_tmx_fraud_check_event(result, user)
-        return unless IdentityConfig.store.irs_attempt_api_track_tmx_fraud_check_event
         return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
         success = result[:review_status] == 'pass'
@@ -56,7 +55,6 @@ module Idv
         unless success
           FraudReviewRequest.create(
             user: user,
-            irs_session_id: irs_attempts_api_session_id,
             login_session_id: Digest::SHA1.hexdigest(user.unique_session_id.to_s),
           )
 

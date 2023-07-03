@@ -29,8 +29,7 @@ module Idv
     end
 
     def store_encrypted_images?
-      IdentityConfig.store.encrypted_document_storage_enabled &&
-        irs_attempts_api_enabled_for_session?
+      IdentityConfig.store.encrypted_document_storage_enabled
     end
   end
 end
