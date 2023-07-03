@@ -99,7 +99,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
-          flow_path: idv_session.flow_path,
+          flow_path: idv_session.flow_path || flow_session[:flow_path], # remove in future deploy
         },
       )
     end
