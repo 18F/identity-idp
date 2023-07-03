@@ -13,7 +13,7 @@ module Users
         personal_key: '',
       )
 
-      if rate_limiter.throttled?
+      if rate_limiter.limited?
         render_throttled
       else
         render :new
@@ -22,7 +22,7 @@ module Users
 
     def create
       rate_limiter.increment!
-      if rate_limiter.throttled?
+      if rate_limiter.limited?
         render_throttled
       else
         result = personal_key_form.submit

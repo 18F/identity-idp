@@ -87,10 +87,10 @@ module Idv
 
       resolution_throttle.increment! if proofing_results_exception.blank?
 
-      if ssn_throttle.throttled?
+      if ssn_throttle.limited?
         idv_failure_log_throttled(:proof_ssn)
         redirect_to idv_session_errors_ssn_failure_url
-      elsif resolution_throttle.throttled?
+      elsif resolution_throttle.limited?
         idv_failure_log_throttled(:idv_resolution)
         redirect_to throttled_url
       elsif proofing_results_exception.present? && is_mva_exception

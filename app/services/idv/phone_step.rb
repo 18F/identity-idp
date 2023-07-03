@@ -8,7 +8,7 @@ module Idv
     end
 
     def submit(step_params)
-      return throttled_result if rate_limiter.throttled?
+      return throttled_result if rate_limiter.limited?
       rate_limiter.increment!
 
       self.step_params = step_params
@@ -20,7 +20,7 @@ module Idv
     end
 
     def failure_reason
-      return :fail if rate_limiter.throttled?
+      return :fail if rate_limiter.limited?
       return :no_idv_result if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?

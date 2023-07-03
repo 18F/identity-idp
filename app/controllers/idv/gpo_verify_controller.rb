@@ -18,7 +18,7 @@ module Idv
         !gpo_mail.mail_spammed? &&
         !gpo_mail.profile_too_old?
 
-      if rate_limiter.throttled?
+      if rate_limiter.limited?
         render_throttled
       elsif pii_locked?
         redirect_to capture_password_url
@@ -35,7 +35,7 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       rate_limiter.increment!
-      if rate_limiter.throttled?
+      if rate_limiter.limited?
         render_throttled
         return
       end

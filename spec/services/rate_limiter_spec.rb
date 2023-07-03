@@ -81,7 +81,7 @@ RSpec.describe RateLimiter do
       expect(rate_limiter.attempts).to eq 0
       rate_limiter.increment!
       expect(rate_limiter.attempts).to eq 1
-      expect(rate_limiter.throttled?).to eq(true)
+      expect(rate_limiter.limited?).to eq(true)
       current_expiration = rate_limiter.expires_at
       travel 5.minutes do # move within 10 minute expiration window
         rate_limiter.increment!
@@ -91,7 +91,7 @@ RSpec.describe RateLimiter do
     end
   end
 
-  describe '#throttled?' do
+  describe '#limited?' do
     let(:rate_limit_type) { :idv_doc_auth }
     let(:max_attempts) { RateLimiter.max_attempts(rate_limit_type) }
     let(:attempt_window_in_minutes) { RateLimiter.attempt_window_in_minutes(rate_limit_type) }
@@ -103,16 +103,16 @@ RSpec.describe RateLimiter do
         rate_limiter.increment!
       end
 
-      expect(rate_limiter.throttled?).to eq(true)
+      expect(rate_limiter.limited?).to eq(true)
     end
 
     it 'returns false if the attempts < max_attempts' do
       (max_attempts - 1).times do
-        expect(rate_limiter.throttled?).to eq(false)
+        expect(rate_limiter.limited?).to eq(false)
         rate_limiter.increment!
       end
 
-      expect(rate_limiter.throttled?).to eq(false)
+      expect(rate_limiter.limited?).to eq(false)
     end
 
     it 'returns false if the attempts <= max_attempts but the window is expired' do
@@ -121,7 +121,7 @@ RSpec.describe RateLimiter do
       end
 
       travel(attempt_window_in_minutes.minutes + 1) do
-        expect(rate_limiter.throttled?).to eq(false)
+        expect(rate_limiter.limited?).to eq(false)
       end
     end
   end

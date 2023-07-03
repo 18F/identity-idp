@@ -15,7 +15,7 @@ class OtpRateLimiter
   end
 
   def max_requests_reached?
-    rate_limiter.throttled?
+    rate_limiter.limited?
   end
 
   def rate_limit_period_expired?

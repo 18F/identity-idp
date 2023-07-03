@@ -35,7 +35,7 @@ class RateLimiter
     @redis_attempts.to_i
   end
 
-  def throttled?
+  def limited?
     !expired? && maxed?
   end
 
@@ -53,7 +53,7 @@ class RateLimiter
   end
 
   def remaining_count
-    return 0 if throttled?
+    return 0 if limited?
 
     RateLimiter.max_attempts(rate_limit_type) - attempts
   end
@@ -67,7 +67,7 @@ class RateLimiter
   end
 
   def increment!
-    return if throttled?
+    return if limited?
     value = nil
 
     REDIS_THROTTLE_POOL.with do |client|

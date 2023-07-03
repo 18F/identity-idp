@@ -54,12 +54,12 @@ module RateLimitConcern
       RateLimiter.new(
         target: Pii::Fingerprinter.fingerprint(pii_ssn),
         rate_limit_type: :proof_ssn,
-      ).throttled?
+      ).limited?
     else
       RateLimiter.new(
         user: idv_session_user,
         rate_limit_type: rate_limit_type,
-      ).throttled?
+      ).limited?
     end
   end
 

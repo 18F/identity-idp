@@ -117,7 +117,7 @@ class RegisterUserEmailForm
   def send_sign_up_unconfirmed_email(request_id)
     throttler = RateLimiter.new(user: existing_user, rate_limit_type: :reg_unconfirmed_email)
     throttler.increment!
-    @throttled = throttler.throttled?
+    @throttled = throttler.limited?
 
     if @throttled
       @analytics.throttler_rate_limit_triggered(
@@ -134,7 +134,7 @@ class RegisterUserEmailForm
   def send_sign_up_confirmed_email
     throttler = RateLimiter.new(user: existing_user, rate_limit_type: :reg_confirmed_email)
     throttler.increment!
-    @throttled = throttler.throttled?
+    @throttled = throttler.limited?
 
     if @throttled
       @analytics.throttler_rate_limit_triggered(
