@@ -14,16 +14,7 @@ module AccountReset::TrackIrsEvent
   end
 
   def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: nil,
-      request: request,
-      user: user,
-      sp: sp,
-      cookie_device_uuid: cookies[:device],
-      sp_request_uri: nil,
-      enabled_for_session: sp.irs_attempts_api_enabled?,
-      analytics: analytics,
-    )
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
   end
 
   def cookies

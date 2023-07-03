@@ -580,6 +580,7 @@ module Features
 
       expect(page).to have_current_path backup_code_setup_path
 
+      check t('forms.backup_code.saved')
       click_button 'Continue'
     end
 
@@ -710,6 +711,10 @@ module Features
     def expect_branded_experience
       # Check for branded experience as being the header containing the Login.gov and partner logos
       expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
+    end
+
+    def acknowledge_backup_code_confirmation
+      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
     end
   end
 end

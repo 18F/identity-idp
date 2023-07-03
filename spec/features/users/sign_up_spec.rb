@@ -191,6 +191,15 @@ RSpec.feature 'Sign Up' do
 
       expect(page).to have_current_path account_path
     end
+
+    it 'allows a user to sign up with backup codes and add methods without reauthentication' do
+      sign_in_user
+      set_up_2fa_with_backup_codes
+      skip_second_mfa_prompt
+
+      visit add_phone_path
+      expect(page).to have_current_path add_phone_path
+    end
   end
 
   context 'user accesses password screen with already confirmed token', email: true do
@@ -381,6 +390,8 @@ RSpec.feature 'Sign Up' do
     sign_in_user
     set_up_2fa_with_backup_codes
     skip_second_mfa_prompt
+
+    acknowledge_backup_code_confirmation
 
     expect(page).to have_current_path account_path
     visit add_phone_path

@@ -43,8 +43,6 @@ class SessionEncryptor
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
 
   def load(value)
-    return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
-
     payload = MessagePack.unpack(value)
     ciphertext = payload[CIPHERTEXT_KEY]
     compressed = payload[COMPRESSED_KEY]
@@ -62,7 +60,6 @@ class SessionEncryptor
   end
 
   def dump(value)
-    return LegacySessionEncryptor.new.dump(value) if should_use_legacy_encryptor_for_write?
     value.deep_stringify_keys!
 
     kms_encrypt_pii!(value)
@@ -206,16 +203,8 @@ class SessionEncryptor
     end
   end
 
-  def should_use_legacy_encryptor_for_read?(value)
-    value.start_with?(LegacySessionEncryptor::CIPHERTEXT_HEADER)
-  end
-
   def should_compress?(value)
     value.bytesize >= MINIMUM_COMPRESS_LIMIT
-  end
-
-  def should_use_legacy_encryptor_for_write?
-    !IdentityConfig.store.session_encryptor_v3_enabled
   end
 
   def session_encryption_key

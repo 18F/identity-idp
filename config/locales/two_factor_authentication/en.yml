@@ -19,6 +19,16 @@ en:
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
+    backup_codes:
+      add_another_authentication_option: '‹ Add another authentication option'
+      instructions: If you don’t have access to another device, keep your backup codes
+        safe. If you lose your backup codes, you won’t be able to sign into
+        %{app_name}.
+      new_backup_codes_html: I need new backup&nbsp;codes
+      saved_backup_codes: I’ve saved my backup codes
+      warning_html: <strong>You’ve only set up backup codes on your account.
+        </strong>If you have access to another device, such as a phone, protect
+        your account with another authentication method.
     choose_another_option: '‹ Choose another option'
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
