@@ -42,7 +42,7 @@ module Idv
       return throttled_failure if throttle.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       idv_session.flow_path = 'hybrid'
-      flow_session[:flow_path] = 'standard' # temp addition for 50/50 remove in future deploy
+      flow_session[:flow_path] = 'hybrid' # temp addition for 50/50 remove in future deploy
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
