@@ -72,6 +72,7 @@ module Idv
     end
 
     def save_in_person_notification_phone
+      return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
       return unless is_in_person_session?
       # future tickets will support voice otp
       return unless idv_session.user_phone_confirmation_session.delivery_method == :sms
