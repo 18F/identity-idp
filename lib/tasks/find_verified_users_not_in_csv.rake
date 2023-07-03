@@ -61,7 +61,7 @@ namespace :users do
         output << ['uuid', 'closest_timestamp', *extra_attributes]
       end
 
-      output << [uuid, closest_timestamp, *extra_attributes.map { |attr| profile.send(attr) }]
+      output << [uuid, closest_timestamp, *profile.values_at(extra_attributes)]
 
       progress.increment
     end
