@@ -212,7 +212,6 @@ module TwoFactorAuthentication
       end
 
       update_phone_attributes
-      # todo: save to notification phone config if user is in in-person
     end
 
     def updating_existing_number?
