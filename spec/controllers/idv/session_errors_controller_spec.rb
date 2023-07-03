@@ -155,7 +155,7 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do

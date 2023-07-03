@@ -181,7 +181,7 @@ RSpec.feature 'doc auth verify_info step', :js do
     end
 
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
-    it 'throttles resolution and continues when it expires' do
+    it 'rate limits resolution and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
         with({ throttle_context: 'single-session' })
 
@@ -246,7 +246,7 @@ RSpec.feature 'doc auth verify_info step', :js do
       end
     end
 
-    it 'throttles ssn and continues when it expires' do
+    it 'rate limits ssn and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
         with({ throttle_context: 'multi-session' })
       click_idv_continue

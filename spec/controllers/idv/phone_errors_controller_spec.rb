@@ -131,7 +131,7 @@ RSpec.describe Idv::PhoneErrorsController do
       end
     end
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       before do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
@@ -160,7 +160,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do
@@ -181,7 +181,7 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do

@@ -45,7 +45,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
@@ -156,7 +156,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       it 'renders throttled page' do
         stub_analytics
         stub_attempts_tracker

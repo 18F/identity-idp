@@ -85,7 +85,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       before do
         RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_throttled!
       end
@@ -329,7 +329,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       let(:submitted_otp) { 'a-wrong-otp' }
 
       it 'renders the index page to show errors' do

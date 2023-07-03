@@ -167,7 +167,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       expect(page.find(':focus')).to match_css('.phone-input__number')
     end
 
-    it 'throttles sending the link' do
+    it 'rate limits sending the link' do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
