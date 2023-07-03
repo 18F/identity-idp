@@ -17,7 +17,7 @@ class ArcgisTokenJob < ApplicationJob
   private
 
   def geocoder
-    @geocoder ||= ArcgisApi::Geocoder.new
+    @geocoder ||= ArcgisApi::GeocoderFactory.new.create
   end
 
   def analytics

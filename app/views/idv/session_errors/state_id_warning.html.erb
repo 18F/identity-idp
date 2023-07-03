@@ -10,7 +10,7 @@
       },
       action_secondary: {
         text: t('idv.warning.state_id.cancel_button', app_name: APP_NAME),
-        url: idv_doc_auth_return_to_sp_path,
+        url: return_to_sp_failure_to_proof_url(step: 'verify_info', location: 'state_id_warning'),
       },
     ) do |c| %>
 
