@@ -346,8 +346,8 @@ RSpec.describe SignUp::CompletionsController do
       end
 
       it 'logs a reproofing event upon reproofing' do
-        verified_profile = user.profiles.first
-        unverified_profile = create(:profile, :verified, user: user)
+        original_profile = user.profiles.first
+        additional_profile = create(:profile, :verified, user: user)
 
         stub_sign_in(user)
         subject.session[:sp] = {
@@ -356,21 +356,21 @@ RSpec.describe SignUp::CompletionsController do
           request_url: 'http://example.com',
         }
 
-        expect(verified_profile.activated_at).to be_present
-        expect(verified_profile.active).to eq true
-        expect(verified_profile.deactivation_reason).to be_nil
-        expect(verified_profile.fraud_review_pending?).to eq(false)
-        expect(verified_profile.gpo_verification_pending_at).to be_nil
-        expect(verified_profile.initiating_service_provider).to be_nil
-        expect(verified_profile.verified_at).to be_present
+        expect(original_profile.activated_at).to be_present
+        expect(original_profile.active).to eq true
+        expect(original_profile.deactivation_reason).to be_nil
+        expect(original_profile.fraud_review_pending?).to eq(false)
+        expect(original_profile.gpo_verification_pending_at).to be_nil
+        expect(original_profile.initiating_service_provider).to be_nil
+        expect(original_profile.verified_at).to be_present
 
-        expect(unverified_profile.activated_at).to be_nil
-        expect(unverified_profile.active).to eq false
-        expect(unverified_profile.deactivation_reason).to be_nil
-        expect(unverified_profile.fraud_review_pending?).to eq(false)
-        expect(unverified_profile.gpo_verification_pending_at).to be_nil
-        expect(unverified_profile.initiating_service_provider).to be_nil
-        expect(unverified_profile.verified_at).to be_present
+        expect(additional_profile.activated_at).to be_present
+        expect(additional_profile.active).to eq false
+        expect(additional_profile.deactivation_reason).to be_nil
+        expect(additional_profile.fraud_review_pending?).to eq(false)
+        expect(additional_profile.gpo_verification_pending_at).to be_nil
+        expect(additional_profile.initiating_service_provider).to be_nil
+        expect(additional_profile.verified_at).to be_present
 
         expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
