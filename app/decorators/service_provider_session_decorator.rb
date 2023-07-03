@@ -108,11 +108,6 @@ class ServiceProviderSessionDecorator
     end
   end
 
-  def irs_attempts_api_session_id
-    @irs_attempts_api_session_id ||=
-      request_url_params['irs_attempts_api_session_id'] || request_url_params['tid']
-  end
-
   def request_url_params
     @request_url_params ||= begin
       if request_url.present?
