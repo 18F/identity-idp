@@ -216,7 +216,8 @@ module Idv
       idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
       # next line temp added for 50/50, remove in future deploy
       flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
-      return if !idv_session.flow_path
+      # flow_session temp added for 50/50, remove in future deploy.
+      return if !idv_session.flow_path && !flow_session[:flow_path]
 
       if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
