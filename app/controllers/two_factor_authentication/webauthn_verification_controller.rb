@@ -56,18 +56,15 @@ module TwoFactorAuthentication
     def handle_invalid_webauthn
       is_platform_auth = params[:platform].to_s == 'true'
       if is_platform_auth
-        if presenter_for_two_factor_authentication_method.multiple_factors_enabled?
-          flash[:error] = t(
-            'two_factor_authentication.webauthn_error.multiple_methods',
-            link: view_context.link_to(
-              t('two_factor_authentication.webauthn_error.additional_methods_link'),
-              login_two_factor_options_path,
-            ),
-          )
-          redirect_to login_two_factor_webauthn_url(platform: params[:platform])
-        else
-          redirect_to login_two_factor_webauthn_error_url
-        end
+        flash[:error] = t(
+          'two_factor_authentication.webauthn_error.multiple_methods',
+          link: view_context.link_to(
+            t('two_factor_authentication.webauthn_error.additional_methods_link'),
+            login_two_factor_options_path,
+          ),
+        )
+        redirect_to login_two_factor_webauthn_url(platform: params[:platform])
+
       else
         flash[:error] = t('errors.general')
         redirect_to login_two_factor_webauthn_url
