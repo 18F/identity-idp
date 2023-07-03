@@ -21,7 +21,7 @@ RequestPasswordReset = RedactedStruct.new(
   private
 
   def send_reset_password_instructions
-    rate_limiter = RateLimit.new(user: user, rate_limit_type: :reset_password_email)
+    rate_limiter = RateLimiter.new(user: user, rate_limit_type: :reset_password_email)
     rate_limiter.increment!
     if rate_limiter.throttled?
       analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)

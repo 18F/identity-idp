@@ -59,7 +59,7 @@ module Idv
     private
 
     def rate_limiter
-      @rate_limiter ||= RateLimit.new(user: current_user, rate_limit_type: :proof_address)
+      @rate_limiter ||= RateLimiter.new(user: current_user, rate_limit_type: :proof_address)
     end
 
     def redirect_to_next_step

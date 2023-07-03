@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::PhoneController do
   include IdvHelper
 
-  let(:max_attempts) { RateLimit.max_attempts(:proof_address) }
+  let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
@@ -99,7 +99,7 @@ RSpec.describe Idv::PhoneController do
 
     context 'when the user is throttled' do
       before do
-        RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'redirects to fail' do
@@ -491,7 +491,7 @@ RSpec.describe Idv::PhoneController do
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
 
-          rate_limiter = RateLimit.new(rate_limit_type: :proof_address, user: user)
+          rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
           rate_limiter.increment_to_throttled!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }

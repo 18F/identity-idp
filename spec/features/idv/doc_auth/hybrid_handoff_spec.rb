@@ -172,7 +172,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
       timeout = distance_of_time_in_words(
-        RateLimit.attempt_window_in_minutes(:idv_send_link).minutes,
+        RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
         and_return(idv_send_link_max_attempts)
@@ -211,9 +211,9 @@ RSpec.feature 'doc auth hybrid_handoff step' do
         throttle_type: :idv_send_link,
       )
 
-      # Manual expiration is needed for now since the RateLimit uses
+      # Manual expiration is needed for now since the RateLimiter uses
       # Redis ttl instead of expiretime
-      RateLimit.new(rate_limit_type: :idv_send_link, user: user).reset!
+      RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
       travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link

@@ -109,7 +109,7 @@ module Idv
     end
 
     def rate_limiter
-      @rate_limiter ||= RateLimit.new(
+      @rate_limiter ||= RateLimiter.new(
         user: idv_session.current_user,
         rate_limit_type: :proof_address,
       )

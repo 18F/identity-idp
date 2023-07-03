@@ -37,7 +37,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        RateLimit.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
 
         get :new
 
@@ -49,7 +49,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
       let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
-        RateLimit.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do
@@ -174,7 +174,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
 
-        max_attempts = RateLimit.max_attempts(:verify_personal_key)
+        max_attempts = RateLimiter.max_attempts(:verify_personal_key)
         max_attempts.times { post :create, params: personal_key_bad_params }
 
         expect(response).to render_template(:throttled)

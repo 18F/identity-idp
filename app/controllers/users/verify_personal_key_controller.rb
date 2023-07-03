@@ -46,7 +46,7 @@ module Users
     private
 
     def rate_limiter
-      @rate_limiter ||= RateLimit.new(
+      @rate_limiter ||= RateLimiter.new(
         user: current_user,
         rate_limit_type: :verify_personal_key,
       )

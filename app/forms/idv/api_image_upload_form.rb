@@ -307,7 +307,7 @@ module Idv
     end
 
     def rate_limiter
-      @rate_limiter ||= RateLimit.new(
+      @rate_limiter ||= RateLimiter.new(
         user: document_capture_session.user,
         rate_limit_type: :idv_doc_auth,
       )

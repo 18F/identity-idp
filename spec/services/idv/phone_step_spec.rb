@@ -52,7 +52,7 @@ RSpec.describe Idv::PhoneStep do
   end
 
   describe '#submit' do
-    let(:rate_limiter) { RateLimit.new(rate_limit_type: :proof_address, user: user) }
+    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :proof_address, user: user) }
     let(:mock_vendor) do
       {
         vendor_name: 'AddressMock',
@@ -198,7 +198,7 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        RateLimit.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_throttled!
 
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)

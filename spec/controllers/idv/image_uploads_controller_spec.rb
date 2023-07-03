@@ -186,7 +186,7 @@ RSpec.describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        RateLimit.new(rate_limit_type: :idv_doc_auth, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment!
 
         action
 
@@ -195,7 +195,7 @@ RSpec.describe Idv::ImageUploadsController do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: RateLimit.max_attempts(:idv_doc_auth) - 2,
+            remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
           },
@@ -216,7 +216,7 @@ RSpec.describe Idv::ImageUploadsController do
         end
 
         before do
-          RateLimit.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
+          RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
 
           action
         end
@@ -238,7 +238,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       it 'tracks events' do
-        RateLimit.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         stub_analytics
         stub_attempts_tracker
