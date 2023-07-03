@@ -46,13 +46,6 @@ RSpec.describe Idv::DocumentCaptureController do
         :confirm_hybrid_handoff_complete,
       )
     end
-
-    it 'cancels any stale establishing in person enrollments' do
-      expect(subject).to have_actions(
-        :before,
-        :cancel_establishing_in_person_enrollments,
-      )
-    end
   end
 
   describe '#show' do
@@ -142,19 +135,6 @@ RSpec.describe Idv::DocumentCaptureController do
         expect(response).to redirect_to(idv_session_errors_throttled_url)
       end
     end
-
-    context 'user has an establishing in-person enrollment' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
-
-      it 'cancels the establishing enrollment' do
-        expect(user.establishing_in_person_enrollment).to eq enrollment
-
-        get :show
-
-        expect(enrollment.reload.cancelled?).to eq(true)
-        expect(user.reload.establishing_in_person_enrollment).to be_nil
-      end
-    end
   end
 
   describe '#update' do
@@ -181,6 +161,19 @@ RSpec.describe Idv::DocumentCaptureController do
       expect { put :update }.to(
         change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
       )
+    end
+
+    context 'user has an establishing in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+
+      it 'cancels the establishing enrollment' do
+        expect(user.establishing_in_person_enrollment).to eq enrollment
+
+        put :update
+
+        expect(enrollment.reload.cancelled?).to eq(true)
+        expect(user.reload.establishing_in_person_enrollment).to be_nil
+      end
     end
   end
 end

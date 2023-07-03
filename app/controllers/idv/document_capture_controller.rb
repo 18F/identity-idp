@@ -9,7 +9,6 @@ module Idv
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
-    before_action :cancel_establishing_in_person_enrollments
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -28,6 +27,8 @@ module Idv
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
+
+      cancel_establishing_in_person_enrollments
 
       if result.success?
         redirect_to idv_ssn_url
