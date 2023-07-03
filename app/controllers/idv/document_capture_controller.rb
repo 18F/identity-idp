@@ -9,6 +9,7 @@ module Idv
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
+    before_action :cancel_establishing_in_person_enrollments
     before_action :override_csp_to_allow_acuant
 
     def show
@@ -61,6 +62,11 @@ module Idv
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    def cancel_establishing_in_person_enrollments
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(current_user)
     end
 
     def analytics_arguments
