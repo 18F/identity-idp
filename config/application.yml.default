@@ -41,12 +41,13 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-allow_otp_countdown_expired_redirect: false
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
+arcgis_api_refresh_token_job_cron: '0/55 * * * *'
+arcgis_api_refresh_token_job_enabled: false
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
@@ -59,7 +60,6 @@ aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
-aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
@@ -152,21 +152,6 @@ in_person_completion_survey_url: 'https://login.gov'
 in_person_usps_outage_message_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
-irs_attempt_api_audience: 'https://irs.gov'
-irs_attempt_api_auth_tokens: ''
-irs_attempt_api_csp_id: 'LOGIN.gov'
-irs_attempt_api_enabled: false
-irs_attempt_api_aws_s3_enabled: false
-irs_attempt_api_aws_s3_stream_enabled: false
-irs_attempt_api_aws_s3_stream_buffer_size: 16_777_216
-irs_attempt_api_event_ttl_seconds: 86400
-irs_attempt_api_event_count_default: 1000
-irs_attempt_api_event_count_max: 10000
-irs_attempt_api_idv_events_enabled: false
-irs_attempt_api_payload_size_logging_enabled: true
-irs_attempt_api_track_idv_fraud_review: false
-irs_attempt_api_track_tmx_fraud_check_event: false
-irs_attempt_api_delete_events_after_s3_upload: false
 key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -274,13 +259,11 @@ recaptcha_site_key_v3: ''
 recaptcha_secret_key_v2: ''
 recaptcha_secret_key_v3: ''
 recovery_code_length: 4
-redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
 redis_throttle_pool_size: 5
-redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
@@ -314,7 +297,6 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v3_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
@@ -369,11 +351,9 @@ voip_allowed_phones: '[]'
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  allow_otp_countdown_expired_redirect: true
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   component_previews_enabled: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
@@ -398,13 +378,6 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_enabled: true
-  irs_attempt_api_aws_s3_enabled: false
-  irs_attempt_api_auth_tokens: 'abc123'
-  irs_attempt_api_bucket_name: default-placeholder
-  irs_attempt_api_idv_events_enabled: false
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -443,9 +416,9 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
+  arcgis_api_refresh_token_job_enabled: true
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
-  aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
@@ -475,8 +448,6 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
-  irs_attempt_api_public_key: change-me-pls
-  irs_attempt_api_public_key_id: key1
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
@@ -494,7 +465,6 @@ production:
   session_encryptor_alert_enabled: true
   reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
-  redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -526,7 +496,6 @@ test:
   acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
@@ -550,10 +519,6 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
-  irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_bucket_name: test-bucket-name
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

@@ -60,6 +60,8 @@ module Users
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 
+    def confirm_backup_codes; end
+
     private
 
     def track_backup_codes_created

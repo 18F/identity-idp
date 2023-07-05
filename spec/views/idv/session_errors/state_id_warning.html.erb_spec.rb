@@ -30,7 +30,7 @@ RSpec.describe 'idv/session_errors/state_id_warning.html.erb' do
   it 'shows exit login.gov button' do
     expect(rendered).to have_link(
       t('idv.warning.state_id.cancel_button', app_name: APP_NAME),
-      href: idv_doc_auth_return_to_sp_path,
+      href: return_to_sp_failure_to_proof_url(step: 'verify_info', location: 'state_id_warning'),
     )
   end
 end

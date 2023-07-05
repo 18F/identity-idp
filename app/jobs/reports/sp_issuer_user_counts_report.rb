@@ -9,7 +9,9 @@ module Reports
         emails = report_hash['emails']
         issuer = report_hash['issuer']
 
-        user_counts = Db::Identity::SpUserCounts.with_issuer(issuer)
+        user_counts = transaction_with_timeout do
+          Db::Identity::SpUserCounts.with_issuer(issuer)
+        end
 
         emails.each do |email|
           ReportMailer.sp_issuer_user_counts_report(

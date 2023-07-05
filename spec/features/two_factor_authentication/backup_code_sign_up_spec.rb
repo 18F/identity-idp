@@ -58,18 +58,17 @@ RSpec.feature 'sign up with backup code' do
     end
   end
 
-  it 'directs backup code only users to the SP during sign up' do
+  it 'directs to SP after backup code confirmation' do
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password
     select_2fa_option('backup_code')
     click_continue
     skip_second_mfa_prompt
 
-    expect(page).to have_current_path(sign_up_completed_path)
+    expect(page).to have_current_path(confirm_backup_codes_path)
+    acknowledge_backup_code_confirmation
 
-    click_agree_and_continue
-
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
+    expect(current_path).to eq(sign_up_completed_path)
   end
 
   context 'when the user needs a backup code reminder' do

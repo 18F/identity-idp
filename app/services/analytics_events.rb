@@ -562,6 +562,22 @@ module AnalyticsEvents
     )
   end
 
+  # Track when ArcGIS auth token refresh job completed
+  def idv_arcgis_token_job_completed(**extra)
+    track_event(
+      'ArcgisTokenJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when ArcGIS auth token refresh job started
+  def idv_arcgis_token_job_started(**extra)
+    track_event(
+      'ArcgisTokenJob: Started',
+      **extra,
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
@@ -673,11 +689,6 @@ module AnalyticsEvents
 
   def idv_doc_auth_link_sent_visited(**extra)
     track_event('IdV: doc auth link_sent visited', **extra)
-  end
-
-  # @identity.idp.previous_event_name IdV: in person proofing optional verify_wait submitted
-  def idv_doc_auth_optional_verify_wait_submitted(**extra)
-    track_event('IdV: doc auth optional verify_wait submitted', **extra)
   end
 
   def idv_doc_auth_randomizer_defaulted
@@ -823,7 +834,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth upload visited', **extra)
   end
 
-  # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
   end
@@ -836,11 +846,6 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing verify visited
   def idv_doc_auth_verify_visited(**extra)
     track_event('IdV: doc auth verify visited', **extra)
-  end
-
-  # @identity.idp.previous_event_name IdV: in person proofing verify_wait visited
-  def idv_doc_auth_verify_wait_step_visited(**extra)
-    track_event('IdV: doc auth verify_wait visited', **extra)
   end
 
   # @param [String] step_name
@@ -2231,24 +2236,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] event_type
-  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
-  # @param [Boolean] recorded if the full event was recorded or not
-  def irs_attempts_api_event_metadata(
-    event_type:,
-    unencrypted_payload_num_bytes:,
-    recorded:,
-    **extra
-  )
-    track_event(
-      'IRS Attempt API: Event metadata',
-      event_type: event_type,
-      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
-      recorded: recorded,
-      **extra,
-    )
-  end
-
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [Boolean] authenticated whether the request was successfully authenticated
   # @param [Float] elapsed_time the amount of time the function took to run
@@ -2814,18 +2801,6 @@ module AnalyticsEvents
       area_code: area_code,
       context: context,
       pii_like_keypaths: pii_like_keypaths,
-      **extra,
-    )
-  end
-
-  # Tracks when user is redirected to OTP expired page
-  # @param [String] otp_sent_at
-  # @param [String] otp_expiration
-  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
-    track_event(
-      'OTP Expired Page Visited',
-      otp_sent_at: otp_sent_at,
-      otp_expiration: otp_expiration,
       **extra,
     )
   end

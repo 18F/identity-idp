@@ -1,5 +1,4 @@
 require 'session_encryptor'
-require 'legacy_session_encryptor'
 
 APPLICATION_SESSION_COOKIE_KEY = '_identity_idp_session'.freeze
 
