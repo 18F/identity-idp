@@ -145,12 +145,6 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
-      # Batch up IRS Attempts API events
-      irs_attempt_events_aggregator: {
-        class: 'IrsAttemptsEventsBatchJob',
-        cron: cron_1h,
-        args: -> { [Time.zone.now - 1.hour] },
-      },
       # Weekly IRS report returning system demand
       irs_weekly_summary_report: {
         class: 'Reports::IrsWeeklySummaryReport',
@@ -175,6 +169,12 @@ else
                          cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
                        }
                      end),
+      # Account creation/deletion stats for OKRs
+      quarterly_account_stats: {
+        class: 'Reports::QuarterlyAccountStats',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength

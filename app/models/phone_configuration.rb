@@ -9,14 +9,11 @@ class PhoneConfiguration < ApplicationRecord
   enum delivery_preference: { sms: 0, voice: 1 }
 
   def formatted_phone
-    Phonelib.parse(phone).international
+    PhoneFormatter.format(phone)
   end
 
   def masked_phone
-    return '' if phone.blank?
-
-    formatted = Phonelib.parse(phone).national
-    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
+    PhoneFormatter.mask(phone)
   end
 
   def selection_presenters

@@ -56,4 +56,24 @@ RSpec.describe PhoneFormatter do
       expect(formatted_phone).to be_nil
     end
   end
+
+  describe '#mask' do
+    it 'masks all but the last four digits' do
+      phone = '+1 703 555 1212'
+      masked_phone = PhoneFormatter.mask(phone)
+      expect(masked_phone).to eq('(***) ***-1212')
+    end
+
+    it 'masks all but the last four digits of formatted international numbers' do
+      phone = '+212 636-023853'
+      masked_phone = PhoneFormatter.mask(phone)
+      expect(masked_phone).to eq('****-**3853')
+    end
+
+    it 'returns an empty string for a blank phone number' do
+      phone = '    '
+      masked_phone = PhoneFormatter.mask(phone)
+      expect(masked_phone).to eq('')
+    end
+  end
 end
