@@ -63,8 +63,7 @@ module Idv
       attr_reader :enrollment
 
       def format_date(date)
-        d = date.to_date
-        d.strftime(I18n.t('date.formats.short'))
+        I18n.l(date.to_date, format: :short)
       end
 
       def localized_hours(hours)

@@ -2,6 +2,7 @@
 es:
   date:
     day_names:
+      -
       - lunes
       - martes
       - miércoles
