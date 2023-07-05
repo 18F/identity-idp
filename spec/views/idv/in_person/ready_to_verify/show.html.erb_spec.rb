@@ -112,11 +112,11 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     it 'renders the outage alert when flag is enabled' do
       allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true)
-      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).and_return(formatted_date)
+      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).
+        and_return(formatted_date)
 
       render
 
-      puts rendered
       expect(rendered).to have_content(
         t(
           'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',

@@ -582,7 +582,8 @@ RSpec.describe UserMailer, type: :mailer do
         it 'renders a warning when the flag is enabled' do
           allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(true)
-          allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).and_return(formatted_date)
+          allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).
+            and_return(formatted_date)
 
           expect(mail.html_part.body).
             to have_content(
