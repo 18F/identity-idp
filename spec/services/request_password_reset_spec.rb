@@ -91,6 +91,15 @@ RSpec.describe RequestPasswordReset do
 
       before do
         user.suspend!
+        allow(UserMailer).to receive(:reset_password_instructions).
+          and_wrap_original do |impl, user, email, options|
+          token = options.fetch(:token)
+          expect(token).to be_present
+          expect(Devise.token_generator.digest(User, :reset_password_token, token)).
+            to eq(user.reset_password_token)
+
+          impl.call(user, email, **options)
+        end
         allow(UserMailer).to receive(:suspended_reset_password).
           and_wrap_original do |impl, user, email, options|
             token = options.fetch(:token)
@@ -105,12 +114,8 @@ RSpec.describe RequestPasswordReset do
           not_to(change { user.reload.reset_password_token })
       end
 
-      it 'sends the correct email to the suspended user' do
-        allow(UserMailer).to receive(:suspended_reset_password)
-
-        subject
-
-        expect(UserMailer).to have_received(:suspended_reset_password)
+      it 'sends an email to the suspended user' do
+        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it 'does not send a recovery activated push event' do

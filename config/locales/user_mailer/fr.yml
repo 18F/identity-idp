@@ -318,5 +318,7 @@ fr:
         à %{app_name} pour le réinitialiser.
     suspended_reset_password:
       header: Nous n’avons pas pu réinitialiser votre mot de passe
-      message: La réinitialisation de votre mot de passe a posé un problème. Veuillez appeler notre centre d’appels au %{contact_number} et fournir ce code - %{support_code}.
+      message: La réinitialisation de votre mot de passe a posé un problème. Veuillez
+        appeler notre centre d’appels au %{contact_number} et fournir ce code -
+        %{support_code}.
       subject: Nous n’avons pas pu réinitialiser votre mot de passe
