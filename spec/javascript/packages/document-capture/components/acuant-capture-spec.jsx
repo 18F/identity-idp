@@ -935,7 +935,9 @@ describe('document-capture/components/acuant-capture', () => {
       <I18nContext.Provider
         value={
           new I18n({
-            strings: { 'doc_auth.buttons.take_or_upload_picture_html': '<lg-upload>Upload</lg-upload>' },
+            strings: {
+              'doc_auth.buttons.take_or_upload_picture_html': '<lg-upload>Upload</lg-upload>',
+            },
           })
         }
       >
