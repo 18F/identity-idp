@@ -169,6 +169,8 @@ module Idv
     end
 
     def clear_applicant!
+      puts '    clear_applicant!'
+      Thread.current.backtrace.map { |line| "    #{line}" }.join("\n")
       session[:applicant] = nil
     end
 
