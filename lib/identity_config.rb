@@ -97,6 +97,7 @@ class IdentityConfig
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
+    config.add(:account_suspended_support_code, type: :string)
     config.add(:acuant_maintenance_window_start, type: :timestamp, allow_nil: true)
     config.add(:acuant_maintenance_window_finish, type: :timestamp, allow_nil: true)
     config.add(:acuant_assure_id_password)

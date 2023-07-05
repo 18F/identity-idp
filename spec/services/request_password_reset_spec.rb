@@ -62,7 +62,7 @@ RSpec.describe RequestPasswordReset do
           end
       end
 
-      it 'sends password reset instructions' do
+      it 'sets password reset token' do
         expect { subject }.
           to(change { user.reload.reset_password_token })
       end
@@ -78,6 +78,57 @@ RSpec.describe RequestPasswordReset do
         subject
 
         expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).once
+      end
+    end
+
+    context 'when the user is found and confirmed, but is suspended' do
+      subject(:perform) do
+        described_class.new(
+          email: email,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        ).perform
+      end
+
+      before do
+        user.suspend!
+        allow(UserMailer).to receive(:reset_password_instructions).
+          and_wrap_original do |impl, user, email, options|
+          token = options.fetch(:token)
+          expect(token).to be_present
+          expect(Devise.token_generator.digest(User, :reset_password_token, token)).
+            to eq(user.reset_password_token)
+
+          impl.call(user, email, **options)
+        end
+        allow(UserMailer).to receive(:suspended_reset_password).
+          and_wrap_original do |impl, user, email, options|
+            token = options.fetch(:token)
+            expect(token).not_to be_present
+
+            impl.call(user, email, **options)
+          end
+      end
+
+      it 'does not set a password reset token' do
+        expect { subject }.
+          not_to(change { user.reload.reset_password_token })
+      end
+
+      it 'sends an email to the suspended user' do
+        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it 'does not send a recovery activated push event' do
+        expect(PushNotification::HttpPush).not_to receive(:deliver).
+          with(PushNotification::RecoveryActivatedEvent.new(user: user))
+
+        subject
+      end
+
+      it 'does not call irs tracking method forgot_password_email_sent' do
+        subject
+
+        expect(irs_attempts_api_tracker).not_to have_received(:forgot_password_email_sent)
       end
     end
 
