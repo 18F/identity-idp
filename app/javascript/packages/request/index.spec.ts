@@ -11,7 +11,7 @@ describe('request', () => {
       const csrf = 'TYsqyyQ66Y';
       const mockGetCSRF = () => csrf;
 
-      sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+      sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
         const headers = init.headers as Headers;
         expect(headers.has('X-CSRF-Token')).to.be.false();
 
@@ -26,7 +26,7 @@ describe('request', () => {
         csrf: mockGetCSRF,
       });
 
-      expect(window.fetch).to.have.been.calledOnce();
+      expect(global.fetch).to.have.been.calledOnce();
     });
 
     context('with a GET request', () => {
@@ -34,7 +34,7 @@ describe('request', () => {
         const csrf = 'TYsqyyQ66Y';
         const mockGetCSRF = () => csrf;
 
-        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+        sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
           const headers = init.headers as Headers;
           expect(headers.has('X-CSRF-Token')).to.be.false();
 
@@ -50,7 +50,7 @@ describe('request', () => {
           method: 'GET',
         });
 
-        expect(window.fetch).to.have.been.calledOnce();
+        expect(global.fetch).to.have.been.calledOnce();
       });
     });
 
@@ -59,7 +59,7 @@ describe('request', () => {
         const csrf = 'TYsqyyQ66Y';
         const mockGetCSRF = () => csrf;
 
-        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+        sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
           const headers = init.headers as Headers;
           expect(headers.has('X-CSRF-Token')).to.be.false();
 
@@ -75,7 +75,7 @@ describe('request', () => {
           method: 'HEAD',
         });
 
-        expect(window.fetch).to.have.been.calledOnce();
+        expect(global.fetch).to.have.been.calledOnce();
       });
     });
 
@@ -84,7 +84,7 @@ describe('request', () => {
         const csrf = 'TYsqyyQ66Y';
         const mockGetCSRF = () => csrf;
 
-        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+        sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
           const headers = init.headers as Headers;
           expect(headers.get('X-CSRF-Token')).to.equal(csrf);
 
@@ -100,11 +100,11 @@ describe('request', () => {
           method: 'PUT',
         });
 
-        expect(window.fetch).to.have.been.calledOnce();
+        expect(global.fetch).to.have.been.calledOnce();
       });
 
       it('works even if the CSRF token is not found on the page', async () => {
-        sandbox.stub(window, 'fetch').callsFake(() =>
+        sandbox.stub(global, 'fetch').callsFake(() =>
           Promise.resolve(
             new Response(JSON.stringify({}), {
               status: 200,
@@ -119,7 +119,7 @@ describe('request', () => {
       });
 
       it('does not try to send a csrf when csrf is false', async () => {
-        sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+        sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
           const headers = init.headers as Headers;
           expect(headers.get('X-CSRF-Token')).to.be.null();
 
@@ -140,7 +140,7 @@ describe('request', () => {
 
   it('prefers the json prop if both json and body props are provided', async () => {
     const preferredData = { prefered: 'data' };
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
@@ -158,7 +158,7 @@ describe('request', () => {
 
   it('works with the native body prop', async () => {
     const preferredData = { this: 'works' };
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
@@ -174,7 +174,7 @@ describe('request', () => {
   });
 
   it('includes additional headers supplied in options', async () => {
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
       const headers = init.headers as Headers;
       expect(headers.get('Some-Fancy')).to.equal('Header');
 
@@ -194,7 +194,7 @@ describe('request', () => {
 
   it('skips json serialization when json is a boolean', async () => {
     const preferredData = { this: 'works' };
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
@@ -212,7 +212,7 @@ describe('request', () => {
 
   it('converts a POJO to a JSON string with supplied via the json property', async () => {
     const preferredData = { this: 'works' };
-    sandbox.stub(window, 'fetch').callsFake((url, init = {}) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init = {}) => {
       expect(init.body).to.equal(JSON.stringify(preferredData));
 
       return Promise.resolve(
@@ -229,7 +229,7 @@ describe('request', () => {
 
   context('with read=false option', () => {
     it('returns the raw response', async () => {
-      sandbox.stub(window, 'fetch').resolves(new Response(JSON.stringify({})));
+      sandbox.stub(global, 'fetch').resolves(new Response(JSON.stringify({})));
       const response = await request('https://example.com', { read: false });
       expect(response.status).to.equal(200);
     });
@@ -237,7 +237,7 @@ describe('request', () => {
 
   context('with unsuccessful response', () => {
     beforeEach(() => {
-      sandbox.stub(window, 'fetch').resolves(new Response(JSON.stringify({}), { status: 400 }));
+      sandbox.stub(global, 'fetch').resolves(new Response(JSON.stringify({}), { status: 400 }));
     });
 
     it('throws an error', async () => {
@@ -261,7 +261,7 @@ describe('request', () => {
 
   context('with response including csrf token', () => {
     beforeEach(() => {
-      sandbox.stub(window, 'fetch').callsFake(() =>
+      sandbox.stub(global, 'fetch').callsFake(() =>
         Promise.resolve(
           new Response(JSON.stringify({}), {
             status: 200,
@@ -292,9 +292,9 @@ describe('request', () => {
 
       it('uses response token for next request', async () => {
         await request('https://example.com', {});
-        (window.fetch as SinonStub).resetHistory();
+        (global.fetch as SinonStub).resetHistory();
         await request('https://example.com', { method: 'PUT' });
-        expect(window.fetch).to.have.been.calledWith(
+        expect(global.fetch).to.have.been.calledWith(
           sinon.match.string,
           sinon.match((init) => init!.headers!.get('x-csrf-token') === 'new-token'),
         );

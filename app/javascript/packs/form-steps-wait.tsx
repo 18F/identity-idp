@@ -120,7 +120,7 @@ export class FormStepsWait {
     // Clear error, if present.
     this.renderError('');
 
-    const response = await window.fetch(action, {
+    const response = await fetch(action, {
       method,
       body: new window.FormData(form),
       headers: {
@@ -222,7 +222,7 @@ export class FormStepsWait {
 
   async poll() {
     const { waitStepPath } = this.options;
-    const response = await window.fetch(waitStepPath, {
+    const response = await fetch(waitStepPath, {
       headers: {
         // Signal to backend that this request is coming from this JS.
         'X-Form-Steps-Wait': '1',
