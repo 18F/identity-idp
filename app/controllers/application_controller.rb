@@ -63,7 +63,6 @@ class ApplicationController < ActionController::Base
         sp: current_sp&.issuer,
         session: session,
         ahoy: ahoy,
-        irs_session_id: irs_attempts_api_session_id,
       )
   end
 
@@ -72,24 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: irs_attempts_api_session_id,
-      request: request,
-      user: effective_user,
-      sp: current_sp,
-      cookie_device_uuid: cookies[:device],
-      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
-      enabled_for_session: irs_attempts_api_enabled_for_session?,
-      analytics: analytics,
-    )
-  end
-
-  def irs_attempts_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled?
-  end
-
-  def irs_attempts_api_session_id
-    decorated_session.irs_attempts_api_session_id
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
   end
 
   def user_event_creator
