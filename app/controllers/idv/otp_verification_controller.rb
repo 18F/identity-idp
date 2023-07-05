@@ -73,22 +73,23 @@ module Idv
 
     def save_in_person_notification_phone
       return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
-      return unless is_in_person_session?
+      return unless in_person_enrollment?
       # future tickets will support voice otp
       return unless idv_session.user_phone_confirmation_session.delivery_method == :sms
 
-      current_enrollment.notification_phone_configuration =
+      establishing_enrollment.notification_phone_configuration =
         NotificationPhoneConfiguration.new(
           phone: idv_session.user_phone_confirmation_session.phone,
         )
     end
 
-    def current_enrollment
+    def establishing_enrollment
       current_user.establishing_in_person_enrollment
     end
 
-    def is_in_person_session?
-      current_enrollment.present?
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      establishing_enrollment.present?
     end
 
     def phone_confirmation_otp_verification_form

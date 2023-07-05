@@ -92,10 +92,12 @@ RSpec.describe Idv::OtpVerificationController do
     context 'the user is going through in person proofing' do
       before(:each) do
         create(:in_person_enrollment, :establishing, user: user)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+          and_return(true)
       end
 
       context 'the user uses sms otp' do
-        it 'doesn not save the phone number if the feature flag is off' do
+        it 'does not save the phone number if the feature flag is off' do
           put :update, params: otp_code_param
 
           phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
@@ -123,7 +125,7 @@ RSpec.describe Idv::OtpVerificationController do
           }
         end
 
-        it 'doesn not save the phone number if the feature flag is off' do
+        it 'does not save the phone number if the feature flag is off' do
           put :update, params: otp_code_param
 
           phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
