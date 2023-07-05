@@ -765,7 +765,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#suspended_reset_password' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).
-      suspended_reset_password
+        suspended_reset_password
     end
 
     it_behaves_like 'a system email'
@@ -781,12 +781,13 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-      to have_content(
-        t(
-          'user_mailer.suspended_reset_password.message',
-          support_code: IdentityConfig.store.account_suspended_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number
-        ),
-      )    end
+        to have_content(
+          t(
+            'user_mailer.suspended_reset_password.message',
+            support_code: IdentityConfig.store.account_suspended_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number,
+          ),
+        )
+    end
   end
 
   describe '#deliver_later' do
