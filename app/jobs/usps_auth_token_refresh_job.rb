@@ -19,10 +19,6 @@ class UspsAuthTokenRefreshJob < ApplicationJob
     end
   end
 
-  def token_expiration
-    Rails.cache.redis.ttl(usps_proofer.AUTH_TOKEN_CACHE_KEY)
-  end
-
   def analytics
     @analytics ||= Analytics.new(
       user: AnonymousUser.new,
