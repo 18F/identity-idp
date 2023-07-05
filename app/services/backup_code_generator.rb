@@ -24,16 +24,9 @@ class BackupCodeGenerator
 
   # @return [Boolean]
   def verify(plaintext_code)
-    return false unless plaintext_code.present?
-    backup_code = RandomPhrase.normalize(plaintext_code)
-    code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
-    return false unless code_usable?(code)
-    code.update!(used_at: Time.zone.now)
-    true
+    if_valid_code_return_config(plaintext_code).present?
   end
 
-  # TODO Note: This is a mirror of the style found in:
-  # app/forms/totp_verification_form.rb
   # @return [BackupCodeConfiguration, nil]
   def if_valid_code_return_config(plaintext_code)
     return unless plaintext_code.present?

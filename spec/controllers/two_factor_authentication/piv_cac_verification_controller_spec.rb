@@ -96,7 +96,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       it 'tracks the valid authentication event' do
         stub_analytics
         stub_attempts_tracker
-        cfg = subject.current_user.piv_cac_configurations.first
+        cfg = controller.current_user.piv_cac_configurations.first
 
         attributes = {
           context: 'authentication',

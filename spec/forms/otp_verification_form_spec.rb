@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe OtpVerificationForm do
-  let(:user) { build_stubbed(:user) }
+  let(:user) { build_stubbed(:user, :with_phone) }
   let(:code) { nil }
-  let(:phone_configuration) { nil }
+  let(:phone_configuration) { user.phone_configurations.first }
   let(:user_otp) { nil }
   let(:user_otp_sent_at) { nil }
 
@@ -26,7 +26,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: true,
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 
@@ -48,7 +48,7 @@ RSpec.describe OtpVerificationForm do
             code: [:blank],
           },
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 
@@ -70,7 +70,7 @@ RSpec.describe OtpVerificationForm do
             code: [:user_otp_missing],
           },
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 
@@ -92,7 +92,7 @@ RSpec.describe OtpVerificationForm do
             code: [:incorrect_length, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 
@@ -114,7 +114,7 @@ RSpec.describe OtpVerificationForm do
             code: [:pattern_mismatch, :incorrect],
           },
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 
@@ -139,7 +139,7 @@ RSpec.describe OtpVerificationForm do
             code: [:user_otp_expired],
           },
           multi_factor_auth_method: 'otp_code',
-          multi_factor_auth_method_created_at: nil,
+          multi_factor_auth_method_created_at: phone_configuration.created_at,
         )
       end
 

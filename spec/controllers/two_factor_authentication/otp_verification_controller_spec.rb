@@ -117,8 +117,8 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user enters an invalid OTP during authentication context' do
       before do
         sign_in_before_2fa
-        subject.user_session[:mfa_selections] = ['sms']
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+        controller.user_session[:mfa_selections] = ['sms']
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 0
         phone_configuration_created_at = controller.current_user.
           default_phone_configuration.created_at
 
@@ -152,7 +152,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'increments second_factor_attempts_count' do
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
 
       it 'redirects to the OTP entry screen' do
@@ -164,8 +164,8 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'does not set auth_method and requires 2FA' do
-        expect(subject.user_session[:auth_method]).to eq nil
-        expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
+        expect(controller.user_session[:auth_method]).to eq nil
+        expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
     end
 
@@ -176,7 +176,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
 
-        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        expect(controller.current_user.reload.second_factor_attempts_count).to eq 1
       end
     end
 
@@ -189,7 +189,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
         sign_in_before_2fa(user)
-        subject.user_session[:mfa_selections] = ['sms']
+        controller.user_session[:mfa_selections] = ['sms']
         phone_configuration_created_at = controller.current_user.
           default_phone_configuration.created_at
 
@@ -217,7 +217,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
-          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+          with(PushNotification::MfaLimitAccountLockedEvent.new(user: controller.current_user))
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
