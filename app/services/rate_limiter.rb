@@ -139,6 +139,7 @@ class RateLimiter
     attempts
   end
 
+  # still uses throttle terminology because of persisted data in redis
   def key
     if @user
       "throttle:throttle:#{@user.id}:#{rate_limit_type}"
@@ -157,7 +158,7 @@ class RateLimiter
 
   def self.rate_limit_config
     if Rails.env.production?
-      CACHED_THROTTLE_CONFIG
+      CACHED_RATE_LIMIT_CONFIG
     else
       load_rate_limit_config
     end
@@ -216,5 +217,5 @@ class RateLimiter
     }.with_indifferent_access
   end
 
-  CACHED_THROTTLE_CONFIG = self.load_rate_limit_config.with_indifferent_access.freeze
+  CACHED_RATE_LIMIT_CONFIG = self.load_rate_limit_config.with_indifferent_access.freeze
 end
