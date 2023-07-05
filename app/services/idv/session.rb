@@ -3,22 +3,23 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
+      flow_path
       go_back_path
-      verify_info_step_document_capture_session_uuid
+      gpo_code_verified
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
-      vendor_phone_confirmation
-      user_phone_confirmation
-      gpo_code_verified
+      personal_key
       phone_for_mobile_flow
       pii
       previous_phone_step_params
       profile_confirmation
       profile_id
       profile_step_params
-      personal_key
       resolution_successful
       threatmetrix_review_status
+      user_phone_confirmation
+      vendor_phone_confirmation
+      verify_info_step_document_capture_session_uuid
       welcome_visited
     ].freeze
 

@@ -242,6 +242,7 @@ class IdentityConfig
     config.add(:in_person_ssn_controller_enabled, type: :boolean)
     config.add(:in_person_completion_survey_url, type: :string)
     config.add(:in_person_usps_outage_message_enabled, type: :boolean)
+    config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:lexisnexis_base_url, type: :string)
