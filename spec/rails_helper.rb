@@ -122,10 +122,6 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    IrsAttemptsApi::RedisClient.clear_attempts!
-  end
-
-  config.before(:each) do
     Rails.cache.clear
   end
 

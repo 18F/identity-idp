@@ -41,7 +41,8 @@ module Idv
       rate_limiter.increment!
       return rate_limited_failure if rate_limiter.limited?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
-      flow_session[:flow_path] = 'hybrid'
+      idv_session.flow_path = 'hybrid'
+      flow_session[:flow_path] = 'hybrid' # temp addition for 50/50 remove in future deploy
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
@@ -60,7 +61,8 @@ module Idv
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
-        flow_session[:flow_path] = nil
+        idv_session.flow_path = nil
+        flow_session[:flow_path] = nil # temp added for 50/50, remove in future deploy
       end
 
       analytics.idv_doc_auth_upload_submitted(
@@ -97,7 +99,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
-          flow_path: flow_session[:flow_path],
+          flow_path: idv_session.flow_path || flow_session[:flow_path], # remove in future deploy
         },
       )
     end
@@ -113,7 +115,8 @@ module Idv
     end
 
     def bypass_send_link_steps
-      flow_session[:flow_path] = 'standard'
+      idv_session.flow_path = 'standard'
+      flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
       redirect_to idv_document_capture_url
 
       analytics.idv_doc_auth_upload_submitted(
@@ -167,7 +170,7 @@ module Idv
         extra: {
           destination: destination,
           skip_upload_step: mobile_device?,
-          flow_path: flow_session[:flow_path],
+          flow_path: idv_session.flow_path,
         },
       )
     end
@@ -210,13 +213,15 @@ module Idv
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
 
+      idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
+      # next line temp added for 50/50, remove in future deploy
       flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
+      # flow_session temp added for 50/50, remove in future deploy.
+      return if !idv_session.flow_path && !flow_session[:flow_path]
 
-      return if !flow_session[:flow_path]
-
-      if flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
         redirect_to idv_document_capture_url
-      elsif flow_session[:flow_path] == 'hybrid'
+      elsif idv_session.flow_path == 'hybrid' || flow_session[:flow_path] == 'hybrid'
         redirect_to idv_link_sent_url
       end
     end
@@ -224,9 +229,11 @@ module Idv
     def setup_for_redo
       flow_session[:redo_document_capture] = true
       if flow_session[:skip_upload_step]
-        flow_session[:flow_path] = 'standard'
+        idv_session.flow_path = 'standard'
+        flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
       else
-        flow_session[:flow_path] = nil
+        idv_session.flow_path = nil
+        flow_session[:flow_path] = nil # temp added for 50/50, remove in future deploy
       end
     end
 

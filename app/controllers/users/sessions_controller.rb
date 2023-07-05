@@ -20,7 +20,6 @@ module Users
       override_csp_for_google_analytics
 
       @ial = sp_session_ial
-      @browser_is_ie11 = browser_is_ie11?
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
@@ -114,10 +113,6 @@ module Users
         email: auth_params[:email],
       )
       redirect_to next_url_after_valid_authentication
-    end
-
-    def browser_is_ie11?
-      BrowserCache.parse(request.user_agent).ie?(11)
     end
 
     def track_authentication_attempt(email)

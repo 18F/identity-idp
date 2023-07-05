@@ -74,10 +74,6 @@ class FeatureManagement
     Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
 
-  def self.use_reauthentication_route?
-    IdentityConfig.store.use_reauthentication_route
-  end
-
   def self.enable_saml_cert_rotation?
     IdentityConfig.store.saml_secret_rotation_enabled
   end
@@ -99,10 +95,6 @@ class FeatureManagement
 
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
-  end
-
-  def self.otp_expired_redirect_enabled?
-    IdentityConfig.store.allow_otp_countdown_expired_redirect
   end
 
   def self.logo_upload_enabled?

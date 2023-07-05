@@ -19,6 +19,16 @@ es:
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
+    backup_codes:
+      add_another_authentication_option: '‹ Añada otra opción de autenticación'
+      instructions: Si no tiene acceso a otro dispositivo, guarde bien sus códigos de
+        respaldo. No podrá iniciar sesión en %{app_name} si pierde sus códigos
+        de respaldo.
+      new_backup_codes_html: Necesito nuevos códigos de respaldo
+      saved_backup_codes: Ya guardé mis códigos de respaldo
+      warning_html: <strong>Solo ha configurado códigos de respaldo en su cuenta.
+        </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
+        cuenta mediante otro método de autenticación.
     choose_another_option: '‹ Elige otra opción'
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante

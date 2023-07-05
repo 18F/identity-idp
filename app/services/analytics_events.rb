@@ -2236,24 +2236,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] event_type
-  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
-  # @param [Boolean] recorded if the full event was recorded or not
-  def irs_attempts_api_event_metadata(
-    event_type:,
-    unencrypted_payload_num_bytes:,
-    recorded:,
-    **extra
-  )
-    track_event(
-      'IRS Attempt API: Event metadata',
-      event_type: event_type,
-      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
-      recorded: recorded,
-      **extra,
-    )
-  end
-
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [Boolean] authenticated whether the request was successfully authenticated
   # @param [Float] elapsed_time the amount of time the function took to run
@@ -2819,18 +2801,6 @@ module AnalyticsEvents
       area_code: area_code,
       context: context,
       pii_like_keypaths: pii_like_keypaths,
-      **extra,
-    )
-  end
-
-  # Tracks when user is redirected to OTP expired page
-  # @param [String] otp_sent_at
-  # @param [String] otp_expiration
-  def otp_expired_visited(otp_sent_at:, otp_expiration:, **extra)
-    track_event(
-      'OTP Expired Page Visited',
-      otp_sent_at: otp_sent_at,
-      otp_expiration: otp_expiration,
       **extra,
     )
   end

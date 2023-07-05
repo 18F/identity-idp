@@ -28,6 +28,8 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
 
+      cancel_establishing_in_person_enrollments
+
       if result.success?
         redirect_to idv_ssn_url
       else
@@ -49,7 +51,8 @@ module Idv
     private
 
     def confirm_hybrid_handoff_complete
-      return if flow_session[:flow_path].present?
+      return if idv_session.flow_path.present?
+      return if flow_session[:flow_path].present? # remove in future deploy
 
       redirect_to idv_hybrid_handoff_url
     end
@@ -61,6 +64,11 @@ module Idv
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    def cancel_establishing_in_person_enrollments
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(current_user)
     end
 
     def analytics_arguments
