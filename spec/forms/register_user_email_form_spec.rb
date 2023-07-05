@@ -34,7 +34,7 @@ RSpec.describe RegisterUserEmailForm do
         )
       end
 
-      it 'creates throttle events after reaching throttle limit' do
+      it 'creates rate_limiter events after reaching rate_limiter limit' do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(
@@ -95,7 +95,7 @@ RSpec.describe RegisterUserEmailForm do
         end.to change { existing_user.reload.email_language }.from('en').to('fr')
       end
 
-      it 'creates throttle events after reaching throttle limit' do
+      it 'creates rate_limiter events after reaching rate_limiter limit' do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(

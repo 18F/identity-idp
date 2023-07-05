@@ -164,7 +164,7 @@ RSpec.describe RequestPasswordReset do
 
     context 'when the user requests password resets above the allowable threshold' do
       let(:analytics) { FakeAnalytics.new }
-      it 'throttles the email sending and logs a throttle event' do
+      it 'rate limits the email sending and logs a rate limit event' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         (max_attempts - 1).times do
@@ -178,7 +178,7 @@ RSpec.describe RequestPasswordReset do
             to(change { user.reload.reset_password_token })
         end
 
-        # extra time, throttled
+        # extra time, rate limited
         expect do
           RequestPasswordReset.new(
             email: email,
@@ -197,7 +197,7 @@ RSpec.describe RequestPasswordReset do
         )
       end
 
-      it 'only sends a push notification when the attempts have not been throttled' do
+      it 'only sends a push notification when the attempts have not been rate limited' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         expect(PushNotification::HttpPush).to receive(:deliver).
@@ -215,7 +215,7 @@ RSpec.describe RequestPasswordReset do
             to(change { user.reload.reset_password_token })
         end
 
-        # extra time, throttled
+        # extra time, rate limited
         expect do
           RequestPasswordReset.new(
             email: email,

@@ -31,11 +31,11 @@ module Users
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
-      throttle_password_failure = true
+      rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
-      increment_session_bad_password_count if throttle_password_failure && !current_user
+      increment_session_bad_password_count if rate_limit_password_failure && !current_user
       track_authentication_attempt(auth_params[:email])
     end
 
