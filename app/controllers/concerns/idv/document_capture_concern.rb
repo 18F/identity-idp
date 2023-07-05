@@ -46,6 +46,8 @@ module Idv
           flow_session[:pii_from_doc].merge!(pii_from_doc)
           idv_session.clear_applicant!
         end
+      elsif store_in_session
+        raise 'flow_session is not available'
       end
 
       track_document_issuing_state(user, pii_from_doc[:state])
