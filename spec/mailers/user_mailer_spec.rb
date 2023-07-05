@@ -784,7 +784,8 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           t(
             'user_mailer.suspended_reset_password.message',
-            support_code: IdentityConfig.store.account_suspended_support_code, contact_number: IdentityConfig.store.idv_contact_phone_number,
+            support_code: IdentityConfig.store.account_suspended_support_code,
+            contact_number: IdentityConfig.store.idv_contact_phone_number,
           ),
         )
     end
