@@ -6,8 +6,7 @@ RSpec.describe Idv::SsnController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -17,6 +16,7 @@ RSpec.describe Idv::SsnController do
   before do
     stub_sign_in(user)
     subject.user_session['idv/doc_auth'] = flow_session
+    subject.idv_session.flow_path = 'standard'
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -258,7 +258,7 @@ RSpec.describe Idv::SsnController do
 
     context 'when pii_from_doc is not present' do
       before do
-        flow_session[:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
         flow_session.delete('pii_from_doc')
       end
 
@@ -269,14 +269,14 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'redirects to LinkSentController on hybrid flow' do
-        flow_session[:flow_path] = 'hybrid'
+        subject.idv_session.flow_path = 'hybrid'
         put :update
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_link_sent_url
       end
 
       it 'redirects to hybrid_handoff if there is no flow_path' do
-        flow_session[:flow_path] = nil
+        subject.idv_session.flow_path = nil
         put :update
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_hybrid_handoff_url

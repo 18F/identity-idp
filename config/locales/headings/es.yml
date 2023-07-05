@@ -28,7 +28,6 @@ es:
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono
-    otp_expired: Su código único ha expirado
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
