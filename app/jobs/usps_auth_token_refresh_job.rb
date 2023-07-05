@@ -7,8 +7,6 @@ class UspsAuthTokenRefreshJob < ApplicationJob
     if token_expiration < 7.minutes
       usps_proofer.retrieve_token!
     end
-
-    return true
   ensure
     analytics.idv_usps_auth_token_refresh_job_completed
   end
