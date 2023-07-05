@@ -305,7 +305,6 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     suspended_reset_password:
-      header: No pudimos restablecer su contraseña
       message: Se produjo un problema al restablecer su contraseña. Llame a nuestro
         centro de atención al número %{contact_number} y proporcione este código
         - %{support_code}.
