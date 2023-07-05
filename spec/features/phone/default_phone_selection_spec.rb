@@ -37,7 +37,7 @@ RSpec.describe 'default phone selection' do
 
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
-          number: '+1 202-555-3434',
+          number_html: '+1 202-555-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
 
@@ -50,7 +50,7 @@ RSpec.describe 'default phone selection' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
-          number: '(***) ***-3434',
+          number_html: '(***) ***-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
