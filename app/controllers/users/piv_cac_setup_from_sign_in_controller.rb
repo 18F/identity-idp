@@ -6,9 +6,7 @@ module Users
     include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_recently_authenticated_2fa, if: -> do
-      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-    end
+    before_action :confirm_recently_authenticated_2fa
     before_action :apply_secure_headers_override, only: :success
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :prompt
 

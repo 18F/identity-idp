@@ -357,7 +357,6 @@ class IdentityConfig
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
     config.add(:reauthn_window, type: :integer)
-    config.add(:reauthentication_for_second_factor_management_enabled, type: :boolean)
     config.add(:recaptcha_enterprise_project_id, type: :string)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_site_key_v2, type: :string)
