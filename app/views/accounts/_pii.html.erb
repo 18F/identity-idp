@@ -4,17 +4,13 @@
       <div class="usa-alert__body">
         <div class="usa-alert__text">
           <%= t('account.re_verify.banner') %>
-          <% if use_reauthentication_route %>
-            <%= render ButtonComponent.new(
-                  action: ->(**tag_options, &block) do
-                    button_to(account_reauthentication_path, **tag_options, &block)
-                  end,
-                  method: :post,
-                  class: 'usa-button usa-button--unstyled',
-                ).with_content(t('account.re_verify.footer')) %>
-          <% else %>
-            <%= link_to(t('account.re_verify.footer'), user_password_confirm_path) %>
-          <% end %>
+          <%= render ButtonComponent.new(
+                action: ->(**tag_options, &block) do
+                  button_to(account_reauthentication_path, **tag_options, &block)
+                end,
+                method: :post,
+                class: 'usa-button usa-button--unstyled',
+              ).with_content(t('account.re_verify.footer')) %>
         </div>
       </div>
     </div>
