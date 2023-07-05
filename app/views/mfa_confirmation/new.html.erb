@@ -3,8 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.confirm')) %>
 
 <p>
-  <%# for follow up: translate factor_to_change (LG-5701) %>
-  <%= t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
+  <%= t('help_text.change_factor') %>
 </p>
 
 <%= simple_form_for(
