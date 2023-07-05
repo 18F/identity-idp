@@ -5,8 +5,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
@@ -23,6 +22,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do
@@ -99,7 +99,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        flow_session.delete(:flow_path)
+        subject.idv_session.flow_path = nil
 
         get :show
 
