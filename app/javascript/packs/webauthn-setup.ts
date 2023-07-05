@@ -2,7 +2,7 @@ import {
   isWebauthnSupported,
   enrollWebauthnDevice,
   extractCredentials,
-  longToByteArray
+  longToByteArray,
 } from '@18f/identity-webauthn';
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
@@ -68,12 +68,12 @@ function webauthn() {
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
-        (document.getElementById('authenticator_data_flags') as HTMLInputElement).value = 
+        (document.getElementById('authenticator_data_flags') as HTMLInputElement).value =
           result.authenticatorDataFlags;
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((err) => {
-        reloadWithError(err.name, { force: true })
+        reloadWithError(err.name, { force: true });
       });
   });
 }

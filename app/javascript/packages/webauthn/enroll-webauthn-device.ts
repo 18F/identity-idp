@@ -1,5 +1,5 @@
-import { arrayBufferToBase64 } from './converters';
 import { getAuthenticatorDataFlags } from '@18f/identity-webauthn';
+import { arrayBufferToBase64 } from './converters';
 
 interface EnrollOptions {
   user: PublicKeyCredentialUserEntity;
@@ -84,7 +84,7 @@ async function enrollWebauthnDevice({
     webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
-    authenticatorDataFlags: authenticatorDataFlag, 
+    authenticatorDataFlags: authenticatorDataFlag,
   };
 }
 
