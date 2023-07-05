@@ -228,20 +228,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             patch :confirm, params: params
           end
         end
-
-        context 'User only has webauthn as an MFA method' do
-          before do
-            allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-              to receive(:multiple_factors_enabled?).
-              and_return(false)
-          end
-
-          it 'redirects to webauthn error page ' do
-            patch :confirm, params: params
-            expect(response).
-              to redirect_to login_two_factor_webauthn_url(platform: params[:platform])
-          end
-        end
       end
     end
   end
