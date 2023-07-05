@@ -37,7 +37,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
         it 'returns the help text for just the security key' do
           expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_only_html'),
+            t('instructions.mfa.webauthn.confirm_webauthn_only'),
           )
         end
       end
@@ -47,7 +47,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
         it 'returns the help text for the security key or PIV' do
           expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html'),
+            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3'),
           )
         end
       end
@@ -58,7 +58,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'displays the help text' do
         expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_html'),
+          t('instructions.mfa.webauthn.confirm_webauthn'),
         )
       end
     end
@@ -69,8 +69,8 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'returns the help text for a platform authenticator' do
         expect(presenter.webauthn_help).to eq(
           t(
-            'instructions.mfa.webauthn.confirm_webauthn_platform_html',
-            app_name_html: APP_NAME,
+            'instructions.mfa.webauthn.confirm_webauthn_platform',
+            app_name: APP_NAME,
           ),
         )
       end
