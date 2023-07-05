@@ -21,55 +21,43 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
   end
 
   describe 'usps auth token refresh job' do
-    context 'the token in the cache is more than 7 mins from expiration' do
-      it 'checks the cache but does not make a request' do
-        Rails.cache.write(usps_auth_token_cache_key, "test token", expires_in: 900)
+    context 'when using redis as a backing store' do
+      before do |ex|
+        allow(Rails).to receive(:cache).and_return(
+          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+        )
+      end
 
+      it 'requests and sets a new token in the cache' do
         stub_request_token
 
-        expect(WebMock).not_to have_requested(:post, "#{root_url}/oauth/authenticate")
+        expect(analytics).to receive(
+          :idv_usps_auth_token_refresh_job_started,
+        ).once
+        expect(analytics).to receive(
+          :idv_usps_auth_token_refresh_job_completed,
+        ).once
+
+        expect(Rails.cache).to receive(:write).with(
+          usps_auth_token_cache_key,
+          an_instance_of(String),
+          hash_including(expires_in: an_instance_of(ActiveSupport::Duration)),
+        )
+
+        subject.perform
+
+        expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate")
       end
-    end
 
-    context 'the token in the cache is less than 7 mins from expiration' do
-      context 'when using redis as a backing store' do
-        before do |ex|
-          allow(Rails).to receive(:cache).and_return(
-            ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
-          )
-        end
+      it 'manually sets the expiration' do
+        allow(analytics).to receive(:idv_usps_auth_token_refresh_job_started)
+        allow(analytics).to receive(:idv_usps_auth_token_refresh_job_completed)
 
-        it 'requests and sets a new token in the cache' do
-          stub_request_token
+        stub_request_token
+        subject.perform
 
-          expect(analytics).to receive(
-            :idv_usps_auth_token_refresh_job_started,
-          ).once
-          expect(analytics).to receive(
-            :idv_usps_auth_token_refresh_job_completed,
-          ).once
-
-          expect(Rails.cache).to receive(:write).with(
-            usps_auth_token_cache_key,
-            an_instance_of(String),
-            hash_including(expires_in: an_instance_of(ActiveSupport::Duration)),
-          )
-
-          subject.perform
-
-          expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate")
-        end
-
-        it 'manually sets the expiration' do
-          allow(analytics).to receive(:idv_usps_auth_token_refresh_job_started)
-          allow(analytics).to receive(:idv_usps_auth_token_refresh_job_completed)
-
-          stub_request_token
-          subject.perform
-
-          ttl = Rails.cache.redis.ttl(usps_auth_token_cache_key)
-          expect(ttl).to be > 0
-        end
+        ttl = Rails.cache.redis.ttl(usps_auth_token_cache_key)
+        expect(ttl).to be > 0
       end
     end
 

@@ -4,9 +4,7 @@ class UspsAuthTokenRefreshJob < ApplicationJob
   def perform
     analytics.idv_usps_auth_token_refresh_job_started
 
-    if token_expiration < 7.minutes
-      usps_proofer.retrieve_token!
-    end
+    usps_proofer.retrieve_token!
   ensure
     analytics.idv_usps_auth_token_refresh_job_completed
   end
