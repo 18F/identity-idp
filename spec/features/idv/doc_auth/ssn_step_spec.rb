@@ -37,7 +37,7 @@ RSpec.feature 'doc auth ssn step', :js do
     fill_out_ssn_form_fail
     click_idv_continue
 
-    expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('true')
+    expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('true')
 
     expect(page).to have_current_path(idv_ssn_url)
   end

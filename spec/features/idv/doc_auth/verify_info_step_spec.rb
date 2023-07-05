@@ -86,7 +86,7 @@ RSpec.feature 'doc auth verify_info step', :js do
       find_field(t('idv.form.ssn_label')).value,
     ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
 
-    fill_in t('idv.form.ssn_label_html'), with: '900456789'
+    fill_in t('idv.form.ssn_label'), with: '900456789'
     click_button t('forms.buttons.submit.update')
 
     expect(fake_analytics).to have_logged_event(
