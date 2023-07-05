@@ -1,9 +1,6 @@
 module UspsInPersonProofing
   module Mock
     class Proofer < UspsInPersonProofing::Proofer
-      def AUTH_TOKEN_CACHE_KEY
-        :usps_ippaas_api_auth_token
-      end
       def request_enroll(applicant)
         case applicant['first_name']
         when 'usps waiting'
