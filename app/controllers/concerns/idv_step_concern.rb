@@ -41,6 +41,13 @@ module IdvStepConcern
   end
 
   def confirm_document_capture_complete
+    if !pii_from_doc.present?
+      puts "confirm_document_capture_complete: pii_from_doc not present"
+      puts "flow_session: #{flow_session.inspect}"
+      puts "idv_session: #{idv_session.inspect}"
+      puts Thread.current.backtrace.map { |line| "    #{line}" }.join("\n")
+    end
+    
     return if pii_from_doc.present?
 
     if flow_path == 'standard'
