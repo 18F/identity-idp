@@ -6,6 +6,7 @@ class MarketingSite
   HELP_CENTER_ARTICLES = %w[
     authentication-methods/which-authentication-method-should-i-use
     creating-an-account/authentication-application
+    manage-your-account/personal-key
     signing-in/what-is-a-hardware-security-key
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id

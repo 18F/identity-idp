@@ -34,7 +34,8 @@ describe('enrollWebauthnDevice', () => {
           response: {
             attestationObject: Buffer.from('attest', 'utf-8'),
             clientDataJSON: Buffer.from('json', 'utf-8'),
-            getAuthenticatorData: sandbox.stub().resolves(authenticatorData),
+            getAuthenticatorData: () => authenticatorData,
+            getTransports: () => ['usb'],
           },
         }),
       },
@@ -91,12 +92,16 @@ describe('enrollWebauthnDevice', () => {
       webauthnPublicKey: '123',
       attestationObject: btoa('attest'),
       clientDataJSON: btoa('json'),
+<<<<<<< HEAD
       authenticatorDataFlags: JSON.stringify({"up": true,
       "uv": false,
       "be": false,
       "bs": false,
       "at": false,
       "ed": false}),
+=======
+      transports: ['usb'],
+>>>>>>> origin/main
     });
   });
 

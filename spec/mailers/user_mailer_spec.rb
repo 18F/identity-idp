@@ -762,6 +762,35 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#suspended_reset_password' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).
+        suspended_reset_password
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.suspended_reset_password.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          t(
+            'user_mailer.suspended_reset_password.message',
+            support_code: IdentityConfig.store.account_suspended_support_code,
+            contact_number: IdentityConfig.store.idv_contact_phone_number,
+          ),
+        )
+    end
+  end
+
   describe '#deliver_later' do
     it 'does not queue email if it potentially contains sensitive value' do
       user = create(:user)

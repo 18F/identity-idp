@@ -9,7 +9,7 @@ module Idv
     before_action :ignore_form_step_wait_requests
 
     def warning
-      @remaining_attempts = throttle.remaining_count
+      @remaining_attempts = rate_limiter.remaining_count
 
       if idv_session.previous_phone_step_params
         @phone = idv_session.previous_phone_step_params[:phone]
@@ -20,24 +20,24 @@ module Idv
     end
 
     def timeout
-      @remaining_step_attempts = throttle.remaining_count
+      @remaining_step_attempts = rate_limiter.remaining_count
       track_event(type: :timeout)
     end
 
     def jobfail
-      @remaining_attempts = throttle.remaining_count
+      @remaining_attempts = rate_limiter.remaining_count
       track_event(type: :jobfail)
     end
 
     def failure
-      @expires_at = throttle.expires_at
+      @expires_at = rate_limiter.expires_at
       track_event(type: :failure)
     end
 
     private
 
-    def throttle
-      Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    def rate_limiter
+      RateLimiter.new(user: idv_session.current_user, rate_limit_type: :proof_address)
     end
 
     def confirm_idv_phone_step_needed

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::PhoneController do
   include IdvHelper
 
-  let(:max_attempts) { Throttle.max_attempts(:proof_address) }
+  let(:max_attempts) { RateLimiter.max_attempts(:proof_address) }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
@@ -97,9 +97,9 @@ RSpec.describe Idv::PhoneController do
       end
     end
 
-    context 'when the user is throttled' do
+    context 'when the user is rate limited' do
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
       end
 
       it 'redirects to fail' do
@@ -484,15 +484,15 @@ RSpec.describe Idv::PhoneController do
         get :new
       end
 
-      context 'when the user is throttled by submission' do
+      context 'when the user is rate limited by submission' do
         before do
           stub_analytics
 
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
 
-          throttle = Throttle.new(throttle_type: :proof_address, user: user)
-          throttle.increment_to_throttled!
+          rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
+          rate_limiter.increment_to_limited!
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
         end
@@ -501,7 +501,7 @@ RSpec.describe Idv::PhoneController do
           expect(response).to redirect_to idv_phone_errors_failure_url
         end
 
-        it 'tracks throttled event' do
+        it 'tracks rate limited event' do
           expect(@analytics).to have_logged_event(
             'Throttler Rate Limit Triggered',
             {

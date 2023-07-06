@@ -123,11 +123,11 @@ RSpec.describe Idv::DocumentCaptureController do
       get :show
     end
 
-    context 'user is rate_limited' do
+    context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
 
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
         allow(subject).to receive(:current_user).and_return(user)
 
         get :show

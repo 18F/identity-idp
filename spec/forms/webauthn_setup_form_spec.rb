@@ -5,19 +5,26 @@ RSpec.describe WebauthnSetupForm do
 
   let(:user) { create(:user) }
   let(:user_session) { { webauthn_challenge: webauthn_challenge } }
+  let(:domain_name) { 'localhost:3000' }
+  let(:params) do
+    {
+      attestation_object: attestation_object,
+      client_data_json: setup_client_data_json,
+      name: 'mykey',
+      platform_authenticator: false,
+      transports: 'usb',
+      authenticator_data_flags: backed_up_authenticator_data_flags,
+    }
+  end
   let(:subject) { WebauthnSetupForm.new(user, user_session) }
+
+  before do
+    allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
+  end
 
   describe '#submit' do
     context 'when the input is valid' do
       it 'returns FormResponse with success: true and creates a webauthn configuration' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-          authenticator_data_flags: backed_up_authenticator_data_flags,
-        }
         extra_attributes = {
           enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn: 1 },
@@ -31,48 +38,68 @@ RSpec.describe WebauthnSetupForm do
           **extra_attributes,
         )
 
-        expect(user.reload.webauthn_configurations.roaming_authenticators.count).to eq(1)
-      end
+        user.reload
 
-      it 'creates a platform authenticator if the platform_authenticator param is set' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: true,
-        }
-
-        result = subject.submit(protocol, params)
-        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
-
-        expect(user.reload.webauthn_configurations.platform_authenticators.count).to eq(1)
+        expect(user.webauthn_configurations.roaming_authenticators.count).to eq(1)
+        expect(user.webauthn_configurations.roaming_authenticators.first.transports).to eq(['usb'])
       end
 
       it 'sends a recovery information changed event' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-        }
-
         subject.submit(protocol, params)
+      end
+
+      context 'with platform authenticator' do
+        let(:params) do
+          super().merge(platform_authenticator: true, transports: 'internal,hybrid')
+        end
+
+        it 'creates a platform authenticator' do
+          result = subject.submit(protocol, params)
+          expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
+
+          user.reload
+
+          expect(user.webauthn_configurations.platform_authenticators.count).to eq(1)
+          expect(user.webauthn_configurations.platform_authenticators.first.transports).to eq(
+            ['internal', 'hybrid'],
+          )
+        end
+      end
+
+      context 'with invalid transports' do
+        let(:params) { super().merge(transports: 'wrong') }
+
+        it 'creates a webauthn configuration without transports' do
+          subject.submit(protocol, params)
+
+          user.reload
+
+          expect(user.webauthn_configurations.roaming_authenticators.first.transports).to be_nil
+        end
+
+        it 'includes unknown transports in extra analytics' do
+          result = subject.submit(protocol, params)
+
+          expect(result.to_h).to eq(
+            success: true,
+            errors: {},
+            enabled_mfa_methods_count: 1,
+            mfa_method_counts: { webauthn: 1 },
+            multi_factor_auth_method: 'webauthn',
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
+            unknown_transports: ['wrong'],
+          )
+        end
       end
     end
 
-    context 'when the input is invalid' do
+    context 'with invalid attestation response from domain' do
+      let(:domain_name) { 'example.com' }
+
       it 'returns FormResponse with success: false' do
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-        }
         extra_attributes = {
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
@@ -86,17 +113,26 @@ RSpec.describe WebauthnSetupForm do
           **extra_attributes,
         )
       end
+    end
+
+    context 'with missing transports' do
+      let(:params) { super().except(:transports) }
+
+      it 'creates a webauthn configuration without transports' do
+        subject.submit(protocol, params)
+
+        user.reload
+
+        expect(user.webauthn_configurations.roaming_authenticators.first.transports).to be_nil
+      end
+    end
+
+    context 'when the attestation response raises an error' do
+      before do
+        allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
+      end
 
       it 'returns false with an error when the attestation response raises an error' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
-
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-        }
         extra_attributes = {
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
@@ -122,15 +158,18 @@ RSpec.describe WebauthnSetupForm do
 
   describe '#passkey_backed_up?' do
     context 'when authenticator data flag bs value is set to false' do
-      it 'should return false' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        params = {
+      let(:params) do
+        {
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
           platform_authenticator: false,
+          transports: 'usb',
           authenticator_data_flags: non_backed_up_authenticator_data_flags,
         }
+      end
+      it 'should return false' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         subject.submit(protocol, params)
         expect(subject.passkey_backed_up).to eq(false)
       end
@@ -139,13 +178,6 @@ RSpec.describe WebauthnSetupForm do
     context 'when bs value is set to true' do
       it 'should return true' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        params = {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-          authenticator_data_flags: backed_up_authenticator_data_flags,
-        }
         subject.submit(protocol, params)
         expect(subject.passkey_backed_up).to eq(true)
       end

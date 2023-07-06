@@ -49,7 +49,7 @@ class WebauthnSetupForm
 
   private
 
-  attr_reader :success
+  attr_reader :success, :transports, :invalid_transports
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
                 :name, :platform_authenticator, :authenticator_data_flags
 
@@ -63,6 +63,9 @@ class WebauthnSetupForm
         params[:authenticator_data_flags],
         symbolize_names: true,
       )
+    end
+    @transports, @invalid_transports = params[:transports]&.split(',')&.partition do |transport|
+      WebauthnConfiguration::VALID_TRANSPORTS.include?(transport)
     end
   end
 
@@ -110,6 +113,7 @@ class WebauthnSetupForm
       credential_id: id,
       name: name,
       platform_authenticator: platform_authenticator,
+      transports: transports.presence,
     )
   end
 
@@ -128,6 +132,7 @@ class WebauthnSetupForm
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
-    }
+      unknown_transports: invalid_transports.presence,
+    }.compact
   end
 end

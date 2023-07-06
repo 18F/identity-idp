@@ -21,6 +21,8 @@ interface EnrollResult {
   clientDataJSON: string;
 
   authenticatorDataFlags: string;
+  
+  transports: string[];
 }
 
 async function enrollWebauthnDevice({
@@ -85,6 +87,7 @@ async function enrollWebauthnDevice({
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
     authenticatorDataFlags: authenticatorDataFlag,
+    transports: response.getTransports(),
   };
 }
 
