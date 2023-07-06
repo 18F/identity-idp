@@ -97,7 +97,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
-          flow_path: idv_session.flow_path || flow_session[:flow_path], # remove in future deploy
+          flow_path: idv_session.flow_path,
         },
       )
     end
@@ -214,9 +214,9 @@ module Idv
       # flow_session temp added for 50/50, remove in future deploy.
       return if !idv_session.flow_path
 
-      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
-      elsif idv_session.flow_path == 'hybrid' || flow_session[:flow_path] == 'hybrid'
+      elsif idv_session.flow_path == 'hybrid'
         redirect_to idv_link_sent_url
       end
     end
