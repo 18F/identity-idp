@@ -4,11 +4,11 @@
         sp_name: @sp_name,
         app_name: APP_NAME,
         date: @date,
-        change_password_link: link_to(
+        change_password_link_html: link_to(
           t('user_mailer.account_verified.change_password_link'),
           new_user_password_url,
         ),
-        contact_link: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
+        contact_link_html: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
       ) %>
 </p>
 

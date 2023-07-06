@@ -124,10 +124,10 @@ fr:
     revoke_consent:
       link_title: Déconnecter
       longer_description_html: Vos informations ne seront plus partagées avec
-        %{service_provider}. Pour accéder à %{service_provider} à l’avenir, vous
-        devez donner votre consentement pour partager vos informations. Vous
-        pouvez donner votre consentement en allant sur le site
-        %{service_provider} et en vous connectant.
+        %{service_provider_html}. Pour accéder à %{service_provider_html} à
+        l’avenir, vous devez donner votre consentement pour partager vos
+        informations. Vous pouvez donner votre consentement en allant sur le
+        site %{service_provider_html} et en vous connectant.
     security:
       link: En apprendre davantage dans le Centre d’aide
       text: L’information de votre profil est verrouillée pour votre sécurité.

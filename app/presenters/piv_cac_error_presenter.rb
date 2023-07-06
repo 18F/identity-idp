@@ -48,7 +48,7 @@ class PivCacErrorPresenter
   def description
     case error
     when 'piv_cac.already_associated'
-      t('instructions.mfa.piv_cac.already_associated_html', try_again: try_again_link)
+      t('instructions.mfa.piv_cac.already_associated_html', try_again_html: try_again_link)
     when 'user.not_found'
       t(
         'instructions.mfa.piv_cac.account_not_found_html',
@@ -57,13 +57,13 @@ class PivCacErrorPresenter
         create_account: @view.link_to(t('links.create_account'), sign_up_email_url),
       )
     when 'certificate.none'
-      t('instructions.mfa.piv_cac.no_certificate_html', try_again: try_again_link)
+      t('instructions.mfa.piv_cac.no_certificate_html', try_again_html: try_again_link)
     when 'certificate.not_auth_cert'
-      t('instructions.mfa.piv_cac.not_auth_cert_html', please_try_again: please_try_again_link)
+      t('instructions.mfa.piv_cac.not_auth_cert_html', please_try_again_html: please_try_again_link)
     when 'token.http_failure'
       t('instructions.mfa.piv_cac.http_failure')
     else
-      t('instructions.mfa.piv_cac.did_not_work_html', please_try_again: please_try_again_link)
+      t('instructions.mfa.piv_cac.did_not_work_html', please_try_again_html: please_try_again_link)
     end
   end
 

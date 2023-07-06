@@ -4,13 +4,13 @@ es:
     account_reset:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
-      pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
-        Se necesitan 24 horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+      pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se
+        necesitan 24 horas desde el momento en que realizó la solicitud para
+        completar el proceso.  Por favor, vuelva más tarde.
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
-        puede restablecer tus preferencias por %{link}.
+        puede restablecer tus preferencias por %{link_html}.
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
@@ -90,11 +90,11 @@ es:
       error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.
       opted_out_html: Ha optado por no recibir mensajes de texto en el
-        %{phone_number}. Puede optar por recibir un código de seguridad de nuevo
-        a ese número de teléfono.
+        %{phone_number_html}. Puede optar por recibir un código de seguridad de
+        nuevo a ese número de teléfono.
       opted_out_last_30d_html: Canceló su suscripción para recibir mensajes de texto
-        al %{phone_number} en los últimos 30 días. Solo podemos suscribir un
-        número telefónico una vez cada 30 días.
+        al %{phone_number_html} en los últimos 30 días. Solo podemos suscribir
+        un número telefónico una vez cada 30 días.
       title: No hemos podido enviar un código de seguridad a su número de teléfono
       wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
         seguridad para ese número de teléfono.
@@ -145,8 +145,8 @@ es:
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:
       disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se
-        %{google_policy_link} y %{google_tos_link} de Google. Consulte
-        %{login_tos_link} de %{app_name} para dispositivos móviles.
+        %{google_policy_link_html} y %{google_tos_link_html} de Google. Consulte
+        %{login_tos_link_html} de %{app_name} para dispositivos móviles.
       google_policy_link: aplican la política de privacidad
       google_tos_link: las condiciones de servicio
       login_tos_link: las condiciones de uso

@@ -76,7 +76,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def account_reset_link
     t(
       'two_factor_authentication.account_reset.text_html',
-      link: @view.link_to(
+      link_html: @view.link_to(
         t('two_factor_authentication.account_reset.link'),
         account_reset_url(locale: LinkLocaleResolver.locale),
       ),
@@ -88,12 +88,15 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def account_reset_cancel_link
-    t(
-      'two_factor_authentication.account_reset.pending_html',
-      cancel_link: @view.link_to(
-        t('two_factor_authentication.account_reset.cancel_link'),
-        account_reset_cancel_url(token: account_reset_token),
-      ),
+    safe_join(
+      [
+        t('two_factor_authentication.account_reset.pending'),
+        @view.link_to(
+          t('two_factor_authentication.account_reset.cancel_link'),
+          account_reset_cancel_url(token: account_reset_token),
+        ),
+      ],
+      ' ',
     )
   end
 

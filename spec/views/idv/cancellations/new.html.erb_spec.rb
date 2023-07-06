@@ -65,7 +65,7 @@ RSpec.describe 'idv/cancellations/new.html.erb' do
         'idv.cancel.description.exit.with_sp_html',
         app_name: APP_NAME,
         sp_name: sp_name,
-        account_page_link: t('idv.cancel.description.account_page'),
+        account_page_link_html: t('idv.cancel.description.account_page'),
       ).each { |expected_p| expect(rendered).to have_content(expected_p) }
       expect(rendered).to have_button(t('idv.cancel.actions.exit', app_name: APP_NAME))
     end

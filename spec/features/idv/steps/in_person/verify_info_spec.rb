@@ -122,7 +122,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     # click update ssn button
     click_button t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
-    fill_in t('idv.form.ssn_label_html'), with: '900-12-2345'
+    fill_in t('idv.form.ssn_label'), with: '900-12-2345'
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
