@@ -320,9 +320,10 @@ fr:
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name_html} pour le réinitialiser.
     suspended_create_account:
-      message: Il y a eu un problème lors de la création de votre compte Login.gov
-        avec cette adresse électronique. Veuillez appeler notre centre d’appels
-        au %{contact_number} et fournir ce code - %{support_code}.
+      message: Il y a eu un problème lors de la création de votre compte
+        %{app_name_html} avec cette adresse électronique. Veuillez appeler notre
+        centre d’appels au %{contact_number} et fournir ce code -
+        %{support_code}.
       subject: Nous ne parvenons pas à créer votre compte
     suspended_reset_password:
       message: La réinitialisation de votre mot de passe a posé un problème. Veuillez
