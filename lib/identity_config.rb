@@ -95,6 +95,7 @@ class IdentityConfig
     config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
+    config.add(:allowed_ialmax_providers, type: :json)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_suspended_support_code, type: :string)
