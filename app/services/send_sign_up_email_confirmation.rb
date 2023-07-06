@@ -12,6 +12,8 @@ class SendSignUpEmailConfirmation
 
     if password_reset_requested && !user.confirmed?
       send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
+    elsif user.suspended?
+      send_suspended_user_email
     else
       send_confirmation_email(request_id, instructions)
     end
@@ -65,6 +67,13 @@ class SendSignUpEmailConfirmation
       request_id: request_id,
       instructions: instructions,
     ).deliver_now_or_later
+  end
+
+  def send_suspended_user_email
+    UserMailer.with(
+      user: user,
+      email_address: email_address,
+    ).suspended_create_account.deliver_now_or_later
   end
 
   def handle_multiple_email_address_error
