@@ -29,12 +29,21 @@ module IdvStepConcern
     flow_session['pii_from_doc']
   end
 
+  def pii_from_user
+    flow_session['pii_from_user']
+  end
+
   # copied from doc_auth_controller
   def flow_path
     flow_session[:flow_path]
   end
 
   private
+
+  def confirm_in_person_address_step_complete
+    return if pii_from_user && pii_from_user[:address1].present?
+    redirect_to prev_url
+  end
 
   def confirm_ssn_step_complete
     return if pii.present? && pii[:ssn].present?

@@ -29,6 +29,8 @@ module Idv
           end
 
           redirect_to idv_in_person_verify_info_url if updating_address?
+
+          exit_flow_state_machine if IdentityConfig.store.in_person_ssn_info_controller_enabled
         end
 
         def extra_view_variables
@@ -65,6 +67,11 @@ module Idv
 
         def form_submit
           form.submit(flow_params)
+        end
+
+        def exit_flow_state_machine
+          flow_session[:flow_path] = @flow.flow_path
+          redirect_to idv_in_person_verify_info_url
         end
       end
     end

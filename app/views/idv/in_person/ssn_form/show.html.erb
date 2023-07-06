@@ -8,11 +8,11 @@ locals:
 * threatmetrix_javascript_urls:: URLs to add to script tags to load the ThreatMetrix javascript
 * threatmetrix_iframe_url: A URL to add to the page for Threatmetrix
 %>
-<h1>hello world </h1>
+
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS,
-        current_step: :verify_info,
+        current_step: :ssn_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
@@ -21,10 +21,11 @@ locals:
 <% title t('titles.doc_auth.ssn') %>
 
 <% if updating_ssn %>
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
-<% else %>
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
+  <% else %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
 <% end %>
+
 
 <p>
   <%= t('doc_auth.info.ssn') %>
@@ -69,9 +70,10 @@ locals:
     <%= render 'shared/ssn_field', f: f %>
   </div>
 
-  <p><%= flow_session[:error_message] %></p>
+<p><%= @error_message %></p>
 
-  <%= f.submit class: 'display-block margin-y-5' do %>
+
+<%= f.submit class: 'display-block margin-y-5' do %>
     <% if updating_ssn %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
@@ -80,8 +82,10 @@ locals:
   <% end %>
 <% end %>
 
-/* <% if updating_ssn %>
-  <%= render 'idv/shared/back', action: 'cancel_update_ssn' %>
+
+<% if updating_ssn %>
+  <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
-<% end %> */
+<% end %>
+
