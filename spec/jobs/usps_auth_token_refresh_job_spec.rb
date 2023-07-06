@@ -62,7 +62,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
     end
 
     context 'auth request throws error' do
-      it 'fetches token and logs analytics' do
+      it 'still logs analytics' do
         stub_error_request_token
 
         expect(analytics).to receive(
