@@ -15,11 +15,11 @@ en:
     failure:
       already_authenticated: ''
       inactive: Your account hasn’t been activated.
-      invalid_html: The email or password you’ve entered is wrong. Try %{link}.
+      invalid_html: The email or password you’ve entered is wrong. Try %{link_html}.
       invalid_link_text: resetting your password
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account has been locked.
-      not_found_in_database_html: The email or password you’ve entered is wrong. Try %{link}.
+      not_found_in_database_html: The email or password you’ve entered is wrong. Try %{link_html}.
       not_found_in_database_link_text: resetting your password
       session_limited: Your login credentials were used in another browser. Please
         sign in again to continue in this browser.
@@ -32,9 +32,9 @@ en:
     passwords:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
-      no_token: To reset your password please use the link in the <strong>Password
-        Reset</strong> email you received. If you’re pasting the link into your
-        browser, please make sure you’ve pasted the entire link.
+      no_token: To reset your password please use the link in the Password Reset email
+        you received. If you’re pasting the link into your browser, please make
+        sure you’ve pasted the entire link.
       send_instructions: You will receive an email with instructions on how to reset
         your password in a few minutes.
       send_paranoid_instructions: You will receive an email with instructions on how

@@ -33,7 +33,7 @@ RSpec.describe 'proofing flow with a Puerto Rican document', :js do
 
     expect(page).to have_current_path(idv_ssn_path)
 
-    fill_in t('idv.form.ssn_label_html'), with: '900456789'
+    fill_in t('idv.form.ssn_label'), with: '900456789'
     click_button t('forms.buttons.submit.update')
 
     expect(page).to have_current_path(idv_verify_info_path)

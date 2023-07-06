@@ -107,7 +107,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.password_changed.intro_html', app_name: APP_NAME),
+        t('user_mailer.password_changed.intro_html', app_name_html: APP_NAME),
       )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=123abc',
@@ -272,7 +272,7 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         I18n.t(
           'user_mailer.signup_with_your_email.intro_html',
-          app_name: APP_NAME,
+          app_name_html: APP_NAME,
         ),
       )
       expect_email_body_to_have_help_and_contact_links
@@ -415,7 +415,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).
         to have_content(
-          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name: APP_NAME)),
+          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name_html: APP_NAME)),
         )
     end
   end
@@ -440,7 +440,7 @@ RSpec.describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).
         to have_content(
-          strip_tags(t('user_mailer.account_reset_cancel.intro_html', app_name: APP_NAME)),
+          strip_tags(t('user_mailer.account_reset_cancel.intro_html', app_name_html: APP_NAME)),
         )
     end
   end
@@ -486,7 +486,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link: APP_NAME)))
+        to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link_html: APP_NAME)))
     end
 
     it 'does not send mail to emails in nonessential email banlist' do

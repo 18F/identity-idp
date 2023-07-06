@@ -30,7 +30,10 @@ RSpec.feature 'sign in with any email address' do
 
     signin(email_address.email, user.password)
 
-    error_message = t('devise.failure.invalid_html', link: t('devise.failure.invalid_link_text'))
+    error_message = t(
+      'devise.failure.invalid_html',
+      link_html: t('devise.failure.invalid_link_text'),
+    )
 
     expect(page).to have_content(error_message)
     expect(page).to have_current_path(new_user_session_path)
