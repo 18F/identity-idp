@@ -72,7 +72,7 @@ RSpec.feature 'doc auth document capture step', :js do
       end
     end
 
-    context 'throttles calls to acuant', allow_browser_log: true do
+    context 'rate limits calls to acuant', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
         allow_any_instance_of(ApplicationController).to receive(
@@ -94,11 +94,11 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'redirects to the throttled error page' do
+      it 'redirects to the rate limited error page' do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+            RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
           message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
           expect(page).to have_content(message)
@@ -106,7 +106,7 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'logs the throttled analytics event for doc_auth' do
+      it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',

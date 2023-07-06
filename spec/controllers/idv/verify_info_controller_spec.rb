@@ -7,8 +7,7 @@ RSpec.describe Idv::VerifyInfoController do
     { 'error_message' => nil,
       'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup,
-      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
@@ -26,6 +25,7 @@ RSpec.describe Idv::VerifyInfoController do
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_idv_steps_before_verify_step(user)
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do
@@ -126,14 +126,14 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to(idv_ssn_url)
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
-        ).increment_to_throttled!
+          rate_limit_type: :proof_ssn,
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -150,15 +150,15 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
-        ).increment_to_throttled!
+          rate_limit_type: :idv_resolution,
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -422,14 +422,14 @@ RSpec.describe Idv::VerifyInfoController do
       )
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
-        ).increment_to_throttled!
+          rate_limit_type: :proof_ssn,
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -446,15 +446,15 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
-        ).increment_to_throttled!
+          rate_limit_type: :idv_resolution,
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url

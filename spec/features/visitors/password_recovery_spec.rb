@@ -264,7 +264,7 @@ RSpec.feature 'Password Recovery' do
     expect(current_path).to eq new_user_password_path
   end
 
-  it 'throttles reset passwords requests' do
+  it 'rate limits reset passwords requests' do
     user = create(:user, :fully_registered)
     email = user.email
 

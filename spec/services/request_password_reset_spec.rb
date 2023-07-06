@@ -62,7 +62,7 @@ RSpec.describe RequestPasswordReset do
           end
       end
 
-      it 'sends password reset instructions' do
+      it 'sets password reset token' do
         expect { subject }.
           to(change { user.reload.reset_password_token })
       end
@@ -78,6 +78,57 @@ RSpec.describe RequestPasswordReset do
         subject
 
         expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).once
+      end
+    end
+
+    context 'when the user is found and confirmed, but is suspended' do
+      subject(:perform) do
+        described_class.new(
+          email: email,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        ).perform
+      end
+
+      before do
+        user.suspend!
+        allow(UserMailer).to receive(:reset_password_instructions).
+          and_wrap_original do |impl, user, email, options|
+          token = options.fetch(:token)
+          expect(token).to be_present
+          expect(Devise.token_generator.digest(User, :reset_password_token, token)).
+            to eq(user.reset_password_token)
+
+          impl.call(user, email, **options)
+        end
+        allow(UserMailer).to receive(:suspended_reset_password).
+          and_wrap_original do |impl, user, email, options|
+            token = options.fetch(:token)
+            expect(token).not_to be_present
+
+            impl.call(user, email, **options)
+          end
+      end
+
+      it 'does not set a password reset token' do
+        expect { subject }.
+          not_to(change { user.reload.reset_password_token })
+      end
+
+      it 'sends an email to the suspended user' do
+        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it 'does not send a recovery activated push event' do
+        expect(PushNotification::HttpPush).not_to receive(:deliver).
+          with(PushNotification::RecoveryActivatedEvent.new(user: user))
+
+        subject
+      end
+
+      it 'does not call irs tracking method forgot_password_email_sent' do
+        subject
+
+        expect(irs_attempts_api_tracker).not_to have_received(:forgot_password_email_sent)
       end
     end
 
@@ -164,7 +215,7 @@ RSpec.describe RequestPasswordReset do
 
     context 'when the user requests password resets above the allowable threshold' do
       let(:analytics) { FakeAnalytics.new }
-      it 'throttles the email sending and logs a throttle event' do
+      it 'rate limits the email sending and logs a rate limit event' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         (max_attempts - 1).times do
@@ -178,7 +229,7 @@ RSpec.describe RequestPasswordReset do
             to(change { user.reload.reset_password_token })
         end
 
-        # extra time, throttled
+        # extra time, rate limited
         expect do
           RequestPasswordReset.new(
             email: email,
@@ -197,7 +248,7 @@ RSpec.describe RequestPasswordReset do
         )
       end
 
-      it 'only sends a push notification when the attempts have not been throttled' do
+      it 'only sends a push notification when the attempts have not been rate limited' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         expect(PushNotification::HttpPush).to receive(:deliver).
@@ -215,7 +266,7 @@ RSpec.describe RequestPasswordReset do
             to(change { user.reload.reset_password_token })
         end
 
-        # extra time, throttled
+        # extra time, rate limited
         expect do
           RequestPasswordReset.new(
             email: email,

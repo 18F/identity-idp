@@ -376,6 +376,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def suspended_reset_password
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.suspended_reset_password.subject'))
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
