@@ -27,7 +27,16 @@ module TwoFactorAuthentication
       handle_webauthn_result(result)
     end
 
-    def error; end
+    def error
+      flash[:error] = t(
+          'two_factor_authentication.webauthn_error.multiple_methods',
+          link: view_context.link_to(
+            t('two_factor_authentication.webauthn_error.additional_methods_link'),
+            login_two_factor_options_path,
+          ),
+        )
+      redirect_to login_two_factor_webauthn_url(platform: params[:platform])
+    end
 
     private
 
