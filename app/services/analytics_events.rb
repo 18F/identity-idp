@@ -2209,18 +2209,18 @@ module AnalyticsEvents
     )
   end
 
-  # Track when USPS auth token refresh job started
-  def idv_usps_auth_token_refresh_job_started(**extra)
-    track_event(
-      'UspsAuthTokenRefreshJob: Started',
-      **extra,
-    )
-  end
-
   # Track when USPS auth token refresh job completed
   def idv_usps_auth_token_refresh_job_completed(**extra)
     track_event(
       'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job started
+  def idv_usps_auth_token_refresh_job_started(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Started',
       **extra,
     )
   end
