@@ -75,25 +75,15 @@ es:
       download: Descargar (archivo de texto)
       instructions: Confirme que tiene una copia de su clave personal ingresándola a
         continuación.
-      required_checkbox: Marque esta casilla para continuar.
+      required_checkbox: He guardado mi clave personal en un lugar seguro.
       title: Ingrese su clave personal
     personal_key_partial:
       acknowledgement:
-        bullets:
-          - Perderás el acceso a tu cuenta
-          - Tendrás que verificar tu identidad nuevamente
         header: Necesitarás tu clave personal si olvidas tu contraseña. Mantenla en un
           lugar seguro y no la compartas con nadie.
-        text: 'Si restableces tu contraseña sin tu clave personal:'
-      explanation:
-        header: '¿Qué es una clave personal?'
-        text:
-          - Una clave personal “bloquea” la información personal de tu cuenta.
-            Es la única manera de desbloquear tu información si pierdes u
-            olvidas tu contraseña.
-          - Si restableces tu contraseña, Login.gov te pedirá tu clave personal
-            para asegurarse de que se trata de ti, y no de alguien que quiere
-            hacerse pasar por ti.
+        help_link_text: Más información sobre la clave personal
+        text: 'Si restableces tu contraseña sin tu clave personal, tendrás que volver a
+          verificar tu identidad.'
       header: Guarda tu clave personal
     phone:
       buttons:
@@ -129,8 +119,8 @@ es:
         a su cuenta %{app_name}.
       confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
-      totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
-        con códigos de seguridad temporales. %{link}
+      totp_intro: Configure una aplicación de autenticación para iniciar sesión con
+        códigos de seguridad temporales.
       totp_step_1: Darle un apodo
       totp_step_1a: Si agrega más de una aplicación, sabrá cuáles.
       totp_step_2: Abra su app de autenticación.
@@ -151,7 +141,7 @@ es:
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo
-      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código
+      welcome_back_description_html: '<p>Si ha recibido su carta, introduzca su código
         único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
         paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
         en llegar</strong>. Gracias por su paciencia.</p>'

@@ -229,7 +229,7 @@ RSpec.describe MfaContext do
       it 'returns 2' do
         user = create(:user)
         create(:webauthn_configuration, user: user)
-        create(:webauthn_configuration, platform_authenticator: true, user: user)
+        create(:webauthn_configuration, :platform_authenticator, user: user)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)

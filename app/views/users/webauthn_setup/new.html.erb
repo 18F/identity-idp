@@ -29,6 +29,7 @@
   <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+  <%= hidden_field_tag :transports, '', id: 'transports' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <%= render ValidatedFieldComponent.new(
         form: f,

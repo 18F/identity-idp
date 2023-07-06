@@ -83,10 +83,10 @@ RSpec.feature 'doc auth verify_info step', :js do
     expect(page).to have_current_path(idv_ssn_path)
     expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
     expect(
-      find_field(t('idv.form.ssn_label_html')).value,
+      find_field(t('idv.form.ssn_label')).value,
     ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
 
-    fill_in t('idv.form.ssn_label_html'), with: '900456789'
+    fill_in t('idv.form.ssn_label'), with: '900456789'
     click_button t('forms.buttons.submit.update')
 
     expect(fake_analytics).to have_logged_event(
@@ -181,7 +181,7 @@ RSpec.feature 'doc auth verify_info step', :js do
     end
 
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
-    it 'throttles resolution and continues when it expires' do
+    it 'rate limits resolution and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
         with({ throttle_context: 'single-session' })
 
@@ -246,7 +246,7 @@ RSpec.feature 'doc auth verify_info step', :js do
       end
     end
 
-    it 'throttles ssn and continues when it expires' do
+    it 'rate limits ssn and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
         with({ throttle_context: 'multi-session' })
       click_idv_continue
@@ -276,10 +276,10 @@ RSpec.feature 'doc auth verify_info step', :js do
       expect(page).to have_current_path(idv_ssn_path)
       expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
       expect(
-        find_field(t('idv.form.ssn_label_html')).value,
+        find_field(t('idv.form.ssn_label')).value,
       ).not_to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
 
-      fill_in t('idv.form.ssn_label_html'), with: '900456789'
+      fill_in t('idv.form.ssn_label'), with: '900456789'
       click_button t('forms.buttons.submit.update')
       click_idv_continue
 

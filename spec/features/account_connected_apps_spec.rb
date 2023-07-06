@@ -45,7 +45,7 @@ RSpec.describe 'Account connected applications' do
     expect(page).to have_content( \
       t(
         'event_types.authenticated_at_html',
-        service_provider_link: identity_with_link.display_name,
+        service_provider_link_html: identity_with_link.display_name,
       ),
     )
     expect(page).to have_link( \

@@ -22,10 +22,12 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
   end
 
   describe 'when signed in before 2fa' do
+    let(:user) { create(:user) }
+
     before do
       stub_analytics
       stub_attempts_tracker
-      sign_in_before_2fa
+      sign_in_before_2fa(user)
     end
 
     describe 'GET show' do
@@ -33,14 +35,15 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         get :show
         expect(response).to redirect_to(user_two_factor_authentication_url)
       end
+
       context 'with webauthn configured' do
+        let!(:webauthn_configuration) { create(:webauthn_configuration, user:) }
+
         before do
-          allow_any_instance_of(TwoFactorAuthentication::WebauthnPolicy).
-            to receive(:enabled?).
-            and_return(true)
           allow(@analytics).to receive(:track_event)
           allow(@irs_attempts_api_tracker).to receive(:track_event)
         end
+
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
           result = { context: 'authentication',
@@ -49,6 +52,20 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           expect(@analytics).to have_received(:track_event).with(
             'Multi-Factor Authentication: enter webAuthn authentication visited',
             result,
+          )
+        end
+
+        it 'assigns presenter instance variable with initialized credentials' do
+          get :show, params: { platform: true }
+
+          presenter = assigns(:presenter)
+
+          expect(presenter).to be_a(TwoFactorAuthCode::WebauthnAuthenticationPresenter)
+          expect(presenter.credentials).to eq(
+            [
+              id: webauthn_configuration.credential_id,
+              transports: webauthn_configuration.transports,
+            ].to_json,
           )
         end
       end
@@ -101,10 +118,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
       it 'tracks a valid platform authenticator submission' do
         create(
           :webauthn_configuration,
+          :platform_authenticator,
           user: controller.current_user,
           credential_id: credential_id,
           credential_public_key: credential_public_key,
-          platform_authenticator: true,
         )
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         result = { context: 'authentication',
@@ -172,10 +189,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               and_return(true)
             create(
               :webauthn_configuration,
+              :platform_authenticator,
               user: controller.current_user,
               credential_id: credential_id,
               credential_public_key: credential_public_key,
-              platform_authenticator: true,
             )
           end
 

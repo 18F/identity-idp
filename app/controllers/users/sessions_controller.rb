@@ -20,7 +20,6 @@ module Users
       override_csp_for_google_analytics
 
       @ial = sp_session_ial
-      @browser_is_ie11 = browser_is_ie11?
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
@@ -32,11 +31,11 @@ module Users
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
-      throttle_password_failure = true
+      rate_limit_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
-      increment_session_bad_password_count if throttle_password_failure && !current_user
+      increment_session_bad_password_count if rate_limit_password_failure && !current_user
       track_authentication_attempt(auth_params[:email])
     end
 
@@ -114,10 +113,6 @@ module Users
         email: auth_params[:email],
       )
       redirect_to next_url_after_valid_authentication
-    end
-
-    def browser_is_ie11?
-      BrowserCache.parse(request.user_agent).ie?(11)
     end
 
     def track_authentication_attempt(email)

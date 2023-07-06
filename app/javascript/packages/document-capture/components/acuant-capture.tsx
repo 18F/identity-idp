@@ -566,7 +566,7 @@ function AcuantCapture(
         {isMobile &&
           hasCapture &&
           allowUpload &&
-          formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
+          formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
               <span className="padding-left-1">
