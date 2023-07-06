@@ -321,7 +321,7 @@ fr:
         à %{app_name_html} pour le réinitialiser.
     suspended_create_account:
       message: Il y a eu un problème lors de la création de votre compte
-        %{app_name_html} avec cette adresse électronique. Veuillez appeler notre
+        %{app_name} avec cette adresse électronique. Veuillez appeler notre
         centre d’appels au %{contact_number} et fournir ce code -
         %{support_code}.
       subject: Nous ne parvenons pas à créer votre compte

@@ -306,7 +306,7 @@ es:
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
     suspended_create_account:
-      message: Se produjo un problema al crear su cuenta de %{app_name_html} con esta
+      message: Se produjo un problema al crear su cuenta de %{app_name} con esta
         dirección de correo electrónico. Llame a nuestro centro de atención al
         número %{contact_number} y proporcione este código - %{support_code}.
       subject: No podemos crear su cuenta
