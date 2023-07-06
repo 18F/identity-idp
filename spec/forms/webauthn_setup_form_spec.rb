@@ -16,6 +16,7 @@ RSpec.describe WebauthnSetupForm do
           client_data_json: setup_client_data_json,
           name: 'mykey',
           platform_authenticator: false,
+          authenticator_data_flags: backed_up_authenticator_data_flags,
         }
         extra_attributes = {
           enabled_mfa_methods_count: 1,
@@ -115,6 +116,38 @@ RSpec.describe WebauthnSetupForm do
           )] },
           **extra_attributes,
         )
+      end
+    end
+  end
+
+  describe '#passkey_backed_up?' do
+    context 'when authenticator data flag bs value is set to false' do
+      it 'should return false' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        params = {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          platform_authenticator: false,
+          authenticator_data_flags: non_backed_up_authenticator_data_flags,
+        }
+        subject.submit(protocol, params)
+        expect(subject.passkey_backed_up).to eq(false)
+      end
+    end
+
+    context 'when bs value is set to true' do
+      it 'should return true' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        params = {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          platform_authenticator: false,
+          authenticator_data_flags: backed_up_authenticator_data_flags,
+        }
+        subject.submit(protocol, params)
+        expect(subject.passkey_backed_up).to eq(true)
       end
     end
   end

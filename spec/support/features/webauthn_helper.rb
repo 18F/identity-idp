@@ -98,6 +98,28 @@ module WebAuthnHelper
     HEREDOC
   end
 
+  def backed_up_authenticator_data_flags
+    {
+      up: true,
+      uv: false,
+      be: true,
+      bs: true,
+      at: true,
+      ed: false,
+    }.to_s
+  end
+
+  def non_backed_up_authenticator_data_flags
+    {
+      up: true,
+      uv: false,
+      be: false,
+      bs: false,
+      at: true,
+      ed: false,
+    }.to_s
+  end
+
   def setup_client_data_json
     <<~HEREDOC
       eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2

@@ -42,9 +42,9 @@ class WebauthnSetupForm
     !!@platform_authenticator
   end
 
-  def passkey_not_backed_up?
+  def passkey_backed_up?
     return false unless @authenticator_data_flags.present?
-    !@authenticator_data_flags[:bs]
+    @authenticator_data_flags[:bs]
   end
 
   private
@@ -56,9 +56,14 @@ class WebauthnSetupForm
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
-    @authenticator_data_flags = JSON.parse(params[:authenticator_data_flags], symbolize_names: true)
     @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
+    if params[:authenticator_data_flags].present?
+      @authenticator_data_flags = JSON.parse(
+        params[:authenticator_data_flags],
+        symbolize_names: true,
+      )
+    end
   end
 
   def name_is_unique

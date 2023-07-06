@@ -164,7 +164,7 @@ module Users
         )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
-        if form.passkey_not_backed_up? && FeatureManagement.platform_backup_state_redirect?
+        if FeatureManagement.platform_backup_state_redirect? && !form.passkey_backed_up?
           redirect_to webauthn_setup_passkey_not_supported_path
           return
         end
