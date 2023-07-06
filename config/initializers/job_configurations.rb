@@ -164,10 +164,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
-      usps_auth_token_refresh: {
-        class: 'UspsAuthTokenRefreshJob',
-        cron: cron_12m,
-      },
+      usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
+                                  {
+                                    class: 'UspsAuthTokenRefreshJob',
+                                    cron: cron_12m,
+                                  }
+                                end),
       arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
                        {
                          class: 'ArcgisTokenJob',
