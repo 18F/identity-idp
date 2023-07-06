@@ -136,7 +136,7 @@ RSpec.describe 'I18n' do
       i18n_file = full_path.sub("#{root_dir}/", '')
 
       describe i18n_file do
-        # Transliteration includes special characters by definition, so it could fail the below checks
+        # Transliteration includes special characters by definition, so it could fail checks below
         if !full_path.match?(%(/config/locales/transliterate/))
           it 'has only lower_snake_case keys' do
             keys = flatten_hash(YAML.load_file(full_path)).keys
