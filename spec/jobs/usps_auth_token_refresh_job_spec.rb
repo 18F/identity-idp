@@ -29,6 +29,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
       end
 
       it 'requests and sets a new token in the cache' do
+        new_token_value = "Bearer ==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7=="
         stub_request_token
 
         expect(analytics).to receive(
@@ -42,11 +43,12 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
           usps_auth_token_cache_key,
           an_instance_of(String),
           hash_including(expires_in: an_instance_of(ActiveSupport::Duration)),
-        )
+        ).and_call_original
 
         subject.perform
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate")
+        expect(Rails.cache.fetch(usps_auth_token_cache_key)).to eq(new_token_value)
       end
 
       it 'manually sets the expiration' do
