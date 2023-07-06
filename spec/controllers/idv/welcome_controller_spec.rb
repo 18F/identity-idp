@@ -27,16 +27,6 @@ RSpec.describe Idv::WelcomeController do
     end
   end
 
-  describe 'legacy redirect', type: :routing do
-    it 'redirects from /verify/doc_auth/:step to idv_welcome_url' do
-      expect(get('/verify/doc_auth/document_capture')).to route_to(
-        controller: 'idv/welcome',
-        action: 'show',
-        step: 'document_capture',
-      )
-    end
-  end
-
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth welcome visited' }
     let(:analytics_args) do
