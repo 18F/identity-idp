@@ -353,7 +353,7 @@ RSpec.describe Idv::GpoVerifyController do
 
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
 
-          (max_attempts).times do |i|
+          max_attempts.times do |i|
             post(
               :create,
               params: {
