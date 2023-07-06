@@ -623,6 +623,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_213457) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "platform_authenticator"
+    t.string "transports", array: true
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
