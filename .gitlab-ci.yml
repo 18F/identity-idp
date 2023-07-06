@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:cc7da5fffa3b63e0cc4f6e860b36d931df916e10f2f4ce4db3b5ac4e7af22847'
+  IDP_CI_SHA: 'sha256:6cefc7c81e2e63530794fd18da8617d6678a4e34e640a21812dee8c95a3fa004'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
