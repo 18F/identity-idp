@@ -1,4 +1,5 @@
 cron_5m = '0/5 * * * *'
+cron_12m = '0/5 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
@@ -165,7 +166,7 @@ else
       },
       usps_auth_token_refresh: {
         class: 'UspsAuthTokenRefreshJob',
-        cron: cron_5m,
+        cron: cron_12m,
       },
       arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
                        {
