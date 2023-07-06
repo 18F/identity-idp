@@ -211,7 +211,6 @@ module Idv
       setup_for_redo if params[:redo]
 
       idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
-      # flow_session temp added for 50/50, remove in future deploy.
       return if !idv_session.flow_path
 
       if idv_session.flow_path == 'standard'
