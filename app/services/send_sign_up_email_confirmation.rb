@@ -10,10 +10,10 @@ class SendSignUpEmailConfirmation
   def call(request_id: nil, instructions: nil, password_reset_requested: false)
     update_email_address_record
 
-    if password_reset_requested && !user.confirmed?
-      send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
-    elsif user.suspended?
+    if user.suspended?
       send_suspended_user_email
+    elsif password_reset_requested && !user.confirmed?
+      send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
     else
       send_confirmation_email(request_id, instructions)
     end
