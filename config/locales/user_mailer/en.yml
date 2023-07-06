@@ -284,3 +284,8 @@ en:
         in with this email address, you can ignore this message.
       link_text: Go to %{app_name}
       reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
+    suspended_reset_password:
+      message: There was an issue resetting your password. Please give our contact
+        center a call at %{contact_number} and provide this code -
+        %{support_code}.
+      subject: We couldn’t reset your password

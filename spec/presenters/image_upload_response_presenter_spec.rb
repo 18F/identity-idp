@@ -105,7 +105,7 @@ RSpec.describe ImageUploadResponsePresenter do
       end
     end
 
-    context 'throttled' do
+    context 'rate limited' do
       let(:extra_attributes) do
         { remaining_attempts: 0, flow_path: 'standard' }
       end

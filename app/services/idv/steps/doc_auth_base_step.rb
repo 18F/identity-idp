@@ -53,19 +53,19 @@ module Idv
         user_id_from_token.present?
       end
 
-      def throttled_response
+      def rate_limited_response
         @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_doc_auth,
         )
         @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
-        redirect_to throttled_url
+        redirect_to rate_limited_url
         DocAuth::Response.new(
           success: false,
           errors: { limit: I18n.t('errors.doc_auth.throttled_heading') },
         )
       end
 
-      def throttled_url
+      def rate_limited_url
         idv_session_errors_throttled_url
       end
 

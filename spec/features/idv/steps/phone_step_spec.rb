@@ -227,7 +227,7 @@ RSpec.feature 'idv phone step', :js do
     end
 
     before do
-      (Throttle.max_attempts(:proof_address) - 1).times do
+      (RateLimiter.max_attempts(:proof_address) - 1).times do
         fill_out_phone_form_fail
         click_idv_continue_for_step(:phone)
         click_on t('idv.failure.phone.warning.try_again_button')
