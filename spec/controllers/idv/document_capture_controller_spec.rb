@@ -5,8 +5,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
@@ -23,6 +22,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
+    subject.idv_session.flow_path = 'standard'
   end
 
   describe 'before_actions' do
@@ -99,7 +99,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        flow_session.delete(:flow_path)
+        subject.idv_session.flow_path = nil
 
         get :show
 
@@ -123,11 +123,11 @@ RSpec.describe Idv::DocumentCaptureController do
       get :show
     end
 
-    context 'user is rate_limited' do
+    context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
 
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
         allow(subject).to receive(:current_user).and_return(user)
 
         get :show
@@ -161,6 +161,19 @@ RSpec.describe Idv::DocumentCaptureController do
       expect { put :update }.to(
         change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
       )
+    end
+
+    context 'user has an establishing in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+
+      it 'cancels the establishing enrollment' do
+        expect(user.establishing_in_person_enrollment).to eq enrollment
+
+        put :update
+
+        expect(enrollment.reload.cancelled?).to eq(true)
+        expect(user.reload.establishing_in_person_enrollment).to be_nil
+      end
     end
   end
 end

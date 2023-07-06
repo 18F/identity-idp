@@ -3,8 +3,8 @@ module RateLimitConcern
 
   def confirm_not_rate_limited
     rate_limited = false
-    %i[idv_resolution idv_doc_auth proof_address proof_ssn].each do |throttle_type|
-      if rate_limit_redirect!(throttle_type)
+    %i[idv_resolution idv_doc_auth proof_address proof_ssn].each do |rate_limit_type|
+      if rate_limit_redirect!(rate_limit_type)
         rate_limited = true
         break
       end
@@ -12,21 +12,21 @@ module RateLimitConcern
     rate_limited
   end
 
-  def rate_limit_redirect!(throttle_type)
-    if idv_attempter_rate_limited?(throttle_type)
-      track_rate_limited_event(throttle_type)
-      rate_limited_redirect(throttle_type)
+  def rate_limit_redirect!(rate_limit_type)
+    if idv_attempter_rate_limited?(rate_limit_type)
+      track_rate_limited_event(rate_limit_type)
+      rate_limited_redirect(rate_limit_type)
       return true
     end
   end
 
-  def track_rate_limited_event(throttle_type)
-    analytics_args = { throttle_type: throttle_type }
+  def track_rate_limited_event(rate_limit_type)
+    analytics_args = { throttle_type: rate_limit_type }
     throttle_context = 'single-session'
 
-    if throttle_type == :proof_address
+    if rate_limit_type == :proof_address
       analytics_args[:step_name] = :phone
-    elsif throttle_type == :proof_ssn
+    elsif rate_limit_type == :proof_ssn
       analytics_args[:step_name] = 'verify_info'
       throttle_context = 'multi-session'
     end
@@ -35,8 +35,8 @@ module RateLimitConcern
     analytics.throttler_rate_limit_triggered(**analytics_args)
   end
 
-  def rate_limited_redirect(throttle_type)
-    case throttle_type
+  def rate_limited_redirect(rate_limit_type)
+    case rate_limit_type
     when :idv_resolution
       redirect_to idv_session_errors_failure_url
     when :idv_doc_auth
@@ -48,18 +48,18 @@ module RateLimitConcern
     end
   end
 
-  def idv_attempter_rate_limited?(throttle_type)
-    if throttle_type == :proof_ssn
+  def idv_attempter_rate_limited?(rate_limit_type)
+    if rate_limit_type == :proof_ssn
       return unless pii_ssn
-      Throttle.new(
+      RateLimiter.new(
         target: Pii::Fingerprinter.fingerprint(pii_ssn),
-        throttle_type: :proof_ssn,
-      ).throttled?
+        rate_limit_type: :proof_ssn,
+      ).limited?
     else
-      Throttle.new(
+      RateLimiter.new(
         user: idv_session_user,
-        throttle_type: throttle_type,
-      ).throttled?
+        rate_limit_type: rate_limit_type,
+      ).limited?
     end
   end
 

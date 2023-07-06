@@ -3,7 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <p class='margin-top-2 margin-bottom-2'>
-  <%= raw @presenter.info %>
+  <%= @presenter.info %>
 </p>
 
 <%= render SpinnerButtonComponent.new(

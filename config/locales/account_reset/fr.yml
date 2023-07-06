@@ -7,7 +7,7 @@ fr:
       cancel_button: Annuler supprimer un compte
       title: Annuler supprimer un compte
     confirm_delete_account:
-      cta_html: Vous pouvez %{link} ou fermer cette fenêtre si vous avez terminé.
+      cta_html: Vous pouvez %{link_html} ou fermer cette fenêtre si vous avez terminé.
       info_html: Le compte pour <strong>%{email}</strong> a été supprimé. Nous avons
         envoyé un email de confirmation de la suppression du compte.
       link_text: créer un nouveau compte

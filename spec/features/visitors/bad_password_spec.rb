@@ -6,7 +6,10 @@ RSpec.feature 'Visitor signs in with bad passwords and gets locked out' do
 
   scenario 'visitor tries too many bad passwords gets locked out then waits window seconds' do
     visit new_user_session_path
-    error_message = t('devise.failure.invalid_html', link: t('devise.failure.invalid_link_text'))
+    error_message = t(
+      'devise.failure.invalid_html',
+      link_html: t('devise.failure.invalid_link_text'),
+    )
     IdentityConfig.store.max_bad_passwords.times do
       fill_in_credentials_and_submit(bad_email, bad_password)
       expect(page).to have_content(error_message)

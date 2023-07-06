@@ -15,7 +15,7 @@ en:
       resend_email_success: We sent another password reset email.
       use_diff_email:
         link: create a new account
-        text_html: Or, %{link} using a different email address.
+        text_html: Or, %{link_html} using a different email address.
     maintenance:
       contact_us: Contact us
       currently_under_maintenance_html: We are currently <b>under maintenance until
@@ -47,25 +47,25 @@ en:
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in
-        live_region_message_html: You will be signed out in %{time_left_in_session}.
-          Select “keep me signed in” to stay logged in. Select “sign me out” to
-          sign out.
-        message_html: For your security, in %{time_left_in_session} we will cancel your
-          sign in.
+        live_region_message_html: You will be signed out in
+          %{time_left_in_session_html}. Select “keep me signed in” to stay
+          logged in. Select “sign me out” to sign out.
+        message_html: For your security, in %{time_left_in_session_html} we will cancel
+          your sign in.
         sign_out: Cancel sign in
       signed_in:
         continue: Keep me signed in
-        live_region_message_html: You will be signed out in %{time_left_in_session}.
-          Select “keep me signed in” to stay logged in. Select “sign me out” to
-          sign out.
-        message_html: For your security, we will sign you out in %{time_left_in_session}
-          unless you tell us otherwise.
+        live_region_message_html: You will be signed out in
+          %{time_left_in_session_html}. Select “keep me signed in” to stay
+          logged in. Select “sign me out” to sign out.
+        message_html: For your security, we will sign you out in
+          %{time_left_in_session_html} unless you tell us otherwise.
         sign_out: Sign me out
     totp_configured: An authentication app was added to your account.
     totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:
       link: use a different email address
-      text_html: Or, %{link}
+      text_html: Or, %{link_html}
     webauthn_configured: A security key was added to your account.
     webauthn_deleted: Your security key was deleted from your account.
     webauthn_platform_configured: Face or touch unlock was added to your account.

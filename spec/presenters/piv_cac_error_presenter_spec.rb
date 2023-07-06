@@ -27,7 +27,7 @@ RSpec.describe PivCacErrorPresenter do
     let(:expected_description) do
       t(
         'instructions.mfa.piv_cac.no_certificate_html',
-        try_again: view.link_to(t('instructions.mfa.piv_cac.try_again'), ''),
+        try_again_html: view.link_to(t('instructions.mfa.piv_cac.try_again'), ''),
       )
     end
 

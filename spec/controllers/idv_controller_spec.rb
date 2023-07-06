@@ -54,7 +54,7 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_resolution, user: user).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
@@ -81,12 +81,12 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to throttled page' do
+      it 'redirects to rate limited page' do
         get :index
 
         expect(response).to redirect_to idv_session_errors_throttled_url
@@ -100,12 +100,12 @@ RSpec.describe IdvController do
           :profile,
           user: user,
         )
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
         stub_sign_in(profile.user)
       end
 
-      it 'redirects to throttled page' do
+      it 'redirects to rate limited page' do
         get :index
 
         expect(response).to redirect_to idv_phone_errors_failure_url

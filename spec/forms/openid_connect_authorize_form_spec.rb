@@ -119,6 +119,29 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    context 'with ialmax requested' do
+      let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
+
+      context 'with a service provider not in the allow list' do
+        it 'has errors' do
+          expect(valid?).to eq false
+          expect(form.errors[:acr_values]).
+            to include(t('openid_connect.authorization.errors.no_auth'))
+        end
+      end
+
+      context 'with a service provider on the allow list' do
+        before do
+          expect(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id] }
+        end
+
+        it 'has no errors' do
+          expect(valid?).to eq true
+          expect(form.errors).to be_blank
+        end
+      end
+    end
+
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
       it 'has errors' do
