@@ -73,7 +73,7 @@ class FeatureManagement
   def self.show_no_pii_banner?
     Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
-  
+
   def self.platform_backup_state_redirect?
     IdentityConfig.store.platform_backup_state_redirect
   end
