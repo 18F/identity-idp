@@ -8,6 +8,8 @@ import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 
+export { InPersonLocations } from '@18f/identity-document-capture';
+
 export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
 export interface FormattedLocation {

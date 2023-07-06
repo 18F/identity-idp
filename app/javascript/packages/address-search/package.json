@@ -3,6 +3,7 @@
   "version": "1.0.4",
   "type": "module",
   "private": false,
+  "sideEffects": false,
   "files": [
     "dist"
   ],
