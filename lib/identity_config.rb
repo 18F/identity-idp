@@ -244,7 +244,6 @@ class IdentityConfig
     config.add(:in_person_outage_message_enabled, type: :boolean)
     config.add(:in_person_outage_expected_update_date, type: :string)
     config.add(:in_person_outage_emailed_by_date, type: :string)
-    config.add(:in_person_verify_info_controller_enabled, type: :boolean)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
