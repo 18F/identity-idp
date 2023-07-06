@@ -7,6 +7,7 @@ require 'telephony/alert_sender'
 require 'telephony/configuration'
 require 'telephony/errors'
 require 'telephony/otp_sender'
+require 'telephony/notification_sender'
 require 'telephony/phone_number_info'
 require 'telephony/response'
 require 'telephony/test/call'
@@ -69,6 +70,19 @@ module Telephony
       country_code: country_code,
       extra_metadata: extra_metadata,
     ).send_confirmation_otp
+  end
+
+  def self.send_notification(message:, to:, expiration:,
+                             channel:, domain:, country_code:, extra_metadata:)
+    NotificationSender.new(
+      message: message,
+      to: to,
+      expiration: expiration,
+      channel: channel,
+      domain: domain,
+      country_code: country_code,
+      extra_metadata: extra_metadata,
+    ).send_notification
   end
 
   def self.alert_sender
