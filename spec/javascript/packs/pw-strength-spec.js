@@ -37,7 +37,7 @@ describe('pw-strength', () => {
   describe('getFeedback', () => {
     const EMPTY_RESULT = '&nbsp;';
     const MINIMUM_LENGTH = 12;
-    const FORBIDDEN_PASSWORDS = '["gsa", "Login.gov"]';
+    const FORBIDDEN_PASSWORDS = ['gsa', 'Login.gov'];
 
     it('returns an empty result for empty password', () => {
       const z = zxcvbn('');
