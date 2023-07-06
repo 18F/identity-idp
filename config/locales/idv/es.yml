@@ -92,7 +92,7 @@ es:
         post_office_search_error: En este momento, estamos teniendo problemas técnicos.
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
-        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link_html}.
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta
