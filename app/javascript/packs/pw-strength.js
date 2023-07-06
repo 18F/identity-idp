@@ -33,8 +33,8 @@ export function getFeedback(z, minPasswordLength, forbiddenPasswords) {
 
   const { warning, suggestions } = z.feedback;
 
-  if (forbiddenPasswords.indexOf(z.password) === 1) {
-    console.log(z.password);
+  if (forbiddenPasswords.includes(z.password)) {
+    return t('errors.attributes.password.avoid_using_phrases_that_are_easily_guessed');
   }
 
   if (!warning && !suggestions.length) {
