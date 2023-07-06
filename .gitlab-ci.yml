@@ -60,6 +60,7 @@ stages:
   - test
   - after_test
   - review
+  - scan
 
 workflow:
   rules:
@@ -397,3 +398,21 @@ stop-review-app:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+ecr-scan:
+  stage: scan
+  needs:
+    - job: build-idp-image
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""] 
+  script:
+    - IMAGE_DIGEST=$(aws ecr describe-images --repository-name identity-idp/review --image-ids imageTag=$CI_COMMIT_SHA --query 'imageDetails[0].imageDigest' --output text)
+    - aws ecr wait image-scan-complete --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageDigest=$IMAGE_DIGEST)
+    - echo $SCAN_FINDINGS
+    - if [[ $SCAN_FINDINGS == *"CRITICAL"* ]]; then exit 1; fi
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
