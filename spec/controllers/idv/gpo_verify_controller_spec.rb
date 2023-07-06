@@ -398,7 +398,8 @@ RSpec.describe Idv::GpoVerifyController do
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           ).once
-          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).exactly(max_attempts).times
+          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+            exactly(max_attempts).times
 
           (max_attempts - 1).times do |i|
             post(
