@@ -34,11 +34,11 @@ module Idv
     def create
       @gpo_verify_form = build_gpo_verify_form
 
-      rate_limiter.increment!
       if rate_limiter.limited?
         render_rate_limited
         return
       end
+      rate_limiter.increment!
 
       result = @gpo_verify_form.submit
       analytics.idv_gpo_verification_submitted(**result.to_h)
