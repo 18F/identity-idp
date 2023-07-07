@@ -12,7 +12,7 @@ locals:
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS,
-        current_step: :ssn_info,
+        current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       ) %>
