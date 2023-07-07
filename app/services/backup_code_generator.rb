@@ -24,11 +24,11 @@ class BackupCodeGenerator
 
   # @return [Boolean]
   def verify(plaintext_code)
-    if_valid_code_return_config(plaintext_code).present?
+    if_valid_consume_code_return_config(plaintext_code).present?
   end
 
   # @return [BackupCodeConfiguration, nil]
-  def if_valid_code_return_config(plaintext_code)
+  def if_valid_consume_code_return_config(plaintext_code)
     return unless plaintext_code.present?
     backup_code = RandomPhrase.normalize(plaintext_code)
     config = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)

@@ -21,7 +21,8 @@ class BackupCodeVerificationForm
   end
 
   def backup_code_config
-    @backup_code_config ||= BackupCodeGenerator.new(@user).if_valid_code_return_config(backup_code)
+    @backup_code_config ||= BackupCodeGenerator.new(@user).
+      if_valid_consume_code_return_config(backup_code)
   end
 
   def extra_analytics_attributes
