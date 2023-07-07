@@ -4,7 +4,7 @@ RSpec.feature 'idv gpo step' do
   include IdvStepHelper
   include OidcAuthHelper
 
-  it 'redirects to the review step and completes it when the user chooses to verify by letter', :js do
+  it 'redirects to and completes the review step when the user chooses to verify by letter', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
     click_on t('idv.buttons.mail.send')
