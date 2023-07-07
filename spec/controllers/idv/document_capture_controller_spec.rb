@@ -4,25 +4,17 @@ RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      issuer: 'http://sp.example.com',
-      app_id: '123',
-    )
-  end
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
-    stub_attempts_tracker
     subject.idv_session.flow_path = 'standard'
+    subject.user_session['idv/doc_auth'] = flow_session
   end
 
   describe 'before_actions' do
@@ -56,6 +48,7 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
     end
 
@@ -147,7 +140,18 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
+    end
+    let(:result) { { success: true, errors: {} } }
+
+    it 'sends analytics_submitted event' do
+      allow(result).to receive(:success?).and_return(true)
+      allow(subject).to receive(:handle_stored_result).and_return(result)
+
+      put :update
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'does not raise an exception when stored_result is nil' do
