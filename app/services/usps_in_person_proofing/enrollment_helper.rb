@@ -8,6 +8,14 @@ module UspsInPersonProofing
         enrollment.current_address_matches_id = pii['same_address_as_id']
         enrollment.save!
 
+        # If we're using secondary ID capture (aka double address verification),
+        # then send the state ID address to USPS. Otherwise send the residential address.
+        pii = pii.to_h
+        if enrollment.capture_secondary_id_enabled? && !enrollment.current_address_matches_id?
+          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
+            transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        end
+
         enrollment_code = create_usps_enrollment(enrollment, pii)
         return unless enrollment_code
 
@@ -45,14 +53,6 @@ module UspsInPersonProofing
         # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
         # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
         unique_id = enrollment.unique_id || enrollment.usps_unique_id
-        pii = pii.to_h
-
-        # If we're using secondary ID capture (aka double address verification),
-        # then send the state ID address to USPS. Otherwise send the residential address.
-        if enrollment.capture_secondary_id_enabled? && !enrollment.current_address_matches_id?
-          pii = pii.except(*SECONDARY_ID_ADDRESS_MAP.values).
-            transform_keys(SECONDARY_ID_ADDRESS_MAP)
-        end
 
         address = [pii[:address1], pii[:address2]].select(&:present?).join(' ')
 
