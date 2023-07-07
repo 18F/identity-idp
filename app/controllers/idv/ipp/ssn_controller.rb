@@ -1,6 +1,6 @@
 module Idv
-  module InPerson
-    class SsnFormController < ApplicationController
+  module Ipp
+    class SsnController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
       include StepUtilitiesConcern
