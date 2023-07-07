@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:103119c0405b49ca9c1f25361a01c751f8f47ea109caaf772433887315c81d38'
+  IDP_CI_SHA: 'sha256:ca8ad4d1296390603555e54a729deda0f9e48d8639c02d8c760c31fedac27620'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -86,7 +86,6 @@ install:
   script:
     - *bundle_install
     - *yarn_install
-    - google-chrome --version
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
