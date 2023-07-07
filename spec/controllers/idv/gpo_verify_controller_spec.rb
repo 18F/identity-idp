@@ -388,7 +388,7 @@ RSpec.describe Idv::GpoVerifyController do
             enqueued_at: nil,
             error_details: otp_code_incorrect,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-          ).once
+          ).exactly(max_attempts - 1).times
           expect(@analytics).to receive(:track_event).with(
             'IdV: GPO verification submitted',
             success: true,
