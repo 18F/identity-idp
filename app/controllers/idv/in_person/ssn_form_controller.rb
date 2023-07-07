@@ -15,48 +15,46 @@ module Idv
       # TO DO: CONFIRM PRIOR STEP IS COMPLETE (CHECK THAT PII FROM USER IS THERE)
       # before_action :confirm_document_capture_complete
 
-
       attr_accessor :error_message
 
       def show
-          @in_person_proofing = true
-          @step_indicator_steps = step_indicator_steps
-          @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+        @in_person_proofing = true
+        @step_indicator_steps = step_indicator_steps
+        @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
 
-          increment_step_counts
+        increment_step_counts
 
-          analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?
-          analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
+        analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?
+        analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
 
-          Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
           call('ssn', :view, true)
 
-          render :show, locals: extra_view_variables
+        render :show, locals: extra_view_variables
       end
 
       def update
-          @error_message = nil
+        @error_message = nil
 
-          @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
-          form_response = @ssn_form.submit(permit(:ssn))
+        @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+        form_response = @ssn_form.submit(permit(:ssn))
 
-          analytics.idv_doc_auth_ssn_submitted(
+        analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
-          )
-          irs_attempts_api_tracker.idv_ssn_submitted(
+        )
+        irs_attempts_api_tracker.idv_ssn_submitted(
           ssn: params[:doc_auth][:ssn],
-          )
+        )
 
+        if form_response.success?
+          flow_session['pii_from_user'][:ssn] = params[:doc_auth][:ssn]
 
-          if form_response.success?
-            flow_session['pii_from_user'][:ssn] = params[:doc_auth][:ssn]
-
-            idv_session.invalidate_steps_after_ssn!
-            redirect_to next_url
-          else
-            @error_message = form_response.first_error_message
-            render :show, locals: threatmetrix_view_variables
-          end
+          idv_session.invalidate_steps_after_ssn!
+          redirect_to next_url
+        else
+          @error_message = form_response.first_error_message
+          render :show, locals: threatmetrix_view_variables
+        end
       end
 
       ##
@@ -64,16 +62,16 @@ module Idv
       # JS if the user's email is on a list of JS disabled emails.
       #
       def should_render_threatmetrix_js?
-          return false unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+        return false unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
-          current_user.email_addresses.each do |email_address|
+        current_user.email_addresses.each do |email_address|
           no_csp_email = IdentityConfig.store.idv_tmx_test_js_disabled_emails.include?(
-              email_address.email,
+            email_address.email,
           )
           return false if no_csp_email
-          end
+        end
 
-          true
+        true
       end
 
       def extra_view_variables
@@ -107,8 +105,7 @@ module Idv
         params.require(:doc_auth).permit(*args)
       end
 
-
-       # TO DO: Why is this step needed? only for idv, not idv_in_person?
+      # TO DO: Why is this step needed? only for idv, not idv_in_person?
       def confirm_repeat_ssn
         # return if !pii_from_user[:ssn]
         # return if request.referer == idv_in_person_verify_info_url
@@ -121,13 +118,13 @@ module Idv
       end
 
       def analytics_arguments
-          {
+        {
           flow_path: flow_path,
           step: 'ssn',
           step_count: current_flow_step_counts['Idv::Steps::SsnStep'],
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-          }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(**acuant_sdk_ab_test_analytics_args)
       end
 
       def updating_ssn?
@@ -144,4 +141,3 @@ module Idv
     end
   end
 end
-  
