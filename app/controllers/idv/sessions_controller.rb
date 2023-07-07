@@ -58,7 +58,7 @@ module Idv
       puts 'clear_session'
       puts Thread.current.backtrace.
         filter { |line| !line.include?('lib/ruby/gems') }.
-        map { |line| line.sub(Rails.root, '') }.
+        map { |line| line.sub(Rails.root.to_s, '') }.
         map { |line| "    #{line}" }.
         join("\n")
 
