@@ -29,6 +29,9 @@ RSpec.describe 'Identity verification', :js do
     validate_document_capture_page
     complete_document_capture_step
     validate_document_capture_submit(user)
+
+    validate_ssn_page
+    complete_ssn_step
   end
 
   def validate_welcome_page
@@ -90,6 +93,20 @@ RSpec.describe 'Identity verification', :js do
 
   def costing_for(cost_type)
     SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+  end
+
+  def validate_ssn_page
+    expect(page).to have_current_path(idv_ssn_path)
+
+    # Check for expected content
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+
+    expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
+
+    # shows error message on invalid ssn
+    fill_out_ssn_form_fail
+    click_idv_continue
+    expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('true')
   end
 
   def try_to_skip_ahead_from_welcome
