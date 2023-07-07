@@ -46,7 +46,7 @@ module IdvStepConcern
       puts "flow_session: #{flow_session.inspect}"
       puts "idv_session: #{idv_session.inspect}"
       puts Thread.current.backtrace.
-        filter { |line| !line.includes('lib/ruby/gems') }.
+        filter { |line| !line.include?('lib/ruby/gems') }.
         map { |line| line.sub(Rails.root, '') }.
         map { |line| "    #{line}" }.
         join("\n")
