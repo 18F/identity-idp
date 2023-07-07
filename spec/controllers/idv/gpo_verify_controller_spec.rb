@@ -329,11 +329,11 @@ RSpec.describe Idv::GpoVerifyController do
       end
     end
 
-    context 'final attempt before rate limiting' do
+    context 'final attempt before rate limited' do
       let(:invalid_otp) { 'a-wrong-otp' }
       let(:max_attempts) { IdentityConfig.store.verify_gpo_key_max_attempts }
 
-      context 'with rate limit reached' do
+      context 'user is rate limited' do
         it 'renders the index page to show errors' do
           expect(@analytics).to receive(:track_event).with(
             'IdV: GPO verification submitted',
@@ -377,8 +377,8 @@ RSpec.describe Idv::GpoVerifyController do
         end
       end
 
-      context 'successful final attempt' do
-        it 'continues to next page' do
+      context 'valid code is submitted' do
+        it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
             'IdV: GPO verification submitted',
             success: false,
