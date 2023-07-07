@@ -51,6 +51,7 @@ RSpec.feature 'idv gpo step' do
         to change { GpoConfirmation.count }.from(1).to(2)
       expect_user_to_be_unverified(user)
 
+      expect(page).to have_content(t('idv.messages.gpo.another_letter_on_the_way'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
