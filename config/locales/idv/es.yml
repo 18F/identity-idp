@@ -199,8 +199,10 @@ es:
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.
+        another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
+        letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
         resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola
           vez de tu carta actual seguirá siendo válido durante un tiempo
