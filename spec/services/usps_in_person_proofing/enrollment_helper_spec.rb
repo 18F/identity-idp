@@ -244,7 +244,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           end
         end
 
-        context 'with address line 2' do
+        context 'with address line 2 present' do
           let(:pii) do
             Pii::Attributes.new_from_hash(
               Idp::Constants::MOCK_IDV_APPLICANT_WITH_ADDRESS_LINE_2.transform_keys(&:to_s),
@@ -261,6 +261,52 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               second_address_line_present: true,
               service_provider: nil,
             )
+          end
+
+          context 'double address verification active' do
+            let(:in_person_capture_secondary_id_enabled) { true }
+
+            it 'does not log the presence of address line 2 only in residential address' do
+              pii['same_address_as_id'] = false
+
+              expect(pii['address2'].present?).to eq(true)
+              expect(pii['identity_doc_address2'].present?).to eq(false)
+
+              subject.schedule_in_person_enrollment(user, pii)
+
+              expect(subject_analytics).to have_logged_event(
+                'USPS IPPaaS enrollment created',
+                enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                enrollment_id: user.in_person_enrollments.first.id,
+                second_address_line_present: false,
+                service_provider: nil,
+              )
+            end
+
+            context 'with address line 2 present in state ID address' do
+              let(:pii) do
+                Pii::Attributes.new_from_hash(
+                  Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
+                )
+              end
+
+              it 'logs the presence of address line 2' do
+                expect(pii['identity_doc_address2'].present?).to eq(true)
+
+                pii['same_address_as_id'] = false
+                pii['address2'] = nil
+
+                subject.schedule_in_person_enrollment(user, pii)
+
+                expect(subject_analytics).to have_logged_event(
+                  'USPS IPPaaS enrollment created',
+                  enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                  enrollment_id: user.in_person_enrollments.first.id,
+                  second_address_line_present: true,
+                  service_provider: nil,
+                )
+              end
+            end
           end
         end
       end
