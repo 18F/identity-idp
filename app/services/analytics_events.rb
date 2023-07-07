@@ -2302,6 +2302,7 @@ module AnalyticsEvents
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
+  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
   # @param [Integer] piv_cac_configuration_id
   # @param [Integer] key_id
@@ -2317,6 +2318,7 @@ module AnalyticsEvents
     errors: nil,
     context: nil,
     multi_factor_auth_method: nil,
+    multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
     key_id: nil,
@@ -2335,6 +2337,7 @@ module AnalyticsEvents
       errors: errors,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
       piv_cac_configuration_id: piv_cac_configuration_id,
       key_id: key_id,
