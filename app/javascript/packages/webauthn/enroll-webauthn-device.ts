@@ -21,7 +21,7 @@ interface EnrollResult {
   clientDataJSON: string;
 
   authenticatorDataFlags: string;
-  
+
   transports: string[];
 }
 
