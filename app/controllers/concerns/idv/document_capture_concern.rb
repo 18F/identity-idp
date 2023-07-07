@@ -39,6 +39,15 @@ module Idv
         uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
       )
 
+      puts '---------------------------------------------------------------------------------------'
+      puts 'extract_pii_from_doc'
+      puts "defined?(flow_session) = #{defined?(flow_session).inspect}"
+      puts "store_in_session = #{store_in_session.inspect}"
+      puts "response = #{response.inspect}"
+      puts "pii_from_doc = #{pii_from_doc.inspect}"
+      puts "flow_session[:pii_from_doc] = #{flow_session[:pii_from_doc].inspect}"
+      puts '---------------------------------------------------------------------------------------'
+
       if defined?(flow_session) # hybrid mobile does not have flow_session
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
         if store_in_session
