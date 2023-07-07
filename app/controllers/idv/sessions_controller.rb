@@ -55,6 +55,13 @@ module Idv
     end
 
     def clear_session
+      puts 'clear_session'
+      puts Thread.current.backtrace.
+        filter { |line| !line.includes('lib/ruby/gems') }.
+        map { |line| line.sub(Rails.root, '') }.
+        map { |line| "    #{line}" }.
+        join("\n")
+
       user_session['idv/doc_auth'] = {}
       user_session['idv/in_person'] = {}
       idv_session.clear

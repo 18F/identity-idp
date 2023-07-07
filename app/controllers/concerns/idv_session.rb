@@ -38,8 +38,8 @@ module IdvSession
       puts 'INITIALIZE flow_session'
       puts Thread.current.backtrace.
         filter { |line| !line.includes('lib/ruby/gems') }.
-        map { |line| line.sub(Rails.root, '') }
-      map { |line| "    #{line}" }.
+        map { |line| line.sub(Rails.root, '') }.
+        map { |line| "    #{line}" }.
         join("\n")
     end
     user_session['idv/doc_auth'] ||= {}
