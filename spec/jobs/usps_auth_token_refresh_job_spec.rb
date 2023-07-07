@@ -29,7 +29,9 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
       end
 
       it 'requests and sets a new token in the cache' do
-        new_token_value = "Bearer ==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7=="
+        # rubocop:disable Layout/LineLength
+        new_token_value = 'Bearer ==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7=='
+        # rubocop:enable Layout/LineLength
         stub_request_token
 
         expect(analytics).to receive(
