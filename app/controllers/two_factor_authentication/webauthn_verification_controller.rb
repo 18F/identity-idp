@@ -64,7 +64,6 @@ module TwoFactorAuthentication
           ),
         )
         redirect_to login_two_factor_webauthn_url(platform: 'true')
-
       else
         flash[:error] = t('errors.general')
         redirect_to login_two_factor_webauthn_url
