@@ -237,7 +237,7 @@ RSpec.describe ApplicationController do
 
         expect(Analytics).to receive(:new).
           with(user: user, request: request, sp: sp.issuer, session: match_array({}),
-               ahoy: controller.ahoy, irs_session_id: nil)
+               ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -252,7 +252,7 @@ RSpec.describe ApplicationController do
 
         expect(Analytics).to receive(:new).
           with(user: user, request: request, sp: nil, session: match_array({}),
-               ahoy: controller.ahoy, irs_session_id: nil)
+               ahoy: controller.ahoy)
 
         controller.analytics
       end

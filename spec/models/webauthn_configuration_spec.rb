@@ -44,4 +44,48 @@ RSpec.describe WebauthnConfiguration do
 
     it { expect(mfa_enabled).to be_truthy }
   end
+
+  describe '#transports' do
+    context 'with nil transports' do
+      before { subject.transports = nil }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with empty array transports' do
+      before { subject.transports = [] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with single valid transport' do
+      before { subject.transports = ['ble'] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with single invalid transport' do
+      before { subject.transports = ['wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
+
+    context 'with multiple valid transports' do
+      before { subject.transports = ['ble', 'hybrid'] }
+
+      it { expect(subject).to be_valid }
+    end
+
+    context 'with multiple invalid transports' do
+      before { subject.transports = ['wrong', 'also wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
+
+    context 'with multiple mixed validity transports' do
+      before { subject.transports = ['ble', 'wrong'] }
+
+      it { expect(subject).not_to be_valid }
+    end
+  end
 end

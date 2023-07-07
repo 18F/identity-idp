@@ -2209,6 +2209,22 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job completed
+  def idv_usps_auth_token_refresh_job_completed(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job started
+  def idv_usps_auth_token_refresh_job_started(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
@@ -2232,24 +2248,6 @@ module AnalyticsEvents
       'Invalid Authenticity Token',
       controller: controller,
       user_signed_in: user_signed_in,
-      **extra,
-    )
-  end
-
-  # @param [String] event_type
-  # @param [Integer] unencrypted_payload_num_bytes size of payload as JSON data
-  # @param [Boolean] recorded if the full event was recorded or not
-  def irs_attempts_api_event_metadata(
-    event_type:,
-    unencrypted_payload_num_bytes:,
-    recorded:,
-    **extra
-  )
-    track_event(
-      'IRS Attempt API: Event metadata',
-      event_type: event_type,
-      unencrypted_payload_num_bytes: unencrypted_payload_num_bytes,
-      recorded: recorded,
       **extra,
     )
   end
@@ -2320,6 +2318,7 @@ module AnalyticsEvents
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
+  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
   # @param [Integer] piv_cac_configuration_id
   # @param [Integer] key_id
@@ -2335,6 +2334,7 @@ module AnalyticsEvents
     errors: nil,
     context: nil,
     multi_factor_auth_method: nil,
+    multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
     key_id: nil,
@@ -2353,6 +2353,7 @@ module AnalyticsEvents
       errors: errors,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
       piv_cac_configuration_id: piv_cac_configuration_id,
       key_id: key_id,

@@ -18,7 +18,7 @@ module TwoFactorAuthCode
     def phone_number_message
       t(
         "instructions.mfa.#{otp_delivery_preference}.number_message_html",
-        number: content_tag(:strong, phone_number),
+        number_html: content_tag(:strong, phone_number),
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
     end

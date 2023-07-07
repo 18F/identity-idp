@@ -774,7 +774,7 @@ RSpec.describe User do
     end
 
     describe '#suspend!' do
-      context 'user is not already supsended' do
+      context 'user is not already suspended' do
         let(:mock_session_id) { SecureRandom.uuid }
         before do
           UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call

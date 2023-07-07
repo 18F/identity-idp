@@ -4,7 +4,7 @@ es:
     account_created: Cuenta creada
     account_verified: Cuenta verificada
     authenticated_at: Sesión iniciada en %{service_provider}
-    authenticated_at_html: Sesión iniciada en %{service_provider_link}
+    authenticated_at_html: Sesión iniciada en %{service_provider_link_html}
     authenticator_disabled: Aplicación autenticadora eliminada
     authenticator_enabled: Aplicación de autenticador agregada
     backup_codes_added: Códigos de respaldo añadidos

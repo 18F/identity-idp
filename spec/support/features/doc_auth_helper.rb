@@ -17,19 +17,19 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_FAILS_RESOLUTION
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_RAISES_EXCEPTION
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
-    fill_in t('idv.form.ssn_label_html'), with: GOOD_SSN
+    fill_in t('idv.form.ssn_label'), with: GOOD_SSN
   end
 
   def fill_out_ssn_form_fail
-    fill_in t('idv.form.ssn_label_html'), with: ''
+    fill_in t('idv.form.ssn_label'), with: ''
   end
 
   def click_doc_auth_back_link
@@ -275,7 +275,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     user = create(:user, :fully_registered)
     visit_idp_from_ial1_oidc_sp(
       client_id: service_provider.issuer,
-      irs_attempts_api_session_id: 'test-session-id',
     )
     visit root_path
     sign_in_and_2fa_user(user)

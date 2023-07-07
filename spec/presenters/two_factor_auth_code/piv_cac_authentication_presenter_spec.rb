@@ -37,12 +37,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     let(:piv_cac_required) { false }
 
     it 'returns help text' do
-      expected_help_text = t(
-        'instructions.mfa.piv_cac.confirm_piv_cac_html',
-        email: content_tag(:strong, user_email),
-        app_name: content_tag(:strong, APP_NAME),
-      )
-      expect(presenter.piv_cac_help).to eq expected_help_text
+      expect(presenter.piv_cac_help).to eq(t('instructions.mfa.piv_cac.confirm_piv_cac'))
     end
 
     context 'with PIV/CAC only requested' do
@@ -54,7 +49,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
         it 'returns the PIV only help text' do
           expect(presenter.piv_cac_help).to eq(
-            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only'),
           )
         end
       end
@@ -64,7 +59,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
         it 'returns the PIV only help text' do
           expect(presenter.piv_cac_help).to eq(
-            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only'),
           )
         end
       end
@@ -79,7 +74,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
         it 'returns the PIV only help text' do
           expect(presenter.piv_cac_help).to eq(
-            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only'),
           )
         end
       end
@@ -89,7 +84,7 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
         it 'returns the PIV or phishing-resistant help text' do
           expect(presenter.piv_cac_help).to eq(
-            t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html'),
+            t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3'),
           )
         end
       end

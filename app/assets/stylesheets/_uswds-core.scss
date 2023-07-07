@@ -1,7 +1,3 @@
-// Prevent USWDS from rendering `@font-face` in every stylesheet. One stylesheet should override
-// this to ensure that the `@font-face` is defined at least once.
-$render-font-face: false !default;
-
 @forward '@18f/identity-design-system/packages/uswds-core' with (
   $theme-body-font-size: 'sm',
   $theme-font-path: '',
@@ -12,21 +8,6 @@ $render-font-face: false !default;
   $theme-header-min-width: 'tablet',
   $theme-link-visited-color: 'primary',
   $theme-style-body-element: true,
-  $theme-typeface-tokens:
-    if(
-      $render-font-face,
-      (),
-      (
-        'roboto-mono': (
-          cap-height: 380px,
-          src: false,
-        ),
-        'public-sans': (
-          cap-height: 362px,
-          src: false,
-        ),
-      )
-    ),
   $output-these-utilities: (
     'add-list-reset',
     'align-items',

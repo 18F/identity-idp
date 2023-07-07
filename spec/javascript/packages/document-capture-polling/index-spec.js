@@ -124,7 +124,7 @@ describe('DocumentCapturePolling', () => {
     expect(subject.elements.form.submit).to.have.been.called();
   });
 
-  it('redirects when throttled', async () => {
+  it('redirects when rate limited', async () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs('/status')

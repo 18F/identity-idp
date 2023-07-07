@@ -22,8 +22,10 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
+allowed_ialmax_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
+account_suspended_support_code: EFGHI
 acuant_maintenance_window_start:
 acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
@@ -132,7 +134,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_tmx_test_csp_disabled_emails: '[]'
 idv_tmx_test_js_disabled_emails: '[]'
-ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
 in_person_email_reminder_early_benchmark_in_days: 11
@@ -148,25 +149,12 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
+in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_usps_outage_message_enabled: false
+in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
-irs_attempt_api_audience: 'https://irs.gov'
-irs_attempt_api_auth_tokens: ''
-irs_attempt_api_csp_id: 'LOGIN.gov'
-irs_attempt_api_enabled: false
-irs_attempt_api_aws_s3_enabled: false
-irs_attempt_api_aws_s3_stream_enabled: false
-irs_attempt_api_aws_s3_stream_buffer_size: 16_777_216
-irs_attempt_api_event_ttl_seconds: 86400
-irs_attempt_api_event_count_default: 1000
-irs_attempt_api_event_count_max: 10000
-irs_attempt_api_idv_events_enabled: false
-irs_attempt_api_payload_size_logging_enabled: true
-irs_attempt_api_track_idv_fraud_review: false
-irs_attempt_api_track_tmx_fraud_check_event: false
-irs_attempt_api_delete_events_after_s3_upload: false
 key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -266,7 +254,6 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
-reauthentication_for_second_factor_management_enabled: true
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -274,13 +261,11 @@ recaptcha_site_key_v3: ''
 recaptcha_secret_key_v2: ''
 recaptcha_secret_key_v3: ''
 recovery_code_length: 4
-redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
 redis_throttle_pool_size: 5
-redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
@@ -345,7 +330,7 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
-use_reauthentication_route: true
+usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -395,13 +380,6 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_enabled: true
-  irs_attempt_api_aws_s3_enabled: false
-  irs_attempt_api_auth_tokens: 'abc123'
-  irs_attempt_api_bucket_name: default-placeholder
-  irs_attempt_api_idv_events_enabled: false
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -472,8 +450,6 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
-  irs_attempt_api_public_key: change-me-pls
-  irs_attempt_api_public_key_id: key1
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
@@ -489,9 +465,7 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
-  redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -507,8 +481,8 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_reauthentication_route: false
   use_kms: true
+  usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
@@ -546,10 +520,6 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
-  irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_bucket_name: test-bucket-name
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

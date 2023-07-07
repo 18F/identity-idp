@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
   namespace :api do
     namespace :internal do
@@ -341,6 +340,7 @@ Rails.application.routes.draw do
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
+      get '/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
       get '/ssn' => 'ssn#show'
       put '/ssn' => 'ssn#update'
       get '/verify_info' => 'verify_info#show'
@@ -373,11 +373,6 @@ Rails.application.routes.draw do
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
-      get '/doc_auth' => 'doc_auth#index'
-      get '/doc_auth/return_to_sp' => 'doc_auth#return_to_sp'
-      get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
-      put '/doc_auth/:step' => 'doc_auth#update'
-      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
       get '/capture_doc' => 'hybrid_mobile/entry#show'
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
@@ -408,6 +403,8 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
+      get '/doc_auth/:step', to: redirect('/verify/welcome')
+      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
     end
 
     # Old paths to GPO outside of IdV.
