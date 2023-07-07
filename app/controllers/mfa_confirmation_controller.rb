@@ -3,7 +3,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def show
-    @content = MfaConfirmationPresenter.new(current_user)
+    @content = MfaConfirmationPresenter.new(mfa_context)
     analytics.user_registration_suggest_another_mfa_notice_visited
   end
 
