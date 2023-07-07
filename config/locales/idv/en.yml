@@ -193,6 +193,7 @@ en:
           code</strong> to the address that you provided on the previous step.
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
+        letter_on_the_way: We are sending you a letter
         resend: Send me another letter
         resend_code_warning: If you request a new letter now, the one-time code from
           your current letter will remain valid for a limited time. You may
