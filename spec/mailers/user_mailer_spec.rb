@@ -812,6 +812,7 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           t(
             'user_mailer.suspended_create_account.message',
+            app_name: APP_NAME,
             support_code: IdentityConfig.store.account_suspended_support_code,
             contact_number: IdentityConfig.store.idv_contact_phone_number,
           ),
