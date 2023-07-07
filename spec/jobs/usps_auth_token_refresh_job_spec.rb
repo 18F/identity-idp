@@ -30,7 +30,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
 
       it 'requests and sets a new token in the cache' do
         # rubocop:disable Layout/LineLength
-        new_token_value = 'Bearer ==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7=='
+        new_token_value = '==PZWyMP2ZHGOIeTd17YomIf7XjZUL4G93dboY1pTsuTJN0s9BwMYvOcIS9B3gRvloK2sroi9uFXdXrFuly7=='
         # rubocop:enable Layout/LineLength
         stub_request_token
 
@@ -50,7 +50,7 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
         subject.perform
 
         expect(WebMock).to have_requested(:post, "#{root_url}/oauth/authenticate")
-        expect(Rails.cache.fetch(usps_auth_token_cache_key)).to eq(new_token_value)
+        expect(Rails.cache.fetch(usps_auth_token_cache_key)).to eq("Bearer #{new_token_value}")
       end
 
       it 'manually sets the expiration' do
