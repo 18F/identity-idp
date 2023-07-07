@@ -19,13 +19,13 @@ RSpec.describe Idv::VerifyInfoController do
       step: 'verify',
     }
   end
-  let(:ssn_throttle_hash) { { throttle_context: 'multi-session' } }
-  let(:proofing_throttle_hash) { { throttle_context: 'single-session' } }
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
+    stub_analytics
+    stub_attempts_tracker
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
+    subject.user_session['idv/doc_auth'] = flow_session
   end
 
   describe 'before_actions' do
@@ -62,13 +62,6 @@ RSpec.describe Idv::VerifyInfoController do
       }
     end
 
-    before do
-      stub_analytics
-      stub_attempts_tracker
-      allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
-    end
-
     it 'renders the show template' do
       get :show
 
@@ -78,7 +71,7 @@ RSpec.describe Idv::VerifyInfoController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog verify_view_count' do
@@ -144,7 +137,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
+          with({ throttle_context: 'multi-session' })
 
         get :show
       end
@@ -166,7 +159,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
+          with({ throttle_context: 'single-session' })
 
         get :show
       end
@@ -279,7 +272,6 @@ RSpec.describe Idv::VerifyInfoController do
 
     context 'for an aamva request' do
       before do
-        stub_analytics
         allow(controller).to receive(:load_async_state).and_return(async_state)
       end
 
@@ -382,13 +374,7 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#update' do
-    before do
-      stub_attempts_tracker
-    end
-
     it 'logs the correct analytics event' do
-      stub_analytics
-
       put :update
 
       expect(@analytics).to have_logged_event(
@@ -440,7 +426,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
+          with({ throttle_context: 'multi-session' })
 
         put :update
       end
@@ -462,7 +448,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
+          with({ throttle_context: 'single-session' })
 
         put :update
       end

@@ -32,6 +32,11 @@ RSpec.describe 'Identity verification', :js do
 
     validate_ssn_page
     complete_ssn_step
+
+    try_to_go_back_from_verify_info
+    validate_verify_info_page
+    complete_verify_step
+    validate_verify_info_submit(user)
   end
 
   def validate_welcome_page
@@ -109,10 +114,37 @@ RSpec.describe 'Identity verification', :js do
     expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('true')
   end
 
+  def validate_verify_info_page
+    expect(page).to have_current_path(idv_verify_info_path)
+
+    # Check for expected content
+    expect(page).to have_content(t('headings.verify'))
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+
+    # DOB is in full month format (October)
+    expect(page).to have_text(t('date.month_names')[10])
+
+    # SSN is masked until revealed
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
+    check t('forms.ssn.show')
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+  end
+
+  def validate_verify_info_submit(user)
+    expect(page).to have_content(t('doc_auth.forms.doc_success'))
+    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
+    expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
+  end
+
   def try_to_skip_ahead_from_welcome
     visit(idv_hybrid_handoff_url)
     expect(page).to have_current_path(idv_welcome_path)
     visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_welcome_path)
+    visit idv_verify_info_path
     expect(page).to have_current_path(idv_welcome_path)
   end
 
@@ -133,5 +165,10 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_document_capture_path)
     visit(idv_hybrid_handoff_url)
     expect(page).to have_current_path(idv_document_capture_path)
+  end
+
+  def try_to_go_back_from_verify_info
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 end
