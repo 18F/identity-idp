@@ -42,14 +42,17 @@ module IdvStepConcern
 
   def confirm_document_capture_complete
     if !pii_from_doc.present?
+      puts '---------------------------------------------------------------------------------------'
       puts 'confirm_document_capture_complete: pii_from_doc not present'
       puts "flow_session: #{flow_session.inspect}"
       puts "idv_session: #{idv_session.inspect}"
+      puts "user_session: #{user_session.inspect}"
       puts Thread.current.backtrace.
         filter { |line| !line.include?('lib/ruby/gems') }.
         map { |line| line.sub(Rails.root.to_s, '') }.
         map { |line| "    #{line}" }.
         join("\n")
+      puts '---------------------------------------------------------------------------------------'
     end
 
     return if pii_from_doc.present?
