@@ -245,11 +245,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         end
 
         context 'with address line 2 present' do
-          let(:pii) do
-            Pii::Attributes.new_from_hash(
-              Idp::Constants::MOCK_IDV_APPLICANT_WITH_ADDRESS_LINE_2.transform_keys(&:to_s),
-            )
-          end
+          before { pii['address2'] = 'Apartment 227' }
 
           it 'logs the presence of address line 2' do
             subject.schedule_in_person_enrollment(user, pii)
@@ -265,12 +261,15 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
           context 'double address verification active' do
             let(:in_person_capture_secondary_id_enabled) { true }
+            # this is a pii bundle that adds identity_doc_* values
+            let(:pii) do
+              Pii::Attributes.new_from_hash(
+                Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
+              )
+            end
 
             it 'does not log the presence of address line 2 only in residential address' do
-              pii['same_address_as_id'] = false
-
-              expect(pii['address2'].present?).to eq(true)
-              expect(pii['identity_doc_address2'].present?).to eq(false)
+              pii['identity_doc_address2'] = nil
 
               subject.schedule_in_person_enrollment(user, pii)
 
@@ -284,12 +283,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             end
 
             context 'with address line 2 present in state ID address' do
-              let(:pii) do
-                Pii::Attributes.new_from_hash(
-                  Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
-                )
-              end
-
               it 'logs the presence of address line 2' do
                 expect(pii['identity_doc_address2'].present?).to eq(true)
 
