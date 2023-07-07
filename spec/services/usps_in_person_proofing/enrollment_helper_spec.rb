@@ -221,6 +221,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: false,
               service_provider: nil,
             )
           end
@@ -237,7 +238,28 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: false,
               service_provider: issuer,
+            )
+          end
+        end
+
+        context 'with address line 2' do
+          let(:pii) do
+            Pii::Attributes.new_from_hash(
+              Idp::Constants::MOCK_IDV_APPLICANT_WITH_ADDRESS_LINE_2.transform_keys(&:to_s),
+            )
+          end
+
+          it 'logs the presence of address line 2' do
+            subject.schedule_in_person_enrollment(user, pii)
+
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: true,
+              service_provider: nil,
             )
           end
         end

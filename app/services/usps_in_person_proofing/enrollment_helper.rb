@@ -20,6 +20,7 @@ module UspsInPersonProofing
         analytics(user: user).usps_ippaas_enrollment_created(
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
+          second_address_line_present: pii[:address2].present?,
           service_provider: enrollment.service_provider&.issuer,
         )
 
