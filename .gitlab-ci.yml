@@ -86,6 +86,7 @@ install:
   script:
     - *bundle_install
     - *yarn_install
+    - google-chrome --version
     - bundle exec rake assets:precompile
 
 # Build a container image async, and don't block CI tests
