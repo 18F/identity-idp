@@ -1,30 +1,7 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth agreement step' do
+RSpec.feature 'agreement step error checking' do
   include DocAuthHelper
-
-  context 'when JS is enabled', :js do
-    before do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_agreement_step
-    end
-
-    it 'shows an inline error if the user clicks continue without giving consent' do
-      expect(page).to have_content(t('step_indicator.flows.idv.getting_started'))
-      click_continue
-
-      expect(page).to have_current_path(idv_agreement_url)
-      expect(page).to have_content(t('forms.validation.required_checkbox'))
-    end
-
-    it 'allows the user to continue after checking the checkbox' do
-      check t('doc_auth.instructions.consent', app_name: APP_NAME)
-      click_continue
-
-      expect(page).to have_current_path(idv_hybrid_handoff_path)
-    end
-  end
-
   context 'when JS is disabled' do
     before do
       sign_in_and_2fa_user
