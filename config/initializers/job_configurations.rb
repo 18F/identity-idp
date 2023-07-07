@@ -1,4 +1,5 @@
 cron_5m = '0/5 * * * *'
+cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
@@ -163,6 +164,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
+                                  {
+                                    class: 'UspsAuthTokenRefreshJob',
+                                    cron: cron_12m,
+                                  }
+                                end),
       arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
                        {
                          class: 'ArcgisTokenJob',

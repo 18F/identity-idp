@@ -221,6 +221,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: false,
               service_provider: nil,
             )
           end
@@ -237,8 +238,68 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
               'USPS IPPaaS enrollment created',
               enrollment_code: user.in_person_enrollments.first.enrollment_code,
               enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: false,
               service_provider: issuer,
             )
+          end
+        end
+
+        context 'with address line 2 present' do
+          before { pii['address2'] = 'Apartment 227' }
+
+          it 'logs the presence of address line 2' do
+            subject.schedule_in_person_enrollment(user, pii)
+
+            expect(subject_analytics).to have_logged_event(
+              'USPS IPPaaS enrollment created',
+              enrollment_code: user.in_person_enrollments.first.enrollment_code,
+              enrollment_id: user.in_person_enrollments.first.id,
+              second_address_line_present: true,
+              service_provider: nil,
+            )
+          end
+
+          context 'double address verification active' do
+            let(:in_person_capture_secondary_id_enabled) { true }
+            # this is a pii bundle that adds identity_doc_* values
+            let(:pii) do
+              Pii::Attributes.new_from_hash(
+                Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.transform_keys(&:to_s),
+              )
+            end
+
+            it 'does not log the presence of address line 2 only in residential address' do
+              pii['identity_doc_address2'] = nil
+
+              subject.schedule_in_person_enrollment(user, pii)
+
+              expect(subject_analytics).to have_logged_event(
+                'USPS IPPaaS enrollment created',
+                enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                enrollment_id: user.in_person_enrollments.first.id,
+                second_address_line_present: false,
+                service_provider: nil,
+              )
+            end
+
+            context 'with address line 2 present in state ID address' do
+              it 'logs the presence of address line 2' do
+                expect(pii['identity_doc_address2'].present?).to eq(true)
+
+                pii['same_address_as_id'] = false
+                pii['address2'] = nil
+
+                subject.schedule_in_person_enrollment(user, pii)
+
+                expect(subject_analytics).to have_logged_event(
+                  'USPS IPPaaS enrollment created',
+                  enrollment_code: user.in_person_enrollments.first.enrollment_code,
+                  enrollment_id: user.in_person_enrollments.first.id,
+                  second_address_line_present: true,
+                  service_provider: nil,
+                )
+              end
+            end
           end
         end
       end

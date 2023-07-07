@@ -2209,6 +2209,22 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job completed
+  def idv_usps_auth_token_refresh_job_completed(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job started
+  def idv_usps_auth_token_refresh_job_started(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
@@ -3879,10 +3895,12 @@ module AnalyticsEvents
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
+  # @param [Boolean] second_address_line_present
   # @param [String] service_provider
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
+    second_address_line_present:,
     service_provider:,
     **extra
   )
@@ -3890,6 +3908,7 @@ module AnalyticsEvents
       'USPS IPPaaS enrollment created',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      second_address_line_present: second_address_line_present,
       service_provider: service_provider,
       **extra,
     )

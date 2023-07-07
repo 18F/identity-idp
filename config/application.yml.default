@@ -330,6 +330,7 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
+usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -481,6 +482,7 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
+  usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
