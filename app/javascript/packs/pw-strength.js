@@ -108,20 +108,11 @@ function updatePasswordFeedback(cls, strength, feedback) {
   pwFeedback.innerHTML = feedback;
 }
 
-function validatePasswordField(score, input) {
-  if (score < 3) {
-    input.setCustomValidity(t('errors.messages.stronger_password'));
-  } else {
-    input.setCustomValidity('');
-  }
-}
-
-function checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input) {
+function checkPasswordStrength(password, minPasswordLength, forbiddenPasswords) {
   const z = zxcvbn(password, forbiddenPasswords);
   const [cls, strength] = getStrength(z);
   const feedback = getFeedback(z, minPasswordLength, forbiddenPasswords);
 
-  validatePasswordField(z.score, input);
   updatePasswordFeedback(cls, strength, feedback);
 }
 
