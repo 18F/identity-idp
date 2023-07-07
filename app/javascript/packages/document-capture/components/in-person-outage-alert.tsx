@@ -13,11 +13,13 @@ function InPersonOutageAlert() {
         <p className="margin-bottom-2">
           <strong>
             {t('idv.failure.exceptions.in_person_outage_error_message.post_cta.title', {
-              date: new Intl.DateTimeFormat(document.documentElement.lang, {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-              }).format(new Date(`${inPersonOutageExpectedUpdateDate}`)),
+              date: inPersonOutageExpectedUpdateDate
+                ? new Intl.DateTimeFormat(document.documentElement.lang, {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                  }).format(new Date(inPersonOutageExpectedUpdateDate))
+                : '',
             })}
           </strong>
         </p>

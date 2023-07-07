@@ -46,21 +46,29 @@ module Idv
         sp_return_url_resolver.homepage_url if service_provider
       end
 
-      def outage_message_enabled
+      def outage_message_enabled?
         IdentityConfig.store.in_person_outage_message_enabled
       end
 
       def date
-        format_date(IdentityConfig.store.in_person_outage_expected_update_date)
+        expected_update_date.present? ? format_date(expected_update_date) : ''
       end
 
       def email_date
-        format_date(IdentityConfig.store.in_person_outage_emailed_by_date)
+        emailed_by_date.present? ? format_date(emailed_by_date) : ''
       end
 
       private
 
       attr_reader :enrollment
+
+      def expected_update_date
+        IdentityConfig.store.in_person_outage_expected_update_date
+      end
+
+      def emailed_by_date
+        IdentityConfig.store.in_person_outage_emailed_by_date
+      end
 
       def format_date(date)
         I18n.l(date.to_date, format: :short)

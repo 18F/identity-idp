@@ -96,7 +96,8 @@ fr:
         post_office_search_error: Nous connaissons des difficultés techniques en ce
           moment. Essayez de chercher à nouveau un bureau de poste. Si le
           problème persiste, revenez plus tard.
-        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link_html}
+        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs,
+          %{link_html}
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte

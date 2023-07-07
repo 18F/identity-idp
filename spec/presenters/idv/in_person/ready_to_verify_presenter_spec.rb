@@ -182,7 +182,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   end
 
   describe '#outage_message_enabled' do
-    subject(:outage_message_enabled) { presenter.outage_message_enabled }
+    subject(:outage_message_enabled) { presenter.outage_message_enabled? }
     it 'returns true when the flag is enabled' do
       allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true).once
