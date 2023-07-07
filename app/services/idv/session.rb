@@ -169,8 +169,12 @@ module Idv
     end
 
     def clear_applicant!
-      puts '        clear_applicant!'
-      puts Thread.current.backtrace.map { |line| "        #{line}" }.join("\n")
+      puts 'clear_applicant!'
+      puts Thread.current.backtrace.
+        filter { |line| !line.include?('lib/ruby/gems') }.
+        map { |line| line.sub(Rails.root.to_s, '') }.
+        map { |line| "    #{line}" }.
+        join("\n")
       session[:applicant] = nil
     end
 

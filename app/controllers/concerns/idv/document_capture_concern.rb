@@ -46,6 +46,7 @@ module Idv
       puts "response = #{response.inspect}"
       puts "pii_from_doc = #{pii_from_doc.inspect}"
       puts "flow_session[:pii_from_doc] = #{flow_session[:pii_from_doc].inspect}"
+      puts "user_session = #{user_session.inspect}"
       puts '---------------------------------------------------------------------------------------'
 
       if defined?(flow_session) # hybrid mobile does not have flow_session
