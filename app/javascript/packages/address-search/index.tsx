@@ -1,4 +1,4 @@
-import { TextInput } from '@18f/identity-components';
+import { Alert, TextInput, PageHeading } from '@18f/identity-components';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { t } from '@18f/identity-i18n';
 import { request } from '@18f/identity-request';
@@ -7,10 +7,12 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { InPersonLocations } from '@18f/identity-document-capture';
 
 export { InPersonLocations } from '@18f/identity-document-capture';
 
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+export const LOCATIONS_URL = globalThis?.USPS_LOCATIONS_URL || '/verify/in_person/usps_locations';
+export const ADDRESS_SEARCH_URL = globalThis?.ADDRESS_SEARCH_URL || '/api/addresses';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -92,8 +94,6 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
-export const ADDRESS_SEARCH_URL = '/api/addresses';
-
 function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
   return request<Location[]>(ADDRESS_SEARCH_URL, {
     method: 'POST',
@@ -172,7 +172,7 @@ interface AddressSearchProps {
   disabled?: boolean;
 }
 
-function AddressSearch({
+export function AddressSearchInput({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
@@ -253,6 +253,50 @@ function AddressSearch({
           {t('in_person_proofing.body.location.po_search.search_button')}
         </SpinnerButton>
       </div>
+    </>
+  );
+}
+
+function AddressSearch({
+  disabled = false,
+  registerField,
+  handleLocationSelect,
+  handleFoundLocations,
+}) {
+  const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
+  const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
+    null,
+  );
+  const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
+  const [apiError, setApiError] = useState<Error | null>(null);
+
+  return (
+    <>
+      {apiError && (
+        <Alert type="error" className="margin-bottom-4">
+          {t('idv.failure.exceptions.post_office_search_error')}
+        </Alert>
+      )}
+      <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
+      <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
+      <AddressSearchInput
+        registerField={registerField}
+        onFoundAddress={setFoundAddress}
+        onFoundLocations={(locations) => {
+          setLocationResults(locations);
+          handleFoundLocations && handleFoundLocations(locations);
+        }}
+        onLoadingLocations={setLoadingLocations}
+        onError={setApiError}
+        disabled={disabled}
+      />
+      {locationResults && foundAddress && !isLoadingLocations && (
+        <InPersonLocations
+          locations={locationResults}
+          onSelect={handleLocationSelect}
+          address={foundAddress?.address || ''}
+        />
+      )}
     </>
   );
 }
