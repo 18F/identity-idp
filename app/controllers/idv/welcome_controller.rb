@@ -46,6 +46,12 @@ module Idv
         issuer: sp_session[:issuer],
       )
       flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      puts '---------------------------------------------------------------------------------------'
+      puts 'create_document_capture_session'
+      puts "flow_session[:document_capture_session_uuid] = #{flow_session[:document_capture_session_uuid].inspect}"
+      puts '---------------------------------------------------------------------------------------'
+
+      document_capture_session.uuid
     end
 
     def cancel_previous_in_person_enrollments
