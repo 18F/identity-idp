@@ -37,6 +37,10 @@ RSpec.describe 'Identity verification', :js do
     validate_verify_info_page
     complete_verify_step
     validate_verify_info_submit(user)
+
+    validate_phone_page
+    try_to_skip_ahead_from_phone
+    complete_otp_verification_page(user)
   end
 
   def validate_welcome_page
@@ -139,12 +143,45 @@ RSpec.describe 'Identity verification', :js do
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
   end
 
+  def validate_phone_page
+    expect(page).to have_current_path(idv_phone_path)
+
+    # selects sms delivery option by default
+    expect(page).to have_checked_field(
+      t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
+    )
+
+    # displays error if invalid phone number is entered
+    fill_in :idv_phone_form_phone, with: '578190'
+    click_idv_send_security_code
+    expect(page).to have_current_path(idv_phone_path)
+    expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
+
+    # displays error if no phone number is entered
+    fill_in('idv_phone_form_phone', with: '')
+    click_idv_send_security_code
+    expect(page).to have_current_path(idv_phone_path)
+    expect(page).to have_content(t('errors.messages.phone_required'))
+  end
+
+  def complete_otp_verification_page(user)
+    fill_in('idv_phone_form_phone', with: '')
+    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+    click_idv_send_security_code
+
+    expect(page).to have_content(t('titles.idv.enter_one_time_code', app_name: APP_NAME))
+    expect(page).to have_current_path(idv_otp_verification_path)
+    click_submit_default
+  end
+
   def try_to_skip_ahead_from_welcome
     visit(idv_hybrid_handoff_url)
     expect(page).to have_current_path(idv_welcome_path)
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_welcome_path)
     visit idv_verify_info_path
+    expect(page).to have_current_path(idv_welcome_path)
+    visit idv_phone_path
     expect(page).to have_current_path(idv_welcome_path)
   end
 
@@ -158,6 +195,11 @@ RSpec.describe 'Identity verification', :js do
   def try_to_skip_ahead_from_hybrid_handoff
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  def try_to_skip_ahead_from_phone
+    visit idv_review_path
+    expect(page).to have_current_path(idv_phone_path)
   end
 
   def try_to_go_back_from_document_capture
