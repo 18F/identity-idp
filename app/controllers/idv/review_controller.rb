@@ -52,7 +52,13 @@ module Idv
 
       user_session[:need_personal_key_confirmation] = true
 
-      flash[:success] = t('idv.messages.confirm')
+      flash[:success] =
+        if gpo_user_flow?
+          t('idv.messages.gpo.letter_on_the_way')
+        else
+          t('idv.messages.confirm')
+        end
+
       redirect_to next_step
 
       analytics.idv_review_complete(
