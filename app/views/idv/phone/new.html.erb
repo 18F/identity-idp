@@ -65,6 +65,14 @@
         required: true,
         class: 'margin-bottom-4',
       ) %>
+  <%= render AlertComponent.new(
+        type: :warning,
+        id: 'phone-already-submitted-alert',
+        data: {
+          already_submitted_numbers: ['703-555-1212', '...'],
+        },
+        hidden: true,
+      ).with_content('...') %>
 
   <h2><%= t('idv.titles.otp_delivery_method') %></h2>
   <p><%= t('idv.messages.otp_delivery_method_description') %></p>
@@ -115,4 +123,4 @@
 
 <%= render 'idv/doc_auth/cancel', step: 'phone' %>
 
-<% javascript_packs_tag_once 'form-steps-wait' %>
+<% javascript_packs_tag_once 'form-steps-wait', 'idv-phone-alert' %>
