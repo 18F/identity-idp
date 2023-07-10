@@ -299,7 +299,6 @@ class IdentityConfig
     config.add(:max_mail_events_window_in_days, type: :integer)
     config.add(:max_phone_numbers_per_account, type: :integer)
     config.add(:max_piv_cac_per_account, type: :integer)
-    config.add(:min_password_score, type: :integer)
     config.add(:otp_min_attempts_remaining_warning_count, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:nonessential_email_banlist, type: :json)
