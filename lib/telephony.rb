@@ -3,11 +3,11 @@ require 'aws-sdk-pinpointsmsvoice'
 require 'forwardable'
 require 'i18n'
 require 'telephony/util'
+require 'telephony/basic_sender'
 require 'telephony/alert_sender'
 require 'telephony/configuration'
 require 'telephony/errors'
 require 'telephony/otp_sender'
-require 'telephony/notification_sender'
 require 'telephony/phone_number_info'
 require 'telephony/response'
 require 'telephony/test/call'
@@ -72,19 +72,6 @@ module Telephony
     ).send_confirmation_otp
   end
 
-  def self.send_notification(message:, to:, expiration:,
-                             channel:, domain:, country_code:, extra_metadata:)
-    NotificationSender.new(
-      message: message,
-      to: to,
-      expiration: expiration,
-      channel: channel,
-      domain: domain,
-      country_code: country_code,
-      extra_metadata: extra_metadata,
-    ).send_notification
-  end
-
   def self.alert_sender
     AlertSender.new
   end
@@ -94,7 +81,8 @@ module Telephony
                  :send_personal_key_regeneration_notice,
                  :send_personal_key_sign_in_notice,
                  :send_account_reset_notice,
-                 :send_account_reset_cancellation_notice
+                 :send_account_reset_cancellation_notice,
+                 :send_notification
 
   # @param [String] phone_number phone number in E.164 format
   # @return [PhoneNumberInfo] info about the phone number
