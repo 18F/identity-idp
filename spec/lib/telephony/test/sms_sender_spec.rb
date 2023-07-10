@@ -9,12 +9,12 @@ RSpec.describe Telephony::Test::SmsSender do
 
   subject(:sms_sender) { Telephony::Test::SmsSender.new }
 
-  describe '#send' do
+  describe '#deliver' do
     it 'adds the message to the message stack' do
       message_body = 'This is a test'
       phone = '+1 (202) 555-5000'
 
-      response = subject.send(message: message_body, to: phone, country_code: 'US')
+      response = subject.deliver(message: message_body, to: phone, country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
 
@@ -27,7 +27,7 @@ RSpec.describe Telephony::Test::SmsSender do
     end
 
     it 'simulates a telephony error' do
-      response = subject.send(message: 'test', to: '+1 (225) 555-1000', country_code: 'US')
+      response = subject.deliver(message: 'test', to: '+1 (225) 555-1000', country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
 
@@ -38,7 +38,7 @@ RSpec.describe Telephony::Test::SmsSender do
     end
 
     it 'simulates an invalid phone number error' do
-      response = subject.send(message: 'test', to: '+1 (225) 555-300', country_code: 'US')
+      response = subject.deliver(message: 'test', to: '+1 (225) 555-300', country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
       expect(response.success?).to eq(false)
@@ -50,7 +50,7 @@ RSpec.describe Telephony::Test::SmsSender do
     end
 
     it 'simulates an invalid calling area error' do
-      response = subject.send(message: 'test', to: '+1 (225) 555-2000', country_code: 'US')
+      response = subject.deliver(message: 'test', to: '+1 (225) 555-2000', country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
 
