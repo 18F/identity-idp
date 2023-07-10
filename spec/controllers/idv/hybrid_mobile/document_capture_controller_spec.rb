@@ -89,9 +89,11 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
             minutes: IdentityConfig.store.doc_capture_request_valid_for_minutes * -2,
           )
         end
-        it 'redirects to root' do
+        it 'redirects to root, displays flash, and deletes session' do
           get :show
           expect(response).to redirect_to(root_url)
+          expect(session.delete('flash')).to be
+          expect(session).to be_blank
         end
       end
     end
