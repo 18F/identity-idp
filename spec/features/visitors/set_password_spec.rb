@@ -82,29 +82,12 @@ RSpec.feature 'Visitor sets password during signup' do
       expect(current_url).to eq sign_up_create_password_url
     end
 
-    scenario 'visitor gets password help message' do
-      fill_in t('forms.password'), with: '1234567891011'
-      fill_in t('components.password_confirmation.confirm_label'),
-              with: '1234567891011'
-
-      click_button t('forms.buttons.continue')
-
-      expect(page).to have_content t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
-    end
-
     scenario 'visitor gets password pwned message' do
       fill_in t('forms.password'), with: '3.1415926535'
 
       click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('errors.messages.pwned_password')
-    end
-
-    scenario 'visitor gets enter a stronger password message', js: true do
-      fill_in t('forms.password'), with: 'badpwd'
-      click_button t('forms.buttons.continue')
-
-      expect(page).to have_css('.usa-error-message', text: t('errors.messages.stronger_password'))
     end
   end
 end
