@@ -413,4 +413,31 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(failed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
     end
   end
+
+  describe 'user cancelling their enrollment' do
+    context 'user has a notification phone number stored' do
+      it 'deletes the notification phone number' do
+        enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+        config_id = enrollment.notification_phone_configuration.id
+        expect(NotificationPhoneConfiguration.find_by({id: config_id})).to_not eq(nil)
+
+        enrollment.cancelled!
+        enrollment.reload
+
+        expect(enrollment.notification_phone_configuration).to eq(nil)
+        expect(NotificationPhoneConfiguration.find_by({id: config_id})).to eq(nil)
+      end
+    end
+
+    context 'user has a "nil" for their notification phone number' do
+      it 'does nothing' do
+        enrollment = create(:in_person_enrollment, :pending, notification_phone_configuration: nil)
+
+        enrollment.cancelled!
+        enrollment.reload
+
+        expect(enrollment.notification_phone_configuration).to eq(nil)
+      end
+    end
+  end
 end
