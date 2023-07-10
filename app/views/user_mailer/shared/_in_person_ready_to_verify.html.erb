@@ -1,4 +1,4 @@
-<% if @presenter.outage_message_enabled? %>
+<% if @presenter.outage_message_enabled? && @presenter.outage_dates_present? %>
 <table class="warning-alert margin-y-4">
   <tr>
     <td width="16">

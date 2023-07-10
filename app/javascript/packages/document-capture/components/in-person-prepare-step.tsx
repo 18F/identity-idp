@@ -14,11 +14,12 @@ function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonOutageMessageEnabled } = useContext(InPersonContext);
+  const { inPersonURL, inPersonOutageMessageEnabled, inPersonOutageExpectedUpdateDate } =
+    useContext(InPersonContext);
 
   return (
     <>
-      {inPersonOutageMessageEnabled && <InPersonOutageAlert />}
+      {inPersonOutageMessageEnabled && inPersonOutageExpectedUpdateDate && <InPersonOutageAlert />}
 
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 

@@ -51,11 +51,15 @@ module Idv
       end
 
       def date
-        expected_update_date.present? ? format_date(expected_update_date) : ''
+        format_outage_date(expected_update_date)
       end
 
       def email_date
-        emailed_by_date.present? ? format_date(emailed_by_date) : ''
+        format_outage_date(emailed_by_date)
+      end
+
+      def outage_dates_present?
+        expected_update_date.present? && emailed_by_date.present?
       end
 
       private
@@ -70,7 +74,7 @@ module Idv
         IdentityConfig.store.in_person_outage_emailed_by_date
       end
 
-      def format_date(date)
+      def format_outage_date(date)
         I18n.l(date.to_date, format: :short)
       end
 

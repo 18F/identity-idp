@@ -584,6 +584,8 @@ RSpec.describe UserMailer, type: :mailer do
             and_return(true)
           allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).
             and_return(formatted_date)
+          allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:outage_dates_present?).
+            and_return(true)
 
           expect(mail.html_part.body).
             to have_content(
