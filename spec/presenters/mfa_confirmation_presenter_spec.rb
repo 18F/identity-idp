@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe MfaConfirmationPresenter do
   let(:user) { create(:user, :with_phone) }
   let(:mfa_context) { MfaContext.new(user) }
-  let(:presenter) { described_class.new(mfa_context) }
+  let(:presenter) do
+    described_class.new(mfa_context: mfa_context)
+  end
 
   describe '#heading?' do
     it 'supplies a message' do
@@ -28,16 +30,22 @@ RSpec.describe MfaConfirmationPresenter do
     end
   end
 
-  describe '#show_skip_link?' do
+  describe '#show_skip_additonal_mfa_link?' do
     it 'returns true' do
-      expect(presenter.show_skip_link?).to eq(true)
+      expect(presenter.show_skip_additonal_mfa_link?).to eq(true)
     end
 
-    context 'when the user only has enabled mfa webauthn platform' do
-      let(:user) { create(:user, :with_webauthn_platform) }
+    context 'when show_skip_additonal_mfa_link is false' do
+      let(:show_skip_additonal_mfa_link) { false }
+      let(:presenter) do
+        described_class.new(
+          mfa_context: mfa_context,
+          show_skip_additonal_mfa_link: show_skip_additonal_mfa_link,
+        )
+      end
 
       it 'returns false' do
-        expect(presenter.show_skip_link?).to eq(false)
+        expect(presenter.show_skip_additonal_mfa_link?).to eq(false)
       end
     end
   end

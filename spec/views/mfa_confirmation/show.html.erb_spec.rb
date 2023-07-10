@@ -7,7 +7,7 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:enforce_second_mfa?).and_return(true)
     mfa_context = MfaContext.new(user)
-    @content = MfaConfirmationPresenter.new(mfa_context)
+    @content = MfaConfirmationPresenter.new(mfa_context: mfa_context)
   end
 
   it 'has a localized title' do
@@ -50,6 +50,14 @@ RSpec.describe 'mfa_confirmation/show.html.erb' do
 
   context 'when the user only has enabled mfa webauthn platform' do
     let(:user) { create(:user, :with_webauthn_platform) }
+
+    before do
+      mfa_context = MfaContext.new(user)
+      @content = MfaConfirmationPresenter.new(
+        mfa_context: mfa_context,
+        show_skip_additonal_mfa_link: false,
+      )
+    end
 
     it 'does not show link to skip add mfa' do
       render
