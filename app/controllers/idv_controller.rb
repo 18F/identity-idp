@@ -33,7 +33,7 @@ class IdvController < ApplicationController
   end
 
   def handle_pending_profile
-    return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
+    redirect_to url_for_pending_profile_reason if user_has_pending_profile?
   end
 
   def profile_needs_reactivation?
