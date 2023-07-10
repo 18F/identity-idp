@@ -203,6 +203,7 @@ fr:
       sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
       physique tel qu’une clé de sécurité ou un identifiant d’employé du
       gouvernement (PIC/CAC) pour accéder à vos informations.
+    webauthn_authenticating: Authentification de vos informations d’identification…
     webauthn_error:
       additional_methods_link: choisir une autre méthode d’authentification
       error_page_text: Vous avez activé le déverrouillage facial ou tactile pour ce
@@ -211,20 +212,8 @@ fr:
       multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné.
         Veuillez réessayer ou %{link}.
       title: Nous ne pouvons pas identifier votre appareil
-    webauthn_fallback:
-      question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
     webauthn_piv_available: Utilisez votre PIV ou CAC
-    webauthn_platform_fallback:
-      question: Vous n’avez pas votre appareil à disposition?
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
     webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
-    webauthn_platform_verified:
-      header: Appareil vérifié
-      info: Nous avons vérifié votre appareil. Cliquez sur continuer pour vous
-        connecter.
     webauthn_use_key: Utiliser la clé de sécurité
-    webauthn_verified:
-      header: Clé de sécurité vérifiée
-      info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous
-        connecter.
