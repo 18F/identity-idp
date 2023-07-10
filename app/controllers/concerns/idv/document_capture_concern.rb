@@ -42,11 +42,17 @@ module Idv
       puts '---------------------------------------------------------------------------------------'
       puts 'extract_pii_from_doc'
       puts "defined?(flow_session) = #{defined?(flow_session).inspect}"
+      puts "flow_session = #{flow_session.inspect}"
       puts "store_in_session = #{store_in_session.inspect}"
       puts "response = #{response.inspect}"
       puts "pii_from_doc = #{pii_from_doc.inspect}"
       puts "flow_session[:pii_from_doc] = #{flow_session[:pii_from_doc].inspect}"
       puts "user_session = #{user_session.inspect}"
+      puts Thread.current.backtrace.
+        filter { |line| !line.include?('lib/ruby/gems') }.
+        map { |line| line.sub(Rails.root.to_s, '') }.
+        map { |line| "    #{line}" }.
+        join("\n")
       puts '---------------------------------------------------------------------------------------'
 
       if defined?(flow_session) # hybrid mobile does not have flow_session
