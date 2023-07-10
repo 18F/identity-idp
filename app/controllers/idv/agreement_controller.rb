@@ -49,7 +49,6 @@ module Idv
     def skip_to_capture
       flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
-      flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
     end
 
     def consent_form_params
