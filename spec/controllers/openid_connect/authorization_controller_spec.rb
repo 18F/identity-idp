@@ -165,7 +165,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               context 'user has an in person pending profile' do
                 let(:user) { create(:profile, :in_person_verification_pending).user }
 
-                it 'redirects to gpo verify page' do
+                it 'redirects to in person ready to verify page' do
                   action
                   expect(controller).to redirect_to(idv_in_person_ready_to_verify_url)
                 end
@@ -199,7 +199,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                     ).user
                   end
 
-                  it 'redirects to gpo verify page if user has gpo and fraud pending' do
+                  it 'redirects to gpo verify page' do
                     action
                     expect(controller).to redirect_to(idv_gpo_verify_url)
                   end
@@ -214,7 +214,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                     ).user
                   end
 
-                  it 'redirects to gpo verify page if user has gpo and in person pending' do
+                  it 'redirects to gpo verify page' do
                     action
                     expect(controller).to redirect_to(idv_gpo_verify_url)
                   end
