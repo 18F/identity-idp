@@ -171,7 +171,7 @@ RSpec.describe WebauthnSetupForm do
       it 'should return false' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         subject.submit(protocol, params)
-        expect(subject.passkey_backed_up).to eq(false)
+        expect(subject.passkey_backed_up?).to eq(false)
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe WebauthnSetupForm do
       it 'should return true' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         subject.submit(protocol, params)
-        expect(subject.passkey_backed_up).to eq(true)
+        expect(subject.passkey_backed_up?).to eq(true)
       end
     end
   end
