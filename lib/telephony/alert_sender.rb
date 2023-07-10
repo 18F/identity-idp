@@ -52,7 +52,7 @@ module Telephony
       response
     end
 
-    alias send_notification send_raw_message
+    alias_method :send_notification, :send_raw_message
 
     private
 
