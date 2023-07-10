@@ -106,7 +106,7 @@ module WebAuthnHelper
       bs: true,
       at: true,
       ed: false,
-    }.to_s
+    }.to_json
   end
 
   def non_backed_up_authenticator_data_flags
@@ -117,7 +117,7 @@ module WebAuthnHelper
       bs: false,
       at: true,
       ed: false,
-    }.to_s
+    }.to_json
   end
 
   def setup_client_data_json
