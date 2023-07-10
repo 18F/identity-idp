@@ -28,6 +28,11 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   def create
+    puts '-----------------------------------------------------------------------------------------'
+    puts "FRONTEND LOG: #{log_params[:event]}"
+    puts log_params[:payload].inspect
+    puts '-----------------------------------------------------------------------------------------'
+
     frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
 
     render json: { success: true }, status: :ok
