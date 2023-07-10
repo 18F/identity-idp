@@ -295,6 +295,10 @@ module Idv
     end
 
     def store_pii(client_response)
+      puts '---------------------------------------------------------------------------------------'
+      puts 'ApiImageUploadForm::store_pii'
+      puts "client_response = #{client_response}"
+      puts '---------------------------------------------------------------------------------------'
       document_capture_session.store_result_from_response(client_response)
     end
 

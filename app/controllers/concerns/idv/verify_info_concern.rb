@@ -315,6 +315,16 @@ module Idv
     end
 
     def delete_pii
+      puts '---------------------------------------------------------------------------------------'
+      puts 'delete_pii'
+      puts "flow_session = #{flow_session.inspect}"
+      puts Thread.current.backtrace.
+        filter { |line| !line.include?('lib/ruby/gems') }.
+        map { |line| line.sub(Rails.root.to_s, '') }.
+        map { |line| "    #{line}" }.
+        join("\n")
+      puts '---------------------------------------------------------------------------------------'
+
       flow_session.delete(:pii_from_doc)
       flow_session.delete(:pii_from_user)
     end
