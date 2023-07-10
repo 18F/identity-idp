@@ -724,7 +724,6 @@ GEM
       webrick (~> 1.7.0)
     zeitwerk (2.6.8)
     zonebie (0.6.1)
-    zxcvbn (0.1.9)
 
 PLATFORMS
   ruby
@@ -847,7 +846,6 @@ DEPENDENCIES
   xmlenc (~> 0.7, >= 0.7.1)
   yard
   zonebie
-  zxcvbn (= 0.1.9)
 
 RUBY VERSION
    ruby 3.2.2p53
