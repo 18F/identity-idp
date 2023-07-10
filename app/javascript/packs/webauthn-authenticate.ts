@@ -6,8 +6,6 @@ function webauthn() {
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
 
   const webauthAlertContainer = document.querySelector('.usa-alert--error')!;
-  const webauthnPlatformRequested =
-    webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
 
   const spinner = document.getElementById('spinner')!;
   spinner.classList.remove('display-none');
@@ -41,8 +39,6 @@ function webauthn() {
       })
       .catch((error: Error) => {
         (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;
-        (document.getElementById('platform') as HTMLInputElement).value =
-          String(webauthnPlatformRequested);
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       });
   }
