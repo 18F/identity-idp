@@ -10,6 +10,7 @@ RSpec.describe 'Identity verification', :js do
   # in person proofing
 
   scenario 'Unsupervised proofing happy path desktop' do
+    try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(:oidc)
     user = sign_up_and_2fa_ial1_user
 
@@ -41,6 +42,12 @@ RSpec.describe 'Identity verification', :js do
     validate_phone_page
     try_to_skip_ahead_from_phone
     complete_otp_verification_page(user)
+
+    validate_review_page
+    complete_review_step(user)
+    validate_review_submit(user)
+
+    validate_personal_key_page
   end
 
   def validate_welcome_page
@@ -171,7 +178,45 @@ RSpec.describe 'Identity verification', :js do
 
     expect(page).to have_content(t('titles.idv.enter_one_time_code', app_name: APP_NAME))
     expect(page).to have_current_path(idv_otp_verification_path)
+
+    # without a code, stay on page
     click_submit_default
+    expect(page).to have_current_path(idv_otp_verification_path)
+
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+  end
+
+  def validate_review_page
+    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.review.phone_verified'))
+
+    # does not move ahead with incorrect password
+    fill_in 'Password', with: 'this is not the right password'
+    click_idv_continue
+    expect(page).to have_content(t('idv.errors.incorrect_password'))
+    expect(page).to have_current_path(idv_review_path)
+  end
+
+  def validate_review_submit(user)
+    expect(user.events.account_verified.size).to be(1)
+    expect(user.profiles.count).to eq 1
+
+    profile = user.profiles.first
+
+    expect(profile.active?).to eq true
+    expect(GpoConfirmation.count).to eq(0)
+  end
+
+  def validate_personal_key_page
+    expect(current_path).to eq idv_personal_key_path
+    expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+  end
+
+  def try_to_skip_ahead_before_signing_in
+    visit idv_review_path
+    expect(current_path).to eq(root_path)
   end
 
   def try_to_skip_ahead_from_welcome
