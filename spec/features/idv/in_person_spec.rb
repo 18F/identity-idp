@@ -103,7 +103,7 @@ RSpec.describe 'In Person Proofing', js: true do
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content(
-        "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
+        "#{t('date.day_names')[7]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
       )
 
       # signing in again before completing in-person proofing at a post office
@@ -236,7 +236,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content(
-      "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
+      "#{t('date.day_names')[7]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
     )
 
     # signing in again before completing in-person proofing at a post office
