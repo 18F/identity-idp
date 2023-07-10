@@ -1,5 +1,5 @@
 module Idv
-  module Ipp
+  module InPersonProofing
     class SsnController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
