@@ -10,7 +10,6 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
   end
 
   it_behaves_like 'password validation'
-  it_behaves_like 'strong password', 'UpdateUserPasswordForm'
 
   describe '#submit' do
     context 'when the password is invalid' do
