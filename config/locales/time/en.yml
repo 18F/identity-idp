@@ -2,7 +2,7 @@
 en:
   date:
     day_names:
-      - # empty item to have correct weekday offset for %A
+      -  # empty item to have correct weekday offset for %A
       - Monday
       - Tuesday
       - Wednesday
