@@ -260,8 +260,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_privileges
     if (ial2_requested? && !ial_context.ial2_service_provider?) ||
-       (ial_context.ialmax_requested? &&
-        !IdentityConfig.store.allowed_ialmax_providers.include?(client_id))
+       (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth

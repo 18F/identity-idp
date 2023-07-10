@@ -15,19 +15,10 @@ RSpec.feature 'Sign in' do
     expect(page).to_not have_content t('devise.registrations.start.accordion')
   end
 
-  context 'service provider is on the ialmax allow list' do
-    before do
-      allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) {
-        ['urn:gov:gsa:openidconnect:sp:server']
-      }
-    end
+  scenario 'user signs in as ialmax and does not see ial2 help text' do
+    visit_idp_from_oidc_sp_with_ialmax
 
-    scenario 'user signs in as ialmax and does not see ial2 help text' do
-      visit_idp_from_oidc_sp_with_ialmax
-
-      expect(page).to_not have_content t('devise.registrations.start.accordion')
-      expect(page).to_not have_content 'The page you were looking for doesn’t exist'
-    end
+    expect(page).to_not have_content t('devise.registrations.start.accordion')
   end
 
   scenario 'user signs in as ial2 and does see ial2 help text' do
@@ -846,153 +837,91 @@ RSpec.feature 'Sign in' do
   end
 
   context 'oidc sp requests ialmax' do
-    context 'the service_provider is on the allow list' do
-      before do
-        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) {
-                                         ['urn:gov:gsa:openidconnect:sp:server']
-                                       }
-      end
+    it 'returns ial1 info for a non-verified user' do
+      user = create(:user, :fully_registered)
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
-      it 'returns ial1 info for a non-verified user' do
-        user = create(:user, :fully_registered)
-        visit_idp_from_oidc_sp_with_ialmax
-        fill_in_credentials_and_submit(user.email, user.password)
-        fill_in_code_with_last_phone_otp
-        click_submit_default
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
 
-        expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content(user.email)
+      click_agree_and_continue
 
-        click_agree_and_continue
-
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
-      end
-
-      it 'returns ial2 info for a verified user' do
-        user = create(
-          :profile, :active, :verified,
-          pii: { first_name: 'John', ssn: '111223333' }
-        ).user
-        visit_idp_from_oidc_sp_with_ialmax
-        fill_in_credentials_and_submit(user.email, user.password)
-        fill_in_code_with_last_phone_otp
-        click_submit_default
-
-        expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content('1**-**-***3')
-
-        click_agree_and_continue
-
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
-      end
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
 
-    context 'the service provider is not on the allow list' do
-      it 'returns an error' do
-        create(:user, :fully_registered)
-        visit_idp_from_oidc_sp_with_ialmax
+    it 'returns ial2 info for a verified user' do
+      user = create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
+      visit_idp_from_oidc_sp_with_ialmax
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
-        expect(page).to have_content 'The page you were looking for doesn’t exist'
-      end
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content('1**-**-***3')
+
+      click_agree_and_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
   end
 
   context 'saml sp requests ialmax' do
-    context 'the service provider is on the allow list' do
-      before do
-        allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [sp1_issuer] }
-      end
+    it 'returns ial1 info for a non-verified user' do
+      user = create(:user, :fully_registered)
+      visit_saml_authn_request_url(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+          ],
+        },
+      )
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default_twice
 
-      it 'returns ial1 info for a non-verified user' do
-        user = create(:user, :fully_registered)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
-               'first_name:last_name email, ssn',
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-          },
-        )
-        fill_in_credentials_and_submit(user.email, user.password)
-        fill_in_code_with_last_phone_otp
-        click_submit_default_twice
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
 
-        expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content(user.email)
+      click_agree_and_continue
 
-        click_agree_and_continue
-
-        expect(current_url).to eq complete_saml_url
-      end
-
-      it 'returns ial2 info for a verified user' do
-        user = create(
-          :profile, :active, :verified,
-          pii: { first_name: 'John', ssn: '111223333' }
-        ).user
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
-              'first_name:last_name email, ssn',
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-          },
-        )
-        fill_in_credentials_and_submit(user.email, user.password)
-        fill_in_code_with_last_phone_otp
-        click_submit_default
-        click_submit_default
-
-        expect(current_path).to eq sign_up_completed_path
-        expect(page).to have_content('1**-**-***3')
-
-        click_agree_and_continue
-
-        expect(current_url).to eq complete_saml_url
-      end
+      expect(current_url).to eq complete_saml_url
     end
 
-    context 'the service provider is not on the allow list' do
-      it 'redirects to an error page for ial1 user' do
-        create(:user, :fully_registered)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
-              'first_name:last_name email, ssn',
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-          },
-        )
-        expect(page).to_not have_content 'The page you were looking for doesn’t exist'
-      end
+    it 'returns ial2 info for a verified user' do
+      user = create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
+      visit_saml_authn_request_url(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+          ],
+        },
+      )
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_submit_default
 
-      it 'redirects to an error page for ial2 user' do
-        create(
-          :profile, :active, :verified,
-          pii: { first_name: 'John', ssn: '111223333' }
-        ).user
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF +
-                'first_name:last_name email, ssn',
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-          },
-        )
-        expect(page).to_not have_content 'The page you were looking for doesn’t exist'
-      end
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content('1**-**-***3')
+
+      click_agree_and_continue
+
+      expect(current_url).to eq complete_saml_url
     end
   end
 
