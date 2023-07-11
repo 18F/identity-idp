@@ -7,12 +7,12 @@ class TwoFactorOptionsPresenter
                  user: nil,
                  phishing_resistant_required: false,
                  piv_cac_required: false,
-                 show_skip_additonal_mfa_link: true)
+                 show_skip_additional_mfa_link: true)
     @user_agent = user_agent
     @user = user
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
-    @show_skip_additonal_mfa_link = show_skip_additonal_mfa_link
+    @show_skip_additional_mfa_link = show_skip_additional_mfa_link
   end
 
   def options
@@ -50,8 +50,8 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def show_skip_additonal_mfa_link?
-    @show_skip_additonal_mfa_link
+  def show_skip_additional_mfa_link?
+    @show_skip_additional_mfa_link
   end
 
   private

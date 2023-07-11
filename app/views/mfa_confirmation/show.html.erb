@@ -15,7 +15,7 @@
       ) { @content.button } %>
 </div>
 
-<% if @content.show_skip_additonal_mfa_link? %>
+<% if @content.show_skip_additional_mfa_link? %>
   <%= button_to(
         auth_method_confirmation_skip_path,
         method: :post,

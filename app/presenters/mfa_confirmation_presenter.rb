@@ -1,9 +1,6 @@
 class MfaConfirmationPresenter
-  attr_reader :mfa_context
-
-  def initialize(mfa_context:, show_skip_additonal_mfa_link: true)
-    @mfa_context = mfa_context
-    @show_skip_additonal_mfa_link = show_skip_additonal_mfa_link
+  def initialize(show_skip_additional_mfa_link: true)
+    @show_skip_additional_mfa_link = show_skip_additional_mfa_link
   end
 
   def heading
@@ -18,7 +15,7 @@ class MfaConfirmationPresenter
     I18n.t('mfa.add')
   end
 
-  def show_skip_additonal_mfa_link?
-    @show_skip_additonal_mfa_link
+  def show_skip_additional_mfa_link?
+    @show_skip_additional_mfa_link
   end
 end

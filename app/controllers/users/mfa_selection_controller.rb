@@ -42,7 +42,7 @@ module Users
         user: current_user,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
-        show_skip_additonal_mfa_link: show_skip_additonal_mfa_link?,
+        show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
       )
     end
 

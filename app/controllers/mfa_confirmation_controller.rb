@@ -41,8 +41,7 @@ class MfaConfirmationController < ApplicationController
 
   def mfa_confirmation_presenter
     MfaConfirmationPresenter.new(
-      mfa_context: mfa_context,
-      show_skip_additonal_mfa_link: show_skip_additonal_mfa_link?,
+      show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
     )
   end
 

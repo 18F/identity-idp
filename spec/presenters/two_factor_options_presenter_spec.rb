@@ -78,22 +78,22 @@ RSpec.describe TwoFactorOptionsPresenter do
     end
   end
 
-  describe '#show_skip_additonal_mfa_link?' do
+  describe '#show_skip_additional_mfa_link?' do
     it 'returns true' do
-      expect(presenter.show_skip_additonal_mfa_link?).to eq(true)
+      expect(presenter.show_skip_additional_mfa_link?).to eq(true)
     end
 
-    context 'when show_skip_additonal_mfa_link is false' do
-      let(:show_skip_additonal_mfa_link) { false }
+    context 'when show_skip_additional_mfa_link is false' do
+      let(:show_skip_additional_mfa_link) { false }
       let(:presenter) do
         described_class.new(
           user_agent: user_agent,
-          show_skip_additonal_mfa_link: show_skip_additonal_mfa_link,
+          show_skip_additional_mfa_link: show_skip_additional_mfa_link,
         )
       end
 
       it 'returns false' do
-        expect(presenter.show_skip_additonal_mfa_link?).to eq(false)
+        expect(presenter.show_skip_additional_mfa_link?).to eq(false)
       end
     end
   end

@@ -197,11 +197,11 @@ RSpec.describe Users::MfaSelectionController do
     end
   end
 
-  describe '#show_skip_additonal_mfa_link?' do
+  describe '#show_skip_additional_mfa_link?' do
     it 'returns true' do
       stub_sign_in
 
-      expect(controller.show_skip_additonal_mfa_link?).to eq(true)
+      expect(controller.show_skip_additional_mfa_link?).to eq(true)
     end
 
     context 'with only webauthn_platform registered' do
@@ -212,7 +212,7 @@ RSpec.describe Users::MfaSelectionController do
       end
 
       it 'returns false' do
-        expect(controller.show_skip_additonal_mfa_link?).to eq(false)
+        expect(controller.show_skip_additional_mfa_link?).to eq(false)
       end
     end
   end
