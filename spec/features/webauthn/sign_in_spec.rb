@@ -24,7 +24,6 @@ RSpec.feature 'webauthn sign in' do
 
     sign_in_user(webauthn_configuration.user)
     mock_press_button_on_hardware_key_on_verification
-    click_button t('forms.buttons.continue')
 
     expect(page).to have_current_path(account_path)
   end
@@ -34,7 +33,6 @@ RSpec.feature 'webauthn sign in' do
     # when the button is pressed.
     sign_in_user(webauthn_configuration.user)
     mock_press_button_on_hardware_key_on_verification
-    click_button t('forms.buttons.continue')
 
     expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
@@ -60,7 +58,6 @@ RSpec.feature 'webauthn sign in' do
     expect(page).to have_content(t('errors.general'))
 
     mock_press_button_on_hardware_key_on_verification
-    click_button t('forms.buttons.continue')
 
     expect(page).to_not have_content(t('errors.general'))
   end

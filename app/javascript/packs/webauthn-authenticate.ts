@@ -38,7 +38,8 @@ function webauthn() {
 }
 
 function webauthnButton() {
-  const button = document.getElementById('webauthn-button')!;
+  const button = document.getElementById('webauthn-button') as HTMLButtonElement;
+  button.type = 'button';
   button.addEventListener('click', webauthn);
 }
 

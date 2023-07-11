@@ -43,7 +43,7 @@
         <%= t('two_factor_authentication.webauthn_authenticating') %>
       </p>
     </div>
-    <button type="button" id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
+    <button id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
       <%= @presenter.authenticate_button_text %>
     </button>
   <% end %>
