@@ -84,8 +84,8 @@ RSpec.describe 'Identity verification', :js do
 
     # defaults phone to user's 2fa phone number
     field = page.find_field(t('two_factor_authentication.phone_label'))
-    expect(PhoneFormatter.format(field.value)).
-      to eq(PhoneFormatter.format(Features::SessionHelper::IAL1_USER_PHONE))
+    expect(same_phone?(field.value, Features::SessionHelper::IAL1_USER_PHONE)).
+      to be true
   end
 
   def validate_document_capture_page
@@ -258,5 +258,9 @@ RSpec.describe 'Identity verification', :js do
   def try_to_go_back_from_verify_info
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_verify_info_path)
+  end
+
+  def same_phone?(phone1, phone2)
+    PhoneFormatter.format(phone1) == PhoneFormatter.format(phone2)
   end
 end
