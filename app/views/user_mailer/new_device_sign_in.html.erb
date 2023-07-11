@@ -28,12 +28,12 @@
 <p>
   <%= t(
         'user_mailer.new_device_sign_in.help_html',
-        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
-        disavowal_link: link_to(
+        app_name_html: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
+        disavowal_link_html: link_to(
           t('.disavowal_link'),
           event_disavowal_url(disavowal_token: @disavowal_token),
         ),
-        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
-        contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
+        help_link_html: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+        contact_link_html: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
       ) %>
 </p>

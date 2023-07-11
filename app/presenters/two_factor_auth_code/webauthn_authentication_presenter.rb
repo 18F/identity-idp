@@ -19,13 +19,13 @@ module TwoFactorAuthCode
     def webauthn_help
       if service_provider_mfa_policy.phishing_resistant_required? &&
          service_provider_mfa_policy.allow_user_to_switch_method?
-        t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html')
+        t('instructions.mfa.webauthn.confirm_webauthn_or_aal3')
       elsif service_provider_mfa_policy.phishing_resistant_required?
-        t('instructions.mfa.webauthn.confirm_webauthn_only_html')
+        t('instructions.mfa.webauthn.confirm_webauthn_only')
       elsif platform_authenticator?
-        t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME)
+        t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)
       else
-        t('instructions.mfa.webauthn.confirm_webauthn_html')
+        t('instructions.mfa.webauthn.confirm_webauthn')
       end
     end
 

@@ -7,7 +7,7 @@ module TwoFactorAuthCode
     def help_text
       t(
         'instructions.mfa.authenticator.confirm_code_html',
-        app_name: content_tag(:strong, APP_NAME),
+        app_name_html: content_tag(:strong, APP_NAME),
       )
     end
 

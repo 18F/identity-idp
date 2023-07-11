@@ -22,7 +22,7 @@ es:
         code_example: Un ejemplo de clave personal con 16 caracteres
         preview: Vista previa de la clave personal
       confirmation_error: Ha ingresado una clave personal incorrecta.
-      generated_on_html: Tu clave personal fue generada el %{date}
+      generated_on_html: Tu clave personal fue generada el %{date_html}
     phones:
       error_message: Agregó el número máximo de números de teléfono.
     rules_of_use:
@@ -35,5 +35,5 @@ es:
         <li>Cómo usamos su información y sus derechos sobre esa información, y</li>
         <li>Las condiciones que acepta cuando realiza determinadas acciones en el servicio %{app_name}.</li>
         </ul>
-      overview_html: Actualizamos nuestro %{link}. Revise y marque la casilla a
+      overview_html: Actualizamos nuestro %{link_html}. Revise y marque la casilla a
         continuación para continuar.

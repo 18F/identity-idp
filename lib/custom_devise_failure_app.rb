@@ -35,7 +35,7 @@ class CustomDeviseFailureApp < Devise::FailureApp
       I18n.t("#{prefix}_link_text"),
       new_user_password_url(locale: locale_url_param, request_id: sp_session[:request_id]),
     )
-    I18n.t("#{prefix}_html", link: link)
+    I18n.t("#{prefix}_html", link_html: link)
   end
 
   def helper

@@ -21,9 +21,9 @@ fr:
         questions: Des questions?
         retail_hours: Heures d’ouverture
         retail_hours_closed: Fermé
-        return_to_partner_html: Vous pouvez %{link} afin d’effectuer toutes les étapes
-          suivantes auxquelles vous pouvez accéder jusqu’à ce que votre identité
-          ait été confitmée.
+        return_to_partner_html: Vous pouvez %{link_html} afin d’effectuer toutes les
+          étapes suivantes auxquelles vous pouvez accéder jusqu’à ce que votre
+          identité ait été confitmée.
         return_to_partner_link: maintenant vous déconnecter et retourner à %{sp_name}
         what_to_expect: À quoi s’attendre au bureau de poste
       cta:

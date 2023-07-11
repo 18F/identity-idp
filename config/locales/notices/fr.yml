@@ -15,7 +15,7 @@ fr:
       resend_email_success: Nous avons envoyé un autre courriel de réinitialisation de mot de passe.
       use_diff_email:
         link: Créer un nouveau compte
-        text_html: Ou, %{link} en utilisant une adresse courriel différente.
+        text_html: Ou, %{link_html} en utilisant une adresse courriel différente.
     maintenance:
       contact_us: Nous contacter
       currently_under_maintenance_html: Nous sommes actuellement <b>en maintenance
@@ -49,25 +49,28 @@ fr:
     timeout_warning:
       partially_signed_in:
         continue: Continuer la connexion
-        live_region_message_html: Vous serez déconnecté dans %{time_left_in_session}.
-          Sélectionnez « garder ma connexion » pour rester connecté.
-          Sélectionnez « déconnectez-moi » pour vous déconnecter.
+        live_region_message_html: Vous serez déconnecté dans
+          %{time_left_in_session_html}. Sélectionnez « garder ma connexion »
+          pour rester connecté. Sélectionnez « déconnectez-moi » pour vous
+          déconnecter.
         message_html: Pour votre sécurité, nous annulerons votre connexion dans
-          %{time_left_in_session}.
+          %{time_left_in_session_html}.
         sign_out: Annuler la connexion
       signed_in:
         continue: Gardez ma connexion active
-        live_region_message_html: Vous serez déconnecté dans %{time_left_in_session}.
-          Sélectionnez « garder ma connexion » pour rester connecté.
-          Sélectionnez « déconnectez-moi » pour vous déconnecter.
+        live_region_message_html: Vous serez déconnecté dans
+          %{time_left_in_session_html}. Sélectionnez « garder ma connexion »
+          pour rester connecté. Sélectionnez « déconnectez-moi » pour vous
+          déconnecter.
         message_html: Pour votre sécurité, nous vous déconnecterons dans
-          %{time_left_in_session}, sauf en cas d’avis contraire de votre part.
+          %{time_left_in_session_html}, sauf en cas d’avis contraire de votre
+          part.
         sign_out: Déconnectez-moi
     totp_configured: Une application d’authentification a été ajoutée à votre compte.
     totp_disabled: Votre application d’authentification a été supprimée de votre compte.
     use_diff_email:
       link: utilisez une adresse courriel différente
-      text_html: Ou %{link}
+      text_html: Ou %{link_html}
     webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
     webauthn_deleted: Votre clé de sécurité a été supprimée de votre compte.
     webauthn_platform_configured: Déverouillage facial ou déverrouillage par

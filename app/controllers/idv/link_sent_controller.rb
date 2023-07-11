@@ -40,9 +40,8 @@ module Idv
 
     def confirm_hybrid_handoff_complete
       return if idv_session.flow_path == 'hybrid'
-      return if flow_session[:flow_path] == 'hybrid'
 
-      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
       else
         redirect_to idv_hybrid_handoff_url
@@ -71,13 +70,11 @@ module Idv
       save_proofing_components(current_user)
       extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
       idv_session.flow_path = 'hybrid'
-      flow_session[:flow_path] = 'hybrid' # temp added for 50/50, remove in future deploy
     end
 
     def render_document_capture_cancelled
       redirect_to idv_hybrid_handoff_url
       idv_session.flow_path = nil
-      flow_session[:flow_path] = nil # temp added for 50/50, remove in future deploy
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 
