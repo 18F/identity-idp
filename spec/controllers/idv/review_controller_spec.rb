@@ -553,14 +553,14 @@ RSpec.describe Idv::ReviewController do
           context 'when user enters an address2 value' do
             let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
 
-            it 'provides address2 if the user entered it' do
+            it 'does not include address2' do
               proofer = UspsInPersonProofing::Proofer.new
               mock = double
 
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
                 expect(applicant.address).
-                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
                 proofer.request_enroll(applicant)
               end
 

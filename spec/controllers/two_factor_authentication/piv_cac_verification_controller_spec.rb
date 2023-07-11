@@ -96,6 +96,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
       it 'tracks the valid authentication event' do
         stub_analytics
         stub_attempts_tracker
+        cfg = controller.current_user.piv_cac_configurations.first
 
         attributes = {
           context: 'authentication',
@@ -111,7 +112,8 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          piv_cac_configuration_id: nil,
+          multi_factor_auth_method_created_at: cfg.created_at,
+          piv_cac_configuration_id: cfg.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
@@ -213,6 +215,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           errors: piv_cac_mismatch,
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
+          multi_factor_auth_method_created_at: nil,
           key_id: nil,
           piv_cac_configuration_id: nil,
         }

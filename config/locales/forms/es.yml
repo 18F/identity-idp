@@ -52,7 +52,7 @@ es:
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
-        update: Actualización
+        update: Actualizar
       upload_photos: Subir fotos
     confirmation:
       show_hdr: Crear una contraseña segura

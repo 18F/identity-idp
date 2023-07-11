@@ -29,7 +29,6 @@ module Idv
         if flow_session['redo_document_capture']
           flow_session.delete('redo_document_capture')
           idv_session.flow_path ||= 'standard'
-          flow_session[:flow_path] ||= 'standard' # temp added for 50/50, remove in future deploy
         end
 
         redirect_to idv_verify_info_url

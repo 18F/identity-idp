@@ -8,7 +8,10 @@ import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+export const LOCATIONS_URL = new URL(
+  '/verify/in_person/usps_locations',
+  window.location.href,
+).toString();
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -90,7 +93,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
-export const ADDRESS_SEARCH_URL = '/api/addresses';
+export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
 
 function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
   return request<Location[]>(ADDRESS_SEARCH_URL, {
