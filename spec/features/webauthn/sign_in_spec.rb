@@ -42,7 +42,7 @@ RSpec.feature 'webauthn sign in' do
     mock_webauthn_verification_challenge
 
     sign_in_user(webauthn_configuration.user)
-    click_button t('forms.buttons.continue')
+    click_button t('two_factor_authentication.webauthn_use_key')
 
     expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
@@ -53,7 +53,7 @@ RSpec.feature 'webauthn sign in' do
 
     sign_in_user(webauthn_configuration.user)
     # click the next button or cancel from the browser dialog
-    click_button t('forms.buttons.continue')
+    click_button t('two_factor_authentication.webauthn_use_key')
 
     expect(page).to have_content(t('errors.general'))
 
