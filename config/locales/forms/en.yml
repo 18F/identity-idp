@@ -154,9 +154,9 @@ en:
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
       intro_html: '<p>Save your face or fingerprint as a credential on your device, so
-        you can access your account with it. %{app_name} does not store your face
-        or fingerprint.</p><p>You may need to use the same device to sign in
-        each time. %{link}</p>'
+        you can access your account with it. %{app_name} does not store your
+        face or fingerprint.</p><p>You may need to use the same device to sign
+        in each time. %{link}</p>'
       intro_link_text: Learn more about face or touch unlock.
       login_text: 'When you are ready, press the button:'
       nickname: Device nickname
