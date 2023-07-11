@@ -208,8 +208,9 @@ fr:
       error_page_text: Vous avez activé le déverrouillage facial ou tactile pour ce
         compte. Utilisez le même appareil et le même profil de navigateur chaque
         fois.
-      verification: Nous n’avons pas pu vérifier votre déverrouillage facial ni votre déverrouillage tactile. Veuillez réessayer ou %{link}.
       title: Nous ne pouvons pas identifier votre appareil
+      verification: Nous n’avons pas pu vérifier votre déverrouillage facial ni votre
+        déverrouillage tactile. Veuillez réessayer ou %{link}.
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité

@@ -188,7 +188,8 @@ en:
       error_page_text: You have face or touch unlock enabled for this account. Use the
         same device and browser profile each time.
       title: We can’t identify your device
-      verification: We were unable to verify your face or touch unlock. Please try again or %{link}.
+      verification: We were unable to verify your face or touch unlock. Please try
+        again or %{link}.
     webauthn_fallback:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
