@@ -37,3 +37,7 @@ es:
         </ul>
       overview_html: Actualizamos nuestro %{link_html}. Revise y marque la casilla a
         continuación para continuar.
+    suspended_sign_in_account:
+      heading: Llámenos
+      contact_details: No pudimos iniciar tu sesión. Por favor, llama a nuestro centro de contacto al %{contact_number}.
+      error_details: Proporciona el código de error %{error_code}.

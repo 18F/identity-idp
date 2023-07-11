@@ -230,6 +230,7 @@ class ApplicationController < ActionController::Base
     return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
+    return user_please_call_url if current_user.suspended?
     account_url
   end
 
@@ -293,6 +294,10 @@ class ApplicationController < ActionController::Base
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
+  end
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 
   def confirm_two_factor_authenticated

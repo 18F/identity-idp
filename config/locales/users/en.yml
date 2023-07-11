@@ -36,3 +36,7 @@ en:
         </ul>
       overview_html: We’ve updated our %{link_html}. Please review and check the box
         below to continue.
+    suspended_sign_in_account:
+      heading: Please give us a call
+      contact_details: We couldn't sign you in. Please call our contact center at %{contact_number}.
+      error_details: Please provide the error code %{error_code}.
