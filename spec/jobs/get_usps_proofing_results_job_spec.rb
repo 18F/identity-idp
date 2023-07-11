@@ -13,7 +13,6 @@ RSpec.shared_examples 'enrollment_with_a_status_update' do |passed:,
         status_check_completed_at: Time.zone.now - 17.minutes,
         status_updated_at: Time.zone.now - 2.days,
       )
-
       job.perform(Time.zone.now)
 
       response = JSON.parse(response_json)
@@ -637,6 +636,9 @@ RSpec.describe GetUspsProofingResultsJob do
           )
 
           it 'logs details about the success' do
+            expect(InPerson::SendProofingNotificationJob).to receive(
+              :perform_now,
+            )
             job.perform(Time.zone.now)
 
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)

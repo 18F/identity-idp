@@ -393,6 +393,9 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       handle_unsupported_status(enrollment, response)
     end
+
+    #invoke another job
+    InPerson::SendProofingNotificationJob.perform_now(enrollment)
   end
 
   def send_verified_email(user, enrollment)

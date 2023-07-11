@@ -8,7 +8,8 @@ module InPerson
                      IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
 
       # skip
-      if !enrollment.notification_phone_configuration.present? || (!enrollment.passed? && !enrollment.failed?)
+      if !enrollment.notification_phone_configuration.present? ||
+        (!enrollment.passed? && !enrollment.failed?)
         # log event
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_job_skipped(
@@ -27,7 +28,7 @@ module InPerson
           to: phone, message: message,
           country_code: Phonelib.parse(phone).country
         )
-        handle_telephony_result(enrollment: enrollment, telephony_result: response)
+        handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
         if response.success?
           # if notification sent successful
           enrollment.update(
@@ -36,7 +37,9 @@ module InPerson
           # delete notification phone configuraiton if success
           enrollment.notification_phone_configuration.destroy!
         end
+        return true
       end
+    ensure
       analytics(user: enrollment.user).
         idv_in_person_usps_proofing_results_notification_job_completed
       return true
@@ -44,7 +47,7 @@ module InPerson
 
     private
 
-    def handle_telephony_result(enrollment:, telephony_result:)
+    def handle_telephony_result(enrollment:, phone:, telephony_result:)
       if telephony_result.success?
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_sent_success(
@@ -56,11 +59,9 @@ module InPerson
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_sent_failure(
             **enrollment_analytics_attributes(enrollment, complete: false),
-            job_name: self.class.name, reason: 'Optout'
+            job_name: self.class.name, reason: telephony_result.error
           )
-        # clear message from https://github.com/18F/identity-idp/blob/7ad3feab24f6f9e0e45224d9e9be9458c0a6a648/app/controllers/users/phones_controller.rb#L40
-        PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
-        # redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
+        PhoneNumberOptOut.mark_opted_out(phone)
       else
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_sent_failure(
