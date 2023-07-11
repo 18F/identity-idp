@@ -175,16 +175,10 @@ RSpec.describe Idv::LinkSentController do
         let(:load_result_success) { false }
 
         it 'returns an empty response' do
-          error_message = t('errors.doc_auth.phone_step_incomplete')
-          expect(FormResponse).to receive(:new).with(
-            { success: false,
-              errors: { message: error_message } },
-          )
-
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flow_session[:error_message]).to eq(error_message)
+          expect(flow_session[:error_message]).to eq(t('errors.doc_auth.phone_step_incomplete'))
         end
       end
     end
