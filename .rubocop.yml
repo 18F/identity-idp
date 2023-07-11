@@ -12,6 +12,7 @@ require:
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
   - ./lib/linters/errors_add_linter.rb
+  - ./lib/linters/stub_new_linter.rb
 
 AllCops:
   Exclude:
@@ -70,6 +71,9 @@ IdentityIdp/ImageSizeLinter:
     - app/views/users/webauthn_setup/new.html.erb
 
 IdentityIdp/RedirectBackLinter:
+  Enabled: true
+
+IdentityIdp/StubNewLinter:
   Enabled: true
 
 Layout/AccessModifierIndentation:
