@@ -165,7 +165,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           IdentityConfig.store.login_otp_confirmation_max_attempts - 1
         user.save
         personal_key_generated_at = controller.current_user.
-          encrypted_recovery_code_digest_generated_at
+          encrypted_recovery_code_digest_generated_at.change(usec: 0)
         stub_analytics
         stub_attempts_tracker
 

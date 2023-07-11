@@ -1,12 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
-  let(:backup_code) { { backup_code: 'foo' } }
-  let(:payload) { { backup_code_verification_form: backup_code } }
+  let(:user) { create(:user) }
+  let(:backup_codes) do
+    BackupCodeGenerator.new(user).create
+  end
+  let(:payload) { { backup_code_verification_form: { backup_code: backup_codes.first } } }
 
   describe '#show' do
     it 'tracks the page visit' do
-      stub_sign_in_before_2fa
+      stub_sign_in_before_2fa(user)
       stub_analytics
       analytics_hash = { context: 'authentication' }
 
@@ -20,27 +23,26 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
   describe '#create' do
     context 'when the user enters a valid backup code' do
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa
+        freeze_time do
+          sign_in_before_2fa(user)
 
-        form = instance_double(BackupCodeVerificationForm)
-        response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
-        )
-        allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user).and_return(form)
-        allow(form).to receive(:submit).and_return(response)
+          stub_analytics
+          stub_attempts_tracker
+          analytics_hash = {
+            success: true,
+            errors: {},
+            multi_factor_auth_method: 'backup_code',
+            multi_factor_auth_method_created_at: Time.zone.now,
+          }
 
-        stub_analytics
-        stub_attempts_tracker
-        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with(analytics_hash)
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
+          expect(@irs_attempts_api_tracker).to receive(:track_event).
+            with(:mfa_login_backup_code, success: true)
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_backup_code, success: true)
-
-        post :create, params: payload
+          post :create, params: payload
+        end
 
         expect(subject.user_session[:auth_method]).to eq(
           TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
@@ -49,32 +51,28 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 'tracks the valid authentication event when there are exisitng codes' do
-        user = build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
-        BackupCodeGenerator.new(user).create
-        stub_sign_in_before_2fa(user)
+        freeze_time do
+          stub_sign_in_before_2fa(user)
 
-        form = instance_double(BackupCodeVerificationForm)
-        response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
-        )
-        allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user).and_return(form)
-        allow(form).to receive(:submit).and_return(response)
+          stub_analytics
+          stub_attempts_tracker
 
-        stub_analytics
-        stub_attempts_tracker
-        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
+          expect(@analytics).to receive(:track_mfa_submit_event).
+            with({
+              success: true,
+              errors: {},
+              multi_factor_auth_method: 'backup_code',
+              multi_factor_auth_method_created_at: Time.zone.now,
+            })
 
-        expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash)
+          expect(@irs_attempts_api_tracker).to receive(:track_event).
+            with(:mfa_login_backup_code, success: true)
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_login_backup_code, success: true)
+          expect(@analytics).to receive(:track_event).
+            with('User marked authenticated', authentication_type: :valid_2fa)
 
-        expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
-
-        post :create, params: payload
+          post :create, params: payload
+        end
       end
     end
 
@@ -83,14 +81,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       let(:payload) { { backup_code_verification_form: backup_code } }
 
       before do
-        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
-        form = instance_double(BackupCodeVerificationForm)
-        response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
-        )
-        allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user).and_return(form)
-        allow(form).to receive(:submit).and_return(response)
+        stub_sign_in_before_2fa(create(:user, :with_phone))
       end
 
       it 'renders the show page' do
@@ -105,7 +96,8 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
     context 'when the user enters an invalid backup code' do
       render_views
-      let(:user) { create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }) }
+      let(:user) { create(:user, :with_phone) }
+      let(:payload) { { backup_code_verification_form: { backup_code: 'A' } } }
       before do
         stub_sign_in_before_2fa(user)
       end

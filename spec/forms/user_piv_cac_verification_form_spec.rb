@@ -26,15 +26,16 @@ RSpec.describe UserPivCacVerificationForm do
         let(:user) { create(:user) }
 
         it 'returns FormResponse with success: false' do
-          result = instance_double(FormResponse)
+          result = form.submit
+          expect(result.to_h).to eq(
+            success: false,
+            errors: { type: 'user.no_piv_cac_associated' },
+            multi_factor_auth_method: 'piv_cac',
+            piv_cac_configuration_id: nil,
+            multi_factor_auth_method_created_at: nil,
+            key_id: nil,
+          )
 
-          expect(FormResponse).to receive(:new).
-            with(success: false, errors: { type: 'user.no_piv_cac_associated' },
-                 extra: { multi_factor_auth_method: 'piv_cac',
-                          piv_cac_configuration_id: nil,
-                          multi_factor_auth_method_created_at: nil,
-                          key_id: nil }).and_return(result)
-          expect(form.submit).to eq result
           expect(form.error_type).to eq 'user.no_piv_cac_associated'
         end
       end
@@ -43,15 +44,16 @@ RSpec.describe UserPivCacVerificationForm do
         let(:user) { create(:user, :with_piv_or_cac) }
 
         it 'returns FormResponse with success: false' do
-          result = instance_double(FormResponse)
+          result = form.submit
 
-          expect(FormResponse).to receive(:new).
-            with(success: false, errors: { type: 'user.piv_cac_mismatch' },
-                 extra: { multi_factor_auth_method: 'piv_cac',
-                          multi_factor_auth_method_created_at: nil,
-                          piv_cac_configuration_id: nil,
-                          key_id: nil }).and_return(result)
-          expect(form.submit).to eq result
+          expect(result.to_h).to eq(
+            success: false,
+            errors: { type: 'user.piv_cac_mismatch' },
+            multi_factor_auth_method: 'piv_cac',
+            multi_factor_auth_method_created_at: nil,
+            piv_cac_configuration_id: nil,
+            key_id: nil,
+          )
           expect(form.error_type).to eq 'user.piv_cac_mismatch'
         end
       end
@@ -63,18 +65,14 @@ RSpec.describe UserPivCacVerificationForm do
         let(:piv_cac_configuration) { user.piv_cac_configurations.first }
 
         it 'returns FormResponse with success: true' do
-          expect(FormResponse).to receive(:new).
-            with(
-              success: true,
-              errors: {},
-              extra: {
-                multi_factor_auth_method: 'piv_cac',
-                piv_cac_configuration_id: piv_cac_configuration.id,
-                multi_factor_auth_method_created_at: piv_cac_configuration.created_at,
-              },
-            ).
-            and_return(result)
-          expect(form.submit).to eq result
+          result = form.submit
+          expect(result.to_h).to eq(
+            success: true,
+            errors: {},
+            multi_factor_auth_method: 'piv_cac',
+            piv_cac_configuration_id: piv_cac_configuration.id,
+            multi_factor_auth_method_created_at: piv_cac_configuration.created_at,
+          )
         end
 
         context 'when nonce is bad' do
@@ -83,16 +81,17 @@ RSpec.describe UserPivCacVerificationForm do
           end
 
           it 'returns FormResponse with success: false' do
-            result = instance_double(FormResponse)
+            result = form.submit
+            expect(result.to_h).to eq(
+              success: false,
+              errors: { type: 'token.invalid' },
+              multi_factor_auth_method: 'piv_cac',
+              piv_cac_configuration_id: nil,
+              multi_factor_auth_method_created_at: nil,
+              key_id: nil,
+            )
 
-            expect(FormResponse).to receive(:new).
-              with(success: false, errors: { type: 'token.invalid' },
-                   extra: { multi_factor_auth_method: 'piv_cac',
-                            piv_cac_configuration_id: nil,
-                            multi_factor_auth_method_created_at: nil,
-                            key_id: nil }).and_return(result)
             expect(Event).to_not receive(:create)
-            expect(form.submit).to eq result
             expect(form.error_type).to eq 'token.invalid'
           end
         end
@@ -106,17 +105,17 @@ RSpec.describe UserPivCacVerificationForm do
       end
 
       it 'returns FormResponse with success: false' do
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: { type: 'token.bad' },
-               extra: { multi_factor_auth_method: 'piv_cac',
-                        multi_factor_auth_method_created_at: nil,
-                        piv_cac_configuration_id: nil,
-                        key_id: nil }).and_return(result)
+        result = form.submit
         expect(Event).to_not receive(:create)
-        expect(form.submit).to eq result
         expect(form.error_type).to eq 'token.bad'
+        expect(result.to_h).to eq(
+          success: false,
+          errors: { type: 'token.bad' },
+          multi_factor_auth_method: 'piv_cac',
+          multi_factor_auth_method_created_at: nil,
+          piv_cac_configuration_id: nil,
+          key_id: nil,
+        )
       end
     end
 
@@ -124,15 +123,16 @@ RSpec.describe UserPivCacVerificationForm do
       let(:token) {}
 
       it 'returns FormResponse with success: false' do
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac',
-                                                    multi_factor_auth_method_created_at: nil,
-                                                    piv_cac_configuration_id: nil }).
-          and_return(result)
+        result = form.submit
         expect(Event).to_not receive(:create)
-        expect(form.submit).to eq result
+
+        expect(result.to_h).to eq(
+          success: false,
+          errors: {},
+          multi_factor_auth_method: 'piv_cac',
+          multi_factor_auth_method_created_at: nil,
+          piv_cac_configuration_id: nil,
+        )
       end
     end
   end
