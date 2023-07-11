@@ -43,7 +43,11 @@ module Idv
       @idv_result = async_state.result
 
       success = idv_result[:success]
-      handle_successful_proofing_attempt if success
+      if success
+        handle_successful_proofing_attempt
+      else
+        idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
+      end
 
       delete_async
       FormResponse.new(
