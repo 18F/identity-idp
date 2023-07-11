@@ -11,7 +11,8 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
 
   context 'in_person_ssn_info_controller_enabled is true' do
     before do
-      allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
+        and_return(true)
     end
 
     context 'when visiting ssn for the first time' do
