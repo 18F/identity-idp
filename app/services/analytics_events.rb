@@ -1695,6 +1695,98 @@ module AnalyticsEvents
     )
   end
 
+
+  def idv_in_person_usps_proofing_results_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_since_established:,
+    minutes_to_completion:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_since_established: minutes_since_established,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      **extra,
+      )
+  end
+  def idv_in_person_usps_proofing_results_notification_job_started(**extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      **extra
+    )
+  end
+
+  def idv_in_person_usps_proofing_results_notification_job_completed(**extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      **extra
+    )
+  end
+
+  def idv_in_person_usps_proofing_results_notification_sent_success(
+    enrollment_code:,
+      enrollment_id:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_since_established:,
+      minutes_to_completion:,
+      issuer:,
+      **extra
+    )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: notification sent successfully',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_since_established: minutes_since_established,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      **extra,
+      )
+  end
+
+  def idv_in_person_usps_proofing_results_notification_sent_failure(
+    enrollment_code:,
+    enrollment_id:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_since_established:,
+    minutes_to_completion:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: failed to sent notification',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      minutes_since_last_status_check: minutes_since_last_status_check,
+      minutes_since_last_status_check_completed:
+        minutes_since_last_status_check_completed,
+      minutes_since_last_status_update: minutes_since_last_status_update,
+      minutes_since_established: minutes_since_established,
+      minutes_to_completion: minutes_to_completion,
+      issuer: issuer,
+      **extra,
+      )
+  end
+
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason

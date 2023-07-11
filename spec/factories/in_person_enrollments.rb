@@ -37,5 +37,9 @@ FactoryBot.define do
     trait :with_service_provider do
       service_provider { association :service_provider }
     end
+
+    trait :with_notification_phone_configuration do
+      notification_phone_configuration { association :notification_phone_configuration }
+    end
   end
 end
