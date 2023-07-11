@@ -114,8 +114,8 @@ en:
     verify_profile:
       throttled: You tried too many times, please try again in %{timeout}.
     webauthn_platform_setup:
-      already_registered: Platform authenticator already registered. Please try a
-        different platform authenticator.
+      already_registered: Face or touch unlock is already registered on this device.
+        Please try adding another authentication method.
       attestation_error: Sorry, but your platform authenticator doesn’t appear to be a
         FIDO platform authenticator. Please make sure your device is listed at
         https://fidoalliance.org/certification/fido-certified-products/ and if

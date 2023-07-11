@@ -120,8 +120,9 @@ es:
     verify_profile:
       throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
-      already_registered: El desbloqueo facial o táctil ya está registrado. Por favor,
-        intente un método de plataforma diferente para iniciar la sesión.
+      already_registered: Ya está registrado el desbloqueo con la cara o con la huella
+        digital en este dispositivo. Trate de agregar otro método de
+        autenticación.
       attestation_error: Lo sentimos, pero su desbloqueo facial o táctil no parece
         funcionar. Por favor, asegúrese de que su dispositivo está registrado en
         https://fidoalliance.org/certification/fido-certified-products/ y si
