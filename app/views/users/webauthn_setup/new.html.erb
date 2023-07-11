@@ -4,7 +4,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<% if @platform_authenticator && @need_to_set_up_additional_mfa %>
+<% if @need_to_set_up_additional_mfa %>
   <%= render AlertComponent.new(type: :info, class: 'margin-y-1') do %>
     <%= t('forms.webauthn_platform_setup.info_text') %>
   <% end %>

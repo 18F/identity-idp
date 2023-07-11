@@ -34,7 +34,6 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     end
     context 'when user selects multiple MFA options on account creation' do
       before do
-        allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(true)
         assign(:need_to_set_up_additional_mfa, false)
       end
 
@@ -47,7 +46,6 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
     context 'when user selects only platform auth options on account creation' do
       before do
-        allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(true)
         assign(:need_to_set_up_additional_mfa, true)
       end
 
@@ -60,7 +58,6 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
     context 'when user is adding MFA at accounts page' do
       before do
-        allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
         assign(:need_to_set_up_additional_mfa, false)
       end
 

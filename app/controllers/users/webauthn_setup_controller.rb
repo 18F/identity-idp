@@ -28,7 +28,7 @@ module Users
       analytics.webauthn_setup_visit(**properties)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
-      @need_to_set_up_additional_mfa = in_multi_mfa_selection_flow? && mfa_selection_count < 2
+      @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
       if !result.success?
         if @platform_authenticator
           irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
@@ -172,6 +172,11 @@ module Users
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       }
+    end
+
+    def need_to_set_up_additional_mfa?
+      return false unless platform_authenticator?
+      in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
 
     def process_invalid_webauthn(form)
