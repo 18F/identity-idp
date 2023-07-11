@@ -20,7 +20,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardType: 1,
+  cardtype: 1,
   dpi: 519,
   moire: 99,
   moireraw: 99,

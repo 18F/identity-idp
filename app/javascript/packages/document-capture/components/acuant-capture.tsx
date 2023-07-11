@@ -433,7 +433,7 @@ function AcuantCapture(
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
+    const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
     const { width, height, data } = image;
@@ -454,7 +454,7 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
-      documentType: getDocumentTypeLabel(cardType),
+      documentType: getDocumentTypeLabel(cardtype),
       dpi,
       moire,
       glare,
