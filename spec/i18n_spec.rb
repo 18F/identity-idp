@@ -108,56 +108,101 @@ RSpec.describe 'I18n' do
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
-  Dir[File.join(root_dir, '/config/locales/**/*.yml')].each do |full_path|
-    i18n_file = full_path.sub("#{root_dir}/", '')
+  Dir[File.join(root_dir, '/config/locales/**')].sort.each do |group_path|
+    i18n_group = group_path.sub("#{root_dir}/", '')
 
-    describe i18n_file do
-      # Transliteration includes special characters by definition, so it could fail the below checks
-      if !full_path.match?(%(/config/locales/transliterate/))
-        it 'has only lower_snake_case keys' do
-          keys = flatten_hash(YAML.load_file(full_path)).keys
+    describe i18n_group do
+      it 'has HTML inside at least one locale string for all keys with .html or _html ' do
+        combined = Hash.new { |h, k| h[k] = {} }
 
-          bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
+        Dir["#{group_path}/**.yml"].each do |file|
+          locale, data = YAML.load_file(file).first
+          flatten_hash(data).each do |key, str|
+            combined[key][locale] = str
+          end
+        end
+
+        bad_keys = combined.select do |key, locales|
+          next if locales.values.all?(&:blank?)
+
+          key.include?('html') ^ contains_html?(locales.values)
+        end
+
+        expect(bad_keys).to be_empty
+      end
+    end
+
+    Dir["#{group_path}/*.yml"].each do |full_path|
+      i18n_file = full_path.sub("#{root_dir}/", '')
+
+      describe i18n_file do
+        # Transliteration includes special characters by definition, so it could fail checks below
+        if !full_path.match?(%(/config/locales/transliterate/))
+          it 'has only lower_snake_case keys' do
+            keys = flatten_hash(YAML.load_file(full_path)).keys
+
+            bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
+
+            expect(bad_keys).to be_empty
+          end
+
+          it 'has only has XML-safe identifiers (keys start with a letter)' do
+            keys = flatten_hash(YAML.load_file(full_path)).keys
+
+            bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+
+            expect(bad_keys).to be_empty
+          end
+        end
+
+        it 'has correctly-formatted interpolation values' do
+          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+            next unless value.is_a?(String)
+
+            interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
+
+            interpolation_names.any? { |name| name.downcase != name }
+          end
 
           expect(bad_keys).to be_empty
         end
 
-        it 'has only has XML-safe identifiers (keys start with a letter)' do
-          keys = flatten_hash(YAML.load_file(full_path)).keys
+        it 'does not contain any translations expecting legacy fallback behavior' do
+          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+            value.include?('NOT TRANSLATED YET')
+          end
 
-          bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+          expect(bad_keys).to be_empty
+        end
+
+        it 'does not contain any translations that hardcode APP_NAME' do
+          bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+            value.include?(APP_NAME)
+          end
 
           expect(bad_keys).to be_empty
         end
       end
+    end
+  end
 
-      it 'has correctly-formatted interpolation values' do
-        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
-          next unless value.is_a?(String)
+  def contains_html?(value)
+    Array(value).flatten.compact.any? do |str|
+      html_tags?(str) || html_entities?(str) || likely_html_interpolation?(str)
+    end
+  end
 
-          interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
+  def html_tags?(str)
+    str.scan(/<.+?>/).present?
+  end
 
-          interpolation_names.any? { |name| name.downcase != name }
-        end
+  def html_entities?(str)
+    str.scan(/&[^;]+?;/).present?
+  end
 
-        expect(bad_keys).to be_empty
-      end
-
-      it 'does not contain any translations expecting legacy fallback behavior' do
-        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
-          value.include?('NOT TRANSLATED YET')
-        end
-
-        expect(bad_keys).to be_empty
-      end
-
-      it 'does not contain any translations that hardcode APP_NAME' do
-        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
-          value.include?(APP_NAME)
-        end
-
-        expect(bad_keys).to be_empty
-      end
+  def likely_html_interpolation?(str)
+    str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
+      key =~ /html/
     end
   end
 

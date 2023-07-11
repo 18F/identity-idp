@@ -36,34 +36,43 @@ describe('pw-strength', () => {
 
   describe('getFeedback', () => {
     const EMPTY_RESULT = '&nbsp;';
+    const MINIMUM_LENGTH = 12;
+    const FORBIDDEN_PASSWORDS = ['gsa', 'Login.gov'];
 
     it('returns an empty result for empty password', () => {
       const z = zxcvbn('');
 
-      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, MINIMUM_LENGTH, FORBIDDEN_PASSWORDS)).to.equal(EMPTY_RESULT);
     });
 
     it('returns an empty result for a strong password', () => {
       const z = zxcvbn('!Juq2Uk2**RBEsA8');
 
-      expect(getFeedback(z, { minimumLength: 12 })).to.equal(EMPTY_RESULT);
+      expect(getFeedback(z, MINIMUM_LENGTH, FORBIDDEN_PASSWORDS)).to.equal(EMPTY_RESULT);
     });
 
     it('returns feedback for a weak password', () => {
       const z = zxcvbn('password');
 
-      expect(getFeedback(z, { minimumLength: 12 })).to.equal(
+      expect(getFeedback(z, MINIMUM_LENGTH, FORBIDDEN_PASSWORDS)).to.equal(
         'zxcvbn.feedback.this_is_a_top_10_common_password',
       );
     });
 
     it('shows feedback when a password is too short', () => {
-      const minPasswordLength = 12;
       const z = zxcvbn('_3G%JMyR"');
 
-      expect(getFeedback(z, minPasswordLength)).to.equal(
+      expect(getFeedback(z, MINIMUM_LENGTH, FORBIDDEN_PASSWORDS)).to.equal(
         'errors.attributes.password.too_short.other',
-        { count: minPasswordLength },
+        { count: MINIMUM_LENGTH },
+      );
+    });
+
+    it('shows feedback when a user enters a forbidden password', () => {
+      const z = zxcvbn('gsa');
+
+      expect(getFeedback(z, MINIMUM_LENGTH, FORBIDDEN_PASSWORDS)).to.equal(
+        'errors.attributes.password.avoid_using_phrases_that_are_easily_guessed',
       );
     });
   });

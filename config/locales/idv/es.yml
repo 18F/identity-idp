@@ -26,7 +26,7 @@ es:
             - Si sale de %{app_name} ahora y regresa a %{sp_name}, no habrá
               verificado su identidad.
             - No obstante, continuará teniendo una cuenta en %{app_name}. Puede
-              administrar o eliminar su cuenta desde %{account_page_link}.
+              administrar o eliminar su cuenta desde %{account_page_link_html}.
           without_sp:
             - Si sale de la verificación de identidad y se dirige a la página de
               su cuenta, no habrá verificado su identidad.
@@ -73,7 +73,7 @@ es:
         post_office_search_error: En este momento, estamos teniendo problemas técnicos.
           Trate de buscar de nuevo una oficina de correos. Si el problema
           continúa, regrese más tarde.
-        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
+        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link_html}.
         usps_outage_error_message:
           post_cta:
             body: Mientras tanto, todavía puedes iniciar el proceso de verificación
@@ -139,10 +139,10 @@ es:
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
       setup:
-        fail_date_html: Llame a nuestro centro de atención antes del %{date} para seguir
-          verificando su identidad.
-        fail_html: Llame al %{contact_number} y facilíteles el código de error
+        fail: Llame al %{contact_number} y facilíteles el código de error
           %{support_code}.
+        fail_date_html: Llame a nuestro centro de atención antes del %{date_html} para
+          seguir verificando su identidad.
         heading: Llámenos
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
@@ -171,7 +171,7 @@ es:
       last_name: Apellido
       password: Contraseña
       ssn: Número de seguridad social
-      ssn_label_html: Número de Seguro Social
+      ssn_label: Número de Seguro Social
       state: Estado
       zipcode: Código postal
     images:
@@ -183,7 +183,7 @@ es:
         state_issue: Documento de identidad emitido por el Estado
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
-        información verificada, por favor, %{link}.
+        información verificada, por favor, %{link_html}.
       activated_link: Contáctenos
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later_html: <p>Las cartas suelen tardar de <strong>3 a 7 días
@@ -199,8 +199,10 @@ es:
       gpo:
         address_on_file_html: Le enviaremos una carta con <strong>un código único
           </strong> a la dirección que nos facilitó en el paso anterior.
+        another_letter_on_the_way: Te enviaremos otra carta
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
+        letter_on_the_way: Te enviaremos una carta
         resend: Envíeme otra carta
         resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola
           vez de tu carta actual seguirá siendo válido durante un tiempo
@@ -275,7 +277,7 @@ es:
           realmente y no alguien que se hace pasar por usted.'
         without_sp: 'La agencia a la que está intentando acceder debe asegurarse de que
           usted sea quien dice ser, y no alguien que se hace pasar por usted.'
-      next_steps_html: '%{status_page_link} o salga de %{app_name} y vuelva a
+      next_steps_html: '%{status_page_link_html} o salga de %{app_name} y vuelva a
         intentarlo más tarde.'
       status_page_link: 'Consulte las actualizaciones en nuestra página de estado'
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra

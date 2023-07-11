@@ -25,7 +25,7 @@ en:
             - If you exit %{app_name} and return to %{sp_name}, you will not
               have verified your identity.
             - You will still have a %{app_name} account. You can manage or
-              delete your account on your %{account_page_link}.
+              delete your account on your %{account_page_link_html}.
           without_sp:
             - If you exit identity verification and go to your account page, you
               will not have verified your identity.
@@ -71,7 +71,7 @@ en:
         post_office_search_error: We are having technical difficulties at the moment.
           Try searching for a Post Office again. If this issue continues, come
           back later.
-        text_html: Please try again. If you keep getting these errors, %{link}.
+        text_html: Please try again. If you keep getting these errors, %{link_html}.
         usps_outage_error_message:
           post_cta:
             body: In the meantime, you can still begin the in-person verification process on
@@ -130,9 +130,10 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail_date_html: Call our contact center by %{date} to continue verifying your identity.
-        fail_html: Call %{contact_number} and provide them with the error code
+        fail: Call %{contact_number} and provide them with the error code
           %{support_code}.
+        fail_date_html: Call our contact center by %{date_html} to continue verifying
+          your identity.
         heading: Please give us a call
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
@@ -162,7 +163,7 @@ en:
       last_name: Last name
       password: Password
       ssn: Social Security number
-      ssn_label_html: Social Security number
+      ssn_label: Social Security number
       state: State
       zipcode: ZIP Code
     images:
@@ -174,7 +175,7 @@ en:
         state_issue: State‑issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
-        verified information, please %{link}.
+        verified information, please %{link_html}.
       activated_link: contact us
       clear_and_start_over: Clear my information and start over
       come_back_later_html: <p>Letters typically take <strong>3 to 7 business
@@ -190,8 +191,10 @@ en:
       gpo:
         address_on_file_html: We will mail a letter with a <strong>one-time
           code</strong> to the address that you provided on the previous step.
+        another_letter_on_the_way: We are sending you another letter
         info_alert: You’ll need to wait until your letter is delivered to finish
           verifying your identity.
+        letter_on_the_way: We are sending you a letter
         resend: Send me another letter
         resend_code_warning: If you request a new letter now, the one-time code from
           your current letter will remain valid for a limited time. You may
@@ -260,7 +263,7 @@ en:
           someone pretending to be you.'
         without_sp: 'The agency that you are trying to access needs to make sure you are
           you — not someone pretending to be you.'
-      next_steps_html: '%{status_page_link} or exit %{app_name} and try again later.'
+      next_steps_html: '%{status_page_link_html} or exit %{app_name} and try again later.'
       status_page_link: 'Get updates on our status page'
       technical_difficulties: Unfortunately, we are having technical difficulties and
         cannot verify your identity at this time.

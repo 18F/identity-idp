@@ -4,13 +4,13 @@ en:
     account_reset:
       cancel_link: Cancel your request
       link: deleting your account
-      pending_html: You currently have a pending request to delete your account. It
-        takes 24 hours from the time you made the request to complete the
-        process. Please check back later. %{cancel_link}
+      pending: You currently have a pending request to delete your account. It takes
+        24 hours from the time you made the request to complete the process.
+        Please check back later.
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
-        reset your preferences by %{link}.
+        reset your preferences by %{link_html}.
     attempt_remaining_warning_html:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
@@ -82,10 +82,11 @@ en:
     opt_in:
       cant_use_phone: Can’t use your phone?
       error_retry: Sorry, we are having trouble opting you in. Please try again.
-      opted_out_html: You’ve opted out of receiving text messages at %{phone_number}.
-        You can opt in and receive a security code again to that phone number.
+      opted_out_html: You’ve opted out of receiving text messages at
+        %{phone_number_html}. You can opt in and receive a security code again
+        to that phone number.
       opted_out_last_30d_html: You’ve opted out of receiving text messages at
-        %{phone_number} within the last 30 days. We can only opt in a phone
+        %{phone_number_html} within the last 30 days. We can only opt in a phone
         number once every 30 days.
       title: We could not send a security code to your phone number
       wait_30d_opt_in: After 30 days, you can opt in and receive a security code to
@@ -136,8 +137,8 @@ en:
     read_about_two_factor_authentication: Read about two-factor authentication
     recaptcha:
       disclosure_statement_html: This site is protected by reCAPTCHA and the Google
-        %{google_policy_link} and %{google_tos_link} apply. Read %{app_name}’s
-        %{login_tos_link}.
+        %{google_policy_link_html} and %{google_tos_link_html} apply. Read
+        %{app_name}’s %{login_tos_link_html}.
       google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use

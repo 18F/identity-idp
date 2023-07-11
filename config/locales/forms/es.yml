@@ -52,7 +52,7 @@ es:
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
-        update: Actualización
+        update: Actualizar
       upload_photos: Subir fotos
     confirmation:
       show_hdr: Crear una contraseña segura
@@ -119,8 +119,8 @@ es:
         a su cuenta %{app_name}.
       confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
-      totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
-        con códigos de seguridad temporales. %{link}
+      totp_intro: Configure una aplicación de autenticación para iniciar sesión con
+        códigos de seguridad temporales.
       totp_step_1: Darle un apodo
       totp_step_1a: Si agrega más de una aplicación, sabrá cuáles.
       totp_step_2: Abra su app de autenticación.
@@ -141,7 +141,7 @@ es:
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo
-      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código
+      welcome_back_description_html: '<p>Si ha recibido su carta, introduzca su código
         único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
         paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
         en llegar</strong>. Gracias por su paciencia.</p>'

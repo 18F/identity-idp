@@ -15,7 +15,7 @@ describe('BarcodeAttentionWarning', () => {
     form.submit = sandbox.stub();
     document.body.appendChild(form);
 
-    sandbox.stub(window, 'fetch').resolves();
+    sandbox.stub(global, 'fetch').resolves();
     sandbox.stub(analytics, 'trackEvent');
   });
 

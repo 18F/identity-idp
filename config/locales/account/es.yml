@@ -115,9 +115,10 @@ es:
     revoke_consent:
       link_title: Desconectar
       longer_description_html: Su información ya no se compartirá con
-        %{service_provider}. Para acceder a %{service_provider} en el futuro,
-        debe dar su consentimiento para compartir su información. Puede dar su
-        consentimiento yendo al sitio %{service_provider} e iniciando sesión.
+        %{service_provider_html}. Para acceder a %{service_provider_html} en el
+        futuro, debe dar su consentimiento para compartir su información. Puede
+        dar su consentimiento yendo al sitio %{service_provider_html} e
+        iniciando sesión.
     security:
       link: Obtenga más información en el Centro de ayuda
       text: Para su seguridad, la información de su perfil está bloqueada.

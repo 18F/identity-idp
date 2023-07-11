@@ -2,20 +2,21 @@
 fr:
   user_mailer:
     account_rejected:
-      intro_html: Nous n’avons pas pu vérifier votre identité avec %{app_name}.
-        Veuillez contacter l’agence dont vous essayez d’accéder au service.
+      intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez
+        contacter l’agence dont vous essayez d’accéder au service.
       subject: Nous n’avons pas pu vérifier votre identité
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
-        suppression de votre compte %{app_name}.
+        suppression de votre compte %{app_name_html}.
       subject: Demande annulée
     account_reset_complete:
-      intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name}.
+      intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name_html}.
       subject: Compte supprimé
     account_reset_granted:
       button: Oui, continuez la suppression
       cancel_link_text: veuillez annuler
-      help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
+      help_html: Si vous ne souhaitez pas supprimer votre compte,
+        %{cancel_account_reset_html}.
       intro_html: Votre période d’attente de 24 heures est terminée. Veuillez terminer
         l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos
         méthodes d’authentification, sélectionnez “confirmer la suppression”
@@ -44,8 +45,8 @@ fr:
       contact_link: nous contacter
       intro_html: Vous avez vérifié avec succès votre identité auprès de %{sp_name} le
         %{date} en utilisant %{app_name}. Si vous n’avez pas effectué cette
-        action, veuillez %{contact_link} et vous connecter pour
-        %{change_password_link}.
+        action, veuillez %{contact_link_html} et vous connecter pour
+        %{change_password_link_html}.
       subject: Vous avez vérifié votre identité avec %{sp_name}
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
@@ -54,16 +55,17 @@ fr:
       subject: Confirmez votre email
     add_email_associated_with_another_account:
       help_html: Si vous n’avez pas demandé de nouvel email ou que vous suspectez une
-        erreur, veuillez visiter le %{app_name} %{help_link} ou %{contact_link}.
+        erreur, veuillez visiter le %{app_name_html} %{help_link_html} ou
+        %{contact_link_html}.
       intro_html: Cette adresse électronique est déjà associée à un compte
-        %{app_name}, nous ne pouvons donc pas l’ajouter à un autre compte. Vous
-        devez d’abord le supprimer ou le supprimer du compte auquel il est
+        %{app_name_html}, nous ne pouvons donc pas l’ajouter à un autre compte.
+        Vous devez d’abord le supprimer ou le supprimer du compte auquel il est
         associé. Pour ce faire, suivez le lien ci-dessous et connectez-vous avec
         cette adresse e-mail. Si vous n’essayez pas d’ajouter cette adresse
         électronique à un compte, vous pouvez ignorer ce message.
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
-        à %{app_name} pour le réinitialiser.
+        à %{app_name_html} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     email_added:
       header: Une nouvelle adresse e-mail a été ajoutée à votre profil %{app_name}.
@@ -93,7 +95,8 @@ fr:
     email_deleted:
       header: Une adresse email a été supprimée de votre profil %{app_name}.
       help_html: Si vous ne souhaitez pas supprimer cette adresse électronique
-        veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
+        veuillez visiter le %{help_link_html} de %{app_name_html} ou
+        %{contact_link_html}.
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
     in_person_completion_survey:
@@ -208,22 +211,22 @@ fr:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code à
         usage unique nous permettant de vérifier votre adresse. Vous pouvez
         terminer le processus de vérification d’identité en vous connectant à
-        %{link} et en entrant le code à usage unique.
+        %{link_html} et en entrant le code à usage unique.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe
-      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
-        plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
-        %{contact_link}.
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
+        Pour plus d’aide, veuillez visiter le %{help_link_html} de
+        %{app_name_html} ou %{contact_link_html}.
       info_html: '<p>Votre compte %{app_name} a été connecté sur un nouvel
         appareil.</p><br/><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe
-      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
-        plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
-        %{contact_link}.
-      intro_html: Le mot de passe de votre compte %{app_name} a été changé.
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link_html}.
+        Pour plus d’aide, veuillez visiter le %{help_link_html} de
+        %{app_name_html} ou %{contact_link_html}.
+      intro_html: Le mot de passe de votre compte %{app_name_html} a été changé.
     personal_key_regenerated:
       help_html: <p>Votre compte %{app_name} vient de recevoir une nouvelle clé
         personnelle de 16 caractères. Le but de cet e-mail est de s’assurer que
@@ -271,9 +274,9 @@ fr:
       subject: Alerte de sécurité du compte
     phone_added:
       disavowal_link: réinitialiser votre mot de passe
-      help: Si vous n’avez pas apporté cette modification, connectez-vous à votre
+      help_html: Si vous n’avez pas apporté cette modification, connectez-vous à votre
         profil et gérez vos numéros de téléphone. Nous vous recommandons
-        également de %{disavowal_link}.
+        également de %{disavowal_link_html}.
       intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app_name}.
       subject: Nouveau numéro de téléphone ajouté
     please_reset_password:
@@ -306,16 +309,21 @@ fr:
       subject: Réinitialisez votre mot de passe
     signup_with_your_email:
       help_html: Si vous n’avez pas demandé un nouveau compte ou que vous soupçonnez
-        qu’une erreur s’est produite, veuillez visiter le %{help_link} de
-        %{app_name} ou %{contact_link}.
-      intro_html: Cette adresse courriel est déjà associée à un compte %{app_name},
-        nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour
-        vous connecter à votre compte existant, suivez le lien ci-dessous. Si
-        vous ne tentez pas de vous connecter avec cette adresse courriel, vous
-        pouvez ignorer ce message.
+        qu’une erreur s’est produite, veuillez visiter le %{help_link_html} de
+        %{app_name_html} ou %{contact_link_html}.
+      intro_html: Cette adresse courriel est déjà associée à un compte
+        %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un
+        nouveau compte. Pour vous connecter à votre compte existant, suivez le
+        lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette
+        adresse courriel, vous pouvez ignorer ce message.
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
-        à %{app_name} pour le réinitialiser.
+        à %{app_name_html} pour le réinitialiser.
+    suspended_create_account:
+      message: Il y a eu un problème lors de la création de votre compte %{app_name}
+        avec cette adresse électronique. Veuillez appeler notre centre d’appels
+        au %{contact_number} et fournir ce code - %{support_code}.
+      subject: Nous ne parvenons pas à créer votre compte
     suspended_reset_password:
       message: La réinitialisation de votre mot de passe a posé un problème. Veuillez
         appeler notre centre d’appels au %{contact_number} et fournir ce code -

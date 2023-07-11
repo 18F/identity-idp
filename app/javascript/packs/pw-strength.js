@@ -26,12 +26,16 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-export function getFeedback(z, minPasswordLength) {
+export function getFeedback(z, minPasswordLength, forbiddenPasswords) {
   if (!z || !z.password) {
     return '&nbsp;';
   }
 
   const { warning, suggestions } = z.feedback;
+
+  if (forbiddenPasswords.includes(z.password)) {
+    return t('errors.attributes.password.avoid_using_phrases_that_are_easily_guessed');
+  }
 
   if (!warning && !suggestions.length) {
     if (z.password.length < minPasswordLength) {
@@ -115,7 +119,7 @@ function validatePasswordField(score, input) {
 function checkPasswordStrength(password, minPasswordLength, forbiddenPasswords, input) {
   const z = zxcvbn(password, forbiddenPasswords);
   const [cls, strength] = getStrength(z);
-  const feedback = getFeedback(z, minPasswordLength);
+  const feedback = getFeedback(z, minPasswordLength, forbiddenPasswords);
 
   validatePasswordField(z.score, input);
   updatePasswordFeedback(cls, strength, feedback);

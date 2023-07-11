@@ -8,8 +8,8 @@ fr:
     buttons:
       add_new_photos: Ajoutez de nouvelles photos
       continue: Continuer
-      take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
-        <lg-upload>Télécharger une photo</lg-upload>'
+      take_or_upload_picture_html: '<lg-take-photo>Prendre une photo</lg-take-photo>
+        ou <lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
@@ -135,7 +135,7 @@ fr:
       capture_complete: Nous avons vérifié votre document d’identité
       capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
         pièce d’identité. Si les informations ci-dessous sont incorrectes,
-        veuillez %{link} de votre carte d’identité délivrée par l’État.
+        veuillez %{link_html} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
@@ -160,8 +160,8 @@ fr:
         services.
       explanation_non_sp_html: Vous utilisez <strong>%{app_name}</strong> pour vérifier votre identité.
       only_add_if_text: 'N’AJOUTEZ VOTRE IDENTIFIANT QUE SI :'
-      only_add_own_account_html: Vous utilisez votre propre compte %{app_name}
-      only_add_phone_verify_html: Vous avez demandé à %{app_name} de vérifier votre
+      only_add_own_account: Vous utilisez votre propre compte %{app_name}
+      only_add_phone_verify: Vous avez demandé à %{app_name} de vérifier votre
         identité en utilisant votre téléphone
       only_add_sp_services_html: Vous essayez d’accéder aux services de
         <strong>%{service_provider_name}</strong>
@@ -215,8 +215,8 @@ fr:
         être équipé d’un appareil photo et d’un navigateur web.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
-      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
-        quelqu’un qui se fait passer pour vous.'
+      welcome: '%{sp_name} doit s’assurer que vous êtes bien vous, et non quelqu’un
+        qui se fait passer pour vous.'
       you_entered: 'Tu as soumis:'
     instructions:
       bullet1: Carte d’identité délivrée par l’État
