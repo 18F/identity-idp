@@ -48,6 +48,12 @@ RSpec.describe 'Identity verification', :js do
     validate_review_submit(user)
 
     validate_personal_key_page
+    acknowledge_and_confirm_personal_key
+
+    validate_idv_completed_page
+    click_agree_and_continue
+
+    validate_return_to_sp
   end
 
   def validate_welcome_page
@@ -213,6 +219,18 @@ RSpec.describe 'Identity verification', :js do
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
+  end
+
+  def validate_idv_completed_page
+    expect(current_path).to eq sign_up_completed_path
+    expect(page).to have_content t(
+      'titles.sign_up.completion_ial2',
+      sp: 'Test SP',
+    )
+  end
+
+  def validate_return_to_sp
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
   def try_to_skip_ahead_before_signing_in
