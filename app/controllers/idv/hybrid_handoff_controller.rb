@@ -38,8 +38,8 @@ module Idv
     end
 
     def handle_phone_submission
-      rate_limiter.increment!
       return rate_limited_failure if rate_limiter.limited?
+      rate_limiter.increment!
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
       idv_session.flow_path = 'hybrid'
       telephony_result = send_link
