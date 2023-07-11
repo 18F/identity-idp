@@ -24,6 +24,7 @@ describe('enrollWebauthnDevice', () => {
           response: {
             attestationObject: Buffer.from('attest', 'utf-8'),
             clientDataJSON: Buffer.from('json', 'utf-8'),
+            getTransports: () => ['usb'],
           },
         }),
       },
@@ -80,6 +81,7 @@ describe('enrollWebauthnDevice', () => {
       webauthnPublicKey: '123',
       attestationObject: btoa('attest'),
       clientDataJSON: btoa('json'),
+      transports: ['usb'],
     });
   });
 

@@ -26,7 +26,7 @@ locals:
       ) do %>
     <%= t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: link_to(
+          link_html: link_to(
             t('doc_auth.headings.capture_scan_warning_link'),
             idv_hybrid_handoff_url(redo: true),
             'aria-label': t('doc_auth.headings.capture_scan_warning_link'),

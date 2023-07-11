@@ -4,7 +4,7 @@ module Telephony
       LANDLINE_PHONE_NUMBER = '+1 225-555-3000'
 
       # rubocop:disable Lint/UnusedMethodArgument
-      def send(message:, to:, country_code:, otp: nil)
+      def deliver(message:, to:, country_code:, otp: nil)
         error = ErrorSimulator.new.error_for_number(to)
         if error.nil?
           Message.messages.push(Message.new(body: message, to: to, otp: otp))

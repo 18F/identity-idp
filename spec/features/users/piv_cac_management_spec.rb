@@ -107,7 +107,7 @@ RSpec.feature 'PIV/CAC Management' do
       expect(page).to have_content(
         t(
           'instructions.mfa.piv_cac.no_certificate_html',
-          try_again: t('instructions.mfa.piv_cac.try_again'),
+          try_again_html: t('instructions.mfa.piv_cac.try_again'),
         ),
       )
     end
@@ -135,7 +135,7 @@ RSpec.feature 'PIV/CAC Management' do
       expect(page).to have_content(
         t(
           'instructions.mfa.piv_cac.did_not_work_html',
-          please_try_again: t('instructions.mfa.piv_cac.please_try_again'),
+          please_try_again_html: t('instructions.mfa.piv_cac.please_try_again'),
         ),
       )
     end

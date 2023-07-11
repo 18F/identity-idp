@@ -33,9 +33,8 @@ module IdvStepConcern
     flow_session['pii_from_user']
   end
 
-  # copied from doc_auth_controller
   def flow_path
-    flow_session[:flow_path]
+    idv_session.flow_path
   end
 
   private

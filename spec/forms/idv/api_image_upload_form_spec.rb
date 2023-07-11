@@ -57,14 +57,14 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when throttled from submission' do
+    context 'when rate limited from submission' do
       it 'is not valid' do
         expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
 
-        Throttle.new(
-          throttle_type: :idv_doc_auth,
+        RateLimiter.new(
+          rate_limit_type: :idv_doc_auth,
           user: document_capture_session.user,
-        ).increment_to_throttled!
+        ).increment_to_limited!
         form.submit
 
         expect(form.valid?).to eq(false)

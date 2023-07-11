@@ -9,6 +9,12 @@ module Idv
 
     def index
       analytics.idv_gpo_verification_visited
+
+      if rate_limiter.limited?
+        render_rate_limited
+        return
+      end
+
       gpo_mail = Idv::GpoMail.new(current_user)
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
@@ -18,9 +24,7 @@ module Idv
         !gpo_mail.mail_spammed? &&
         !gpo_mail.profile_too_old?
 
-      if throttle.throttled?
-        render_throttled
-      elsif pii_locked?
+      if pii_locked?
         redirect_to capture_password_url
       else
         render :index
@@ -32,13 +36,13 @@ module Idv
     end
 
     def create
-      @gpo_verify_form = build_gpo_verify_form
-
-      throttle.increment!
-      if throttle.throttled?
-        render_throttled
+      if rate_limiter.limited?
+        render_rate_limited
         return
       end
+      rate_limiter.increment!
+
+      @gpo_verify_form = build_gpo_verify_form
 
       result = @gpo_verify_form.submit
       analytics.idv_gpo_verification_submitted(**result.to_h)
@@ -85,20 +89,20 @@ module Idv
       idv_session.address_confirmed!
     end
 
-    def throttle
-      @throttle ||= Throttle.new(
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
         user: current_user,
-        throttle_type: :verify_gpo_key,
+        rate_limit_type: :verify_gpo_key,
       )
     end
 
-    def render_throttled
+    def render_rate_limited
       irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,
       )
 
-      @expires_at = throttle.expires_at
+      @expires_at = rate_limiter.expires_at
       render :throttled
     end
 
