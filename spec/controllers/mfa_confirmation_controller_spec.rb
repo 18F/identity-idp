@@ -96,26 +96,6 @@ RSpec.describe MfaConfirmationController do
     end
   end
 
-  describe '#show_skip_additional_mfa_link?' do
-    it 'returns true' do
-      stub_sign_in
-
-      expect(controller.show_skip_additional_mfa_link?).to eq(true)
-    end
-
-    context 'with only webauthn_platform registered' do
-      let(:user) { create(:user, :with_webauthn_platform) }
-
-      before do
-        stub_sign_in(user)
-      end
-
-      it 'returns false' do
-        expect(controller.show_skip_additional_mfa_link?).to eq(false)
-      end
-    end
-  end
-
   describe 'password attempts counter' do
     context 'max password attempts reached' do
       it 'signs the user out' do
