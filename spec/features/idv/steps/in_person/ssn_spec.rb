@@ -106,5 +106,47 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
         expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
       end
     end
+
+    context 'when in_person_capture_secondary_id_enabled is true, ssn step is accessible from' do
+      it 'address step', allow_browser_log: true do
+        user = user_with_2fa
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        # prepare page
+        complete_prepare_step(user)
+        # location page
+        complete_location_step(user)
+        # state ID page
+        fill_out_state_id_form_ok(double_address_verification: true, same_address_as_id: false)
+        click_idv_continue
+        fill_out_address_form_ok(double_address_verification: true, same_address_as_id: false)
+        click_idv_continue
+        # ssn page
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+      end
+
+      it 'state_id step (when state id address matches residential address)',
+         allow_browser_log: true do
+        user = user_with_2fa
+        complete_idv_steps_before_ssn(user)
+        # ssn page
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+      end
+
+      it 'verify info step', allow_browser_log: true do
+        user = user_with_2fa
+        complete_idv_steps_before_ssn(user)
+        # ssn page (first visit)
+        complete_ssn_step(user)
+        # verify page (next page)
+        expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+        expect(page).to have_content(t('headings.verify'))
+        # click update ssn button on verify page
+        click_on t('idv.buttons.change_ssn_label')
+
+        # visting ssn again
+        expect(page).to have_content(t('doc_auth.headings.ssn_update'))
+      end
+    end
   end
 end
