@@ -13,7 +13,7 @@ module FormPasswordValidator
               length: { in: Devise.password_length },
               if: -> { validate_confirmation }
 
-    validate :password_graphemes_length, :not_pwned, :passwords_match
+    validate :password_graphemes_length, :not_pwned, :passwords_match, :password_email
   end
 
   private
@@ -32,6 +32,21 @@ module FormPasswordValidator
     end
   end
 
+  def password_email
+    @emails_strings = user.email_addresses.
+      flat_map { |address| ForbiddenPasswords.new(address.email).call }
+    @emails = false
+    @emails_strings.each do |string|
+      if password.include? string
+        @emails = true
+        break
+      end
+    end
+
+    return if !@emails
+    errors.add(:password, :avoid_using_phrases_that_are_easily_guessed, type: :password)
+  end
+
   def not_pwned
     return if password.blank? || !PwnedPasswords::LookupPassword.call(password)
 
@@ -47,5 +62,9 @@ module FormPasswordValidator
         type: :mismatch
       )
     end
+  end
+
+  def i18n_key(key)
+    key.tr(' -', '_').gsub(/\W/, '').downcase
   end
 end

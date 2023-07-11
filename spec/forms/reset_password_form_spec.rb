@@ -169,5 +169,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         expect(result.errors).to eq({ reset_password_token: ['token_expired'] })
       end
     end
+
+    it_behaves_like 'strong password', 'ResetPasswordForm'
   end
 end

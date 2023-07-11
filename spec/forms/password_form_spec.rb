@@ -12,7 +12,7 @@ RSpec.describe PasswordForm, type: :model do
     }
   end
 
-  it_behaves_like 'password validation'
+  it_behaves_like 'strong password', 'PasswordForm'
 
   describe '#submit' do
     subject(:result) { form.submit(params) }
