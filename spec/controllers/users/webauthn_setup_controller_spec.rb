@@ -145,6 +145,20 @@ RSpec.describe Users::WebauthnSetupController do
       end
     end
 
+    describe 'get passkey_not_backed_up' do
+      context 'when feature toggle is off' do
+        before do
+          allow(IdentityConfig.store).to receive(:platform_backup_state_redirect).and_return(false)
+        end
+
+        it 'should redirect to account page' do
+          
+          get :passkey_not_backed_up
+          expect(response).to redirect_to(account_url)
+        end
+      end
+    end
+
     describe 'delete' do
       let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
 

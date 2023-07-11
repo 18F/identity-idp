@@ -115,7 +115,7 @@ module Users
     end
 
     def passkey_backed_up_feature_on?
-      redirect_to user_two_factor_authentication_url unless
+      redirect_to account_url unless
         FeatureManagement.platform_backup_state_redirect?
     end
 
