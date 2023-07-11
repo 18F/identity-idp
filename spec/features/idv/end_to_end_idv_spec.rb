@@ -84,7 +84,8 @@ RSpec.describe 'Identity verification', :js do
 
     # defaults phone to user's 2fa phone number
     field = page.find_field(t('two_factor_authentication.phone_label'))
-    expect(field.value).to eq('(202) 555-1212')
+    expect(PhoneFormatter.format(field.value)).
+      to eq(PhoneFormatter.format(Features::SessionHelper::IAL1_USER_PHONE))
   end
 
   def validate_document_capture_page
