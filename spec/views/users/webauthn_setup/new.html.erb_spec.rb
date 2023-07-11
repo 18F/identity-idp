@@ -33,10 +33,10 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       render
     end
 
-    it 'displays warning alert' do
+    it 'displays info alert' do
       render
 
-      expect(rendered).to have_content(I18n.t('forms.webauthn_platform_setup.warning_text'))
+      expect(rendered).to have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
     end
   end
 end
