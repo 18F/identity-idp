@@ -32,6 +32,7 @@ class FrontendLogController < ApplicationController
     puts "FRONTEND LOG: #{log_params[:event]}"
     puts log_params[:payload].inspect
     puts ''
+    puts "session loaded: #{session.loaded?}"
     puts "user_session: #{user_session.inspect}"
     puts "session: #{session.to_h.inspect}"
     puts '-----------------------------------------------------------------------------------------'
