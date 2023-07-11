@@ -130,6 +130,8 @@ fr:
     verify_profile:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_platform_setup:
+      account_setup_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
+        déverrouillage tactile. Veuillez réessayer ou %{link}.
       already_registered: Le déverrouillage facial ou le déverrouillage tactile est
         déjà enregistré sur cet appareil. Veuillez essayer d’ajouter une autre
         méthode d’authentification.
@@ -138,6 +140,7 @@ fr:
         sur https://fidoalliance.org/certification/fido-certified-products/ et
         si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
         contacter à %{link}.
+      choose_another_method: choisir une autre méthode d’authentification
       general_error: Une erreur s’est produite lors de l’ajout de votre méthode
         d’authentification. Veuillez réessayer.
       not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge

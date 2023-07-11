@@ -120,6 +120,8 @@ es:
     verify_profile:
       throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
+      account_setup_error: No pudimos agregar el desbloqueo con la cara o con la
+        huella digital. Inténtelo de nuevo o %{link}.
       already_registered: Ya está registrado el desbloqueo con la cara o con la huella
         digital en este dispositivo. Trate de agregar otro método de
         autenticación.
@@ -128,6 +130,7 @@ es:
         https://fidoalliance.org/certification/fido-certified-products/ y si
         cree que se trata de un error nuestro, póngase en contacto con nosotros
         en %{link}.
+      choose_another_method: elija otro método de autenticación
       general_error: Se ha producido un error al agregar su método de autenticación.
         Por favor, inténtelo de nuevo.
       not_supported: Lo sentimos, pero su navegador no es compatible con el desbloqueo
