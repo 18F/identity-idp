@@ -16,7 +16,7 @@ module Telephony
     end
 
     def send_authentication_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: authentication_message,
         to: recipient_phone,
         otp: otp,
@@ -27,7 +27,7 @@ module Telephony
     end
 
     def send_confirmation_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: confirmation_message,
         to: recipient_phone,
         otp: otp,

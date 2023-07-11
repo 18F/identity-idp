@@ -108,13 +108,6 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
       let(:user) { create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }) }
       before do
         stub_sign_in_before_2fa(user)
-        form = BackupCodeVerificationForm.new(user)
-        response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
-        )
-        allow(BackupCodeVerificationForm).to receive(:new).
-          with(subject.current_user).and_return(form)
-        allow(form).to receive(:submit).and_return(response)
       end
 
       it 're-renders the backup code entry screen' do
@@ -137,6 +130,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
           success: false,
           errors: {},
           multi_factor_auth_method: 'backup_code',
+          multi_factor_auth_method_created_at: nil,
         }
 
         stub_analytics

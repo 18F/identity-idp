@@ -80,7 +80,8 @@ module Telephony
                  :send_personal_key_regeneration_notice,
                  :send_personal_key_sign_in_notice,
                  :send_account_reset_notice,
-                 :send_account_reset_cancellation_notice
+                 :send_account_reset_cancellation_notice,
+                 :send_notification
 
   # @param [String] phone_number phone number in E.164 format
   # @return [PhoneNumberInfo] info about the phone number

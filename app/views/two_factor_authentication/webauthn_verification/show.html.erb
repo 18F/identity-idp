@@ -22,16 +22,13 @@
   <%= hidden_field_tag :signature, '', id: 'signature' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :webauthn_error, '', id: 'webauthn_error' %>
-  <%= hidden_field_tag :platform, '', id: 'platform' %>
-  <%= hidden_field_tag :webauthn_device, '', id: 'webauthn_device' %>
+  <%= hidden_field_tag :platform, @presenter.platform_authenticator? %>
 
   <%= content_tag(
         :div,
         id: 'webauthn-auth-in-progress',
         data: {
           webauthn_not_enabled_url: @presenter.webauthn_not_enabled_link,
-          platform_authenticator_requested: @presenter.platform_authenticator?,
-          multiple_factors_enabled: @presenter.multiple_factors_enabled?,
         },
       ) do %>
     <div class="display-none spinner text-center margin-bottom-4" id="spinner">

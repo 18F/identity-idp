@@ -18,7 +18,7 @@ module Telephony
 
       # rubocop:disable Lint/UnusedMethodArgument
       # rubocop:disable Metrics/BlockLength
-      def send(message:, to:, country_code:, otp: nil)
+      def deliver(message:, to:, country_code:, otp: nil)
         if Telephony.config.pinpoint.voice_configs.empty?
           return PinpointHelper.handle_config_failure(:voice)
         end

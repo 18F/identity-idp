@@ -32,13 +32,6 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def suspended_reset_password
-    UserMailer.with(
-      user: user,
-      email_address: email_address_record,
-    ).suspended_reset_password
-  end
-
   def password_changed
     UserMailer.with(user: user, email_address: email_address_record).
       password_changed(disavowal_token: SecureRandom.hex)
@@ -170,6 +163,20 @@ class UserMailerPreview < ActionMailer::Preview
 
   def account_rejected
     UserMailer.with(user: user, email_address: email_address_record).account_rejected
+  end
+
+  def suspended_create_account
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).suspended_create_account
+  end
+
+  def suspended_reset_password
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).suspended_reset_password
   end
 
   private

@@ -16,6 +16,7 @@ RSpec.describe TotpVerificationForm do
           errors: {},
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: cfg.id,
+          multi_factor_auth_method_created_at: cfg.created_at,
         )
       end
     end
@@ -33,6 +34,7 @@ RSpec.describe TotpVerificationForm do
           errors: {},
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: nil,
+          multi_factor_auth_method_created_at: nil,
         )
       end
     end
@@ -51,6 +53,7 @@ RSpec.describe TotpVerificationForm do
             errors: {},
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            multi_factor_auth_method_created_at: nil,
           )
         end
       end
