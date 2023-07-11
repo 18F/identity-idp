@@ -70,11 +70,13 @@ RSpec.describe Users::WebauthnSetupController do
           client_data_json: setup_client_data_json,
           name: 'mykey',
           transports: 'usb',
+          authenticator_data_flags: backed_up_authenticator_data_flags,
         }
       end
 
       before do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:platform_backup_state_redirect).and_return(true)
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
@@ -105,6 +107,41 @@ RSpec.describe Users::WebauthnSetupController do
           })
 
         patch :confirm, params: params
+      end
+      context 'when platform auth device is not backup state eligible' do
+        let(:params) do
+          {
+            attestation_object: attestation_object,
+            client_data_json: setup_client_data_json,
+            name: 'mykey',
+            transports: 'internal,hybrid',
+            platform_authenticator: 'true',
+            authenticator_data_flags: non_backed_up_authenticator_data_flags,
+          }
+        end
+
+        it 'should redirect to backup state not supported page' do
+          patch :confirm, params: params
+          expect(response).to redirect_to(webauthn_setup_passkey_not_backed_up_path)
+        end
+      end
+
+      context 'when platform auth device is backup state eligible' do
+        let(:params) do
+          {
+            attestation_object: attestation_object,
+            client_data_json: setup_client_data_json,
+            name: 'mykey',
+            transports: 'internal,hybrid',
+            platform_authenticator: 'true',
+            authenticator_data_flags: backed_up_authenticator_data_flags,
+          }
+        end
+
+        it 'should redirect to accounts page' do
+          patch :confirm, params: params
+          expect(response).to redirect_to(account_url)
+        end
       end
     end
 
