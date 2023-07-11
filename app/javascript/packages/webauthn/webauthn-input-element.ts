@@ -19,7 +19,7 @@ export class WebauthnInputElement extends HTMLElement {
       return false;
     }
 
-    return !this.isPlatform || !this.isOnlyPasskeySupported || true;
+    return !this.isPlatform || !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
   }
 
   toggleVisibleIfSupported() {
