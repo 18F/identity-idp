@@ -40,11 +40,6 @@ module IdvStepConcern
 
   private
 
-  def confirm_in_person_address_step_complete
-    return if pii_from_user && pii_from_user[:address1].present?
-    redirect_to prev_url
-  end
-
   def confirm_ssn_step_complete
     return if pii.present? && pii[:ssn].present?
     redirect_to prev_url

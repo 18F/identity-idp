@@ -7,7 +7,7 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
-      before_action :renders_404_if_flag_not_set
+      before_action :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
@@ -70,12 +70,10 @@ module Idv
         flow_session[:flow_path]
       end
 
-      # TO DO: Why is this step needed? only for idv, not idv_in_person?
       def confirm_repeat_ssn
-        # return if !pii_from_user[:ssn]
-        # return if request.referer == idv_in_person_verify_info_url
-
-        # redirect_to idv_in_person_verify_info_url
+        return if !pii_from_user[:ssn]
+        return if request.referer == idv_in_person_verify_info_url
+        redirect_to idv_in_person_verify_info_url
       end
 
       def next_url
@@ -95,13 +93,14 @@ module Idv
         flow_session.dig(:pii_from_user, :ssn).present?
       end
 
-      def renders_404_if_flag_not_set
+      def renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
         render_not_found unless IdentityConfig.store.in_person_ssn_info_controller_enabled
       end
 
-      # def pii_from_user
-      #   flow_session[:pii_from_user]
-      # end
+      def confirm_in_person_address_step_complete
+        return if pii_from_user && pii_from_user[:address1].present?
+        redirect_to idv_in_person_step_url(step: :address)
+      end
     end
   end
 end
