@@ -31,6 +31,9 @@ class FrontendLogController < ApplicationController
     puts '-----------------------------------------------------------------------------------------'
     puts "FRONTEND LOG: #{log_params[:event]}"
     puts log_params[:payload].inspect
+    puts ''
+    puts "user_session: #{user_session.inspect}"
+    puts "session: #{session.inspect}"
     puts '-----------------------------------------------------------------------------------------'
 
     frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
