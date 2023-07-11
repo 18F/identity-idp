@@ -53,7 +53,6 @@ module Idv
         map { |line| line.sub(Rails.root.to_s, '') }.
         map { |line| "    #{line}" }.
         join("\n")
-      puts '---------------------------------------------------------------------------------------'
 
       if defined?(flow_session) # hybrid mobile does not have flow_session
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
@@ -67,6 +66,11 @@ module Idv
       end
 
       track_document_issuing_state(user, pii_from_doc[:state])
+
+      puts 'after store --'
+      puts "flow_session = #{flow_session.inspect}"
+      puts "user_session = #{user_session.inspect}"
+      puts '---------------------------------------------------------------------------------------'
     end
 
     def stored_result
