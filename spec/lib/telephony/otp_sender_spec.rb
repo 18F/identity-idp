@@ -128,7 +128,7 @@ RSpec.describe Telephony::OtpSender do
         )
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
-        expect(adapter).to receive(:send).with(
+        expect(adapter).to receive(:deliver).with(
           message: message,
           to: to,
           otp: otp,
@@ -149,7 +149,7 @@ RSpec.describe Telephony::OtpSender do
         )
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
-        expect(adapter).to receive(:send).with(
+        expect(adapter).to receive(:deliver).with(
           message: message,
           to: to,
           otp: otp,
@@ -174,7 +174,7 @@ RSpec.describe Telephony::OtpSender do
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-          expect(adapter).to receive(:send).with(
+          expect(adapter).to receive(:deliver).with(
             message: start_with(message),
             to: to,
             otp: otp,
@@ -195,7 +195,7 @@ RSpec.describe Telephony::OtpSender do
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-          expect(adapter).to receive(:send).with(
+          expect(adapter).to receive(:deliver).with(
             message: start_with(message),
             to: to,
             otp: otp,
@@ -219,7 +219,7 @@ RSpec.describe Telephony::OtpSender do
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-          expect(adapter).to receive(:send).with(
+          expect(adapter).to receive(:deliver).with(
             message: start_with(message),
             to: to,
             otp: otp,
@@ -232,7 +232,7 @@ RSpec.describe Telephony::OtpSender do
 
       it 'sends valid XML' do
         adapter = instance_double(Telephony::Pinpoint::VoiceSender)
-        expect(adapter).to receive(:send) do |args|
+        expect(adapter).to receive(:deliver) do |args|
           message = args[:message]
           expect { Nokogiri::XML(message) { |config| config.strict } }.to_not raise_error
 
