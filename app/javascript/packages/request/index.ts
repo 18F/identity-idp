@@ -101,7 +101,7 @@ export async function request(url: string, options: Partial<RequestOptions> = {}
     }
   }
 
-  const response = await window.fetch(url, { ...fetchOptions, headers, body });
+  const response = await fetch(url, { ...fetchOptions, headers, body });
   CSRF.token = response.headers.get('X-CSRF-Token');
 
   if (read) {

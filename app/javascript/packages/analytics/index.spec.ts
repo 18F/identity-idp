@@ -2,17 +2,6 @@ import { trackEvent, trackError } from '@18f/identity-analytics';
 import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 import type { SinonStub } from 'sinon';
 
-function blobTextContents(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.addEventListener('loadend', () => {
-      resolve(reader.result as string);
-    });
-    reader.addEventListener('error', reject);
-    reader.readAsText(blob, 'utf-8');
-  });
-}
-
 describe('trackEvent', () => {
   const sandbox = useSandbox();
 
@@ -49,7 +38,7 @@ describe('trackEvent', () => {
         expect(actualEndpoint).to.eql(endpoint);
         expect(data).to.have.property('type').eql('application/json');
 
-        expect(await blobTextContents(data)).to.eql('{"event":"name"}');
+        expect(await data.text()).to.eql('{"event":"name"}');
       });
     });
 
@@ -65,7 +54,7 @@ describe('trackEvent', () => {
 
         expect(actualEndpoint).to.eql(endpoint);
         expect(data).to.have.property('type').eql('application/json');
-        expect(await blobTextContents(data)).to.eql('{"event":"name","payload":{"foo":"bar"}}');
+        expect(await data.text()).to.eql('{"event":"name","payload":{"foo":"bar"}}');
       });
     });
 

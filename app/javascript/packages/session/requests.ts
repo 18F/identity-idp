@@ -52,7 +52,7 @@ interface SessionTimedOutStatus {
 
 export type SessionStatus = SessionLiveStatus | SessionTimedOutStatus;
 
-export const SESSIONS_URL = '/api/internal/sessions';
+export const SESSIONS_URL = new URL('/api/internal/sessions', window.location.href).toString();
 
 function mapSessionStatusResponse<R extends SessionLiveStatusResponse>(
   response: R,
