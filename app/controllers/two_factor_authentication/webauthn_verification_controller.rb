@@ -94,7 +94,7 @@ module TwoFactorAuthentication
     def credentials
       MfaContext.new(current_user).webauthn_configurations.map do |configuration|
         { id: configuration.credential_id, transports: configuration.transports }
-      end.to_json
+      end
     end
 
     def analytics_properties
