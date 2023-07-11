@@ -107,17 +107,37 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     before(:each) do
     end
 
-    let(:formatted_date) { 'Saturday, November 1' }
+    let(:formatted_date) { 'Tuesday, October 31' }
+    let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
+    let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
 
     it 'renders the outage alert when flag is enabled' do
       allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true)
-      allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).to receive(:date).
-        and_return(formatted_date)
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return(in_person_outage_emailed_by_date)
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return(in_person_outage_expected_update_date)
 
       render
 
       expect(rendered).to have_content(
+        t(
+          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+          date: formatted_date,
+        ),
+      )
+    end
+
+    it 'does not render a warning when outage dates are not included' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return('')
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return('')
+
+      expect(rendered).to_not have_content(
         t(
           'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
           date: formatted_date,
