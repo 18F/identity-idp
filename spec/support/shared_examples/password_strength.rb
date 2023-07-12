@@ -1,52 +1,12 @@
 RSpec.shared_examples 'strong password' do |form_class|
-  it 'does not allow a password that is common and/or needs more words' do
+  it 'does not allow a password that has been added to database of compromised passwords' do
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
-    password = 'password foo'
+    password = '3.141592653589'
     errors = {
-      password: ['Your password is not strong enough.' \
-        ' This is similar to a commonly used password.' \
-        ' Add another word or two.' \
-        ' Uncommon words are better'],
-    }
-
-    result = form.submit(password: password)
-
-    expect(result.success?).to eq(false)
-    expect(result.errors).to eq(errors)
-    expect(result.extra).to include(user_id: '123') if result.extra.present?
-  end
-
-  it 'does not allow a password that needs more words' do
-    user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
-    allow(user).to receive(:reset_password_period_valid?).and_return(true)
-    form = form_class.constantize.new(user)
-    password = 'benevolentman'
-    errors = {
-      password: ['Your password is not strong enough.' \
-        ' Add another word or two.' \
-        ' Uncommon words are better'],
-    }
-
-    result = form.submit(password: password)
-
-    expect(result.success?).to eq(false)
-    expect(result.errors).to eq(errors)
-    expect(result.extra).to include(user_id: '123') if result.extra.present?
-  end
-
-  # This test is disabled for now because zxcvbn doesn't support this
-  # feature yet. See: https://github.com/dropbox/zxcvbn/issues/227
-  xit 'does not allow a password containing words from the user email' do
-    user = build_stubbed(:user, email: 'janedoe@gmail.com', uuid: '123')
-    allow(user).to receive(:reset_password_period_valid?).and_return(true)
-    form = form_class.constantize.new(user)
-    password = 'janedoe gmail'
-    errors = {
-      password: ['Your password is not strong enough.' \
-        ' Add another word or two.' \
-        ' Uncommon words are better'],
+      password: ['The password you entered is not safe. It’s in a list of' \
+        ' known passwords exposed in data breaches.'],
     }
 
     result = form.submit(password: password)
@@ -62,9 +22,8 @@ RSpec.shared_examples 'strong password' do |form_class|
     form = form_class.constantize.new(user)
     password = 'custom@benevolent.com'
     errors = {
-      password: ['Your password is not strong enough.' \
-        ' Add another word or two.' \
-        ' Uncommon words are better'],
+      password: ['Avoid using phrases that are easily guessed, such as' \
+        ' parts of your email or personal dates.'],
     }
     result = form.submit(password: password)
 
