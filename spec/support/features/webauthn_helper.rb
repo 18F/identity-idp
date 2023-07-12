@@ -45,21 +45,56 @@ module WebAuthnHelper
     end
   end
 
-  def mock_press_button_on_hardware_key_on_verification
+  def click_webauthn_authenticate_button_and_cancel
+    if javascript_enabled?
+      page.evaluate_script(<<~JS)
+        navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
+      JS
+      click_webauthn_authenticate_button
+      expect(page).to have_content(t('errors.general'), wait: 5)
+    else
+      find('#webauthn-button').click
+    end
+  end
+
+  def click_webauthn_authenticate_button_and_verify
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 
-    # simulate javascript that is triggered when the hardware key button is pressed
-    set_hidden_field('credential_id', credential_id)
-    set_hidden_field('authenticator_data', authenticator_data)
-    set_hidden_field('signature', signature)
-    set_hidden_field('client_data_json', verification_client_data_json)
-
-    # submit form
     if javascript_enabled?
-      first('form').evaluate_script('this.submit()')
+      page.evaluate_script(<<~JS)
+        base64ToArrayBuffer = (base64) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer;
+      JS
+      page.evaluate_script(<<~JS)
+        navigator.credentials.get = () => Promise.resolve({
+          rawId: base64ToArrayBuffer(#{credential_id.to_json}),
+          response: {
+            authenticatorData: base64ToArrayBuffer(#{authenticator_data.to_json}),
+            clientDataJSON: base64ToArrayBuffer(#{verification_client_data_json.to_json}),
+            signature: base64ToArrayBuffer(#{signature.to_json}),
+          },
+        });
+      JS
+      original_path = current_path
+      click_webauthn_authenticate_button
+      expect(page).not_to have_current_path(original_path, wait: 5)
     else
+      # simulate javascript that is triggered when the hardware key button is pressed
+      set_hidden_field('credential_id', credential_id)
+      set_hidden_field('authenticator_data', authenticator_data)
+      set_hidden_field('signature', signature)
+      set_hidden_field('client_data_json', verification_client_data_json)
+
+      # submit form
       find('#webauthn-button').click
+    end
+  end
+
+  def click_webauthn_authenticate_button
+    if platform_authenticator?
+      click_button t('two_factor_authentication.webauthn_platform_use_key')
+    else
+      click_button t('two_factor_authentication.webauthn_use_key')
     end
   end
 
@@ -136,5 +171,9 @@ module WebAuthnHelper
       MEYCIQC7VHQpZasv8URBC/VYKWcuv4MrmV82UfsESKTGgV3r+QIhAO8iAduYC7XDHJjpKkrSKb
       B3/YJKhlr2AA5uw59+aFzk
     HEREDOC
+  end
+
+  def platform_authenticator?
+    Rack::Utils.parse_nested_query(URI(current_url).query)['platform'] == 'true'
   end
 end
