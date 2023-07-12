@@ -67,12 +67,22 @@
       ) %>
   <%= render AlertComponent.new(
         type: :warning,
+        class: 'margin-bottom-4',
+        text_tag: 'div',
         id: 'phone-already-submitted-alert',
         data: {
           failed_phone_numbers: @idv_form.failed_phone_numbers,
         },
         hidden: true,
-      ).with_content('...') %>
+      ) do %>
+    <%= t(
+        'idv.messages.phone.failed_number.alert_html',
+        link_html: link_to(
+          t('idv.messages.phone.failed_number.gpo_verify_link'),
+          idv_gpo_path,
+        ),
+      ) %>
+  <% end %>
 
   <h2><%= t('idv.titles.otp_delivery_method') %></h2>
   <p><%= t('idv.messages.otp_delivery_method_description') %></p>
