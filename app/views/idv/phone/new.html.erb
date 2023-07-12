@@ -69,7 +69,7 @@
         type: :warning,
         id: 'phone-already-submitted-alert',
         data: {
-          already_submitted_numbers: ['703-555-1212', '...'],
+          failed_phone_numbers: @idv_form.failed_phone_numbers,
         },
         hidden: true,
       ).with_content('...') %>
