@@ -152,7 +152,6 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should redirect to account page' do
-          
           get :passkey_not_backed_up
           expect(response).to redirect_to(account_url)
         end
