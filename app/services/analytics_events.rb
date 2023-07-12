@@ -723,6 +723,8 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [String] user_id
   # @param [String] flow_path
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -731,6 +733,8 @@ module AnalyticsEvents
     flow_path:,
     attempts: nil,
     user_id: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -741,6 +745,8 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       user_id: user_id,
       flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -758,6 +764,8 @@ module AnalyticsEvents
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -772,6 +780,8 @@ module AnalyticsEvents
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -789,6 +799,8 @@ module AnalyticsEvents
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
       vendor_request_time_in_ms: vendor_request_time_in_ms,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -799,6 +811,8 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -807,6 +821,8 @@ module AnalyticsEvents
     pii_like_keypaths:,
     flow_path:,
     user_id: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -817,6 +833,8 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       pii_like_keypaths: pii_like_keypaths,
       flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
