@@ -6,7 +6,9 @@ require 'simplecov-cobertura'
 class SimplecovHelper
   def self.start
     configure
-    SimpleCov.start
+    SimpleCov.start do
+      enable_coverage_for_eval
+    end
 
     at_exit do
       SimpleCov.run_exit_tasks!
