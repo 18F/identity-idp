@@ -33,17 +33,10 @@ module FormPasswordValidator
   end
 
   def password_not_forbidden
-    emails = false
-    forbidden_passwords.each do |string|
-      if password.to_s.include? string
-        emails = true
-        break
-      end
-    end
-
-    return if !emails
+    return if !forbidden_passwords.include?(password)
     errors.add(:password, :avoid_using_phrases_that_are_easily_guessed, type: :password)
   end
+
 
   def forbidden_passwords
     user.email_addresses.
