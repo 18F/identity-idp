@@ -186,7 +186,7 @@ en:
     webauthn_authenticating: Authenticating your credentials…
     webauthn_error:
       additional_methods_link: choose another authentication method
-      multiple_methods: Face or touch unlock was unsuccessful. Please try again or %{link}.
+      try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
     webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_header_text: Use face or touch unlock

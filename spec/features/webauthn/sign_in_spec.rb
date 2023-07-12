@@ -50,4 +50,28 @@ RSpec.feature 'webauthn sign in' do
 
     expect(page).to_not have_content(t('errors.general'))
   end
+
+  it 'maintains correct platform attachment content if cancelled', :js do
+    mock_webauthn_verification_challenge
+
+    sign_in_user(user)
+    click_webauthn_authenticate_button_and_cancel
+
+    expect(page).to have_content(t('two_factor_authentication.webauthn_header_text'))
+  end
+
+  context 'platform authenticator' do
+    let(:user) do
+      create(:user, :with_webauthn_platform, with: { credential_id:, credential_public_key: })
+    end
+
+    it 'maintains correct platform attachment content if cancelled', :js do
+      mock_webauthn_verification_challenge
+
+      sign_in_user(user)
+      click_webauthn_authenticate_button_and_cancel
+
+      expect(page).to have_content(t('two_factor_authentication.webauthn_platform_header_text'))
+    end
+  end
 end

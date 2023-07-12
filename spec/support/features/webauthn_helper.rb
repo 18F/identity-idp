@@ -1,5 +1,6 @@
 module WebAuthnHelper
   include JavascriptDriverHelper
+  include ActionView::Helpers::UrlHelper
 
   def mock_webauthn_setup_challenge
     allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
@@ -51,7 +52,22 @@ module WebAuthnHelper
         navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
       JS
       click_webauthn_authenticate_button
-      expect(page).to have_content(t('errors.general'), wait: 5)
+      if platform_authenticator?
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'two_factor_authentication.webauthn_error.try_again',
+              link: link_to(
+                t('two_factor_authentication.webauthn_error.additional_methods_link'),
+                login_two_factor_options_path,
+              ),
+            ),
+          ),
+          wait: 5,
+        )
+      else
+        expect(page).to have_content(t('errors.general'), wait: 5)
+      end
     else
       find('#webauthn-button').click
     end
