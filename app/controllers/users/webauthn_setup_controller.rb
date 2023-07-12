@@ -175,7 +175,7 @@ module Users
     end
 
     def need_to_set_up_additional_mfa?
-      return false unless platform_authenticator?
+      return false unless @platform_authenticator
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
 
