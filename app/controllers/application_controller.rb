@@ -371,12 +371,17 @@ class ApplicationController < ActionController::Base
     MfaPolicy.new(current_user).two_factor_enabled?
   end
 
+  # Prevent the session from being written back to the session store at the end of the request.
+  def skip_session_commit
+    request.session_options[:skip] = true
+  end
+
   def skip_session_expiration
     @skip_session_expiration = true
   end
 
   def skip_session_load
-    request.session_options[:skip] = true
+    skip_session_commit
     @skip_session_load = true
   end
 
