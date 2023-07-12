@@ -25,8 +25,9 @@ class AppArtifacts
 
     # @param [Symbol] name
     # @param [String] path
-    def add_artifact(name, path)
+    def add_artifact(name, path, optional: false)
       value = read_artifact(path)
+      return if value.nil? && optional
       raise MissingArtifactError.new("missing artifact: #{path}") if value.nil?
       value = yield(value) if block_given?
       @artifacts[name] = value

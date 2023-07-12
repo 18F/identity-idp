@@ -38,6 +38,25 @@ RSpec.describe AppArtifacts::Store do
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/test_artifact'
         )
       end
+
+      it 'does not raise an error if an artifact is missing if configured as optional' do
+        expect(secrets_s3).to receive(:read_file).with(
+          '/%<env>s/test_artifact',
+        ).and_return(nil)
+        expect(secrets_s3).to receive(:read_file).with(
+          '/%<env>s/test_artifact2',
+        ).and_return('abc')
+
+        store = instance.build do |store|
+          store.add_artifact(:test_artifact, '/%<env>s/test_artifact', optional: true)
+          store.add_artifact(:test_artifact2, '/%<env>s/test_artifact2')
+        end
+
+        expect do
+          store['test_artifact']
+        end.to raise_error(NameError)
+        expect(store['test_artifact2']).to eq 'abc'
+      end
     end
 
     context 'when running locally' do
@@ -61,6 +80,23 @@ RSpec.describe AppArtifacts::Store do
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/dne.txt'
         )
       end
+    end
+
+    it 'does not raise an error if an artifact is missing if configured as optional' do
+      store = instance.build do |store|
+        store.add_artifact(:test_artifact, '/%<env>s/saml2023.crt')
+        store.add_artifact(:test_artifact2, '/%<env>s/test_artifact', optional: true)
+      end
+
+      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2023.crt')
+      contents = File.read(file_path)
+      expect(store.test_artifact).to eq(contents)
+      expect(store['test_artifact']).to eq(contents)
+
+      expect(store['test_artifact']).to eq contents
+      expect do
+        store['test_artifact2']
+      end.to raise_error(NameError)
     end
 
     it 'allows a block to be used to transform values' do
