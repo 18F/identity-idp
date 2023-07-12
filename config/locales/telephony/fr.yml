@@ -14,6 +14,9 @@ fr:
         est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
         votre code à usage unique est %{code}. Ce code expire dans %{expiration}
         minutes.
+    confirmation_ipp_enrollment_result:
+      sms: |-
+        %{app_name}: Vous avez tenté de vérifier votre identité dans un bureau de poste le %{proof_date}. Vérifiez votre e-mail pour votre résultat.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.

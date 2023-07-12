@@ -1695,9 +1695,13 @@ module AnalyticsEvents
     )
   end
 
-  def idv_in_person_usps_proofing_results_notification_job_completed(**extra)
+  def idv_in_person_usps_proofing_results_notification_job_completed(enrollment_code:,
+                                                                     enrollment_id:,
+                                                                     **extra)
     track_event(
       'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -1705,84 +1709,38 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_notification_job_skipped(
     enrollment_code:,
     enrollment_id:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_since_established:,
-    minutes_to_completion:,
-    issuer:,
     **extra
   )
     track_event(
       'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed:
-        minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_since_established: minutes_since_established,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
       **extra,
     )
   end
 
-  def idv_in_person_usps_proofing_results_notification_job_started(**extra)
+  def idv_in_person_usps_proofing_results_notification_job_started(enrollment_code:,
+                                                                   enrollment_id:,
+                                                                   **extra)
     track_event(
       'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
 
-  def idv_in_person_usps_proofing_results_notification_sent_failure(
+  def idv_in_person_usps_proofing_results_notification_sent_attempted(
+    success:,
     enrollment_code:,
     enrollment_id:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_since_established:,
-    minutes_to_completion:,
-    issuer:,
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: failed to sent notification',
+      'IdV: in person notification SMS send attempted',
+      success: success,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed:
-        minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_since_established: minutes_since_established,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
-      **extra,
-    )
-  end
-
-  def idv_in_person_usps_proofing_results_notification_sent_success(
-    enrollment_code:,
-    enrollment_id:,
-    minutes_since_last_status_check:,
-    minutes_since_last_status_check_completed:,
-    minutes_since_last_status_update:,
-    minutes_since_established:,
-    minutes_to_completion:,
-    issuer:,
-    **extra
-  )
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: notification sent successfully',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      minutes_since_last_status_check: minutes_since_last_status_check,
-      minutes_since_last_status_check_completed:
-        minutes_since_last_status_check_completed,
-      minutes_since_last_status_update: minutes_since_last_status_update,
-      minutes_since_established: minutes_since_established,
-      minutes_to_completion: minutes_to_completion,
-      issuer: issuer,
       **extra,
     )
   end
@@ -3756,15 +3714,15 @@ module AnalyticsEvents
   # @param [Array] sp_request_requested_attributes
   # @param [Array] sp_session_requested_attributes
   def user_registration_agency_handoff_page_visit(
-      ial2:,
-      service_provider_name:,
-      page_occurence:,
-      needs_completion_screen_reason:,
-      sp_session_requested_attributes:,
-      sp_request_requested_attributes: nil,
-      ialmax: nil,
-      **extra
-    )
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+  )
     track_event(
       'User registration: agency handoff visited',
       ial2: ial2,

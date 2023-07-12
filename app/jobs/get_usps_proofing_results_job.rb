@@ -394,7 +394,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       handle_unsupported_status(enrollment, response)
     end
 
-    #invoke another job
+    # invoke job to send sms notification
     InPerson::SendProofingNotificationJob.perform_now(enrollment)
   end
 
