@@ -10,14 +10,14 @@ fr:
           réessayer plus tard ou vérifier votre adresse par la poste.
       pinpoint:
         idv:
-          header: Nous travaillons à la résolution d'une erreur
-          message_html: <strong>%{sp_name}</strong> doit s'assurer que c'est bien
-            vous — et non quelqu'un qui se fait passer pour vous.
+          header: Nous travaillons à la résolution d’une erreur
+          message_html: <strong>%{sp_name}</strong> doit s’assurer que c’est bien vous —
+            et non quelqu’un qui se fait passer pour vous.
 
-            <p>Malheureusement, nous avons actuellement des difficultés techniques.
-            <a href="%{status_page_url}" class="usa-link usa-link--external"
-            target="_blank">Obtenez des mises à jour sur notre page de
-            statut</a> pour savoir quand l’erreur est résolue.</p>
+            <p>Malheureusement, nous avons actuellement des
+            difficultés techniques. <a href="%{status_page_url}" class="usa-link
+            usa-link--external" target="_blank">Obtenez des mises à jour sur
+            notre page de statut</a> pour savoir quand l’erreur est résolue.</p>
           options_html:
             - Continuer maintenant et effectuer la vérification par courrier, ce
               qui prend de <strong>3 à 7 jours ouvrables</strong>.

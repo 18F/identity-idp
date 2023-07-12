@@ -13,10 +13,10 @@ en:
           message_html: <strong>%{sp_name}</strong> needs to make sure you are you — not
             someone pretending to be you.
 
-            <p>Unfortunately, we're having technical difficulties right now.
-            <a href="%{status_page_url}" class="usa-link usa-link--external"
-            target="_blank">Get updates on our status page</a> to learn when
-            the error is resolved.</p>
+            <p>Unfortunately, we’re having technical difficulties
+            right now. <a href="%{status_page_url}" class="usa-link
+            usa-link--external" target="_blank">Get updates on our status
+            page</a> to learn when the error is resolved.</p>
           options_html:
             - Continue now and verify by mail, which takes <strong>3 to 7
               business days</strong>
