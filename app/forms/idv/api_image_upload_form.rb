@@ -129,13 +129,14 @@ module Idv
         flow_path: params[:flow_path],
       }
 
-      if errors.blank? && front_image_bytes
-        @extra_attributes[:front_image_hash] =
+      if readable?(:front)
+        @extra_attributes[:front_image_fingerprint] =
           Digest::SHA256.urlsafe_base64digest(front_image_bytes)
       end
 
-      if errors.blank? && back_image_bytes
-        @extra_attributes[:back_image_hash] = Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      if readable?(:back)
+        @extra_attributes[:back_image_fingerprint] =
+          Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
 
       @extra_attributes
@@ -219,8 +220,13 @@ module Idv
       )
     end
 
+    def readable?(image_key)
+      value = @readable[image_key]
+      value && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
+    end
+
     def as_readable(image_key)
-      return @readable[image_key] if @readable.key?(image_key)
+      return @readable[image_key] if readable?(image_key)
       value = params[image_key]
       @readable[image_key] = begin
         if value.respond_to?(:read)
