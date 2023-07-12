@@ -61,7 +61,11 @@ module Idv
         international_code ||= country_code_for(phone)
       end
 
-      phone = PhoneFormatter.format(phone, country_code: international_code)
+      if failed_phone_numbers.include?(Phonelib.parse(phone).e164)
+        phone = nil
+      else
+        phone = PhoneFormatter.format(phone, country_code: international_code)
+      end
 
       [international_code, phone]
     end
