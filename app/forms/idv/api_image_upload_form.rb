@@ -120,13 +120,25 @@ module Idv
     end
 
     def extra_attributes
-      @extra_attributes ||= {
+      return @extra_attributes if defined?(@extra_attributes)
+      @extra_attributes = {
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
         pii_like_keypaths: [[:pii]],
         flow_path: params[:flow_path],
       }
+
+      if errors.blank? && front_image_bytes
+        @extra_attributes[:front_image_hash] =
+          Digest::SHA256.urlsafe_base64digest(front_image_bytes)
+      end
+
+      if errors.blank? && back_image_bytes
+        @extra_attributes[:back_image_hash] = Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+
+      @extra_attributes
     end
 
     def remaining_attempts
