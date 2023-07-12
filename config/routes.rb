@@ -275,6 +275,7 @@ Rails.application.routes.draw do
 
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
+    get '/user_please_call' => 'users/please_call#show'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')

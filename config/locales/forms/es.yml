@@ -169,7 +169,6 @@ es:
         %{link}</p>'
       intro_link_text: Obtenga más información sobre el desbloqueo con la cara o con
         la huella digital.
-      login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
       nickname_hint: Si agrega más dispositivos para desbloquear con la cara o con la
         huella digital, podrá distinguirlos.
@@ -182,5 +181,4 @@ es:
         método de autenticación. Puede añadir tantas claves de seguridad como
         desee. Para empezar, primero asigne un apodo a su clave de
         seguridad.</p>'
-      login_text: 'Cuando esté listo para autenticarse, presione el botón:'
       nickname: Apodo clave de seguridad
