@@ -22,10 +22,9 @@ locals:
 
 <% if updating_ssn %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
-  <% else %>
+<% else %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
 <% end %>
-
 
 <p>
   <%= t('doc_auth.info.ssn') %>
@@ -72,7 +71,6 @@ locals:
 
 <p><%= @error_message %></p>
 
-
 <%= f.submit class: 'display-block margin-y-5' do %>
     <% if updating_ssn %>
       <%= t('forms.buttons.submit.update') %>
@@ -81,7 +79,6 @@ locals:
     <% end %>
   <% end %>
 <% end %>
-
 
 <% if updating_ssn %>
   <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>

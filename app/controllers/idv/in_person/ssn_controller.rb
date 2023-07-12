@@ -60,6 +60,23 @@ module Idv
         }
       end
 
+      ##
+      # In order to test the behavior without the threatmetrix JS, we do not load the threatmetrix
+      # JS if the user's email is on a list of JS disabled emails.
+      #
+      def should_render_threatmetrix_js?
+        return false unless FeatureManagement.proofing_device_profiling_collecting_enabled?
+
+        current_user.email_addresses.each do |email_address|
+          no_csp_email = IdentityConfig.store.idv_tmx_test_js_disabled_emails.include?(
+            email_address.email,
+          )
+          return false if no_csp_email
+        end
+
+        true
+      end
+
       private
 
       def flow_session
