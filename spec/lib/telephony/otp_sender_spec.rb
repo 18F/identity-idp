@@ -55,7 +55,7 @@ RSpec.describe Telephony::OtpSender do
       end
 
       it 'logs a message being sent' do
-        expect(Telephony.config).to receive(:log_info).with(
+        expect(Telephony).to receive(:log_info).with(
           event: {
             success: true,
             errors: {},

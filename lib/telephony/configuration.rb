@@ -56,11 +56,9 @@ module Telephony
   )
 
   class Configuration
-    LOG_FILENAME = 'telephony.log'
-
     attr_writer :adapter
     attr_reader :pinpoint
-    attr_writer :logger
+    attr_accessor :logger
     attr_accessor :voice_pause_time
     attr_accessor :voice_rate
 
@@ -81,16 +79,6 @@ module Telephony
 
     def country_sender_ids
       @country_sender_ids || {}
-    end
-
-    def log_info(event:)
-      event[:log_filename] = LOG_FILENAME
-      @logger.info(event.to_json)
-    end
-
-    def log_warn(event:)
-      event[:log_filename] = LOG_FILENAME
-      @logger.warn(event.to_json)
     end
   end
 end

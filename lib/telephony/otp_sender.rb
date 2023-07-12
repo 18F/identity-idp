@@ -90,7 +90,7 @@ module Telephony
         },
       )
       output = response.to_h.merge(extra)
-      Telephony.config.log_info(event: output)
+      Telephony.log_info(event: output)
     end
 
     def otp_transformed_for_channel
