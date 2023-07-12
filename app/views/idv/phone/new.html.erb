@@ -76,12 +76,12 @@
         hidden: true,
       ) do %>
     <%= t(
-        'idv.messages.phone.failed_number.alert_html',
-        link_html: link_to(
-          t('idv.messages.phone.failed_number.gpo_verify_link'),
-          idv_gpo_path,
-        ),
-      ) %>
+          'idv.messages.phone.failed_number.alert_html',
+          link_html: link_to(
+            t('idv.messages.phone.failed_number.gpo_verify_link'),
+            idv_gpo_path,
+          ),
+        ) %>
   <% end %>
 
   <h2><%= t('idv.titles.otp_delivery_method') %></h2>

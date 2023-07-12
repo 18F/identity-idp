@@ -141,7 +141,7 @@ module Idv
         previous_params: idv_session.previous_phone_step_params,
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
-        failed_phone_numbers: idv_session.failed_phone_step_numbers
+        failed_phone_numbers: idv_session.failed_phone_step_numbers,
       )
     end
 

@@ -4,6 +4,8 @@ const failedPhoneNumbers: string[] = JSON.parse(alertElement.dataset.failedPhone
 const iti = window.intlTelInputGlobals.getInstance(input);
 
 input.addEventListener('input', () => {
-    const isFailedPhoneNumber = failedPhoneNumbers.includes(iti.getNumber(intlTelInputUtils.numberFormat.E164));
-    alertElement.hidden = !isFailedPhoneNumber;
+  const isFailedPhoneNumber = failedPhoneNumbers.includes(
+    iti.getNumber(intlTelInputUtils.numberFormat.E164),
+  );
+  alertElement.hidden = !isFailedPhoneNumber;
 });

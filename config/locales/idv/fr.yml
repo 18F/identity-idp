@@ -238,7 +238,9 @@ fr:
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
         failed_number:
-          alert_html: Nous n’avons pas pu vous associer à ce numéro. Si vous n’avez pas <strong>d’autre</strong> numéro de téléphone à essayer, %{link_html}.
+          alert_html: Nous n’avons pas pu vous associer à ce numéro. Si vous n’avez pas
+            <strong>d’autre</strong> numéro de téléphone à essayer,
+            %{link_html}.
           gpo_verify_link: vérifiez plutôt par courrier
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
