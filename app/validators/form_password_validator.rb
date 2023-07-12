@@ -37,7 +37,6 @@ module FormPasswordValidator
     errors.add(:password, :avoid_using_phrases_that_are_easily_guessed, type: :password)
   end
 
-
   def forbidden_passwords
     user.email_addresses.
       flat_map { |address| ForbiddenPasswords.new(address.email).call }
