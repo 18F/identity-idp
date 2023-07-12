@@ -19,8 +19,8 @@ en:
             page</a> to learn when the error is resolved.</p>
           options_html:
             - Continue now and verify by mail, which takes <strong>3 to 7
-              business days</strong>
-            - Exit Login.gov and try again later
+              business days</strong>.
+            - Exit Login.gov and try again later.
           options_prompt: 'You can:'
       sms:
         default: We cannot send text messages (SMS) at this time. You can get a code by

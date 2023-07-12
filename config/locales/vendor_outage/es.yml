@@ -21,7 +21,7 @@ es:
             estado</a> para saber cuándo se ha resuelto el error.</p>
           options_html:
             - Continuar ahora y verificar por correo, que tarda de <strong>3 a 7
-              días laborables</strong>
+              días laborables</strong>.
             - Salir de Login.gov e inténtelo de nuevo más tarde.
           options_prompt: 'Usted puede:'
       sms:

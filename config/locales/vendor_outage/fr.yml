@@ -21,7 +21,7 @@ fr:
           options_html:
             - Continuer maintenant et effectuer la vérification par courrier, ce
               qui prend de <strong>3 à 7 jours ouvrables</strong>.
-            - Quitter Login.gov
+            - Quitter Login.gov.
           options_prompt: 'Vous pouvez :'
       sms:
         default: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment.
