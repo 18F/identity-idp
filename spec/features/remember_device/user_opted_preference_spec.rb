@@ -117,9 +117,8 @@ RSpec.describe 'Unchecking remember device' do
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         mock_webauthn_verification_challenge
         sign_in_user(user)
-        mock_press_button_on_hardware_key_on_verification
         uncheck(:remember_device)
-        click_button t('forms.buttons.continue')
+        mock_press_button_on_hardware_key_on_verification
         first(:link, t('links.sign_out')).click
 
         sign_in_user(user)
