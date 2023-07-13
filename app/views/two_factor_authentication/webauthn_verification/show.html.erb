@@ -24,29 +24,21 @@
   <%= hidden_field_tag :webauthn_error, '', id: 'webauthn_error' %>
   <%= hidden_field_tag :platform, @presenter.platform_authenticator? %>
 
-  <%= content_tag(
-        :div,
-        id: 'webauthn-auth-in-progress',
-        data: {
-          webauthn_not_enabled_url: @presenter.webauthn_not_enabled_link,
-        },
-      ) do %>
-    <div class="display-none spinner text-center margin-bottom-5" id="spinner">
-      <%= image_tag(
-            asset_url('spinner.gif'),
-            srcset: asset_url('spinner@2x.gif'),
-            height: 144,
-            width: 144,
-            alt: '',
-          ) %>
-      <p class="text-bold margin-y-5">
-        <%= t('two_factor_authentication.webauthn_authenticating') %>
-      </p>
-    </div>
-    <button id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
-      <%= @presenter.authenticate_button_text %>
-    </button>
-  <% end %>
+  <div class="display-none spinner text-center margin-bottom-5" id="spinner">
+    <%= image_tag(
+          asset_url('spinner.gif'),
+          srcset: asset_url('spinner@2x.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
+    <p class="text-bold margin-y-5">
+      <%= t('two_factor_authentication.webauthn_authenticating') %>
+    </p>
+  </div>
+  <button id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
+    <%= @presenter.authenticate_button_text %>
+  </button>
 
   <%= f.input(
         :remember_device,

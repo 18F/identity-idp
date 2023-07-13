@@ -27,8 +27,6 @@ module TwoFactorAuthentication
       handle_webauthn_result(result)
     end
 
-    def error; end
-
     private
 
     def handle_webauthn_result(result)

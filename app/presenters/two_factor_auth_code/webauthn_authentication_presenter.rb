@@ -81,14 +81,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def webauthn_not_enabled_link
-      if platform_authenticator?
-        login_two_factor_webauthn_error_path
-      else
-        login_two_factor_options_path
-      end
-    end
-
     def multiple_factors_enabled?
       service_provider_mfa_policy.multiple_factors_enabled?
     end
