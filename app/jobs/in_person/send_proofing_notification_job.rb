@@ -91,7 +91,7 @@ module InPerson
     end
 
     def notification_message(enrollment:)
-      proof_date = enrollment.proofed_at ? enrollment.proofed_at.strftime('%m/%d/%Y') : 'NA'
+      proof_date = enrollment.proofed_at ? I18n.l(enrollment.proofed_at, format: :sms_date) : 'NA'
       I18n.t(
         'telephony.confirmation_ipp_enrollment_result.sms',
         app_name: APP_NAME,
