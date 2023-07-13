@@ -18,18 +18,14 @@ events:
       The user has uploaded identity documents, and Login.gov has submitted them to Acuant for 
       processing.
     params:
-      request_success:
-        type: boolean
-        description: Whether the underlying HTTP request succeeded.
-      response_status:
-        type: number
-        description: HTTP status code returned with the response
-      result:
+      $ref: '#!/schemas/DocAuthResult'
 
   idv_documents_submitted_to_trueid:
     description: >
       The user has uploaded identity documents, and Login.gov has submitted them to LexisNexis TrueID
       for processing.
+    params:
+      $ref: '#!/schemas/DocAuthResult'
 
   idv_ssn_entered_by_user:
     description: >
@@ -135,8 +131,8 @@ schemas:
 
   DocAuthResult:
     type: object
-    description: Structured data describing the result.
     properties:
+      response_status:
       billed:
         type: boolean
       doc_auth_result:
