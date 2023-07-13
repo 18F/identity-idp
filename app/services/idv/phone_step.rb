@@ -46,7 +46,9 @@ module Idv
       if success
         handle_successful_proofing_attempt
       else
-        idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
+        unless failure_reason == :timeout
+          idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
+        end
       end
 
       delete_async
