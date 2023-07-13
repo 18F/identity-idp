@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "workspaces": [
     "app/javascript/packages/*"
@@ -63,7 +63,6 @@
     "@types/sinon-chai": "^3.2.8",
     "@typescript-eslint/eslint-plugin": "^5.38.1",
     "@typescript-eslint/parser": "^5.38.1",
-    "audit-ci": "^6.6.1",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^3.0.3",
@@ -86,12 +85,11 @@
     "react-test-renderer": "^17.0.2",
     "sinon": "^14.0.0",
     "sinon-chai": "^3.7.0",
-    "stylelint": "^15.5.0",
+    "stylelint": "^15.10.1",
     "svgo": "^2.8.0",
     "swr": "^2.0.0",
     "typescript": "^5.0.4",
-    "webpack-dev-server": "^4.11.1",
-    "whatwg-fetch": "^3.4.0"
+    "webpack-dev-server": "^4.11.1"
   },
   "resolutions": {
     "minimist": "1.2.6"

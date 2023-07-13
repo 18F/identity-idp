@@ -1,12 +1,12 @@
 class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
-  include FraudReviewConcern
+  include VerifyProfileConcern
   include RateLimitConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
-  before_action :handle_fraud
+  before_action :handle_pending_profile, only: [:index]
   before_action :confirm_not_rate_limited
 
   def index
@@ -30,6 +30,10 @@ class IdvController < ApplicationController
   def verify_identity
     analytics.idv_intro_visit
     redirect_to idv_welcome_url
+  end
+
+  def handle_pending_profile
+    redirect_to url_for_pending_profile_reason if user_has_pending_profile?
   end
 
   def profile_needs_reactivation?

@@ -54,6 +54,13 @@ module WebAuthnHelper
     set_hidden_field('authenticator_data', authenticator_data)
     set_hidden_field('signature', signature)
     set_hidden_field('client_data_json', verification_client_data_json)
+
+    # submit form
+    if javascript_enabled?
+      first('form').evaluate_script('this.submit()')
+    else
+      find('#webauthn-button').click
+    end
   end
 
   def set_hidden_field(id, value)

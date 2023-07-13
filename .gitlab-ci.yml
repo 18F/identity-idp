@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:e846ed99aa3c8f9083731105b8ef25536c7ab3ed5e9f2b781b63431badcb091b'
+  IDP_CI_SHA: 'sha256:6915b54a913ebcb9066fdfaa88c3d42bda1f4505cfb59b9d5848576705954621'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -102,7 +102,7 @@ build-idp-image:
     - build-pool
   image:
     name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
+    entrypoint: ['']
   script:
     - mkdir -p /kaniko/.docker
     - |-
@@ -393,7 +393,7 @@ stop-review-app:
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
-  
+
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml

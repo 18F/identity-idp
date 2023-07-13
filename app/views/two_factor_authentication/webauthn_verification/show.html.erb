@@ -31,7 +31,7 @@
           webauthn_not_enabled_url: @presenter.webauthn_not_enabled_link,
         },
       ) do %>
-    <div class="display-none spinner text-center margin-bottom-4" id="spinner">
+    <div class="display-none spinner text-center margin-bottom-5" id="spinner">
       <%= image_tag(
             asset_url('spinner.gif'),
             srcset: asset_url('spinner@2x.gif'),
@@ -39,43 +39,41 @@
             width: 144,
             alt: '',
           ) %>
+      <p class="text-bold margin-y-5">
+        <%= t('two_factor_authentication.webauthn_authenticating') %>
+      </p>
     </div>
-    <p class="text-bold">
-      <%= @presenter.login_text %>
-    </p>
-    <button type="button" id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
+    <button id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
       <%= @presenter.authenticate_button_text %>
     </button>
-    <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
 
-  <div id='webauthn-auth-successful' class="display-none">
-    <div class="text-center margin-bottom-2">
-      <%= image_tag(
-            asset_url('webauthn-verified.svg'),
-            height: 144,
-            width: 144,
-            alt: '',
-          ) %>
-    </div>
-    <h2 class="h4 half-center margin-top-4">
-      <%= @presenter.verified_header %>
-    </h2>
-    <p class="half-center">
-      <%= @presenter.verified_info_text %>
-    </p>
-    <%= f.input(
-          :remember_device,
-          as: :boolean,
-          label: t('forms.messages.remember_device'),
-          wrapper_html: { class: 'margin-top-4' },
-          input_html: {
-            class: 'usa-checkbox__input--bordered',
-            checked: @presenter.remember_device_box_checked?,
-          },
-        ) %>
-    <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-4' %>
-  </div>
+  <%= f.input(
+        :remember_device,
+        as: :boolean,
+        label: t('forms.messages.remember_device'),
+        wrapper_html: { class: 'margin-y-5' },
+        input_html: {
+          class: 'usa-checkbox__input--bordered',
+          checked: @presenter.remember_device_box_checked?,
+        },
+      ) %>
+
+  <%= render TroubleshootingOptionsComponent.new do |c| %>
+    <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+    <% if @presenter.link_path.present? %>
+      <% c.with_option(url: @presenter.link_path).with_content(@presenter.link_text) %>
+    <% end %>
+    <% c.with_option(
+         url: help_center_redirect_path(
+           category: 'get-started',
+           article: 'authentication-options',
+           flow: :two_factor_authentication,
+           step: :webauthn_verification,
+         ),
+         new_tab: true,
+       ).with_content(t('two_factor_authentication.phone_verification.troubleshooting.learn_more')) %>
+  <% end %>
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
 

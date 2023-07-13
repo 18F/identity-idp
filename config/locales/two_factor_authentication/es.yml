@@ -197,6 +197,7 @@ es:
       seguridad. Para poder acceder a su información, deberá verificar su
       identidad a través de un dispositivo físico como una clave de seguridad o
       identificación de empleado gubernamental (PIV/CAC)
+    webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
       error_page_text: Tiene habilitado el desbloqueo facial o táctil para esta
@@ -204,20 +205,8 @@ es:
       multiple_methods: El desbloqueo facial o táctil no fue exitoso. Por favor,
         inténtelo de nuevo o %{link}.
       title: No podemos reconocer su dispositivo
-    webauthn_fallback:
-      question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
-    webauthn_platform_fallback:
-      question: '¿No dispone de tu dispositivo?'
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
-    webauthn_platform_verified:
-      header: Dispositivo verificado
-      info: Hemos verificado su dispositivo. Haga clic en continuar para iniciar
-        sesión.
     webauthn_use_key: Usar llave de seguridad
-    webauthn_verified:
-      header: Llave de seguridad verificada
-      info: Hemos verificado su llave de seguridad. Haga clic en continuar para
-        iniciar sesión.

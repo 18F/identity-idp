@@ -3,9 +3,6 @@ import type { VerifyCredentialDescriptor } from '@18f/identity-webauthn';
 
 function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress')!;
-  const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
-
-  const webauthAlertContainer = document.querySelector('.usa-alert--error')!;
 
   const spinner = document.getElementById('spinner')!;
   spinner.classList.remove('display-none');
@@ -30,22 +27,19 @@ function webauthn() {
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
         (document.getElementById('signature') as HTMLInputElement).value = result.signature;
-        webauthnInProgressContainer.classList.add('display-none');
-        webauthnSuccessContainer.classList.remove('display-none');
-        // Check if alert container is shown and remove when device passes successfully.
-        if (webauthAlertContainer) {
-          webauthAlertContainer.remove();
-        }
       })
       .catch((error: Error) => {
         (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;
+      })
+      .then(() => {
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       });
   }
 }
 
 function webauthnButton() {
-  const button = document.getElementById('webauthn-button')!;
+  const button = document.getElementById('webauthn-button') as HTMLButtonElement;
+  button.type = 'button';
   button.addEventListener('click', webauthn);
 }
 

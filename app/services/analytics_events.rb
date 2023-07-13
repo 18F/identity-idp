@@ -3892,6 +3892,14 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user is suspended and attempts to sign in, triggering the please call page.
+  def user_suspended_please_call_visited(**extra)
+    track_event(
+      'User Suspension: Please call visited',
+      **extra,
+    )
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
