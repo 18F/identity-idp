@@ -71,7 +71,7 @@ module WebAuthnHelper
         expect(page).to have_content(t('errors.general'), wait: 5)
       end
     else
-      find('#webauthn-button').click
+      yield
     end
   end
 
@@ -103,8 +103,7 @@ module WebAuthnHelper
       set_hidden_field('signature', signature)
       set_hidden_field('client_data_json', verification_client_data_json)
 
-      # submit form
-      find('#webauthn-button').click
+      yield
     end
   end
 
