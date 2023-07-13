@@ -22,12 +22,24 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
 
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
-      t('idv.failure.phone.rate_limited.option_cancel_and_return_to_sp'),
-      href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
-    )
-    expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       href: MarketingSite.contact_url,
+    )
+  end
+
+  it 'tells them they can try again later' do
+    expect(rendered).to have_text(
+      t(
+        'idv.failure.phone.rate_limited.option_try_again_later',
+        time_left: distance_of_time_in_words(Time.zone.now, @expires_at, except: :seconds),
+      ),
+    )
+  end
+
+  it 'renders a cancel link' do
+    expect(rendered).to have_link(
+      t('links.cancel'),
+      href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
     )
   end
 
