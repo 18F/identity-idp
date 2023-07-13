@@ -3,10 +3,13 @@
 module InPerson
   class SendProofingNotificationJob < ApplicationJob
     # @param [InPersonEnrollment] enrollment
-    def perform(enrollment)
+    def perform(enrollment_id)
       return true if IdentityConfig.store.in_person_proofing_enabled.blank? ||
                      IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
-
+      enrollment = InPersonEnrollment.find(
+        enrollment_id,
+        include: [:notification_phone_configuration, :user],
+      )
       # skip
       if !enrollment.notification_phone_configuration.present? ||
          (!enrollment.passed? && !enrollment.failed?)
@@ -43,6 +46,13 @@ module InPerson
       end
       return true
     ensure
+      unless enrollment.present?
+        enrollment = InPersonEnrollment.find(
+          enrollment_id,
+          include: [:notification_phone_configuration,
+                    :user],
+        )
+      end
       analytics(user: enrollment.user).
         idv_in_person_usps_proofing_results_notification_job_completed(
           enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment.id,

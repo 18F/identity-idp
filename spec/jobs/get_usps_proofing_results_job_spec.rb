@@ -640,7 +640,8 @@ RSpec.describe GetUspsProofingResultsJob do
               and_return(true)
             expect do
               job.perform(Time.zone.now)
-            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).with(pending_enrollment)
+            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -1135,7 +1136,8 @@ RSpec.describe GetUspsProofingResultsJob do
               and_return(true)
             expect do
               job.perform Time.zone.now
-            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).with(pending_enrollment)
+            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
+              with(pending_enrollment.id)
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(pending_enrollment.profile.active).to eq(false)
             expect(job_analytics).to have_logged_event(

@@ -43,6 +43,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       and_return(in_person_proofing_enabled)
     allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
       and_return(in_person_send_proofing_notifications_enabled)
+
   end
 
   describe '#perform' do
@@ -50,6 +51,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_proofing_enabled) { false }
       let(:in_person_send_proofing_notifications_enabled) { true }
       it 'returns true without doing anything' do
+        allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
         expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_started,
         )
@@ -65,6 +67,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_proofing_enabled) { true }
       let(:in_person_send_proofing_notifications_enabled) { false }
       it 'returns true without doing anything' do
+        allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+
         expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_started,
         )
@@ -73,7 +77,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
-        expect(job.perform(passed_enrollment)).to be(true)
+        expect(job.perform(passed_enrollment.id)).to be(true)
       end
     end
     context 'ipp and job enabled' do
@@ -81,18 +85,22 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_send_proofing_notifications_enabled) { true }
       context 'without notification phone notification' do
         it 'returns true without doing anything' do
+          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment_without_notification)
+
           expect(analytics).not_to receive(
             :idv_in_person_usps_proofing_results_notification_job_started,
           )
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_job_completed,
           )
-          expect(job.perform(passed_enrollment_without_notification)).to be(true)
+          expect(job.perform(passed_enrollment_without_notification.id)).to be(true)
         end
       end
       context 'with notification phone configuration' do
         it 'send notification successfully when enrollment is successful and enrollment updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+
           freeze_time do
             now = Time.zone.now
             expect(analytics).to receive(
@@ -106,13 +114,15 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             )
             expect(passed_enrollment.notification_sent_at).to eq(nil)
 
-            expect(job.perform(passed_enrollment)).to be(true)
+            expect(job.perform(passed_enrollment.id)).to be(true)
             expect(passed_enrollment.notification_sent_at).to eq(now)
             expect(passed_enrollment.reload.notification_phone_configuration).to eq(nil)
           end
         end
         it 'send notification successfully when enrollment failed' do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+          allow(InPersonEnrollment).to receive(:find).and_return(failing_enrollment)
+
           freeze_time do
             now = Time.zone.now
             expect(analytics).to receive(
@@ -133,6 +143,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       context 'failed to send notification' do
         it 'logs sms send failre when number is opt out and enrollment not updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_opt_out_response)
+          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,
           )
@@ -141,6 +153,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
         it 'logs sms send failure for delivery failure' do
           allow(Telephony).to receive(:send_notification).and_return(sms_failure_response)
+          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,
           )
