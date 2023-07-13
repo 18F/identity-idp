@@ -23,4 +23,9 @@
         wide: true,
         class: 'webauthn-verify-button__button display-block margin-y-3',
       ).with_content(content) %>
+  <%= hidden_field_tag :credential_id, '' %>
+  <%= hidden_field_tag :authenticator_data, '' %>
+  <%= hidden_field_tag :signature, '' %>
+  <%= hidden_field_tag :client_data_json, '' %>
+  <%= hidden_field_tag :webauthn_error, '' %>
 <% end %>

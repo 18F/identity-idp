@@ -45,23 +45,20 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
     try {
       const result = await verifyWebauthnDevice({ userChallenge, credentials });
-      this.appendInput('credential_id', result.credentialId);
-      this.appendInput('authenticator_data', result.authenticatorData);
-      this.appendInput('client_data_json', result.clientDataJSON);
-      this.appendInput('signature', result.signature);
+      this.setInputValue('credential_id', result.credentialId);
+      this.setInputValue('authenticator_data', result.authenticatorData);
+      this.setInputValue('client_data_json', result.clientDataJSON);
+      this.setInputValue('signature', result.signature);
     } catch (error) {
-      this.appendInput('webauthn_error', error.name);
+      this.setInputValue('webauthn_error', error.name);
     }
 
     this.closest('form')?.submit();
   }
 
-  appendInput(name: string, value: string) {
-    const input = this.ownerDocument.createElement('input');
-    input.name = name;
+  setInputValue(name: string, value: string) {
+    const input = this.querySelector<HTMLInputElement>(`[name="${name}"]`)!;
     input.value = value;
-    input.type = 'hidden';
-    this.appendChild(input);
   }
 }
 

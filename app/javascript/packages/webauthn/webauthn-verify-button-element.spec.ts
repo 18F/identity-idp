@@ -30,6 +30,11 @@ describe('WebauthnVerifyButtonElement', () => {
           <button class="webauthn-verify-button__button">
             Authenticate
           </button>
+          <input type="hidden" name="credential_id" value="">
+          <input type="hidden" name="authenticator_data" value="">
+          <input type="hidden" name="signature" value="">
+          <input type="hidden" name="client_data_json" value="">
+          <input type="hidden" name="webauthn_error" value="">
         </lg-webauthn-verify-button>
       </form>
     `;
@@ -86,6 +91,10 @@ describe('WebauthnVerifyButtonElement', () => {
     await expect(form.submit).to.eventually.be.called();
 
     expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+      credential_id: '',
+      authenticator_data: '',
+      client_data_json: '',
+      signature: '',
       webauthn_error: 'CustomError',
     });
   });
@@ -108,6 +117,7 @@ describe('WebauthnVerifyButtonElement', () => {
       authenticator_data: 'auth',
       client_data_json: 'json',
       signature: 'sig',
+      webauthn_error: '',
     });
   });
 });
