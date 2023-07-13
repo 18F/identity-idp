@@ -4,7 +4,7 @@ class WebauthnVisitForm
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TagHelper
 
-  attr_reader :url_options
+  attr_reader :url_options, :in_mfa_selection_flow
 
   INVALID_STATE_ERROR = 'InvalidStateError'
   NOT_SUPPORTED_ERROR = 'NotSupportedError'
@@ -46,13 +46,17 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_platform_setup.not_supported')
     else
-      I18n.t(
-        'errors.webauthn_platform_setup.account_setup_error',
-        link_html: link_to(
-          I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-          authentication_methods_setup_path,
-        ),
-      )
+      if in_mfa_selection_flow
+        I18n.t(
+          'errors.webauthn_platform_setup.account_setup_error',
+          link_html: link_to(
+            I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+            authentication_methods_setup_path,
+          ),
+        )
+      else
+        I18n.t('errors.webauthn_platform_setup.general_error')
+      end
     end
   end
 
