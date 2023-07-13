@@ -44,15 +44,31 @@ describe('WebauthnInputElement', () => {
 
     context('passkey supported only', () => {
       context('device does not support passkey', () => {
-        beforeEach(() => {
-          isWebauthnPasskeySupported.returns(false);
-          document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only hidden></lg-webauthn-input>`;
+        context('unsupported passkey not shown', () => {
+          beforeEach(() => {
+            isWebauthnPasskeySupported.returns(false);
+            document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only hidden></lg-webauthn-input>`;
+          });
+
+          it('stays hidden', () => {
+            const element = document.querySelector('lg-webauthn-input')!;
+
+            expect(element.hidden).to.be.true();
+          });
         });
 
-        it('stays hidden', () => {
-          const element = document.querySelector('lg-webauthn-input')!;
+        context('unsupported passkey shown', () => {
+          beforeEach(() => {
+            isWebauthnPasskeySupported.returns(false);
+            document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only show-unsupported-passkey hidden></lg-webauthn-input>`;
+          });
 
-          expect(element.hidden).to.be.true();
+          it('becomes visible, with modifier class', () => {
+            const element = document.querySelector('lg-webauthn-input')!;
+
+            expect(element.hidden).to.be.false();
+            expect(element.classList.contains('webauthn-input--unsupported-passkey'));
+          });
         });
       });
 
