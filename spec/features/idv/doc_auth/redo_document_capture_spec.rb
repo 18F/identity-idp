@@ -19,6 +19,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       mock_doc_auth_attention_with_barcode
       attach_and_submit_images
       click_idv_continue
+      expect(page).to have_current_path(idv_ssn_path, wait: 5)
 
       if use_bad_ssn
         fill_out_ssn_form_with_ssn_that_fails_resolution
