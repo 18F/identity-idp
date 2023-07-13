@@ -1,5 +1,4 @@
 import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
-import isWebauthnSupported from './is-webauthn-supported';
 
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
@@ -15,10 +14,6 @@ export class WebauthnInputElement extends HTMLElement {
   }
 
   isSupported(): boolean {
-    if (!isWebauthnSupported()) {
-      return false;
-    }
-
     return !this.isPlatform || !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
   }
 
