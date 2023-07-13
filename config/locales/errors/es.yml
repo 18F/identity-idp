@@ -121,7 +121,7 @@ es:
       throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     webauthn_platform_setup:
       account_setup_error: No pudimos agregar el desbloqueo con la cara o con la
-        huella digital. Inténtelo de nuevo o %{link}.
+        huella digital. Inténtelo de nuevo o %{link_html}.
       already_registered: Ya está registrado el desbloqueo con la cara o con la huella
         digital en este dispositivo. Trate de agregar otro método de
         autenticación.
