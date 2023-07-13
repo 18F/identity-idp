@@ -28,6 +28,8 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
+      expect(page).to have_content(t('doc_auth.info.you_entered'))
+      expect(page).to have_content('+1 415-555-0199')
 
       # Confirm that Continue button is not shown when polling is enabled
       expect(page).not_to have_content(t('doc_auth.buttons.continue'))
