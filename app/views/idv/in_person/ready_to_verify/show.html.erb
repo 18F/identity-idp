@@ -9,9 +9,9 @@
       ) %>
 <% end %>
 
-<% if @presenter.outage_message_enabled? && @presenter.outage_dates_present? %>
+<% if @presenter.outage_message_enabled? %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
-    <%= render 'shared/outage_alert', date: @presenter.date, email_date: @presenter.email_date %>
+    <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
   <% end %>
 <% end %>
 

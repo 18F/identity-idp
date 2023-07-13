@@ -47,30 +47,35 @@ module Idv
       end
 
       def outage_message_enabled?
-        IdentityConfig.store.in_person_outage_message_enabled
+        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
       end
 
-      def date
-        format_outage_date(expected_update_date)
+      def formatted_outage_expected_update_date
+        format_outage_date(outage_expected_update_date)
       end
 
-      def email_date
-        format_outage_date(emailed_by_date)
+      def formatted_outage_emailed_by_date
+        format_outage_date(outage_emailed_by_date)
       end
 
       def outage_dates_present?
-        expected_update_date.present? && emailed_by_date.present?
+        outage_expected_update_date.present? && outage_emailed_by_date.present?
+        formatted_outage_expected_update_date
+        formatted_outage_emailed_by_date
+        true
+      rescue
+        false
       end
 
       private
 
       attr_reader :enrollment
 
-      def expected_update_date
+      def outage_expected_update_date
         IdentityConfig.store.in_person_outage_expected_update_date
       end
 
-      def emailed_by_date
+      def outage_emailed_by_date
         IdentityConfig.store.in_person_outage_emailed_by_date
       end
 

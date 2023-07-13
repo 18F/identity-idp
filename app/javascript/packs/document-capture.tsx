@@ -33,8 +33,6 @@ interface AppRootData {
   cancelUrl: string;
   idvInPersonUrl?: string;
   securityAndPrivacyHowItWorksUrl: string;
-  inPersonOutageMessageEnabled: string;
-  inPersonOutageExpectedUpdateDate: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;

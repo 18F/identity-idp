@@ -39,18 +39,20 @@ RSpec.describe IdentityConfig do
         update_date = IdentityConfig.store.in_person_outage_expected_update_date.to_date
         update_month, update_day, update_year =
           IdentityConfig.store.in_person_outage_expected_update_date.remove(',').split(' ')
-        expect(update_month).to_not be_empty
+
+        expect(Date::MONTHNAMES.include?(update_month && update_month.capitalize)).to be_truthy
         expect(update_day).to_not be_empty
         expect(update_year).to_not be_empty
-        expect(update_date).to_not be_nil
+        expect { update_date }.to_not raise_error
 
         email_date = IdentityConfig.store.in_person_outage_emailed_by_date.to_date
         email_month, email_day, email_year =
           IdentityConfig.store.in_person_outage_emailed_by_date.remove(',').split(' ')
-        expect(email_month).to_not be_empty
+
+        expect(Date::MONTHNAMES.include?(email_month && email_month.capitalize)).to be_truthy
         expect(email_day).to_not be_empty
         expect(email_year).to_not be_empty
-        expect(email_date).to_not be_nil
+        expect { email_date }.to_not raise_error
       end
     end
   end
