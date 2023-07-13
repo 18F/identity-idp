@@ -33,6 +33,14 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     started_at = Time.zone.now
+
+#    enrollments.update(:last_batch_claim_at => started_at)
+    enrollments.each do |enroll|
+      enroll.update(:last_batch_claim_at => started_at)
+    end
+    puts("there are #{enrollments.size} before calling batch")
+    enrollments = InPersonEnrollment.needs_usps_status_check_batch(started_at) if enrollments.size > 0 
+    puts("there are #{enrollments.size} after calling batch")
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
