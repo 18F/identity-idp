@@ -72,13 +72,13 @@ events.each do |event|
     properties = schema[:properties] || {}
 
     if properties.length == 0
-      param_structs << "#{params_type} = Struct.new()"
+      param_structs << "#{params_type} = Struct.new"
     else
       param_structs << "#{params_type} = Struct.new("
       properties.each_pair do |name, _schema|
         param_structs << "  :#{name},"
       end
-      param_structs << '  keyword_init: true'
+      param_structs << '  keyword_init: true,'
       param_structs << ')'
     end
 
@@ -99,18 +99,18 @@ events.each do |event|
   methods << ''
 end
 
+methods.pop # remove last blank line
+
 lines = []
 lines << "# 👋 This file was automatically generated. Please don't edit it by hand."
 lines << ''
 lines << 'module Idv::Events'
-lines << ''
 
 if !param_structs.empty?
-  param_structs.each { |line| lines << "  #{line}" }
-  lines << ''
+  param_structs.each { |line| lines << "  #{line}".rstrip }
 end
 
-methods.each { |line| lines << "  #{line}" }
+methods.each { |line| lines << "  #{line}".rstrip }
 
 lines << 'end'
 
