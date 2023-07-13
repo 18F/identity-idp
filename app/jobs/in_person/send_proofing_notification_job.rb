@@ -2,9 +2,9 @@
 
 module InPerson
   class SendProofingNotificationJob < ApplicationJob
-    # @param [String] enrollment_id primary key of the enrollment
+    # @param [Number] enrollment_id primary key of the enrollment
     def perform(enrollment_id)
-      return true if IdentityConfig.store.in_person_proofing_enabled.blank? ||
+      return if IdentityConfig.store.in_person_proofing_enabled.blank? ||
                      IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
       enrollment = InPersonEnrollment.find(
         enrollment_id,
@@ -19,7 +19,7 @@ module InPerson
             enrollment_code: enrollment.enrollment_code,
             enrollment_id: enrollment.id,
           )
-        return true
+        return
       end
       analytics(user: enrollment.user).
         idv_in_person_usps_proofing_results_notification_job_started(
@@ -44,7 +44,6 @@ module InPerson
           enrollment.notification_phone_configuration.destroy!
         end
       end
-      return true
     ensure
       unless enrollment.present?
         enrollment = InPersonEnrollment.find(
