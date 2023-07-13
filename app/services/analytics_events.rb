@@ -1743,7 +1743,7 @@ module AnalyticsEvents
   end
 
   # Track sms notification attempt
-  # @param [Object] success: sms notification successful or not
+  # @param [boolean] success sms notification successful or not
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
   # @param [Hash] extra extra information
