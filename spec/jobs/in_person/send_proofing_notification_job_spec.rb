@@ -43,7 +43,6 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       and_return(in_person_proofing_enabled)
     allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
       and_return(in_person_send_proofing_notifications_enabled)
-
   end
 
   describe '#perform' do
@@ -85,7 +84,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_send_proofing_notifications_enabled) { true }
       context 'without notification phone notification' do
         it 'returns true without doing anything' do
-          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment_without_notification)
+          allow(InPersonEnrollment).to receive(:find).
+            and_return(passed_enrollment_without_notification)
 
           expect(analytics).not_to receive(
             :idv_in_person_usps_proofing_results_notification_job_started,
