@@ -5,7 +5,7 @@ module InPerson
     # @param [Number] enrollment_id primary key of the enrollment
     def perform(enrollment_id)
       return if IdentityConfig.store.in_person_proofing_enabled.blank? ||
-                     IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
+                IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
       enrollment = InPersonEnrollment.find(
         enrollment_id,
         include: [:notification_phone_configuration, :user],
