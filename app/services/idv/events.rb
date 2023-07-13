@@ -2,9 +2,22 @@
 
 module Idv::Events
   IdvDocumentsSubmittedToAcuantParams = Struct.new(
-    :request_success,
     :response_status,
-    :result,
+    :billed,
+    :doc_auth_result,
+    :processed_alerts,
+    :alert_failure_count,
+    :address_line2_present,
+    keyword_init: true,
+  )
+
+  IdvDocumentsSubmittedToTrueidParams = Struct.new(
+    :response_status,
+    :billed,
+    :doc_auth_result,
+    :processed_alerts,
+    :alert_failure_count,
+    :address_line2_present,
     keyword_init: true,
   )
 
@@ -63,9 +76,10 @@ module Idv::Events
 
   # The user has uploaded identity documents, and Login.gov has submitted them to
   # LexisNexis TrueID for processing.
-  # @return [nil]
-  def idv_documents_submitted_to_trueid
-    nil
+  # @param [IdvDocumentsSubmittedToTrueidParams] params
+  # @return [IdvDocumentsSubmittedToTrueidParams]
+  def idv_documents_submitted_to_trueid(params)
+    params
   end
 
   # The information from the user's identity documents was submitted to the American

@@ -6,25 +6,54 @@ require 'action_controller'
 require 'action_view'
 require 'yaml'
 
-def resolve_schema(schema, document)
-  return schema if !schema
+def get_params_schema_for_event(event, document)
+  return if !event[:params]
 
-  ref = schema[:ref]
+  schema = event[:params]
 
-  if ref
-    raise "Invalid ref: #{ref}" unless ref.start_with?('#!/')
-    path = ref.sub('#!/', '').split('/')
-    return resolve_schema(document.dig(path), document)
+  has_ref = !!schema[:$ref]
+  has_type = !!schema[:type]
+
+  if !has_ref && !has_type
+    # This might be shorthand, assume it's an object
+    schema = {
+      type: 'object',
+      properties: schema,
+    }
   end
 
-  if schema[:type] == 'object' && schema[:properties]
-    schema.merge(
-      {
-        properties: schema[:properties].transform_values do |schema|
-                      resolve_schema(schema, document)
-                    end,
-      },
-    )
+  resolve_schema(schema, document).merge(
+    {
+      title: "#{event[:name].to_s.camelize}Params",
+    },
+  )
+end
+
+def resolve_schema(schema, document)
+  ref = schema[:$ref]
+
+  if ref
+    raise "Invalid $ref: #{ref}" unless ref.start_with?('#!/')
+
+    path = ref.sub('#!/', '').split('/').map { |s| s.to_sym }
+    schema_at_path = document.dig(*path)
+
+    if !schema_at_path
+      raise "Invalid $ref: #{path}"
+    end
+
+    return resolve_schema(schema_at_path, document)
+  end
+
+  if schema[:type] == 'object' && schema.has_key?(:properties)
+    new_properties = {}
+    schema[:properties].each_pair do |name, property_schema|
+      if property_schema.nil?
+        property_schema = { type: 'string' }
+      end
+      new_properties[name] = resolve_schema(property_schema, document)
+    end
+    schema.merge(properties: new_properties)
   elsif schema[:type] == 'array' && schema[:items]
     schema.merge(
       {
@@ -54,27 +83,18 @@ events.each do |event|
   args = []
   rdoc = ActionController::Base.helpers.word_wrap(event[:description]).split("\n")
 
-  if event[:params]
+  params_schema = get_params_schema_for_event(event, document)
+
+  if params_schema
     args << 'params'
-    params_type = "#{event[:name].to_s.camelize}Params"
-    rdoc << "@param [#{params_type}] params"
+    rdoc << "@param [#{params_schema[:title]}] params"
 
-    schema = if event[:params][:type]
-               event[:params]
-    else
-      {
-        type: 'object',
-        properties: event[:params],
-      }
-    end
-
-    schema = resolve_schema(schema, document)
-    properties = schema[:properties] || {}
+    properties = params_schema[:properties] || {}
 
     if properties.length == 0
-      param_structs << "#{params_type} = Struct.new"
+      param_structs << "#{params_schema[:title]} = Struct.new"
     else
-      param_structs << "#{params_type} = Struct.new("
+      param_structs << "#{params_schema[:title]} = Struct.new("
       properties.each_pair do |name, _schema|
         param_structs << "  :#{name},"
       end
@@ -84,7 +104,7 @@ events.each do |event|
 
     param_structs << ''
 
-    rdoc << "@return [#{params_type}]"
+    rdoc << "@return [#{params_schema[:title]}]"
   else
     rdoc << '@return [nil]'
   end
