@@ -55,7 +55,7 @@ module TwoFactorAuthentication
       is_platform_auth = params[:platform].to_s == 'true'
       if is_platform_auth
         flash[:error] = t(
-          'two_factor_authentication.webauthn_error.multiple_methods',
+          'two_factor_authentication.webauthn_error.try_again',
           link: view_context.link_to(
             t('two_factor_authentication.webauthn_error.additional_methods_link'),
             login_two_factor_options_path,

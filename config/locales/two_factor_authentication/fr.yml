@@ -206,8 +206,8 @@ fr:
     webauthn_authenticating: Authentification de vos informations d’identification…
     webauthn_error:
       additional_methods_link: choisir une autre méthode d’authentification
-      multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné.
-        Veuillez réessayer ou %{link}.
+      try_again: Le déverrouillage facial ou tactile n’a pas fonctionné. Veuillez
+        réessayer ou %{link}.
     webauthn_header_text: Connectez votre clé de sécurité
     webauthn_piv_available: Utilisez votre PIV ou CAC
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
