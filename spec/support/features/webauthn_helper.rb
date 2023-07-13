@@ -51,7 +51,9 @@ module WebAuthnHelper
       page.evaluate_script(<<~JS)
         navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
       JS
+
       click_webauthn_authenticate_button
+      
       if platform_authenticator?
         expect(page).to have_content(
           strip_tags(
