@@ -2,7 +2,7 @@
 
 module InPerson
   class SendProofingNotificationJob < ApplicationJob
-    # @param [InPersonEnrollment] enrollment
+    # @param [String] enrollment_id primary key of the enrollment
     def perform(enrollment_id)
       return true if IdentityConfig.store.in_person_proofing_enabled.blank? ||
                      IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
@@ -100,7 +100,7 @@ module InPerson
       )
     end
 
-    def analytics(user: AnonymousUser.new)
+    def analytics(user:)
       Analytics.new(user: user, request: nil, session: {}, sp: nil)
     end
   end
