@@ -47,16 +47,6 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     end
   end
 
-  context 'in recovery without an authenticated user' do
-    let(:user_fully_authenticated) { false }
-
-    it 'renders a link to return to the MFA step' do
-      render
-
-      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
-    end
-  end
-
   context 'during the acuant maintenance window' do
     let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
     let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }

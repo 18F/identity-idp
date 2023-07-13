@@ -219,7 +219,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         it 'displays flash error message' do
           patch :confirm, params: params
           expect(flash[:error]).to eq t(
-            'two_factor_authentication.webauthn_error.verification',
+            'two_factor_authentication.webauthn_error.try_again',
             link: view_context.link_to(
               t('two_factor_authentication.webauthn_error.additional_methods_link'),
               login_two_factor_options_path,

@@ -5,12 +5,7 @@
  * @return Converted string.
  */
 export const base64ToArrayBuffer = (base64: string): ArrayBuffer =>
-  Uint8Array.from(
-    window
-      .atob(base64)
-      .split('')
-      .map((char) => char.charCodeAt(0)),
-  ).buffer;
+  Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)).buffer;
 
 /**
  * Converts an array buffer to a base64-encoded string.

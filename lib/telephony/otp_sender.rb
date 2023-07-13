@@ -89,8 +89,8 @@ module Telephony
           country_code: country_code,
         },
       )
-      output = response.to_h.merge(extra).to_json
-      Telephony.config.logger.info(output)
+      output = response.to_h.merge(extra)
+      Telephony.log_info(event: output)
     end
 
     def otp_transformed_for_channel

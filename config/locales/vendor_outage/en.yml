@@ -9,18 +9,17 @@ en:
           address by mail instead.
       pinpoint:
         idv:
-          header: We can only verify your identity by mail right now
-          message_html: Unfortunately, %{app_name} is having technical difficulties. We’re
-            working to resolve an error so that we can verify your identity for
-            <strong>%{sp_name}</strong> quickly.
+          header: We are working to resolve an error
+          message_html: '%{sp_name_html} needs to make sure you are you — not someone
+            pretending to be you.'
           options_html:
-            - <a href="%{status_page_url}" class="usa-link usa-link--external"
-              target="_blank">Get updates on our status page</a> to learn when
-              the error is resolved
             - Continue now and verify by mail, which takes <strong>3 to 7
-              business days</strong>
-            - Exit Login.gov and try again later
+              business days</strong>.
+            - Exit Login.gov and try again later.
           options_prompt: 'You can:'
+          status_page_html: Unfortunately, we’re having technical difficulties right now.
+            %{link_html} to learn when the error is resolved.
+          status_page_link: Get updates on our status page
       sms:
         default: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or choose another authentication method if you have one.

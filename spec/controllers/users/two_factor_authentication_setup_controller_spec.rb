@@ -64,21 +64,20 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           selection: 'voice',
         },
       }
-      params = ActionController::Parameters.new(voice_params)
-      response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
-      analytics_hash = response.to_h
 
-      form_params = { user: user, phishing_resistant_required: false, piv_cac_required: nil }
-      form = instance_double(TwoFactorOptionsForm)
-      allow(TwoFactorOptionsForm).to receive(:new).with(form_params).and_return(form)
-      expect(form).to receive(:submit).
-        with(params.require(:two_factor_options_form).permit(:selection)).
-        and_return(response)
-      expect(form).to receive(:selection).twice.and_return(['voice'])
+      expect(controller.two_factor_options_form).to receive(:submit).
+        with(hash_including(voice_params[:two_factor_options_form])).and_call_original
 
       patch :create, params: voice_params
 
-      expect(@analytics).to have_logged_event('User Registration: 2FA Setup', analytics_hash)
+      expect(@analytics).to have_logged_event(
+        'User Registration: 2FA Setup',
+        success: true,
+        errors: {},
+        enabled_mfa_methods_count: 0,
+        selected_mfa_count: 1,
+        selection: ['voice'],
+      )
     end
 
     it 'tracks analytics event' do

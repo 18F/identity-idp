@@ -1,6 +1,6 @@
 class MfaConfirmationPresenter
-  def initialize(user)
-    @user = user
+  def initialize(show_skip_additional_mfa_link: true)
+    @show_skip_additional_mfa_link = show_skip_additional_mfa_link
   end
 
   def heading
@@ -13,5 +13,9 @@ class MfaConfirmationPresenter
 
   def button
     I18n.t('mfa.add')
+  end
+
+  def show_skip_additional_mfa_link?
+    @show_skip_additional_mfa_link
   end
 end

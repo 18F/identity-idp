@@ -8,7 +8,10 @@
 <%= render StatusPageComponent.new(status: :warning) do |c| %>
   <% c.with_header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
   <p>
-    <%= t('vendor_outage.alerts.pinpoint.idv.message_html', app_name: APP_NAME, sp_name: current_sp&.friendly_name || APP_NAME) %>
+    <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name_html: content_tag(:strong, current_sp&.friendly_name || APP_NAME)) %>
+  </p>
+  <p>
+    <%= t('vendor_outage.alerts.pinpoint.idv.status_page_html', link_html: new_tab_link_to(t('vendor_outage.alerts.pinpoint.idv.status_page_link'), StatusPage.base_url)) %>
   </p>
   <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
   <ul class="margin-bottom-5">
