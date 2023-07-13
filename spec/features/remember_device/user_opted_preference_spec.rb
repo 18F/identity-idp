@@ -118,7 +118,7 @@ RSpec.describe 'Unchecking remember device' do
         mock_webauthn_verification_challenge
         sign_in_user(user)
         uncheck(:remember_device)
-        click_webauthn_authenticate_button_and_verify
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
         first(:link, t('links.sign_out')).click
 
         sign_in_user(user)

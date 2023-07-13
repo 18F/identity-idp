@@ -548,7 +548,7 @@ RSpec.feature 'Two Factor Authentication' do
           mock_webauthn_verification_challenge
 
           sign_in_user(webauthn_configuration.user)
-          click_webauthn_authenticate_button_and_verify
+          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
           expect(page).to have_current_path(account_path)
         end
@@ -563,7 +563,7 @@ RSpec.feature 'Two Factor Authentication' do
           mock_webauthn_verification_challenge
 
           sign_in_user(webauthn_configuration.user)
-          click_webauthn_authenticate_button_and_verify
+          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
           expect(page).to have_current_path(account_path)
         end

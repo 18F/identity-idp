@@ -46,14 +46,14 @@ module WebAuthnHelper
     end
   end
 
-  def click_webauthn_authenticate_button_and_cancel
+  def mock_cancelled_webauthn_authentication
     if javascript_enabled?
       page.evaluate_script(<<~JS)
         navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
       JS
 
-      click_webauthn_authenticate_button
-      
+      yield
+
       if platform_authenticator?
         expect(page).to have_content(
           strip_tags(
@@ -75,7 +75,7 @@ module WebAuthnHelper
     end
   end
 
-  def click_webauthn_authenticate_button_and_verify
+  def mock_successful_webauthn_authentication
     # this is required because the domain is embedded in the supplied attestation object
     allow(WebauthnSetupForm).to receive(:domain_name).and_return('localhost:3000')
 
@@ -94,7 +94,7 @@ module WebAuthnHelper
         });
       JS
       original_path = current_path
-      click_webauthn_authenticate_button
+      yield
       expect(page).not_to have_current_path(original_path, wait: 5)
     else
       # simulate javascript that is triggered when the hardware key button is pressed

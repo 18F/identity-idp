@@ -13,7 +13,7 @@ RSpec.feature 'webauthn sign in' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
-    click_webauthn_authenticate_button_and_verify
+    mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to have_current_path(account_path)
   end
@@ -22,7 +22,7 @@ RSpec.feature 'webauthn sign in' do
     # Not calling `mock_challenge` here means the challenge won't match the signature that is set
     # when the button is pressed.
     sign_in_user(user)
-    click_webauthn_authenticate_button_and_verify
+    mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
@@ -32,7 +32,7 @@ RSpec.feature 'webauthn sign in' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
-    click_webauthn_authenticate_button_and_cancel
+    mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
@@ -42,11 +42,11 @@ RSpec.feature 'webauthn sign in' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
-    click_webauthn_authenticate_button_and_cancel
+    mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to have_content(t('errors.general'))
 
-    click_webauthn_authenticate_button_and_verify
+    mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to_not have_content(t('errors.general'))
   end
@@ -55,7 +55,7 @@ RSpec.feature 'webauthn sign in' do
     mock_webauthn_verification_challenge
 
     sign_in_user(user)
-    click_webauthn_authenticate_button_and_cancel
+    mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
     expect(page).to have_content(t('two_factor_authentication.webauthn_header_text'))
   end
@@ -69,7 +69,7 @@ RSpec.feature 'webauthn sign in' do
       mock_webauthn_verification_challenge
 
       sign_in_user(user)
-      click_webauthn_authenticate_button_and_cancel
+      mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform_header_text'))
     end
