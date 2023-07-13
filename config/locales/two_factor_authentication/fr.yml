@@ -30,7 +30,7 @@ fr:
         votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un
         téléphone, protégez votre compte à l’aide d’une autre méthode
         d’authentification.
-    choose_another_option: '‹ Choisissez une autre option'
+    choose_another_option: '‹ Choisissez une autre option de sécurité'
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
