@@ -134,7 +134,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             expect(analytics).to receive(
               :idv_in_person_usps_proofing_results_notification_sent_attempted,
             )
-            expect(job.perform(failing_enrollment)).to be(true)
+            expect(job.perform(failing_enrollment.id)).to be(true)
             expect(failing_enrollment.notification_sent_at).to eq(now)
             expect(failing_enrollment.reload.notification_phone_configuration).to eq(nil)
           end
@@ -148,7 +148,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,
           )
-          expect(job.perform(passed_enrollment)).to be(true)
+          expect(job.perform(passed_enrollment.id)).to be(true)
           expect(passed_enrollment.notification_sent_at).to eq(nil)
         end
         it 'logs sms send failure for delivery failure' do
@@ -158,7 +158,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,
           )
-          expect(job.perform(passed_enrollment)).to be(true)
+          expect(job.perform(passed_enrollment.id)).to be(true)
           expect(passed_enrollment.notification_sent_at).to eq(nil)
         end
       end
