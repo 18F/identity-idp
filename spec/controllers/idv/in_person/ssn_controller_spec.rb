@@ -164,31 +164,6 @@ RSpec.describe Idv::InPerson::SsnController do
           end
         end
       end
-
-      describe '#should_render_threatmetrix_js?' do
-        it 'returns true if the JS should be disabled for the user' do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:enabled)
-          allow(IdentityConfig.store).to receive(:idv_tmx_test_js_disabled_emails).
-            and_return([user.email_addresses.first.email])
-
-          expect(controller.should_render_threatmetrix_js?).to eq(false)
-        end
-
-        it 'returns true if the JS should not be disabled for the user' do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:enabled)
-
-          expect(controller.should_render_threatmetrix_js?).to eq(true)
-        end
-
-        it 'returns false if TMx profiling is disabled' do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:disabled)
-
-          expect(controller.should_render_threatmetrix_js?).to eq(false)
-        end
-      end
     end
   end
 end
