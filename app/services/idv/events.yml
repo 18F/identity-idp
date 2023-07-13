@@ -1,0 +1,175 @@
+events:
+  auth_password_reset:
+    description: >
+      The user has reset their password and will not be able to access their IDV PII until providing
+      their personal key.
+
+  idv_started:
+    description: >  
+      The user has confirmed their desire to begin the identity verification process. They have
+      NOT necessarily yet consented to share their PII with Login.gov.
+  
+  idv_consented:
+    description: >
+      The user has consented to share PII with Login.gov for the purposes of identity verification.
+    
+  idv_documents_submitted_to_acuant:
+    description: >
+      The user has uploaded identity documents, and Login.gov has submitted them to Acuant for 
+      processing.
+    params:
+      request_success:
+        type: boolean
+        description: Whether the underlying HTTP request succeeded.
+      response_status:
+        type: number
+        description: HTTP status code returned with the response
+      result:
+
+  
+  idv_documents_submitted_to_trueid:
+    description: >
+      The user has uploaded identity documents, and Login.gov has submitted them to LexisNexis TrueID
+      for processing.
+    
+
+  idv_ssn_entered_by_user:
+    description: >
+      The user has entered their Social Security Number (SSN).
+    params:
+      type: object
+      required:
+        - ssn
+      properties:
+        ssn:
+          type: string
+          description: The user's social security number.
+
+  idv_threatmetrix_check_initiated:
+    description: >
+      Login.gov has initiated an automated fraud check for the user using LexisNexis ThreatMetrix.
+    params:
+      type: object
+      properties:
+        threatmetrix_session_id:
+          type: string
+          description: A UUID reported to ThreatMetrix identifying the user's session.
+
+  idv_threatmetrix_check_completed:
+    description: >
+      Login.gov requested the result of an automated fraud check. The response details will b
+    params:
+      type: object
+      properties:
+        response_status:
+          type: number
+          description: HTTP status code returned when making the request to ThreatMetrix
+        response_success:
+          type: boolean
+          description: Whether the request to ThreatMetrix succeeded.
+        threatmetrix_session_id:
+          type: string
+          description: A UUID reported to ThreatMetrix identifying the user's session.
+        threatmetrix_result:
+          type: object
+          description: Full result returned from ThreatMetrix.
+  
+  idv_mailing_address_updated_by_user:
+    description: >
+      The user manually updated their mailing address.
+    params:
+      address:
+        ref: '#!/schemas/address'
+    
+  idv_info_verified_by_user:
+    description: >
+      The user has reviewed (and possibly updated) the information from their identity documents.
+    params: {}
+
+  idv_info_submitted_to_aamva:
+    description: >
+      The information from the user's identity documents was submitted to the American Association
+      of Motor Vehicle Administrators (AAMVA) for verification.
+
+  idv_info_submitted_to_lexisnexis_trueid:
+    description: >
+      Login.gov made a request to LexisNexis TrueID to verify the user's identity.
+
+
+  idv_residential_address_submitted_to_instantverify:
+    description: >
+      The user's residential address was submitted to LexisNexis InstantVerify.
+      This is used during the In-Person Proofing flow and may be different than the address
+      on their identification documents.
+
+  idv_address_submitted_to_instantverify:
+    description: >
+      The user's address was submitted to LexisNexis InstantVerify.
+  
+
+# Shared schemas used across events.
+schemas:
+  address:
+    type: object
+    required:
+      - line1
+      - city
+      - state
+      - zipcode
+    properties:
+      line1:
+        type: string
+      line2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+        maxlength: 2
+      zipcode:
+        type: string
+
+  Alert:
+    type: object
+    properties:
+      name:
+        type: string
+      result:
+        type: string
+
+
+
+  DocAuthResult:
+    type: object
+    description: Structured data describing the result.
+    properties:
+      billed:
+        type: boolean
+      doc_auth_result:
+        type: string
+      processed_alerts:
+        type: object
+        properties:
+          passed:
+            type: array
+            items:
+              ref: '#!/schemas/Alert'
+          failed:
+            type: array
+            items:
+              ref: '#!/schemas/Alert'
+      alert_failure_count:
+        type: number
+      # log_alert_results: log_alert_formatter.log_alerts(alerts),
+      # image_metrics: processed_image_metrics,
+      # tamper_result: tamper_result_code&.name,
+      # classification_info: classification_info,
+      address_line2_present:
+        type: boolean
+
+
+
+
+
+
+      
