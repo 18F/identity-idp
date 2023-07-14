@@ -95,6 +95,9 @@ build-idp-image:
   stage: review
   needs: []
   interruptible: true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   tags:
     - build-pool
   image:
@@ -400,6 +403,10 @@ include:
 ecr-scan:
   stage: scan
   interruptible: true
+  allow_failure: true
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
   tags:
     - build-pool
   needs:
