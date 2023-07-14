@@ -186,7 +186,6 @@ module Users
           flash.now[:error] = t('errors.webauthn_setup.unique_name')
         end
       elsif form.platform_authenticator?
-        display_error
         flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
