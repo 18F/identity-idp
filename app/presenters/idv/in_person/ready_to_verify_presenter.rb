@@ -50,10 +50,6 @@ module Idv
         IdentityConfig.store.in_person_usps_outage_message_enabled
       end
 
-      def in_person_doc_auth_button_enabled
-        IdentityConfig.store.in_person_doc_auth_button_enabled
-      end
-
       private
 
       attr_reader :enrollment
