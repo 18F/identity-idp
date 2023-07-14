@@ -8,7 +8,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
   module Idv
     class StepController < ApplicationController
-      include IdvStepConcern
+      include GettingStartedAbTestConcern
 
       def show
         render plain: 'Hello'
@@ -16,5 +16,31 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     end
   end
 
-  context "#maybe_redirect_for_getting_started_ab_test"
+  context '#maybe_redirect_for_getting_started_ab_test' do
+    controller Idv::StepController do
+      before_action :maybe_redirect_for_getting_started_ab_test
+    end
+
+    before do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    it 'does not redirect users getting existing experience' do
+      # user goes in bucket A
+      get :show
+
+      expect(response.body).to eq('Hello')
+      expect(response.status).to eq(200)
+    end
+
+    it 'redirects to idv_getting_started_url for users getting the new experience' do
+      # user goes in bucket B
+      get :show
+
+      expect(response).to redirect_to(idv_getting_started_url)
+    end
+  end
 end
