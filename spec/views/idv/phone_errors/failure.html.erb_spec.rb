@@ -28,12 +28,13 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   end
 
   it 'tells them they can try again later' do
-    expect(rendered).to have_text(
-      t(
-        'idv.failure.phone.rate_limited.option_try_again_later_html',
-        time_left: distance_of_time_in_words(Time.zone.now, @expires_at, except: :seconds),
-      ),
+    raw_expected_text = t(
+      'idv.failure.phone.rate_limited.option_try_again_later_html',
+      time_left: distance_of_time_in_words(Time.zone.now, @expires_at, except: :seconds),
     )
+    expected_text = ActionView::Base.full_sanitizer.sanitize(raw_expected_text)
+
+    expect(rendered).to have_text(expected_text)
   end
 
   it 'renders a cancel link' do
