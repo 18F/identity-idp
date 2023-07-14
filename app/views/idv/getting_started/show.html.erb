@@ -1,14 +1,5 @@
 <% title t('doc_auth.headings.welcome') %>
 
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :getting_started,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
-
 <%= render 'shared/maintenance_window_alert' do %>
   <%= render JavascriptRequiredComponent.new(
         header: t('idv.welcome.no_js_header'),

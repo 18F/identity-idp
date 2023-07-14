@@ -1,7 +1,6 @@
 module Idv
   class GettingStartedController < ApplicationController
     include IdvStepConcern
-    include StepIndicatorConcern
     include StepUtilitiesConcern
 
     before_action :confirm_welcome_needed
