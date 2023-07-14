@@ -29,6 +29,14 @@ events:
     params:
       $ref: '#!/schemas/DocAuthResult'
 
+
+  idv_password_entered_by_user:
+    description: >
+      The user has entered their password to encrypt their PII.
+    params:
+      password:
+        type: string
+
   idv_ssn_entered_by_user:
     description: >
       The user has entered their Social Security Number (SSN).
@@ -53,53 +61,70 @@ events:
 
   idv_threatmetrix_check_completed:
     description: >
-      Login.gov requested the result of an automated fraud check. The response details will b
+      Login.gov requested the result of an automated fraud check.
     params:
       type: object
       properties:
+        request_success:
+          type: boolean
+          description: Did the underlying HTTP request succeed?
+        request_timed_out:
+          type: boolean
+          description: Did the underlying HTTP request time out?
         response_status:
           type: number
-          description: HTTP status code returned when making the request to ThreatMetrix
-        response_success:
-          type: boolean
-          description: Whether the request to ThreatMetrix succeeded.
+          description: >
+            HTTP status code returned from ThreatMetrix. (For logging purposes only, not 
+            decisional -- use `request_success` to determine if the HTTP request succeeded,
+            and `threatmetrix_review_status == 'pass'` to determine if the session passed
+            automated fraud checks.
         threatmetrix_session_id:
           type: string
           description: A UUID reported to ThreatMetrix identifying the user's session.
         threatmetrix_review_status:
-          type: object
-          description: Full result returned from ThreatMetrix.
+          type: string
+          enum: [ 'pass', 'reject', 'review' ]
+          description: Result of ThreatMetrix review
+          
 
   idv_mailing_address_updated_by_user:
     description: >
       The user manually updated their mailing address.
     params:
-      address:
-        ref: "#!/schemas/address"
+      type: object
+      properties:
+        address:
+          ref: "#!/schemas/address"
 
   idv_info_verified_by_user:
     description: >
-      The user has reviewed (and possibly updated) the information from their identity documents.
-    params: {}
+      The user confirmed the accuracy of the PII on file and chose to continue the IDV process.
 
   idv_info_submitted_to_aamva:
     description: >
       The information from the user's identity documents was submitted to the American Association
       of Motor Vehicle Administrators (AAMVA) for verification.
+    # TODO params
 
   idv_info_submitted_to_lexisnexis_trueid:
     description: >
       Login.gov made a request to LexisNexis TrueID to verify the user's identity.
+    # TODO params
+
+  idv_gpo_letter_requested:
+    description: The user has requested a letter to verify their address.
 
   idv_residential_address_submitted_to_instantverify:
     description: >
       The user's residential address was submitted to LexisNexis InstantVerify.
       This is used during the In-Person Proofing flow and may be different than the address
       on their identification documents.
+    # TODO params
 
   idv_address_submitted_to_instantverify:
     description: >
       The user's address was submitted to LexisNexis InstantVerify.
+    # TODO params
 
 # Shared schemas used across events.
 schemas:

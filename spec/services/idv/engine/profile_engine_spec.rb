@@ -44,6 +44,45 @@ RSpec.describe Idv::Engine::ProfileEngine do
     end
   end
 
+  describe('#auth_password_reset') do
+    before do
+      subject.auth_password_reset
+    end
+
+    context 'no active profile' do
+      it 'does nothing' do
+      end
+    end
+    context 'with pending gpo ' do
+      let(:user) { create(:user, :with_pending_gpo_profile) }
+
+      it 'cancels the profile' do
+        expect(user.active_profile).to eql(nil)
+      end
+    end
+    context 'with a proofing component' do
+      xit 'destroys proofing component' do
+      end
+    end
+  end
+
+  describe('#idv_gpo_letter_requested') do
+    context 'without idv_session' do
+      it 'raises' do
+        expect { subject.idv_gpo_letter_requested }.to raise_error
+      end
+    end
+
+    context 'with idv_session' do
+      let(:idv_session) { {} }
+
+      it 'notes request in idv_session' do
+        subject.idv_gpo_letter_requested
+        expect(idv_session[:address_verification_mechanism]).to eql(:gpo)
+      end
+    end
+  end
+
   describe('#idv_ssn_entered_by_user') do
     context('no idv_session') do
       it 'raises' do
