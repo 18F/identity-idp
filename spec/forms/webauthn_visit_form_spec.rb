@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe WebauthnVisitForm do
   include ActionView::Helpers::UrlHelper
+  include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
   let(:subject) do
