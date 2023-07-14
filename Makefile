@@ -300,5 +300,5 @@ clobber_logs: ## Purges logs and tmp/
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
 
-app/services/idv/events.rb: app/services/idv/events.yml scripts/build-idv-code.rb
-	scripts/build-idv-code.rb $< > $@.tmp && mv $@.tmp $@
+app/services/idv/engine/events.rb: app/services/idv/engine/events.yml scripts/build-idv-events.rb
+	scripts/build-idv-events.rb $< > $@.tmp && mv $@.tmp $@
