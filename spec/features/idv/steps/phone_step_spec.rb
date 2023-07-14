@@ -104,6 +104,22 @@ RSpec.feature 'idv phone step', :js do
         expect(phone_field.value).to be_empty
       end
 
+      it 'succeds to otp verificaiton with valid number' do
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+
+        fill_out_phone_form_fail
+
+        click_idv_send_security_code
+        click_on t('idv.failure.phone.warning.try_again_button')
+
+        expect(page).to have_current_path(idv_phone_path)
+
+        fill_out_phone_form_ok
+        click_idv_send_security_code
+        expect(page).to have_current_path(idv_otp_verification_path)
+      end
+
       context 'displays alert message if same nubmer is resubmitted' do
         context 'gpo verification is enabled' do
           it 'includes verify link' do
