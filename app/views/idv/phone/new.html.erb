@@ -75,8 +75,8 @@
         },
         hidden: true,
       ) do %>
-    <%= t(
-          'idv.messages.phone.failed_number.alert_html',
+    <%= t('idv.messages.phone.failed_number.alert_text')%>
+    <%= gpo_letter_available && t('idv.messages.phone.failed_number.gpo_alert_html',
           link_html: link_to(
             t('idv.messages.phone.failed_number.gpo_verify_link'),
             idv_gpo_path,
