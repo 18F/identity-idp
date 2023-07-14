@@ -245,8 +245,8 @@ RSpec.describe GetUspsProofingResultsJob do
         before do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
             and_return([pending_enrollment])
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-            and_return([pending_enrollment])
+          #allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
+          #  and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -363,8 +363,8 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
             and_return(pending_enrollments)
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-            and_return(pending_enrollments)
+         # allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
+         #   and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
           )
@@ -461,9 +461,10 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'generates a backwards-compatible unique ID' do
             pending_enrollment.update(unique_id: nil)
             stub_request_passed_proofing_results
-            expect(pending_enrollment).to receive(:usps_unique_id).and_call_original
+            expect_any_instance_of(InPersonEnrollment).to receive(:usps_unique_id).and_call_original
 
             job.perform(Time.zone.now)
+            pending_enrollment.reload
 
             expect(pending_enrollment.unique_id).not_to be_nil
           end
@@ -643,6 +644,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs details about the success' do
             job.perform(Time.zone.now)
 
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -680,7 +682,8 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs failure details' do
             job.perform(Time.zone.now)
-
+            
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -719,6 +722,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs fraud failure details' do
             job.perform(Time.zone.now)
 
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -758,6 +762,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs a message about the unsupported ID' do
             job.perform Time.zone.now
 
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -1113,10 +1118,10 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-           and_return([pending_enrollment])
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-            and_return([pending_enrollment])
+        #  allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+        #   and_return([pending_enrollment])
+        #  allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
+        #    and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -1136,6 +1141,8 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs a message about enrollment with secondary ID' do
             job.perform Time.zone.now
+
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(pending_enrollment.profile.active).to eq(false)
             expect(job_analytics).to have_logged_event(
