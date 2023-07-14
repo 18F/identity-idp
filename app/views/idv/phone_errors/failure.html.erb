@@ -20,10 +20,13 @@
           <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
         <% end %>
         <li>
-          <%= t('idv.failure.phone.rate_limited.option_try_again_later',
-                time_left: distance_of_time_in_words(Time.zone.now,
-                                                     [@expires_at, Time.zone.now].compact.max,
-                                                     except: :seconds)
+          <%= t(
+                'idv.failure.phone.rate_limited.option_try_again_later',
+                time_left: distance_of_time_in_words(
+                  Time.zone.now,
+                  [@expires_at, Time.zone.now].compact.max,
+                  except: :seconds,
+                ),
               ) %>
         </li>
       </ul>
@@ -39,11 +42,9 @@
       <% end %>
     <% end %>
     <%= render PageFooterComponent.new do %>
-      <%=
-        link_to(
-          t('links.cancel'),
-          return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
-        )
-      %>
+      <%= link_to(
+            t('links.cancel'),
+            return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
+          ) %>
     <% end %>
 
