@@ -68,7 +68,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             [
               id: webauthn_configuration.credential_id,
               transports: webauthn_configuration.transports,
-            ].to_json,
+            ],
           )
         end
       end
