@@ -18,15 +18,24 @@ module Idv
 
     def update
       flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
+      skip_to_capture if params[:skip_upload]
 
-      analytics.idv_doc_auth_getting_started_submitted(**analytics_arguments)
+      result = Idv::ConsentForm.new.submit(consent_form_params)
 
-      create_document_capture_session
-      cancel_previous_in_person_enrollments
+      analytics.idv_doc_auth_getting_started_submitted(
+        **analytics_arguments.merge(result.to_h),
+      )
 
-      idv_session.welcome_visited = true
+      if result.success?
+        idv_session.idv_consent_given = true
 
-      redirect_to idv_agreement_url
+        create_document_capture_session
+        cancel_previous_in_person_enrollments
+
+        redirect_to idv_hybrid_handoff_url
+      else
+        redirect_to idv_getting_started_url
+      end
     end
 
     private
@@ -51,6 +60,15 @@ module Idv
       return unless IdentityConfig.store.in_person_proofing_enabled
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
+    end
+
+    def skip_to_capture
+      flow_session[:skip_upload_step] = true
+      idv_session.flow_path = 'standard'
+    end
+
+    def consent_form_params
+      params.require(:doc_auth).permit(:ial2_consent_given)
     end
 
     def confirm_agreement_needed

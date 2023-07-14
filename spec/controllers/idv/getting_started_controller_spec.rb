@@ -80,19 +80,21 @@ RSpec.describe Idv::GettingStartedController do
     let(:analytics_name) { 'IdV: doc auth getting_started submitted' }
 
     let(:analytics_args) do
-      { step: 'getting_started',
+      { success: true,
+        errors: {},
+        step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
 
-    it 'sends analytics_submitted event' do
-      put :update
+    it 'sends analytics_submitted event with consent given' do
+      put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'creates a document capture session' do
-      expect { put :update }.
+      expect { put :update, params: { doc_auth: { ial2_consent_given: 1 } } }.
         to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
     end
 
@@ -104,7 +106,7 @@ RSpec.describe Idv::GettingStartedController do
       end
 
       it 'cancels all previous establishing enrollments' do
-        put :update
+        put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
         expect(enrollment.reload.status).to eq('cancelled')
         expect(user.establishing_in_person_enrollment).to be_blank
