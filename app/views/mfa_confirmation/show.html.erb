@@ -15,10 +15,12 @@
       ) { @content.button } %>
 </div>
 
-<%= button_to(
-      auth_method_confirmation_skip_path,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-    ) do %>
-  <%= t('mfa.skip') %>
+<% if @content.show_skip_additional_mfa_link? %>
+  <%= button_to(
+        auth_method_confirmation_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= t('mfa.skip') %>
+  <% end %>
 <% end %>

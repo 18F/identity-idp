@@ -157,7 +157,6 @@ en:
         device.</p><p>We do not copy or store these images. You’ll need the same
         device to sign in using face or touch unlock in the future. %{link}</p>'
       intro_link_text: Learn more about face or touch unlock.
-      login_text: 'When you are ready, press the button:'
       nickname: Device nickname
       warning_text: If you lose or change your device, you’ll have to reset your
         account. We recommend setting up multiple authentication methods to help
@@ -169,5 +168,4 @@ en:
       intro_html: '<p>Add a security key that meets the FIDO standard as your
         authentication method. You can add as many security keys as you want. To
         get started, first give your security key a nickname.</p>'
-      login_text: 'When you are ready to authenticate, press the button:'
       nickname: Security key nickname
