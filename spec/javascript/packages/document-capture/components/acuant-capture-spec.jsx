@@ -28,6 +28,11 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
   sharpness: 100,
 };
 
+const ACUANT_CAPTURE_CARDTYPE_ERROR = { ...ACUANT_CAPTURE_SUCCESS_RESULT };
+
+delete ACUANT_CAPTURE_CARDTYPE_ERROR.cardtype;
+ACUANT_CAPTURE_CARDTYPE_ERROR.cardType = 2;
+
 describe('getDecodedBase64ByteSize', () => {
   it('returns the decoded byte size', () => {
     const original = 'Hello World';
@@ -754,6 +759,42 @@ describe('document-capture/components/acuant-capture', () => {
         attempt: sinon.match.number,
         size: sinon.match.number,
       });
+    });
+
+    it('logs a human readable error when the document type errs', async () => {
+      const trackEvent = sinon.spy();
+      const { findByText, getByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped(ACUANT_CAPTURE_CARDTYPE_ERROR);
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      await findByText('doc_auth.info.image_loading');
+
+      // await findByText('doc_auth.buttons.take_picture_retry');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'IdV: test image added',
+        sinon.match({
+          documentType: 'An error in document type returned: undefined',
+        }),
+      );
     });
 
     it('triggers forced upload', () => {

@@ -61,7 +61,7 @@ interface ImageAnalyticsPayload {
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel;
+  documentType: AcuantDocumentTypeLabel | string;
   dpi: number;
   moire: number;
   glare: number;
@@ -135,14 +135,16 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel {
+function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
   switch (documentType) {
+    case 0:
+      return 'none';
     case 1:
       return 'id';
     case 2:
       return 'passport';
     default:
-      return 'none';
+      return `An error in document type returned: ${documentType}`;
   }
 }
 
@@ -553,6 +555,7 @@ function AcuantCapture(
             isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
+            // below log happens
             onClick={withLoggedClick('button')(startCaptureOrTriggerUpload)}
             className={value ? 'margin-right-1' : 'margin-right-2'}
           >
