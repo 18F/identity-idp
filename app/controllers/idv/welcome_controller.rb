@@ -3,8 +3,10 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
+    include GettingStartedAbTestConcern
 
     before_action :confirm_welcome_needed
+    before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)

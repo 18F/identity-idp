@@ -25,6 +25,13 @@ RSpec.describe Idv::WelcomeController do
         :check_for_outage,
       )
     end
+
+    it 'includes getting started ab test before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :maybe_redirect_for_getting_started_ab_test,
+      )
+    end
   end
 
   describe '#show' do
