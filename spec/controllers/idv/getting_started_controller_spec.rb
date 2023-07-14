@@ -28,9 +28,9 @@ RSpec.describe Idv::GettingStartedController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth welcome visited' }
+    let(:analytics_name) { 'IdV: doc auth getting_started visited' }
     let(:analytics_args) do
-      { step: 'welcome',
+      { step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
@@ -55,13 +55,13 @@ RSpec.describe Idv::GettingStartedController do
       )
     end
 
-    context 'welcome already visited' do
-      it 'redirects to agreement' do
-        subject.idv_session.welcome_visited = true
+    context 'getting_started already visited' do
+      it 'redirects to hybrid_handoff' do
+        subject.idv_session.idv_consent_given = true
 
         get :show
 
-        expect(response).to redirect_to(idv_agreement_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 
@@ -77,10 +77,10 @@ RSpec.describe Idv::GettingStartedController do
   end
 
   describe '#update' do
-    let(:analytics_name) { 'IdV: doc auth welcome submitted' }
+    let(:analytics_name) { 'IdV: doc auth getting_started submitted' }
 
     let(:analytics_args) do
-      { step: 'welcome',
+      { step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end

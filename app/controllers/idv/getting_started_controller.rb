@@ -3,10 +3,10 @@ module Idv
     include IdvStepConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_welcome_needed
+    before_action :confirm_agreement_needed
 
     def show
-      analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
+      analytics.idv_doc_auth_getting_started_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'welcome', :view,
@@ -19,7 +19,7 @@ module Idv
     def update
       flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
-      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
+      analytics.idv_doc_auth_getting_started_submitted(**analytics_arguments)
 
       create_document_capture_session
       cancel_previous_in_person_enrollments
@@ -33,7 +33,7 @@ module Idv
 
     def analytics_arguments
       {
-        step: 'welcome',
+        step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
       }
@@ -53,10 +53,10 @@ module Idv
         cancel_stale_establishing_enrollments_for_user(current_user)
     end
 
-    def confirm_welcome_needed
-      return unless idv_session.welcome_visited
+    def confirm_agreement_needed
+      return unless idv_session.idv_consent_given
 
-      redirect_to idv_agreement_url
+      redirect_to idv_hybrid_handoff_url
     end
   end
 end
