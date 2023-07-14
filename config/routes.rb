@@ -398,7 +398,6 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
-        post '/usps' => 'gpo#update'
       end
 
       # deprecated routes
