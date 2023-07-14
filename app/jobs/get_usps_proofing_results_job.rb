@@ -448,13 +448,16 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def send_enrollment_status_sms_notification(enrollment:)
-    return if IdentityConfig.store.in_person_proofing_enabled.blank? ||
-              IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
+    return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
     return if enrollment.blank? || enrollment.proofed_at.blank?
     sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
                       DEFAULT_EMAIL_DELAY_IN_HOURS
     wait_until = enrollment.proofed_at + sms_delay_hours
-    InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
+    if wait_until <= Time.zone.now
+      InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
+    else
+      InPerson::SendProofingNotificationJob.perform_now(enrollment.id)
+    end
   end
 
   def email_analytics_attributes(enrollment)
