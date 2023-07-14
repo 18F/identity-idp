@@ -1,22 +1,17 @@
-<% if @presenter.usps_outage_message_enabled %>
+<% if @presenter.outage_message_enabled? %>
 <table class="warning-alert margin-y-4">
   <tr>
     <td width="16">
       <%= image_tag('email/warning.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
-      <strong><%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title') %></strong>
-      <br />
-      <br />
-      <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.body') %>
-      <br />
-      <br />
-      <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
-      <br />
-      <br />
+      <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
     </td>
   </tr>
 </table>
+  <h4>
+    <%= t('in_person_proofing.headings.barcode') %>
+  </h4>
 <% end %>
 <div class="text-center">
   <%= render 'idv/shared/mini_logo', filename: 'logo.png' %>
@@ -112,9 +107,9 @@
     </div>
     <div><strong><%= t('in_person_proofing.body.barcode.retail_hours') %></strong></div>
     <div class="margin-bottom-2">
-      <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
-      <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
-      <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
+      <%= t('date.range', from: t('date.day_names')[1], to: t('date.day_names')[5]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+      <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+      <%= t('date.day_names')[7] %>: <%= @presenter.selected_location_hours(:sunday) %>
     </div>
   </div>
 <% end %>

@@ -80,7 +80,8 @@ const {
   cancelUrl: cancelURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonUspsOutageMessageEnabled,
+  inPersonOutageMessageEnabled,
+  inPersonOutageExpectedUpdateDate,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 const App = composeComponents(
@@ -91,7 +92,8 @@ const App = composeComponents(
     {
       value: {
         inPersonURL,
-        inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
+        inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
+        inPersonOutageExpectedUpdateDate,
       },
     },
   ],

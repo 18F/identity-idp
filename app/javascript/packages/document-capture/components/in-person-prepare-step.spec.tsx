@@ -18,25 +18,30 @@ describe('InPersonPrepareStep', () => {
     ).not.to.exist();
   });
 
-  context('USPS outage message', () => {
+  context('Outage message', () => {
     it('renders a warning when the flag is enabled', () => {
       const { queryByText } = render(
-        <InPersonContext.Provider value={{ inPersonUspsOutageMessageEnabled: true }}>
+        <InPersonContext.Provider
+          value={{
+            inPersonOutageMessageEnabled: true,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          }}
+        >
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
       expect(
-        queryByText('idv.failure.exceptions.usps_outage_error_message.post_cta.title'),
+        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
       ).to.exist();
     });
     it('does not render a warning when the flag is disabled', () => {
       const { queryByText } = render(
-        <InPersonContext.Provider value={{ inPersonUspsOutageMessageEnabled: false }}>
+        <InPersonContext.Provider value={{ inPersonOutageMessageEnabled: false }}>
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
       );
       expect(
-        queryByText('idv.failure.exceptions.usps_outage_error_message.post_cta.title'),
+        queryByText('idv.failure.exceptions.in_person_outage_error_message.post_cta.title'),
       ).not.to.exist();
     });
   });

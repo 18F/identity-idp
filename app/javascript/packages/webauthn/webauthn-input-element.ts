@@ -13,13 +13,20 @@ export class WebauthnInputElement extends HTMLElement {
     return this.hasAttribute('passkey-supported-only');
   }
 
+  get showUnsupportedPasskey(): boolean {
+    return this.hasAttribute('show-unsupported-passkey');
+  }
+
   isSupported(): boolean {
     return !this.isPlatform || !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
   }
 
   toggleVisibleIfSupported() {
     if (this.isSupported()) {
-      this.removeAttribute('hidden');
+      this.hidden = false;
+    } else if (this.showUnsupportedPasskey) {
+      this.hidden = false;
+      this.classList.add('webauthn-input--unsupported-passkey');
     }
   }
 }
