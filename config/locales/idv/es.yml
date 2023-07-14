@@ -67,14 +67,7 @@ es:
         try_online: Vuelva a intentarlo en línea
         warning: Inténtelo de nuevo
       exceptions:
-        internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
-          inténtalo de nuevo.
-        link: contáctanos
-        post_office_search_error: En este momento, estamos teniendo problemas técnicos.
-          Trate de buscar de nuevo una oficina de correos. Si el problema
-          continúa, regrese más tarde.
-        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link_html}.
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: Mientras tanto, todavía puedes iniciar el proceso de verificación
               presencial en %{app_name} y luego acudir a una oficina de correos.
@@ -82,17 +75,24 @@ es:
               directamente a tu agencia.
             title: Estamos resolviendo un problema técnico. Es probable que los resultados
               de tu verificación de identidad se te envíen por correo
-              electrónico hasta el martes, May 30.
+              electrónico hasta el %{date}.
           ready_to_verify:
             body: Todavía puedes acudir a una oficina de correos para completar tu proceso
               de verificación de identidad. Si necesitas utilizar cuanto antes
               los servicios, contacta directamente a tu agencia.
             contact_html: <a href="%{help_url}" target="_blank">Contacta al soporte de
               %{app_name}</a> si no has recibido un correo electrónico con los
-              resultados de tu verificación para el jueves, June 1.
+              resultados de tu verificación para el %{date}.
             title: Estamos resolviendo un problema técnico. Es probable que los resultados
               de tu verificación de identidad se te envíen por correo
-              electrónico hasta el martes, May 30.
+              electrónico hasta el %{date}.
+        internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
+          inténtalo de nuevo.
+        link: contáctanos
+        post_office_search_error: En este momento, estamos teniendo problemas técnicos.
+          Trate de buscar de nuevo una oficina de correos. Si el problema
+          continúa, regrese más tarde.
+        text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link_html}.
       exit:
         with_sp: Salir de %{app_name} y volver a %{sp_name}
         without_sp: Salir de la verificación de identidad e ir a la página de su cuenta

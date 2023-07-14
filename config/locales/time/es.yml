@@ -2,6 +2,7 @@
 es:
   date:
     day_names:
+      -  # empty item to have correct weekday offset for %A
       - lunes
       - martes
       - miércoles
@@ -11,6 +12,7 @@ es:
       - domingo
     formats:
       long: '%-d de %B de %Y'
+      short: '%A, %-d de %B'
     month_names:
       -
       - enero
