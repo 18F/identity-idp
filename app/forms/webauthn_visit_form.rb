@@ -48,7 +48,7 @@ class WebauthnVisitForm
       if in_mfa_selection_flow
         I18n.t(
           'errors.webauthn_platform_setup.account_setup_error',
-          link_html: link_to(
+          link: link_to(
             I18n.t('errors.webauthn_platform_setup.choose_another_method'),
             authentication_methods_setup_path,
           ),
