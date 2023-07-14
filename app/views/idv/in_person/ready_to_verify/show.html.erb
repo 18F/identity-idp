@@ -9,17 +9,9 @@
       ) %>
 <% end %>
 
-<% if @presenter.usps_outage_message_enabled %>
+<% if @presenter.outage_message_enabled? %>
   <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4', text_tag: 'div') do %>
-    <strong><%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title') %></strong>
-    <br/>
-    <br/>
-    <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.body') %>
-    <br/>
-    <br/>
-    <%= t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url) %>
-    <br/>
-    <br/>
+    <%= render 'shared/outage_alert', date: @presenter.formatted_outage_expected_update_date, email_date: @presenter.formatted_outage_emailed_by_date %>
   <% end %>
 <% end %>
 
@@ -97,9 +89,9 @@
       </div>
       <h3 class="margin-y-0 h4"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
       <div class="margin-bottom-2">
-        <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
-        <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
-        <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
+        <%= t('date.range', from: t('date.day_names')[1], to: t('date.day_names')[5]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+        <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+        <%= t('date.day_names')[7] %>: <%= @presenter.selected_location_hours(:sunday) %>
       </div>
     </address>
   </section>

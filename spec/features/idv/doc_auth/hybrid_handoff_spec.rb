@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth hybrid_handoff step' do
+RSpec.feature 'hybrid_handoff step send link and errors' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -21,17 +21,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       and_return(fake_attempts_tracker)
   end
 
-  it 'does not skip ahead in standard desktop flow' do
-    visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_welcome_path)
-    complete_welcome_step
-    visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_agreement_path)
-    complete_agreement_step
-    expect(page).to have_current_path(idv_hybrid_handoff_path)
-  end
-
-  context 'on a desktop device' do
+  context 'on a desktop device send link' do
     before do
       complete_doc_auth_steps_before_hybrid_handoff_step
       allow_any_instance_of(
@@ -39,36 +29,6 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       ).to receive(
         :mobile_device?,
       ).and_return(false)
-    end
-
-    it 'displays with the expected content' do
-      expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
-    end
-
-    it 'proceeds to document capture when user chooses to upload from computer' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_document_upload_method_selected,
-      ).with({ upload_method: 'desktop' })
-
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      click_upload_from_computer
-
-      expect(page).to have_current_path(idv_document_capture_url)
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', destination: :document_capture),
-      )
-
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_document_capture_path)
-    end
-
-    it "defaults phone to user's 2fa phone number", :js do
-      field = page.find_field(t('two_factor_authentication.phone_label'))
-      expect(field.value).to eq('(202) 555-1212')
     end
 
     it 'proceeds to link sent page when user chooses to use phone' do

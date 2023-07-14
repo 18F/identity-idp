@@ -1,0 +1,32 @@
+<%= content_tag(
+      :'lg-webauthn-verify-button',
+      **tag_options,
+      data: {
+        **tag_options[:data].to_h,
+        credentials: credentials.to_json,
+        user_challenge: user_challenge.to_json,
+      },
+    ) do %>
+  <div class="webauthn-verify-button__spinner text-center" hidden>
+    <%= image_tag(
+          asset_url('spinner.gif'),
+          srcset: asset_url('spinner@2x.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
+    <p class="text-bold margin-y-5">
+      <%= t('two_factor_authentication.webauthn_authenticating') %>
+    </p>
+  </div>
+  <%= render ButtonComponent.new(
+        big: true,
+        wide: true,
+        class: 'webauthn-verify-button__button display-block margin-y-3',
+      ).with_content(content) %>
+  <%= hidden_field_tag :credential_id, '' %>
+  <%= hidden_field_tag :authenticator_data, '' %>
+  <%= hidden_field_tag :signature, '' %>
+  <%= hidden_field_tag :client_data_json, '' %>
+  <%= hidden_field_tag :webauthn_error, '' %>
+<% end %>

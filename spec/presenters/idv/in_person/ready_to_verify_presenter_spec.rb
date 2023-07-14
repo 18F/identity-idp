@@ -159,18 +159,49 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
-  describe '#usps_outage_message_enabled' do
-    subject(:usps_outage_message_enabled) { presenter.usps_outage_message_enabled }
+  describe '#formatted_outage_expected_update_date' do
+    let(:in_person_outage_expected_update_date) { 'January 1, 2024' }
+    subject(:update_date) { presenter.formatted_outage_expected_update_date }
+
+    it 'returns a formatted date for expected update after an outage' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return(in_person_outage_expected_update_date)
+      update_day, update_month = update_date.remove(',').split(' ')
+
+      expect(Date::DAYNAMES.include?(update_day && update_day.capitalize)).to be_truthy
+      expect(Date::MONTHNAMES.include?(update_month && update_month.capitalize)).to be_truthy
+      expect(update_date).to eq 'Monday, January 1'
+    end
+  end
+
+  describe '#formatted_outage_emailed_by_date' do
+    let(:in_person_outage_emailed_by_date) { 'January 2, 2024' }
+    subject(:email_date) { presenter.formatted_outage_emailed_by_date }
+
+    it 'returns a formatted email date' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return(in_person_outage_emailed_by_date)
+      email_day, email_month = email_date.remove(',').split(' ')
+
+      expect(Date::DAYNAMES.include?(email_day && email_day.capitalize)).to be_truthy
+      expect(Date::MONTHNAMES.include?(email_month && email_month.capitalize)).to be_truthy
+      expect(email_date).to eq 'Tuesday, January 2'
+    end
+  end
+
+  describe '#outage_message_enabled' do
+    subject(:outage_message_enabled) { presenter.outage_message_enabled? }
+
     it 'returns true when the flag is enabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true).once
-      expect(usps_outage_message_enabled).to be(true)
+      expect(outage_message_enabled).to be(true)
     end
 
     it 'returns false when the flag is disabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(false).once
-      expect(usps_outage_message_enabled).to be(false)
+      expect(outage_message_enabled).to be(false)
     end
   end
 

@@ -102,9 +102,7 @@ RSpec.describe 'In Person Proofing', js: true do
         t('in_person_proofing.body.barcode.deadline', deadline: deadline),
       )
       expect(page).to have_content('MILWAUKEE')
-      expect(page).to have_content(
-        "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
-      )
+      expect(page).to have_content('Sunday: Closed')
 
       # signing in again before completing in-person proofing at a post office
       Capybara.reset_session!
@@ -235,9 +233,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
     expect(page).to have_content('MILWAUKEE')
-    expect(page).to have_content(
-      "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
-    )
+    expect(page).to have_content('Sunday: Closed')
 
     # signing in again before completing in-person proofing at a post office
     Capybara.reset_session!
