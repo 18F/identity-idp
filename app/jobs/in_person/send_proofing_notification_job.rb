@@ -6,13 +6,13 @@ module InPerson
     def perform(enrollment_id)
       return unless IdentityConfig.store.in_person_proofing_enabled &&
                     IdentityConfig.store.in_person_send_proofing_notifications_enabled
-      enrollment = InPersonEnrollment.find(
-        enrollment_id,
+      enrollment = InPersonEnrollment.find_by(
+        { id: enrollment_id },
         include: [:notification_phone_configuration, :user],
       )
+      return unless enrollment
       # skip
-      if !enrollment.notification_phone_configuration.present? ||
-         (!enrollment.passed? && !enrollment.failed?)
+      if enrollment.skip_notification_sent_at_set?
         # log event
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_job_skipped(
@@ -26,35 +26,29 @@ module InPerson
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
         )
-      if enrollment.passed? || enrollment.failed?
-        # send notification and log result
-        phone = enrollment.notification_phone_configuration.formatted_phone
-        message = notification_message(enrollment: enrollment)
-        response = Telephony.send_notification(
-          to: phone, message: message,
-          country_code: Phonelib.parse(phone).country
-        )
-        handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
-        if response.success?
-          # if notification sent successful
-          enrollment.update(
-            notification_sent_at: Time.zone.now,
-          )
-          # delete notification phone configuraiton if success
-          enrollment.notification_phone_configuration.destroy!
-        end
-      end
+
+      # send notification and log result
+      phone = enrollment.notification_phone_configuration.formatted_phone
+      message = notification_message(enrollment: enrollment)
+      response = Telephony.send_notification(
+        to: phone, message: message,
+        country_code: Phonelib.parse(phone).country
+      )
+      handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
+
+      # if notification sent successful
+      enrollment.set_notification_sent_at if response.success?
     ensure
       unless enrollment.present?
-        enrollment = InPersonEnrollment.find(
-          enrollment_id,
+        enrollment = InPersonEnrollment.find_by(
+          { id: enrollment_id },
           include: [:notification_phone_configuration,
                     :user],
         )
       end
-      analytics(user: enrollment.user).
+      analytics(user: enrollment&.user).
         idv_in_person_usps_proofing_results_notification_job_completed(
-          enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment.id,
+          enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment&.id,
         )
     end
 
@@ -69,16 +63,6 @@ module InPerson
             enrollment_id: enrollment.id,
             telephony_result: telephony_result,
           )
-        # log success
-      elsif telephony_result.error.is_a?(Telephony::OptOutError)
-        analytics(user: enrollment.user).
-          idv_in_person_usps_proofing_results_notification_sent_attempted(
-            success: false,
-            enrollment_code: enrollment.enrollment_code,
-            enrollment_id: enrollment.id,
-            telephony_result: telephony_result,
-          )
-        PhoneNumberOptOut.mark_opted_out(phone)
       else
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_sent_attempted(
@@ -87,6 +71,9 @@ module InPerson
             enrollment_id: enrollment.id,
             telephony_result: telephony_result,
           )
+        if telephony_result.error&.is_a?(Telephony::OptOutError)
+          PhoneNumberOptOut.mark_opted_out(phone)
+        end
       end
     end
 

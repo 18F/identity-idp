@@ -363,4 +363,45 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(enrollment.minutes_since_last_status_update).to eq(nil)
     end
   end
+
+  describe 'set_notification_sent_at' do
+    let(:enrollment) do
+      enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+      enrollment.status_updated_at = (Time.zone.now - 2.hours)
+      enrollment
+    end
+
+    it 'set notification_sent_at and destroy notification phone configuration' do
+      enrollment.set_notification_sent_at
+      expect(enrollment.notification_sent_at).to_not be(nil)
+    end
+  end
+
+  describe 'skip_notification_sent_at_set?' do
+    let(:passed_enrollment) do
+      create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+    end
+    let(:expired_enrollment) do
+      create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
+    end
+    let(:incomplete_enrollment) do
+      create(:in_person_enrollment, :with_notification_phone_configuration)
+    end
+    let(:passed_enrollment_without_notification) do
+      create(:in_person_enrollment, :passed)
+    end
+    let(:failed_enrollment_without_notification) do
+      create(:in_person_enrollment, :failed)
+    end
+
+    it 'returns false when status of passed/failed/expired and notification configuration' do
+      expect(passed_enrollment.skip_notification_sent_at_set?).to eq(false)
+      expect(expired_enrollment.skip_notification_sent_at_set?).to eq(false)
+    end
+    it 'returns false when status of incomplete or without notification configuration' do
+      expect(incomplete_enrollment.skip_notification_sent_at_set?).to eq(true)
+      expect(passed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+      expect(failed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+    end
+  end
 end

@@ -99,7 +99,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       context 'with notification phone configuration' do
         it 'send notification successfully when enrollment is successful and enrollment updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
-          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+          allow(InPersonEnrollment).to receive(:find_by).and_return(passed_enrollment)
 
           freeze_time do
             now = Time.zone.now
@@ -121,7 +121,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
         it 'send notification successfully when enrollment failed' do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
-          allow(InPersonEnrollment).to receive(:find).and_return(failing_enrollment)
+          allow(InPersonEnrollment).to receive(:find_by).and_return(failing_enrollment)
 
           freeze_time do
             now = Time.zone.now
@@ -143,7 +143,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       context 'failed to send notification' do
         it 'logs sms send failre when number is opt out and enrollment not updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_opt_out_response)
-          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+          allow(InPersonEnrollment).to receive(:find_by).and_return(passed_enrollment)
 
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,
@@ -153,7 +153,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
         it 'logs sms send failure for delivery failure' do
           allow(Telephony).to receive(:send_notification).and_return(sms_failure_response)
-          allow(InPersonEnrollment).to receive(:find).and_return(passed_enrollment)
+          allow(InPersonEnrollment).to receive(:find_by).and_return(passed_enrollment)
 
           expect(analytics).to receive(
             :idv_in_person_usps_proofing_results_notification_sent_attempted,

@@ -126,6 +126,15 @@ class InPersonEnrollment < ApplicationRecord
     (today...due_date).count
   end
 
+  def set_notification_sent_at
+    self.notification_sent_at = Time.zone.now
+    notification_phone_configuration.destroy if notification_phone_configuration.present?
+  end
+
+  def skip_notification_sent_at_set?
+    !notification_phone_configuration.present? || (!self.passed? && !self.failed? && !self.expired?)
+  end
+
   private
 
   def on_status_updated
