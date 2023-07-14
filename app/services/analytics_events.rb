@@ -854,12 +854,6 @@ module AnalyticsEvents
     )
   end
 
-  # Desktop user has reached the above "hybrid handoff" view
-  # @identity.idp.previous_event_name IdV: doc auth upload visited
-  def idv_doc_auth_hybrid_handoff_visited(**extra)
-    track_event('IdV: doc auth hybrid handoff visited', **extra)
-  end
-
   # @identity.idp.previous_event_name IdV: doc auth optional verify_wait submitted
   def idv_doc_auth_verify_proofing_results(**extra)
     track_event('IdV: doc auth verify proofing results', **extra)
