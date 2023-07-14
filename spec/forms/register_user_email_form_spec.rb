@@ -56,7 +56,7 @@ RSpec.describe RegisterUserEmailForm do
         email_address = create(:email_address, user: old_user, confirmed_at: nil)
 
         subject.submit(email: email_address.email, terms_accepted: '1')
-        
+
         expect_delivered_email_count(1)
         expect_delivered_email(
           to: [email_address.email],
