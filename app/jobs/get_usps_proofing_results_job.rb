@@ -56,7 +56,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   attr_accessor :enrollment_outcomes
 
   DEFAULT_EMAIL_DELAY_IN_HOURS = 1
-  DEFAULT_SMS_DELAY_IN_HOURS = 1
   REQUEST_DELAY_IN_SECONDS = IdentityConfig.store.
     get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
@@ -453,7 +452,7 @@ class GetUspsProofingResultsJob < ApplicationJob
               IdentityConfig.store.in_person_send_proofing_notifications_enabled.blank?
     return if enrollment.blank? || enrollment.proofed_at.blank?
     sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
-                      DEFAULT_SMS_DELAY_IN_HOURS
+                      DEFAULT_EMAIL_DELAY_IN_HOURS
     wait_until = enrollment.proofed_at + sms_delay_hours
     InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
   end
