@@ -161,6 +161,7 @@ RSpec.feature 'idv phone step', :js do
         click_idv_continue_for_step(:phone)
         click_on t('idv.failure.phone.warning.try_again_button')
       end
+      fill_out_phone_form_fail
       click_idv_continue_for_step(:phone)
     end
 
