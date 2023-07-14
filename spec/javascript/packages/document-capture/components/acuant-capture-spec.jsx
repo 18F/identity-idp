@@ -787,8 +787,6 @@ describe('document-capture/components/acuant-capture', () => {
 
       await findByText('doc_auth.info.image_loading');
 
-      // await findByText('doc_auth.buttons.take_picture_retry');
-
       expect(trackEvent).to.have.been.calledWith(
         'IdV: test image added',
         sinon.match({

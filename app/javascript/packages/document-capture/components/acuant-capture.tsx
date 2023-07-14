@@ -555,7 +555,6 @@ function AcuantCapture(
             isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
-            // below log happens
             onClick={withLoggedClick('button')(startCaptureOrTriggerUpload)}
             className={value ? 'margin-right-1' : 'margin-right-2'}
           >
