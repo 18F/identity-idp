@@ -16,6 +16,38 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     end
   end
 
+  describe '#getting_started_a_b_test_bucket' do
+    let(:sp_session) { {} }
+
+    controller Idv::StepController do
+    end
+
+    before do
+      allow(session).to receive(:id).and_return('session-id')
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+      allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket) do |discriminator|
+        case discriminator
+        when 'session-id'
+          :default
+        when 'request-id'
+          :new
+        end
+      end
+    end
+
+    it 'returns the bucket based on session id' do
+      expect(controller.getting_started_a_b_test_bucket).to eq(:default)
+    end
+
+    context 'with associated sp session request id' do
+      let(:sp_session) { { request_id: 'request-id' } }
+
+      it 'returns the bucket based on request id' do
+        expect(controller.getting_started_a_b_test_bucket).to eq(:new)
+      end
+    end
+  end
+
   context '#maybe_redirect_for_getting_started_ab_test' do
     controller Idv::StepController do
       before_action :maybe_redirect_for_getting_started_ab_test
@@ -28,19 +60,37 @@ RSpec.describe 'GettingStartedAbTestConcern' do
       end
     end
 
-    it 'does not redirect users getting existing experience' do
-      # user goes in bucket A
-      get :show
+    let(:session_uuid) { SecureRandom.uuid }
 
-      expect(response.body).to eq('Hello')
-      expect(response.status).to eq(200)
+    context 'A/B test specifies getting started page' do
+      before do
+        stub_const(
+          'AbTests::IDV_GETTING_STARTED',
+          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :new) },
+        )
+      end
+
+      it 'redirects to idv_getting_started_url' do
+        get :show
+
+        expect(response).to redirect_to(idv_getting_started_url)
+      end
     end
 
-    it 'redirects to idv_getting_started_url for users getting the new experience' do
-      # user goes in bucket B
-      get :show
+    context 'A/B test specifies welcome page' do
+      before do
+        stub_const(
+          'AbTests::IDV_GETTING_STARTED',
+          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :default) },
+        )
+      end
 
-      expect(response).to redirect_to(idv_getting_started_url)
+      it 'does not redirect users away from welcome page' do
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
     end
   end
 end
