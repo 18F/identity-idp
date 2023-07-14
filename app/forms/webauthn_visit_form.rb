@@ -2,7 +2,6 @@ class WebauthnVisitForm
   include ActiveModel::Model
   include ActionView::Helpers::UrlHelper
   include Rails.application.routes.url_helpers
-  include ActionView::Helpers::TagHelper
 
   attr_reader :url_options, :in_mfa_selection_flow
 
