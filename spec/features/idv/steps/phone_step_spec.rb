@@ -86,6 +86,90 @@ RSpec.feature 'idv phone step', :js do
       expect(page).to have_content('+1 703-555-5555')
     end
 
+    context 'resubmission after failed number' do
+      it 'phone field is empty after invalid submission' do
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+
+        phone_field = find_field(t('two_factor_authentication.phone_label'))
+
+        fill_out_phone_form_fail
+
+        expect(phone_field.value).not_to be_empty
+
+        click_idv_send_security_code
+        click_on t('idv.failure.phone.warning.try_again_button')
+
+        expect(page).to have_current_path(idv_phone_path)
+        expect(phone_field.value).to be_empty
+      end
+
+      context 'displays alert message if same nubmer is resubmitted' do
+        context 'gpo verification is enabled' do
+          it 'includes verify link' do
+            start_idv_from_sp
+            complete_idv_steps_before_phone_step
+            fill_out_phone_form_fail
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+
+            fill_out_phone_form_fail
+
+            expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+            expect(page).to have_content(
+              strip_tags(
+                t(
+                  'idv.messages.phone.failed_number.gpo_alert_html',
+                  link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                ),
+              ),
+            )
+
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+          end
+        end
+
+        context 'gpo verification is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(false)
+          end
+
+          it 'does not display verify link' do
+            start_idv_from_sp
+            complete_idv_steps_before_phone_step
+            fill_out_phone_form_fail
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+
+            fill_out_phone_form_fail
+
+            expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+            expect(page).not_to have_content(
+              strip_tags(
+                t(
+                  'idv.messages.phone.failed_number.gpo_alert_html',
+                  link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                ),
+              ),
+            )
+
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+          end
+        end
+      end
+    end
+
     it 'goes to the cancel page when cancel link is clicked' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
