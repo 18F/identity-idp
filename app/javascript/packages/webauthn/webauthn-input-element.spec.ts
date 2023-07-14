@@ -67,7 +67,7 @@ describe('WebauthnInputElement', () => {
             const element = document.querySelector('lg-webauthn-input')!;
 
             expect(element.hidden).to.be.false();
-            expect(element.classList.contains('webauthn-input--unsupported-passkey'));
+            expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.true();
           });
         });
       });
