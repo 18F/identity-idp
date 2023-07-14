@@ -157,6 +157,7 @@ RSpec.describe Idv::HybridHandoffController do
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: { doc_auth: { phone: '202-555-5555' } }
 
+        expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end

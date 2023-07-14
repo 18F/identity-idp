@@ -305,6 +305,7 @@ session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
+show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
@@ -396,10 +397,11 @@ development:
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"},{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_unsupported_passkey_platform_authentication_setup: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   state_tracking_enabled: true
   telephony_adapter: test

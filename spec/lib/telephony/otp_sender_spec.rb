@@ -55,8 +55,8 @@ RSpec.describe Telephony::OtpSender do
       end
 
       it 'logs a message being sent' do
-        expect(Telephony.config.logger).to receive(:info).with(
-          {
+        expect(Telephony).to receive(:log_info).with(
+          event: {
             success: true,
             errors: {},
             request_id: 'fake-message-request-id',
@@ -66,7 +66,7 @@ RSpec.describe Telephony::OtpSender do
             channel: :sms,
             context: :authentication,
             country_code: 'US',
-          }.to_json,
+          },
         )
 
         subject.send_authentication_otp

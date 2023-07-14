@@ -34,6 +34,7 @@ module Telephony
                    GSM_DOUBLE_CHARACTERS).freeze
 
   UCS_2_BASIC_CHAR_MAX = 0xFFFF
+  LOG_FILENAME = 'telephony.log'
 
   extend SingleForwardable
 
@@ -94,6 +95,16 @@ module Telephony
     end
 
     sender.phone_info(phone_number)
+  end
+
+  def self.log_info(event:)
+    event[:log_filename] = LOG_FILENAME
+    self.config.logger.info(event.to_json)
+  end
+
+  def self.log_warn(event:)
+    event[:log_filename] = LOG_FILENAME
+    self.config.logger.warn(event.to_json)
   end
 
   # A character in a GSM 03.38 message counts as one character, unless it is explicitly one of

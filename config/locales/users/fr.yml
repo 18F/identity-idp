@@ -39,3 +39,8 @@ fr:
         </ul>
       overview_html: Nous avons mis à jour notre %{link_html}. Veuillez consulter et
         cocher la case ci-dessous pour continuer.
+    suspended_sign_in_account:
+      contact_details: Nous n’avons pas pu vous connecter. Merci d’appeler notre
+        centre de contact au %{contact_number}.
+      error_details: Indiquez le code d’erreur %{error_code}.
+      heading: S’il vous plaît, appelez-nous
