@@ -1,3 +1,5 @@
+# This file is used to generate events.rb.
+
 events:
   auth_password_reset:
     description: >
@@ -64,7 +66,7 @@ events:
         threatmetrix_session_id:
           type: string
           description: A UUID reported to ThreatMetrix identifying the user's session.
-        threatmetrix_result:
+        threatmetrix_review_status:
           type: object
           description: Full result returned from ThreatMetrix.
 

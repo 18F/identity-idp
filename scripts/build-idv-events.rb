@@ -6,6 +6,9 @@ require 'action_controller'
 require 'action_view'
 require 'yaml'
 
+MODULE = 'Idv::Engine::Events'
+WIDTH = 80
+
 def get_params_schema_for_event(event, document)
   return if !event[:params]
 
@@ -65,8 +68,6 @@ def resolve_schema(schema, document)
   end
 end
 
-WIDTH = 80
-
 document = YAML.safe_load_file(ARGV[0], symbolize_names: true)
 
 events = document[:events].map do |name, event|
@@ -81,30 +82,35 @@ methods = []
 
 events.each do |event|
   args = []
-  rdoc = ActionController::Base.helpers.word_wrap(event[:description]).split("\n")
+  rdoc = ActionController::Base.helpers.word_wrap(
+    event[:description],
+    line_width: WIDTH - '  # '.length,
+  ).
+    split("\n")
 
   params_schema = get_params_schema_for_event(event, document)
+  params_arg_type = 'Object'
 
   if params_schema
     args << 'params'
-    rdoc << "@param [#{params_schema[:title]}] params"
+    rdoc << "@param [#{params_arg_type}] params"
 
     properties = params_schema[:properties] || {}
 
-    if properties.length == 0
-      param_structs << "#{params_schema[:title]} = Struct.new"
-    else
+    if properties.length > 0
+      # We have properties on the params type, so build out a
+      # custom Struct to track it
+      params_arg_type = params_schema[:title]
       param_structs << "#{params_schema[:title]} = Struct.new("
       properties.each_pair do |name, _schema|
         param_structs << "  :#{name},"
       end
       param_structs << '  keyword_init: true,'
       param_structs << ')'
+      param_structs << ''
     end
 
-    param_structs << ''
-
-    rdoc << "@return [#{params_schema[:title]}]"
+    rdoc << "@return [#{params_arg_type}]"
   else
     rdoc << '@return [nil]'
   end
@@ -114,6 +120,7 @@ events.each do |event|
   end
 
   methods << "def #{event[:name]}#{ "(#{args.join(", ")})" unless args.empty? }"
+  methods << "  handle_event :#{event[:name]}#{", #{args.join(', ')}" unless args.empty?}"
   methods << "  #{args[0] || 'nil'}"
   methods << 'end'
   methods << ''
@@ -124,7 +131,14 @@ methods.pop # remove last blank line
 lines = []
 lines << "# 👋 This file was automatically generated. Please don't edit it by hand."
 lines << ''
-lines << 'module Idv::Events'
+lines << "module #{MODULE}"
+
+lines << '  ALL = ['
+events.each do |event|
+  lines << "    :#{event[:name]},"
+end
+lines << '  ].freeze'
+lines << ''
 
 if !param_structs.empty?
   param_structs.each { |line| lines << "  #{line}".rstrip }
