@@ -101,7 +101,7 @@ en:
           gpo:
             button: Verify by mail
           heading: 'We couldn’t verify your identity by phone'
-          option_try_again_later: Cancel and start over again after %{time_left}
+          option_try_again_later_html: 'Cancel and start over again after <b>%{time_left}</b>'
           option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
           options_header: 'You can:'
         timeout: Our request to verify your information timed out. Please try again.

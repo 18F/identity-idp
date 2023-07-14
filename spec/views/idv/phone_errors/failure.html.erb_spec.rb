@@ -30,7 +30,7 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   it 'tells them they can try again later' do
     expect(rendered).to have_text(
       t(
-        'idv.failure.phone.rate_limited.option_try_again_later',
+        'idv.failure.phone.rate_limited.option_try_again_later_html',
         time_left: distance_of_time_in_words(Time.zone.now, @expires_at, except: :seconds),
       ),
     )

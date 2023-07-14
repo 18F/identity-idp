@@ -113,7 +113,7 @@ fr:
           gpo:
             button: Vérifier par courrier
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
-          option_try_again_later: Annuler et recommencer après %{time_left}
+          option_try_again_later_html: 'Annuler et recommencer après <b>%{time_left}</b>'
           option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
             <b>trois à sept jours ouvrables</b>.
           options_header: 'Vous Pouvez :'
