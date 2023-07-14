@@ -7,10 +7,12 @@ module Idv::Engine::Events
     :idv_consented,
     :idv_documents_submitted_to_acuant,
     :idv_documents_submitted_to_trueid,
+    :idv_gpo_letter_requested,
     :idv_info_submitted_to_aamva,
     :idv_info_submitted_to_lexisnexis_trueid,
     :idv_info_verified_by_user,
     :idv_mailing_address_updated_by_user,
+    :idv_password_entered_by_user,
     :idv_residential_address_submitted_to_instantverify,
     :idv_ssn_entered_by_user,
     :idv_started,
@@ -43,16 +45,22 @@ module Idv::Engine::Events
     keyword_init: true,
   )
 
+  IdvPasswordEnteredByUserParams = Struct.new(
+    :password,
+    keyword_init: true,
+  )
+
   IdvSsnEnteredByUserParams = Struct.new(
     :ssn,
     keyword_init: true,
   )
 
   IdvThreatmetrixCheckCompletedParams = Struct.new(
+    :request_success,
+    :request_timed_out,
     :response_status,
-    :response_success,
     :threatmetrix_session_id,
-    :threatmetrix_result,
+    :threatmetrix_review_status,
     keyword_init: true,
   )
 
@@ -102,6 +110,13 @@ module Idv::Engine::Events
     params
   end
 
+  # The user has requested a letter to verify their address.
+  # @return [nil]
+  def idv_gpo_letter_requested
+    handle_event :idv_gpo_letter_requested
+    nil
+  end
+
   # The information from the user's identity documents was submitted to the
   # American Association of Motor Vehicle Administrators (AAMVA) for
   # verification.
@@ -118,13 +133,12 @@ module Idv::Engine::Events
     nil
   end
 
-  # The user has reviewed (and possibly updated) the information from their
-  # identity documents.
-  # @param [Object] params
-  # @return [Object]
-  def idv_info_verified_by_user(params)
-    handle_event :idv_info_verified_by_user, params
-    params
+  # The user confirmed the accuracy of the PII on file and chose to continue the
+  # IDV process.
+  # @return [nil]
+  def idv_info_verified_by_user
+    handle_event :idv_info_verified_by_user
+    nil
   end
 
   # The user manually updated their mailing address.
@@ -132,6 +146,14 @@ module Idv::Engine::Events
   # @return [IdvMailingAddressUpdatedByUserParams]
   def idv_mailing_address_updated_by_user(params)
     handle_event :idv_mailing_address_updated_by_user, params
+    params
+  end
+
+  # The user has entered their password to encrypt their PII.
+  # @param [Object] params
+  # @return [IdvPasswordEnteredByUserParams]
+  def idv_password_entered_by_user(params)
+    handle_event :idv_password_entered_by_user, params
     params
   end
 
@@ -161,8 +183,7 @@ module Idv::Engine::Events
     nil
   end
 
-  # Login.gov requested the result of an automated fraud check. The response
-  # details will b
+  # Login.gov requested the result of an automated fraud check.
   # @param [Object] params
   # @return [IdvThreatmetrixCheckCompletedParams]
   def idv_threatmetrix_check_completed(params)

@@ -32,7 +32,7 @@ module Idv::Engine
       if self.class.class_variable_defined?(:@@handlers)
         handlers = self.class.class_variable_get(:@@handlers)
         if handlers && handlers[event_name]
-          handlers[event_name].each do
+          handlers[event_name].each do |block|
             instance_exec(params, &block)
           end
         end

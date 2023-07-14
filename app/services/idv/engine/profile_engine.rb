@@ -10,6 +10,15 @@ module Idv::Engine
       @idv_session = idv_session
     end
 
+    on :auth_password_reset do
+    end
+
+    on :idv_gpo_letter_requested do
+      update_idv_session(
+        address_verification_mechanism: :gpo,
+      )
+    end
+
     on :idv_ssn_entered_by_user do |params|
       update_idv_session_pii_from_doc(
         ssn: params.ssn,
@@ -21,13 +30,21 @@ module Idv::Engine
         threatmetrix_review_status: params.threatmetrix_review_status,
       )
 
-      update_proofing_component(
+      update_proofing_components(
         threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
         threatmetrix_review_status: params.threatmetrix_review_status,
       )
     end
 
     protected
+
+    def assert_no_active_profile
+      raise 'User has an active profile' if user.active_profile
+    end
+
+    def assert_idv_session_available
+      raise 'idv_session is not available' unless idv_session
+    end
 
     def build_verification
       Verification.new(
@@ -36,7 +53,8 @@ module Idv::Engine
     end
 
     def update_idv_session(fields)
-      raise 'idv_session is not available' unless idv_session
+      assert_idv_session_available
+      assert_no_active_profile
 
       fields.each_pair do |key, value|
         idv_session[key] = value
@@ -44,12 +62,13 @@ module Idv::Engine
     end
 
     def update_idv_session_pii_from_doc(fields)
-      raise 'idv_session is not available' unless idv_session
+      assert_idv_session_available
+      assert_no_active_profile
 
       idv_session[:pii_from_doc] = (idv_session[:pii_from_doc] || {}).merge(fields)
     end
 
-    def update_proofing_component(fields)
+    def update_proofing_components(fields)
       ProofingComponent.
         create_or_find_by(user_id: user.id).
         update(fields)
