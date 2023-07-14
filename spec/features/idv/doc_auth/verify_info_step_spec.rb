@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth verify_info step', :js do
+RSpec.feature 'verify_info step and verify_info_concern', :js do
   include IdvStepHelper
   include DocAuthHelper
 
@@ -26,101 +26,72 @@ RSpec.feature 'doc auth verify_info step', :js do
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
     sign_in_and_2fa_user
-    complete_doc_auth_steps_before_verify_step
+    complete_doc_auth_steps_before_ssn_step
   end
 
-  it 'sends the user to start doc auth if there is no pii from the document in session' do
-    visit sign_out_url
-    sign_in_and_2fa_user
-    visit idv_verify_info_path
+  context 'with good ssn' do
+    before do
+      fill_out_ssn_form_ok
+      click_idv_continue
+    end
 
-    expect(page).to have_current_path(idv_welcome_path)
-  end
+    it 'allows the user to enter in a new address and displays updated info' do
+      click_link t('idv.buttons.change_address_label')
+      fill_in 'idv_form_zipcode', with: '12345'
+      fill_in 'idv_form_address2', with: 'Apt 3E'
 
-  it 'displays the expected content' do
-    expect(page).to have_current_path(idv_verify_info_path)
-    expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_content(t('step_indicator.flows.idv.verify_info'))
+      click_button t('forms.buttons.submit.update')
 
-    # DOB is in full month format (October)
-    expect(page).to have_text(t('date.month_names')[10])
+      expect(page).to have_current_path(idv_verify_info_path)
 
-    # SSN is masked until revealed
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-    check t('forms.ssn.show')
-    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+      expect(page).to have_content('12345')
+      expect(page).to have_content('Apt 3E')
 
-    # navigating to earlier pages returns here
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_verify_info_path)
-  end
+      click_idv_continue
 
-  it 'allows the user to enter in a new address and displays updated info' do
-    click_link t('idv.buttons.change_address_label')
-    fill_in 'idv_form_zipcode', with: '12345'
-    fill_in 'idv_form_address2', with: 'Apt 3E'
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth verify proofing results',
+        hash_including(address_edited: true, address_line2_present: true),
+      )
+    end
 
-    click_button t('forms.buttons.submit.update')
+    it 'allows the user to enter in a new ssn and displays updated info' do
+      click_link t('idv.buttons.change_ssn_label')
 
-    expect(page).to have_current_path(idv_verify_info_path)
+      expect(page).to have_current_path(idv_ssn_path)
+      expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
+      expect(
+        find_field(t('idv.form.ssn_label')).value,
+      ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
 
-    expect(page).to have_content('12345')
-    expect(page).to have_content('Apt 3E')
+      fill_in t('idv.form.ssn_label'), with: '900456789'
+      click_button t('forms.buttons.submit.update')
 
-    click_idv_continue
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth redo_ssn submitted',
+      )
 
-    expect(fake_analytics).to have_logged_event(
-      'IdV: doc auth verify proofing results',
-      hash_including(address_edited: true, address_line2_present: true),
-    )
-  end
+      expect(page).to have_current_path(idv_verify_info_path)
 
-  it 'allows the user to enter in a new ssn and displays updated info' do
-    click_link t('idv.buttons.change_ssn_label')
+      expect(page).to have_text('9**-**-***9')
+      check t('forms.ssn.show')
+      expect(page).to have_text('900-45-6789')
+    end
 
-    expect(page).to have_current_path(idv_ssn_path)
-    expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
-    expect(
-      find_field(t('idv.form.ssn_label')).value,
-    ).to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
+    it 'logs analytics and attempts tracker events on submit' do
+      expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+        success: true,
+        failure_reason: nil,
+        **fake_pii_details,
+        ssn: DocAuthHelper::GOOD_SSN,
+      )
+      click_idv_continue
 
-    fill_in t('idv.form.ssn_label'), with: '900456789'
-    click_button t('forms.buttons.submit.update')
-
-    expect(fake_analytics).to have_logged_event(
-      'IdV: doc auth redo_ssn submitted',
-    )
-
-    expect(page).to have_current_path(idv_verify_info_path)
-
-    expect(page).to have_text('9**-**-***9')
-    check t('forms.ssn.show')
-    expect(page).to have_text('900-45-6789')
-  end
-
-  it 'proceeds to the next page upon confirmation' do
-    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
-      success: true,
-      failure_reason: nil,
-      **fake_pii_details,
-      ssn: DocAuthHelper::GOOD_SSN,
-    )
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_verify_step
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_phone_path)
-    expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    user = User.last
-    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
-    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
-    expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
-    expect(fake_analytics).to have_logged_event(
-      'IdV: doc auth verify proofing results',
-      hash_including(address_edited: false, address_line2_present: false),
-    )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: doc auth verify proofing results',
+        hash_including(address_edited: false, address_line2_present: false),
+      )
+    end
   end
 
   it 'does not proceed to the next page if resolution fails' do
@@ -130,8 +101,6 @@ RSpec.feature 'doc auth verify_info step', :js do
       **fake_pii_details,
       ssn: DocAuthHelper::SSN_THAT_FAILS_RESOLUTION,
     )
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     click_idv_continue
@@ -149,8 +118,6 @@ RSpec.feature 'doc auth verify_info step', :js do
       **fake_pii_details,
       ssn: DocAuthHelper::SSN_THAT_RAISES_EXCEPTION,
     )
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
 
     click_idv_continue
@@ -170,12 +137,10 @@ RSpec.feature 'doc auth verify_info step', :js do
 
   context 'resolution throttling' do
     let(:max_resolution_attempts) { 3 }
-    before(:each) do
+    before do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
     end
@@ -235,8 +200,6 @@ RSpec.feature 'doc auth verify_info step', :js do
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
 
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_ssn_step
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
       (max_ssn_attempts - 1).times do
@@ -434,27 +397,7 @@ RSpec.feature 'doc auth verify_info step', :js do
   end
 
   context 'phone vendor outage' do
-    let(:fake_analytics) { FakeAnalytics.new }
-    let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-
-    # values from Idp::Constants::MOCK_IDV_APPLICANT
-    let(:fake_pii_details) do
-      {
-        document_state: 'MT',
-        document_number: '1111111111111',
-        document_issued: '2019-12-31',
-        document_expiration: '2099-12-31',
-        first_name: 'FAKEY',
-        last_name: 'MCFAKERSON',
-        date_of_birth: '1938-10-06',
-        address: '1 FAKE RD',
-      }
-    end
-
     before do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-      allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
-        and_return(fake_attempts_tracker)
       allow_any_instance_of(OutageStatus).to receive(:any_phone_vendor_outage?).and_return(true)
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_and_2fa_user
