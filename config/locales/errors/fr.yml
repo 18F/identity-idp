@@ -131,7 +131,7 @@ fr:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_platform_setup:
       account_setup_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
-        déverrouillage tactile. Veuillez réessayer ou %{link_html}.
+        déverrouillage tactile. Veuillez réessayer ou %{link}.
       already_registered: Le déverrouillage facial ou le déverrouillage tactile est
         déjà enregistré sur cet appareil. Veuillez essayer d’ajouter une autre
         méthode d’authentification.
