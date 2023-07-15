@@ -37,7 +37,7 @@ module InPerson
       handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
 
       # if notification sent successful
-      enrollment.set_notification_sent_at if response.success?
+      enrollment.update(notification_sent_at: Time.zone.now) if response.success?
     ensure
       unless enrollment.present?
         enrollment = InPersonEnrollment.find_by(

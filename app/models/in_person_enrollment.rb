@@ -25,6 +25,10 @@ class InPersonEnrollment < ApplicationRecord
   before_save(:on_status_updated, if: :will_save_change_to_status?)
   before_create(:set_unique_id, unless: :unique_id)
   before_create(:set_capture_secondary_id)
+  after_save(
+    :on_notification_sent_at_updated,
+    if: [:notification_sent_at, :notification_phone_configuration],
+  )
 
   def self.is_pending_and_established_between(early_benchmark, late_benchmark)
     where(status: :pending).
@@ -126,9 +130,8 @@ class InPersonEnrollment < ApplicationRecord
     (today...due_date).count
   end
 
-  def set_notification_sent_at
-    self.notification_sent_at = Time.zone.now
-    notification_phone_configuration.destroy if notification_phone_configuration.present?
+  def on_notification_sent_at_updated
+    notification_phone_configuration&.destroy
   end
 
   def skip_notification_sent_at_set?

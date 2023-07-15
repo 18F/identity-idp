@@ -364,16 +364,23 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'set_notification_sent_at' do
+  describe 'when notification_sent_at is updated' do
     let(:enrollment) do
-      enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
-      enrollment.status_updated_at = (Time.zone.now - 2.hours)
-      enrollment
+      create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
     end
 
-    it 'set notification_sent_at and destroy notification phone configuration' do
-      enrollment.set_notification_sent_at
-      expect(enrollment.notification_sent_at).to_not be(nil)
+    let(:enrollment_without_notification) { create(:in_person_enrollment, :passed) }
+
+    it 'no error without notification phone configuration' do
+      now = Time.zone.now
+      enrollment_without_notification.update(notification_sent_at: now)
+      expect(enrollment_without_notification.notification_sent_at).to_not be(now)
+    end
+    it 'destroys notification phone configuration' do
+      now = Time.zone.now
+      enrollment.update(notification_sent_at: now)
+      expect(enrollment.notification_sent_at).to_not be(now)
+      expect(enrollment.reload.notification_phone_configuration).to be_nil
     end
   end
 
