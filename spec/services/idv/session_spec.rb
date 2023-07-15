@@ -74,6 +74,31 @@ RSpec.describe Idv::Session do
     end
   end
 
+  describe '#add_failed_phone_step_number' do
+    it 'adds uniq phone numbers in e164 format' do
+      subject.add_failed_phone_step_number('+1703-555-1212')
+      subject.add_failed_phone_step_number('703555-7575')
+
+      expect(subject.failed_phone_step_numbers.length).to eq(2)
+
+      # add duplicates
+      subject.add_failed_phone_step_number('(703) 355-7575')
+      subject.add_failed_phone_step_number('1703555-1212')
+
+      expect(subject.failed_phone_step_numbers.length).to eq(3)
+
+      ['+17035551212', '+17035557575', '+17033557575'].each do |num|
+        expect(subject.failed_phone_step_numbers.include?(num)).to be_truthy
+      end
+    end
+  end
+
+  describe '#failed_phone_step_numbers' do
+    it 'defaults to an empy array' do
+      expect(subject.failed_phone_step_numbers).to eq([])
+    end
+  end
+
   describe '#create_profile_from_applicant_with_password' do
     before do
       subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
