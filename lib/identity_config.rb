@@ -227,6 +227,7 @@ class IdentityConfig
     config.add(:idv_tmx_test_csp_disabled_emails, type: :json)
     config.add(:idv_tmx_test_js_disabled_emails, type: :json)
     config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
+    config.add(:in_person_doc_auth_button_enabled, type: :boolean)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
