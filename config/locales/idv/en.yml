@@ -215,7 +215,8 @@ en:
           This is to help verify your identity.
         failed_number:
           alert_text: We couldn’t match you to this number.
-          gpo_alert_html: If you don’t have <strong>another</strong> number to try, %{link_html} instead.
+          gpo_alert_html: If you don’t have <strong>another</strong> number to try,
+            %{link_html} instead.
           gpo_verify_link: verify by mail
         rules:
           - Based in the United States (including U.S. territories)

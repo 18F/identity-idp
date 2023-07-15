@@ -239,7 +239,8 @@ fr:
           code à usage unique. Ceci est pour aider à vérifier votre identité.
         failed_number:
           alert_text: Nous n’avons pas pu vous associer à ce numéro.
-          gpo_alert_html: Si vous n’avez pas <strong>d’autre</strong> numéro de téléphone à essayer, %{link_html}.
+          gpo_alert_html: Si vous n’avez pas <strong>d’autre</strong> numéro de téléphone
+            à essayer, %{link_html}.
           gpo_verify_link: vérifiez plutôt par courrier
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
