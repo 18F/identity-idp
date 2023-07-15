@@ -76,24 +76,22 @@ RSpec.feature 'idv phone step', :js do
   end
 
   context "when the user's information cannot be verified" do
-    it 'reports the number the user entered' do
+    before do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
+    end
+
+    it 'reports the number the user entered' do
       click_idv_send_security_code
 
       expect(page).to have_content(t('idv.failure.phone.warning.heading'))
       expect(page).to have_content('+1 703-555-5555')
     end
 
-    context 'resubmission after failed number' do
+    context 'resubmission after number failed verification' do
       it 'phone field is empty after invalid submission' do
-        start_idv_from_sp
-        complete_idv_steps_before_phone_step
-
         phone_field = find_field(t('two_factor_authentication.phone_label'))
-
-        fill_out_phone_form_fail
 
         expect(phone_field.value).not_to be_empty
 
@@ -104,12 +102,7 @@ RSpec.feature 'idv phone step', :js do
         expect(phone_field.value).to be_empty
       end
 
-      it 'succeds to otp verificaiton with valid number' do
-        start_idv_from_sp
-        complete_idv_steps_before_phone_step
-
-        fill_out_phone_form_fail
-
+      it 'succeds to otp verificaiton with valid number resubmission' do
         click_idv_send_security_code
         click_on t('idv.failure.phone.warning.try_again_button')
 
@@ -123,9 +116,6 @@ RSpec.feature 'idv phone step', :js do
       context 'displays alert message if same nubmer is resubmitted' do
         context 'gpo verification is enabled' do
           it 'includes verify link' do
-            start_idv_from_sp
-            complete_idv_steps_before_phone_step
-            fill_out_phone_form_fail
             click_idv_send_security_code
             click_on t('idv.failure.phone.warning.try_again_button')
 
@@ -157,9 +147,6 @@ RSpec.feature 'idv phone step', :js do
           end
 
           it 'does not display verify link' do
-            start_idv_from_sp
-            complete_idv_steps_before_phone_step
-            fill_out_phone_form_fail
             click_idv_send_security_code
             click_on t('idv.failure.phone.warning.try_again_button')
 
