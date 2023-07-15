@@ -173,6 +173,28 @@ RSpec.feature 'idv phone step', :js do
       end
     end
 
+    context 'phone number submission times out' do
+      it 'does not display failed alert message' do
+        timeout_phone_number = '7035555888'
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+        fill_out_phone_form_ok(timeout_phone_number)
+        click_idv_send_security_code
+        click_on t('idv.failure.button.warning')
+
+        expect(page).to have_current_path(idv_phone_path)
+
+        fill_out_phone_form_ok(timeout_phone_number)
+
+        expect(page).not_to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+        click_idv_send_security_code
+        click_on t('idv.failure.button.warning')
+
+        expect(page).to have_current_path(idv_phone_path)
+      end
+    end
+
     it 'goes to the cancel page when cancel link is clicked' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
