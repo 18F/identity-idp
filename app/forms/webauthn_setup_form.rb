@@ -114,6 +114,7 @@ class WebauthnSetupForm
       name: name,
       platform_authenticator: platform_authenticator,
       transports: transports.presence,
+      authenticator_data_flags: authenticator_data_flags.presence,
     )
   end
 
