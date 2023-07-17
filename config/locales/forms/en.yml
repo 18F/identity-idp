@@ -149,18 +149,18 @@ en:
       confirm: Are you sure you want to remove face or touch unlock?
     webauthn_platform_setup:
       continue: Continue
+      info_text: You’ll need to set up an additional authentication method after you
+        set up face or touch unlock.
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
-      intro_html: '<p>When you want to access your %{app_name} account, you use your
-        device to scan your face or fingerprint. Your device confirms if those
-        scans are a match to the images you already have stored on your
-        device.</p><p>We do not copy or store these images. You’ll need the same
-        device to sign in using face or touch unlock in the future. %{link}</p>'
+      intro_html: '<p>Save your face or fingerprint as a credential on your device, so
+        you can access your account with it. %{app_name} does not store your
+        face or fingerprint.</p><p>You may need to use the same device to sign
+        in each time. %{link}</p>'
       intro_link_text: Learn more about face or touch unlock.
       nickname: Device nickname
-      warning_text: If you lose or change your device, you’ll have to reset your
-        account. We recommend setting up multiple authentication methods to help
-        avoid account lockout.
+      nickname_hint: If you add more devices for face or touch unlock, you’ll know
+        which one is which.
     webauthn_setup:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}

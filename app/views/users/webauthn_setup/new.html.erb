@@ -4,9 +4,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<% if @platform_authenticator %>
-  <%= render AlertComponent.new(type: :warning, class: 'margin-y-1') do %>
-    <%= t('forms.webauthn_platform_setup.warning_text') %>
+<% if @need_to_set_up_additional_mfa %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('forms.webauthn_platform_setup.info_text') %>
   <% end %>
 <% end %>
 
@@ -36,6 +36,7 @@
         name: :name,
         required: true,
         label: @presenter.nickname_label,
+        hint: @presenter.device_nickname_hint,
         input_html: {
           id: 'nickname',
           class: 'font-family-mono',
