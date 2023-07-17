@@ -39,7 +39,10 @@ FactoryBot.define do
     end
 
     trait :with_notification_phone_configuration do
-      notification_phone_configuration { association :notification_phone_configuration }
+      after(:build) do |enrollment|
+        enrollment.notification_phone_configuration =
+          FactoryBot.build(:notification_phone_configuration)
+      end
     end
   end
 end
