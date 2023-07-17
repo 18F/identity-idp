@@ -1,4 +1,4 @@
-# 👋 This file was automatically generated. Please don't edit it by hand.
+# 👋 This file was automatically generated.
 
 module Idv::Engine::Events
   ALL = [
