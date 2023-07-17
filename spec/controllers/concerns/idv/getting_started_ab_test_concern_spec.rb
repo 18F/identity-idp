@@ -64,10 +64,8 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
     context 'A/B test specifies getting started page' do
       before do
-        stub_const(
-          'AbTests::IDV_GETTING_STARTED',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :new) },
-        )
+        allow(controller).to receive(:getting_started_a_b_test_bucket).
+          and_return(:new)
       end
 
       it 'redirects to idv_getting_started_url' do
@@ -79,10 +77,8 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
     context 'A/B test specifies welcome page' do
       before do
-        stub_const(
-          'AbTests::IDV_GETTING_STARTED',
-          FakeAbTestBucket.new.tap { |ab| ab.assign(session_uuid => :default) },
-        )
+        allow(controller).to receive(:getting_started_a_b_test_bucket).
+          and_return(:default)
       end
 
       it 'does not redirect users away from welcome page' do
