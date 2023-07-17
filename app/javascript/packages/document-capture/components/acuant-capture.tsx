@@ -30,7 +30,7 @@ import type {
 } from './acuant-camera';
 
 type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
-type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
+type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
 interface ImageAnalyticsPayload {
@@ -438,10 +438,14 @@ function AcuantCapture(
     const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const isUnsupportedDocument = cardtype !== 1;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isAssessedAsGlare) {
+    if (isUnsupportedDocument) {
+      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      assessment = 'unsupported';
+    } else if (isAssessedAsGlare) {
       setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
     } else if (isAssessedAsBlurry) {
@@ -475,7 +479,7 @@ function AcuantCapture(
       onChangeAndResetError(data, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
-      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
+      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry, isUnsupportedDocument });
     }
 
     setIsCapturingEnvironment(false);
