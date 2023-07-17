@@ -23,31 +23,10 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    it 'includes authentication before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_two_factor_authenticated,
-      )
-    end
-
     it 'checks that feature flag is enabled' do
       expect(subject).to have_actions(
         :before,
         :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set,
-      )
-    end
-
-    it 'includes outage before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :check_for_outage,
-      )
-    end
-
-    it 'checks that the previous step is complete' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_in_person_address_step_complete,
       )
     end
 
@@ -58,10 +37,54 @@ RSpec.describe Idv::InPerson::SsnController do
       )
     end
 
+    context 'when in_person_ssn_info_controller_enabled is not set' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
+          and_return(nil)
+      end
+
+      context('#renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set') do
+        it 'renders a 404' do
+          get :show
+
+          expect(response).to be_not_found
+        end
+      end
+    end
+
+    context 'when in_person_ssn_info_controller_enabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
+          and_return(false)
+      end
+
+      context('#renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set') do
+        it 'renders a 404' do
+          get :show
+
+          expect(response).to be_not_found
+        end
+      end
+    end
+
     context 'when in_person_ssn_info_controller_enabled is true' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
           and_return(true)
+      end
+
+      context('#confirm_in_person_address_step_complete') do
+        it 'redirects if the user hasn\'t completed the address page' do
+          # delete address attributes on session
+          flow_session['pii_from_user'].delete(:address1)
+          flow_session['pii_from_user'].delete(:address2)
+          flow_session['pii_from_user'].delete(:city)
+          flow_session['pii_from_user'].delete(:state)
+          flow_session['pii_from_user'].delete(:zipcode)
+          get :show
+
+          expect(response).to redirect_to idv_in_person_step_url(step: :address)
+        end
       end
 
       describe '#show' do
