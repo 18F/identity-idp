@@ -17,9 +17,10 @@
 
   <%= render PageHeadingComponent.new.with_content(@title) %>
     <p>
-      <%= t('doc_auth.info.getting_started_html', 
-        sp_name: @sp_name,
-        link_html: new_tab_link_to(
+      <%= t(
+            'doc_auth.info.getting_started_html',
+            sp_name: @sp_name,
+            link_html: new_tab_link_to(
               t('doc_auth.info.getting_started_learn_more'),
               help_center_redirect_path(
                 category: 'verify-your-identity',
@@ -28,7 +29,8 @@
                 step: :getting_started,
                 location: 'you_will_need',
               ),
-            )) %>
+            ),
+          ) %>
     </p>
 
     <h2><%= t('doc_auth.getting_started.instructions.getting_started') %></h2>

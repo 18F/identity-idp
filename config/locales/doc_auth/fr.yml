@@ -129,6 +129,24 @@ fr:
         dossier</lg-underline>
       doc_success: Nous avons vérifié vos informations
       selected_file: Fichier sélectionné
+    getting_started:
+      instructions:
+        bullet1: Ajoutez des photos de votre pièce d’identité
+        bullet2: Saisissez votre numéro de sécurité sociale
+        bullet3: Faire correspondre à votre numéro de téléphone
+        bullet4: Saisissez à nouveau votre mot de passe Login.gov
+        consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
+          conserver et partager vos renseignements personnels. Nous les
+          utilisons pour vérifier votre identité.
+        getting_started: 'Vous aurez besoin de :'
+        learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
+        privacy: Nos normes de confidentialité et de sécurité
+        text1: Utilisez votre permis de conduire ou votre carte d’identité de l’État.
+          Les autres pièces d’identité ne sont pas acceptées.
+        text2: Vous n’aurez pas besoin de votre carte SSN physique.
+        text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
+          fois la correspondance établie, nous vous enverrons un code.
+        text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     headings:
       address: Mettre à jour votre adresse postale
       back: Verso
@@ -166,22 +184,6 @@ fr:
         identité en utilisant votre téléphone
       only_add_sp_services_html: Vous essayez d’accéder aux services de
         <strong>%{service_provider_name}</strong>
-    getting_started:
-      instructions:
-        bullet1: Ajoutez des photos de votre pièce d’identité
-        bullet2: Saisissez votre numéro de sécurité sociale
-        bullet3: Faire correspondre à votre numéro de téléphone
-        bullet4: Saisissez à nouveau votre mot de passe Login.gov
-        consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
-          conserver et partager vos renseignements personnels. Nous les utilisons
-          pour vérifier votre identité.
-        getting_started: 'Vous aurez besoin de :'
-        learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-        privacy: Nos normes de confidentialité et de sécurité
-        text1: Utilisez votre permis de conduire ou votre carte d'identité de l'État. Les autres pièces d’identité ne sont pas acceptées.
-        text2: Vous n’aurez pas besoin de votre carte SSN physique.
-        text3: Votre numéro de téléphone correspond à vos informations personnelles. Une fois la correspondance établie, nous vous enverrons un code.
-        text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     info:
       address_guidance_puerto_rico_html: Résidents de Porto Rico:<br><br>Modifiez
         votre adresse pour indiquer votre lotissement ou votre condominium à la
@@ -194,7 +196,8 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
-      getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non quelqu’un qui se fait passer pour vous. %{link_html}'
+      getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
+        quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.

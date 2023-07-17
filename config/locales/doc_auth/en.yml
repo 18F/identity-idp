@@ -99,6 +99,24 @@ en:
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       doc_success: We verified your information
       selected_file: Selected file
+    getting_started:
+      instructions:
+        bullet1: Add photos of your ID
+        bullet2: Enter your Social Security number
+        bullet3: Match to your phone number
+        bullet4: Re-enter your Login.gov password
+        consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+          and share your personal information. We will use it to verify your
+          identity.
+        getting_started: 'You’ll need to:'
+        learn_more: Learn more about our privacy and security measures
+        privacy: Our privacy and security standards
+        text1: Use your driver’s license or state ID card. Other forms of ID are not
+          accepted.
+        text2: You will not need your physical SSN card.
+        text3: Your phone number matches you to your personal information. After you
+          match, we’ll send you a code.
+        text4: Your password saves and encrypts your personal information.
     headings:
       address: Update your mailing address
       back: Back
@@ -135,22 +153,6 @@ en:
       only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
       only_add_sp_services_html: You are trying to access
         <strong>%{service_provider_name}</strong> services
-    getting_started:
-      instructions:
-        bullet1: Add photos of your ID
-        bullet2: Enter your Social Security number
-        bullet3: Match to your phone number
-        bullet4: Re-enter your Login.gov password
-        consent: By checking this box, you are letting %{app_name} ask for, use, keep,
-          and share your personal information. We will use it to verify your
-          identity.
-        getting_started: 'You’ll need to:'
-        learn_more: Learn more about our privacy and security measures
-        privacy: Our privacy and security standards
-        text1: Use your driver’s license or state ID card. Other forms of ID are not accepted.
-        text2: You will not need your physical SSN card.
-        text3: Your phone number matches you to your personal information. After you match, we’ll send you a code.
-        text4: Your password saves and encrypts your personal information. 
     info:
       address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your
         address to list your urbanization or condominium on address line 2.
