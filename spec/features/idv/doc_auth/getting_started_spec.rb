@@ -31,6 +31,32 @@ RSpec.feature 'getting started step' do
     expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
+  context 'when JS is disabled' do
+    it 'shows the notice if the user clicks continue without giving consent' do
+      click_continue
+
+      expect(page).to have_current_path(idv_getting_started_url)
+      expect(page).to have_content(t('errors.doc_auth.consent_form'))
+    end
+
+    it 'allows the user to continue after checking the checkbox' do
+      check t('doc_auth.instructions.consent', app_name: APP_NAME)
+      click_continue
+
+      expect(page).to have_current_path(idv_hybrid_handoff_path)
+    end
+  end
+
+  context 'skipping hybrid_handoff step', :js, driver: :headless_chrome_mobile do
+    before do
+      complete_getting_started_step
+    end
+
+    it 'progresses to document capture' do
+      expect(page).to have_current_path(idv_document_capture_url)
+    end
+  end
+
   def complete_getting_started_step
     complete_agreement_step # it does the right thing
   end
