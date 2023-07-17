@@ -14,7 +14,7 @@ module Idv::Engine::Events
     :idv_info_submitted_to_aamva,
     :idv_info_submitted_to_lexisnexis_trueid,
     :idv_residential_address_submitted_to_instantverify,
-    :idv_user_consented,
+    :idv_user_consented_to_share_pii,
     :idv_user_entered_password,
     :idv_user_entered_ssn,
     :idv_user_started,
@@ -206,8 +206,8 @@ module Idv::Engine::Events
   # The user has consented to share PII with Login.gov for the purposes of
   # identity verification.
   # @return [nil]
-  def idv_user_consented
-    handle_event :idv_user_consented
+  def idv_user_consented_to_share_pii
+    handle_event :idv_user_consented_to_share_pii
     nil
   end
 

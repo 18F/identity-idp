@@ -25,7 +25,7 @@ module Idv
       create_document_capture_session
       cancel_previous_in_person_enrollments
 
-      idv_session.welcome_visited = true
+      idv_engine.idv_user_started
 
       redirect_to idv_agreement_url
     end

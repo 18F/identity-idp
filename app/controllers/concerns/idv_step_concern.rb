@@ -72,4 +72,12 @@ module IdvStepConcern
 
     redirect_to idv_otp_verification_url
   end
+
+  def idv_engine
+    @idv_engine ||= Idv::Engine::ProfileEngine.new(
+      user: current_user,
+      idv_session: idv_session,
+      user_session: user_session,
+    )
+  end
 end
