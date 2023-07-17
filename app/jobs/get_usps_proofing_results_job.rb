@@ -455,7 +455,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     return if enrollment&.proofed_at.blank?
     sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
                       DEFAULT_EMAIL_DELAY_IN_HOURS
-    wait_until = proofed_at + sms_delay_hours
+    wait_until = enrollment.proofed_at + sms_delay_hours
     if wait_until > Time.zone.now
       InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
     else
