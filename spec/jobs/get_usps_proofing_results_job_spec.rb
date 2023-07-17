@@ -506,6 +506,30 @@ RSpec.describe GetUspsProofingResultsJob do
             end
           end
 
+          it 'sends sms message on response with expired status' do
+            stub_request_expired_proofing_results
+            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+              and_return(true)
+            pending_enrollment.user
+            expect(pending_enrollment.deadline_passed_sent).to be false
+            freeze_time do
+              expect do
+                job.perform(Time.zone.now)
+              end.to have_enqueued_job(InPerson::SendProofingNotificationJob)
+              pending_enrollment.reload
+              expect(pending_enrollment.deadline_passed_sent).to be true
+              expect(job_analytics).to have_logged_event(
+                'GetUspsProofingResultsJob: deadline passed email initiated',
+                enrollment_code: pending_enrollment.enrollment_code,
+                enrollment_id: pending_enrollment.id,
+                service_provider: pending_enrollment.issuer,
+                timestamp: anything,
+                wait_until: nil,
+                job_name: 'GetUspsProofingResultsJob',
+              )
+            end
+          end
+
           it 'sends failed email when fraudSuspected is true' do
             stub_request_failed_suspected_fraud_proofing_results
 
