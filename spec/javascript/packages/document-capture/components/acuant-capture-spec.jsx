@@ -28,11 +28,6 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
   sharpness: 100,
 };
 
-const ACUANT_CAPTURE_CARDTYPE_ERROR = { ...ACUANT_CAPTURE_SUCCESS_RESULT };
-
-delete ACUANT_CAPTURE_CARDTYPE_ERROR.cardtype;
-ACUANT_CAPTURE_CARDTYPE_ERROR.cardType = 2;
-
 describe('getDecodedBase64ByteSize', () => {
   it('returns the decoded byte size', () => {
     const original = 'Hello World';
@@ -763,6 +758,7 @@ describe('document-capture/components/acuant-capture', () => {
 
     it('logs a human readable error when the document type errs', async () => {
       const trackEvent = sinon.spy();
+      const incorrectCardType = 5;
       const { findByText, getByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
@@ -778,7 +774,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped(ACUANT_CAPTURE_CARDTYPE_ERROR);
+          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardtype: incorrectCardType });
         }),
       });
 
@@ -790,7 +786,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.have.been.calledWith(
         'IdV: test image added',
         sinon.match({
-          documentType: 'An error in document type returned: undefined',
+          documentType: `An error in document type returned: ${incorrectCardType}`,
         }),
       );
     });
