@@ -131,7 +131,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def on_notification_sent_at_updated
-    notification_phone_configuration&.destroy
+    self.notification_phone_configuration&.destroy
   end
 
   def skip_notification_sent_at_set?

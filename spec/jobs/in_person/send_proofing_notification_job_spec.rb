@@ -116,7 +116,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
             job.perform(passed_enrollment.id)
             expect(passed_enrollment.notification_sent_at).to eq(now)
-            expect(passed_enrollment.reload.notification_phone_configuration).to eq(nil)
+            expect(passed_enrollment.reload_notification_phone_configuration).to eq(nil)
           end
         end
         it 'sends notification successfully when enrollment failed' do
@@ -136,7 +136,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             )
             job.perform(failing_enrollment.id)
             expect(failing_enrollment.notification_sent_at).to eq(now)
-            expect(failing_enrollment.reload.notification_phone_configuration).to eq(nil)
+            expect(failing_enrollment.reload_notification_phone_configuration).to eq(nil)
           end
         end
       end
