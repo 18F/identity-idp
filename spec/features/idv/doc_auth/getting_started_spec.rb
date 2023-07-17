@@ -21,5 +21,17 @@ RSpec.feature 'getting started step' do
 
   it 'displays expected content', :js do
     expect(page).to have_current_path(idv_getting_started_path)
+
+    # Try to continue with unchecked checkbox
+    click_continue
+    expect(page).to have_current_path(idv_getting_started_path)
+    expect(page).to have_content(t('forms.validation.required_checkbox'))
+
+    complete_getting_started_step
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  def complete_getting_started_step
+    complete_agreement_step # it does the right thing
   end
 end
