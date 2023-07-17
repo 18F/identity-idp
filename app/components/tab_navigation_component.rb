@@ -8,8 +8,9 @@ class TabNavigationComponent < BaseComponent
   end
 
   def is_current_path?(path)
-    request.path == URI.parse(path).path
-  rescue URI::InvalidURIError
+    recognized_path = Rails.application.routes.recognize_path(path)
+    [recognized_path, request].pluck(:controller, :action).uniq.one?
+  rescue ActionController::RoutingError
     false
   end
 end
