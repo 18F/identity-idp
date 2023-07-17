@@ -375,12 +375,14 @@ RSpec.describe InPersonEnrollment, type: :model do
       now = Time.zone.now
       enrollment_without_notification.update(notification_sent_at: now)
       expect(enrollment_without_notification.notification_sent_at).to_not be(now)
+      expect(InPersonEnrollment.count).to eq(1)
     end
     it 'destroys notification phone configuration' do
       now = Time.zone.now
       enrollment.update(notification_sent_at: now)
       expect(enrollment.notification_sent_at).to_not be(now)
       expect(enrollment.reload.notification_phone_configuration).to be_nil
+      expect(InPersonEnrollment.count).to eq(1)
     end
   end
 
