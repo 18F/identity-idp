@@ -142,6 +142,7 @@ fr:
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
       front: Recto
+      getting_started: Commencez à vérifier votre identité
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
@@ -165,6 +166,31 @@ fr:
         identité en utilisant votre téléphone
       only_add_sp_services_html: Vous essayez d’accéder aux services de
         <strong>%{service_provider_name}</strong>
+    getting_started:
+      instructions:
+        bullet1: Carte d’identité délivrée par l’État
+        bullet2: Numéro de sécurité sociale
+        bullet3: Numéro de téléphone OU adresse du domicile
+        consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
+          conserver et partager vos renseignements personnels. Nous les utilisons
+          pour vérifier votre identité.
+        getting_started: 'Vous aurez besoin de votre:'
+        learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
+        privacy: Nos normes de confidentialité et de sécurité
+        switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
+        switch_back_image: Flèche pointant du téléphone vers l’ordinateur
+        test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
+          “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
+          champ.
+        text1: Votre carte d’identité ne doit pas être expirée.
+        text2: Vous n’aurez pas besoin de la carte sur vous.
+        text3_html:
+          - '<strong>Vérification par téléphone</strong> : Nous appellerons ou
+            enverrons un SMS à votre numéro de téléphone. Cela prend quelques
+            minutes.'
+          - '<strong>Vérification par courrier</strong> : Nous vous enverrons une
+            lettre à votre adresse personnelle. Cela prend de 3 à 7 jours
+            ouvrables.'
     info:
       address_guidance_puerto_rico_html: Résidents de Porto Rico:<br><br>Modifiez
         votre adresse pour indiquer votre lotissement ou votre condominium à la
@@ -177,6 +203,8 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
+      getting_started: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous.'
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       image_loaded: Image chargée
@@ -225,6 +253,7 @@ fr:
       consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous les utilisons
         pour vérifier votre identité.
+      getting_started: 'Vous aurez besoin de votre:'
       learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
       privacy: Nos normes de confidentialité et de sécurité
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.

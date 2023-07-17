@@ -112,6 +112,7 @@ en:
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
       front: Front
+      getting_started: Get started verifying your identity
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
@@ -134,6 +135,28 @@ en:
       only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
       only_add_sp_services_html: You are trying to access
         <strong>%{service_provider_name}</strong> services
+    getting_started:
+      instructions:
+        bullet1: State‑issued ID
+        bullet2: Social Security number
+        bullet3: Phone number OR home address
+        consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+          and share your personal information. We will use it to verify your
+          identity.
+        getting_started: 'You will need your:'
+        learn_more: Learn more about our privacy and security measures
+        privacy: Our privacy and security standards
+        switch_back: Switch back to your computer to finish verifying your identity.
+        switch_back_image: Arrow pointing from phone to computer
+        test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
+          considered valid. Do not enter real PII in this field.
+        text1: Your ID cannot be expired.
+        text2: You will not need the card with you.
+        text3_html:
+          - '<strong>Verify by phone</strong>: We’ll call or text your phone
+            number. This takes a few minutes.'
+          - '<strong>Verify by mail</strong>: We’ll mail a letter to your home
+            address. This takes about 3 to 7 business days.'
     info:
       address_guidance_puerto_rico_html: Puerto Rico residents:<br><br>Edit your
         address to list your urbanization or condominium on address line 2.
@@ -145,6 +168,8 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state‑issued ID. We use this information to verify your
         identity.
+      getting_started: '%{sp_name} needs to make sure you are you — not someone
+        pretending to be you.'
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading
@@ -186,6 +211,7 @@ en:
       consent: By checking this box, you are letting %{app_name} ask for, use, keep,
         and share your personal information. We will use it to verify your
         identity.
+      getting_started: 'You will need your:'
       learn_more: Learn more about our privacy and security measures
       privacy: Our privacy and security standards
       switch_back: Switch back to your computer to finish verifying your identity.
