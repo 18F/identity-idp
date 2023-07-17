@@ -27,7 +27,7 @@ module Idv
       )
 
       if result.success?
-        idv_session.idv_consent_given = true
+        idv_engine.idv_user_consented_to_share_pii
 
         redirect_to idv_hybrid_handoff_url
       else

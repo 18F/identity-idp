@@ -30,7 +30,7 @@ module Idv::Engine
     end
 
     on :idv_user_entered_ssn do |params|
-      update_idv_session_pii_from_doc(
+      update_flow_session_pii_from_doc(
         ssn: params.ssn,
       )
     end
@@ -43,6 +43,18 @@ module Idv::Engine
       update_proofing_components(
         threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
         threatmetrix_review_status: params.threatmetrix_review_status,
+      )
+    end
+
+    on :idv_user_started do
+      update_idv_session(
+        welcome_visited: true,
+      )
+    end
+
+    on :idv_user_consented_to_share_pii do
+      update_idv_session(
+        idv_consent_given: true,
       )
     end
 
@@ -66,20 +78,29 @@ module Idv::Engine
       )
     end
 
+    def flow_session
+      assert_user_session_available
+      user_session['idv/doc_auth'] ||= {}
+    end
+
+    def update_flow_session(fields)
+      fields.each_pair do |key, value|
+        flow_session[key] = value
+      end
+    end
+
+    def update_flow_session_pii_from_doc(fields)
+      pii_from_doc = flow_session[:pii_from_doc]
+      flow_session[:pii_from_doc] = (pii_from_doc || {}).merge(fields)
+    end
+
     def update_idv_session(fields)
       assert_idv_session_available
       assert_no_active_profile
 
       fields.each_pair do |key, value|
-        idv_session[key] = value
+        idv_session.send("#{key}=".to_sym, value)
       end
-    end
-
-    def update_idv_session_pii_from_doc(fields)
-      assert_idv_session_available
-      assert_no_active_profile
-
-      idv_session[:pii_from_doc] = (idv_session[:pii_from_doc] || {}).merge(fields)
     end
 
     def update_proofing_components(fields)

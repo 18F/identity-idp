@@ -89,4 +89,12 @@ module IdvStepConcern
     end
     extra
   end
+  
+  def idv_engine
+    @idv_engine ||= Idv::Engine::ProfileEngine.new(
+      user: current_user,
+      idv_session: idv_session,
+      user_session: user_session,
+    )
+  end
 end

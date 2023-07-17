@@ -1,5 +1,11 @@
 # This file is used to generate events.rb.
 
+attributes:
+  user_has_started?:
+    description: Has the user begun identity verification?
+  user_has_consented_to_share_pii?:
+    description: Has the user consented to share PII with Login.gov.
+
 events:
   auth_user_changed_password:
     description: >
@@ -20,7 +26,7 @@ events:
       The user has confirmed their desire to begin the identity verification process. They have
       NOT necessarily yet consented to share their PII with Login.gov.
 
-  idv_user_consented:
+  idv_user_consented_to_share_pii:
     description: >
       The user has consented to share PII with Login.gov for the purposes of identity verification.
 
