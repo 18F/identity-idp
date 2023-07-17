@@ -245,10 +245,10 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-
+    # destroy phone number for expired
+    enrollment.notification_phone_configuration&.destroy
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
-      send_enrollment_status_sms_notification(enrollment: enrollment) if enrollment.expired?
     rescue StandardError => err
       NewRelic::Agent.notice_error(err)
       analytics(user: enrollment.user).
@@ -448,12 +448,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     return { wait_until: wait_until, queue: :intentionally_delayed }
   end
 
+  # enqueue sms notification job when it's expired or success
+  # @param [InPersonEnrollment] enrollment
   def send_enrollment_status_sms_notification(enrollment:)
     return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
-    proofed_at = enrollment.proofed_at
-    # no proofed_at for expired status
-    proofed_at = Time.zone.now if enrollment.expired?
-    return if proofed_at.blank?
+    return if enrollment&.proofed_at.blank?
     sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
                       DEFAULT_EMAIL_DELAY_IN_HOURS
     wait_until = proofed_at + sms_delay_hours

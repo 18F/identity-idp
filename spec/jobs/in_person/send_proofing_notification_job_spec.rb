@@ -143,22 +143,21 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             expect(failing_enrollment.reload_notification_phone_configuration).to eq(nil)
           end
         end
-        it 'sends notification successfully when enrollment expired' do
+        it 'sends no notification and phone removed when enrollment expired' do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
           allow(InPersonEnrollment).to receive(:find_by).and_return(expired_enrollment)
           freeze_time do
-            now = Time.zone.now
             expect(analytics).to receive(
               :idv_in_person_usps_proofing_results_notification_job_started,
             )
             expect(analytics).to receive(
               :idv_in_person_usps_proofing_results_notification_job_completed,
             )
-            expect(analytics).to receive(
+            expect(analytics).not_to receive(
               :idv_in_person_usps_proofing_results_notification_sent_attempted,
             )
             job.perform(expired_enrollment.id)
-            expect(expired_enrollment.notification_sent_at).to eq(now)
+            expect(expired_enrollment.notification_sent_at).to be_nil
             expect(expired_enrollment.reload_notification_phone_configuration).to eq(nil)
           end
         end

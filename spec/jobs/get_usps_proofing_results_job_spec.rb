@@ -217,7 +217,7 @@ RSpec.describe GetUspsProofingResultsJob do
         let!(:pending_enrollments) do
           [
             create(
-              :in_person_enrollment, :pending,
+              :in_person_enrollment, :pending, :with_notification_phone_configuration,
               selected_location_details: { name: 'BALTIMORE' },
               issuer: 'http://localhost:3000'
             ),
@@ -482,9 +482,11 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'sends deadline passed email on response with expired status' do
             stub_request_expired_proofing_results
-
+            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+              and_return(true)
             user = pending_enrollment.user
             expect(pending_enrollment.deadline_passed_sent).to be false
+            expect(pending_enrollment.notification_phone_configuration).not_to be_nil
             freeze_time do
               expect do
                 job.perform(Time.zone.now)
@@ -503,30 +505,8 @@ RSpec.describe GetUspsProofingResultsJob do
                 wait_until: nil,
                 job_name: 'GetUspsProofingResultsJob',
               )
-            end
-          end
-
-          it 'sends sms message on response with expired status' do
-            stub_request_expired_proofing_results
-            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-              and_return(true)
-            pending_enrollment.user
-            expect(pending_enrollment.deadline_passed_sent).to be false
-            freeze_time do
-              expect do
-                job.perform(Time.zone.now)
-              end.to have_enqueued_job(InPerson::SendProofingNotificationJob)
-              pending_enrollment.reload
-              expect(pending_enrollment.deadline_passed_sent).to be true
-              expect(job_analytics).to have_logged_event(
-                'GetUspsProofingResultsJob: deadline passed email initiated',
-                enrollment_code: pending_enrollment.enrollment_code,
-                enrollment_id: pending_enrollment.id,
-                service_provider: pending_enrollment.issuer,
-                timestamp: anything,
-                wait_until: nil,
-                job_name: 'GetUspsProofingResultsJob',
-              )
+              expect(pending_enrollment.notification_phone_configuration).to be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
             end
           end
 

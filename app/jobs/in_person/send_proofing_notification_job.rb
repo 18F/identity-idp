@@ -12,7 +12,7 @@ module InPerson
           include: [:notification_phone_configuration, :user],
         )
         return unless enrollment
-        # skip
+        # skip when enrollment status not success/failed/expired and no phone configured
         if enrollment.skip_notification_sent_at_set?
           # log event
           analytics(user: enrollment.user).
@@ -27,7 +27,13 @@ module InPerson
             enrollment_code: enrollment.enrollment_code,
             enrollment_id: enrollment.id,
           )
+        if enrollment.expired?
+          # no sending message for expired status
+          enrollment.notification_phone_configuration&.destroy
+          return
+        end
 
+        # only send sms when success or failed
         # send notification and log result
         phone = enrollment.notification_phone_configuration.formatted_phone
         message = notification_message(enrollment: enrollment)
