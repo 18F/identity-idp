@@ -36,14 +36,11 @@ module InPerson
           country_code: Phonelib.parse(phone).country
         )
         handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
-
         # if notification sent successful
         enrollment.update(notification_sent_at: Time.zone.now) if response.success?
       ensure
-        if enrollment
-          Rails.logger.error("Unknown enrollment with id #{enrollment_id}")
-        end
-        analytics(user: enrollment ? enrollment.user : AnonymousUser.new).
+        Rails.logger.error("Unknown enrollment with id #{enrollment_id}") unless enrollment.present?
+        analytics(user: enrollment.present? ? enrollment.user : AnonymousUser.new).
           idv_in_person_usps_proofing_results_notification_job_completed(
             enrollment_code: enrollment&.enrollment_code, enrollment_id: enrollment_id,
           )
