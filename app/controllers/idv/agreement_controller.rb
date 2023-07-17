@@ -64,7 +64,7 @@ module Idv
     end
 
     def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
+      return unless idv_engine.verification.user_has_consented_to_share_pii?
 
       redirect_to idv_hybrid_handoff_url
     end
