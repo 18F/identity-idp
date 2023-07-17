@@ -245,8 +245,6 @@ RSpec.describe GetUspsProofingResultsJob do
         before do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
             and_return([pending_enrollment])
-          #allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-          #  and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -363,8 +361,8 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
             and_return(pending_enrollments)
-         # allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-         #   and_return(pending_enrollments)
+          # allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
+          #   and_return(pending_enrollments)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
           )
@@ -682,7 +680,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs failure details' do
             job.perform(Time.zone.now)
-            
+
             pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
@@ -1118,10 +1116,10 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-        #  allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-        #   and_return([pending_enrollment])
-        #  allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
-        #    and_return([pending_enrollment])
+          #  allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          #   and_return([pending_enrollment])
+          #  allow(InPersonEnrollment).to receive(:needs_usps_status_check_batch).
+          #    and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
