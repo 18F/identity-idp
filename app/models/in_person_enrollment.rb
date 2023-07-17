@@ -23,12 +23,9 @@ class InPersonEnrollment < ApplicationRecord
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
+  before_save(:on_notification_sent_at_updated, if: :will_save_change_to_notification_sent_at?)
   before_create(:set_unique_id, unless: :unique_id)
   before_create(:set_capture_secondary_id)
-  after_save(
-    :on_notification_sent_at_updated,
-    if: [:notification_sent_at, :notification_phone_configuration],
-  )
 
   def self.is_pending_and_established_between(early_benchmark, late_benchmark)
     where(status: :pending).
@@ -131,7 +128,9 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def on_notification_sent_at_updated
-    self.notification_phone_configuration&.destroy
+    if self.notification_sent_at && self.notification_phone_configuration
+      self.notification_phone_configuration.destroy
+    end
   end
 
   def skip_notification_sent_at_set?
