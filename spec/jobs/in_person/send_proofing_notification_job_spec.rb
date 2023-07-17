@@ -54,7 +54,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_started,
         )
-        expect(analytics).to receive(
+        expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_completed,
         )
         expect(job).not_to receive(:poll)
@@ -71,7 +71,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_started,
         )
-        expect(analytics).to receive(
+        expect(analytics).not_to receive(
           :idv_in_person_usps_proofing_results_notification_job_completed,
         )
         expect(job).not_to receive(:poll)

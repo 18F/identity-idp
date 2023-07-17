@@ -6,50 +6,48 @@ module InPerson
     def perform(enrollment_id)
       return unless IdentityConfig.store.in_person_proofing_enabled &&
                     IdentityConfig.store.in_person_send_proofing_notifications_enabled
-      enrollment = InPersonEnrollment.find_by(
-        { id: enrollment_id },
-        include: [:notification_phone_configuration, :user],
-      )
-      return unless enrollment
-      # skip
-      if enrollment.skip_notification_sent_at_set?
-        # log event
+      begin
+        enrollment = InPersonEnrollment.find_by(
+          { id: enrollment_id },
+          include: [:notification_phone_configuration, :user],
+        )
+        return unless enrollment
+        # skip
+        if enrollment.skip_notification_sent_at_set?
+          # log event
+          analytics(user: enrollment.user).
+            idv_in_person_usps_proofing_results_notification_job_skipped(
+              enrollment_code: enrollment.enrollment_code,
+              enrollment_id: enrollment.id,
+            )
+          return
+        end
         analytics(user: enrollment.user).
-          idv_in_person_usps_proofing_results_notification_job_skipped(
+          idv_in_person_usps_proofing_results_notification_job_started(
             enrollment_code: enrollment.enrollment_code,
             enrollment_id: enrollment.id,
           )
-        return
-      end
-      analytics(user: enrollment.user).
-        idv_in_person_usps_proofing_results_notification_job_started(
-          enrollment_code: enrollment.enrollment_code,
-          enrollment_id: enrollment.id,
-        )
 
-      # send notification and log result
-      phone = enrollment.notification_phone_configuration.formatted_phone
-      message = notification_message(enrollment: enrollment)
-      response = Telephony.send_notification(
-        to: phone, message: message,
-        country_code: Phonelib.parse(phone).country
-      )
-      handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
+        # send notification and log result
+        phone = enrollment.notification_phone_configuration.formatted_phone
+        message = notification_message(enrollment: enrollment)
+        response = Telephony.send_notification(
+          to: phone, message: message,
+          country_code: Phonelib.parse(phone).country
+        )
+        handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
 
-      # if notification sent successful
-      enrollment.update(notification_sent_at: Time.zone.now) if response.success?
-    ensure
-      unless enrollment.present?
-        enrollment = InPersonEnrollment.find_by(
-          { id: enrollment_id },
-          include: [:notification_phone_configuration,
-                    :user],
-        )
+        # if notification sent successful
+        enrollment.update(notification_sent_at: Time.zone.now) if response.success?
+      ensure
+        if enrollment
+          Rails.logger.error("Unknown enrollment with id #{enrollment_id}")
+        end
+        analytics(user: enrollment ? enrollment.user : AnonymousUser.new).
+          idv_in_person_usps_proofing_results_notification_job_completed(
+            enrollment_code: enrollment&.enrollment_code, enrollment_id: enrollment_id,
+          )
       end
-      analytics(user: enrollment&.user).
-        idv_in_person_usps_proofing_results_notification_job_completed(
-          enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment&.id,
-        )
     end
 
     private
