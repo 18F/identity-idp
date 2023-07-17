@@ -16,7 +16,7 @@ module Idv
         true
       )
 
-      render :show, locals: { flow_session: flow_session }
+      render :show
     end
 
     def update
