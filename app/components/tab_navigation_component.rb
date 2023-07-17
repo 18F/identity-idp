@@ -9,7 +9,8 @@ class TabNavigationComponent < BaseComponent
 
   def is_current_path?(path)
     recognized_path = Rails.application.routes.recognize_path(path)
-    [recognized_path, request].pluck(:controller, :action).uniq.one?
+    request[:controller] == recognized_path[:controller] &&
+      request[:action] == recognized_path[:action]
   rescue ActionController::RoutingError
     false
   end
