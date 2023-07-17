@@ -26,12 +26,10 @@ RSpec.describe TabNavigationComponent, type: :component do
   context 'with link for current request' do
     let(:request_path) { '/first' }
 
-    class ExampleController < ApplicationController; end
-
     around do |example|
       Rails.application.routes.draw do
-        get '(:example_param)/first' => 'example#first'
-        get '(:example_param)/second' => 'example#second'
+        get '(:example_param)/first' => 'application#first'
+        get '(:example_param)/second' => 'application#second'
       end
 
       with_request_url(request_path) { example.run }
