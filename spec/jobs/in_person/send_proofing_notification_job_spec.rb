@@ -16,6 +16,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
     enrollment.proofed_at = Time.zone.now - 3.days
     enrollment
   end
+  let(:expired_enrollment) do
+    enrollment = create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
+    enrollment
+  end
   let(:sms_success_response) do
     Telephony::Response.new(
       success: true,
@@ -137,6 +141,25 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             job.perform(failing_enrollment.id)
             expect(failing_enrollment.notification_sent_at).to eq(now)
             expect(failing_enrollment.reload_notification_phone_configuration).to eq(nil)
+          end
+        end
+        it 'sends notification successfully when enrollment expired' do
+          allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
+          allow(InPersonEnrollment).to receive(:find_by).and_return(expired_enrollment)
+          freeze_time do
+            now = Time.zone.now
+            expect(analytics).to receive(
+              :idv_in_person_usps_proofing_results_notification_job_started,
+            )
+            expect(analytics).to receive(
+              :idv_in_person_usps_proofing_results_notification_job_completed,
+            )
+            expect(analytics).to receive(
+              :idv_in_person_usps_proofing_results_notification_sent_attempted,
+            )
+            job.perform(expired_enrollment.id)
+            expect(expired_enrollment.notification_sent_at).to eq(now)
+            expect(expired_enrollment.reload_notification_phone_configuration).to eq(nil)
           end
         end
       end
