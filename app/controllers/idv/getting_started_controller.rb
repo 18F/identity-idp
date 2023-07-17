@@ -12,6 +12,8 @@ module Idv
         'welcome', :view,
         true
       )
+      @sp_name = decorated_session.sp_name || t('doc_auth.info.no_sp_name')
+      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name.downcase)
 
       render :show, locals: { flow_session: flow_session }
     end

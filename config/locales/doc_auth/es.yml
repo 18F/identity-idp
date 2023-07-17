@@ -136,7 +136,7 @@ es:
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
       front: Parte Delantera
-      getting_started: Comience a verificar su identidad
+      getting_started: Vamos a verificar su identidad para %{sp_name}
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
@@ -163,27 +163,20 @@ es:
         <strong>%{service_provider_name}</strong>
     getting_started:
       instructions:
-        bullet1: Documento de identidad emitido por el estado.
-        bullet2: Número de seguro social
-        bullet3: Número de teléfono O domicilio
+        bullet1: Incluir fotos de su identificación
+        bullet2: Introducir su número de Seguro Social
+        bullet3: Vincular su número de teléfono
+        bullet4: Volver a introducir su contraseña de Login.gov 
         consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
           utilice, conserve y comparta su información personal. Los utilizamos
           para verificar su identidad.
-        getting_started: 'Necesitará su:'
+        getting_started: 'Deberá:'
         learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
         privacy: Nuestras normas de privacidad y seguridad
-        switch_back: Regrese a su computadora para continuar con la verificación de su
-          identidad.
-        switch_back_image: Flecha que apunta del teléfono a la computadora
-        test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
-          se consideran válidos. No ingrese PII real en este campo.
         text1: Su documento de identidad no puede estar caducado.
         text2: No necesitará la tarjeta con usted.
-        text3_html:
-          - '<strong>Verificar por teléfono</strong>: Le llamaremos o enviaremos
-            un mensaje de texto a su número de teléfono. Esto lleva unos minutos'
-          - '<strong>Verificar por correo</strong>: Le enviaremos una carta a su
-            domicilio. Esto tarda entre 3 y 7 días laborables.'
+        text3: Su número de teléfono se asocia a su información personal. Después de que lo haya asociado, le enviaremos un código.
+        text4: Su contraseña guarda y encripta su información personal.
     info:
       address_guidance_puerto_rico_html: Residentes en Puerto Rico:<br><br>Edite su
         dirección para que figure su urbanización o condominio en la línea de
@@ -196,8 +189,8 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su documento de identidad expedido por el Estado. Usamos esta
         información para verificar su identidad.
-      getting_started: '%{sp_name} necesita asegurarse de que es usted y no es alguien
-        que se hace pasar por usted.'
+      getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente y no alguien que se hace pasar por usted. %{link_html}'
+      getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -244,7 +237,6 @@ es:
       consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
         utilice, conserve y comparta su información personal. Los utilizamos
         para verificar su identidad.
-      getting_started: 'Necesitará su:'
       learn_more: Obtenga más información sobre nuestras medidas de privacidad y seguridad
       privacy: Nuestras normas de privacidad y seguridad
       switch_back: Regrese a su computadora para continuar con la verificación de su
