@@ -1,31 +1,41 @@
 module Idv::Engine
-  # An implementation of Idv::Engine that uses the Profile model and IdvSession as its backing
-  # data store.
+  # An implementation of Idv::Engine that uses the Profile model, IdvSession, and user_session
+  # as its backing data store.
   class ProfileEngine < Base
-    attr_reader :idv_session, :user
+    attr_reader :idv_session, :user, :user_session
 
-    def initialize(user:, idv_session: nil)
+    def initialize(user:, idv_session: nil, user_session: nil)
       raise 'user is required' unless user
       @user = user
       @idv_session = idv_session
+      @user_session = user_session
     end
 
-    on :auth_password_reset do
+    on :auth_user_changed_password do |params|
+      assert_user_session_available
+
+      if user.active_profile
+        ActiveProfileEncryptor.new(user, user_session, params.password).call
+      end
     end
 
-    on :idv_gpo_letter_requested do
+    on :auth_user_reset_password do
+      user.proofing_component&.destroy
+    end
+
+    on :idv_gpo_user_requested_letter do
       update_idv_session(
         address_verification_mechanism: :gpo,
       )
     end
 
-    on :idv_ssn_entered_by_user do |params|
+    on :idv_user_entered_ssn do |params|
       update_idv_session_pii_from_doc(
         ssn: params.ssn,
       )
     end
 
-    on :idv_threatmetrix_check_completed do |params|
+    on :idv_fraud_threatmetrix_check_completed do |params|
       update_idv_session(
         threatmetrix_review_status: params.threatmetrix_review_status,
       )
@@ -44,6 +54,10 @@ module Idv::Engine
 
     def assert_idv_session_available
       raise 'idv_session is not available' unless idv_session
+    end
+
+    def assert_user_session_available
+      raise 'user_session is not available' unless user_session
     end
 
     def build_verification

@@ -1,17 +1,26 @@
 # This file is used to generate events.rb.
 
 events:
-  auth_password_reset:
+  auth_user_changed_password:
+    description: >
+      The user has changed their password.
+    params:
+      type: object
+      properties:
+        password:
+          type: string
+
+  auth_user_reset_password:
     description: >
       The user has reset their password and will not be able to access their IDV PII until providing
       their personal key.
 
-  idv_started:
+  idv_user_started:
     description: >
       The user has confirmed their desire to begin the identity verification process. They have
       NOT necessarily yet consented to share their PII with Login.gov.
 
-  idv_consented:
+  idv_user_consented:
     description: >
       The user has consented to share PII with Login.gov for the purposes of identity verification.
 
@@ -20,24 +29,25 @@ events:
       The user has uploaded identity documents, and Login.gov has submitted them to Acuant for 
       processing.
     params:
-      $ref: '#!/schemas/DocAuthResult'
+      $ref: "#!/schemas/DocAuthResult"
 
   idv_documents_submitted_to_trueid:
     description: >
-      The user has uploaded identity documents, and Login.gov has submitted them to LexisNexis TrueID
-      for processing.
+      The user has uploaded identity documents, and Login.gov has submitted them to LexisNexis 
+      TrueID for processing.
     params:
-      $ref: '#!/schemas/DocAuthResult'
+      $ref: "#!/schemas/DocAuthResult"
 
-
-  idv_password_entered_by_user:
+  idv_user_entered_password:
     description: >
       The user has entered their password to encrypt their PII.
     params:
-      password:
-        type: string
+      type: object
+      properties:
+        password:
+          type: string
 
-  idv_ssn_entered_by_user:
+  idv_user_entered_ssn:
     description: >
       The user has entered their Social Security Number (SSN).
     params:
@@ -49,7 +59,7 @@ events:
           type: string
           description: The user's social security number.
 
-  idv_threatmetrix_check_initiated:
+  idv_fraud_threatmetrix_check_initiated:
     description: >
       Login.gov has initiated an automated fraud check for the user using LexisNexis ThreatMetrix.
     params:
@@ -59,7 +69,7 @@ events:
           type: string
           description: A UUID reported to ThreatMetrix identifying the user's session.
 
-  idv_threatmetrix_check_completed:
+  idv_fraud_threatmetrix_check_completed:
     description: >
       Login.gov requested the result of an automated fraud check.
     params:
@@ -83,11 +93,10 @@ events:
           description: A UUID reported to ThreatMetrix identifying the user's session.
         threatmetrix_review_status:
           type: string
-          enum: [ 'pass', 'reject', 'review' ]
+          enum: ["pass", "reject", "review"]
           description: Result of ThreatMetrix review
-          
 
-  idv_mailing_address_updated_by_user:
+  idv_user_updated_mailing_address:
     description: >
       The user manually updated their mailing address.
     params:
@@ -96,7 +105,7 @@ events:
         address:
           ref: "#!/schemas/address"
 
-  idv_info_verified_by_user:
+  idv_user_verified_their_info:
     description: >
       The user confirmed the accuracy of the PII on file and chose to continue the IDV process.
 
@@ -111,8 +120,11 @@ events:
       Login.gov made a request to LexisNexis TrueID to verify the user's identity.
     # TODO params
 
-  idv_gpo_letter_requested:
+  idv_gpo_user_requested_letter:
     description: The user has requested a letter to verify their address.
+
+  idv_gpo_user_verified_otp:
+    description: The user entered the one time password (OTP) they received via US mail.
 
   idv_residential_address_submitted_to_instantverify:
     description: >

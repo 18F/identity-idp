@@ -68,7 +68,8 @@ def resolve_schema(schema, document)
   end
 end
 
-document = YAML.safe_load_file(ARGV[0], symbolize_names: true)
+input_file = ARGV[0]
+document = YAML.safe_load_file(input_file, symbolize_names: true)
 
 events = document[:events].map do |name, event|
   {
@@ -120,6 +121,19 @@ events.each do |event|
   end
 
   methods << "def #{event[:name]}#{ "(#{args.join(", ")})" unless args.empty? }"
+
+  if args.length == 1
+    # Handle translating hashes into structs
+    methods << <<-VALIDATION
+  raise '#{args[0]} cannot be nil' if #{args[0]}.nil?
+
+    if #{args[0]}.kind_of?(Hash)
+      #{args[0]} = #{params_arg_type}.new(#{args[0]})
+    end
+    VALIDATION
+    methods << ''
+  end
+
   methods << "  handle_event :#{event[:name]}#{", #{args.join(', ')}" unless args.empty?}"
   methods << "  #{args[0] || 'nil'}"
   methods << 'end'
@@ -129,7 +143,7 @@ end
 methods.pop # remove last blank line
 
 lines = []
-lines << "# 👋 This file was automatically generated. Please don't edit it by hand."
+lines << '# 👋 This file was automatically generated.'
 lines << ''
 lines << "module #{MODULE}"
 
