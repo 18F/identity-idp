@@ -55,6 +55,14 @@ RSpec.describe Idv::GettingStartedController do
       )
     end
 
+    it 'updates DocAuthLog agreement_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.agreement_view_count }.from(0).to(1),
+      )
+    end
+
     context 'getting_started already visited' do
       it 'redirects to hybrid_handoff' do
         subject.idv_session.idv_consent_given = true
