@@ -456,7 +456,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     if wait_until <= Time.zone.now
       InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
     else
-      InPerson::SendProofingNotificationJob.perform_now(enrollment.id)
+      InPerson::SendProofingNotificationJob.perform_later(enrollment.id)
     end
   end
 

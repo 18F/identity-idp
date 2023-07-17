@@ -56,7 +56,7 @@ RSpec.describe InPersonEnrollment, type: :model do
           status = InPersonEnrollment.statuses[key]
           if status != InPersonEnrollment.statuses[:pending]
             profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
-            create(:in_person_enrollment, user: user, profile: profile, status: status)
+            create(:in_person_enrollment, :with_service_provider, user: user, profile: profile, status: status)
           end
         end
       end.not_to raise_error
