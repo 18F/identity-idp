@@ -20,7 +20,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardType: 1,
+  cardtype: 1,
   dpi: 519,
   moire: 99,
   moireraw: 99,
@@ -754,6 +754,41 @@ describe('document-capture/components/acuant-capture', () => {
         attempt: sinon.match.number,
         size: sinon.match.number,
       });
+    });
+
+    it('logs a human readable error when the document type errs', async () => {
+      const trackEvent = sinon.spy();
+      const incorrectCardType = 5;
+      const { findByText, getByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardtype: incorrectCardType });
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      await findByText('doc_auth.info.image_loading');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'IdV: test image added',
+        sinon.match({
+          documentType: `An error in document type returned: ${incorrectCardType}`,
+        }),
+      );
     });
 
     it('triggers forced upload', () => {
