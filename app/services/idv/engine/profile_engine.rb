@@ -74,7 +74,9 @@ module Idv::Engine
 
     def build_verification
       Verification.new(
-        valid: !!user.active_profile,
+        identity_verified?: !!user.active_profile,
+        user_has_consented_to_share_pii?:
+          user_has_active_or_pending_profile? || idv_session&.idv_consent_given,
       )
     end
 
@@ -107,6 +109,10 @@ module Idv::Engine
       ProofingComponent.
         create_or_find_by(user_id: user.id).
         update(fields)
+    end
+
+    def user_has_active_or_pending_profile?
+      !!(user.active_profile || user.pending_profile)
     end
   end
 end

@@ -55,7 +55,7 @@ module Idv
     end
 
     def confirm_welcome_needed
-      return unless idv_session.welcome_visited
+      return unless idv_engine.verification.user_has_started_idv?
 
       redirect_to idv_agreement_url
     end

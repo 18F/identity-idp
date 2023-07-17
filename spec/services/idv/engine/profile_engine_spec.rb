@@ -27,16 +27,16 @@ RSpec.describe Idv::Engine::ProfileEngine do
     context 'user has no profile' do
       it 'returns a invalid verification' do
         expect(subject.verification).to be
-        expect(subject.verification.valid?).to eql(false)
+        expect(subject.verification.identity_verified?).to eql(false)
       end
     end
 
     context 'user has an active profile' do
       let(:user) { create(:user, :proofed) }
 
-      it 'returns a valid verification' do
+      it 'returns an identity-verified verification' do
         expect(subject.verification).to be
-        expect(subject.verification.valid?).to eql(true)
+        expect(subject.verification.identity_verified?).to eql(true)
       end
     end
   end
@@ -48,6 +48,11 @@ RSpec.describe Idv::Engine::ProfileEngine do
       end.to change {
         idv_session.idv_consent_given
       }.to eql(true)
+    end
+
+    it 'updates verification' do
+      subject.idv_user_consented_to_share_pii
+      expect(subject.verification.user_has_consented_to_share_pii?).to eql(true)
     end
   end
 
