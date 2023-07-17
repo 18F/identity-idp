@@ -127,7 +127,7 @@ events.each do |event|
     methods << <<-VALIDATION
   raise '#{args[0]} cannot be nil' if #{args[0]}.nil?
 
-    if #{args[0]}.kind_of?(Hash)
+    if #{args[0]}.is_a?(Hash)
       #{args[0]} = #{params_arg_type}.new(#{args[0]})
     end
     VALIDATION
