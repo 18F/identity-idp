@@ -29,7 +29,7 @@ en:
       warning_html: <strong>You’ve only set up backup codes on your account.
         </strong>If you have access to another device, such as a phone, protect
         your account with another authentication method.
-    choose_another_option: '‹ Choose another option'
+    choose_another_option: '‹ Choose another authentication method'
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.

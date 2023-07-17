@@ -29,7 +29,7 @@ es:
       warning_html: <strong>Solo ha configurado códigos de respaldo en su cuenta.
         </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
         cuenta mediante otro método de autenticación.
-    choose_another_option: '‹ Elige otra opción'
+    choose_another_option: '‹ Elige otra opción de seguridad'
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
