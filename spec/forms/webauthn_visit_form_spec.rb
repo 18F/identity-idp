@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe WebauthnVisitForm do
   include ActionView::Helpers::UrlHelper
-  include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
   let(:subject) do
@@ -112,6 +111,29 @@ RSpec.describe WebauthnVisitForm do
             errors: errors,
             error_details: hash_including(*errors.keys),
           )
+        end
+
+        context 'when a user is not in mfa selection' do
+          let(:subject) do
+            WebauthnVisitForm.new(
+              user: user,
+              url_options: {},
+              in_mfa_selection_flow: false,
+            )
+          end
+
+          it 'returns FormResponse with success: false with an unrecognized error' do
+            params = { error: 'foo', platform: 'true' }
+            errors = { foo: [I18n.t(
+              'errors.webauthn_platform_setup.general_error',
+            )] }
+
+            expect(subject.submit(params).to_h).to include(
+              success: false,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+            )
+          end
         end
       end
     end
