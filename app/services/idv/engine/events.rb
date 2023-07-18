@@ -1,4 +1,5 @@
 # 👋 This file was automatically generated.
+# To recreate it, modify app/services/idv/engine/events.yml and run "make idv_events"
 
 module Idv::Engine::Events
   ALL = [

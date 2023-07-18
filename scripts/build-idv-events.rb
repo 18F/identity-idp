@@ -144,6 +144,7 @@ methods.pop # remove last blank line
 
 lines = []
 lines << '# 👋 This file was automatically generated.'
+lines << '# To recreate it, modify app/services/idv/engine/events.yml and run "make idv_events"'
 lines << ''
 lines << "module #{MODULE}"
 
