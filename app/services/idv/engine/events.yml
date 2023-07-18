@@ -77,7 +77,7 @@ events:
       properties:
         request_success:
           type: boolean
-          description: Did the underlying HTTP request succeed?
+          description: Was the underlying HTTP request successfully made and completed?
         request_timed_out:
           type: boolean
           description: Did the underlying HTTP request time out?
@@ -173,7 +173,7 @@ schemas:
     properties:
       request_success:
         type: boolean
-        description: Did the underlying HTTP request succeed?
+        description: Was the underlying HTTP request successfully made and completed?
       request_timed_out:
         type: boolean
         description: Did the underlying HTTP request time out?

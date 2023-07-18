@@ -64,6 +64,10 @@ RSpec.describe Idv::Engine::ProfileEngine do
         idv_session.welcome_visited
       }.to eql(true)
     end
+    it 'updates verification' do
+      subject.idv_user_started
+      expect(subject.verification.user_has_started_idv?).to eql(true)
+    end
   end
 
   describe('#auth_user_changed_password') do
