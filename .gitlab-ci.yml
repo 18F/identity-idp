@@ -60,6 +60,7 @@ stages:
   - test
   - after_test
   - review
+  - scan
 
 workflow:
   rules:
