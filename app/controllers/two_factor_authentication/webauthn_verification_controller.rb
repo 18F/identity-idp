@@ -89,9 +89,11 @@ module TwoFactorAuthentication
     end
 
     def credentials
-      MfaContext.new(current_user).webauthn_configurations.map do |configuration|
-        { id: configuration.credential_id, transports: configuration.transports }
-      end
+      MfaContext.new(current_user).webauthn_configurations.
+        select { |configuration| configuration.platform_authenticator? == platform_authenticator? }.
+        map do |configuration|
+          { id: configuration.credential_id, transports: configuration.transports }
+        end
     end
 
     def analytics_properties
