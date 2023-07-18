@@ -37,4 +37,5 @@ fr:
       event_timestamp_js: '%{day} %{month} %{year} à %{hour}:%{minute}'
       event_timestamp_utc: '%e %B %Y à %H:%M UTC'
       event_timestamp_with_zone: '%e %B %Y à %H:%M %Z'
+      sms_date: '%m/%d/%Y'
     pm: P.M.

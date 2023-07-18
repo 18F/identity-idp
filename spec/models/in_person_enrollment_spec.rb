@@ -363,4 +363,54 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(enrollment.minutes_since_last_status_update).to eq(nil)
     end
   end
+
+  describe 'when notification_sent_at is updated' do
+    let(:enrollment) do
+      create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+    end
+
+    let(:enrollment_without_notification) { create(:in_person_enrollment, :passed) }
+
+    it 'no error without notification phone configuration' do
+      now = Time.zone.now
+      enrollment_without_notification.update(notification_sent_at: now)
+      expect(enrollment_without_notification.notification_sent_at).to_not be(now)
+      expect(InPersonEnrollment.count).to eq(1)
+    end
+    it 'destroys notification phone configuration' do
+      now = Time.zone.now
+      enrollment.update(notification_sent_at: now)
+      expect(enrollment.notification_sent_at).to_not be(now)
+      expect(enrollment.reload.notification_phone_configuration).to be_nil
+      expect(InPersonEnrollment.count).to eq(1)
+    end
+  end
+
+  describe 'skip_notification_sent_at_set?' do
+    let(:passed_enrollment) do
+      create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+    end
+    let(:expired_enrollment) do
+      create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
+    end
+    let(:incomplete_enrollment) do
+      create(:in_person_enrollment, :with_notification_phone_configuration)
+    end
+    let(:passed_enrollment_without_notification) do
+      create(:in_person_enrollment, :passed)
+    end
+    let(:failed_enrollment_without_notification) do
+      create(:in_person_enrollment, :failed)
+    end
+
+    it 'returns false when status of passed/failed/expired and notification configuration' do
+      expect(passed_enrollment.skip_notification_sent_at_set?).to eq(false)
+      expect(expired_enrollment.skip_notification_sent_at_set?).to eq(false)
+    end
+    it 'returns false when status of incomplete or without notification configuration' do
+      expect(incomplete_enrollment.skip_notification_sent_at_set?).to eq(true)
+      expect(passed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+      expect(failed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+    end
+  end
 end
