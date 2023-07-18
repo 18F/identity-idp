@@ -50,7 +50,6 @@ es:
       logout: Cierre de sesión de OpenID Connect
     passwords:
       change: Cambie la contraseña de su cuenta
-      confirm: Confirme la contraseña de su cuenta
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
     phone_setup: Obtenga su código único

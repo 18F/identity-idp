@@ -32,11 +32,40 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
       render
     end
+    context 'when user selects multiple MFA options on account creation' do
+      before do
+        assign(:need_to_set_up_additional_mfa, false)
+      end
 
-    it 'displays warning alert' do
-      render
+      it 'does not displays info alert' do
+        render
 
-      expect(rendered).to have_content(I18n.t('forms.webauthn_platform_setup.warning_text'))
+        expect(rendered).to_not have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+      end
+    end
+
+    context 'when user selects only platform auth options on account creation' do
+      before do
+        assign(:need_to_set_up_additional_mfa, true)
+      end
+
+      it 'displays info alert' do
+        render
+
+        expect(rendered).to have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+      end
+    end
+
+    context 'when user is adding MFA at accounts page' do
+      before do
+        assign(:need_to_set_up_additional_mfa, false)
+      end
+
+      it 'does not displays info alert' do
+        render
+
+        expect(rendered).to_not have_content(I18n.t('forms.webauthn_platform_setup.info_text'))
+      end
     end
   end
 end

@@ -70,6 +70,6 @@ es:
     verify_email: Revise su email
     verify_personal_key: Verifica tu clave personal
     webauthn_platform_setup:
-      new: Utilice su dispositivo
+      new: Desbloqueo facial o táctil
     webauthn_setup:
       new: Añade tu clave de seguridad

@@ -44,9 +44,9 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth upload visited' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
     let(:analytics_args) do
-      { step: 'upload',
+      { step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
@@ -137,7 +137,7 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#update' do
-    let(:analytics_name) { 'IdV: doc auth upload submitted' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff submitted' }
 
     context 'hybrid flow' do
       let(:analytics_args) do
@@ -145,7 +145,7 @@ RSpec.describe Idv::HybridHandoffController do
           errors: { message: nil },
           destination: :link_sent,
           flow_path: 'hybrid',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
           telephony_response: { errors: {},
@@ -168,7 +168,7 @@ RSpec.describe Idv::HybridHandoffController do
           errors: {},
           destination: :document_capture,
           flow_path: 'standard',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
           skip_upload_step: false }

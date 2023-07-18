@@ -43,7 +43,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
 
       expect(current_path).to eq(idv_hybrid_handoff_path)
       expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload visited',
+        'IdV: doc auth hybrid handoff visited',
         hash_including(redo_document_capture: true),
       )
       complete_hybrid_handoff_step
