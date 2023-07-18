@@ -9,16 +9,10 @@ module Idv
       analytics.idv_doc_auth_getting_started_visited(**analytics_arguments)
 
       # Register both Welcome and Agreement steps in DocAuthLog
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-        'welcome',
-        :view,
-        true,
-      )
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-        'agreement',
-        :view,
-        true,
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('welcome', :view, true)
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('agreement', :view, true)
 
       @sp_name = decorated_session.sp_name || t('doc_auth.info.no_sp_name')
       @title = t(

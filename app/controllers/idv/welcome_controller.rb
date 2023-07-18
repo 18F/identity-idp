@@ -11,10 +11,8 @@ module Idv
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-        'welcome', :view,
-        true
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('welcome', :view, true)
 
       render :show
     end
