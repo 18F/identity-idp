@@ -15,6 +15,15 @@ class WebauthnConfiguration < ApplicationRecord
     internal
   ].to_set.freeze
 
+  VALID_AUTHENTICATOR_DATA_FLAGS = %w[
+    up
+    uv
+    be
+    bs
+    at
+    ed
+  ].to_set.freeze
+
   def self.roaming_authenticators
     self.where(platform_authenticator: [nil, false])
   end

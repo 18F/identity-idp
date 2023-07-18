@@ -7,6 +7,7 @@ class WebauthnSetupForm
   validates :client_data_json, presence: true
   validates :name, presence: true
   validate :name_is_unique
+  validate :authenticator_data_flag_valid?
 
   attr_reader :attestation_response, :name_taken
 
@@ -59,7 +60,7 @@ class WebauthnSetupForm
     @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
     if params[:authenticator_data_flags].present?
-      @authenticator_data_flags = JSON.parse(
+      @authenticator_data_flags =  JSON.parse(
         params[:authenticator_data_flags],
         symbolize_names: true,
       )
@@ -118,6 +119,13 @@ class WebauthnSetupForm
     )
   end
 
+  def authenticator_data_flag_valid
+    return unless authenticator_data_flags.present?
+    authenticator_data_flags.keys.all? do |flag|
+      WebauthnConfiguration::VALID_AUTHENTICATOR_DATA_FLAGS.include?(flag)
+    end
+  end
+
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
   end
@@ -133,6 +141,7 @@ class WebauthnSetupForm
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      authenticator_data_flags: authenticator_data_flags.presence,
       unknown_transports: invalid_transports.presence,
     }.compact
   end
