@@ -11,8 +11,6 @@ module Idv
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
-      ## TO DO: ARE WE DOING THREATMETRIX? IF YES, KEEP
-      before_action :override_csp_for_threat_metrix_no_fsm
 
       attr_accessor :error_message
 

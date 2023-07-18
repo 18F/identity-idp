@@ -30,13 +30,6 @@ RSpec.describe Idv::InPerson::SsnController do
       )
     end
 
-    it 'overrides CSPs for ThreatMetrix' do
-      expect(subject).to have_actions(
-        :before,
-        :override_csp_for_threat_metrix_no_fsm,
-      )
-    end
-
     context 'when in_person_ssn_info_controller_enabled is not set' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
@@ -140,50 +133,6 @@ RSpec.describe Idv::InPerson::SsnController do
 
               expect(response).to render_template :show
             end
-          end
-        end
-
-        it 'overrides Content Security Policies for ThreatMetrix' do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:enabled)
-          get :show
-
-          csp = response.request.content_security_policy
-
-          aggregate_failures do
-            expect(csp.directives['script-src']).to include('h.online-metrix.net')
-            expect(csp.directives['script-src']).to include("'unsafe-eval'")
-
-            expect(csp.directives['style-src']).to include("'unsafe-inline'")
-
-            expect(csp.directives['child-src']).to include('h.online-metrix.net')
-
-            expect(csp.directives['connect-src']).to include('h.online-metrix.net')
-
-            expect(csp.directives['img-src']).to include('*.online-metrix.net')
-          end
-        end
-
-        it 'does not override the Content Security for CSP disabled test users' do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-            and_return(:enabled)
-          allow(IdentityConfig.store).to receive(:idv_tmx_test_csp_disabled_emails).
-            and_return([user.email_addresses.first.email])
-
-          get :show
-
-          csp = response.request.content_security_policy
-
-          aggregate_failures do
-            expect(csp.directives['script-src']).to_not include('h.online-metrix.net')
-
-            expect(csp.directives['style-src']).to_not include("'unsafe-inline'")
-
-            expect(csp.directives['child-src']).to_not include('h.online-metrix.net')
-
-            expect(csp.directives['connect-src']).to_not include('h.online-metrix.net')
-
-            expect(csp.directives['img-src']).to_not include('*.online-metrix.net')
           end
         end
       end
