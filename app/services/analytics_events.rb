@@ -2828,6 +2828,22 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a sucessful openid authorization request is returned
+  # @param [String] client_id
+  # @param [String] code_digest hash of returned "code" param
+  def openid_connect_authorization_handoff(
+    client_id:,
+    code_digest:,
+    **extra
+  )
+    track_event(
+      'OpenID Connect: authorization request handoff',
+      client_id: client_id,
+      code_digest: code_digest,
+      **extra,
+    )
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
@@ -2850,14 +2866,12 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
-  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
-    code_digest:,
     **extra
   )
     track_event(
@@ -2867,7 +2881,6 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
-      code_digest: code_digest,
       **extra,
     )
   end
