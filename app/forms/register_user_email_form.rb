@@ -84,7 +84,7 @@ class RegisterUserEmailForm
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_address_record&.user&.suspended?
-      send_suspended_user_email
+      send_suspended_user_email(email_address_record)
     elsif email_taken? && user_unconfirmed?
       update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
@@ -151,10 +151,10 @@ class RegisterUserEmailForm
     end
   end
 
-  def send_suspended_user_email
+  def send_suspended_user_email(suspended_email_record)
     UserMailer.with(
-      user: user,
-      email_address: email_address,
+      user: suspended_email_record.user,
+      email_address: suspended_email_record,
     ).suspended_create_account.deliver_now_or_later
   end
 
