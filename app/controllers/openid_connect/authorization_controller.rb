@@ -77,12 +77,11 @@ module OpenidConnect
     end
 
     def track_handoff_analytics(result, attributes = {})
-      result_attributes = result.to_h
-      attributes[:success] = result.success?
-      attributes[:client_id] = result_attributes[:client_id]
-      attributes[:code_digest] = result_attributes[:code_digest]
-
-      analytics.openid_connect_authorization_handoff(**attributes)
+      analytics.openid_connect_authorization_handoff(
+        **attributes.merge(result.to_h.slice(:client_id, :code_digest)).merge(
+          success: result.success?,
+        ),
+      )
     end
 
     def identity_needs_verification?
