@@ -36,14 +36,14 @@ module Idv::Engine
     end
 
     on :idv_fraud_threatmetrix_check_completed do |params|
-      update_idv_session(
-        threatmetrix_review_status: params.threatmetrix_review_status,
-      )
-
       update_proofing_components(
         threatmetrix: FeatureManagement.proofing_device_profiling_collecting_enabled?,
         threatmetrix_review_status: params.threatmetrix_review_status,
-      )
+      ) do
+        update_idv_session(
+          threatmetrix_review_status: params.threatmetrix_review_status,
+        )
+      end
     end
 
     on :idv_user_started do
@@ -75,6 +75,7 @@ module Idv::Engine
     def build_verification
       Verification.new(
         identity_verified?: !!user.active_profile,
+        user_has_started_idv?: idv_session&.welcome_visited,
         user_has_consented_to_share_pii?:
           user_has_active_or_pending_profile? || idv_session&.idv_consent_given,
       )
@@ -105,10 +106,13 @@ module Idv::Engine
       end
     end
 
-    def update_proofing_components(fields)
-      ProofingComponent.
-        create_or_find_by(user_id: user.id).
-        update(fields)
+    def update_proofing_components(fields, &block)
+      ProofingComponent.transaction do
+        ProofingComponent.
+          create_or_find_by(user_id: user.id).
+          update(fields)
+        block.call
+      end
     end
 
     def user_has_active_or_pending_profile?
