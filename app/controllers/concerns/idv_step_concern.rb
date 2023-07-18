@@ -29,6 +29,10 @@ module IdvStepConcern
     flow_session['pii_from_doc']
   end
 
+  def pii_from_user
+    flow_session['pii_from_user']
+  end
+
   def flow_path
     idv_session.flow_path
   end
