@@ -12,12 +12,11 @@
     ) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
         field_options: {
-          label: t('forms.passwords.edit.labels.password'),
-          required: true,
-          input_html: {
+          input_html: { 
+            aria: { describedby: 'password-description' },
             autocomplete: 'new-password',
           },
         },

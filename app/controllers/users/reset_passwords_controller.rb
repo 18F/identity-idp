@@ -45,7 +45,7 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(resource)
+      @reset_password_form = ResetPasswordForm.new(resource, validate_confirmation: true)
 
       result = @reset_password_form.submit(user_params)
 
@@ -180,7 +180,7 @@ module Users
 
     def user_params
       params.require(:reset_password_form).
-        permit(:password, :reset_password_token)
+        permit(:password, :password_confirmation, :reset_password_token)
     end
 
     def assert_reset_token_passed

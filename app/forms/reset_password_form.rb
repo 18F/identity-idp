@@ -6,13 +6,15 @@ class ResetPasswordForm
 
   validate :valid_token
 
-  def initialize(user)
+  def initialize(user, options = {})
     @user = user
-    self.reset_password_token = @user.reset_password_token
+    @reset_password_token = @user.reset_password_token
+    @validate_confirmation = options.fetch(:validate_confirmation, false)
   end
 
   def submit(params)
-    self.password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
 
     @success = valid?
 
