@@ -55,6 +55,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  client_id: client_id,
                  prompt: 'select_account',
                  referer: nil,
+                 allow_prompt_login: true,
+                 errors: {},
+                 unauthorized_scope: true,
+                 user_fully_authenticated: true,
+                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                 scope: 'openid')
+          expect(@analytics).to receive(:track_event).
+            with('OpenID Connect: authorization request handoff',
+                 success: true,
+                 client_id: client_id,
+                 prompt: 'select_account',
+                 referer: nil,
                  user_sp_authorized: true,
                  allow_prompt_login: true,
                  errors: {},
@@ -115,6 +127,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
               stub_analytics
               expect(@analytics).to receive(:track_event).
                 with('OpenID Connect: authorization request',
+                     success: true,
+                     client_id: client_id,
+                     prompt: 'select_account',
+                     referer: nil,
+                     allow_prompt_login: true,
+                     errors: {},
+                     unauthorized_scope: false,
+                     user_fully_authenticated: true,
+                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
+                     scope: 'openid profile')
+              expect(@analytics).to receive(:track_event).
+                with('OpenID Connect: authorization request handoff',
                      success: true,
                      client_id: client_id,
                      prompt: 'select_account',
@@ -277,6 +301,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        client_id: client_id,
                        prompt: 'select_account',
                        referer: nil,
+                       allow_prompt_login: true,
+                       errors: {},
+                       unauthorized_scope: false,
+                       user_fully_authenticated: true,
+                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
+                       success: true,
+                       client_id: client_id,
+                       prompt: 'select_account',
+                       referer: nil,
                        user_sp_authorized: true,
                        allow_prompt_login: true,
                        errors: {},
@@ -319,6 +355,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 stub_analytics
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request',
+                       success: true,
+                       client_id: client_id,
+                       prompt: 'select_account',
+                       referer: nil,
+                       allow_prompt_login: true,
+                       errors: {},
+                       unauthorized_scope: false,
+                       user_fully_authenticated: true,
+                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
                        prompt: 'select_account',
@@ -366,6 +414,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 stub_analytics
                 expect(@analytics).to receive(:track_event).
                   with('OpenID Connect: authorization request',
+                       success: true,
+                       client_id: client_id,
+                       prompt: 'select_account',
+                       referer: nil,
+                       allow_prompt_login: true,
+                       errors: {},
+                       unauthorized_scope: false,
+                       user_fully_authenticated: true,
+                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
                        prompt: 'select_account',
@@ -459,8 +519,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  error_details: hash_including(:prompt),
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
-                 code_digest: nil)
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -491,8 +550,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  error_details: hash_including(:client_id),
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
-                 code_digest: nil)
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -541,6 +599,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       it 'redirects to SP landing page with the request_id in the params' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('OpenID Connect: authorization request',
+               success: true,
+               client_id: client_id,
+               prompt: 'select_account',
+               referer: nil,
+               allow_prompt_login: true,
+               errors: {},
+               unauthorized_scope: true,
+               user_fully_authenticated: false,
+               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+               scope: 'openid')
+
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 
