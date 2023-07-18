@@ -128,14 +128,13 @@ es:
         bullet1: Incluir fotos de su identificación
         bullet2: Introducir su número de Seguro Social
         bullet3: Vincular su número de teléfono
-        bullet4: Volver a introducir su contraseña de Login.gov
+        bullet4: Volver a introducir su contraseña de %{app_name}
         consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
           utilice, conserve y comparta su información personal. Los utilizamos
           para verificar su identidad.
         getting_started: 'Deberá:'
         learn_more: Obtenga más información sobre nuestras medidas de privacidad y
           seguridad
-        privacy: Nuestras normas de privacidad y seguridad
         text1: Su documento de identidad no puede estar caducado.
         text2: No necesitará la tarjeta con usted.
         text3: Su número de teléfono se asocia a su información personal. Después de que

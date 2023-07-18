@@ -134,13 +134,12 @@ fr:
         bullet1: Ajoutez des photos de votre pièce d’identité
         bullet2: Saisissez votre numéro de sécurité sociale
         bullet3: Faire correspondre à votre numéro de téléphone
-        bullet4: Saisissez à nouveau votre mot de passe Login.gov
+        bullet4: Saisissez à nouveau votre mot de passe %{app_name}
         consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
           conserver et partager vos renseignements personnels. Nous les
           utilisons pour vérifier votre identité.
         getting_started: 'Vous aurez besoin de :'
         learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
-        privacy: Nos normes de confidentialité et de sécurité
         text1: Utilisez votre permis de conduire ou votre carte d’identité de l’État.
           Les autres pièces d’identité ne sont pas acceptées.
         text2: Vous n’aurez pas besoin de votre carte SSN physique.

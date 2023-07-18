@@ -104,13 +104,12 @@ en:
         bullet1: Add photos of your ID
         bullet2: Enter your Social Security number
         bullet3: Match to your phone number
-        bullet4: Re-enter your Login.gov password
+        bullet4: Re-enter your %{app_name} password
         consent: By checking this box, you are letting %{app_name} ask for, use, keep,
           and share your personal information. We will use it to verify your
           identity.
         getting_started: 'You’ll need to:'
         learn_more: Learn more about our privacy and security measures
-        privacy: Our privacy and security standards
         text1: Use your driver’s license or state ID card. Other forms of ID are not
           accepted.
         text2: You will not need your physical SSN card.

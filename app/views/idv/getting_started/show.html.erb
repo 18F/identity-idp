@@ -55,7 +55,7 @@
       <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet3')) do %>
         <p><%= t('doc_auth.getting_started.instructions.text3') %></p>
       <% end %>
-      <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet4')) do %>
+      <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet4', app_name: APP_NAME)) do %>
         <p><%= t('doc_auth.getting_started.instructions.text4') %></p>
       <% end %>
     <% end %>
