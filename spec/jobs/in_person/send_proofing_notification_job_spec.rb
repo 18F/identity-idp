@@ -163,7 +163,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         end
       end
       context 'when failed to send notification' do
-        it 'logs sms send failre when number is opt out and enrollment not updated' do
+        it 'logs sms send failure when number is opt out and enrollment not updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_opt_out_response)
           allow(InPersonEnrollment).to receive(:find_by).and_return(passed_enrollment)
 

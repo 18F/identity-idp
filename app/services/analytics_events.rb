@@ -1746,11 +1746,13 @@ module AnalyticsEvents
   # @param [boolean] success sms notification successful or not
   # @param [String] enrollment_code enrollment_code
   # @param [String] enrollment_id enrollment_id
+  # @param [Telephony::Response] telephony_result
   # @param [Hash] extra extra information
   def idv_in_person_usps_proofing_results_notification_sent_attempted(
     success:,
     enrollment_code:,
     enrollment_id:,
+    telephony_result:,
     **extra
   )
     track_event(
@@ -1758,6 +1760,7 @@ module AnalyticsEvents
       success: success,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      telephony_result: telephony_result,
       **extra,
     )
   end
