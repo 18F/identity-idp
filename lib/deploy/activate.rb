@@ -73,11 +73,20 @@ module Deploy
         File.join(root, 'certs/sp'),
       )
 
+      idp_logos_dir = File.join(root, 'public/assets/sp-logos')
+      FileUtils.mkdir_p(idp_logos_dir)
+
+      # Invalid symlinks can cause issues in the build process, so this step iterates through the
+      # sp-logos directory in the IDP to delete any broken symlinks.
+      Dir.entries(idp_logos_dir).each do |name|
+        next if name.start_with?('.')
+        target = File.join(idp_logos_dir, name)
+        File.rm(target) if File.symlink?(target) && !File.file?(target)
+      end
       # Public assets: sp-logos
       # Inject the logo files into the app's asset folder. deploy/activate is
       # run before deploy/build-post-config, so these will be picked up by the
       # rails asset pipeline.
-      FileUtils.mkdir_p(File.join(root, 'public/assets/sp-logos'))
       logos_dir = File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos')
       Dir.entries(logos_dir).each do |name|
         next if name.start_with?('.')

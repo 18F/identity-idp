@@ -50,6 +50,19 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
     it 'includes hidden platform form input with value false' do
       expect(rendered).to have_field('platform', with: 'true', type: 'hidden')
     end
+
+    it 'includes troubleshooting link to learn more about face/touch unlock' do
+      expect(rendered).to have_css('.troubleshooting-options li', count: 3)
+      expect(rendered).to have_link(
+        t('instructions.mfa.webauthn_platform.learn_more_help'),
+        href: help_center_redirect_path(
+          category: 'trouble-signing-in',
+          article: 'face-or-touch-unlock',
+          flow: :two_factor_authentication,
+          step: :webauthn_verification,
+        ),
+      )
+    end
   end
 
   context 'with phishing-resistant MFA requirement' do

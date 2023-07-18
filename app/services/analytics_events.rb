@@ -1713,6 +1713,76 @@ module AnalyticsEvents
     )
   end
 
+  # Track sms notification job completion
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_completed(enrollment_code:,
+                                                                     enrollment_id:,
+                                                                     **extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job skipped
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job started
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_started(enrollment_code:,
+                                                                   enrollment_id:,
+                                                                   **extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification attempt
+  # @param [boolean] success sms notification successful or not
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Telephony::Response] telephony_result
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_sent_attempted(
+    success:,
+    enrollment_code:,
+    enrollment_id:,
+    telephony_result:,
+    **extra
+  )
+    track_event(
+      'IdV: in person notification SMS send attempted',
+      success: success,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      telephony_result: telephony_result,
+      **extra,
+    )
+  end
+
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason

@@ -131,9 +131,6 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-
-      get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
-      post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
     end
 
     if IdentityConfig.store.enable_test_routes
@@ -401,7 +398,6 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
-        post '/usps' => 'gpo#update'
       end
 
       # deprecated routes
