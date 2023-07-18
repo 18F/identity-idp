@@ -8,6 +8,7 @@ module Idv
       include ThreatMetrixConcern
 
       before_action :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
+      before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
       ## TO DO: ARE WE DOING THREATMETRIX? IF YES, KEEP
