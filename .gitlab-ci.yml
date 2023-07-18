@@ -59,6 +59,7 @@ stages:
   - build
   - test
   - after_test
+  - build_image
   - review
   - scan
 
@@ -92,7 +93,7 @@ install:
 # Build a container image async, and don't block CI tests
 # Cache intermediate images for 1 week (168 hours)
 build-idp-image:
-  stage: review
+  stage: build_image
   needs: []
   interruptible: true
   rules:
