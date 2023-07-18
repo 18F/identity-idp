@@ -37,6 +37,7 @@ RSpec.describe RegisterUserEmailForm do
           to: [registered_email_address],
           subject: t('user_mailer.suspended_create_account.subject'),
         )
+        expect(subject.send(:email_address_record).user).to eq(user)
       end
       it 'sends the correct email to a taken email on an unconfirmed user' do
         user = create(*unconfirmed_user_registered_email)
@@ -49,6 +50,7 @@ RSpec.describe RegisterUserEmailForm do
           to: [registered_email_address],
           subject: t('user_mailer.suspended_create_account.subject'),
         )
+        expect(subject.send(:email_address_record).user).to eq(user)
       end
       it 'sends the correct email to and unconfimed email on a confirmed user' do
         old_user = create(:user)
@@ -62,6 +64,7 @@ RSpec.describe RegisterUserEmailForm do
           to: [email_address.email],
           subject: t('user_mailer.suspended_create_account.subject'),
         )
+        expect(subject.send(:email_address_record).user).to eq(old_user)
       end
     end
 
