@@ -65,15 +65,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with('OpenID Connect: authorization request handoff',
                  success: true,
                  client_id: client_id,
-                 prompt: 'select_account',
-                 referer: nil,
                  user_sp_authorized: true,
-                 allow_prompt_login: true,
-                 errors: {},
-                 unauthorized_scope: true,
-                 user_fully_authenticated: true,
-                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
                  code_digest: kind_of(String))
           expect(@analytics).to receive(:track_event).
             with(
@@ -141,15 +133,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with('OpenID Connect: authorization request handoff',
                      success: true,
                      client_id: client_id,
-                     prompt: 'select_account',
-                     referer: nil,
                      user_sp_authorized: true,
-                     allow_prompt_login: true,
-                     errors: {},
-                     unauthorized_scope: false,
-                     user_fully_authenticated: true,
-                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                     scope: 'openid profile',
                      code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
@@ -311,15 +295,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
-                       prompt: 'select_account',
-                       referer: nil,
                        user_sp_authorized: true,
-                       allow_prompt_login: true,
-                       errors: {},
-                       unauthorized_scope: false,
-                       user_fully_authenticated: true,
-                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(
@@ -369,15 +345,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
-                       prompt: 'select_account',
-                       referer: nil,
                        user_sp_authorized: true,
-                       allow_prompt_login: true,
-                       errors: {},
-                       unauthorized_scope: false,
-                       user_fully_authenticated: true,
-                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(
@@ -428,15 +396,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   with('OpenID Connect: authorization request handoff',
                        success: true,
                        client_id: client_id,
-                       prompt: 'select_account',
-                       referer: nil,
                        user_sp_authorized: true,
-                       allow_prompt_login: true,
-                       errors: {},
-                       unauthorized_scope: false,
-                       user_fully_authenticated: true,
-                       acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(

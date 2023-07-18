@@ -31,12 +31,11 @@ module OpenidConnect
 
       result = @authorize_form.submit
 
-      referer = request.referer
       if auth_count == 1 && first_visit_for_sp?
-        track_handoff_analytics(result, user_sp_authorized: false, referer: referer)
+        track_handoff_analytics(result, user_sp_authorized: false)
         return redirect_to(user_authorization_confirmation_url)
       end
-      track_handoff_analytics(result, user_sp_authorized: true, referer: referer)
+      track_handoff_analytics(result, user_sp_authorized: true)
       handle_successful_handoff
     end
 
@@ -77,11 +76,13 @@ module OpenidConnect
       delete_branded_experience
     end
 
-    def track_handoff_analytics(result, extra = {})
-      extra[:user_fully_authenticated] = user_fully_authenticated?
-      analytics_attributes = result.to_h.except(:redirect_uri).merge(extra)
+    def track_handoff_analytics(result, attributes = {})
+      result_attributes = result.to_h
+      attributes[:success] = result.success?
+      attributes[:client_id] = result_attributes[:client_id]
+      attributes[:code_digest] = result_attributes[:code_digest]
 
-      analytics.openid_connect_authorization_handoff(**analytics_attributes)
+      analytics.openid_connect_authorization_handoff(**attributes)
     end
 
     def identity_needs_verification?
