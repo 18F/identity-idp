@@ -23,6 +23,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	fast_setup \
 	fast_test \
 	help \
+	idv_events \
 	lint \
 	lint_analytics_events \
 	lint_analytics_events_sorted \
@@ -299,6 +300,8 @@ clobber_logs: ## Purges logs and tmp/
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
+
+idv_events: app/services/idv/engine/events.rb
 
 app/services/idv/engine/events.rb: app/services/idv/engine/events.yml scripts/build-idv-events.rb
 	scripts/build-idv-events.rb $< > $@.tmp && mv $@.tmp $@
