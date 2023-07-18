@@ -6,6 +6,8 @@ This repository contains the core code base and documentation for the identity m
 
 **This file is auto-generated**. Run `make README.md` to regenerate its contents.
 
+
+
 ## Getting Started
 
 Refer to the [_Local Development_ documentation](./docs/local-development.md) to learn how to set up your environment for local development.
