@@ -40,7 +40,7 @@ module IdvHelper
   end
 
   def click_idv_update
-    click_spinner_button_and_wait t('forms.buttons.submit.update')
+    click_on t('forms.buttons.submit.update')
   end
 
   def click_idv_exit
