@@ -28,9 +28,11 @@ module Idv::Engine::Events
   )
 
   IdvDocumentsSubmittedToAcuantParams = Struct.new(
+    :request_success,
+    :request_timed_out,
     :response_status,
+    :result,
     :billed,
-    :doc_auth_result,
     :processed_alerts,
     :alert_failure_count,
     :address_line2_present,
@@ -38,9 +40,11 @@ module Idv::Engine::Events
   )
 
   IdvDocumentsSubmittedToTrueidParams = Struct.new(
+    :request_success,
+    :request_timed_out,
     :response_status,
+    :result,
     :billed,
-    :doc_auth_result,
     :processed_alerts,
     :alert_failure_count,
     :address_line2_present,

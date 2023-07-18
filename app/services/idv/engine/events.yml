@@ -1,11 +1,5 @@
 # This file is used to generate events.rb.
 
-attributes:
-  user_has_started?:
-    description: Has the user begun identity verification?
-  user_has_consented_to_share_pii?:
-    description: Has the user consented to share PII with Login.gov.
-
 events:
   auth_user_changed_password:
     description: >
@@ -177,11 +171,25 @@ schemas:
   DocAuthResult:
     type: object
     properties:
+      request_success:
+        type: boolean
+        description: Did the underlying HTTP request succeed?
+      request_timed_out:
+        type: boolean
+        description: Did the underlying HTTP request time out?
       response_status:
+        type: number
+        description: >
+          HTTP status code returned from the doc auth vendor. (For logging purposes only, not 
+          decisional -- use `request_success` to determine if the HTTP request succeeded,
+          and `result` to determine what the doc auth vendor _said_ about the documents.)
+      result:
+        type: string
+        enum: ['Passed', 'Attention', 'Failed', 'Unknown']
+        description: The vendor's judgement of the doucemnts.
       billed:
         type: boolean
-      doc_auth_result:
-        type: string
+        description: TODO
       processed_alerts:
         type: object
         properties:
