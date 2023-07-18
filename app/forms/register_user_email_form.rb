@@ -151,10 +151,10 @@ class RegisterUserEmailForm
     end
   end
 
-  def send_suspended_user_email(suspsended_email_record)
+  def send_suspended_user_email(suspended_email_record)
     UserMailer.with(
-      user: suspsended_email_record.user,
-      email_address: suspsended_email_record,
+      user: suspended_email_record.user,
+      email_address: suspended_email_record,
     ).suspended_create_account.deliver_now_or_later
   end
 
