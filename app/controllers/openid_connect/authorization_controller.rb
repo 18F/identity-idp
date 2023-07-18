@@ -110,10 +110,12 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
-      analytics_attributes = result.to_h.except(:redirect_uri, :code_digest)
-      analytics_attributes[:user_fully_authenticated] = user_fully_authenticated?
-      analytics_attributes[:referer] = request.referer
-      analytics.openid_connect_request_authorization(**analytics_attributes)
+      analytics.openid_connect_request_authorization(
+        **result.to_h.except(:redirect_uri, :code_digest).merge(
+          user_fully_authenticated: user_fully_authenticated?,
+          referer: request.referer,
+        ),
+      )
       return if result.success?
 
       if (redirect_uri = result.extra[:redirect_uri])
