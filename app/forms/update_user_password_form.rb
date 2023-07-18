@@ -4,13 +4,15 @@ class UpdateUserPasswordForm
 
   delegate :personal_key, to: :encryptor
 
-  def initialize(user, user_session = nil)
+  def initialize(user, user_session = nil, options = {})
     @user = user
     @user_session = user_session
+    @validate_confirmation = options.fetch(:validate_confirmation, false)
   end
 
   def submit(params)
-    self.password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
     success = valid?
     process_valid_submission if success
     FormResponse.new(success: success, errors: errors)
