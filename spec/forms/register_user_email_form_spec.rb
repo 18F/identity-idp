@@ -8,25 +8,80 @@ RSpec.describe RegisterUserEmailForm do
   it_behaves_like 'email validation'
 
   describe '#submit' do
+    let(:email_domain) { 'test.com' }
+    let(:registered_email_address) { 'taken@' + email_domain }
+    let(:unregistered_email_address) { 'not_taken@' + email_domain }
+    let(:registered_and_confirmed_user) do
+      [:user, :fully_registered, **{ email: registered_email_address }]
+    end
+    let(:unconfirmed_user_registered_email) do
+      [
+        :user,
+        **{
+          email: registered_email_address,
+          email_language: 'en',
+          confirmed_at: nil,
+          uuid: '123',
+        },
+      ]
+    end
+    context 'when the user is suspended' do
+      it 'sends the correct email to a fully registered and confirmed user' do
+        user = create(*registered_and_confirmed_user)
+        user.suspend!
+
+        subject.submit(email: registered_email_address, terms_accepted: '1')
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [registered_email_address],
+          subject: t('user_mailer.suspended_create_account.subject'),
+        )
+      end
+      it 'sends the correct email to a taken email on an unconfirmed user' do
+        user = create(*unconfirmed_user_registered_email)
+        user.suspend!
+
+        subject.submit(email: registered_email_address, terms_accepted: '1')
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [registered_email_address],
+          subject: t('user_mailer.suspended_create_account.subject'),
+        )
+      end
+      it 'sends the correct email to and unconfimed email on a confirmed user' do
+        old_user = create(:user)
+        old_user.suspend!
+        email_address = create(:email_address, user: old_user, confirmed_at: nil)
+
+        subject.submit(email: email_address.email, terms_accepted: '1')
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [email_address.email],
+          subject: t('user_mailer.suspended_create_account.subject'),
+        )
+      end
+    end
+
+    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }
     context 'when email is already taken' do
-      let(:email_address) { 'taken@gmail.com' }
-      let!(:existing_user) { create(:user, :fully_registered, email: email_address) }
+      let!(:existing_user) { create(*registered_and_confirmed_user) }
       let(:extra_params) do
         {
           email_already_exists: true,
           throttled: false,
           user_id: existing_user.uuid,
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
         }
       end
 
       it 'sets success to true to prevent revealing account existence' do
-        expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1').to_h).to eq(
-          success: true,
-          errors: {},
-          **extra_params,
-        )
-        expect(subject.email).to eq email_address
+        expect(
+          subject.submit(email: variation_of_preexisting_email, terms_accepted: '1').to_h,
+        ).to eq(success: true, errors: {}, **extra_params)
+        expect(subject.email).to eq registered_email_address
         expect_delivered_email_count(1)
         expect_delivered_email(
           to: [subject.email],
@@ -35,14 +90,11 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
-        expect(attempts_tracker).to receive(
-          :user_registration_email_submission_rate_limited,
-        ).with(
-          email: email_address, email_already_registered: true,
-        )
+        expect(attempts_tracker).to receive(:user_registration_email_submission_rate_limited).
+          with(email: registered_email_address, email_already_registered: true)
 
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
-          subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1')
+          subject.submit(email: variation_of_preexisting_email, terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
@@ -53,13 +105,12 @@ RSpec.describe RegisterUserEmailForm do
     end
 
     context 'when email is already taken and existing user is unconfirmed' do
-      let(:email_address) { 'existing@test.com' }
       let!(:existing_user) do
-        create(:user, email: email_address, email_language: 'en', confirmed_at: nil, uuid: '123')
+        create(*unconfirmed_user_registered_email)
       end
       let(:params) do
         {
-          email: 'EXISTING@test.com',
+          email: variation_of_preexisting_email,
           email_language: 'fr',
           terms_accepted: '1',
         }
@@ -69,16 +120,16 @@ RSpec.describe RegisterUserEmailForm do
           email_already_exists: true,
           throttled: false,
           user_id: existing_user.uuid,
-          domain_name: 'test.com',
+          domain_name: email_domain,
         }
       end
       let(:send_sign_up_email_confirmation) { instance_double(SendSignUpEmailConfirmation) }
 
       it 'sends confirmation instructions to existing user' do
         expect(send_sign_up_email_confirmation).to receive(:call)
-        expect(SendSignUpEmailConfirmation).to receive(:new).with(
-          existing_user,
-        ).and_return(send_sign_up_email_confirmation)
+        expect(SendSignUpEmailConfirmation).to receive(:new).
+          with(existing_user).
+          and_return(send_sign_up_email_confirmation)
 
         result = subject.submit(params).to_h
 
@@ -99,11 +150,11 @@ RSpec.describe RegisterUserEmailForm do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(
-          email: email_address, email_already_registered: false,
+          email: registered_email_address, email_already_registered: false,
         )
 
         IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
-          subject.submit(email: email_address, terms_accepted: '1')
+          subject.submit(email: registered_email_address, terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
@@ -135,12 +186,12 @@ RSpec.describe RegisterUserEmailForm do
 
     context 'when email is not already taken' do
       it 'is valid' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com', terms_accepted: '1')
+        submit_form = subject.submit(email: unregistered_email_address, terms_accepted: '1')
         extra = {
           email_already_exists: false,
           throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
-          domain_name: 'gmail.com',
+          user_id: User.find_with_email(unregistered_email_address).uuid,
+          domain_name: email_domain,
         }
 
         expect(submit_form.to_h).to eq(
@@ -154,26 +205,28 @@ RSpec.describe RegisterUserEmailForm do
         form = RegisterUserEmailForm.new(analytics: analytics, attempts_tracker: attempts_tracker)
 
         response = form.submit(
-          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: '1',
+          email: unregistered_email_address, email_language: 'fr', terms_accepted: '1',
         )
         expect(response).to be_success
 
-        expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
+        expect(User.find_with_email(unregistered_email_address).email_language).to eq('fr')
       end
     end
 
+    let(:anonymous_uuid) { 'anonymous-uuid' }
     context 'when email is invalid' do
       it 'returns false and adds errors to the form object' do
+        invalid_email = 'invalid_email'
         errors = { email: [t('valid_email.validations.email.invalid')] }
 
         extra = {
           email_already_exists: false,
           throttled: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'invalid_email',
+          user_id: anonymous_uuid,
+          domain_name: invalid_email,
         }
 
-        expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to include(
+        expect(subject.submit(email: invalid_email, terms_accepted: '1').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -188,7 +241,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           email_already_exists: false,
           throttled: false,
-          user_id: 'anonymous-uuid',
+          user_id: anonymous_uuid,
           domain_name: 'çà.com',
         }
 
@@ -202,19 +255,20 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'returns false and adds errors when domain is blocked and email exists' do
-        email = 'test@example.com'
-        email_address = create(:email_address, email: email)
+        blocked_domain = 'blocked.com'
+        blocked_email = 'test@' + blocked_domain
+        email_address = create(:email_address, email: blocked_email)
         errors = { email: [t('valid_email.validations.email.invalid')] }
-        allow(BanDisposableEmailValidator).to receive(:config).and_return(['example.com'])
+        allow(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
 
         extra = {
           email_already_exists: true,
           throttled: false,
           user_id: email_address.user.uuid,
-          domain_name: 'example.com',
+          domain_name: blocked_domain,
         }
 
-        expect(subject.submit(email: email, terms_accepted: '1').to_h).to include(
+        expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -226,17 +280,18 @@ RSpec.describe RegisterUserEmailForm do
 
     context 'when request_id is invalid' do
       it 'returns successful and does not include request_id in email' do
+        invalid_id = 'fake_id'
         submit_form = subject.submit(
-          email: 'not_taken@example.com',
-          request_id: 'fake_id',
+          email: unregistered_email_address,
+          request_id: invalid_id,
           terms_accepted: '1',
         )
 
         expect(submit_form.success?).to eq true
 
         last_email = ActionMailer::Base.deliveries.last
-        expect(last_email.to).to eq ['not_taken@example.com']
-        expect(last_email.body).to_not include 'fake_id'
+        expect(last_email.to).to eq [unregistered_email_address]
+        expect(last_email.body).to_not include invalid_id
       end
     end
 
@@ -250,15 +305,15 @@ RSpec.describe RegisterUserEmailForm do
         )
         request_id = sp_request.uuid
         submit_form = subject.submit(
-          email: 'not_taken@example.com',
+          email: unregistered_email_address,
           request_id: request_id,
           terms_accepted: '1',
         )
         extra = {
-          domain_name: 'example.com',
+          domain_name: email_domain,
           email_already_exists: false,
           throttled: false,
-          user_id: User.find_with_email('not_taken@example.com').uuid,
+          user_id: User.find_with_email(unregistered_email_address).uuid,
         }
 
         expect(submit_form.to_h).to eq(
@@ -268,7 +323,7 @@ RSpec.describe RegisterUserEmailForm do
         )
 
         last_email = ActionMailer::Base.deliveries.last
-        expect(last_email.to).to eq ['not_taken@example.com']
+        expect(last_email.to).to eq [unregistered_email_address]
         expect(last_email.body).to_not include request_id
       end
     end
@@ -276,15 +331,15 @@ RSpec.describe RegisterUserEmailForm do
     context 'when request_id is blank' do
       it 'returns success with no errors' do
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: unregistered_email_address,
           request_id: nil,
           terms_accepted: '1',
         )
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
           throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
+          user_id: User.find_with_email(unregistered_email_address).uuid,
         }
 
         expect(submit_form.to_h).to eq(
@@ -299,13 +354,13 @@ RSpec.describe RegisterUserEmailForm do
       it 'returns failure with errors' do
         errors = { terms_accepted: [t('errors.registration.terms')] }
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
           throttled: false,
-          user_id: 'anonymous-uuid',
+          user_id: anonymous_uuid,
         }
 
-        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        submit_form = subject.submit(email: unregistered_email_address)
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
@@ -313,21 +368,20 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'returns failure with errors when email already exists' do
-        email = 'example@gmail.com'
         email_address = create(
           :email_address,
-          email: email,
+          email: registered_email_address,
           user: build(:user, accepted_terms_at: nil),
         )
         errors = { terms_accepted: [t('errors.registration.terms')] }
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: true,
           throttled: false,
           user_id: email_address.user.uuid,
         }
 
-        submit_form = subject.submit(email: email)
+        submit_form = subject.submit(email: registered_email_address)
         expect(submit_form.success?).to eq false
         expect(submit_form.extra).to eq extra
         expect(submit_form.errors).to eq errors
@@ -339,13 +393,13 @@ RSpec.describe RegisterUserEmailForm do
       it 'returns failure with errors' do
         errors = { email_language: [t('errors.messages.inclusion')] }
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: email_domain,
           email_already_exists: false,
           throttled: false,
-          user_id: 'anonymous-uuid',
+          user_id: anonymous_uuid,
         }
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: unregistered_email_address,
           terms_accepted: '1',
           email_language: '01234567890',
         )

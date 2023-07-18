@@ -66,28 +66,28 @@ en:
         try_online: Try again online
         warning: Try again
       exceptions:
-        internal_error: There was an internal error processing your request. Please try again.
-        link: please contact us
-        post_office_search_error: We are having technical difficulties at the moment.
-          Try searching for a Post Office again. If this issue continues, come
-          back later.
-        text_html: Please try again. If you keep getting these errors, %{link_html}.
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: In the meantime, you can still begin the in-person verification process on
               %{app_name} and then visit a Post Office. If you urgently need
               access to services, please contact your agency directly.
             title: We’re working on a technical issue. Your identity verification results
-              may not be emailed to you until Tuesday, May 30.
+              may not be emailed to you until %{date}.
           ready_to_verify:
             body: You can still visit a Post Office to complete verifying your identity. If
               you urgently need access to services, please contact your agency
               directly.
             contact_html: <a href="%{help_url}" target="_blank">Contact %{app_name}
               support</a> if you have not received an email with your
-              verification results by Thursday, June 1.
+              verification results by %{date}.
             title: We’re working on a technical issue. Your identity verification results
-              may not be emailed to you until Tuesday, May 30.
+              may not be emailed to you until %{date}.
+        internal_error: There was an internal error processing your request. Please try again.
+        link: please contact us
+        post_office_search_error: We are having technical difficulties at the moment.
+          Try searching for a Post Office again. If this issue continues, come
+          back later.
+        text_html: Please try again. If you keep getting these errors, %{link_html}.
       exit:
         with_sp: Exit %{app_name} and return to %{sp_name}
         without_sp: Exit identity verification and go to your account page

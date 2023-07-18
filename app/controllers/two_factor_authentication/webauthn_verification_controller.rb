@@ -27,8 +27,6 @@ module TwoFactorAuthentication
       handle_webauthn_result(result)
     end
 
-    def error; end
-
     private
 
     def handle_webauthn_result(result)
@@ -57,7 +55,7 @@ module TwoFactorAuthentication
       is_platform_auth = params[:platform].to_s == 'true'
       if is_platform_auth
         flash[:error] = t(
-          'two_factor_authentication.webauthn_error.multiple_methods',
+          'two_factor_authentication.webauthn_error.try_again',
           link: view_context.link_to(
             t('two_factor_authentication.webauthn_error.additional_methods_link'),
             login_two_factor_options_path,
@@ -94,7 +92,7 @@ module TwoFactorAuthentication
     def credentials
       MfaContext.new(current_user).webauthn_configurations.map do |configuration|
         { id: configuration.credential_id, transports: configuration.transports }
-      end.to_json
+      end
     end
 
     def analytics_properties

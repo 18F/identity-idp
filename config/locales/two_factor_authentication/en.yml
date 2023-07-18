@@ -29,7 +29,7 @@ en:
       warning_html: <strong>You’ve only set up backup codes on your account.
         </strong>If you have access to another device, such as a phone, protect
         your account with another authentication method.
-    choose_another_option: '‹ Choose another option'
+    choose_another_option: '‹ Choose another authentication method'
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
@@ -186,10 +186,7 @@ en:
     webauthn_authenticating: Authenticating your credentials…
     webauthn_error:
       additional_methods_link: choose another authentication method
-      error_page_text: You have face or touch unlock enabled for this account. Use the
-        same device and browser profile each time.
-      multiple_methods: Face or touch unlock was unsuccessful. Please try again or %{link}.
-      title: We can’t identify your device
+      try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
     webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_header_text: Use face or touch unlock

@@ -29,7 +29,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       click_idv_continue
     end
 
-    xit 'shows a warning message to allow the user to return to upload new images' do
+    it 'shows a warning message to allow the user to return to upload new images' do
       warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
 
       expect(page).to have_css(
@@ -60,7 +60,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(page).to have_css('[role="status"]')  # We verified your ID
     end
 
-    xit 'document capture cannot be reached after submitting verify info step' do
+    it 'document capture cannot be reached after submitting verify info step' do
       warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
 
       expect(page).to have_css(
@@ -106,7 +106,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
     context 'with a bad SSN' do
       let(:use_bad_ssn) { true }
 
-      xit 'shows a troubleshooting option to allow the user to cancel and return to SP' do
+      it 'shows a troubleshooting option to allow the user to cancel and return to SP' do
         click_idv_continue
 
         expect(page).to have_link(
