@@ -14,11 +14,8 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('agreement', :view, true)
 
-      @sp_name = decorated_session.sp_name || t('doc_auth.info.no_sp_name')
-      @title = t(
-        'doc_auth.headings.getting_started',
-        sp_name: decorated_session.sp_name || t('doc_auth.info.no_sp_name').downcase,
-      )
+      @sp_name = decorated_session.sp_name || APP_NAME
+      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
 
       render :show, locals: { flow_session: flow_session }
     end
