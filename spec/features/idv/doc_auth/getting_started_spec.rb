@@ -19,7 +19,7 @@ RSpec.feature 'getting started step' do
     complete_doc_auth_steps_before_welcome_step
   end
 
-  it 'displays expected content', :js do
+  it 'displays expected content with javascript enabled', :js do
     expect(page).to have_current_path(idv_getting_started_path)
 
     # Try to continue with unchecked checkbox
@@ -29,6 +29,21 @@ RSpec.feature 'getting started step' do
 
     complete_getting_started_step
     expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  it 'logs "intro_paragraph" learn more link click' do
+    click_on t('doc_auth.info.getting_started_learn_more')
+
+    expect(fake_analytics).to have_logged_event(
+      'External Redirect',
+      step: 'getting_started',
+      location: 'intro_paragraph',
+      flow: 'idv',
+      redirect_url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'how-to-verify-your-identity',
+      ),
+    )
   end
 
   context 'when JS is disabled' do
