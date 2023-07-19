@@ -11,7 +11,11 @@ RSpec.feature 'disavowing an action' do
   scenario 'disavowing a password update' do
     sign_in_and_2fa_user(user)
     visit manage_password_path
-    fill_in 'New password', with: 'OldVal!dPassw0rd'
+    password = 'OldVal!dPassw0rd'
+    fill_in t('forms.password'), with: password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: password
+
     click_on t('forms.buttons.submit.update')
     Capybara.reset_sessions!
 
@@ -140,7 +144,9 @@ RSpec.feature 'disavowing an action' do
     click_continue
     open_last_email
     click_email_link_matching(/reset_password_token/)
-    fill_in 'New password', with: 'OldVal!dPassw0rd'
+    password = 'OldVal!dPassw0rd'
+    fill_in 'Password', with: password
+    fill_in 'Confirm password', with: password
     click_button t('forms.passwords.edit.buttons.submit')
   end
 
