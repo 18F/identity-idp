@@ -1,20 +1,9 @@
-import { useEffect, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading } from '@18f/identity-components';
 import BackButton from './back-button';
 
 function InPersonLocationFullAddressEntryPostOfficeSearchStep({ toPreviousStep }) {
   const { t } = useI18n();
-
-  // ref allows us to avoid a memory leak
-  const mountedRef = useRef(false);
-
-  useEffect(() => {
-    mountedRef.current = true;
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
 
   return (
     <>
