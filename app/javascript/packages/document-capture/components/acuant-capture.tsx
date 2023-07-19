@@ -442,15 +442,15 @@ function AcuantCapture(
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isAssessedAsUnsupported) {
-      setOwnErrorMessage(t('doc_auth.errors.card_type'));
-      assessment = 'unsupported';
+    if (isAssessedAsBlurry) {
+      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
+      assessment = 'blurry';
     } else if (isAssessedAsGlare) {
       setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
-    } else if (isAssessedAsBlurry) {
-      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
-      assessment = 'blurry';
+    } else if (isAssessedAsUnsupported) {
+      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      assessment = 'unsupported';
     } else {
       assessment = 'success';
     }
