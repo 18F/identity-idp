@@ -67,9 +67,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-doc_auth_error_dpi_threshold: 290
-doc_auth_error_sharpness_threshold: 40
-doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
