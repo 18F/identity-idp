@@ -2,12 +2,14 @@ require 'rails_helper'
 
 RSpec.describe WebauthnVisitForm do
   include ActionView::Helpers::UrlHelper
+  include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
+  let(:url_options) { {} }
   let(:subject) do
     WebauthnVisitForm.new(
       user: user,
-      url_options: {},
+      url_options:,
       in_mfa_selection_flow: true,
     )
   end
@@ -102,7 +104,7 @@ RSpec.describe WebauthnVisitForm do
             'errors.webauthn_platform_setup.account_setup_error',
             link: link_to(
               I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-              '/authentication_methods_setup',
+              authentication_methods_setup_path,
             ),
           )] }
 
