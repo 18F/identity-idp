@@ -13,7 +13,7 @@ RSpec.describe WebauthnSetupForm do
       name: 'mykey',
       platform_authenticator: false,
       transports: 'usb',
-      authenticator_data_flags: backed_up_authenticator_data_flags,
+      authenticator_data_value: 45,
     }
   end
   let(:subject) { WebauthnSetupForm.new(user, user_session) }
@@ -165,7 +165,7 @@ RSpec.describe WebauthnSetupForm do
           name: 'mykey',
           platform_authenticator: false,
           transports: 'usb',
-          authenticator_data_flags: non_backed_up_authenticator_data_flags,
+          authenticator_data_value: 65,
         }
       end
       it 'should return false' do
