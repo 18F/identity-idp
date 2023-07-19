@@ -87,7 +87,7 @@ RSpec.describe SignUp::PasswordsController do
                 count: Devise.password_length.first,
               )],
             password_confirmation:
-              ["is too short (minimum is #{Devise.password_length.first} characters)"],
+              ['is too short (minimum is 12 characters)'],
           }
         end
         let(:error_details) do
