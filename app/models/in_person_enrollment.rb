@@ -69,8 +69,8 @@ class InPersonEnrollment < ApplicationRecord
   # Does this enrollment need a status check via the USPS API?
   def needs_usps_status_check?(check_interval)
     pending? && (
-      status_check_attempted_at.nil? ||
-      check_interval.cover?(status_check_attempted_at)
+      last_batch_claim_at.nil? ||
+      check_interval.cover?(last_batch_claim_at)
     )
   end
 
