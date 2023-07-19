@@ -70,7 +70,7 @@ RSpec.describe Users::WebauthnSetupController do
           client_data_json: setup_client_data_json,
           name: 'mykey',
           transports: 'usb',
-          authenticator_data_value: 45,
+          authenticator_data_value: '45',
         }
       end
 
@@ -116,7 +116,7 @@ RSpec.describe Users::WebauthnSetupController do
             name: 'mykey',
             transports: 'internal,hybrid',
             platform_authenticator: 'true',
-            authenticator_data_value: 65,
+            authenticator_data_value: '65',
           }
         end
 
@@ -134,7 +134,7 @@ RSpec.describe Users::WebauthnSetupController do
             name: 'mykey',
             transports: 'internal,hybrid',
             platform_authenticator: 'true',
-            authenticator_data_value: 45,
+            authenticator_data_value: '45',
           }
         end
 
