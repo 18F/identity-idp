@@ -483,7 +483,7 @@ function AcuantCapture(
       onFailedCaptureAttempt({
         isAssessedAsGlare,
         isAssessedAsBlurry,
-        isUnsupportedDocument: isAssessedAsUnsupported,
+        isAssessedAsUnsupported,
       });
     }
 

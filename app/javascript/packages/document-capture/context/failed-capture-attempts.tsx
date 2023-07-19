@@ -5,7 +5,7 @@ import useCounter from '../hooks/use-counter';
 interface CaptureAttemptMetadata {
   isAssessedAsGlare: boolean;
   isAssessedAsBlurry: boolean;
-  isUnsupportedDocument: boolean;
+  isAssessedAsUnsupported: boolean;
 }
 
 interface FailedCaptureAttemptsContextInterface {
@@ -67,7 +67,7 @@ interface FailedCaptureAttemptsContextInterface {
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
   isAssessedAsGlare: false,
   isAssessedAsBlurry: false,
-  isUnsupportedDocument: false,
+  isAssessedAsUnsupported: false,
 };
 
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
