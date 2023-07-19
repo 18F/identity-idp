@@ -147,7 +147,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def enrollment_will_be_cancelled?
-    status_change_to_be_saved&.last == "cancelled"
+    status_change_to_be_saved&.last == 'cancelled'
   end
 
   def set_unique_id

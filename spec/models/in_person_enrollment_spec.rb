@@ -419,13 +419,13 @@ RSpec.describe InPersonEnrollment, type: :model do
       it 'deletes the notification phone number' do
         enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
         config_id = enrollment.notification_phone_configuration.id
-        expect(NotificationPhoneConfiguration.find_by({id: config_id})).to_not eq(nil)
+        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not eq(nil)
 
         enrollment.cancelled!
         enrollment.reload
 
         expect(enrollment.notification_phone_configuration).to eq(nil)
-        expect(NotificationPhoneConfiguration.find_by({id: config_id})).to eq(nil)
+        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to eq(nil)
       end
     end
 
