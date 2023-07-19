@@ -87,9 +87,8 @@
   <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
-                 warning: session_timeout_warning,
-                 start: session_timeout_start,
-                 frequency: session_timeout_frequency,
+                 timeout: current_user.timeout_in.from_now,
+                 warning_offset: session_timeout_warning,
                  modal: session_modal,
                } %>
   <% elsif !@skip_session_expiration %>

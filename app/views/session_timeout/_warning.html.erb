@@ -1,4 +1,4 @@
-<%= render ModalComponent.new(class: 'session-timeout-modal') do |c| %>
+<%= render SessionTimeoutModalComponent.new(timeout:, warning_offset:, timeout_url:) do |c| %>
   <div class="display-flex flex-align-center flex-justify-center">
     <%= render AlertIconComponent.new(icon_name: :info_question) %>
   </div>
@@ -37,17 +37,15 @@
           ) %>
     </p>
   </div>
-  <%= render ButtonComponent.new(
-        type: :button,
-        id: 'session-keepalive-btn',
+  <%= c.keep_alive_button(
         big: true,
         full_width: true,
         class: 'margin-bottom-2',
-      ).with_content(
+      ) do
         # i18n-tasks-use t('notices.timeout_warning.signed_in.continue')
         # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.continue')
-        t('continue', scope: modal_presenter.translation_scope),
-      ) %>
+        t('continue', scope: modal_presenter.translation_scope)
+      end %>
   <%= render ButtonComponent.new(
         action: ->(**tag_options, &block) { link_to(destroy_user_session_path, **tag_options, &block) },
         big: true,

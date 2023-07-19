@@ -83,6 +83,12 @@ export class CountdownElement extends HTMLElement {
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-countdown': CountdownElement;
+  }
+}
+
 if (!customElements.get('lg-countdown')) {
   customElements.define('lg-countdown', CountdownElement);
 }

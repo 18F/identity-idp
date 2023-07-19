@@ -1,12 +1,4 @@
 module SessionTimeoutWarningHelper
-  def session_timeout_frequency
-    IdentityConfig.store.session_check_frequency
-  end
-
-  def session_timeout_start
-    IdentityConfig.store.session_check_delay
-  end
-
   def session_timeout_warning
     IdentityConfig.store.session_timeout_warning_seconds
   end
