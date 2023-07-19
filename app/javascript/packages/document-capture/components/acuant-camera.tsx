@@ -94,9 +94,9 @@ interface AcuantCameraUIOptions {
 }
 
 export enum AcuantDocumentType {
-  NONE = 0,
-  ID = 1,
-  PASSPORT = 2,
+  none = 0,
+  id = 1,
+  passport = 2,
 }
 
 export type AcuantCaptureFailureError =

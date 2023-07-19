@@ -16,20 +16,16 @@ import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import AcuantCamera from './acuant-camera';
+import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type {
-  AcuantSuccessResponse,
-  AcuantDocumentType,
-  AcuantCaptureFailureError,
-} from './acuant-camera';
+import type { AcuantSuccessResponse, AcuantCaptureFailureError } from './acuant-camera';
 
-type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
+type AcuantDocumentTypeLabel = keyof typeof AcuantDocumentType;
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
@@ -136,16 +132,11 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  *
  */
 function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
-  switch (documentType) {
-    case 0:
-      return 'none';
-    case 1:
-      return 'id';
-    case 2:
-      return 'passport';
-    default:
-      return `An error in document type returned: ${documentType}`;
+  const label = AcuantDocumentType[documentType];
+  if (label === undefined) {
+    return `An error in document type returned: ${documentType}`;
   }
+  return label;
 }
 
 export function getNormalizedAcuantCaptureFailureMessage(
@@ -438,7 +429,7 @@ function AcuantCapture(
     const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = cardtype !== 1;
+    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.id;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
