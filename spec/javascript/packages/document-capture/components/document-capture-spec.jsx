@@ -18,6 +18,7 @@ import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
+import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
@@ -91,7 +92,7 @@ describe('document-capture/components/document-capture', () => {
         image: {
           data: validUpload,
         },
-        cardtype: 1,
+        cardtype: AcuantDocumentType.id,
       });
     });
 
