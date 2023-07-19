@@ -28,22 +28,22 @@ RSpec.describe 'GettingStartedAbTestConcern' do
       allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket) do |discriminator|
         case discriminator
         when 'session-id'
-          :default
+          :welcome
         when 'request-id'
-          :new
+          :getting_started
         end
       end
     end
 
     it 'returns the bucket based on session id' do
-      expect(controller.getting_started_a_b_test_bucket).to eq(:default)
+      expect(controller.getting_started_a_b_test_bucket).to eq(:welcome)
     end
 
     context 'with associated sp session request id' do
       let(:sp_session) { { request_id: 'request-id' } }
 
       it 'returns the bucket based on request id' do
-        expect(controller.getting_started_a_b_test_bucket).to eq(:new)
+        expect(controller.getting_started_a_b_test_bucket).to eq(:getting_started)
       end
     end
   end
@@ -65,7 +65,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     context 'A/B test specifies getting started page' do
       before do
         allow(controller).to receive(:getting_started_a_b_test_bucket).
-          and_return(:new)
+          and_return(:getting_started)
       end
 
       it 'redirects to idv_getting_started_url' do
@@ -78,7 +78,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     context 'A/B test specifies welcome page' do
       before do
         allow(controller).to receive(:getting_started_a_b_test_bucket).
-          and_return(:default)
+          and_return(:welcome)
       end
 
       it 'does not redirect users away from welcome page' do

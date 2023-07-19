@@ -5,7 +5,7 @@ module Idv
     end
 
     def maybe_redirect_for_getting_started_ab_test
-      return if getting_started_a_b_test_bucket == :default
+      return if getting_started_a_b_test_bucket == :welcome
 
       redirect_to idv_getting_started_url
     end
