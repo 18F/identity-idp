@@ -7,7 +7,6 @@ class WebauthnSetupForm
   validates :client_data_json, presence: true
   validates :name, presence: true
   validate :name_is_unique
-  validate :authenticator_data_flag_valid?
 
   attr_reader :attestation_response, :name_taken
 
@@ -45,6 +44,7 @@ class WebauthnSetupForm
 
   def passkey_backed_up?
     return false unless @authenticator_data_flags.present?
+    binding.pry
     @authenticator_data_flags[:bs]
   end
 
@@ -59,12 +59,9 @@ class WebauthnSetupForm
     @client_data_json = params[:client_data_json]
     @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
-    if params[:authenticator_data_flags].present?
-      @authenticator_data_flags =  JSON.parse(
-        params[:authenticator_data_flags],
-        symbolize_names: true,
-      )
-    end
+    @authenticator_data_flags = process_authenticator_data_value(
+      params[:authenticator_data_value],
+    )
     @transports, @invalid_transports = params[:transports]&.split(',')&.partition do |transport|
       WebauthnConfiguration::VALID_TRANSPORTS.include?(transport)
     end
@@ -105,6 +102,21 @@ class WebauthnSetupForm
     false
   end
 
+  def process_authenticator_data_value(data_value)
+    return unless data_value.present?
+    # Ensure that its an int
+    return unless data_value.scan(/\D/).empty?
+    data_int_value = data_value.to_i
+    {
+      up: (data_int_value & (1 << 0)),
+      uv: (data_int_value & (1 << 2)),
+      be: (data_int_value & (1 << 3)),
+      bs: (data_int_value & (1 << 4)),
+      at: (data_int_value & (1 << 6)),
+      ed: (data_int_value & (1 << 7)),
+    }
+  end
+
   def create_webauthn_configuration
     credential = attestation_response.credential
     public_key = Base64.strict_encode64(credential.public_key)
@@ -117,13 +129,6 @@ class WebauthnSetupForm
       transports: transports.presence,
       authenticator_data_flags: authenticator_data_flags.presence,
     )
-  end
-
-  def authenticator_data_flag_valid
-    return unless authenticator_data_flags.present?
-    authenticator_data_flags.keys.all? do |flag|
-      WebauthnConfiguration::VALID_AUTHENTICATOR_DATA_FLAGS.include?(flag)
-    end
   end
 
   def mfa_user

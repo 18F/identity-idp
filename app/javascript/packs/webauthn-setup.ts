@@ -68,8 +68,8 @@ function webauthn() {
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
-        (document.getElementById('authenticator_data_flags') as HTMLInputElement).value =
-          result.authenticatorDataFlags;
+        (document.getElementById('authenticator_data_value') as HTMLInputElement).value =
+          `${result.authenticatorDataValue}`;
         (document.getElementById('transports') as HTMLInputElement).value =
           result.transports.join();
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();

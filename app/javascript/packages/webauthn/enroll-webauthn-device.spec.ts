@@ -92,14 +92,7 @@ describe('enrollWebauthnDevice', () => {
       webauthnPublicKey: '123',
       attestationObject: btoa('attest'),
       clientDataJSON: btoa('json'),
-      authenticatorDataFlags: JSON.stringify({
-        up: true,
-        uv: false,
-        be: false,
-        bs: false,
-        at: true,
-        ed: false,
-      }),
+      authenticatorDataValue: 65,
       transports: ['usb'],
     });
   });

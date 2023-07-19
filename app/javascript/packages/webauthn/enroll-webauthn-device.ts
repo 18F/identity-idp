@@ -20,7 +20,7 @@ interface EnrollResult {
 
   clientDataJSON: string;
 
-  authenticatorDataFlags: string;
+  authenticatorDataValue: number;
 
   transports: string[];
 }
@@ -78,15 +78,13 @@ async function enrollWebauthnDevice({
   })) as PublicKeyCredential;
 
   const response = credential.response as AuthenticatorAttestationResponse;
-  const authenticatorDataFlag = JSON.stringify(
-    getAuthenticatorDataFlags(response.getAuthenticatorData()),
-  );
+  const authenticatorDataValue = new Uint8Array(response.getAuthenticatorData())[32];
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),
     webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
-    authenticatorDataFlags: authenticatorDataFlag,
+    authenticatorDataValue: authenticatorDataValue,
     transports: response.getTransports(),
   };
 }
