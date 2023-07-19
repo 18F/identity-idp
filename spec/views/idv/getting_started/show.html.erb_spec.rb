@@ -89,7 +89,7 @@ RSpec.describe 'idv/getting_started/show' do
         article: 'how-to-verify-your-identity',
         flow: :idv,
         step: :getting_started,
-        location: 'you_will_need',
+        location: 'intro_paragraph',
       ),
     )
   end
