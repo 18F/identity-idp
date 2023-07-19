@@ -44,7 +44,6 @@ class WebauthnSetupForm
 
   def passkey_backed_up?
     return false unless @authenticator_data_flags.present?
-    binding.pry
     @authenticator_data_flags[:bs]
   end
 
@@ -108,12 +107,12 @@ class WebauthnSetupForm
     return unless data_value.scan(/\D/).empty?
     data_int_value = data_value.to_i
     {
-      up: (data_int_value & (1 << 0)),
-      uv: (data_int_value & (1 << 2)),
-      be: (data_int_value & (1 << 3)),
-      bs: (data_int_value & (1 << 4)),
-      at: (data_int_value & (1 << 6)),
-      ed: (data_int_value & (1 << 7)),
+      up: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 0)),
+      uv: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 2)),
+      be: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 3)),
+      bs: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 4)),
+      at: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 6)),
+      ed: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 7)),
     }
   end
 
