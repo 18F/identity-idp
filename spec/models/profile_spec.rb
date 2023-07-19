@@ -891,6 +891,47 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#activate_after_fraud_review_unnecessary' do
+    it 'activates a profile if raud review is unnecessary' do
+      profile = create(:profile, :fraud_review_pending, user: user)
+
+      expect(profile.activated_at).to be_nil # to change
+      expect(profile.active).to eq(false) # to change
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(true) # to change
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil # to change
+
+      profile.activate_after_fraud_review_unnecessary
+
+      expect(profile.activated_at).to be_present # changed
+      expect(profile.active).to eq(true) # changed
+      expect(profile.deactivation_reason).to be_nil
+      expect(profile.fraud_review_pending?).to eq(false) # changed
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_present # changed
+
+      expect(profile).to be_active
+      expect(profile.fraud_review_pending_at).to be_nil
+      expect(profile.fraud_pending_reason).to be_nil
+    end
+
+    it 'does not activate a profile if transaction raises an error' do
+      profile = create(:profile, :fraud_review_pending, user: user)
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      suppress(RuntimeError) do
+        profile.activate_after_fraud_review_unnecessary
+      end
+
+      expect(profile.fraud_review_pending_at).to_not eq nil
+      expect(profile).to_not be_active
+    end
+  end
+
   # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
   # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_gpo_verification' do
