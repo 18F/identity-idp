@@ -62,6 +62,8 @@ es:
           compruebe la configuración de su navegador o sistema, recargue esta
           página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
+      card_type: Solo se aceptan licencias de conducir o documentos de identidad
+        estatales.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
