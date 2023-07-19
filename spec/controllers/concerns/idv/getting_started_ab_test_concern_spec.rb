@@ -88,5 +88,19 @@ RSpec.describe 'GettingStartedAbTestConcern' do
         expect(response.status).to eq(200)
       end
     end
+
+    context 'A/B test specifies some other value' do
+      before do
+        allow(controller).to receive(:getting_started_a_b_test_bucket).
+          and_return(:something_else)
+      end
+
+      it 'does not redirect users away from welcome page' do
+        get :show
+
+        expect(response.body).to eq('Hello')
+        expect(response.status).to eq(200)
+      end
+    end
   end
 end
