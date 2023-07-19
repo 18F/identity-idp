@@ -6,46 +6,45 @@ module InPerson
     def perform(enrollment_id)
       return unless IdentityConfig.store.in_person_proofing_enabled &&
                     IdentityConfig.store.in_person_send_proofing_notifications_enabled
-      begin
-        enrollment = InPersonEnrollment.find_by(
-          { id: enrollment_id },
-          include: [:notification_phone_configuration, :user],
-        )
 
-        if enrollment.nil? || !enrollment.eligible_for_notification?
-          analytics(user: enrollment&.user || AnonymousUser.new).
-            idv_in_person_usps_proofing_results_notification_job_skipped(
-              enrollment_code: enrollment&.enrollment_code,
-              enrollment_id: enrollment&.id,
-            )
-          return
-        end
+      enrollment = InPersonEnrollment.find_by(
+        { id: enrollment_id },
+        include: [:notification_phone_configuration, :user],
+      )
 
-        analytics(user: enrollment.user).
-          idv_in_person_usps_proofing_results_notification_job_started(
-            enrollment_code: enrollment.enrollment_code,
-            enrollment_id: enrollment.id,
+      if enrollment.nil? || !enrollment.eligible_for_notification?
+        analytics(user: enrollment&.user || AnonymousUser.new).
+          idv_in_person_usps_proofing_results_notification_job_skipped(
+            enrollment_code: enrollment&.enrollment_code,
+            enrollment_id: enrollment&.id,
           )
-        if enrollment.expired?
-          # no sending message for expired status
-          enrollment.notification_phone_configuration&.destroy
-          return
-        end
-
-        # send notification and log result when success or failed
-        phone = enrollment.notification_phone_configuration.formatted_phone
-        message = notification_message(enrollment: enrollment)
-        response = Telephony.send_notification(
-          to: phone, message: message,
-          country_code: Phonelib.parse(phone).country
-        )
-        handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
-        # if notification sent successful
-        enrollment.update(notification_sent_at: Time.zone.now) if response.success?
-
-      ensure
-        log_job_completed(enrollment: enrollment)
+        return
       end
+
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_notification_job_started(
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+        )
+      if enrollment.expired?
+        # no sending message for expired status
+        enrollment.notification_phone_configuration&.destroy
+        log_job_completed(enrollment: enrollment)
+        return
+      end
+
+      # send notification and log result when success or failed
+      phone = enrollment.notification_phone_configuration.formatted_phone
+      message = notification_message(enrollment: enrollment)
+      response = Telephony.send_notification(
+        to: phone, message: message,
+        country_code: Phonelib.parse(phone).country
+      )
+      handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
+      # if notification sent successful
+      enrollment.update(notification_sent_at: Time.zone.now) if response.success?
+
+      log_job_completed(enrollment: enrollment)
     end
 
     private
