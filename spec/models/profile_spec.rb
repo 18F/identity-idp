@@ -1034,7 +1034,7 @@ RSpec.describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = create(:profile, :fraud_review_pending, user: user)
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -1054,7 +1054,7 @@ RSpec.describe Profile do
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
+        profile = create(:profile, :fraud_review_pending, user: user)
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -1069,11 +1069,7 @@ RSpec.describe Profile do
     context 'when the SP is the IRS' do
       let(:sp) { create(:service_provider, :irs) }
       let(:profile) do
-        user.profiles.create(
-          active: false,
-          fraud_review_pending_at: 1.day.ago,
-          initiating_service_provider: sp,
-        )
+        create(:profile, :fraud_review_pending, active: false, initiating_service_provider: sp)
       end
 
       context 'and notify_user is true' do

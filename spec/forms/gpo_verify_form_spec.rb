@@ -13,8 +13,8 @@ RSpec.describe GpoVerifyForm do
   let(:pending_profile) do
     create(
       :profile,
+      :verify_by_mail_pending,
       user: user,
-      gpo_verification_pending_at: 1.day.ago,
       proofing_components: proofing_components,
     )
   end
