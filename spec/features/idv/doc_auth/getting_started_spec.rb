@@ -11,8 +11,8 @@ RSpec.feature 'getting started step' do
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
-    allow_any_instance_of(Idv::WelcomeController).to receive(:getting_started_a_b_test_bucket).
-      and_return(:getting_started)
+    stub_const('AbTests::IDV_GETTING_STARTED', FakeAbTestBucket.new)
+    AbTests::IDV_GETTING_STARTED.assign_all(:getting_started)
 
     visit_idp_from_sp_with_ial2(:oidc)
     sign_in_and_2fa_user
