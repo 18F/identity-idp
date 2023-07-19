@@ -11,15 +11,12 @@ module InPerson
           { id: enrollment_id },
           include: [:notification_phone_configuration, :user],
         )
-        return unless enrollment
 
-        # skip when enrollment status not success/failed/expired or no phone configured
-        if !enrollment.eligible_for_notification?
-          # log event
-          analytics(user: enrollment.user).
+        if enrollment.nil? || !enrollment.eligible_for_notification?
+          analytics(user: enrollment&.user || AnonymousUser.new).
             idv_in_person_usps_proofing_results_notification_job_skipped(
-              enrollment_code: enrollment.enrollment_code,
-              enrollment_id: enrollment.id,
+              enrollment_code: enrollment&.enrollment_code,
+              enrollment_id: enrollment&.id,
             )
           return
         end
@@ -35,8 +32,7 @@ module InPerson
           return
         end
 
-        # only send sms when success or failed
-        # send notification and log result
+        # send notification and log result when success or failed
         phone = enrollment.notification_phone_configuration.formatted_phone
         message = notification_message(enrollment: enrollment)
         response = Telephony.send_notification(
@@ -46,16 +42,20 @@ module InPerson
         handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
         # if notification sent successful
         enrollment.update(notification_sent_at: Time.zone.now) if response.success?
+
       ensure
-        Rails.logger.error("Unknown enrollment with id #{enrollment_id}") unless enrollment.present?
-        analytics(user: enrollment.present? ? enrollment.user : AnonymousUser.new).
-          idv_in_person_usps_proofing_results_notification_job_completed(
-            enrollment_code: enrollment&.enrollment_code, enrollment_id: enrollment_id,
-          )
+        log_job_completed(enrollment: enrollment)
       end
     end
 
     private
+
+    def log_job_completed(enrollment:)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_notification_job_completed(
+          enrollment_code: enrollment.enrollment_code, enrollment_id: enrollment.id,
+        )
+    end
 
     def handle_telephony_result(enrollment:, phone:, telephony_result:)
       if telephony_result.success?
