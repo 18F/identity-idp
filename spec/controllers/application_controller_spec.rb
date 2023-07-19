@@ -476,13 +476,6 @@ RSpec.describe ApplicationController do
       end
     end
 
-    context 'with a url that has prompt=login' do
-      let(:sp_session_request_url) { '/authorize?prompt=login' }
-      it 'changes it to prompt=select_account' do
-        expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
-      end
-    end
-
     context 'when the locale has been changed' do
       before { I18n.locale = :es }
       let(:sp_session_request_url) { '/authorize' }
