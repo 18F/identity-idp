@@ -52,6 +52,7 @@ en:
           browser or system settings, reload this page, or upload a photo
           instead.
         failed: Camera failed to start, please try again.
+      card_type: Try again with your driver’s license or state ID card.
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID

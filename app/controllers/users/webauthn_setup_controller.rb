@@ -14,7 +14,11 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def new
-      form = WebauthnVisitForm.new(current_user)
+      form = WebauthnVisitForm.new(
+        user: current_user,
+        url_options: url_options,
+        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
