@@ -438,11 +438,11 @@ function AcuantCapture(
     const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
-    const isUnsupportedDocument = cardtype !== 1;
+    const isAssessedAsUnsupported = cardtype !== 1;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isUnsupportedDocument) {
+    if (isAssessedAsUnsupported) {
       setOwnErrorMessage(t('doc_auth.errors.card_type'));
       assessment = 'unsupported';
     } else if (isAssessedAsGlare) {
@@ -460,6 +460,7 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
+      isAssessedAsUnsupported,
       documentType: getDocumentTypeLabel(cardtype),
       dpi,
       moire,
@@ -479,7 +480,11 @@ function AcuantCapture(
       onChangeAndResetError(data, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
-      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry, isUnsupportedDocument });
+      onFailedCaptureAttempt({
+        isAssessedAsGlare,
+        isAssessedAsBlurry,
+        isUnsupportedDocument: isAssessedAsUnsupported,
+      });
     }
 
     setIsCapturingEnvironment(false);
