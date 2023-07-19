@@ -12,8 +12,9 @@ module InPerson
           include: [:notification_phone_configuration, :user],
         )
         return unless enrollment
-        # skip when enrollment status not success/failed/expired and no phone configured
-        if enrollment.skip_notification_sent_at_set?
+
+        # skip when enrollment status not success/failed/expired or no phone configured
+        if !enrollment.eligible_for_notification?
           # log event
           analytics(user: enrollment.user).
             idv_in_person_usps_proofing_results_notification_job_skipped(
@@ -22,6 +23,7 @@ module InPerson
             )
           return
         end
+
         analytics(user: enrollment.user).
           idv_in_person_usps_proofing_results_notification_job_started(
             enrollment_code: enrollment.enrollment_code,
