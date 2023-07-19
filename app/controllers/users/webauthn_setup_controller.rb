@@ -9,14 +9,16 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
-    before_action :confirm_recently_authenticated_2fa, if: -> do
-      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-    end
+    before_action :confirm_recently_authenticated_2fa
 
     helper_method :in_multi_mfa_selection_flow?
 
     def new
-      form = WebauthnVisitForm.new(current_user)
+      form = WebauthnVisitForm.new(
+        user: current_user,
+        url_options: url_options,
+        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -30,7 +32,7 @@ module Users
       analytics.webauthn_setup_visit(**properties)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
-
+      @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
       if !result.success?
         if @platform_authenticator
           irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
@@ -176,6 +178,11 @@ module Users
       }
     end
 
+    def need_to_set_up_additional_mfa?
+      return false unless @platform_authenticator
+      in_multi_mfa_selection_flow? && mfa_selection_count < 2
+    end
+
     def process_invalid_webauthn(form)
       if form.name_taken
         if form.platform_authenticator?
@@ -196,7 +203,13 @@ module Users
     end
 
     def confirm_params
-      params.permit(:attestation_object, :client_data_json, :name, :platform_authenticator)
+      params.permit(
+        :attestation_object,
+        :client_data_json,
+        :transports,
+        :name,
+        :platform_authenticator,
+      )
     end
 
     def delete_params

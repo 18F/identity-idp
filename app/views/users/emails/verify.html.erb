@@ -22,9 +22,7 @@
 <%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
 <%= button_to(add_email_resend_path, method: :post, class: 'usa-button usa-button--unstyled', form_class: 'display-inline-block padding-left-1') { t('links.resend') } %>
 
-<p><% link = link_to(t('notices.use_diff_email.link'), add_email_path) %></p>
-
-<p><%= t('notices.use_diff_email.text_html', link: link) %></p>
+<p><%= t('notices.use_diff_email.text_html', link_html: link_to(t('notices.use_diff_email.link'), add_email_path)) %></p>
 <p><%= t('devise.registrations.close_window') %></p>
 
 <% if FeatureManagement.enable_load_testing_mode? %>

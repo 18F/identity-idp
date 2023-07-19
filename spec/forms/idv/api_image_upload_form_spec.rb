@@ -57,17 +57,16 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when throttled from submission' do
-      before do
-        Throttle.new(
-          throttle_type: :idv_doc_auth,
-          user: document_capture_session.user,
-        ).increment_to_throttled!
-        form.submit
-      end
-
+    context 'when rate limited from submission' do
       it 'is not valid' do
         expect(irs_attempts_api_tracker).to receive(:idv_document_upload_rate_limited).with(no_args)
+
+        RateLimiter.new(
+          rate_limit_type: :idv_doc_auth,
+          user: document_capture_session.user,
+        ).increment_to_limited!
+        form.submit
+
         expect(form.valid?).to eq(false)
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
       end
@@ -105,6 +104,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -137,6 +138,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           user_id: document_capture_session.user.uuid,
           vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
       end
 
@@ -197,6 +200,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
       end
 

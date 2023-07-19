@@ -3,22 +3,24 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
+      flow_path
       go_back_path
-      verify_info_step_document_capture_session_uuid
+      gpo_code_verified
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
-      vendor_phone_confirmation
-      user_phone_confirmation
-      gpo_code_verified
+      personal_key
       phone_for_mobile_flow
       pii
       previous_phone_step_params
       profile_confirmation
       profile_id
       profile_step_params
-      personal_key
       resolution_successful
       threatmetrix_review_status
+      user_phone_confirmation
+      vendor_phone_confirmation
+      verify_info_step_document_capture_session_uuid
+      welcome_visited
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :service_provider
@@ -49,7 +51,7 @@ module Idv
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         deactivation_reason: deactivation_reason,
-        fraud_review_needed: threatmetrix_failed_and_needs_review?,
+        fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
       )
 
@@ -225,19 +227,15 @@ module Idv
       )
     end
 
-    def threatmetrix_failed_and_needs_review?
-      failed_and_needs_review = true
-      ok_no_review_needed = false
+    def threatmetrix_fraud_pending_reason
+      return if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
-      if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
-        return ok_no_review_needed
+      case threatmetrix_review_status
+      when 'reject'
+        'threatmetrix_reject'
+      when 'review'
+        'threatmetrix_review'
       end
-
-      return ok_no_review_needed if threatmetrix_review_status.nil?
-
-      return ok_no_review_needed if threatmetrix_review_status == 'pass'
-
-      return failed_and_needs_review
     end
   end
 end

@@ -5,14 +5,11 @@ RSpec.describe Idv::AgreementController do
 
   let(:user) { create(:user) }
 
-  let(:feature_flag_enabled) { true }
-
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
-      and_return(feature_flag_enabled)
     stub_sign_in(user)
     stub_analytics
-    subject.user_session['idv/doc_auth'] = { 'Idv::Steps::WelcomeStep' => true }
+    subject.user_session['idv/doc_auth'] = {}
+    subject.idv_session.welcome_visited = true
   end
 
   describe 'before_actions' do
@@ -60,12 +57,12 @@ RSpec.describe Idv::AgreementController do
     end
 
     context 'welcome step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
-        subject.user_session['idv/doc_auth']['Idv::Steps::WelcomeStep'] = nil
+      it 'redirects to idv_welcome_url' do
+        subject.idv_session.welcome_visited = nil
 
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_welcome_url)
       end
     end
 
@@ -95,16 +92,6 @@ RSpec.describe Idv::AgreementController do
       put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-    end
-  end
-
-  context 'when doc_auth_agreement_controller_enabled is false' do
-    let(:feature_flag_enabled) { false }
-
-    it 'returns 404' do
-      get :show
-
-      expect(response.status).to eq(404)
     end
   end
 end

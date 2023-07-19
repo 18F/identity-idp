@@ -7,6 +7,10 @@ RSpec.describe AccountsController do
         :before,
         :confirm_two_factor_authenticated,
       )
+      expect(subject).to have_actions(
+        :before,
+        :confirm_user_is_not_suspended,
+      )
     end
   end
 
@@ -74,6 +78,22 @@ RSpec.describe AccountsController do
       end
     end
 
+    context 'when a user is suspended' do
+      render_views
+      it 'redirects to contact support page' do
+        user = create(
+          :user,
+          :fully_registered,
+        )
+
+        user.suspend!
+        sign_in user
+        get :show
+
+        expect(response).to redirect_to(user_please_call_url)
+      end
+    end
+
     context 'when logging in with piv/cac' do
       context 'when the user is proofed' do
         it 'renders a locked profile' do
@@ -100,6 +120,30 @@ RSpec.describe AccountsController do
           expect(response).to_not be_redirect
         end
       end
+    end
+  end
+
+  describe '#reauthentication' do
+    let(:user) { create(:user, :fully_registered) }
+    before(:each) do
+      stub_sign_in(user)
+    end
+    it 'redirects to 2FA options' do
+      post :reauthentication
+
+      expect(response).to redirect_to login_two_factor_options_url(reauthn: true)
+    end
+
+    it 'sets context to authentication' do
+      post :reauthentication
+
+      expect(controller.user_session[:context]).to eq 'reauthentication'
+    end
+
+    it 'sets stored location for redirecting' do
+      post :reauthentication
+
+      expect(controller.user_session[:stored_location]).to eq account_url
     end
   end
 end

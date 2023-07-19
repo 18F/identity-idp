@@ -93,14 +93,11 @@ interface AcuantCameraUIOptions {
   text: AcuantCameraUIText;
 }
 
-/**
- * Document type.
- *
- * 0 = None
- * 1 = ID
- * 2 = Passport
- */
-export type AcuantDocumentType = 0 | 1 | 2;
+export enum AcuantDocumentType {
+  NONE = 0,
+  ID = 1,
+  PASSPORT = 2,
+}
 
 export type AcuantCaptureFailureError =
   | undefined // Cropping failure (SDK v11.5.0, L1171)
@@ -202,7 +199,7 @@ interface AcuantDetectedResult {
 }
 
 /**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.8.1#image-from-acuantcameraui-and-acuantcamera
  */
 export interface AcuantSuccessResponse {
   /**
@@ -212,7 +209,7 @@ export interface AcuantSuccessResponse {
   /**
    * Document type
    */
-  cardType: AcuantDocumentType;
+  cardtype: AcuantDocumentType;
   /**
    * Detected image glare
    */

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -310,6 +310,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
     t.boolean "ready_for_status_check", default: false
+    t.datetime "notification_sent_at", comment: "The time a notification was sent"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
@@ -348,15 +349,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.index ["service_provider_id"], name: "index_integrations_on_service_provider_id"
   end
 
-  create_table "irs_attempt_api_log_files", force: :cascade do |t|
-    t.string "filename"
-    t.string "iv"
-    t.text "encrypted_key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "requested_time"
-  end
-
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
     t.datetime "ftp_at", precision: nil, null: false
     t.integer "letter_requests_count", null: false
@@ -369,6 +361,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.integer "user_id", null: false
     t.integer "auth_count", default: 1, null: false
     t.index ["issuer", "year_month", "user_id"], name: "index_monthly_auth_counts_on_issuer_and_year_month_and_user_id", unique: true
+  end
+
+  create_table "notification_phone_configurations", force: :cascade do |t|
+    t.bigint "in_person_enrollment_id", null: false
+    t.text "encrypted_phone", null: false, comment: "Encrypted phone number to send notifications to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["in_person_enrollment_id"], name: "index_notification_phone_configurations_on_enrollment_id", unique: true
   end
 
   create_table "partner_account_statuses", force: :cascade do |t|
@@ -446,6 +446,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.datetime "gpo_verification_pending_at"
+    t.integer "fraud_pending_reason"
+    t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
@@ -622,6 +624,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_01_195606) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "platform_authenticator"
+    t.string "transports", array: true
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

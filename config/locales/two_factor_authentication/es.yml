@@ -4,13 +4,13 @@ es:
     account_reset:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
-      pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
-        Se necesitan 24 horas desde el momento en que realizó la solicitud para
-        completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
+      pending: Actualmente tiene una solicitud pendiente para eliminar su cuenta. Se
+        necesitan 24 horas desde el momento en que realizó la solicitud para
+        completar el proceso.  Por favor, vuelva más tarde.
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
-        puede restablecer tus preferencias por %{link}.
+        puede restablecer tus preferencias por %{link_html}.
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
@@ -19,7 +19,17 @@ es:
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
-    choose_another_option: '‹ Elige otra opción'
+    backup_codes:
+      add_another_authentication_option: '‹ Añada otra opción de autenticación'
+      instructions: Si no tiene acceso a otro dispositivo, guarde bien sus códigos de
+        respaldo. No podrá iniciar sesión en %{app_name} si pierde sus códigos
+        de respaldo.
+      new_backup_codes_html: Necesito nuevos códigos de respaldo
+      saved_backup_codes: Ya guardé mis códigos de respaldo
+      warning_html: <strong>Solo ha configurado códigos de respaldo en su cuenta.
+        </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
+        cuenta mediante otro método de autenticación.
+    choose_another_option: '‹ Elige otra opción de seguridad'
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
@@ -80,11 +90,11 @@ es:
       error_retry: Lo sentimos, estamos teniendo problemas para aceptarlo. Por favor,
         inténtelo de nuevo.
       opted_out_html: Ha optado por no recibir mensajes de texto en el
-        %{phone_number}. Puede optar por recibir un código de seguridad de nuevo
-        a ese número de teléfono.
+        %{phone_number_html}. Puede optar por recibir un código de seguridad de
+        nuevo a ese número de teléfono.
       opted_out_last_30d_html: Canceló su suscripción para recibir mensajes de texto
-        al %{phone_number} en los últimos 30 días. Solo podemos suscribir un
-        número telefónico una vez cada 30 días.
+        al %{phone_number_html} en los últimos 30 días. Solo podemos suscribir
+        un número telefónico una vez cada 30 días.
       title: No hemos podido enviar un código de seguridad a su número de teléfono
       wait_30d_opt_in: Después de 30 días, podrá inscribirse y recibir un código de
         seguridad para ese número de teléfono.
@@ -135,8 +145,8 @@ es:
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:
       disclosure_statement_html: Este sitio está protegido por reCAPTCHA y se
-        %{google_policy_link} y %{google_tos_link} de Google. Consulte
-        %{login_tos_link} de %{app_name} para dispositivos móviles.
+        %{google_policy_link_html} y %{google_tos_link_html} de Google. Consulte
+        %{login_tos_link_html} de %{app_name} para dispositivos móviles.
       google_policy_link: aplican la política de privacidad
       google_tos_link: las condiciones de servicio
       login_tos_link: las condiciones de uso
@@ -187,27 +197,13 @@ es:
       seguridad. Para poder acceder a su información, deberá verificar su
       identidad a través de un dispositivo físico como una clave de seguridad o
       identificación de empleado gubernamental (PIV/CAC)
+    webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
-      error_page_text: Tiene habilitado el desbloqueo facial o táctil para esta
-        cuenta. Utilice cada vez el mismo dispositivo y perfil de navegador.
-      multiple_methods: El desbloqueo facial o táctil no fue exitoso. Por favor,
-        inténtelo de nuevo o %{link}.
-      title: No podemos reconocer su dispositivo
-    webauthn_fallback:
-      question: '¿No dispone de su llave de seguridad?'
+      try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
+        nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
-    webauthn_platform_fallback:
-      question: '¿No dispone de tu dispositivo?'
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
-    webauthn_platform_verified:
-      header: Dispositivo verificado
-      info: Hemos verificado su dispositivo. Haga clic en continuar para iniciar
-        sesión.
     webauthn_use_key: Usar llave de seguridad
-    webauthn_verified:
-      header: Llave de seguridad verificada
-      info: Hemos verificado su llave de seguridad. Haga clic en continuar para
-        iniciar sesión.

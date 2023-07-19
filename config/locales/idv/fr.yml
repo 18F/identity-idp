@@ -26,7 +26,7 @@ fr:
             - Si vous quittez %{app_name} maintenant pour retourner sur
               %{sp_name}, vous n’aurez pas vérifié votre identité.
             - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
-              supprimer votre compte sur %{account_page_link}.
+              supprimer votre compte sur %{account_page_link_html}.
           without_sp:
             - Si vous quittez la vérification d’identité et accédez à la page de
               votre compte, vous n’aurez pas vérifié votre identité.
@@ -70,14 +70,7 @@ fr:
         try_online: Réessayer en ligne
         warning: Essayez à nouveau
       exceptions:
-        internal_error: Une erreur interne s’est produite lors du traitement de votre
-          demande. Veuillez réessayer.
-        link: contactez-nous
-        post_office_search_error: Nous connaissons des difficultés techniques en ce
-          moment. Essayez de chercher à nouveau un bureau de poste. Si le
-          problème persiste, revenez plus tard.
-        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
-        usps_outage_error_message:
+        in_person_outage_error_message:
           post_cta:
             body: En attendant, vous pouvez toujours commencer la procédure de vérification
               en personne sur %{app_name} et vous pouvez visiter un bureau de
@@ -85,7 +78,7 @@ fr:
               veuillez contacter directement votre agence.
             title: Nous travaillons sur un problème technique. Il se peut que les résultats
               de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le mardi, May 30.
+              courrier électronique avant le %{date}.
           ready_to_verify:
             body: Vous pouvez toujours vous rendre dans un bureau de poste pour finalisation
               de la vérification de votre identité. Si vous avez un besoin
@@ -93,11 +86,18 @@ fr:
               agence.
             contact_html: <a href="%{help_url}" target="_blank">Contactez l’assistance
               %{app_name}</a> si vous n’avez pas reçu de courrier électronique
-              contenant les résultats de votre vérification avant le jeudi, June
-              1.
+              contenant les résultats de votre vérification avant le %{date}.
             title: Nous travaillons sur un problème technique. Il se peut que les résultats
               de votre vérification d’identité ne vous soient pas envoyés par
-              courrier électronique avant le mardi, May 30.
+              courrier électronique avant le %{date}.
+        internal_error: Une erreur interne s’est produite lors du traitement de votre
+          demande. Veuillez réessayer.
+        link: contactez-nous
+        post_office_search_error: Nous connaissons des difficultés techniques en ce
+          moment. Essayez de chercher à nouveau un bureau de poste. Si le
+          problème persiste, revenez plus tard.
+        text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs,
+          %{link_html}
       exit:
         with_sp: Quittez %{app_name} et retournez à %{sp_name}
         without_sp: Quittez la vérification d’identité et accédez à la page de votre compte
@@ -146,10 +146,9 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail_date_html: Appelez notre centre de contact avant le %{date} pour continuer
-          à vérifier votre identité.
-        fail_html: Appelez le %{contact_number} et indiquez le code d’erreur
-          %{support_code}.
+        fail: Appelez le %{contact_number} et indiquez le code d’erreur %{support_code}.
+        fail_date_html: Appelez notre centre de contact avant le %{date_html} pour
+          continuer à vérifier votre identité.
         heading: S’il vous plaît, appelez-nous
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
@@ -179,7 +178,7 @@ fr:
       last_name: Nom de famille
       password: Mot de passe
       ssn: Numéro de sécurité sociale
-      ssn_label_html: Numéro de sécurité sociale
+      ssn_label: Numéro de sécurité sociale
       state: État
       zipcode: Code postal
     images:
@@ -191,7 +190,7 @@ fr:
         state_issue: Carte d’identité délivrée par l’État
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
-        information vérifiée, veuillez %{link}.
+        information vérifiée, veuillez %{link_html}.
       activated_link: communiquer avec nous
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later_html: <p>Les lettres prennent généralement <strong>trois à sept
@@ -211,8 +210,10 @@ fr:
         address_on_file_html: Nous enverrons une lettre avec <strong>un code à usage
           unique </strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
+        another_letter_on_the_way: Nous vous envoyons une autre lettre
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
+        letter_on_the_way: Nous vous envoyons une lettre
         resend: Envoyez-moi une autre lettre
         resend_code_warning: Si vous demandez une nouvelle lettre maintenant, le code à
           usage unique de votre lettre actuelle restera valable pendant une
@@ -291,7 +292,7 @@ fr:
         without_sp: 'L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
           s’agit bien de vous, et non de quelqu’un qui se fait passer pour
           vous.'
-      next_steps_html: '%{status_page_link} ou quittez le site %{app_name} et
+      next_steps_html: '%{status_page_link_html} ou quittez le site %{app_name} et
         réessayez plus tard.'
       status_page_link: 'Obtenez des mises à jour sur notre page de statut'
       technical_difficulties: Malheureusement, nous rencontrons des difficultés

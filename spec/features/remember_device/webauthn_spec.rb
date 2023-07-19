@@ -24,9 +24,8 @@ RSpec.describe 'Remembering a webauthn device' do
       def remember_device_and_sign_out_user
         mock_webauthn_verification_challenge
         sign_in_user(user)
-        mock_press_button_on_hardware_key_on_verification
         check t('forms.messages.remember_device')
-        click_button t('forms.buttons.continue')
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
         first(:link, t('links.sign_out')).click
         user
       end
@@ -78,8 +77,8 @@ RSpec.describe 'Remembering a webauthn device' do
       before do
         create(
           :webauthn_configuration,
+          :platform_authenticator,
           user: user,
-          platform_authenticator: true,
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
@@ -88,9 +87,8 @@ RSpec.describe 'Remembering a webauthn device' do
       def remember_device_and_sign_out_user
         mock_webauthn_verification_challenge
         sign_in_user(user)
-        mock_press_button_on_hardware_key_on_verification
         check t('forms.messages.remember_device')
-        click_button t('forms.buttons.continue')
+        mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
         first(:link, t('links.sign_out')).click
         user
       end

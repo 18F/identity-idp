@@ -49,14 +49,6 @@ class FeatureManagement
     IdentityConfig.store.use_kms
   end
 
-  def self.redirect_to_clean_edit_password_url?
-    IdentityConfig.store.use_clean_edit_password_url
-  end
-
-  def self.kms_multi_region_enabled?
-    IdentityConfig.store.aws_kms_multi_region_enabled
-  end
-
   def self.use_dashboard_service_providers?
     IdentityConfig.store.use_dashboard_service_providers
   end
@@ -103,10 +95,6 @@ class FeatureManagement
 
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
-  end
-
-  def self.otp_expired_redirect_enabled?
-    IdentityConfig.store.allow_otp_countdown_expired_redirect
   end
 
   def self.logo_upload_enabled?

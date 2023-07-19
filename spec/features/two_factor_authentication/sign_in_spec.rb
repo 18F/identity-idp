@@ -544,23 +544,11 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(true)
         end
 
-        it 'shows signed in user options with webauthn visible' do
-          sign_in_user(webauthn_configuration.user)
-
-          click_link t('two_factor_authentication.login_options_link_text')
-
-          expect(page).
-            to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
-        end
-
         it 'allows user to be signed in without issue' do
           mock_webauthn_verification_challenge
 
           sign_in_user(webauthn_configuration.user)
-          mock_press_button_on_hardware_key_on_verification
-          click_button t('forms.buttons.continue')
+          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
           expect(page).to have_current_path(account_path)
         end
@@ -571,23 +559,11 @@ RSpec.feature 'Two Factor Authentication' do
           allow(IdentityConfig.store).to receive(:platform_auth_set_up_enabled).and_return(false)
         end
 
-        it 'shows signed in user options with webauthn visible' do
-          sign_in_user(webauthn_configuration.user)
-
-          click_link t('two_factor_authentication.login_options_link_text')
-
-          expect(page).
-            to have_content t('two_factor_authentication.login_options.webauthn_platform')
-          expect(page).
-            to_not have_content t('two_factor_authentication.login_options.auth_app')
-        end
-
         it 'allows user to be signed in without issue' do
           mock_webauthn_verification_challenge
 
           sign_in_user(webauthn_configuration.user)
-          mock_press_button_on_hardware_key_on_verification
-          click_button t('forms.buttons.continue')
+          mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
           expect(page).to have_current_path(account_path)
         end

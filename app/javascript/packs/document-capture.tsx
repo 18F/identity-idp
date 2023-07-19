@@ -80,7 +80,9 @@ const {
   cancelUrl: cancelURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonUspsOutageMessageEnabled,
+  inPersonFullAddressEntryEnabled,
+  inPersonOutageMessageEnabled,
+  inPersonOutageExpectedUpdateDate,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 const App = composeComponents(
@@ -91,7 +93,8 @@ const App = composeComponents(
     {
       value: {
         inPersonURL,
-        inPersonUspsOutageMessageEnabled: inPersonUspsOutageMessageEnabled === 'true',
+        inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
+        inPersonOutageExpectedUpdateDate,
       },
     },
   ],
@@ -136,7 +139,13 @@ const App = composeComponents(
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
     },
   ],
-  [DocumentCapture, { onStepChange: extendSession }],
+  [
+    DocumentCapture,
+    {
+      onStepChange: extendSession,
+      inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+    },
+  ],
 );
 
 render(<App />, appRoot);

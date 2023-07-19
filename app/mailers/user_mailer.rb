@@ -278,6 +278,9 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     with_user_locale(user) do
+      @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
+                    IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
+                    IdentityConfig.store.in_person_outage_expected_update_date.present?
       @header = t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
@@ -373,6 +376,18 @@ class UserMailer < ActionMailer::Base
         to: email_address.email,
         subject: t('user_mailer.account_rejected.subject'),
       )
+    end
+  end
+
+  def suspended_create_account
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.suspended_create_account.subject'))
+    end
+  end
+
+  def suspended_reset_password
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.suspended_reset_password.subject'))
     end
   end
 

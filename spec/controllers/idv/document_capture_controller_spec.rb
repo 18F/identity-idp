@@ -4,25 +4,17 @@ RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
-  let(:service_provider) do
-    create(
-      :service_provider,
-      issuer: 'http://sp.example.com',
-      app_id: '123',
-    )
-  end
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
     stub_analytics
-    stub_attempts_tracker
+    subject.idv_session.flow_path = 'standard'
+    subject.user_session['idv/doc_auth'] = flow_session
   end
 
   describe 'before_actions' do
@@ -30,6 +22,13 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
 
@@ -49,6 +48,7 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'hybrid handoff step is not complete' do
       it 'redirects to hybrid handoff' do
-        flow_session.delete(:flow_path)
+        subject.idv_session.flow_path = nil
 
         get :show
 
@@ -116,11 +116,11 @@ RSpec.describe Idv::DocumentCaptureController do
       get :show
     end
 
-    context 'user is rate_limited' do
+    context 'user is rate limited' do
       it 'redirects to rate limited page' do
         user = create(:user)
 
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
         allow(subject).to receive(:current_user).and_return(user)
 
         get :show
@@ -140,7 +140,18 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
+        acuant_sdk_upgrade_ab_test_bucket: :default,
       }
+    end
+    let(:result) { { success: true, errors: {} } }
+
+    it 'sends analytics_submitted event' do
+      allow(result).to receive(:success?).and_return(true)
+      allow(subject).to receive(:handle_stored_result).and_return(result)
+
+      put :update
+
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'does not raise an exception when stored_result is nil' do
@@ -154,6 +165,19 @@ RSpec.describe Idv::DocumentCaptureController do
       expect { put :update }.to(
         change { doc_auth_log.reload.document_capture_submit_count }.from(0).to(1),
       )
+    end
+
+    context 'user has an establishing in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+
+      it 'cancels the establishing enrollment' do
+        expect(user.establishing_in_person_enrollment).to eq enrollment
+
+        put :update
+
+        expect(enrollment.reload.cancelled?).to eq(true)
+        expect(user.reload.establishing_in_person_enrollment).to be_nil
+      end
     end
   end
 end

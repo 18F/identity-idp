@@ -8,7 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
-    validate :throttle_if_rate_limited
+    validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
                    uuid_prefix: nil, irs_attempts_api_tracker: nil, store_encrypted_images: false)
@@ -22,7 +22,6 @@ module Idv
     end
 
     def submit
-      increment_throttle!
       form_response = validate_form
 
       client_response = nil
@@ -31,7 +30,10 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
-        doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
+        if client_response.success?
+          doc_pii_response = validate_pii_from_doc(client_response)
+          rate_limiter.reset!
+        end
       end
 
       response = determine_response(
@@ -50,21 +52,23 @@ module Idv
     attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
                 :irs_attempts_api_tracker
 
-    def increment_throttle!
+    def increment_rate_limiter!
       return unless document_capture_session
-      throttle.increment!
-      @throttled = throttle.throttled?
+      rate_limiter.increment!
     end
 
     def validate_form
+      success = valid?
+      increment_rate_limiter!
+      track_rate_limited if rate_limited?
+
       response = Idv::DocAuthFormResponse.new(
-        success: valid?,
+        success: success,
         errors: errors,
         extra: extra_attributes,
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
-
       response
     end
 
@@ -116,21 +120,34 @@ module Idv
     end
 
     def extra_attributes
-      @extra_attributes ||= {
+      return @extra_attributes if defined?(@extra_attributes)
+      @extra_attributes = {
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
         pii_like_keypaths: [[:pii]],
         flow_path: params[:flow_path],
       }
+
+      if readable?(:front)
+        @extra_attributes[:front_image_fingerprint] =
+          Digest::SHA256.urlsafe_base64digest(front_image_bytes)
+      end
+
+      if readable?(:back)
+        @extra_attributes[:back_image_fingerprint] =
+          Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+
+      @extra_attributes
     end
 
     def remaining_attempts
-      throttle.remaining_count if document_capture_session
+      rate_limiter.remaining_count if document_capture_session
     end
 
     def attempts
-      throttle.attempts if document_capture_session
+      rate_limiter.attempts if document_capture_session
     end
 
     def determine_response(form_response:, client_response:, doc_pii_response:)
@@ -180,11 +197,16 @@ module Idv
       end
     end
 
-    def throttle_if_rate_limited
-      return unless @throttled
+    def limit_if_rate_limited
+      return unless document_capture_session
+      return unless rate_limited?
+
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
+    end
+
+    def track_rate_limited
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
     def document_capture_session_uuid
@@ -198,8 +220,13 @@ module Idv
       )
     end
 
+    def readable?(image_key)
+      value = @readable[image_key]
+      value && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
+    end
+
     def as_readable(image_key)
-      return @readable[image_key] if @readable.key?(image_key)
+      return @readable[image_key] if readable?(image_key)
       value = params[image_key]
       @readable[image_key] = begin
         if value.respond_to?(:read)
@@ -297,11 +324,15 @@ module Idv
       document_capture_session&.user&.uuid
     end
 
-    def throttle
-      @throttle ||= Throttle.new(
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
         user: document_capture_session.user,
-        throttle_type: :idv_doc_auth,
+        rate_limit_type: :idv_doc_auth,
       )
+    end
+
+    def rate_limited?
+      rate_limiter.limited? if document_capture_session
     end
 
     def track_event(response)

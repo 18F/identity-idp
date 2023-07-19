@@ -13,7 +13,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
+      expect(current_path).to eq idv_welcome_path
 
       complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: user.password

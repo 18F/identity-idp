@@ -9,6 +9,8 @@ en:
         - We’ll give you 10 codes that you can download, print, copy or write
           down. You’ll enter one code every time you sign in.
       are_you_sure_title: Are you sure you want to use backup codes?
+      caution_codes: Each code can only be used once. We’ll give you new codes after
+        you use all ten.
       caution_delete: If you delete your backup codes you will no longer be able to
         use them to sign in.
       confirm_delete: Are you sure you want to delete your backup codes?
@@ -16,11 +18,11 @@ en:
       last_code: You used your last backup code. Please print, copy or download the
         codes below. You can use these new codes the next time you sign in.
       regenerate: Get new codes
-      subinfo_html: '<b>Don’t lose these codes</b>. Download, print, or copy them.
-        Each code can only be used once. After you’ve used all 10 codes, we’ll
-        give you 10 new codes.  Keep your codes as safe as your password.'
-      subtitle: Your backup codes
-      title: Backup codes
+      saved: I’ve put my backup codes in a safe place.
+      subinfo_html: '<strong>If you lose your device, you’ll need these codes to sign
+        into %{app_name}.</strong> Save or print them and put them somewhere
+        safe.'
+      title: Save these backup codes
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of
         backup codes. Your original backup codes will no longer be valid.
@@ -68,24 +70,15 @@ en:
       confirmation_label: Personal key
       download: Download (text file)
       instructions: Please confirm you have a copy of your personal key by entering it below.
-      required_checkbox: Please check this box to continue.
+      required_checkbox: I saved my personal key in a safe place.
       title: Enter your personal key
     personal_key_partial:
       acknowledgement:
-        bullets:
-          - You’ll lose access to your account
-          - You’ll need to verify your identity again
         header: You need your personal key if you forget your password. Keep it safe and
           don’t share it with anyone.
-        text: 'If you reset your password without your personal key:'
-      explanation:
-        header: What is a personal key?
-        text:
-          - A personal key “locks” your personal information with your account.
-            It’s the only way to unlock your information if you lose or forget
-            your password.
-          - When you reset your password, Login.gov will ask for your personal
-            key to make sure you are you - not someone pretending to be you.
+        help_link_text: Learn more about the personal key
+        text: If you reset your password without your personal key, you’ll need to
+          verify your identity again.
       header: Save your personal key
     phone:
       buttons:
@@ -120,8 +113,7 @@ en:
         access your %{app_name} account.
       confirm: Are you sure you want to remove your authentication app?
     totp_setup:
-      totp_intro_html: Set up an authentication app to sign in using temporary
-        security codes. %{link}
+      totp_intro: Set up an authentication app to sign in using temporary security codes.
       totp_step_1: Give it a nickname
       totp_step_1a: If you add more than one app, you’ll know which one is which.
       totp_step_2: Open your authentication app
@@ -134,7 +126,7 @@ en:
     validation:
       required_checkbox: Please check this box to continue
     verify_profile:
-      alert_info: 'We sent a lettter with your one-time code to:'
+      alert_info: 'We sent a letter with your one-time code to:'
       clear_and_start_over: Clear your information and start over
       instructions: Enter the 10-character code from the letter you received.
       name: One-time code
@@ -142,10 +134,10 @@ en:
       submit: Confirm account
       title: Confirm your account
       welcome_back: Welcome back
-      welcome_back_description: '<p>If you have received your letter, please enter
-        your one-time code below. </p><p>If your letter hasn’t arrived yet,
-        please be patient as <strong>letters typically take 3 to 7 business days
-        to arrive</strong>. Thank you for your patience.</p>'
+      welcome_back_description_html: '<p>If you have received your letter, please
+        enter your one-time code below. </p><p>If your letter hasn’t arrived
+        yet, please be patient as <strong>letters typically take 3 to 7 business
+        days to arrive</strong>. Thank you for your patience.</p>'
       wrong_address: Not the right address?
     webauthn_delete:
       caution: If you remove your security key you won’t be able to use it to access
@@ -157,19 +149,18 @@ en:
       confirm: Are you sure you want to remove face or touch unlock?
     webauthn_platform_setup:
       continue: Continue
+      info_text: You’ll need to set up an additional authentication method after you
+        set up face or touch unlock.
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
-      intro_html: '<p>When you want to access your %{app_name} account, you use your
-        device to scan your face or fingerprint. Your device confirms if those
-        scans are a match to the images you already have stored on your
-        device.</p><p>We do not copy or store these images. You’ll need the same
-        device to sign in using face or touch unlock in the future. %{link}</p>'
+      intro_html: '<p>Save your face or fingerprint as a credential on your device, so
+        you can access your account with it. %{app_name} does not store your
+        face or fingerprint.</p><p>You may need to use the same device to sign
+        in each time. %{link}</p>'
       intro_link_text: Learn more about face or touch unlock.
-      login_text: 'When you are ready, press the button:'
       nickname: Device nickname
-      warning_text: If you lose or change your device, you’ll have to reset your
-        account. We recommend setting up multiple authentication methods to help
-        avoid account lockout.
+      nickname_hint: If you add more devices for face or touch unlock, you’ll know
+        which one is which.
     webauthn_setup:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}
@@ -177,5 +168,4 @@ en:
       intro_html: '<p>Add a security key that meets the FIDO standard as your
         authentication method. You can add as many security keys as you want. To
         get started, first give your security key a nickname.</p>'
-      login_text: 'When you are ready to authenticate, press the button:'
       nickname: Security key nickname

@@ -17,7 +17,6 @@ es:
     add_email: Añadir una nueva dirección de correo electrónico
     add_info:
       phone: Agregar un número de teléfono
-    address: Dirección
     cancellations:
       prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:
@@ -29,7 +28,6 @@ es:
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono
-    otp_expired: Su código único ha expirado
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
@@ -72,6 +70,6 @@ es:
     verify_email: Revise su email
     verify_personal_key: Verifica tu clave personal
     webauthn_platform_setup:
-      new: Utilice su dispositivo
+      new: Desbloqueo facial o táctil
     webauthn_setup:
       new: Añade tu clave de seguridad

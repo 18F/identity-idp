@@ -3,6 +3,17 @@ class WebauthnConfiguration < ApplicationRecord
   validates :name, presence: true
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
+  validate :valid_transports
+
+  # https://w3c.github.io/webauthn/#enum-transport
+  VALID_TRANSPORTS = %w[
+    usb
+    nfc
+    ble
+    smart-card
+    hybrid
+    internal
+  ].to_set.freeze
 
   def self.roaming_authenticators
     self.where(platform_authenticator: [nil, false])
@@ -38,5 +49,12 @@ class WebauthnConfiguration < ApplicationRecord
     else
       []
     end
+  end
+
+  private
+
+  def valid_transports
+    return if transports.blank? || (transports - VALID_TRANSPORTS.to_a).blank?
+    errors.add(:transports, I18n.t('errors.general'), type: :invalid_transports)
   end
 end

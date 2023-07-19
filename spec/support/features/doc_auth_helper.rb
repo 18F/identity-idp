@@ -11,34 +11,25 @@ module DocAuthHelper
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'
 
-  def session_from_completed_flow_steps(finished_step)
-    session = { doc_auth: {} }
-    Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
-      session[:doc_auth][klass.to_s] = true
-      return session if step == finished_step
-    end
-    session
-  end
-
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
     fill_in field_name, with: text
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_FAILS_RESOLUTION
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_RAISES_EXCEPTION
+    fill_in t('idv.form.ssn_label'), with: SSN_THAT_RAISES_EXCEPTION
   end
 
   def fill_out_ssn_form_ok
-    fill_in t('idv.form.ssn_label_html'), with: GOOD_SSN
+    fill_in t('idv.form.ssn_label'), with: GOOD_SSN
   end
 
   def fill_out_ssn_form_fail
-    fill_in t('idv.form.ssn_label_html'), with: ''
+    fill_in t('idv.form.ssn_label'), with: ''
   end
 
   def click_doc_auth_back_link
@@ -53,16 +44,8 @@ module DocAuthHelper
     click_on t('forms.buttons.upload_photos')
   end
 
-  def idv_doc_auth_welcome_step
-    idv_doc_auth_step_path(step: :welcome)
-  end
-
-  def idv_doc_auth_agreement_step
-    idv_doc_auth_step_path(step: :agreement)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
-    visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
+    visit idv_welcome_url unless current_path == idv_welcome_url
     click_idv_continue if current_path == idv_mail_only_warning_path
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
@@ -292,7 +275,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     user = create(:user, :fully_registered)
     visit_idp_from_ial1_oidc_sp(
       client_id: service_provider.issuer,
-      irs_attempts_api_session_id: 'test-session-id',
     )
     visit root_path
     sign_in_and_2fa_user(user)

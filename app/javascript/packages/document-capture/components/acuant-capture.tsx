@@ -30,7 +30,7 @@ import type {
 } from './acuant-camera';
 
 type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
-type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
+type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
 interface ImageAnalyticsPayload {
@@ -61,7 +61,7 @@ interface ImageAnalyticsPayload {
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel;
+  documentType: AcuantDocumentTypeLabel | string;
   dpi: number;
   moire: number;
   glare: number;
@@ -135,14 +135,16 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel {
+function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
   switch (documentType) {
+    case 0:
+      return 'none';
     case 1:
       return 'id';
     case 2:
       return 'passport';
     default:
-      return 'none';
+      return `An error in document type returned: ${documentType}`;
   }
 }
 
@@ -433,18 +435,22 @@ function AcuantCapture(
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
+    const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const isAssessedAsUnsupported = cardtype !== 1;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
-      assessment = 'glare';
-    } else if (isAssessedAsBlurry) {
+    if (isAssessedAsBlurry) {
       setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
       assessment = 'blurry';
+    } else if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
+      assessment = 'glare';
+    } else if (isAssessedAsUnsupported) {
+      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      assessment = 'unsupported';
     } else {
       assessment = 'success';
     }
@@ -454,7 +460,8 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
-      documentType: getDocumentTypeLabel(cardType),
+      isAssessedAsUnsupported,
+      documentType: getDocumentTypeLabel(cardtype),
       dpi,
       moire,
       glare,
@@ -473,7 +480,11 @@ function AcuantCapture(
       onChangeAndResetError(data, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
-      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
+      onFailedCaptureAttempt({
+        isAssessedAsGlare,
+        isAssessedAsBlurry,
+        isAssessedAsUnsupported,
+      });
     }
 
     setIsCapturingEnvironment(false);
@@ -566,7 +577,7 @@ function AcuantCapture(
         {isMobile &&
           hasCapture &&
           allowUpload &&
-          formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
+          formatHTML(t('doc_auth.buttons.take_or_upload_picture_html'), {
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
               <span className="padding-left-1">

@@ -11,6 +11,9 @@ fr:
           copier ou noter. Vous saisirez un code chaque fois que vous vous
           connecterez.
       are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde?
+      caution_codes: Chaque code ne peut être utilisé qu’une seule fois. Nous vous
+        donnerons de nouveaux codes une fois que vous aurez utilisé les dix
+        fournis.
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
@@ -19,12 +22,11 @@ fr:
         imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
         utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       regenerate: Obtenir de nouveaux codes
-      subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
-        copiez-les. Chaque code ne peut être utilisé qu’une seule fois. Une fois
-        que vous avez utilisé les 10 codes, nous vous en donnons 10 nouveaux.
-        Gardez vos codes aussi sûr qu’un mot de passe.'
-      subtitle: Vos codes de sauvegarde
-      title: Codes de sauvegarde
+      saved: J’ai placé mes codes de sauvegarde en lieu sûr.
+      subinfo_html: '<strong>Si vous perdez votre appareil, vous aurez besoin de ces
+        codes pour vous connecter à %{app_name}.</strong> Enregistrez-les ou
+        imprimez-les et placez-les en lieu sûr.'
+      title: Enregistrer ces codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
@@ -75,25 +77,15 @@ fr:
       download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
-      required_checkbox: Veuillez cocher cette case pour continuer.
+      required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
       title: Entrez votre clé personnelle
     personal_key_partial:
       acknowledgement:
-        bullets:
-          - Vous perdrez l’accès à votre compte
-          - Vous allez devoir vérifier à nouveau votre identité
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
-        text: 'Si vous réinitialisez votre mot de passe sans votre clé personnelle:'
-      explanation:
-        header: Qu’est-ce qu’une clé personnelle?
-        text:
-          - Une clé personnelle « verrouille » vos informations personnelles
-            avec votre compte. C’est le seul moyen de déverrouiller vos
-            informations si vous perdez ou oubliez votre mot de passe.
-          - Lors de la réinitialisation de votre mot de passe, Login.gov vous
-            demandera votre clé personnelle pour s’assurer que vous êtes bien
-            vous, et non quelqu’un qui se fait passer pour vous.
+        help_link_text: En savoir plus sur la clé personnelle
+        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous
+          devrez à nouveau vérifier votre identité.
       header: Sauvegardez votre clé personnelle
     phone:
       buttons:
@@ -129,8 +121,8 @@ fr:
         plus l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
-      totp_intro_html: Configurez une application d’authentification pour vous
-        connecter à l’aide de codes de sécurité temporaires. %{link}
+      totp_intro: Configurez une application d’authentification pour vous connecter à
+        l’aide de codes de sécurité temporaires.
       totp_step_1: Donnez-lui un surnom
       totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
       totp_step_2: Démarrez votre application d’authentification
@@ -152,11 +144,11 @@ fr:
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir
-      welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
-        votre code à usage unique ci-dessous. </p> <p>Si votre lettre n’est pas
-        encore arrivée, veuillez être patient car les <strong>lettres prennent
-        généralement entre trois à sept jours ouvrables pour arriver</strong>.
-        Nous vous remercions de votre patience.</p>'
+      welcome_back_description_html: '<p>Si vous avez reçu votre lettre, veuillez
+        entrer votre code à usage unique ci-dessous. </p> <p>Si votre lettre
+        n’est pas encore arrivée, veuillez être patient car les <strong>lettres
+        prennent généralement entre trois à sept jours ouvrables pour
+        arriver</strong>. Nous vous remercions de votre patience.</p>'
       wrong_address: Pas la bonne adresse?
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
@@ -170,24 +162,24 @@ fr:
         déverrouillage par empreinte digitale?
     webauthn_platform_setup:
       continue: Continuer
+      info_text: Vous aurez besoin de configurer une méthode d’authentification
+        supplémentaire après que vous aurez configuré le déverrouillage facial
+        ou le déverrouillage tactile.
       instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte avec %{app_name}.
       instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
-      intro_html: '<p>Lorsque vous voulez accéder à votre compte %{app_name}, vous
-        utilisez votre appareil pour numériser votre visage ou votre empreinte
-        digitale. Votre appareil confirme si ces numérisations correspondent aux
-        images que vous avez déjà stockées sur votre appareil.</p><p>Nous ne
-        copions ni ne stockons ces images. Vous aurez besoin du même appareil
-        pour vous connecter en utilisant le déverrouillage facial ou tactile à
-        l’avenir. %{link}</p>'
-      intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
-      login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
+      intro_html: '<p>Enregistrez votre visage ou votre empreinte digitale en tant
+        qu’identifiant sur votre appareil, afin de pouvoir les utiliser pour
+        accéder à votre compte. %{app_name} ne stocke pas votre visage ni votre
+        empreinte digitale</p><p>Il se peut que vous ayez besoin d’utiliser le
+        même appareil pour vous connecter chaque fois.%{link}</p>'
+      intro_link_text: En savoir plus sur le déverrouillage facial ou sur le
+        déverrouillage tactile.
       nickname: Pseudo dispositivo
-      warning_text: Si vous perdez ou changez votre appareil, vous devrez
-        réinitialiser votre compte. Nous vous conseillons de mettre en place
-        plusieurs méthodes d’authentification afin d’éviter que votre compte ne
-        se bloque.
+      nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le
+        déverrouillage facial ou pour le déverrouillage tactile, vous saurez les
+        reconnaître.
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
@@ -197,5 +189,4 @@ fr:
         méthode d’authentification. Vous pouvez ajouter autant de clés de
         sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
         à votre clé de sécurité.</p>'
-      login_text: 'Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton:'
       nickname: Pseudo clé de sécurité

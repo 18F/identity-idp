@@ -17,7 +17,6 @@ en:
     add_email: Add a new email address
     add_info:
       phone: Add a phone number
-    address: Address
     cancellations:
       prompt: Are you sure you want to cancel?
     confirmations:
@@ -29,7 +28,6 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
-    otp_expired: Your one-time code has expired
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
@@ -72,6 +70,6 @@ en:
     verify_email: Check your email
     verify_personal_key: Verify your personal key
     webauthn_platform_setup:
-      new: Use your device
+      new: Add face or touch unlock
     webauthn_setup:
       new: Add your security key

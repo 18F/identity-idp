@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth hybrid_handoff step' do
+RSpec.feature 'hybrid_handoff step send link and errors' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -21,17 +21,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       and_return(fake_attempts_tracker)
   end
 
-  it 'does not skip ahead in standard desktop flow' do
-    visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
-    complete_welcome_step
-    visit(idv_hybrid_handoff_url)
-    expect(page).to have_current_path(idv_doc_auth_agreement_step)
-    complete_agreement_step
-    expect(page).to have_current_path(idv_hybrid_handoff_path)
-  end
-
-  context 'on a desktop device' do
+  context 'on a desktop device send link' do
     before do
       complete_doc_auth_steps_before_hybrid_handoff_step
       allow_any_instance_of(
@@ -39,36 +29,6 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       ).to receive(
         :mobile_device?,
       ).and_return(false)
-    end
-
-    it 'displays with the expected content' do
-      expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
-      expect(page).to have_content(t('doc_auth.headings.upload_from_phone'))
-    end
-
-    it 'proceeds to document capture when user chooses to upload from computer' do
-      expect(fake_attempts_tracker).to receive(
-        :idv_document_upload_method_selected,
-      ).with({ upload_method: 'desktop' })
-
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      click_upload_from_computer
-
-      expect(page).to have_current_path(idv_document_capture_url)
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', destination: :document_capture),
-      )
-
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_document_capture_path)
-    end
-
-    it "defaults phone to user's 2fa phone number", :js do
-      field = page.find_field(t('two_factor_authentication.phone_label'))
-      expect(field.value).to eq('(202) 555-1212')
     end
 
     it 'proceeds to link sent page when user chooses to use phone' do
@@ -80,8 +40,8 @@ RSpec.feature 'doc auth hybrid_handoff step' do
 
       expect(page).to have_current_path(idv_link_sent_path)
       expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload submitted',
-        hash_including(step: 'upload', destination: :link_sent),
+        'IdV: doc auth hybrid handoff submitted',
+        hash_including(step: 'hybrid_handoff', destination: :link_sent),
       )
 
       visit(idv_hybrid_handoff_url)
@@ -167,12 +127,12 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       expect(page.find(':focus')).to match_css('.phone-input__number')
     end
 
-    it 'throttles sending the link' do
+    it 'rate limits sending the link' do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
       timeout = distance_of_time_in_words(
-        Throttle.attempt_window_in_minutes(:idv_send_link).minutes,
+        RateLimiter.attempt_window_in_minutes(:idv_send_link).minutes,
       )
       allow(IdentityConfig.store).to receive(:idv_send_link_max_attempts).
         and_return(idv_send_link_max_attempts)
@@ -182,7 +142,7 @@ RSpec.feature 'doc auth hybrid_handoff step' do
       ).with({ phone_number: '+1 415-555-0199' })
 
       freeze_time do
-        (idv_send_link_max_attempts - 1).times do
+        idv_send_link_max_attempts.times do
           expect(page).to_not have_content(
             I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
           )
@@ -211,9 +171,9 @@ RSpec.feature 'doc auth hybrid_handoff step' do
         throttle_type: :idv_send_link,
       )
 
-      # Manual expiration is needed for now since the Throttle uses
+      # Manual expiration is needed for now since the RateLimiter uses
       # Redis ttl instead of expiretime
-      Throttle.new(throttle_type: :idv_send_link, user: user).reset!
+      RateLimiter.new(rate_limit_type: :idv_send_link, user: user).reset!
       travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
         fill_in :doc_auth_phone, with: '415-555-0199'
         click_send_link

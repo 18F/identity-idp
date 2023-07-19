@@ -1,6 +1,6 @@
 import removeUnloadProtection from './remove-unload-protection';
 
-type Navigate = (url: string) => void;
+export type Navigate = (url: string) => void;
 
 const DEFAULT_NAVIGATE: Navigate = (url) => {
   window.location.href = url;

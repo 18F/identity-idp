@@ -2,6 +2,8 @@ module Idv
   module VerifyInfoConcern
     extend ActiveSupport::Concern
 
+    STEP_NAME = 'verify_info'.freeze
+
     def shared_update
       return if idv_session.verify_info_step_document_capture_session_uuid
       analytics.idv_doc_auth_verify_submitted(**analytics_arguments)
@@ -11,22 +13,7 @@ module Idv
       pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
       set_state_id_type
 
-      ssn_throttle.increment!
-      if ssn_throttle.throttled?
-        idv_failure_log_throttled(:proof_ssn)
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :proof_ssn,
-          step_name: 'verify_info',
-        )
-        redirect_to idv_session_errors_ssn_failure_url
-        return
-      end
-
-      if resolution_throttle.throttled?
-        idv_failure_log_throttled(:idv_resolution)
-        redirect_to throttled_url
-        return
-      end
+      ssn_rate_limiter.increment!
 
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
@@ -74,17 +61,17 @@ module Idv
       banlist.include?(sp_session[:issuer])
     end
 
-    def resolution_throttle
-      @resolution_throttle ||= Throttle.new(
+    def resolution_rate_limiter
+      @resolution_rate_limiter ||= RateLimiter.new(
         user: current_user,
-        throttle_type: :idv_resolution,
+        rate_limit_type: :idv_resolution,
       )
     end
 
-    def ssn_throttle
-      @ssn_throttle ||= Throttle.new(
+    def ssn_rate_limiter
+      @ssn_rate_limiter ||= RateLimiter.new(
         target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
-        throttle_type: :proof_ssn,
+        rate_limit_type: :proof_ssn,
       )
     end
 
@@ -98,11 +85,14 @@ module Idv
         :mva_exception,
       )
 
-      resolution_throttle.increment! if proofing_results_exception.blank?
+      resolution_rate_limiter.increment! if proofing_results_exception.blank?
 
-      if resolution_throttle.throttled?
-        idv_failure_log_throttled(:idv_resolution)
-        redirect_to throttled_url
+      if ssn_rate_limiter.limited?
+        idv_failure_log_rate_limited(:proof_ssn)
+        redirect_to idv_session_errors_ssn_failure_url
+      elsif resolution_rate_limiter.limited?
+        idv_failure_log_rate_limited(:idv_resolution)
+        redirect_to rate_limited_url
       elsif proofing_results_exception.present? && is_mva_exception
         idv_failure_log_warning
         redirect_to state_id_warning_url
@@ -115,54 +105,68 @@ module Idv
       end
     end
 
-    def idv_failure_log_throttled(throttle_type)
-      if throttle_type == :idv_resolution
+    def idv_failure_log_rate_limited(rate_limit_type)
+      if rate_limit_type == :proof_ssn
+        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
+        analytics.throttler_rate_limit_triggered(
+          throttle_type: :proof_ssn,
+          step_name: STEP_NAME,
+        )
+      elsif rate_limit_type == :idv_resolution
         irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
         analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_resolution,
-          step_name: self.class.name,
+          step_name: STEP_NAME,
         )
-      elsif throttle_type == :proof_ssn
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
       end
     end
 
     def idv_failure_log_error
       analytics.idv_doc_auth_exception_visited(
-        step_name: self.class.name,
-        remaining_attempts: resolution_throttle.remaining_count,
+        step_name: STEP_NAME,
+        remaining_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 
     def idv_failure_log_warning
       analytics.idv_doc_auth_warning_visited(
-        step_name: self.class.name,
-        remaining_attempts: resolution_throttle.remaining_count,
+        step_name: STEP_NAME,
+        remaining_attempts: resolution_rate_limiter.remaining_count,
       )
     end
 
-    def throttled_url
+    def rate_limited_url
       idv_session_errors_failure_url
     end
 
     def exception_url
-      idv_session_errors_exception_url
+      idv_session_errors_exception_url(flow: flow_param)
     end
 
     def state_id_warning_url
-      idv_session_errors_state_id_warning_url
+      idv_session_errors_state_id_warning_url(flow: flow_param)
     end
 
     def warning_url
-      idv_session_errors_warning_url
+      idv_session_errors_warning_url(flow: flow_param)
     end
 
     def process_async_state(current_async_state)
+      if current_async_state.done?
+        async_state_done(current_async_state)
+        return
+      end
+
+      if current_async_state.in_progress?
+        render 'shared/wait'
+        return
+      end
+
+      return if confirm_not_rate_limited
+
       if current_async_state.none?
         idv_session.invalidate_verify_info_step!
         render :show
-      elsif current_async_state.in_progress?
-        render 'shared/wait'
       elsif current_async_state.missing?
         analytics.idv_proofing_resolution_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
@@ -175,8 +179,6 @@ module Idv
           success: false,
           failure_reason: { idv_verification: [:timeout] },
         )
-      elsif current_async_state.done?
-        async_state_done(current_async_state)
       end
     end
 
@@ -201,7 +203,7 @@ module Idv
       )
 
       form_response = form_response.merge(check_ssn) if form_response.success?
-      summarize_result_and_throttle_failures(form_response)
+      summarize_result_and_rate_limit_failures(form_response)
       delete_async
 
       if form_response.success?
@@ -209,6 +211,8 @@ module Idv
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
         idv_session.invalidate_steps_after_verify_info!
+
+        flash[:success] = t('doc_auth.forms.doc_success')
         redirect_to next_step_url
       else
         idv_session.invalidate_verify_info_step!
@@ -227,10 +231,10 @@ module Idv
       idv_session.threatmetrix_review_status = review_status
     end
 
-    def summarize_result_and_throttle_failures(summary_result)
+    def summarize_result_and_rate_limit_failures(summary_result)
       if summary_result.success?
         add_proofing_components
-        summary_result
+        ssn_rate_limiter.reset!
       else
         idv_failure(summary_result)
       end
@@ -321,8 +325,9 @@ module Idv
           # transaction_id comes from ConversationId
           add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
         elsif stage == :state_id
-          next if hash[:vendor_name] == 'UnsupportedJurisdiction'
-          process_aamva(hash[:transaction_id])
+          next if hash[:exception].present?
+          add_cost(:aamva, transaction_id: hash[:transaction_id])
+          track_aamva unless hash[:vendor_name] == 'UnsupportedJurisdiction'
         elsif stage == :threatmetrix
           # transaction_id comes from request_id
           tmx_id = hash[:transaction_id]
@@ -330,12 +335,6 @@ module Idv
           add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
         end
       end
-    end
-
-    def process_aamva(transaction_id)
-      # transaction_id comes from TransactionLocatorId
-      add_cost(:aamva, transaction_id: transaction_id)
-      track_aamva
     end
 
     def track_aamva

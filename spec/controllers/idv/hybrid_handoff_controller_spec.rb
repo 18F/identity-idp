@@ -9,7 +9,8 @@ RSpec.describe Idv::HybridHandoffController do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
-    subject.user_session['idv/doc_auth'] = { 'Idv::Steps::AgreementStep' => true }
+    subject.user_session['idv/doc_auth'] = {}
+    subject.idv_session.idv_consent_given = true
   end
 
   describe 'before_actions' do
@@ -17,6 +18,13 @@ RSpec.describe Idv::HybridHandoffController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
 
@@ -36,9 +44,9 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth upload visited' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
     let(:analytics_args) do
-      { step: 'upload',
+      { step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
@@ -65,19 +73,10 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'agreement step is not complete' do
       before do
-        subject.user_session['idv/doc_auth']['Idv::Steps::AgreementStep'] = nil
+        subject.idv_session.idv_consent_given = nil
       end
 
-      it 'redirects to idv_doc_auth_url' do
-        get :show
-
-        expect(response).to redirect_to(idv_doc_auth_url)
-      end
-
-      it 'redirects to idv_agreement_url when feature flag is set' do
-        allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
-          and_return(true)
-
+      it 'redirects to idv_agreement_url' do
         get :show
 
         expect(response).to redirect_to(idv_agreement_url)
@@ -86,7 +85,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'hybrid_handoff already visited' do
       it 'redirects to document_capture in standard flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
 
         get :show
 
@@ -94,7 +93,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'redirects to link_sent in hybrid flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+        subject.idv_session.flow_path = 'hybrid'
 
         get :show
 
@@ -104,7 +103,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'redo document capture' do
       it 'does not redirect in standard flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
 
         get :show, params: { redo: true }
 
@@ -112,7 +111,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'does not redirect in hybrid flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+        subject.idv_session.flow_path = 'hybrid'
 
         get :show, params: { redo: true }
 
@@ -120,7 +119,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'redirects to document_capture on a mobile device' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
         subject.user_session['idv/doc_auth'][:skip_upload_step] = true
 
         get :show, params: { redo: true }
@@ -138,7 +137,7 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#update' do
-    let(:analytics_name) { 'IdV: doc auth upload submitted' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff submitted' }
 
     context 'hybrid flow' do
       let(:analytics_args) do
@@ -146,7 +145,7 @@ RSpec.describe Idv::HybridHandoffController do
           errors: { message: nil },
           destination: :link_sent,
           flow_path: 'hybrid',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
           telephony_response: { errors: {},
@@ -158,6 +157,7 @@ RSpec.describe Idv::HybridHandoffController do
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: { doc_auth: { phone: '202-555-5555' } }
 
+        expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
@@ -168,7 +168,7 @@ RSpec.describe Idv::HybridHandoffController do
           errors: {},
           destination: :document_capture,
           flow_path: 'standard',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
           skip_upload_step: false }
@@ -178,6 +178,14 @@ RSpec.describe Idv::HybridHandoffController do
         put :update, params: { type: 'desktop' }
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      it 'sends irs_attempts_api_tracking' do
+        expect(@irs_attempts_api_tracker).to receive(
+          :idv_document_upload_method_selected,
+        ).with({ upload_method: 'desktop' })
+
+        put :update, params: { type: 'desktop' }
       end
     end
   end

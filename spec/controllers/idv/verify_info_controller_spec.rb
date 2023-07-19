@@ -7,8 +7,7 @@ RSpec.describe Idv::VerifyInfoController do
     { 'error_message' => nil,
       'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_doc => Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup,
-      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard' }
+      'threatmetrix_session_id' => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
@@ -20,12 +19,13 @@ RSpec.describe Idv::VerifyInfoController do
       step: 'verify',
     }
   end
-  let(:ssn_throttle_hash) { { throttle_context: 'multi-session' } }
-  let(:proofing_throttle_hash) { { throttle_context: 'single-session' } }
 
   before do
-    allow(subject).to receive(:flow_session).and_return(flow_session)
+    stub_analytics
+    stub_attempts_tracker
     stub_idv_steps_before_verify_step(user)
+    subject.idv_session.flow_path = 'standard'
+    subject.user_session['idv/doc_auth'] = flow_session
   end
 
   describe 'before_actions' do
@@ -33,6 +33,13 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+      )
+    end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
       )
     end
 
@@ -55,13 +62,6 @@ RSpec.describe Idv::VerifyInfoController do
       }
     end
 
-    before do
-      stub_analytics
-      stub_attempts_tracker
-      allow(@analytics).to receive(:track_event)
-      allow(@irs_attempts_api_tracker).to receive(:track_event)
-    end
-
     it 'renders the show template' do
       get :show
 
@@ -71,7 +71,7 @@ RSpec.describe Idv::VerifyInfoController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'updates DocAuthLog verify_view_count' do
@@ -119,14 +119,14 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to(idv_ssn_url)
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
-        ).increment_to_throttled!
+          rate_limit_type: :proof_ssn,
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -137,21 +137,21 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
+          with({ throttle_context: 'multi-session' })
 
         get :show
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
-        ).increment_to_throttled!
+          rate_limit_type: :idv_resolution,
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -159,7 +159,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
+          with({ throttle_context: 'single-session' })
 
         get :show
       end
@@ -199,8 +199,6 @@ RSpec.describe Idv::VerifyInfoController do
         controller.
           idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
-        allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
-          and_return(true)
       end
 
       context 'when threatmetrix response is Pass' do
@@ -272,20 +270,29 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when aamva has trouble' do
+    context 'for an aamva request' do
+      before do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
       let(:document_capture_session) do
         DocumentCaptureSession.create(user:)
       end
+
+      let(:success) { true }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:vendor_name) { :aamva }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
-            success: false,
-            errors: {},
-            exception: Proofing::Aamva::VerificationError.new('ExceptionId: 0001'),
-            vendor_name: nil,
-            transaction_id: '',
+            success: success,
+            errors: errors,
+            exception: exception,
+            vendor_name: vendor_name,
+            transaction_id: 'abc123',
             verified_attributes: [],
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
@@ -303,34 +310,71 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session.load_proofing_result
       end
 
-      before do
-        stub_analytics
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-        put :show
+      context 'when aamva processes the request normally' do
+        it 'redirect to phone confirmation url' do
+          put :show
+          expect(response).to redirect_to idv_phone_url
+        end
+
+        it 'logs an event' do
+          put :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(success: true),
+          )
+        end
+
+        it 'records the cost as billable' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
       end
 
-      it 'redirects user to warning' do
-        expect(response).to redirect_to idv_session_errors_state_id_warning_url
+      context 'when aamva returns success: false but no exception' do
+        let(:success) { false }
+
+        it 'logs a cost' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
       end
 
-      it 'logs an event' do
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth warning visited',
-          step_name: 'Idv::VerifyInfoController',
-          remaining_attempts: kind_of(Numeric),
-        )
+      context 'when the jurisdiction is unsupported' do
+        let(:success) { true }
+        let(:vendor_name) { 'UnsupportedJurisdiction' }
+
+        it 'considers the request billable' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
+      end
+
+      context 'when aamva returns an exception' do
+        let(:success) { false }
+        let(:exception) { Proofing::Aamva::VerificationError.new('ExceptionId: 0001') }
+
+        it 'redirects user to warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_state_id_warning_url
+        end
+
+        it 'logs an event' do
+          put :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth warning visited',
+            step_name: 'verify_info',
+            remaining_attempts: kind_of(Numeric),
+          )
+        end
+
+        it 'does not log a cost' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(0)
+        end
       end
     end
   end
 
   describe '#update' do
-    before do
-      stub_attempts_tracker
-    end
-
     it 'logs the correct analytics event' do
-      stub_analytics
-
       put :update
 
       expect(@analytics).to have_logged_event(
@@ -364,14 +408,14 @@ RSpec.describe Idv::VerifyInfoController do
       )
     end
 
-    context 'when the user is ssn throttled' do
+    context 'when the user is ssn rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           target: Pii::Fingerprinter.fingerprint(
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
           ),
-          throttle_type: :proof_ssn,
-        ).increment_to_throttled!
+          rate_limit_type: :proof_ssn,
+        ).increment_to_limited!
       end
 
       it 'redirects to ssn failure url' do
@@ -382,21 +426,21 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(ssn_throttle_hash)
+          with({ throttle_context: 'multi-session' })
 
         put :update
       end
     end
 
-    context 'when the user is proofing throttled' do
+    context 'when the user is proofing rate limited' do
       before do
-        Throttle.new(
+        RateLimiter.new(
           user: subject.current_user,
-          throttle_type: :idv_resolution,
-        ).increment_to_throttled!
+          rate_limit_type: :idv_resolution,
+        ).increment_to_limited!
       end
 
-      it 'redirects to throttled url' do
+      it 'redirects to rate limited url' do
         put :update
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -404,7 +448,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with(proofing_throttle_hash)
+          with({ throttle_context: 'single-session' })
 
         put :update
       end

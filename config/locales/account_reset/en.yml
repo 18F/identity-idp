@@ -7,7 +7,7 @@ en:
       cancel_button: Cancel delete account
       title: Cancel delete account
     confirm_delete_account:
-      cta_html: You may %{link} or close this window if you’re done.
+      cta_html: You may %{link_html} or close this window if you’re done.
       info_html: The account for <strong>%{email}</strong> has been deleted. We sent
         an email confirmation of the account deletion.
       link_text: create a new account

@@ -1,19 +1,15 @@
 module Idv
   class HybridHandoffController < ApplicationController
     include ActionView::Helpers::DateHelper
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
-    before_action :check_for_outage, only: :show
 
     def show
-      analytics.idv_doc_auth_upload_visited(**analytics_arguments)
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -42,10 +38,10 @@ module Idv
     end
 
     def handle_phone_submission
-      throttle.increment!
-      return throttled_failure if throttle.throttled?
-      idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
-      flow_session[:flow_path] = 'hybrid'
+      return rate_limited_failure if rate_limiter.limited?
+      rate_limiter.increment!
+      idv_session.phone_for_mobile_flow = formatted_destination_phone
+      idv_session.flow_path = 'hybrid'
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
@@ -64,10 +60,10 @@ module Idv
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
-        flow_session[:flow_path] = nil
+        idv_session.flow_path = nil
       end
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(telephony_form_response.to_h),
       )
     end
@@ -101,7 +97,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
-          flow_path: flow_session[:flow_path],
+          flow_path: idv_session.flow_path,
         },
       )
     end
@@ -117,10 +113,10 @@ module Idv
     end
 
     def bypass_send_link_steps
-      flow_session[:flow_path] = 'standard'
+      idv_session.flow_path = 'standard'
       redirect_to idv_document_capture_url
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
@@ -136,7 +132,7 @@ module Idv
 
     def mobile_device?
       # See app/javascript/packs/document-capture-welcome.js
-      # And app/services/idv/steps/agreement_step.rb
+      # And app/controllers/idv/agreement_controller.rb
       !!flow_session[:skip_upload_step]
     end
 
@@ -148,16 +144,16 @@ module Idv
       )
     end
 
-    def throttle
-      @throttle ||= Throttle.new(
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
         user: current_user,
-        throttle_type: :idv_send_link,
+        rate_limit_type: :idv_send_link,
       )
     end
 
     def analytics_arguments
       {
-        step: 'upload',
+        step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
@@ -171,12 +167,12 @@ module Idv
         extra: {
           destination: destination,
           skip_upload_step: mobile_device?,
-          flow_path: flow_session[:flow_path],
+          flow_path: idv_session.flow_path,
         },
       )
     end
 
-    def throttled_failure
+    def rate_limited_failure
       analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_send_link,
       )
@@ -184,7 +180,7 @@ module Idv
         'errors.doc_auth.send_link_throttle',
         timeout: distance_of_time_in_words(
           Time.zone.now,
-          [throttle.expires_at, Time.zone.now].compact.max,
+          [rate_limiter.expires_at, Time.zone.now].compact.max,
           except: :seconds,
         ),
       )
@@ -206,25 +202,20 @@ module Idv
     end
 
     def confirm_agreement_step_complete
-      # delete when removing doc_auth_agreement_controller_enabled flag
-      return if flow_session['Idv::Steps::AgreementStep']
       return if idv_session.idv_consent_given
 
-      if IdentityConfig.store.doc_auth_agreement_controller_enabled
-        redirect_to idv_agreement_url
-      else
-        redirect_to idv_doc_auth_url
-      end
+      redirect_to idv_agreement_url
     end
 
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
 
-      return if !flow_session[:flow_path]
+      idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
+      return if !idv_session.flow_path
 
-      if flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
-      elsif flow_session[:flow_path] == 'hybrid'
+      elsif idv_session.flow_path == 'hybrid'
         redirect_to idv_link_sent_url
       end
     end
@@ -232,9 +223,9 @@ module Idv
     def setup_for_redo
       flow_session[:redo_document_capture] = true
       if flow_session[:skip_upload_step]
-        flow_session[:flow_path] = 'standard'
+        idv_session.flow_path = 'standard'
       else
-        flow_session[:flow_path] = nil
+        idv_session.flow_path = nil
       end
     end
 

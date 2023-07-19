@@ -2,18 +2,14 @@ module Idv
   class DocumentCaptureController < ApplicationController
     include AcuantConcern
     include DocumentCaptureConcern
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include RateLimitConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -31,6 +27,8 @@ module Idv
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
+
+      cancel_establishing_in_person_enrollments
 
       if result.success?
         redirect_to idv_ssn_url
@@ -53,7 +51,7 @@ module Idv
     private
 
     def confirm_hybrid_handoff_complete
-      return if flow_session[:flow_path].present?
+      return if idv_session.flow_path.present?
 
       redirect_to idv_hybrid_handoff_url
     end
@@ -65,6 +63,11 @@ module Idv
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    def cancel_establishing_in_person_enrollments
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(current_user)
     end
 
     def analytics_arguments

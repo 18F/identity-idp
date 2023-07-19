@@ -226,6 +226,8 @@ class OpenidConnectAuthorizeForm
   def extra_analytics_attributes
     {
       client_id: client_id,
+      prompt: prompt,
+      allow_prompt_login: service_provider&.allow_prompt_login,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),
@@ -258,7 +260,8 @@ class OpenidConnectAuthorizeForm
 
   def validate_privileges
     if (ial2_requested? && !ial_context.ial2_service_provider?) ||
-       (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
+       (ial_context.ialmax_requested? &&
+        !IdentityConfig.store.allowed_ialmax_providers.include?(client_id))
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
         type: :no_auth

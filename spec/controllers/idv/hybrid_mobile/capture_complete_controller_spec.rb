@@ -38,13 +38,6 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
         :check_valid_document_capture_session,
       )
     end
-
-    it 'includes document capture session complete before action' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_document_capture_session_complete,
-      )
-    end
   end
 
   describe '#show' do

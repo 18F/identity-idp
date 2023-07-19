@@ -151,14 +151,6 @@ RSpec.describe Idv::ReviewController do
         expect(response).to render_template :new
       end
 
-      it 'displays a helpful flash message to the user' do
-        get :new
-
-        expect(flash.now[:success]).to eq(
-          t('idv.messages.review.phone_verified'),
-        )
-      end
-
       it 'uses the correct step indicator step' do
         indicator_step = subject.step_indicator_step
 
@@ -174,7 +166,6 @@ RSpec.describe Idv::ReviewController do
         it 'displays info message about sending letter' do
           get :new
 
-          expect(flash.now[:success]).to be_nil
           expect(flash.now[:info]).to eq(
             t('idv.messages.review.gpo_pending'),
           )
@@ -224,7 +215,6 @@ RSpec.describe Idv::ReviewController do
         get :new
 
         expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
-        expect(flash.now[:success]).to be_nil
       end
     end
 
@@ -563,14 +553,14 @@ RSpec.describe Idv::ReviewController do
           context 'when user enters an address2 value' do
             let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
 
-            it 'provides address2 if the user entered it' do
+            it 'does not include address2' do
               proofer = UspsInPersonProofing::Proofer.new
               mock = double
 
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
                 expect(applicant.address).
-                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
                 proofer.request_enroll(applicant)
               end
 

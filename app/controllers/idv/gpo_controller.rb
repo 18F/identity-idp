@@ -27,6 +27,7 @@ module Idv
         redirect_to capture_password_url
       elsif resend_requested?
         resend_letter
+        flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
         redirect_to idv_come_back_later_url
       else
         redirect_to idv_review_url
@@ -76,7 +77,7 @@ module Idv
       return if current_user.gpo_verification_pending_profile?
       return if idv_session.verify_info_step_complete?
 
-      redirect_to idv_doc_auth_url
+      redirect_to idv_verify_info_url
     end
 
     def resend_letter

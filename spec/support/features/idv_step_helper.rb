@@ -82,7 +82,7 @@ module IdvStepHelper
   end
 
   def sp_text
-    t('in_person_proofing.body.barcode.return_to_partner_html', link: link_text)
+    t('in_person_proofing.body.barcode.return_to_partner_html', link_html: link_text)
   end
 
   def complete_review_step(user = user_with_2fa)
@@ -124,6 +124,18 @@ module IdvStepHelper
 
   def expect_step_indicator_current_step(text)
     expect(page).to have_css('.step-indicator__step--current', text: text, wait: 5)
+  end
+
+  def complete_idv_steps_before_ssn(user = user_with_2fa)
+    sign_in_and_2fa_user(user)
+    begin_in_person_proofing(user)
+    # prepare page
+    complete_prepare_step(user)
+    # location page
+    complete_location_step(user)
+    # state ID page
+    fill_out_state_id_form_ok(double_address_verification: true, same_address_as_id: true)
+    click_idv_continue
   end
 
   private

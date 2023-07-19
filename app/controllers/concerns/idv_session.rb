@@ -22,7 +22,7 @@ module IdvSession
     return if flash[:allow_confirmations_continue]
     return if idv_session.address_confirmed? || idv_session.phone_confirmed?
 
-    redirect_to idv_doc_auth_url
+    redirect_to idv_review_url
   end
 
   def idv_session
@@ -31,6 +31,10 @@ module IdvSession
       current_user: idv_session_user,
       service_provider: current_sp,
     )
+  end
+
+  def flow_session
+    user_session['idv/doc_auth'] ||= {}
   end
 
   def redirect_unless_idv_session_user

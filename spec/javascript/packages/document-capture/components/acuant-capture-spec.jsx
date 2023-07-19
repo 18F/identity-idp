@@ -20,7 +20,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardType: 1,
+  cardtype: 1,
   dpi: 519,
   moire: 99,
   moireraw: 99,
@@ -547,6 +547,47 @@ describe('document-capture/components/acuant-capture', () => {
       );
     });
 
+    it('renders error message and logs metadata if capture succeeds but the document type identified is unsupported', async () => {
+      const trackEvent = sinon.spy();
+      const { getByText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            cardtype: 2,
+          });
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      const error = await findByText('doc_auth.errors.card_type');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'IdV: test image added',
+        sinon.match({
+          documentType: 'passport',
+          isAssessedAsUnsupported: true,
+          assessment: 'unsupported',
+        }),
+      );
+
+      expect(error).to.be.ok();
+    });
+
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
       const trackEvent = sinon.spy();
       const { getByText, findByText } = render(
@@ -585,6 +626,7 @@ describe('document-capture/components/acuant-capture', () => {
         height: 1104,
         sharpnessScoreThreshold: sinon.match.number,
         glareScoreThreshold: 50,
+        isAssessedAsUnsupported: false,
         isAssessedAsBlurry: false,
         isAssessedAsGlare: true,
         assessment: 'glare',
@@ -639,6 +681,7 @@ describe('document-capture/components/acuant-capture', () => {
         height: 1104,
         sharpnessScoreThreshold: 50,
         glareScoreThreshold: sinon.match.number,
+        isAssessedAsUnsupported: false,
         isAssessedAsBlurry: true,
         isAssessedAsGlare: false,
         assessment: 'blurry',
@@ -746,6 +789,7 @@ describe('document-capture/components/acuant-capture', () => {
         height: 1104,
         sharpnessScoreThreshold: 50,
         glareScoreThreshold: sinon.match.number,
+        isAssessedAsUnsupported: false,
         isAssessedAsBlurry: true,
         isAssessedAsGlare: false,
         assessment: 'blurry',
@@ -756,13 +800,48 @@ describe('document-capture/components/acuant-capture', () => {
       });
     });
 
+    it('logs a human readable error when the document type errs', async () => {
+      const trackEvent = sinon.spy();
+      const incorrectCardType = 5;
+      const { findByText, getByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardtype: incorrectCardType });
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      await findByText('doc_auth.info.image_loading');
+
+      expect(trackEvent).to.have.been.calledWith(
+        'IdV: test image added',
+        sinon.match({
+          documentType: `An error in document type returned: ${incorrectCardType}`,
+        }),
+      );
+    });
+
     it('triggers forced upload', () => {
       const { getByText } = render(
         <I18nContext.Provider
           value={
             new I18n({
               strings: {
-                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
+                'doc_auth.buttons.take_or_upload_picture_html': '<lg-upload>Upload</lg-upload>',
               },
             })
           }
@@ -790,7 +869,7 @@ describe('document-capture/components/acuant-capture', () => {
           value={
             new I18n({
               strings: {
-                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
+                'doc_auth.buttons.take_or_upload_picture_html': '<lg-upload>Upload</lg-upload>',
               },
             })
           }
@@ -935,7 +1014,9 @@ describe('document-capture/components/acuant-capture', () => {
       <I18nContext.Provider
         value={
           new I18n({
-            strings: { 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' },
+            strings: {
+              'doc_auth.buttons.take_or_upload_picture_html': '<lg-upload>Upload</lg-upload>',
+            },
           })
         }
       >

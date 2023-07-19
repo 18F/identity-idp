@@ -28,10 +28,10 @@ function HybridDocCaptureWarning({ className = '' }: HybridDocCaptureWarningProp
   const appName = getConfigValue('appName');
 
   const listHeadingText = t('doc_auth.hybrid_flow_warning.only_add_if_text');
-  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account_html', {
+  const ownAccountItemText = t('doc_auth.hybrid_flow_warning.only_add_own_account', {
     app_name: appName,
   });
-  const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify_html', {
+  const phoneVerifyItemText = t('doc_auth.hybrid_flow_warning.only_add_phone_verify', {
     app_name: appName,
   });
   let spServicesItemText;

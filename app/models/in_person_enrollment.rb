@@ -8,6 +8,9 @@ class InPersonEnrollment < ApplicationRecord
              primary_key: 'issuer',
              inverse_of: :in_person_enrollments,
              optional: true
+
+  has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
+
   enum status: {
     establishing: 0,
     pending: 1,
@@ -20,6 +23,7 @@ class InPersonEnrollment < ApplicationRecord
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
+  before_save(:on_notification_sent_at_updated, if: :will_save_change_to_notification_sent_at?)
   before_create(:set_unique_id, unless: :unique_id)
   before_create(:set_capture_secondary_id)
 
@@ -121,6 +125,16 @@ class InPersonEnrollment < ApplicationRecord
   def days_to_due_date
     today = DateTime.now
     (today...due_date).count
+  end
+
+  def on_notification_sent_at_updated
+    if self.notification_sent_at && self.notification_phone_configuration
+      self.notification_phone_configuration.destroy
+    end
+  end
+
+  def skip_notification_sent_at_set?
+    !notification_phone_configuration.present? || (!self.passed? && !self.failed? && !self.expired?)
   end
 
   private

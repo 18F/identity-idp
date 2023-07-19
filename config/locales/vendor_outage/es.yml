@@ -11,18 +11,17 @@ es:
           correo.
       pinpoint:
         idv:
-          header: Solo podemos verificar su identidad por correo en este momento
-          message_html: Desafortunadamente, %{app_name} está teniendo dificultades
-            técnicas. Estamos trabajando para resolver un error y poder
-            verificar su identidad en <strong>%{sp_name}</strong> rápidamente.
+          header: Estamos trabajando para resolver un error
+          message_html: '%{sp_name_html} necesita asegurarse de que es usted realmente y
+            no alguien que se hace pasar por usted.'
           options_html:
-            - <a href="%{status_page_url}" class="usa-link usa-link--external"
-              target="_blank">Reciba actualizaciones en nuestra página de
-              estado</a> para saber cuándo se ha resuelto el error
             - Continuar ahora y verificar por correo, que tarda de <strong>3 a 7
-              días laborables</strong>
-            - Salga de Login.gov e inténtelo de nuevo más tarde
+              días laborables</strong>.
+            - Salir de Login.gov e inténtelo de nuevo más tarde.
           options_prompt: 'Usted puede:'
+          status_page_html: Lamentablemente, estamos teniendo problemas técnicos.
+            %{link_html} para saber cuándo se ha resuelto el error.
+          status_page_link: Reciba actualizaciones en nuestra página de estado
       sms:
         default: No podemos enviar mensajes de texto (SMS) en estos momentos. Puede
           recibir un código por medio de una llamada telefónica o elegir otro

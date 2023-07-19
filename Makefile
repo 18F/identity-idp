@@ -104,7 +104,6 @@ endif
 	@echo "--- lint migrations ---"
 	make lint_migrations
 
-
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
 

@@ -1,16 +1,11 @@
 module Idv
   class AgreementController < ApplicationController
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
-    before_action :render_404_if_agreement_controller_disabled
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -35,9 +30,6 @@ module Idv
       if result.success?
         idv_session.idv_consent_given = true
 
-        # for the 50/50 state
-        flow_session['Idv::Steps::AgreementStep'] = true
-
         redirect_to idv_hybrid_handoff_url
       else
         redirect_to idv_agreement_url
@@ -56,7 +48,7 @@ module Idv
 
     def skip_to_capture
       flow_session[:skip_upload_step] = true
-      flow_session[:flow_path] = 'standard'
+      idv_session.flow_path = 'standard'
     end
 
     def consent_form_params
@@ -64,19 +56,15 @@ module Idv
     end
 
     def confirm_welcome_step_complete
-      return if flow_session['Idv::Steps::WelcomeStep']
+      return if idv_session.welcome_visited
 
-      redirect_to idv_doc_auth_url
+      redirect_to idv_welcome_url
     end
 
     def confirm_agreement_needed
       return unless idv_session.idv_consent_given
 
       redirect_to idv_hybrid_handoff_url
-    end
-
-    def render_404_if_agreement_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_agreement_controller_enabled
     end
   end
 end

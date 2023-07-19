@@ -22,8 +22,10 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
+allowed_ialmax_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
+account_suspended_support_code: EFGHI
 acuant_maintenance_window_start:
 acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
@@ -41,13 +43,13 @@ acuant_get_results_timeout: 1.0
 acuant_create_document_timeout: 1.0
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
-allow_otp_countdown_expired_redirect: false
 arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
-arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
+arcgis_api_refresh_token_job_cron: '0/55 * * * *'
+arcgis_api_refresh_token_job_enabled: false
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
@@ -60,20 +62,18 @@ aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
-aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-doc_auth_error_dpi_threshold: 290
-doc_auth_error_sharpness_threshold: 40
-doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
+database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
@@ -87,7 +87,6 @@ doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
-doc_auth_agreement_controller_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
@@ -130,13 +129,16 @@ idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-ie11_support_end_date: '2022-12-31'
+idv_tmx_test_csp_disabled_emails: '[]'
+idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
+in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
+in_person_send_proofing_notifications_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
@@ -146,26 +148,17 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
+in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
-in_person_usps_outage_message_enabled: false
-in_person_verify_info_controller_enabled: false
+in_person_full_address_entry_enabled: false
+in_person_outage_message_enabled: false
+# in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
+# are strings in the format 'Month day, year'
+in_person_outage_expected_update_date: 'October 31, 2024'
+in_person_outage_emailed_by_date: 'November 1, 2024'
+in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
-irs_attempt_api_audience: 'https://irs.gov'
-irs_attempt_api_auth_tokens: ''
-irs_attempt_api_csp_id: 'LOGIN.gov'
-irs_attempt_api_enabled: false
-irs_attempt_api_aws_s3_enabled: false
-irs_attempt_api_aws_s3_stream_enabled: false
-irs_attempt_api_aws_s3_stream_buffer_size: 16_777_216
-irs_attempt_api_event_ttl_seconds: 86400
-irs_attempt_api_event_count_default: 1000
-irs_attempt_api_event_count_max: 10000
-irs_attempt_api_idv_events_enabled: false
-irs_attempt_api_payload_size_logging_enabled: true
-irs_attempt_api_track_idv_fraud_review: false
-irs_attempt_api_track_tmx_fraud_check_event: false
-irs_attempt_api_delete_events_after_s3_upload: false
 key_pair_generation_percent: 0
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -258,14 +251,13 @@ proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
 proof_ssn_max_attempt_window_in_minutes: 60
-proofing_device_profiling: disabled
+proofing_device_profiling: enabled
 push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
-reauthentication_for_second_factor_management_enabled: true
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -273,13 +265,11 @@ recaptcha_site_key_v3: ''
 recaptcha_secret_key_v2: ''
 recaptcha_secret_key_v3: ''
 recovery_code_length: 4
-redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
 redis_session_pool_size: 10
 redis_throttle_pool_size: 5
-redis_irs_attempt_api_pool_size: 1
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
 reg_unconfirmed_email_max_attempts: 20
@@ -312,17 +302,18 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v3_enabled: false
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
+show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
 sp_issuer_user_counts_report_configs: '[]'
+team_ursula_email: ''
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -340,9 +331,10 @@ verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
+version_headers_enabled: false
 use_dashboard_service_providers: false
-use_clean_edit_password_url: true
 use_kms: false
+usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -365,11 +357,9 @@ voip_allowed_phones: '[]'
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  allow_otp_countdown_expired_redirect: true
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   component_previews_enabled: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
@@ -390,18 +380,11 @@ development:
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
   enable_rate_limiting: false
-  use_clean_edit_password_url: true
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_enabled: true
-  irs_attempt_api_aws_s3_enabled: false
-  irs_attempt_api_auth_tokens: 'abc123'
-  irs_attempt_api_bucket_name: default-placeholder
-  irs_attempt_api_idv_events_enabled: false
+  in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
@@ -412,15 +395,17 @@ development:
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"},{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_unsupported_passkey_platform_authentication_setup: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   state_tracking_enabled: true
   telephony_adapter: test
@@ -439,9 +424,9 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
+  arcgis_api_refresh_token_job_enabled: true
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
-  aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
@@ -471,8 +456,6 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
-  irs_attempt_api_public_key: change-me-pls
-  irs_attempt_api_public_key_id: key1
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
@@ -487,11 +470,8 @@ production:
   password_pepper:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
-  platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
-  reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
-  redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -507,8 +487,8 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_clean_edit_password_url: false
   use_kms: true
+  usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
@@ -523,7 +503,6 @@ test:
   acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
@@ -547,10 +526,6 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
-  irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
-  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
-  irs_attempt_api_public_key_id: key1
-  irs_attempt_api_bucket_name: test-bucket-name
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

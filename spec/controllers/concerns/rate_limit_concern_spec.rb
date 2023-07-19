@@ -26,13 +26,14 @@ RSpec.describe 'RateLimitConcern' do
     before(:each) do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
+      allow(subject).to receive(:flow_session).and_return({})
       routes.draw do
         get 'show' => 'idv/step#show'
         put 'update' => 'idv/step#update'
       end
     end
 
-    context 'user is not throttled' do
+    context 'user is not rate limited' do
       let(:user) { create(:user, :fully_registered) }
 
       it 'does not redirect' do
@@ -43,10 +44,10 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with idv_doc_auth throttle (DocumentCapture)' do
-      it 'redirects to idv_doc_auth throttled error page' do
-        throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
-        throttle.increment_to_throttled!
+    context 'with idv_doc_auth rate_limiter (DocumentCapture)' do
+      it 'redirects to idv_doc_auth rate limited error page' do
+        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+        rate_limiter.increment_to_limited!
 
         get :show
 
@@ -54,10 +55,10 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with idv_resolution throttle (VerifyInfo)' do
-      it 'redirects to idv_resolution throttled error page' do
-        throttle = Throttle.new(user: user, throttle_type: :idv_resolution)
-        throttle.increment_to_throttled!
+    context 'with idv_resolution rate_limiter (VerifyInfo)' do
+      it 'redirects to idv_resolution rate limited error page' do
+        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_resolution)
+        rate_limiter.increment_to_limited!
 
         get :show
 
@@ -65,36 +66,16 @@ RSpec.describe 'RateLimitConcern' do
       end
     end
 
-    context 'with proof_address throttle (PhoneStep)' do
+    context 'with proof_address rate_limiter (PhoneStep)' do
       before do
-        throttle = Throttle.new(user: user, throttle_type: :proof_address)
-        throttle.increment_to_throttled!
+        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :proof_address)
+        rate_limiter.increment_to_limited!
       end
 
-      it 'redirects to proof_address throttled error page' do
+      it 'redirects to proof_address rate limited error page' do
         get :show
 
         expect(response).to redirect_to idv_phone_errors_failure_url
-      end
-
-      context 'controller and throttle match' do
-        before do
-          allow(subject).to receive(:throttle_and_controller_match).
-            and_return(true)
-        end
-
-        it 'redirects on show' do
-          get :show
-
-          expect(response).to redirect_to idv_phone_errors_failure_url
-        end
-
-        it 'does not redirect on update' do
-          put :update
-
-          expect(response.body).to eq 'Bye'
-          expect(response.status).to eq 200
-        end
       end
     end
   end

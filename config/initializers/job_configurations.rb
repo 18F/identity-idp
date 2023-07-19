@@ -1,4 +1,5 @@
 cron_5m = '0/5 * * * *'
+cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
@@ -145,12 +146,6 @@ else
         class: 'ThreatMetrixJsVerificationJob',
         cron: cron_1h,
       },
-      # Batch up IRS Attempts API events
-      irs_attempt_events_aggregator: {
-        class: 'IrsAttemptsEventsBatchJob',
-        cron: cron_1h,
-        args: -> { [Time.zone.now - 1.hour] },
-      },
       # Weekly IRS report returning system demand
       irs_weekly_summary_report: {
         class: 'Reports::IrsWeeklySummaryReport',
@@ -169,7 +164,25 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
-    }
+      usps_auth_token_refresh: (if IdentityConfig.store.usps_auth_token_refresh_job_enabled
+                                  {
+                                    class: 'UspsAuthTokenRefreshJob',
+                                    cron: cron_12m,
+                                  }
+                                end),
+      arcgis_token: (if IdentityConfig.store.arcgis_api_refresh_token_job_enabled
+                       {
+                         class: 'ArcgisTokenJob',
+                         cron: IdentityConfig.store.arcgis_api_refresh_token_job_cron,
+                       }
+                     end),
+      # Account creation/deletion stats for OKRs
+      quarterly_account_stats: {
+        class: 'Reports::QuarterlyAccountStats',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+    }.compact
   end
   # rubocop:enable Metrics/BlockLength
 

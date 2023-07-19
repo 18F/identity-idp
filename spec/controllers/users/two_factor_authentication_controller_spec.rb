@@ -11,7 +11,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
       expect(subject).to have_actions(
         :before,
         :authenticate_user,
-        [:require_current_password, if: :current_password_required?],
         :check_already_authenticated,
         :reset_attempt_count_if_user_no_longer_locked_out,
         :apply_secure_headers_override,
@@ -619,7 +618,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           end
 
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+            RateLimiter.attempt_window_in_minutes(:phone_confirmation).minutes,
           )
 
           expect(flash[:error]).to eq(
@@ -672,7 +671,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           end
 
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+            RateLimiter.attempt_window_in_minutes(:phone_confirmation).minutes,
           )
 
           expect(flash[:error]).to eq(

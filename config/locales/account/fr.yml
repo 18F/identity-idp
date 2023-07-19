@@ -59,7 +59,7 @@ fr:
       verification:
         instructions: Votre compte nécessite un code à usage unique pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
-        success: Votre compte a été vérifié.
+        success: Nous avons vérifié vos informations
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé
@@ -77,7 +77,6 @@ fr:
       delete_account: Effacer
       regenerate_personal_key: Réinitialiser
     login:
-      ie_not_supported: Internet Explorer 11 n’est plus pris en charge à partir du %{date}
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       tab_navigation: Onglets de création de compte
     navigation:
@@ -125,10 +124,10 @@ fr:
     revoke_consent:
       link_title: Déconnecter
       longer_description_html: Vos informations ne seront plus partagées avec
-        %{service_provider}. Pour accéder à %{service_provider} à l’avenir, vous
-        devez donner votre consentement pour partager vos informations. Vous
-        pouvez donner votre consentement en allant sur le site
-        %{service_provider} et en vous connectant.
+        %{service_provider_html}. Pour accéder à %{service_provider_html} à
+        l’avenir, vous devez donner votre consentement pour partager vos
+        informations. Vous pouvez donner votre consentement en allant sur le
+        site %{service_provider_html} et en vous connectant.
     security:
       link: En apprendre davantage dans le Centre d’aide
       text: L’information de votre profil est verrouillée pour votre sécurité.

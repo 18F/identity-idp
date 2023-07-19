@@ -4,9 +4,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<% if @platform_authenticator %>
-  <%= render AlertComponent.new(type: :warning, class: 'margin-y-1') do %>
-    <%= t('forms.webauthn_platform_setup.warning_text') %>
+<% if @need_to_set_up_additional_mfa %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('forms.webauthn_platform_setup.info_text') %>
   <% end %>
 <% end %>
 
@@ -29,12 +29,14 @@
   <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+  <%= hidden_field_tag :transports, '', id: 'transports' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :name,
         required: true,
         label: @presenter.nickname_label,
+        hint: @presenter.device_nickname_hint,
         input_html: {
           id: 'nickname',
           class: 'font-family-mono',

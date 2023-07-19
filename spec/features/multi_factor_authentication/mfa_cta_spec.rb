@@ -8,12 +8,35 @@ RSpec.feature 'mfa cta banner' do
     it 'displays a banner after configuring a single MFA method' do
       visit_idp_from_sp_with_ial1(:oidc)
       user = sign_up_and_set_password
-      select_2fa_option('backup_code')
+      select_2fa_option('phone')
       click_continue
+
+      fill_in :new_phone_form_phone, with: '3015551212'
+      click_send_one_time_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(page).to have_content(t('notices.phone_confirmed'))
 
       click_button t('mfa.skip')
       expect(page).to have_current_path(sign_up_completed_path)
       expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+      expect(page).to have_content(t('mfa.second_method_warning.text'))
+    end
+
+    it 'displays a banner after confirming that backup codes are saved' do
+      visit_idp_from_sp_with_ial1(:oidc)
+      user = sign_up_and_set_password
+      select_2fa_option('backup_code')
+      click_continue
+
+      click_button t('mfa.skip')
+      expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
+      expect(page).to have_current_path(confirm_backup_codes_path)
+
+      acknowledge_backup_code_confirmation
+
       expect(page).to have_content(t('mfa.second_method_warning.text'))
     end
 
@@ -41,6 +64,9 @@ RSpec.feature 'mfa cta banner' do
 
       set_up_mfa_with_backup_codes
       click_button t('mfa.skip')
+
+      expect(page).to have_current_path(confirm_backup_codes_path)
+      acknowledge_backup_code_confirmation
       click_link(t('mfa.second_method_warning.link'))
       expect(page).to have_current_path(second_mfa_setup_path)
     end

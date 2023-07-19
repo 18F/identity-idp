@@ -19,12 +19,6 @@ module Idv
         return handle_invalid_document_capture_session if document_capture_session.expired?
       end
 
-      def confirm_document_capture_session_complete
-        return if document_capture_session&.load_result&.success?
-
-        redirect_to idv_hybrid_mobile_document_capture_url
-      end
-
       def document_capture_session
         return @document_capture_session if defined?(@document_capture_session)
         @document_capture_session =
@@ -41,6 +35,9 @@ module Idv
       end
 
       def handle_invalid_document_capture_session
+        # it is critical to remove all session data to avoid authenticating and
+        # resuming a partial session
+        sign_out
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end

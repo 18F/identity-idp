@@ -6,6 +6,10 @@
   - Before: (1) `node_modules`, (2) default load paths, (3) custom `--load-path` load paths
   - After: (1) custom `--load-path` load paths, (2) default load paths, (3) `node_modules`
 
+### Improvements
+
+- Prevent situations where overridden output stylesheets may be temporarily emptied during parallel builds.
+
 ## 1.3.0
 
 ### Improvements

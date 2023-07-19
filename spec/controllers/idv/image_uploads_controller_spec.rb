@@ -11,6 +11,7 @@ RSpec.describe Idv::ImageUploadsController do
 
     let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let(:flow_path) { 'standard' }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
@@ -18,7 +19,7 @@ RSpec.describe Idv::ImageUploadsController do
         back: DocAuthImageFixtures.document_back_image_multipart,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
-        flow_path: 'standard',
+        flow_path: flow_path,
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
@@ -127,6 +128,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: nil,
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -185,7 +188,7 @@ RSpec.describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment!
 
         action
 
@@ -194,33 +197,50 @@ RSpec.describe Idv::ImageUploadsController do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
+            remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
           },
         )
       end
 
-      it 'returns an error when throttled' do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
-
-        action
-
-        expect(response.status).to eq(429)
-        expect(json).to eq(
+      context 'when rate limited' do
+        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:error_json) do
           {
             success: false,
             errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
-            redirect: idv_session_errors_throttled_url,
+            redirect: redirect_url,
             remaining_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
-          },
-        )
+          }
+        end
+
+        before do
+          RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
+
+          action
+        end
+
+        context 'hybrid flow' do
+          let(:flow_path) { 'hybrid' }
+          let(:redirect_url) { idv_hybrid_mobile_capture_complete_url }
+
+          it 'returns an error and redirects to capture_complete on hybrid flow' do
+            expect(response.status).to eq(429)
+            expect(json).to eq(error_json)
+          end
+        end
+
+        it 'redirects to session_errors_throttled on (mobile) standard flow' do
+          expect(response.status).to eq(429)
+          expect(json).to eq(error_json)
+        end
       end
 
       it 'tracks events' do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
 
         stub_analytics
         stub_attempts_tracker
@@ -239,6 +259,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: 0,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -297,6 +319,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -320,6 +344,8 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -332,6 +358,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -447,6 +475,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -470,6 +500,8 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -487,6 +519,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -527,6 +561,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -550,6 +586,8 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -567,6 +605,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -607,6 +647,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -630,6 +672,8 @@ RSpec.describe Idv::ImageUploadsController do
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
               vendor_request_time_in_ms: a_kind_of(Float),
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -647,6 +691,8 @@ RSpec.describe Idv::ImageUploadsController do
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
               flow_path: 'standard',
+              front_image_fingerprint: an_instance_of(String),
+              back_image_fingerprint: an_instance_of(String),
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -710,6 +756,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -735,6 +783,8 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         action
@@ -773,6 +823,8 @@ RSpec.describe Idv::ImageUploadsController do
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -800,6 +852,8 @@ RSpec.describe Idv::ImageUploadsController do
           pii_like_keypaths: [[:pii]],
           flow_path: 'standard',
           vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         action

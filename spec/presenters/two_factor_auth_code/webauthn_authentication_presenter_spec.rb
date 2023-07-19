@@ -5,10 +5,14 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
   let(:view) { ActionController::Base.new.view_context }
   let(:reauthn) {}
-  let(:presenter) do
-    TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, service_provider: nil,
-          view: view, platform_authenticator: platform_authenticator)
+  let(:credentials) { [] }
+  subject(:presenter) do
+    TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
+      data: { reauthn:, credentials: },
+      service_provider: nil,
+      view: view,
+      platform_authenticator: platform_authenticator,
+    )
   end
 
   let(:allow_user_to_switch_method) { false }
@@ -37,7 +41,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
         it 'returns the help text for just the security key' do
           expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_only_html'),
+            t('instructions.mfa.webauthn.confirm_webauthn_only'),
           )
         end
       end
@@ -47,7 +51,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
         it 'returns the help text for the security key or PIV' do
           expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html'),
+            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3'),
           )
         end
       end
@@ -58,7 +62,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'displays the help text' do
         expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_html'),
+          t('instructions.mfa.webauthn.confirm_webauthn'),
         )
       end
     end
@@ -68,7 +72,10 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
       it 'returns the help text for a platform authenticator' do
         expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME),
+          t(
+            'instructions.mfa.webauthn.confirm_webauthn_platform',
+            app_name: APP_NAME,
+          ),
         )
       end
     end
@@ -110,26 +117,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#verified_info_text' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_verified.info'),
-        )
-      end
-    end
-
-    context 'with a platform authenticator' do
-      let(:platform_authenticator) { true }
-
-      it 'renders the platform authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.info'),
-        )
-      end
-    end
-  end
-
   describe '#header' do
     context 'with a roaming authenticator' do
       it 'renders the roaming authenticator header' do
@@ -145,26 +132,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'renders the platform authenticator header' do
         expect(presenter.header).to eq(
           t('two_factor_authentication.webauthn_platform_header_text'),
-        )
-      end
-    end
-  end
-
-  describe '#verified_header' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_verified.header'),
-        )
-      end
-    end
-
-    context 'with a platform authenticator' do
-      let(:platform_authenticator) { true }
-
-      it 'renders the platform authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.header'),
         )
       end
     end
@@ -194,15 +161,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#fallback_question' do
-    let(:allow_user_to_switch_method) { true }
-
-    it 'supplies a fallback_question' do
-      expect(presenter.fallback_question).to \
-        eq(t('two_factor_authentication.webauthn_fallback.question'))
-    end
-  end
-
   describe '#cancel_link' do
     let(:locale) { LinkLocaleResolver.locale }
 
@@ -220,6 +178,12 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'returns the sign out path' do
         expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
       end
+    end
+  end
+
+  describe '#credentials' do
+    it 'returns credentials from initialized data' do
+      expect(presenter.credentials).to eq credentials
     end
   end
 

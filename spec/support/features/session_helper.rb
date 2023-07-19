@@ -6,6 +6,8 @@ module Features
 
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
+    IAL1_USER_PHONE = '202-555-1212'.freeze
+
     def sign_up_with(email)
       visit sign_up_email_path
       check t('sign_up.terms', app_name: APP_NAME)
@@ -36,7 +38,7 @@ module Features
     def sign_up_and_2fa_ial1_user
       user = sign_up_and_set_password
       select_2fa_option('phone')
-      fill_in 'new_phone_form_phone', with: '202-555-1212'
+      fill_in 'new_phone_form_phone', with: IAL1_USER_PHONE
       click_send_one_time_code
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
@@ -212,7 +214,7 @@ module Features
     end
 
     def user_with_2fa
-      create(:user, :fully_registered, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
+      create(:user, :fully_registered, with: { phone: IAL1_USER_PHONE }, password: VALID_PASSWORD)
     end
 
     def user_verified
@@ -336,7 +338,7 @@ module Features
     end
 
     def click_acknowledge_personal_key
-      checkbox_header = t('forms.validation.required_checkbox')
+      checkbox_header = t('forms.personal_key.required_checkbox')
       find('label', text: /#{checkbox_header}/).click
       click_continue
     end
@@ -580,6 +582,7 @@ module Features
 
       expect(page).to have_current_path backup_code_setup_path
 
+      check t('forms.backup_code.saved')
       click_button 'Continue'
     end
 
@@ -710,6 +713,10 @@ module Features
     def expect_branded_experience
       # Check for branded experience as being the header containing the Login.gov and partner logos
       expect(page).to have_css(".page-header--basic img[alt='#{APP_NAME}'] ~ img")
+    end
+
+    def acknowledge_backup_code_confirmation
+      click_on t('two_factor_authentication.backup_codes.saved_backup_codes')
     end
   end
 end

@@ -12,9 +12,7 @@ module Users
     before_action :authorize_piv_cac_disable, only: :delete
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
-    before_action :confirm_recently_authenticated_2fa, if: -> do
-      IdentityConfig.store.reauthentication_for_second_factor_management_enabled
-    end
+    before_action :confirm_recently_authenticated_2fa
 
     helper_method :in_multi_mfa_selection_flow?
 

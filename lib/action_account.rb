@@ -33,6 +33,10 @@ class ActionAccount
 
           * #{basename} review-pass uuid1 uuid2
 
+          * #{basename} suspend-user uuid1 uuid2
+
+          * #{basename} reinstate-user uuid1 uuid2
+
         Options:
     EOS
   end
@@ -45,10 +49,12 @@ class ActionAccount
     {
       'review-reject' => ReviewReject,
       'review-pass' => ReviewPass,
+      'suspend-user' => SuspendUser,
+      'reinstate-user' => ReinstateUser,
     }[name]
   end
 
-  class ReviewAction
+  module LogBase
     def log_message(uuid:, log:, table:, messages:)
       table << [uuid, log]
       messages << '`' + uuid + '`: ' + log
@@ -63,11 +69,75 @@ class ActionAccount
         error_activating: "There was an error activating the user's profile. Please try again.",
         past_eligibility: 'User is past the 30 day review eligibility.',
         missing_uuid: 'Error: Could not find user with that UUID',
+        user_suspended: 'User has been suspended',
+        user_reinstated: 'User has been reinstated',
+        user_already_suspended: 'User has already been suspended',
+        user_is_not_suspended: 'User is not suspended',
       }
     end
   end
 
-  class ReviewReject < ReviewAction
+  module UserActions
+    include LogBase
+
+    def perform_user_action(args:, config:, action:)
+      table = []
+      messages = []
+      uuids = args
+      table << %w[uuid status]
+
+      users = User.where(uuid: uuids).order(:uuid)
+      users.each do |user|
+        log_texts = []
+        case action
+        when :suspend
+          if user.suspended?
+            log_texts << log_text[:user_already_suspended]
+          else
+            user.suspend!
+            log_texts << log_text[:user_suspended]
+          end
+        when :reinstate
+          if user.suspended?
+            user.reinstate!
+            log_texts << log_text[:user_reinstated]
+          else
+            log_texts << log_text[:user_is_not_suspended]
+          end
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid,
+            log: text,
+            table:,
+            messages:,
+          )
+        end
+      end
+
+      if config.include_missing?
+        (uuids - users.map(&:uuid)).each do |missing_uuid|
+          table, messages = log_message(
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            table:,
+            messages:,
+          )
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: "#{action}-user",
+        uuids: users.map(&:uuid),
+        messages:,
+        table:,
+      )
+    end
+  end
+
+  class ReviewReject
+    include LogBase
     def run(args:, config:)
       uuids = args
 
@@ -94,8 +164,10 @@ class ActionAccount
 
         log_texts.each do |text|
           table, messages = log_message(
-            uuid: user.uuid, log: text, table: table,
-            messages: messages
+            uuid: user.uuid,
+            log: text,
+            table:,
+            messages:,
           )
         end
       end
@@ -103,8 +175,10 @@ class ActionAccount
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table, messages = log_message(
-            uuid: missing_uuid, log: log_text[:missing_uuid],
-            table: table, messages: messages
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            table:,
+            messages:,
           )
         end
       end
@@ -118,7 +192,9 @@ class ActionAccount
     end
   end
 
-  class ReviewPass < ReviewAction
+  class ReviewPass
+    include LogBase
+
     def alert_verified(user:, date_time:)
       UserAlerts::AlertUserAboutAccountVerified.call(
         user: user,
@@ -160,8 +236,10 @@ class ActionAccount
 
         log_texts.each do |text|
           table, messages = log_message(
-            uuid: user.uuid, log: text, table: table,
-            messages: messages
+            uuid: user.uuid,
+            log: text,
+            table:,
+            messages:,
           )
         end
       end
@@ -169,8 +247,10 @@ class ActionAccount
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
           table, messages = log_message(
-            uuid: missing_uuid, log: log_text[:missing_uuid],
-            table: table, messages: messages
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            table:,
+            messages:,
           )
         end
       end
@@ -180,6 +260,30 @@ class ActionAccount
         uuids: users.map(&:uuid),
         messages:,
         table:,
+      )
+    end
+  end
+
+  class SuspendUser
+    include UserActions
+
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :suspend,
+      )
+    end
+  end
+
+  class ReinstateUser
+    include UserActions
+
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :reinstate,
       )
     end
   end

@@ -36,14 +36,14 @@ RSpec.feature 'doc auth redo document capture', js: true do
         '[role="status"]',
         text: t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: warning_link_text,
+          link_html: warning_link_text,
         ).tr(' ', ' '),
       )
       click_link warning_link_text
 
       expect(current_path).to eq(idv_hybrid_handoff_path)
       expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth upload visited',
+        'IdV: doc auth hybrid handoff visited',
         hash_including(redo_document_capture: true),
       )
       complete_hybrid_handoff_step
@@ -60,14 +60,14 @@ RSpec.feature 'doc auth redo document capture', js: true do
       expect(page).to have_css('[role="status"]')  # We verified your ID
     end
 
-    xit 'document capture cannot be reached after submitting verify info step' do
+    it 'document capture cannot be reached after submitting verify info step' do
       warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
 
       expect(page).to have_css(
         '[role="status"]',
         text: t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: warning_link_text,
+          link_html: warning_link_text,
         ).tr(' ', ' '),
       )
       click_link warning_link_text
@@ -128,7 +128,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
           '[role="status"]',
           text: t(
             'doc_auth.headings.capture_scan_warning_html',
-            link: warning_link_text,
+            link_html: warning_link_text,
           ).tr(' ', ' '),
         )
         click_link warning_link_text

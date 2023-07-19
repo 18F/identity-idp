@@ -10,6 +10,7 @@ import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
+import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import UploadContext from '../context/upload';
@@ -27,9 +28,13 @@ interface DocumentCaptureProps {
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
+  inPersonFullAddressEntryEnabled: Boolean;
 }
 
-function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
+function DocumentCapture({
+  onStepChange = () => {},
+  inPersonFullAddressEntryEnabled,
+}: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
@@ -78,6 +83,10 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
+  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
+    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
+    : InPersonLocationPostOfficeSearchStep;
+
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -89,7 +98,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           },
           {
             name: 'location',
-            form: InPersonLocationPostOfficeSearchStep,
+            form: inPersonLocationPostOfficeSearchForm,
             title: t('in_person_proofing.headings.po_search.location'),
           },
           flowPath === 'hybrid' && {

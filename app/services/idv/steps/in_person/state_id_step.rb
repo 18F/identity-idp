@@ -4,8 +4,6 @@ module Idv
       class StateIdStep < DocAuthBaseStep
         STEP_INDICATOR_STEP = :verify_info
 
-        include TempMaybeRedirectToVerifyInfoHelper
-
         def self.analytics_visited_event
           :idv_in_person_proofing_state_id_visited
         end
@@ -15,6 +13,7 @@ module Idv
         end
 
         def call
+          flow_session[:flow_path] = @flow.flow_path
           pii_from_user = flow_session[:pii_from_user]
           initial_state_of_same_address_as_id = flow_session[:pii_from_user][:same_address_as_id]
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -28,6 +27,9 @@ module Idv
             if pii_from_user[:same_address_as_id] == 'true'
               copy_state_id_address_to_residential_address(pii_from_user)
               mark_step_complete(:address)
+              if IdentityConfig.store.in_person_ssn_info_controller_enabled
+                redirect_to idv_in_person_proofing_ssn_url
+              end
             end
 
             if initial_state_of_same_address_as_id == 'true' &&
@@ -37,7 +39,9 @@ module Idv
            end
           end
 
-          maybe_redirect_to_verify_info(flow_session[steps[:address].to_s].blank?)
+          if flow_session['Idv::Steps::InPerson::AddressStep']
+            redirect_to idv_in_person_verify_info_url
+          end
         end
 
         def extra_view_variables

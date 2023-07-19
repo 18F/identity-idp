@@ -18,7 +18,7 @@ module TwoFactorAuthCode
     def phone_number_message
       t(
         "instructions.mfa.#{otp_delivery_preference}.number_message_html",
-        number: content_tag(:strong, phone_number),
+        number_html: content_tag(:strong, phone_number),
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
     end
@@ -39,11 +39,6 @@ module TwoFactorAuthCode
 
     def fallback_question
       t('two_factor_authentication.phone_fallback.question')
-    end
-
-    def otp_expired_path
-      return unless FeatureManagement.otp_expired_redirect_enabled?
-      login_two_factor_otp_expired_path
     end
 
     def help_text

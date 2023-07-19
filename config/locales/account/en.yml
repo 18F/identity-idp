@@ -55,7 +55,7 @@ en:
       verification:
         instructions: Your account requires a one-time code to be verified.
         reactivate_button: Enter the code you received via US mail
-        success: Your account has been verified.
+        success: We verified your information
       webauthn: Security key
       webauthn_add: Add security key
       webauthn_confirm_delete: Yes, remove key
@@ -71,7 +71,6 @@ en:
       delete_account: Delete
       regenerate_personal_key: Reset
     login:
-      ie_not_supported: Internet Explorer 11 is no longer supported as of %{date}
       piv_cac: Sign in with your government employee ID
       tab_navigation: Account creation tabs
     navigation:
@@ -115,9 +114,10 @@ en:
     revoke_consent:
       link_title: Disconnect
       longer_description_html: Your information will no longer be shared with
-        %{service_provider}. To access %{service_provider} in the future, you
-        must give your consent to share your information. You can give consent
-        by going to the %{service_provider} site and logging in.
+        %{service_provider_html}. To access %{service_provider_html} in the
+        future, you must give your consent to share your information. You can
+        give consent by going to the %{service_provider_html} site and logging
+        in.
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

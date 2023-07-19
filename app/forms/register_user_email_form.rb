@@ -15,7 +15,7 @@ class RegisterUserEmailForm
   end
 
   def initialize(analytics:, attempts_tracker:, password_reset_requested: false)
-    @throttled = false
+    @rate_limited = false
     @password_reset_requested = password_reset_requested
     @analytics = analytics
     @attempts_tracker = attempts_tracker
@@ -83,7 +83,9 @@ class RegisterUserEmailForm
   def process_successful_submission(request_id, instructions)
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
-    if email_taken? && user_unconfirmed?
+    if email_address_record&.user&.suspended?
+      send_suspended_user_email(email_address_record)
+    elsif email_taken? && user_unconfirmed?
       update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
     elsif email_taken?
@@ -110,16 +112,16 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
-      throttled: @throttled,
+      throttled: @rate_limited,
     }
   end
 
   def send_sign_up_unconfirmed_email(request_id)
-    throttler = Throttle.new(user: existing_user, throttle_type: :reg_unconfirmed_email)
-    throttler.increment!
-    @throttled = throttler.throttled?
+    rate_limiter = RateLimiter.new(user: existing_user, rate_limit_type: :reg_unconfirmed_email)
+    rate_limiter.increment!
+    @rate_limited = rate_limiter.limited?
 
-    if @throttled
+    if @rate_limited
       @analytics.throttler_rate_limit_triggered(
         throttle_type: :reg_unconfirmed_email,
       )
@@ -132,11 +134,11 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_confirmed_email
-    throttler = Throttle.new(user: existing_user, throttle_type: :reg_confirmed_email)
-    throttler.increment!
-    @throttled = throttler.throttled?
+    rate_limiter = RateLimiter.new(user: existing_user, rate_limit_type: :reg_confirmed_email)
+    rate_limiter.increment!
+    @rate_limited = rate_limiter.limited?
 
-    if @throttled
+    if @rate_limited
       @analytics.throttler_rate_limit_triggered(
         throttle_type: :reg_confirmed_email,
       )
@@ -147,6 +149,13 @@ class RegisterUserEmailForm
       UserMailer.with(user: existing_user, email_address: email_address_record).
         signup_with_your_email.deliver_now_or_later
     end
+  end
+
+  def send_suspended_user_email(suspended_email_record)
+    UserMailer.with(
+      user: suspended_email_record.user,
+      email_address: suspended_email_record,
+    ).suspended_create_account.deliver_now_or_later
   end
 
   def user_unconfirmed?

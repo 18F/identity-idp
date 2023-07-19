@@ -44,22 +44,20 @@ RSpec.shared_examples 'verification step max attempts' do |step, sp|
 
   context 'after completing one less than the max attempts' do
     it 'allows the user to continue if their last attempt is successful' do
-      (Throttle.max_attempts(:proof_address) - 1).times do
+      (RateLimiter.max_attempts(:proof_address) - 1).times do
         fill_out_phone_form_fail
         click_idv_continue_for_step(step)
         click_on t('idv.failure.phone.warning.try_again_button')
       end
 
       fill_out_phone_form_ok
-      click_idv_continue_for_step(step)
-
-      expect(page).to have_content(t('titles.idv.enter_one_time_code'))
-      expect(page).to have_current_path(idv_otp_verification_path)
+      verify_phone_otp
+      expect(page).to have_current_path(idv_review_path, wait: 10)
     end
   end
 
   def perfom_maximum_allowed_idv_step_attempts(step)
-    (Throttle.max_attempts(:proof_address) - 1).times do
+    (RateLimiter.max_attempts(:proof_address) - 1).times do
       yield
       click_idv_continue_for_step(step)
       click_on t('idv.failure.phone.warning.try_again_button')

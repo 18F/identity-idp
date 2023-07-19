@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth document capture step', :js do
+RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -18,42 +18,9 @@ RSpec.feature 'doc auth document capture step', :js do
     sign_in_and_2fa_user(user)
   end
 
-  it 'does not skip ahead in standard desktop flow' do
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
-    complete_welcome_step
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_agreement_step)
-    complete_agreement_step
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_hybrid_handoff_path)
-  end
-
   context 'standard desktop flow' do
     before do
       complete_doc_auth_steps_before_document_capture_step
-    end
-
-    it 'shows the new DocumentCapture page for desktop standard flow' do
-      expect(page).to have_current_path(idv_document_capture_path)
-
-      expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
-      expect(page).to have_content(t('step_indicator.flows.idv.verify_id'))
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        flow_path: 'standard',
-        step: 'document_capture',
-        analytics_id: 'Doc Auth',
-        irs_reproofing: false,
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      )
-
-      # it redirects here if trying to move earlier in the flow
-      visit(idv_doc_auth_agreement_step)
-      expect(page).to have_current_path(idv_document_capture_path)
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_document_capture_path)
     end
 
     it 'logs return to sp link click' do
@@ -72,7 +39,7 @@ RSpec.feature 'doc auth document capture step', :js do
       end
     end
 
-    context 'throttles calls to acuant', allow_browser_log: true do
+    context 'rate limits calls to acuant', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
         allow_any_instance_of(ApplicationController).to receive(
@@ -94,11 +61,11 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'redirects to the throttled error page' do
+      it 'redirects to the rate limited error page' do
         freeze_time do
           attach_and_submit_images
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+            RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
           message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
           expect(page).to have_content(message)
@@ -106,7 +73,7 @@ RSpec.feature 'doc auth document capture step', :js do
         end
       end
 
-      it 'logs the throttled analytics event for doc_auth' do
+      it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',
@@ -118,25 +85,17 @@ RSpec.feature 'doc auth document capture step', :js do
         attach_and_submit_images
         expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
       end
-    end
 
-    it 'proceeds to the next page with valid info' do
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+      context 'successfully processes image on last attempt' do
+        before do
+          DocAuth::Mock::DocAuthMockClient.reset!
+        end
 
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_ssn_url)
-      expect_costing_for_document
-      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
-
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_ssn_url)
-      fill_out_ssn_form_ok
-      click_idv_continue
-      complete_verify_step
-      expect(page).to have_current_path(idv_phone_url)
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_phone_url)
+        it 'proceeds to the next page with valid info' do
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_ssn_url)
+        end
+      end
     end
 
     it 'catches network connection errors on post_front_image', allow_browser_log: true do

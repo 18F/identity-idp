@@ -32,7 +32,7 @@ RSpec.feature 'legacy passwords' do
 
     expect(page).to have_current_path(new_user_session_path)
     expect(page).to have_content(
-      t('devise.failure.invalid_html', link: t('devise.failure.invalid_link_text')),
+      t('devise.failure.invalid_html', link_html: t('devise.failure.invalid_link_text')),
     )
   end
 

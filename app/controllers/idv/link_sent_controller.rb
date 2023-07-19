@@ -1,17 +1,13 @@
 module Idv
   class LinkSentController < ApplicationController
     include DocumentCaptureConcern
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :extend_timeout_using_meta_refresh
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -43,9 +39,9 @@ module Idv
     private
 
     def confirm_hybrid_handoff_complete
-      return if flow_session[:flow_path] == 'hybrid'
+      return if idv_session.flow_path == 'hybrid'
 
-      if flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
       else
         redirect_to idv_hybrid_handoff_url
@@ -73,12 +69,12 @@ module Idv
     def handle_document_verification_success(get_results_response)
       save_proofing_components(current_user)
       extract_pii_from_doc(current_user, get_results_response, store_in_session: true)
-      flow_session[:flow_path] = 'hybrid'
+      idv_session.flow_path = 'hybrid'
     end
 
     def render_document_capture_cancelled
       redirect_to idv_hybrid_handoff_url
-      flow_session[:flow_path] = nil
+      idv_session.flow_path = nil
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 
