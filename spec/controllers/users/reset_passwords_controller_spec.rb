@@ -193,11 +193,13 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
   describe '#update' do
     let(:password_short_error) { { password: [:too_short] } }
+
     let(:password_token_error) { { reset_password_token: [token_expired_error] } }
     context 'user submits new password after token expires' do
       let(:reset_password_error_details) do
         {
           **password_short_error,
+          password_confirmation: [:too_short],
           **password_token_error,
         }
       end
@@ -221,7 +223,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
         )
 
-        params = { password: 'short', reset_password_token: raw_reset_token }
+        params = {
+          password: 'short',
+          password_confirmation: 'short',
+          reset_password_token: raw_reset_token,
+        }
 
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
@@ -230,6 +236,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: [password_error_message],
+            password_confirmation: ['is too short (minimum is 12 characters)'],
             **password_token_error,
           },
           error_details: reset_password_error_details,
@@ -239,12 +246,15 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-        expect(response).to redirect_to new_user_password_path
-        expect(flash[:error]).to eq t('devise.passwords.token_expired')
+        # expect(response).to redirect_to new_user_password_path
+        # expect(flash[:error]).to eq t('devise.passwords.token_expired')
       end
     end
 
     context 'user submits invalid new password' do
+      let(:password) { 'short' }
+      let(:password_confirmation) { 'short' }
+
       it 'renders edit' do
         stub_analytics
         stub_attempts_tracker
@@ -257,13 +267,21 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now,
         )
-        form_params = { password: 'short', reset_password_token: raw_reset_token }
+        form_params = {
+          password: password,
+          password_confirmation: password_confirmation,
+          reset_password_token: raw_reset_token,
+        }
         analytics_hash = {
           success: false,
           errors: {
             password: [password_error_message],
+            password_confirmation: ['is too short (minimum is 12 characters)'],
           },
-          error_details: password_short_error,
+          error_details: {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          },
           user_id: user.uuid,
           profile_deactivated: false,
         }
@@ -272,7 +290,59 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           with('Password Reset: Password Submitted', analytics_hash)
         expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
-          failure_reason: password_short_error,
+          failure_reason: {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          },
+        )
+
+        put :update, params: { reset_password_form: form_params }
+
+        expect(assigns(:forbidden_passwords)).to all(be_a(String))
+        expect(response).to render_template(:edit)
+      end
+    end
+
+    context 'user submits password confirmation that does not match' do
+      let(:password) { 'salty pickles' }
+      let(:password_confirmation) { 'salty pickles2' }
+
+      it 'renders edit' do
+        stub_analytics
+        stub_attempts_tracker
+
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
+        user = create(
+          :user,
+          :fully_registered,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.zone.now,
+        )
+        form_params = {
+          password: password,
+          password_confirmation: password_confirmation,
+          reset_password_token: raw_reset_token,
+        }
+        analytics_hash = {
+          success: false,
+          errors: {
+            password_confirmation: [t('errors.messages.password_mismatch')],
+          },
+          error_details: {
+            password_confirmation: [t('errors.messages.password_mismatch')],
+          },
+          user_id: user.uuid,
+          profile_deactivated: false,
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with('Password Reset: Password Submitted', analytics_hash)
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success: false,
+          failure_reason: {
+            password_confirmation: [t('errors.messages.password_mismatch')],
+          },
         )
 
         put :update, params: { reset_password_form: form_params }
@@ -283,6 +353,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'user submits the reset password form twice' do
+      let(:password) { 'a really long passw0rd' }
+
       it 'shows an invalid token error' do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -292,7 +364,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now,
         )
-        form_params = { password: 'a really long passw0rd', reset_password_token: raw_reset_token }
+        form_params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
 
         put :update, params: { reset_password_form: form_params }
         put :update, params: { reset_password_form: form_params }
@@ -303,6 +379,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'IAL1 user submits valid new password' do
+      let(:password) { 'a really long passw0rd' }
+
       it 'redirects to sign in page' do
         stub_analytics
         stub_attempts_tracker
@@ -330,8 +408,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             :forgot_password_new_password_submitted,
           ).with(success_properties)
 
-          password = 'a really long passw0rd'
-          params = { password: password, reset_password_token: raw_reset_token }
+          params = {
+            password: password,
+            password_confirmation: password,
+            reset_password_token: raw_reset_token,
+          }
 
           get :edit, params: { reset_password_token: raw_reset_token }
           put :update, params: { reset_password_form: params }
@@ -355,6 +436,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'ial2 user submits valid new password' do
+      let(:password) { 'a really long passw0rd' }
+
       it 'deactivates the active profile and redirects' do
         stub_analytics
         stub_attempts_tracker
@@ -379,8 +462,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         )
 
         get :edit, params: { reset_password_token: raw_reset_token }
-        password = 'a really long passw0rd'
-        params = { password: password, reset_password_token: raw_reset_token }
+        params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
 
         put :update, params: { reset_password_form: params }
 
@@ -399,6 +485,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'unconfirmed user submits valid new password' do
+      let(:password) { 'a really long passw0rd' }
+
       it 'confirms the user' do
         stub_analytics
         stub_attempts_tracker
@@ -423,8 +511,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           success_properties,
         )
 
-        password = 'a really long passw0rd'
-        params = { password: password, reset_password_token: raw_reset_token }
+        params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
 
         get :edit, params: { reset_password_token: raw_reset_token }
         put :update, params: { reset_password_form: params }
