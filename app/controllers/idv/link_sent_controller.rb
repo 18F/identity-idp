@@ -62,7 +62,7 @@ module Idv
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+      }.merge(**ab_test_analytics_args)
     end
 
     def handle_document_verification_success(get_results_response)
