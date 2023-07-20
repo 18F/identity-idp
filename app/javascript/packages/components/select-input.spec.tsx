@@ -9,8 +9,22 @@ describe('SelectInput', () => {
 
     const input = getByLabelText('Input');
 
-    expect(input).to.be.an.instanceOf(HTMLInputElement);
-    expect(input.classList.contains('usa-input')).to.be.true();
+    expect(input).to.be.an.instanceOf(HTMLSelectElement);
+    expect(input.classList.contains('usa-select')).to.be.true();
+  });
+
+  it('renders with child elements', () => {
+    const childElement = <option value="abc">def</option>;
+    const { getByText, getByLabelText } = render(
+      <SelectInput label="Input">{childElement}</SelectInput>,
+    );
+
+    const input = getByLabelText('Input');
+
+    expect(input).to.be.an.instanceOf(HTMLSelectElement);
+    const optionElement = getByText('def');
+    expect(optionElement).to.be.an.instanceOf(HTMLOptionElement);
+    expect((optionElement as HTMLOptionElement).selected).to.be.true();
   });
 
   it('uses an explicitly-provided ID', () => {
@@ -36,20 +50,20 @@ describe('SelectInput', () => {
 
     const input = getByLabelText('Input');
 
-    expect([...input.classList.values()]).to.have.all.members(['usa-input', customClass]);
+    expect([...input.classList.values()]).to.have.all.members(['usa-select', customClass]);
   });
 
   it('applies additional input attributes', () => {
-    const type = 'password';
+    const value = 'password';
     const { getByLabelText } = render(
-      <SelectInput label="Input" type={type}>
+      <SelectInput label="Input" title={value}>
         test
       </SelectInput>,
     );
 
-    const input = getByLabelText('Input') as HTMLInputElement;
+    const input = getByLabelText('Input');
 
-    expect(input.type).to.equal(type);
+    expect(input.title).to.equal(value);
   });
 
   it('forwards ref', () => {
@@ -60,7 +74,7 @@ describe('SelectInput', () => {
       </SelectInput>,
     );
 
-    expect(ref.current).to.be.an.instanceOf(HTMLInputElement);
+    expect(ref.current).to.be.an.instanceOf(HTMLSelectElement);
   });
 
   it('renders with a hint', () => {
