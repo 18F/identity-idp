@@ -15,6 +15,11 @@ export interface InPersonContextProps {
    * Date communicated to users regarding expected update about their enrollment after an outage
    */
   inPersonOutageExpectedUpdateDate?: string;
+
+  /**
+   * When true users must enter a full address when searching for a Post Office location
+   */
+  inPersonFullAddressEntryEnabled: boolean;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({

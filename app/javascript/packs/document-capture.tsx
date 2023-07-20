@@ -95,6 +95,7 @@ const App = composeComponents(
         inPersonURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
+        inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
       },
     },
   ],
@@ -143,7 +144,6 @@ const App = composeComponents(
     DocumentCapture,
     {
       onStepChange: extendSession,
-      inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
     },
   ],
 );
