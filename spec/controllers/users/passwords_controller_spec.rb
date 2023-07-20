@@ -128,7 +128,7 @@ RSpec.describe Users::PasswordsController do
       it 'does not create a password_changed user Event' do
         stub_sign_in
 
-        # expect(controller).to_not receive(:create_user_event)
+        expect(controller).to_not receive(:create_user_event)
 
         params = {
           password: 'new',

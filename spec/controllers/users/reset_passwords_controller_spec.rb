@@ -246,8 +246,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Password Submitted', analytics_hash)
-        # expect(response).to redirect_to new_user_password_path
-        # expect(flash[:error]).to eq t('devise.passwords.token_expired')
+        expect(response).to redirect_to new_user_password_path
+        expect(flash[:error]).to eq t('devise.passwords.token_expired')
       end
     end
 

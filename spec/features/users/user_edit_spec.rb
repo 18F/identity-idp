@@ -11,8 +11,8 @@ RSpec.feature 'User edit' do
 
     scenario 'user sees error message if form is submitted with invalid password' do
       password = 'foo'
-      fill_in 'Password', with: password
-      fill_in 'Confirm password', with: password
+      fill_in t('forms.passwords.edit.labels.password'), with: password
+      fill_in t('components.password_confirmation.confirm_label'), with: password
       click_button 'Update'
 
       expect(page).to have_css '.usa-alert', text: 'Please review the problems below:'

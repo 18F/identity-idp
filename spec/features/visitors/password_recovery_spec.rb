@@ -49,7 +49,7 @@ RSpec.feature 'Password Recovery' do
       expect(current_path).to eq edit_user_password_path
 
       password = 'NewVal!dPassw0rd'
-      fill_in t('forms.password'), with: password
+      fill_in t('forms.passwords.edit.labels.password'), with: password
       fill_in t('components.password_confirmation.confirm_label'),
               with: password
       click_button t('forms.passwords.edit.buttons.submit')
@@ -87,8 +87,8 @@ RSpec.feature 'Password Recovery' do
 
     it 'keeps user signed out after they successfully reset their password' do
       password = 'NewVal!dPassw0rd'
-      fill_in 'Password', with: password
-      fill_in 'Confirm password', with: password
+      fill_in t('forms.passwords.edit.labels.password'), with: password
+      fill_in t('components.password_confirmation.confirm_label'), with: password
       click_button t('forms.passwords.edit.buttons.submit')
 
       expect(current_path).to eq new_user_session_path
@@ -127,7 +127,7 @@ RSpec.feature 'Password Recovery' do
 
     it 'redirects user to profile after signing back in' do
       password = 'a real secure password'
-      fill_in t('forms.password'), with: password
+      fill_in t('forms.passwords.edit.labels.password'), with: password
       fill_in t('components.password_confirmation.confirm_label'),
               with: password
       click_button t('forms.passwords.edit.buttons.submit')
@@ -169,7 +169,7 @@ RSpec.feature 'Password Recovery' do
     context 'when password form values are valid' do
       it 'changes the password, sends an email about the change, and does not sign the user in' do
         password = 'NewVal!dPassw0rd'
-        fill_in t('forms.password'), with: password
+        fill_in t('forms.passwords.edit.labels.password'), with: password
         fill_in t('components.password_confirmation.confirm_label'),
                 with: password
 
@@ -188,7 +188,7 @@ RSpec.feature 'Password Recovery' do
 
       it 'allows the user to continue to the service provider' do
         password = 'NewVal!dPassw0rd'
-        fill_in t('forms.password'), with: password
+        fill_in t('forms.passwords.edit.labels.password'), with: password
         fill_in t('components.password_confirmation.confirm_label'),
                 with: password
         click_button t('forms.passwords.edit.buttons.submit')
@@ -210,7 +210,7 @@ RSpec.feature 'Password Recovery' do
     context 'when password form values are invalid' do
       it 'does not allow the user to submit until password score is good', js: true do
         password = 'invalid'
-        fill_in t('forms.password'), with: password
+        fill_in t('forms.passwords.edit.labels.password'), with: password
         fill_in t('components.password_confirmation.confirm_label'),
                 with: password
         click_button t('forms.passwords.edit.buttons.submit')
@@ -224,8 +224,8 @@ RSpec.feature 'Password Recovery' do
       end
 
       it 'displays field validation error when password field is too short' do
-        fill_in 'Password', with: '1234'
-        fill_in 'Confirm password', with: '1234'
+        fill_in t('forms.passwords.edit.labels.password'), with: '1234'
+        fill_in t('components.password_confirmation.confirm_label'), with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
         expect(page).
@@ -235,8 +235,8 @@ RSpec.feature 'Password Recovery' do
       end
 
       it "does not update the user's password when password is invalid" do
-        fill_in 'Password', with: '1234'
-        fill_in 'Confirm password', with: '1234'
+        fill_in t('forms.passwords.edit.labels.password'), with: '1234'
+        fill_in t('components.password_confirmation.confirm_label'), with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
         signin(@user.email, '1234')
@@ -244,16 +244,16 @@ RSpec.feature 'Password Recovery' do
       end
 
       it 'allows multiple attempts with invalid password' do
-        fill_in 'Password', with: '1234'
-        fill_in 'Confirm password', with: '1234'
+        fill_in t('forms.passwords.edit.labels.password'), with: '1234'
+        fill_in t('components.password_confirmation.confirm_label'), with: '1234'
         click_button t('forms.passwords.edit.buttons.submit')
 
         expect(page).to have_content t(
           'errors.attributes.password.too_short.other', count: Devise.password_length.first
         )
 
-        fill_in 'Password', with: '5678'
-        fill_in 'Confirm password', with: '5678'
+        fill_in t('forms.passwords.edit.labels.password'), with: '5678'
+        fill_in t('components.password_confirmation.confirm_label'), with: '5678'
         click_button t('forms.passwords.edit.buttons.submit')
 
         expect(page).to have_content t(

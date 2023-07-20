@@ -12,7 +12,7 @@ RSpec.feature 'disavowing an action' do
     sign_in_and_2fa_user(user)
     visit manage_password_path
     password = 'OldVal!dPassw0rd'
-    fill_in t('forms.password'), with: password
+    fill_in t('forms.passwords.edit.labels.password'), with: password
     fill_in t('components.password_confirmation.confirm_label'),
             with: password
 
@@ -112,14 +112,14 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('headings.passwords.change'))
 
-    fill_in 'New password', with: 'invalid'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'invalid'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content t(
       'errors.attributes.password.too_short.other', count: Devise.password_length.first
     )
 
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))
@@ -145,8 +145,8 @@ RSpec.feature 'disavowing an action' do
     open_last_email
     click_email_link_matching(/reset_password_token/)
     password = 'OldVal!dPassw0rd'
-    fill_in 'Password', with: password
-    fill_in 'Confirm password', with: password
+    fill_in t('forms.passwords.edit.labels.password'), with: password
+    fill_in t('components.password_confirmation.confirm_label'), with: password
     click_button t('forms.passwords.edit.buttons.submit')
   end
 
@@ -158,7 +158,7 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('headings.passwords.change'))
 
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))
