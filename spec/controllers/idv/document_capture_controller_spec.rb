@@ -20,7 +20,7 @@ RSpec.describe Idv::DocumentCaptureController do
     subject.idv_session.flow_path = 'standard'
     subject.user_session['idv/doc_auth'] = flow_session
 
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

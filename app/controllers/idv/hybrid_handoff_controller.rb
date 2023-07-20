@@ -156,7 +156,7 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
-      }.compact.merge(ab_test_analytics_args)
+      }.compact.merge(ab_test_analytics_buckets)
     end
 
     def form_response(destination:)

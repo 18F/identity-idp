@@ -24,7 +24,7 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

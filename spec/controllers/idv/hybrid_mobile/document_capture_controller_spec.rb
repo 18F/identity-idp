@@ -27,7 +27,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
 
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

@@ -83,7 +83,7 @@ module Idv
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(ab_test_analytics_args)
+        }.merge(ab_test_analytics_buckets)
       end
 
       def updating_ssn?

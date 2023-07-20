@@ -15,7 +15,7 @@ RSpec.describe Idv::HybridHandoffController do
     stub_attempts_tracker
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

@@ -3,7 +3,7 @@ module Idv
     include AcuantConcern
     include Idv::GettingStartedAbTestConcern
 
-    def ab_test_analytics_args
+    def ab_test_analytics_buckets
       acuant_sdk_ab_test_analytics_args.
         merge(getting_started_ab_test_analytics_args)
     end

@@ -33,7 +33,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:confirm_document_capture_session_complete).
       and_return(true)
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

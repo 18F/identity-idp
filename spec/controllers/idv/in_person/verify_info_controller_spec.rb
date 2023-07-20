@@ -20,7 +20,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
-    allow(subject).to receive(:ab_test_analytics_args).and_return(ab_test_args)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do

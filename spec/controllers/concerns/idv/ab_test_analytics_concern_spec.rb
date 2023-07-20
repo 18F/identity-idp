@@ -7,7 +7,7 @@ RSpec.describe 'AbTestAnalyticsConcern' do
     end
   end
 
-  describe '#ab_test_analytics_args' do
+  describe '#ab_test_analytics_buckets' do
     controller Idv::StepController do
     end
 
@@ -15,14 +15,14 @@ RSpec.describe 'AbTestAnalyticsConcern' do
       acuant_sdk_args = { as_bucket: :as_value }
       expect(subject).to receive(:acuant_sdk_ab_test_analytics_args).
         and_return(acuant_sdk_args)
-      expect(controller.ab_test_analytics_args).to include(acuant_sdk_args)
+      expect(controller.ab_test_analytics_buckets).to include(acuant_sdk_args)
     end
 
     it 'includes getting_started_ab_test_analytics_args' do
       getting_started_args = { gs_bucket: :gs_value }
       expect(subject).to receive(:acuant_sdk_ab_test_analytics_args).
         and_return(getting_started_args)
-      expect(controller.ab_test_analytics_args).to include(getting_started_args)
+      expect(controller.ab_test_analytics_buckets).to include(getting_started_args)
     end
   end
 end
