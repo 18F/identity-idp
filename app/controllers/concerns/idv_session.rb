@@ -1,8 +1,6 @@
 module IdvSession
   extend ActiveSupport::Concern
 
-  include Idv::StepUtilitiesConcern
-
   included do
     before_action :redirect_unless_idv_session_user
     before_action :redirect_if_sp_context_needed
@@ -37,6 +35,23 @@ module IdvSession
 
   def flow_session
     user_session['idv/doc_auth'] ||= {}
+  end
+
+  def irs_reproofing?
+    current_user&.reproof_for_irs?(
+      service_provider: current_sp,
+    ).present?
+  end
+
+  def document_capture_session_uuid
+    flow_session[:document_capture_session_uuid]
+  end
+
+  def document_capture_session
+    return @document_capture_session if defined?(@document_capture_session)
+    @document_capture_session = DocumentCaptureSession.find_by(
+      uuid: document_capture_session_uuid,
+    )
   end
 
   def redirect_unless_idv_session_user
