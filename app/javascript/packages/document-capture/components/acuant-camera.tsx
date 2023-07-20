@@ -93,9 +93,6 @@ interface AcuantCameraUIOptions {
   text: AcuantCameraUIText;
 }
 
-/**
- * We call String.toLowerCase() on these when sending analytics events to the server
- */
 export enum AcuantDocumentType {
   NONE = 0,
   ID = 1,

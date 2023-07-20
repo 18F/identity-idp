@@ -16,7 +16,6 @@ import DocumentCapture from '@18f/identity-document-capture/components/document-
 import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
-import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -92,7 +91,7 @@ describe('document-capture/components/document-capture', () => {
         image: {
           data: validUpload,
         },
-        cardtype: AcuantDocumentType.ID,
+        cardtype: 1,
       });
     });
 

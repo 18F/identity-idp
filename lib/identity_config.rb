@@ -221,7 +221,6 @@ class IdentityConfig
     config.add(:idv_acuant_sdk_version_alternate, type: :string)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_enabled, type: :boolean)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_percent, type: :integer)
-    config.add(:idv_getting_started_a_b_testing, type: :json, options: { symbolize_names: true })
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)

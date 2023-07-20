@@ -891,51 +891,6 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#activate_after_fraud_review_unnecessary' do
-    it 'activates a profile if fraud review is unnecessary' do
-      profile = create(:profile, :fraud_review_pending, user: user)
-
-      expect(profile.activated_at).to be_nil # to change
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(true) # to change
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      expect(profile).to_not be_active
-      expect(profile.fraud_review_pending_at).to_not be_nil
-      expect(profile.fraud_pending_reason).to_not be_nil
-
-      profile.activate_after_fraud_review_unnecessary
-
-      expect(profile.activated_at).to be_present # changed
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false) # changed
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # changed
-
-      expect(profile).to be_active
-      expect(profile.fraud_review_pending_at).to be_nil
-      expect(profile.fraud_pending_reason).to be_nil
-    end
-
-    it 'does not activate a profile if transaction raises an error' do
-      profile = create(:profile, :fraud_review_pending, user: user)
-
-      allow(profile).to receive(:update!).and_raise(RuntimeError)
-
-      suppress(RuntimeError) do
-        profile.activate_after_fraud_review_unnecessary
-      end
-
-      expect(profile.fraud_review_pending_at).to_not eq nil
-      expect(profile).to_not be_active
-    end
-  end
-
   # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
   # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_gpo_verification' do
@@ -1038,7 +993,7 @@ RSpec.describe Profile do
 
     context 'it notifies the user' do
       let(:profile) do
-        profile = create(:profile, :fraud_review_pending, user: user)
+        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
         profile.reject_for_fraud(notify_user: true)
         profile
       end
@@ -1058,7 +1013,7 @@ RSpec.describe Profile do
 
     context 'it does not notify the user' do
       let(:profile) do
-        profile = create(:profile, :fraud_review_pending, user: user)
+        profile = user.profiles.create(fraud_review_pending_at: 1.day.ago)
         profile.reject_for_fraud(notify_user: false)
         profile
       end
@@ -1073,7 +1028,11 @@ RSpec.describe Profile do
     context 'when the SP is the IRS' do
       let(:sp) { create(:service_provider, :irs) }
       let(:profile) do
-        create(:profile, :fraud_review_pending, active: false, initiating_service_provider: sp)
+        user.profiles.create(
+          active: false,
+          fraud_review_pending_at: 1.day.ago,
+          initiating_service_provider: sp,
+        )
       end
 
       context 'and notify_user is true' do
