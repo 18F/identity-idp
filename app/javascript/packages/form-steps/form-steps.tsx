@@ -31,7 +31,7 @@ interface FormStepRegisterFieldOptions {
 export type RegisterFieldCallback = (
   field: string,
   options?: Partial<FormStepRegisterFieldOptions>,
-) => undefined | RefCallback<HTMLInputElement>;
+) => undefined | RefCallback<HTMLElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
