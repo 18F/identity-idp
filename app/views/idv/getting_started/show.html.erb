@@ -6,15 +6,6 @@
         intro: t('idv.getting_started.no_js_intro', sp_name: @sp_name),
       ) do %>
 
-    <% if @current_user&.reproof_for_irs?(service_provider: @current_sp) %>
-    <%= render AlertComponent.new(
-          type: :info,
-          message: t('doc_auth.info.irs_reproofing_explanation'),
-          class: ['margin-bottom-2', 'usa-alert--info-important'],
-        )
-    %>
-    <% end %>
-
   <%= render AlertComponent.new(
         type: :error,
         class: [
