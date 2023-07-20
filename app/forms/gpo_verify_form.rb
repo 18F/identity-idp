@@ -57,10 +57,6 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def bump_fraud_review_pending_timestamps
-    pending_profile&.bump_fraud_review_pending_timestamps
-  end
-
   def validate_otp_not_expired
     return unless gpo_confirmation_code.present? && gpo_confirmation_code.expired?
 
