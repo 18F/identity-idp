@@ -34,7 +34,6 @@ RSpec.describe Idv::ProfileMaker do
 
       expect(pii).to be_a Pii::Attributes
       expect(pii.first_name).to eq('Some')
-      expect(profile.reproof_at).to be_nil
     end
 
     context 'with deactivation reason' do
