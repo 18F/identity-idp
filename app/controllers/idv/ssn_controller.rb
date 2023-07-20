@@ -89,7 +89,7 @@ module Idv
         step: 'ssn',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**ab_test_analytics_args)
+      }.merge(ab_test_analytics_args)
     end
 
     def updating_ssn?

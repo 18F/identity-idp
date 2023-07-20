@@ -57,7 +57,7 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-        }.merge(**ab_test_analytics_args)
+        }.merge(ab_test_analytics_args)
       end
 
       def handle_stored_result

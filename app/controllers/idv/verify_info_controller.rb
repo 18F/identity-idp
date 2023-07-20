@@ -51,7 +51,7 @@ module Idv
         step: 'verify',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**ab_test_analytics_args)
+      }.merge(ab_test_analytics_args)
     end
 
     # copied from verify_step
