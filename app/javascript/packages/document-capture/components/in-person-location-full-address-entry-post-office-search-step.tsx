@@ -3,12 +3,13 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import FullAddressSearch, {
+import {
   transformKeys,
   snakeCase,
   LocationQuery,
   LOCATIONS_URL,
-} from './in-person-full-address-search';
+} from '@18f/identity-address-search';
+import FullAddressSearch from './in-person-full-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
@@ -40,7 +41,6 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   };
 
   // ref allows us to avoid a memory leak
-  // todo: is this necessary?
   const mountedRef = useRef(false);
 
   useEffect(() => {

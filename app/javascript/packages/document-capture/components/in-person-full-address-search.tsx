@@ -7,45 +7,14 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-
-export const LOCATIONS_URL = new URL(
-  '/verify/in_person/usps_locations',
-  window.location.href,
-).toString();
-
-export interface FormattedLocation {
-  formattedCityStateZip: string;
-  distance: string;
-  id: number;
-  name: string;
-  saturdayHours: string;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-  isPilot: boolean;
-}
-
-export interface PostOffice {
-  address: string;
-  city: string;
-  distance: string;
-  name: string;
-  saturday_hours: string;
-  state: string;
-  sunday_hours: string;
-  weekday_hours: string;
-  zip_code_4: string;
-  zip_code_5: string;
-  is_pilot: boolean;
-}
-
-export interface LocationQuery {
-  streetAddress: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  address: string;
-}
+import {
+  FormattedLocation,
+  transformKeys,
+  snakeCase,
+  LocationQuery,
+  LOCATIONS_URL,
+  PostOffice,
+} from '@18f/identity-address-search';
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
   postOffices.map((po: PostOffice, index) => ({
@@ -60,22 +29,6 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
     isPilot: !!po.is_pilot,
   }));
 
-export const snakeCase = (value: string) =>
-  value
-    .split(/(?=[A-Z])/)
-    .join('_')
-    .toLowerCase();
-
-// snake case the keys of the location
-export const transformKeys = (location: object, predicate: (key: string) => string) =>
-  Object.keys(location).reduce(
-    (acc, key) => ({
-      [predicate(key)]: location[key],
-      ...acc,
-    }),
-    {},
-  );
-
 const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
   const response = await request<PostOffice[]>(LOCATIONS_URL, {
     method: 'post',
@@ -86,9 +39,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
 };
 
 function useUspsLocations() {
-  // raw text input that is set when user clicks search
-  const [addressQuery, setAddressQuery] = useState<LocationQuery | null>(null);
-  // todo: are these all necessary?
+  const [locationQuery, setLocationQuery] = useState<LocationQuery | null>(null);
   const validatedAddressFieldRef = useRef<HTMLFormElement>(null);
   const validatedCityFieldRef = useRef<HTMLFormElement>(null);
   const validatedStateFieldRef = useRef<HTMLFormElement>(null);
@@ -115,7 +66,7 @@ function useUspsLocations() {
         return;
       }
 
-      setAddressQuery({
+      setLocationQuery({
         address: `${addressInput}, ${cityInput}, ${stateInput} ${zipCodeInput}`,
         streetAddress: addressInput,
         city: cityInput,
@@ -130,10 +81,10 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([addressQuery], ([address]) => (address ? requestUspsLocations(address) : null));
+  } = useSWR([locationQuery], ([address]) => (address ? requestUspsLocations(address) : null));
 
   return {
-    addressQuery,
+    locationQuery,
     locationResults,
     uspsError,
     isLoading: isLoadingLocations,
@@ -170,7 +121,7 @@ function FullAddressSearch({
   const [stateInput, setStateInput] = useState('');
   const [zipCodeInput, setZipCodeInput] = useState('');
   const {
-    addressQuery,
+    locationQuery,
     locationResults,
     uspsError,
     isLoading,
@@ -206,7 +157,7 @@ function FullAddressSearch({
   }, [uspsError]);
 
   useDidUpdateEffect(() => {
-    onFoundLocations(addressQuery, locationResults);
+    onFoundLocations(locationQuery, locationResults);
   }, [locationResults]);
 
   const handleSearch = useCallback(
