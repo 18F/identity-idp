@@ -13,7 +13,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     end
   end
 
-  describe '#getting_started_a_b_test_bucket' do
+  describe '#getting_started_ab_test_bucket' do
     controller Idv::StepController do
     end
 
@@ -29,7 +29,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
     end
 
     it 'returns the bucket based on user id' do
-      expect(controller.getting_started_a_b_test_bucket).to eq(:getting_started)
+      expect(controller.getting_started_ab_test_bucket).to eq(:getting_started)
     end
 
     context 'with a different user' do
@@ -38,7 +38,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
         allow(controller).to receive(:current_user).and_return(user2)
       end
       it 'returns the bucket based on request id' do
-        expect(controller.getting_started_a_b_test_bucket).to eq(:welcome)
+        expect(controller.getting_started_ab_test_bucket).to eq(:welcome)
       end
     end
   end
@@ -57,7 +57,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
     context 'A/B test specifies getting started page' do
       before do
-        allow(controller).to receive(:getting_started_a_b_test_bucket).
+        allow(controller).to receive(:getting_started_ab_test_bucket).
           and_return(:getting_started)
       end
 
@@ -70,7 +70,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
     context 'A/B test specifies welcome page' do
       before do
-        allow(controller).to receive(:getting_started_a_b_test_bucket).
+        allow(controller).to receive(:getting_started_ab_test_bucket).
           and_return(:welcome)
       end
 
@@ -84,7 +84,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
 
     context 'A/B test specifies some other value' do
       before do
-        allow(controller).to receive(:getting_started_a_b_test_bucket).
+        allow(controller).to receive(:getting_started_ab_test_bucket).
           and_return(:something_else)
       end
 
