@@ -106,14 +106,13 @@ function useUspsLocations() {
       validatedZipCodeFieldRef.current?.setCustomValidity('');
       validatedZipCodeFieldRef.current?.reportValidity();
 
-      // if (unvalidatedAddressInput === '') {
-      //   return;
-      // }
+      if (addressInput === '' || cityInput === '' || stateInput === '' || zipCodeInput === '') {
+        return;
+      }
 
       setAddressQuery({
-        // do we need streetAddress and address?
+        address: `${addressInput}, ${cityInput}, ${stateInput} ${zipCodeInput}`,
         streetAddress: addressInput,
-        address: addressInput,
         city: cityInput,
         state: stateInput,
         zipCode: zipCodeInput,
