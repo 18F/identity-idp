@@ -892,7 +892,7 @@ RSpec.describe Profile do
   end
 
   describe '#activate_after_fraud_review_unnecessary' do
-    it 'activates a profile if raud review is unnecessary' do
+    it 'activates a profile if fraud review is unnecessary' do
       profile = create(:profile, :fraud_review_pending, user: user)
 
       expect(profile.activated_at).to be_nil # to change
@@ -902,6 +902,10 @@ RSpec.describe Profile do
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
+
+      expect(profile).to_not be_active
+      expect(profile.fraud_review_pending_at).to_not be_nil
+      expect(profile.fraud_pending_reason).to_not be_nil
 
       profile.activate_after_fraud_review_unnecessary
 
