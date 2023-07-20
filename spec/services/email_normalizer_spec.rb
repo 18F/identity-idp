@@ -26,8 +26,14 @@ RSpec.describe EmailNormalizer do
       let(:email) { 'foo.bar.baz+123@example.com' }
 
       before do
-        allow(normalizer).to receive(:mx_records).with('example.com').
-          and_return(%w[abcd.mail.google.com])
+        dns = instance_double(
+          'Resolv::DNS',
+          getresources: [
+            Resolv::DNS::Resource::IN::MX.new(1, 'abcd.l.google.com'),
+          ],
+        )
+
+        allow(Resolv::DNS).to receive(:open).and_yield(dns)
       end
 
       it 'still removes . and anything after the +' do
