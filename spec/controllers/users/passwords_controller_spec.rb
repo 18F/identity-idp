@@ -89,40 +89,12 @@ RSpec.describe Users::PasswordsController do
     end
 
     context 'form returns failure' do
-      it 'renders edit' do
-        password_short_error = {
-          password: [:too_short],
-          password_confirmation: [:too_short],
+      let(:password) { 'new' }
+      let(:params) do
+        {
+          password: password,
+          password_confirmation: password,
         }
-        stub_sign_in
-
-        stub_analytics
-        stub_attempts_tracker
-        allow(@analytics).to receive(:track_event)
-
-        expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
-          success: false,
-          failure_reason: password_short_error,
-        )
-
-        params = {
-          password: 'new',
-          password_confirmation: 'new',
-        }
-        patch :update, params: { update_user_password_form: params }
-
-        expect(@analytics).to have_received(:track_event).with(
-          'Password Changed',
-          success: false,
-          errors: {
-            password: [
-              t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
-            ],
-            password_confirmation: ['is too short (minimum is 12 characters)'],
-          },
-          error_details: password_short_error,
-        )
-        expect(response).to render_template(:edit)
       end
 
       it 'does not create a password_changed user Event' do
@@ -130,11 +102,88 @@ RSpec.describe Users::PasswordsController do
 
         expect(controller).to_not receive(:create_user_event)
 
-        params = {
-          password: 'new',
-          password_confirmation: 'new',
-        }
         patch :update, params: { update_user_password_form: params }
+      end
+
+      context 'when password is too short' do
+        before do
+          stub_sign_in
+          stub_analytics
+          stub_attempts_tracker
+          allow(@analytics).to receive(:track_event)
+        end
+
+        it 'renders edit' do
+          password_short_error = {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          }
+
+          expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
+            success: false,
+            failure_reason: password_short_error,
+          )
+
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_received(:track_event).with(
+            'Password Changed',
+            success: false,
+            errors: {
+              password: [
+                t(
+                  'errors.attributes.password.too_short.other',
+                  count: Devise.password_length.first,
+                ),
+              ],
+              password_confirmation: ['is too short (minimum is 12 characters)'],
+            },
+            error_details: password_short_error,
+          )
+          expect(response).to render_template(:edit)
+        end
+      end
+
+      context 'when passwords do not match' do
+        let(:password) { 'salty pickles' }
+        let(:password_confirmation) { 'salty pickles2' }
+
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password_confirmation,
+          }
+        end
+
+        before do
+          stub_sign_in
+          stub_analytics
+          stub_attempts_tracker
+          allow(@analytics).to receive(:track_event)
+        end
+
+        it 'renders edit' do
+          expect(@irs_attempts_api_tracker).to receive(:logged_in_password_change).with(
+            success: false,
+            failure_reason: {
+              password_confirmation: [t('errors.messages.password_mismatch')],
+            },
+          )
+
+          patch :update, params: { update_user_password_form: params }
+
+          expect(@analytics).to have_received(:track_event).with(
+            'Password Changed',
+            success: false,
+            errors: {
+              password_confirmation: [t('errors.messages.password_mismatch')],
+            },
+            error_details: {
+              password_confirmation: [t('errors.messages.password_mismatch')],
+            },
+          )
+          expect(response).to render_template(:edit)
+        end
       end
     end
   end
