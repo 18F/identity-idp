@@ -131,13 +131,8 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
-  const label = AcuantDocumentType[documentType];
-  if (label === undefined) {
-    return `An error in document type returned: ${documentType}`;
-  }
-  return label;
-}
+const getDocumentTypeLabel = (documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string =>
+  AcuantDocumentType[documentType] ?? `An error in document type returned: ${documentType}`;
 
 export function getNormalizedAcuantCaptureFailureMessage(
   error: AcuantCaptureFailureError,
