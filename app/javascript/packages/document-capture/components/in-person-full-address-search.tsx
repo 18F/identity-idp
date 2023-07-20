@@ -1,5 +1,5 @@
 import { TextInput, SelectInput } from '@18f/identity-components';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback, useContext } from 'react';
 import { t } from '@18f/identity-i18n';
 import { request } from '@18f/identity-request';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
@@ -15,6 +15,7 @@ import {
   LOCATIONS_URL,
   PostOffice,
 } from '@18f/identity-address-search';
+import { InPersonContext } from '../context';
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
   postOffices.map((po: PostOffice, index) => ({
@@ -132,20 +133,17 @@ function FullAddressSearch({
     validatedZipCodeFieldRef,
   } = useUspsLocations();
 
-  const textInputChangeHandler = (input) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { target } = event;
-    input(target.value);
-  };
+  const inputChangeHandler =
+    <T extends HTMLElement & { value: string }>(input) =>
+    (event: React.ChangeEvent<T>) => {
+      const { target } = event;
+      input(target.value);
+    };
 
-  const selectInputChangeHandler = (input) => (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { target } = event;
-    input(target.value);
-  };
-
-  const onAddressChange = textInputChangeHandler(setAddressInput);
-  const onCityChange = textInputChangeHandler(setCityInput);
-  const onStateChange = selectInputChangeHandler(setStateInput);
-  const onZipCodeChange = textInputChangeHandler(setZipCodeInput);
+  const onAddressChange = inputChangeHandler(setAddressInput);
+  const onCityChange = inputChangeHandler(setCityInput);
+  const onStateChange = inputChangeHandler(setStateInput);
+  const onZipCodeChange = inputChangeHandler(setZipCodeInput);
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
@@ -167,6 +165,8 @@ function FullAddressSearch({
     },
     [addressInput, cityInput, stateInput, zipCodeInput],
   );
+
+  const { usStatesTerritories } = useContext(InPersonContext);
 
   return (
     <>
@@ -199,8 +199,12 @@ function FullAddressSearch({
           label={t('in_person_proofing.body.location.po_search.state_label')}
           disabled={disabled}
         >
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
+          <option value="" disabled selected>
+            {t('in_person_proofing.form.address.state_prompt')}
+          </option>
+          {usStatesTerritories.map(([name, abbr]) => (
+            <option value={abbr}>{name}</option>
+          ))}
         </SelectInput>
       </ValidatedField>
       <ValidatedField ref={validatedZipCodeFieldRef}>
