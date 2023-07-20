@@ -127,8 +127,8 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
   error instanceof Error;
 
 /**
- * Returns a human-readable document label corresponding to the given document type constant.
- *
+ * Returns a human-readable document label corresponding to the given document type constant,
+ * such as "id" "passport" or "none"
  */
 const getDocumentTypeLabel = (documentType: AcuantDocumentType): string =>
   AcuantDocumentType[documentType]?.toLowerCase() ??
