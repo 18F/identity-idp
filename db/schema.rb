@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_20_162501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -441,7 +441,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.integer "deactivation_reason"
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
-    t.date "reproof_at"
     t.string "initiating_service_provider_issuer"
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
@@ -452,7 +451,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
-    t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
