@@ -14,6 +14,7 @@
   <%= f.full_error :reset_password_token %>
   <%= render PasswordConfirmationComponent.new(
         form: f,
+        password_label: t('forms.passwords.edit.labels.password'),
         field_options: {
           input_html: {
             aria: { describedby: 'password-description' },
