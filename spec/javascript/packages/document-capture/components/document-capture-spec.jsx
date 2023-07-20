@@ -92,7 +92,7 @@ describe('document-capture/components/document-capture', () => {
         image: {
           data: validUpload,
         },
-        cardtype: AcuantDocumentType.id,
+        cardtype: AcuantDocumentType.ID,
       });
     });
 

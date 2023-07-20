@@ -67,7 +67,7 @@ describe('document-capture/components/documents-step', () => {
     );
 
     initialize();
-    const result = { sharpness: 100, image: { data: '' }, cardtype: AcuantDocumentType.id };
+    const result = { sharpness: 100, image: { data: '' }, cardtype: AcuantDocumentType.ID };
 
     window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));

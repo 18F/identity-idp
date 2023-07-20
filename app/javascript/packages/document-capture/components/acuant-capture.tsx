@@ -132,7 +132,7 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  *
  */
 const getDocumentTypeLabel = (documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string =>
-  AcuantDocumentType[documentType] ?? `An error in document type returned: ${documentType}`;
+  AcuantDocumentType[documentType]?.toLowerCase() ?? `An error in document type returned: ${documentType}`;
 
 export function getNormalizedAcuantCaptureFailureMessage(
   error: AcuantCaptureFailureError,
@@ -424,7 +424,7 @@ function AcuantCapture(
     const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.id;
+    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
@@ -579,3 +579,4 @@ function AcuantCapture(
 }
 
 export default forwardRef(AcuantCapture);
+export { AcuantDocumentType };
