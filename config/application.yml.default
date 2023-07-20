@@ -141,6 +141,7 @@ in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
+in_person_send_proofing_notifications_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'
@@ -386,6 +387,7 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
+  in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5

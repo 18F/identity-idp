@@ -24,6 +24,7 @@ module I18n
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'time.formats.sms_date' }, # for us date format
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish

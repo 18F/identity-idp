@@ -61,6 +61,13 @@ RSpec.describe Users::WebauthnSetupController do
 
         get :new
       end
+      context 'when adding webauthn platform to existing user MFA methods' do
+        it 'should set need_to_set_up_additional_mfa to false' do
+          get :new, params: { platform: true }
+          additional_mfa_check = assigns(:need_to_set_up_additional_mfa)
+          expect(additional_mfa_check).to be_falsey
+        end
+      end
     end
 
     describe 'patch confirm' do
@@ -187,8 +194,37 @@ RSpec.describe Users::WebauthnSetupController do
       request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
+
+    describe 'webauthn platform #new' do
+      context 'when in account creation flow and selected multiple mfa' do
+        let(:mfa_selections) { ['webauthn_platform', 'voice'] }
+        before do
+          controller.user_session[:mfa_selections] = mfa_selections
+        end
+
+        it 'should set need_to_set_up_additional_mfa to false' do
+          get :new, params: { platform: true }
+          additional_mfa_check = assigns(:need_to_set_up_additional_mfa)
+          expect(additional_mfa_check).to be_falsey
+        end
+      end
+
+      context 'when in account creation and only have platform as sole MFA method' do
+        let(:mfa_selections) { ['webauthn_platform'] }
+
+        before do
+          controller.user_session[:mfa_selections] = mfa_selections
+        end
+
+        it 'should set need_to_set_up_additional_mfa to true' do
+          get :new, params: { platform: true }
+          additional_mfa_check = assigns(:need_to_set_up_additional_mfa)
+          expect(additional_mfa_check).to be_truthy
+        end
+      end
+    end
     describe 'multiple MFA handling' do
-      let(:mfa_selections) { ['webauthn', 'voice'] }
+      let(:mfa_selections) { ['webauthn_platform', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
