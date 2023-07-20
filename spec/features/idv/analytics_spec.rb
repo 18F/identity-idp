@@ -32,11 +32,11 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:happy_path_events) do
     {
       'IdV: intro visited' => {},
-      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
       'IdV: consent checkbox toggled' => { checked: true },
-      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
       'IdV: doc auth hybrid handoff visited' => { step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth hybrid handoff submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },
@@ -68,10 +68,10 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:gpo_path_events) do
     {
       'IdV: intro visited' => {},
-      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
       'IdV: doc auth hybrid handoff visited' => { step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth hybrid handoff submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },
@@ -97,10 +97,10 @@ RSpec.feature 'Analytics Regression', js: true do
 
   let(:in_person_path_events) do
     {
-      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
+      'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false, acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome },
       'IdV: doc auth hybrid handoff visited' => { step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth hybrid handoff submitted' => { success: true, errors: {}, destination: :document_capture, flow_path: 'standard', step: 'hybrid_handoff', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false, skip_upload_step: false },
       'IdV: doc auth document_capture visited' => { flow_path: 'standard', step: 'document_capture', acuant_sdk_upgrade_ab_test_bucket: :default, getting_started_ab_test_bucket: :welcome, analytics_id: 'Doc Auth', irs_reproofing: false },

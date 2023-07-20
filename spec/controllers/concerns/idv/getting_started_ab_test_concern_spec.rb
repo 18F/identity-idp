@@ -37,7 +37,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
         user2 = create(:user, :fully_registered, email: 'new_email@example.com')
         allow(controller).to receive(:current_user).and_return(user2)
       end
-      it 'returns the bucket based on request id' do
+      it 'returns the bucket based on user id' do
         expect(controller.getting_started_ab_test_bucket).to eq(:welcome)
       end
     end

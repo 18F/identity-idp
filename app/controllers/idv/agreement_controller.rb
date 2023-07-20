@@ -42,7 +42,7 @@ module Idv
         step: 'agreement',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }
+      }.merge(ab_test_analytics_buckets)
     end
 
     def skip_to_capture
