@@ -108,7 +108,7 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
     old_personal_key = PersonalKeyGenerator.new(user).create
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.confirmed_email_addresses.first.email)
-    fill_in t('forms.password'), with: new_password
+    fill_in t('forms.passwords.edit.labels.password'), with: new_password
     fill_in t('components.password_confirmation.confirm_label'),
             with: new_password
     click_button t('forms.passwords.edit.buttons.submit')

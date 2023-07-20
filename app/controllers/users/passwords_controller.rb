@@ -14,7 +14,10 @@ module Users
     end
 
     def update
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user, user_session, validate_confirmation: true)
+      @update_user_password_form = UpdateUserPasswordForm.new(
+        current_user, user_session,
+        validate_confirmation: true
+      )
 
       result = @update_user_password_form.submit(user_params)
 

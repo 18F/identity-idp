@@ -118,7 +118,7 @@ RSpec.feature 'User profile' do
 
       expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
-      fill_in t('forms.password'), with: 'this is a great sentence'
+      fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
       fill_in t('components.password_confirmation.confirm_label'),
               with: 'this is a great sentence'
 
@@ -141,7 +141,7 @@ RSpec.feature 'User profile' do
         sign_in_live_with_2fa(profile.user)
 
         visit manage_password_path
-        fill_in t('forms.password'), with: 'this is a great sentence'
+        fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
         fill_in t('components.password_confirmation.confirm_label'),
                 with: 'this is a great sentence'
         click_button 'Update'

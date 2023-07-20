@@ -42,7 +42,7 @@ RSpec.describe 'Account email language' do
           click_link('Edit')
         end
 
-        fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+        fill_in t('forms.passwords.edit.labels.password'), with: Features::SessionHelper::VALID_PASSWORD
         fill_in t('components.password_confirmation.confirm_label'),
                 with: Features::SessionHelper::VALID_PASSWORD
         click_button 'Update'
