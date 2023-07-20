@@ -33,7 +33,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     started_at = Time.zone.now
-
     enrollments.each do |enroll|
       enroll.update(last_batch_claim_at: started_at)
     end

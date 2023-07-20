@@ -285,7 +285,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
           freeze_time do
             job.perform(Time.zone.now)
-
             expect(
               pending_enrollments.
                 map(&:reload).
