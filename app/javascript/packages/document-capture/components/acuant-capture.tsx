@@ -25,7 +25,6 @@ import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
 import type { AcuantSuccessResponse, AcuantCaptureFailureError } from './acuant-camera';
 
-type AcuantDocumentTypeLabel = keyof typeof AcuantDocumentType;
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
@@ -57,7 +56,7 @@ interface ImageAnalyticsPayload {
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel | string;
+  documentType: string;
   dpi: number;
   moire: number;
   glare: number;
@@ -131,7 +130,7 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  */
-const getDocumentTypeLabel = (documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string =>
+const getDocumentTypeLabel = (documentType: AcuantDocumentType): string =>
   AcuantDocumentType[documentType]?.toLowerCase() ??
   `An error in document type returned: ${documentType}`;
 
