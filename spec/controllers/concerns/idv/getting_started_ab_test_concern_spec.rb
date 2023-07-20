@@ -2,9 +2,6 @@ require 'rails_helper'
 
 RSpec.describe 'GettingStartedAbTestConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
-  let(:idv_session) do
-    Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
-  end
 
   module Idv
     class StepController < ApplicationController
@@ -17,33 +14,31 @@ RSpec.describe 'GettingStartedAbTestConcern' do
   end
 
   describe '#getting_started_a_b_test_bucket' do
-    let(:sp_session) { {} }
-
     controller Idv::StepController do
     end
 
     before do
-      allow(session).to receive(:id).and_return('session-id')
-      allow(controller).to receive(:sp_session).and_return(sp_session)
+      allow(controller).to receive(:current_user).and_return(user)
       allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket) do |discriminator|
         case discriminator
-        when 'session-id'
-          :welcome
-        when 'request-id'
+        when user.uuid
           :getting_started
+        else :welcome
         end
       end
     end
 
-    it 'returns the bucket based on session id' do
-      expect(controller.getting_started_a_b_test_bucket).to eq(:welcome)
+    it 'returns the bucket based on user id' do
+      expect(controller.getting_started_a_b_test_bucket).to eq(:getting_started)
     end
 
-    context 'with associated sp session request id' do
-      let(:sp_session) { { request_id: 'request-id' } }
-
+    context 'with a different user' do
+      before do
+        user2 = create(:user, :fully_registered, email: 'new_email@example.com')
+        allow(controller).to receive(:current_user).and_return(user2)
+      end
       it 'returns the bucket based on request id' do
-        expect(controller.getting_started_a_b_test_bucket).to eq(:getting_started)
+        expect(controller.getting_started_a_b_test_bucket).to eq(:welcome)
       end
     end
   end
@@ -59,8 +54,6 @@ RSpec.describe 'GettingStartedAbTestConcern' do
         get 'show' => 'idv/step#show'
       end
     end
-
-    let(:session_uuid) { SecureRandom.uuid }
 
     context 'A/B test specifies getting started page' do
       before do

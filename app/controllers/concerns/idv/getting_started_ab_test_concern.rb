@@ -1,7 +1,7 @@
 module Idv
   module GettingStartedAbTestConcern
     def getting_started_a_b_test_bucket
-      AbTests::IDV_GETTING_STARTED.bucket(sp_session[:request_id] || session.id)
+      AbTests::IDV_GETTING_STARTED.bucket(current_user&.uuid)
     end
 
     def maybe_redirect_for_getting_started_ab_test
