@@ -28,20 +28,16 @@ interface DocumentCaptureProps {
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
-  inPersonFullAddressEntryEnabled: Boolean;
 }
 
-function DocumentCapture({
-  onStepChange = () => {},
-  inPersonFullAddressEntryEnabled,
-}: DocumentCaptureProps) {
+function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   useDidUpdateEffect(onStepChange, [stepName]);
