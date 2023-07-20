@@ -106,7 +106,12 @@ function useUspsLocations() {
       validatedZipCodeFieldRef.current?.setCustomValidity('');
       validatedZipCodeFieldRef.current?.reportValidity();
 
-      if (addressInput === '' || cityInput === '' || stateInput === '' || zipCodeInput === '') {
+      if (
+        addressInput.trim().length === 0 ||
+        cityInput.trim().length === 0 ||
+        stateInput.trim().length === 0 ||
+        zipCodeInput.trim().length === 0
+      ) {
         return;
       }
 
