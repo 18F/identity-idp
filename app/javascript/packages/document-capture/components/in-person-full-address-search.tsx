@@ -100,7 +100,7 @@ function useUspsLocations() {
 interface FullAddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundLocations?: (
-    address: LocationQuery,
+    address: LocationQuery | null,
     locations: FormattedLocation[] | null | undefined,
   ) => void;
   onLoadingLocations?: (isLoading: boolean) => void;

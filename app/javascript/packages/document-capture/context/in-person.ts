@@ -30,6 +30,7 @@ export interface InPersonContextProps {
 
 const InPersonContext = createContext<InPersonContextProps>({
   inPersonOutageMessageEnabled: false,
+  inPersonFullAddressEntryEnabled: false,
   usStatesTerritories: [],
 });
 
