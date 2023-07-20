@@ -1,5 +1,4 @@
 # This file is used to generate events.rb.
-
 events:
   auth_user_changed_password:
     description: >
@@ -103,7 +102,7 @@ events:
       type: object
       properties:
         address:
-          ref: "#!/schemas/address"
+          $ref: "#!/schemas/address"
 
   idv_user_verified_their_info:
     description: >
@@ -196,11 +195,11 @@ schemas:
           passed:
             type: array
             items:
-              ref: "#!/schemas/Alert"
+              $ref: "#!/schemas/Alert"
           failed:
             type: array
             items:
-              ref: "#!/schemas/Alert"
+              $ref: "#!/schemas/Alert"
       alert_failure_count:
         type: number
       # log_alert_results: log_alert_formatter.log_alerts(alerts),

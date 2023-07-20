@@ -2,16 +2,6 @@ module Idv::Engine
   class Base
     include Events
 
-    def self.on(event_name, &block)
-      event_name = event_name.to_sym
-
-      raise "Invalid event name: #{event_name}" unless Events::ALL.include?(event_name)
-
-      @@handlers ||= {}
-      @@handlers[event_name] ||= []
-      @@handlers[event_name] << block
-    end
-
     def initialize
     end
 
@@ -26,17 +16,9 @@ module Idv::Engine
       raise 'build_verification not implemented'
     end
 
-    def handle_event(event_name, params = nil)
+    def handle_event(event_name, payload = nil)
       invalidate_cache!
-
-      if self.class.class_variable_defined?(:@@handlers)
-        handlers = self.class.class_variable_get(:@@handlers)
-        if handlers && handlers[event_name]
-          handlers[event_name].each do |block|
-            instance_exec(params, &block)
-          end
-        end
-      end
+      invoke_handlers(event_name, payload)
     end
 
     def invalidate_cache!

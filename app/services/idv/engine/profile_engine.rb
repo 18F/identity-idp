@@ -11,7 +11,7 @@ module Idv::Engine
       @user_session = user_session
     end
 
-    on :auth_user_changed_password do |params|
+    on :user_changed_password do |params|
       assert_user_session_available
 
       if user.active_profile
