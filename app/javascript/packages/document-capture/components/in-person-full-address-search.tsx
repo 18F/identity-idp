@@ -210,67 +210,44 @@ function FullAddressSearch({
 
   return (
     <>
-      <ValidatedField
-        ref={validatedAddressFieldRef}
-        messages={{
-          valueMissing: t('in_person_proofing.body.location.inline_error'),
-        }}
-      >
+      <ValidatedField ref={validatedAddressFieldRef}>
         <TextInput
           required
           ref={registerField('address')}
           value={addressInput}
           onChange={onAddressChange}
-          label={t('in_person_proofing.body.location.po_search.address_search_label')}
-          hint={t('in_person_proofing.body.location.po_search.address_search_hint')}
+          label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
         />
       </ValidatedField>
-      <ValidatedField
-        ref={validatedCityFieldRef}
-        messages={{
-          valueMissing: t('in_person_proofing.body.location.inline_error'),
-        }}
-      >
+      <ValidatedField ref={validatedCityFieldRef}>
         <TextInput
           required
           ref={registerField('city')}
           value={cityInput}
           onChange={onCityChange}
-          label={t('in_person_proofing.body.location.po_search.city_search_label')}
-          hint={t('in_person_proofing.body.location.po_search.city_search_hint')}
+          label={t('in_person_proofing.body.location.po_search.city_label')}
           disabled={disabled}
         />
       </ValidatedField>
-      <ValidatedField
-        ref={validatedStateFieldRef}
-        messages={{
-          valueMissing: t('in_person_proofing.body.location.inline_error'),
-        }}
-      >
+      <ValidatedField ref={validatedStateFieldRef}>
         <TextInput
           required
           ref={registerField('state')}
           value={stateInput}
           onChange={onStateChange}
-          label={t('in_person_proofing.body.location.po_search.state_search_label')}
-          hint={t('in_person_proofing.body.location.po_search.state_search_hint')}
+          label={t('in_person_proofing.body.location.po_search.state_label')}
           disabled={disabled}
         />
       </ValidatedField>
-      <ValidatedField
-        ref={validatedZipCodeFieldRef}
-        messages={{
-          valueMissing: t('in_person_proofing.body.location.inline_error'),
-        }}
-      >
+      <ValidatedField ref={validatedZipCodeFieldRef}>
         <TextInput
           required
+          className="tablet:grid-col-5"
           ref={registerField('zip_code')}
           value={zipCodeInput}
           onChange={onZipCodeChange}
-          label={t('in_person_proofing.body.location.po_search.zip_code_search_label')}
-          hint={t('in_person_proofing.body.location.po_search.zip_code_search_hint')}
+          label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
         />
       </ValidatedField>
