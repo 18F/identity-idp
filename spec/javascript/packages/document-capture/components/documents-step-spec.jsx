@@ -9,6 +9,7 @@ import {
   UploadContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
+import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
 import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -66,7 +67,7 @@ describe('document-capture/components/documents-step', () => {
     );
 
     initialize();
-    const result = { sharpness: 100, image: { data: '' }, cardtype: 1 };
+    const result = { sharpness: 100, image: { data: '' }, cardtype: AcuantDocumentType.ID };
 
     window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
     await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
