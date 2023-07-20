@@ -15,7 +15,6 @@ class MarketingSite
     verify-your-identity/verify-your-identity-in-person
     verify-your-identity/phone-number
     verify-your-identity/verify-your-address-by-mail
-    verify-your-identity/how-to-verify-your-identity
   ].to_set.freeze
 
   def self.locale_segment

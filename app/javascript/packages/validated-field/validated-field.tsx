@@ -69,13 +69,13 @@ export function getErrorMessages(inputType?: string) {
   return messages;
 }
 
-function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
+function ValidatedField(
   {
     validate = () => {},
     messages,
     children,
     ...inputProps
-  }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
+  }: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>,
   forwardedRef,
 ) {
   const fieldRef = useRef<ValidatedFieldElement>();
@@ -97,19 +97,11 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
         nextError = nextError || (input.validity.customError && input.validationMessage) || '';
 
         input.setCustomValidity(nextError);
-        return (
-          !nextError &&
-          (input instanceof HTMLSelectElement
-            ? HTMLSelectElement.prototype.checkValidity.call(input)
-            : HTMLInputElement.prototype.checkValidity.call(input))
-        );
+        return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
       };
 
       input.reportValidity = () => {
         input.checkValidity();
-        if (input instanceof HTMLSelectElement) {
-          return HTMLSelectElement.prototype.reportValidity.call(input);
-        }
         return HTMLInputElement.prototype.reportValidity.call(input);
       };
     }
@@ -117,8 +109,8 @@ function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
 
   const errorId = `validated-field-error-${instanceId}`;
 
-  const input: ReactHTMLElement<HTMLInputElement | HTMLSelectElement> = children
-    ? (Children.only(children) as ReactHTMLElement<InputType>)
+  const input: ReactHTMLElement<HTMLInputElement> = children
+    ? (Children.only(children) as ReactHTMLElement<HTMLInputElement>)
     : createElement('input');
 
   const inputClasses = ['validated-field__input', inputProps.className, input.props.className]

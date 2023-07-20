@@ -18,9 +18,4 @@ module AbTests
         0,
     },
   )
-
-  IDV_GETTING_STARTED = AbTestBucket.new(
-    experiment_name: 'Idv: Getting Started Experience',
-    buckets: IdentityConfig.store.idv_getting_started_a_b_testing,
-  )
 end

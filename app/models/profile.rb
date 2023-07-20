@@ -31,7 +31,7 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   def fraud_review_pending?
-    fraud_pending_reason.present? && !fraud_rejection?
+    fraud_review_pending_at.present?
   end
 
   def fraud_rejection?
@@ -98,24 +98,11 @@ class Profile < ApplicationRecord
     track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
-  def activate_after_fraud_review_unnecessary
-    transaction do
-      update!(
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
-        fraud_pending_reason: nil,
-      )
-      activate
-    end
-  end
-
   def activate_after_passing_in_person
     transaction do
       update!(
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
-        fraud_pending_reason: nil,
         deactivation_reason: nil,
+        fraud_review_pending_at: nil,
       )
       activate
     end
@@ -134,6 +121,10 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
+  end
+
+  def has_deactivation_reason?
+    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
   end
 
   def has_fraud_deactivation_reason?
