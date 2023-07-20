@@ -35,7 +35,10 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);
 
-  const onFoundLocations = (address: LocationQuery, locations: FormattedLocation[]) => {
+  const onFoundLocations = (
+    address: LocationQuery | null,
+    locations: FormattedLocation[] | null | undefined,
+  ) => {
     setFoundAddress(address);
     setLocationResults(locations);
   };
