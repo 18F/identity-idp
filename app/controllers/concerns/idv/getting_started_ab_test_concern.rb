@@ -9,5 +9,14 @@ module Idv
 
       redirect_to idv_getting_started_url
     end
+
+    def getting_started_ab_test_analytics_args
+      return {} if current_user.blank?
+
+      {
+        getting_started_ab_test_bucket:
+          getting_started_ab_test_bucket,
+      }
+    end
   end
 end
