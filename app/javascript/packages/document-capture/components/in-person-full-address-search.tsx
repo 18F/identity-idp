@@ -1,4 +1,4 @@
-import { TextInput } from '@18f/identity-components';
+import { TextInput, SelectInput } from '@18f/identity-components';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { t } from '@18f/identity-i18n';
 import { request } from '@18f/identity-request';
@@ -137,9 +137,14 @@ function FullAddressSearch({
     input(target.value);
   };
 
+  const selectInputChangeHandler = (input) => (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { target } = event;
+    input(target.value);
+  };
+
   const onAddressChange = textInputChangeHandler(setAddressInput);
   const onCityChange = textInputChangeHandler(setCityInput);
-  const onStateChange = textInputChangeHandler(setStateInput);
+  const onStateChange = selectInputChangeHandler(setStateInput);
   const onZipCodeChange = textInputChangeHandler(setZipCodeInput);
 
   useEffect(() => {
@@ -186,14 +191,17 @@ function FullAddressSearch({
         />
       </ValidatedField>
       <ValidatedField ref={validatedStateFieldRef}>
-        <TextInput
+        <SelectInput
           required
           ref={registerField('state')}
           value={stateInput}
           onChange={onStateChange}
           label={t('in_person_proofing.body.location.po_search.state_label')}
           disabled={disabled}
-        />
+        >
+          <option value="dog">Dog</option>
+          <option value="cat">Cat</option>
+        </SelectInput>
       </ValidatedField>
       <ValidatedField ref={validatedZipCodeFieldRef}>
         <TextInput
