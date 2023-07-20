@@ -19,7 +19,7 @@ export interface InPersonContextProps {
   /**
    * When true users must enter a full address when searching for a Post Office location
    */
-  inPersonFullAddressEntryEnabled?: boolean;
+  inPersonFullAddressEntryEnabled: boolean;
 
   /**
    * Collection of US states and territories
