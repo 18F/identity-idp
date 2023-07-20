@@ -2,7 +2,6 @@ module Idv
   class WelcomeController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
     include GettingStartedAbTestConcern
 
     before_action :confirm_welcome_needed

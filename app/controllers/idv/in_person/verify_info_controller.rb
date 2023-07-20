@@ -3,7 +3,6 @@ module Idv
     class VerifyInfoController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
-      include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
@@ -63,7 +62,7 @@ module Idv
         @pii = flow_session[:pii_from_user]
       end
 
-      # override StepUtilitiesConcern
+      # override IdvSession concern
       def flow_session
         user_session.fetch('idv/in_person', {})
       end

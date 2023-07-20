@@ -2,7 +2,6 @@ module Idv
   class AgreementController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed

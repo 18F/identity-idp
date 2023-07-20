@@ -1,7 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
-    include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper

@@ -1,6 +1,8 @@
 module IdvSession
   extend ActiveSupport::Concern
 
+  include Idv::StepUtilitiesConcern
+
   included do
     before_action :redirect_unless_idv_session_user
     before_action :redirect_if_sp_context_needed

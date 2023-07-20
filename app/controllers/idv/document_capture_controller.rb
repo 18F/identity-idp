@@ -4,8 +4,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
-    include RateLimitConcern
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
