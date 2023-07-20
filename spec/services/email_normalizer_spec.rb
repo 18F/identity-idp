@@ -29,7 +29,7 @@ RSpec.describe EmailNormalizer do
         dns = instance_double(
           'Resolv::DNS',
           getresources: [
-            Resolv::DNS::Resource::IN::MX.new(1, 'abcd.l.google.com'),
+            Resolv::DNS::Resource::IN::MX.new(1, Resolv::DNS::Name.new(%w[abcd l google com])),
           ],
         )
 
