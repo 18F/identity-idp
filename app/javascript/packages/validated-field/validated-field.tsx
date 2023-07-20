@@ -69,13 +69,13 @@ export function getErrorMessages(inputType?: string) {
   return messages;
 }
 
-function ValidatedField(
+function ValidatedField<InputType extends HTMLInputElement | HTMLSelectElement>(
   {
     validate = () => {},
     messages,
     children,
     ...inputProps
-  }: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>,
+  }: ValidatedFieldProps & InputHTMLAttributes<InputType>,
   forwardedRef,
 ) {
   const fieldRef = useRef<ValidatedFieldElement>();
@@ -117,8 +117,8 @@ function ValidatedField(
 
   const errorId = `validated-field-error-${instanceId}`;
 
-  const input: ReactHTMLElement<HTMLInputElement> = children
-    ? (Children.only(children) as ReactHTMLElement<HTMLInputElement>)
+  const input: ReactHTMLElement<HTMLInputElement | HTMLSelectElement> = children
+    ? (Children.only(children) as ReactHTMLElement<InputType>)
     : createElement('input');
 
   const inputClasses = ['validated-field__input', inputProps.className, input.props.className]
