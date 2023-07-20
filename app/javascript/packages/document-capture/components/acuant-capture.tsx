@@ -504,8 +504,10 @@ function AcuantCapture(
               );
 
               refreshAcuantFailureCookie();
-            } else {
+            } else if (error === 'Camera not supported.') {
               setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+            } else {
+              setOwnErrorMessage(t('errors.general'));
             }
 
             setIsCapturingEnvironment(false);

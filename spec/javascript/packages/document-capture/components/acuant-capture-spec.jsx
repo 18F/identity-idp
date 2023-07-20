@@ -288,6 +288,35 @@ describe('document-capture/components/acuant-capture', () => {
       expect(document.activeElement).to.equal(button);
     });
 
+    it('shows a generic error if camera starts but cropping error occurs', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, undefined, 'start-fail-code'),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+      await findByText('errors.general');
+
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Cropping failure',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
     it('shows sequence break error', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
