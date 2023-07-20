@@ -97,11 +97,19 @@ function ValidatedField(
         nextError = nextError || (input.validity.customError && input.validationMessage) || '';
 
         input.setCustomValidity(nextError);
-        return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
+        return (
+          !nextError &&
+          (input instanceof HTMLSelectElement
+            ? HTMLSelectElement.prototype.checkValidity.call(input)
+            : HTMLInputElement.prototype.checkValidity.call(input))
+        );
       };
 
       input.reportValidity = () => {
         input.checkValidity();
+        if (input instanceof HTMLSelectElement) {
+          return HTMLSelectElement.prototype.reportValidity.call(input);
+        }
         return HTMLInputElement.prototype.reportValidity.call(input);
       };
     }
