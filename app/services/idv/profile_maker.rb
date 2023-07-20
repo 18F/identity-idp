@@ -18,10 +18,11 @@ module Idv
       profile.initiating_service_provider = initiating_service_provider
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
+      profile.fraud_pending_reason = fraud_pending_reason
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
-      if fraud_pending_reason.present?
-        profile.deactivate_for_fraud_review(fraud_pending_reason: fraud_pending_reason)
+      if fraud_pending_reason.present? && !gpo_verification_needed
+        profile.deactivate_for_fraud_review
       end
       profile
     end
