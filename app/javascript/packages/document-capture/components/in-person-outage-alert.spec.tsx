@@ -11,6 +11,7 @@ describe('InPersonOutageAlert', () => {
           inPersonOutageExpectedUpdateDate: 'January 1, 2024',
           inPersonOutageMessageEnabled: true,
           inPersonFullAddressEntryEnabled: false,
+          usStatesTerritories: [],
         }}
       >
         <InPersonOutageAlert />

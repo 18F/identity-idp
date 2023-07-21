@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { I18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
+import type { SetupServer } from 'msw/node';
 import { rest } from 'msw';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
