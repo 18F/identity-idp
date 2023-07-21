@@ -128,7 +128,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         <InPersonLocations
           locations={locationResults}
           onSelect={handleLocationSelect}
-          address={foundAddress?.address || ''}
+          address={foundAddress.address || ''}
         />
       )}
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
