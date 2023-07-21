@@ -2,10 +2,6 @@ module TwoFactorAuthCode
   class BackupCodePresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper
 
-    def help_text
-      ''
-    end
-
     def cancel_link
       if reauthn
         account_path
