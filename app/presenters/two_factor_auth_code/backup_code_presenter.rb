@@ -9,9 +9,5 @@ module TwoFactorAuthCode
         sign_out_path
       end
     end
-
-    def fallback_question
-      t('two_factor_authentication.backup_code_fallback.question')
-    end
   end
 end

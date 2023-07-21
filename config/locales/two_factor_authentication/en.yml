@@ -14,8 +14,6 @@ en:
     attempt_remaining_warning_html:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
-    backup_code_fallback:
-      question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
@@ -111,8 +109,6 @@ en:
         a default phone number.
       one_number_title: This is your default number
       title: Make this your default phone number?
-    personal_key_fallback:
-      question: Don’t have your personal key?
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it,
       you’ll be provided a new key.
@@ -120,8 +116,6 @@ en:
       delete:
         failure: Unable to remove your phone.
         success: Your phone has been removed.
-    phone_fallback:
-      question: Can’t use your phone?
     phone_fee_disclosure: Message and data rates may apply.
     phone_info: We’ll send you a one-time code each time you sign in.
     phone_label: Phone number
@@ -129,8 +123,6 @@ en:
       troubleshooting:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
-    piv_cac_fallback:
-      question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.
@@ -142,8 +134,6 @@ en:
       google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
-    totp_fallback:
-      question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You
