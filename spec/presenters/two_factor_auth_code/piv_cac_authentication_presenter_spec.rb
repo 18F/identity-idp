@@ -91,12 +91,6 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     end
   end
 
-  describe 'help_text' do
-    it 'supplies no help text' do
-      expect(presenter.help_text).to eq('')
-    end
-  end
-
   describe '#link_text' do
     let(:phishing_resistant_required) { true }
 
