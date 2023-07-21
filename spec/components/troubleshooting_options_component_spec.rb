@@ -17,6 +17,19 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
       expect(rendered).to have_link('Link Text', href: '/')
     end
 
+    context 'with options specified by constructor' do
+      it 'renders troubleshooting options' do
+        rendered = render_inline(
+          TroubleshootingOptionsComponent.new(
+            options: [BlockLinkComponent.new(url: '/').with_content('Link Text')],
+          ),
+        )
+
+        expect(rendered).to have_css('.troubleshooting-options')
+        expect(rendered).to have_link('Link Text', href: '/')
+      end
+    end
+
     context 'with tag options' do
       it 'renders troubleshooting options' do
         rendered = render_inline(
