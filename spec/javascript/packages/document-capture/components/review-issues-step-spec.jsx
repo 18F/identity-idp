@@ -69,7 +69,7 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.exist();
   });
   it('renders initially with warning page and displays attempts remaining with IPP', () => {
-    const {getByRole, getByText, } = render(
+    const { getByRole, getByText } = render(
       <InPersonContext.Provider value={{ inPersonURL: true }}>
         <I18nContext.Provider
           value={
