@@ -199,7 +199,7 @@ function FullAddressSearch({
           label={t('in_person_proofing.body.location.po_search.state_label')}
           disabled={disabled}
         >
-          <option value="" disabled selected>
+          <option value="" disabled>
             {t('in_person_proofing.form.address.state_prompt')}
           </option>
           {usStatesTerritories.map(([name, abbr]) => (
