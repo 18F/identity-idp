@@ -1,22 +1,19 @@
 require 'rails_helper'
 
-RSpec.describe 'GettingStartedAbTestConcern' do
+RSpec.describe Idv::GettingStartedAbTestConcern do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
 
-  module Idv
-    class StepController < ApplicationController
-      include GettingStartedAbTestConcern
+  controller(ApplicationController) do
+    include Idv::GettingStartedAbTestConcern
 
-      def show
-        render plain: 'Hello'
-      end
+    before_action :maybe_redirect_for_getting_started_ab_test
+
+    def index
+      render plain: 'Hello'
     end
   end
 
   describe '#getting_started_ab_test_bucket' do
-    controller Idv::StepController do
-    end
-
     before do
       allow(controller).to receive(:current_user).and_return(user)
       allow(AbTests::IDV_GETTING_STARTED).to receive(:bucket) do |discriminator|
@@ -44,15 +41,8 @@ RSpec.describe 'GettingStartedAbTestConcern' do
   end
 
   context '#maybe_redirect_for_getting_started_ab_test' do
-    controller Idv::StepController do
-      before_action :maybe_redirect_for_getting_started_ab_test
-    end
-
     before do
       sign_in(user)
-      routes.draw do
-        get 'show' => 'idv/step#show'
-      end
     end
 
     context 'A/B test specifies getting started page' do
@@ -62,7 +52,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
       end
 
       it 'redirects to idv_getting_started_url' do
-        get :show
+        get :index
 
         expect(response).to redirect_to(idv_getting_started_url)
       end
@@ -75,7 +65,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
       end
 
       it 'does not redirect users away from welcome page' do
-        get :show
+        get :index
 
         expect(response.body).to eq('Hello')
         expect(response.status).to eq(200)
@@ -89,7 +79,7 @@ RSpec.describe 'GettingStartedAbTestConcern' do
       end
 
       it 'does not redirect users away from welcome page' do
-        get :show
+        get :index
 
         expect(response.body).to eq('Hello')
         expect(response.status).to eq(200)
