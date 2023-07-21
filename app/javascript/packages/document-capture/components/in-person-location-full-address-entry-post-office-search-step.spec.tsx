@@ -267,7 +267,8 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
           }}
         >
           <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        </InPersonContext.Provider>,
+        </InPersonContext.Provider>
+        ,
       </I18nContext.Provider>,
       { wrapper },
     );
@@ -327,7 +328,8 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
           }}
         >
           <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-        </InPersonContext.Provider>,
+        </InPersonContext.Provider>
+        ,
       </I18nContext.Provider>,
       { wrapper },
     );
