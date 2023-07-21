@@ -3,7 +3,6 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
@@ -157,7 +156,7 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
-      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
+      }.compact.merge(ab_test_analytics_buckets)
     end
 
     def form_response(destination:)

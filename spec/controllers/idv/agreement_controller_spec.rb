@@ -5,11 +5,16 @@ RSpec.describe Idv::AgreementController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.welcome_visited = true
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -31,9 +36,11 @@ RSpec.describe Idv::AgreementController do
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth agreement visited' }
     let(:analytics_args) do
-      { step: 'agreement',
+      {
+        step: 'agreement',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -81,11 +88,13 @@ RSpec.describe Idv::AgreementController do
     let(:analytics_name) { 'IdV: doc auth agreement submitted' }
 
     let(:analytics_args) do
-      { success: true,
+      {
+        success: true,
         errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'sends analytics_submitted event with consent given' do

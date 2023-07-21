@@ -3,7 +3,6 @@ module Idv
     class VerifyInfoController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
-      include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
@@ -63,7 +62,7 @@ module Idv
         @pii = flow_session[:pii_from_user]
       end
 
-      # override StepUtilitiesConcern
+      # override IdvSession concern
       def flow_session
         user_session.fetch('idv/in_person', {})
       end
@@ -74,7 +73,7 @@ module Idv
           step: 'verify',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args).
+        }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
       end
 

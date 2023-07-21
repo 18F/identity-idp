@@ -5,6 +5,7 @@ module IdvStepConcern
   include RateLimitConcern
   include FraudReviewConcern
   include Idv::OutageConcern
+  include Idv::AbTestAnalyticsConcern
 
   included do
     before_action :confirm_two_factor_authenticated

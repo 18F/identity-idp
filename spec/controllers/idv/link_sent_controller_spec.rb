@@ -4,11 +4,15 @@ RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
+      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
+
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
@@ -17,6 +21,7 @@ RSpec.describe Idv::LinkSentController do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -50,7 +55,7 @@ RSpec.describe Idv::LinkSentController do
         flow_path: 'hybrid',
         irs_reproofing: false,
         step: 'link_sent',
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -113,7 +118,7 @@ RSpec.describe Idv::LinkSentController do
         flow_path: 'hybrid',
         irs_reproofing: false,
         step: 'link_sent',
-      }
+      }.merge(ab_test_args)
     end
 
     it 'sends analytics_submitted event' do
