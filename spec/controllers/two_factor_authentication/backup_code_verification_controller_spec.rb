@@ -52,8 +52,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
 
       context 'with remember_device in the params' do
         it 'saves an encrypted cookie' do
-          remember_device_cookie = instance_double(RememberDeviceCookie)
-          allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
+          remember_device_cookie = instance_double(RememberDeviceCookie, to_json: 'asdf1234')
           allow(RememberDeviceCookie).to receive(:new).and_return(remember_device_cookie)
 
           stub_sign_in_before_2fa(user)
