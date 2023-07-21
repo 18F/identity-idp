@@ -39,6 +39,7 @@ en:
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or
       something went wrong on our end. Try again or choose another
       authentication method.
+    learn_more: Learn more about authentication options
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
@@ -128,7 +129,6 @@ en:
       troubleshooting:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
-        learn_more: Learn more about authentication options
     piv_cac_fallback:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC

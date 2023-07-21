@@ -66,7 +66,7 @@ module TwoFactorAuthCode
             flow: :two_factor_authentication,
             step: :otp_confirmation,
           ),
-          text: t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
+          text: t('two_factor_authentication.learn_more'),
           new_tab: true,
         },
       ]
