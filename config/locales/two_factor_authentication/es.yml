@@ -40,6 +40,7 @@ es:
       correcto para esta cuenta. Si es así, puede haber un problema con su
       PIV/CAC, PIN o algo salió mal de nuestra parte. Intente nuevamente o elija
       otro método de autenticación.
+    learn_more: Más información sobre las opciones de autenticación.
     login_intro: Usted configuró esto cuando creó su cuenta.
     login_options:
       auth_app: Aplicación de autenticación
@@ -136,7 +137,6 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
-        learn_more: Más información sobre las opciones de autenticación.
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
