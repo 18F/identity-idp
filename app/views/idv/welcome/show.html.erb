@@ -15,15 +15,6 @@
         intro: t('idv.welcome.no_js_intro', sp_name: decorated_session.sp_name || APP_NAME),
       ) do %>
 
-    <% if @current_user&.reproof_for_irs?(service_provider: @current_sp) %>
-    <%= render AlertComponent.new(
-          type: :info,
-          message: t('doc_auth.info.irs_reproofing_explanation'),
-          class: ['margin-bottom-2', 'usa-alert--info-important'],
-        )
-    %>
-    <% end %>
-
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.welcome')) %>
     <p>
       <%= t('doc_auth.info.welcome', sp_name: decorated_session.sp_name || APP_NAME) %>

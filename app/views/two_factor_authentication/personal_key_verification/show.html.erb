@@ -11,7 +11,7 @@
                           html: { autocomplete: 'off', method: :post }
     ) do |f| %>
   <%= render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key %>
-  <%= f.submit t('forms.buttons.submit.default') %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

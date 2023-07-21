@@ -41,6 +41,7 @@ fr:
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
       problème survenu de notre côté pourrait bien poser problème. Réessayez ou
       choisissez une autre méthode d’authentification.
+    learn_more: En savoir plus sur les options d’authentification
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte.
     login_options:
       auth_app: Application d’authentification
@@ -142,7 +143,6 @@ fr:
       troubleshooting:
         change_number: Utilisez un autre numéro de téléphone
         code_not_received: Je n’ai pas reçu mon code à usage unique
-        learn_more: En savoir plus sur les options d’authentification
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC

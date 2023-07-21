@@ -54,30 +54,16 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       end
     end
 
-    context 'OTP copy' do
-      let(:help_text) do
+    it 'informs the user that an OTP has been sent to their number' do
+      render
+
+      expect(rendered).to include(
         t(
           'instructions.mfa.sms.number_message_html',
           number_html: content_tag(:strong, presenter_data[:phone_number]),
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        )
-      end
-
-      it 'informs the user that an OTP has been sent to their number via #help_text' do
-        render
-
-        expect(rendered).to include help_text
-      end
-
-      context 'in other locales' do
-        before { I18n.locale = :es }
-
-        it 'translates correctly' do
-          render
-
-          expect(rendered).to include help_text
-        end
-      end
+        ),
+      )
     end
 
     context 'user signed up' do
