@@ -50,6 +50,27 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
+      context 'with remember_device in the params' do
+        it 'saves an encrypted cookie' do
+          remember_device_cookie = instance_double(RememberDeviceCookie)
+          allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
+          allow(RememberDeviceCookie).to receive(:new).and_return(remember_device_cookie)
+
+          stub_sign_in_before_2fa(user)
+          post(
+            :create,
+            params: {
+              backup_code_verification_form: {
+                backup_code: backup_codes.first,
+                remember_device: '1',
+              },
+            },
+          )
+
+          expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
+        end
+      end
+
       it 'tracks the valid authentication event when there are exisitng codes' do
         freeze_time do
           stub_sign_in_before_2fa(user)
