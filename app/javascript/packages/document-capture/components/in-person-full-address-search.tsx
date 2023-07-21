@@ -47,7 +47,7 @@ function useUspsLocations() {
   const validatedZipCodeFieldRef = useRef<HTMLFormElement>(null);
 
   const handleLocationSearch = useCallback(
-    (event, addressInput, cityInput, stateInput, zipCodeInput) => {
+    (event, addressValue, cityValue, stateValue, zipCodeValue) => {
       event.preventDefault();
       validatedAddressFieldRef.current?.setCustomValidity('');
       validatedAddressFieldRef.current?.reportValidity();
@@ -59,20 +59,20 @@ function useUspsLocations() {
       validatedZipCodeFieldRef.current?.reportValidity();
 
       if (
-        addressInput.trim().length === 0 ||
-        cityInput.trim().length === 0 ||
-        stateInput.trim().length === 0 ||
-        zipCodeInput.trim().length === 0
+        addressValue.trim().length === 0 ||
+        cityValue.trim().length === 0 ||
+        stateValue.trim().length === 0 ||
+        zipCodeValue.trim().length === 0
       ) {
         return;
       }
 
       setLocationQuery({
-        address: `${addressInput}, ${cityInput}, ${stateInput} ${zipCodeInput}`,
-        streetAddress: addressInput,
-        city: cityInput,
-        state: stateInput,
-        zipCode: zipCodeInput,
+        address: `${addressValue}, ${cityValue}, ${stateValue} ${zipCodeValue}`,
+        streetAddress: addressValue,
+        city: cityValue,
+        state: stateValue,
+        zipCode: zipCodeValue,
       });
     },
     [],
@@ -115,12 +115,11 @@ function FullAddressSearch({
   onError = () => undefined,
   disabled = false,
 }: FullAddressSearchProps) {
-  // todo: should we get rid of verbose 'input' word?
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
-  const [addressInput, setAddressInput] = useState('');
-  const [cityInput, setCityInput] = useState('');
-  const [stateInput, setStateInput] = useState('');
-  const [zipCodeInput, setZipCodeInput] = useState('');
+  const [addressValue, setAddressValue] = useState('');
+  const [cityValue, setCityValue] = useState('');
+  const [stateValue, setStateValue] = useState('');
+  const [zipCodeValue, setZipCodeValue] = useState('');
   const {
     locationQuery,
     locationResults,
@@ -140,10 +139,10 @@ function FullAddressSearch({
       input(target.value);
     };
 
-  const onAddressChange = inputChangeHandler(setAddressInput);
-  const onCityChange = inputChangeHandler(setCityInput);
-  const onStateChange = inputChangeHandler(setStateInput);
-  const onZipCodeChange = inputChangeHandler(setZipCodeInput);
+  const onAddressChange = inputChangeHandler(setAddressValue);
+  const onCityChange = inputChangeHandler(setCityValue);
+  const onStateChange = inputChangeHandler(setStateValue);
+  const onZipCodeChange = inputChangeHandler(setZipCodeValue);
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
@@ -161,9 +160,9 @@ function FullAddressSearch({
   const handleSearch = useCallback(
     (event) => {
       onError(null);
-      onSearch(event, addressInput, cityInput, stateInput, zipCodeInput);
+      onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
-    [addressInput, cityInput, stateInput, zipCodeInput],
+    [addressValue, cityValue, stateValue, zipCodeValue],
   );
 
   const { usStatesTerritories } = useContext(InPersonContext);
@@ -174,7 +173,7 @@ function FullAddressSearch({
         <TextInput
           required
           ref={registerField('address')}
-          value={addressInput}
+          value={addressValue}
           onChange={onAddressChange}
           label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
@@ -184,7 +183,7 @@ function FullAddressSearch({
         <TextInput
           required
           ref={registerField('city')}
-          value={cityInput}
+          value={cityValue}
           onChange={onCityChange}
           label={t('in_person_proofing.body.location.po_search.city_label')}
           disabled={disabled}
@@ -194,7 +193,7 @@ function FullAddressSearch({
         <SelectInput
           required
           ref={registerField('state')}
-          value={stateInput}
+          value={stateValue}
           onChange={onStateChange}
           label={t('in_person_proofing.body.location.po_search.state_label')}
           disabled={disabled}
@@ -203,7 +202,9 @@ function FullAddressSearch({
             {t('in_person_proofing.form.address.state_prompt')}
           </option>
           {usStatesTerritories.map(([name, abbr]) => (
-            <option key={abbr} value={abbr}>{name}</option>
+            <option key={abbr} value={abbr}>
+              {name}
+            </option>
           ))}
         </SelectInput>
       </ValidatedField>
@@ -212,7 +213,7 @@ function FullAddressSearch({
           required
           className="tablet:grid-col-5"
           ref={registerField('zip_code')}
-          value={zipCodeInput}
+          value={zipCodeValue}
           onChange={onZipCodeChange}
           label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
