@@ -1,14 +1,15 @@
 module Idv
   module GettingStartedAbTestConcern
     def getting_started_ab_test_bucket
-      uuid =
-        if defined?(document_capture_user) # hybrid flow
-          document_capture_user.uuid
-        else
-          current_user.uuid
-        end
+      AbTests::IDV_GETTING_STARTED.bucket(getting_started_user.uuid)
+    end
 
-      AbTests::IDV_GETTING_STARTED.bucket(uuid)
+    def getting_started_user
+      if defined?(document_capture_user) # hybrid flow
+        document_capture_user
+      else
+        current_user
+      end
     end
 
     def maybe_redirect_for_getting_started_ab_test

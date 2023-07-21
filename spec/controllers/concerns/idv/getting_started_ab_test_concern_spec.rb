@@ -40,6 +40,30 @@ RSpec.describe Idv::GettingStartedAbTestConcern do
     end
   end
 
+  describe '#getting_started_user' do
+    let(:document_capture_user) { create(:user) }
+    let(:current_user) { create(:user) }
+    before do
+      allow(controller).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'when document_capture_user is defined (hybrid flow)' do
+      before do
+        allow(controller).to receive(:document_capture_user).and_return(document_capture_user)
+      end
+
+      it 'uses the document_capture_user to choose a bucket' do
+        expect(controller.getting_started_user).to eq(document_capture_user)
+      end
+    end
+
+    context 'when falling back to current_user' do
+      it 'falls back to current_user when document_capture_user undefined' do
+        expect(controller.getting_started_user).to eq(current_user)
+      end
+    end
+  end
+
   context '#maybe_redirect_for_getting_started_ab_test' do
     before do
       sign_in(user)
