@@ -118,8 +118,7 @@ module InPersonHelper
             with: GOOD_ADDRESS1
     fill_in t('in_person_proofing.body.location.po_search.city_label'),
             with: GOOD_CITY
-    fill_in t('in_person_proofing.body.location.po_search.state_label'),
-            with: GOOD_STATE
+    select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     fill_in t('in_person_proofing.body.location.po_search.zipcode_label'),
             with: GOOD_ZIPCODE
     click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))

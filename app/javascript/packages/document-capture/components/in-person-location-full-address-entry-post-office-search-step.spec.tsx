@@ -2,11 +2,13 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { I18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
+import type { SetupServer } from 'msw/node';
 import { rest } from 'msw';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
 import { LOCATIONS_URL } from '@18f/identity-address-search';
+import { InPersonContext } from '../context';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 
 const USPS_RESPONSE = [
@@ -67,10 +69,17 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('renders the step', () => {
     const { getByRole } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      {
-        wrapper,
-      },
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
     );
 
     expect(getByRole('heading', { name: 'in_person_proofing.headings.po_search.location' }));
@@ -83,7 +92,16 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
     it('displays a try again error message', async () => {
       const { findByText, findByLabelText } = render(
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        <InPersonContext.Provider
+          value={{
+            inPersonOutageMessageEnabled: false,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+            inPersonFullAddressEntryEnabled: true,
+            usStatesTerritories: [['Delaware', 'DE']],
+          }}
+        >
+          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        </InPersonContext.Provider>,
         { wrapper },
       );
 
@@ -95,7 +113,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
         'Endeavor',
       );
-      await userEvent.type(
+      await userEvent.selectOptions(
         await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
         'DE',
       );
@@ -115,10 +133,17 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('displays validation error messages to the user if fields are empty', async () => {
     const { findAllByText, findByText } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
-      {
-        wrapper,
-      },
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
     );
 
     await userEvent.click(
@@ -131,7 +156,16 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
     const { findByText, findByLabelText, queryByRole } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
       { wrapper },
     );
 
@@ -143,7 +177,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
       'Endeavor',
     );
-    await userEvent.type(
+    await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
@@ -171,7 +205,16 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('clicking search again after first results do not clear results', async () => {
     const { findAllByText, findByText, findByLabelText } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
       { wrapper },
     );
 
@@ -183,7 +226,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
       'Endeavor',
     );
-    await userEvent.type(
+    await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
@@ -215,7 +258,17 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
           })
         }
       >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />
+        <InPersonContext.Provider
+          value={{
+            inPersonOutageMessageEnabled: false,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+            inPersonFullAddressEntryEnabled: true,
+            usStatesTerritories: [['Delaware', 'DE']],
+          }}
+        >
+          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        </InPersonContext.Provider>
+        ,
       </I18nContext.Provider>,
       { wrapper },
     );
@@ -227,7 +280,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
       'Endeavor',
     );
-    await userEvent.type(
+    await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
@@ -266,7 +319,17 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
           })
         }
       >
-        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />
+        <InPersonContext.Provider
+          value={{
+            inPersonOutageMessageEnabled: false,
+            inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+            inPersonFullAddressEntryEnabled: true,
+            usStatesTerritories: [['Delaware', 'DE']],
+          }}
+        >
+          <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+        </InPersonContext.Provider>
+        ,
       </I18nContext.Provider>,
       { wrapper },
     );
@@ -279,7 +342,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
       'Endeavor',
     );
-    await userEvent.type(
+    await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
@@ -303,7 +366,16 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('allows user to select a location', async () => {
     const { findAllByText, findByLabelText, findByText, queryByText } = render(
-      <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
       { wrapper },
     );
     await userEvent.type(
@@ -314,7 +386,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
       'Endeavor',
     );
-    await userEvent.type(
+    await userEvent.selectOptions(
       await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
       'DE',
     );
@@ -332,9 +404,6 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
     await userEvent.clear(
       await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-    );
-    await userEvent.clear(
-      await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
     );
     await userEvent.clear(
       await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),

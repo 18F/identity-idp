@@ -26,6 +26,7 @@ describe('InPersonPrepareStep', () => {
             inPersonOutageMessageEnabled: true,
             inPersonOutageExpectedUpdateDate: 'January 1, 2024',
             inPersonFullAddressEntryEnabled: false,
+            usStatesTerritories: [],
           }}
         >
           <InPersonPrepareStep {...DEFAULT_PROPS} />
@@ -38,7 +39,11 @@ describe('InPersonPrepareStep', () => {
     it('does not render a warning when the flag is disabled', () => {
       const { queryByText } = render(
         <InPersonContext.Provider
-          value={{ inPersonOutageMessageEnabled: false, inPersonFullAddressEntryEnabled: false }}
+          value={{
+            inPersonOutageMessageEnabled: false,
+            inPersonFullAddressEntryEnabled: false,
+            usStatesTerritories: [],
+          }}
         >
           <InPersonPrepareStep {...DEFAULT_PROPS} />
         </InPersonContext.Provider>,
