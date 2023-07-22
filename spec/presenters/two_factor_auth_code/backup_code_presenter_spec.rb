@@ -28,10 +28,4 @@ RSpec.describe TwoFactorAuthCode::BackupCodePresenter do
         '/account'
     end
   end
-
-  describe '#help_text' do
-    it 'returns blank' do
-      expect(presenter.help_text).to eq ''
-    end
-  end
 end

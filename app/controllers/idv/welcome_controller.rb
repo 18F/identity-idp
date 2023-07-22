@@ -2,19 +2,18 @@ module Idv
   class WelcomeController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
+    include GettingStartedAbTestConcern
 
     before_action :confirm_welcome_needed
+    before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
-      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
-        'welcome', :view,
-        true
-      )
+      Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
+        call('welcome', :view, true)
 
-      render :show, locals: { flow_session: flow_session }
+      render :show
     end
 
     def update
@@ -37,7 +36,7 @@ module Idv
         step: 'welcome',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }
+      }.merge(ab_test_analytics_buckets)
     end
 
     def create_document_capture_session
