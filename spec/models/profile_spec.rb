@@ -979,7 +979,8 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
-      profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
+      profile.fraud_pending_reason = 'threatmetrix_review'
+      profile.deactivate_for_fraud_review
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
