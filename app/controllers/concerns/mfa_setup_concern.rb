@@ -2,11 +2,15 @@ module MfaSetupConcern
   extend ActiveSupport::Concern
 
   def next_setup_path
+    puts('next setup path')
     if suggest_second_mfa?
-      auth_method_confirmation_url
+      puts('suggest second mfa')
+      second_mfa_setup_url
     elsif next_setup_choice
+      puts('next setup choice')
       confirmation_path
     else
+      puts('next default')
       if user_session[:mfa_selections]
         analytics.user_registration_mfa_setup_complete(
           mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
@@ -15,8 +19,9 @@ module MfaSetupConcern
           success: true,
         )
       end
-      user_session.delete(:mfa_selections)
-      nil
+      second_mfa_setup_url
+      # user_session.delete(:mfa_selections)
+      # nil
     end
   end
 

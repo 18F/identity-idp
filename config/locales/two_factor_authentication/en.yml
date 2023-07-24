@@ -154,8 +154,9 @@ en:
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
       configurations_added:
-        one: '(%{count} added)'
-        other: '(%{count} added)'
+        one: '%{count} added'
+        other: '%{count} added'
+      no_count_configuration_added: Added
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate

@@ -172,8 +172,9 @@ fr:
         générerons une nouvelle liste. Gardez à l’esprit que les codes de
         sauvegarde sont faciles à perdre.
       configurations_added:
-        one: '(%{count} ajouté)'
-        other: '(%{count} ajoutés)'
+        one: '%{count} ajouté'
+        other: '%{count} ajoutés'
+      no_count_configuration_added: Ajouté
       phone: Message texte ou vocal
       phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
       phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (

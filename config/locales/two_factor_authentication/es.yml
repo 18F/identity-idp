@@ -163,8 +163,9 @@ es:
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
       configurations_added:
-        one: '(%{count} añadido)'
-        other: '(%{count} añadido)'
+        one: '%{count} añadido'
+        other: '%{count} añadido'
+      no_count_configuration_added: Añadido
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.

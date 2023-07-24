@@ -2,8 +2,8 @@
       'two_factor_options_form[selection][]',
       option.type,
       false,
-      disabled: option.disabled?,
-      checked: option.disabled?,
+      disabled: option.disabled? && option.type === 'backup_code',
+      checked: option.disabled? && option.type === 'backup_code',
       class: 'usa-checkbox__input usa-checkbox__input--tile',
       id: "two_factor_options_form_selection_#{option.type}",
       aria: {
@@ -20,7 +20,7 @@
   <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image') %>
   <div class="usa-checkbox__label--text">
     <%= option.label %>
-    <span id="two_factor_options_form_selection_description_<%= option.type %>" aria-hidden="true">
+    <span id="two_factor_options_form_selection_description_<%= option.type %>" <% if option.mfa_configuration_description.length > 0 %>class="usa-tag option-added" <% end %>aria-hidden="true">
       <%= option.mfa_configuration_description %>
     </span>
     <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">

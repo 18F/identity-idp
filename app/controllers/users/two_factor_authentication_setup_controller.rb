@@ -8,12 +8,14 @@ module Users
     before_action :confirm_user_needs_2fa_setup
 
     def index
+      puts('2F auth setup index')
       two_factor_options_form
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit
     end
 
     def create
+      puts('2F auth setup create')
       result = submit_form
       analytics_hash = result.to_h
       analytics.user_registration_2fa_setup(**analytics_hash)
@@ -56,6 +58,7 @@ module Users
     end
 
     def process_valid_form
+      puts('process valid form')
       user_session[:mfa_selections] = @two_factor_options_form.selection
       redirect_to confirmation_path(user_session[:mfa_selections].first)
     end
