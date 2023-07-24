@@ -409,8 +409,6 @@ dast-scan:
     DAST_WEBSITE: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
-  script:
-    - echo "Run scan on $CI_ENVIRONMENT_SLUG environment"
   needs:
     - job: review-app
   
