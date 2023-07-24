@@ -2,19 +2,23 @@ class TroubleshootingOptionsComponent < BaseComponent
   renders_one :header, 'TroubleshootingOptionsHeadingComponent'
   renders_many :options, BlockLinkComponent
 
-  attr_reader :options_from_constructor, :tag_options
+  attr_reader :tag_options
 
   def initialize(options: [], **tag_options)
     @options_from_constructor = options
     @tag_options = tag_options.dup
   end
 
-  def all_options
-    options_from_constructor + options
+  def options
+    @options_from_constructor + get_slot(:options)
+  end
+
+  def options?
+    options.present?
   end
 
   def render?
-    all_options.present?
+    options?
   end
 
   def css_class
