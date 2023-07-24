@@ -92,6 +92,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Capture troubleshooting shown', {
       isAssessedAsGlare: false,
       isAssessedAsBlurry: false,
+      isAssessedAsUnsupported: false,
     });
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });

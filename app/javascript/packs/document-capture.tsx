@@ -80,9 +80,16 @@ const {
   cancelUrl: cancelURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
+  inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
+  usStatesTerritories = '',
 } = appRoot.dataset as DOMStringMap & AppRootData;
+
+let parsedUsStatesTerritories = [];
+try {
+  parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
+} catch (e) {}
 
 const App = composeComponents(
   [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
@@ -94,6 +101,8 @@ const App = composeComponents(
         inPersonURL,
         inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
         inPersonOutageExpectedUpdateDate,
+        inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
+        usStatesTerritories: parsedUsStatesTerritories,
       },
     },
   ],
@@ -138,7 +147,12 @@ const App = composeComponents(
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
     },
   ],
-  [DocumentCapture, { onStepChange: extendSession }],
+  [
+    DocumentCapture,
+    {
+      onStepChange: extendSession,
+    },
+  ],
 );
 
 render(<App />, appRoot);

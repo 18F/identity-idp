@@ -45,8 +45,10 @@ fr:
         inline_error: Saisissez une adresse valide avec la ville, l’état et le code postal
         location_button: Sélectionner
         po_search:
+          address_label: Adresse
           address_search_hint: 'Exemple: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Entrez une adresse pour trouver un bureau de poste près de chez vous.
+          city_label: Ville
           is_searching_message: Recherche des emplacements de bureau de poste…
           none_found: Désolé, il n’y a pas de bureaux de poste participants dans un rayon
             de 50 miles de la ville %{address}
@@ -63,6 +65,8 @@ fr:
           results_instructions: Sélectionnez un emplacement de bureau de poste ci-dessous,
             ou effectuez une nouvelle recherche en utilisant une autre adresse.
           search_button: Rechercher
+          state_label: État
+          zipcode_label: Code postal
         retail_hours_heading: Heures de vente au détail
         retail_hours_sat: 'Sam:'
         retail_hours_sun: 'Dim:'

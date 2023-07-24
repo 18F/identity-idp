@@ -10,11 +10,17 @@ RSpec.describe Idv::DocumentCaptureController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     subject.idv_session.flow_path = 'standard'
     subject.user_session['idv/doc_auth'] = flow_session
+
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -48,8 +54,7 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -140,8 +145,7 @@ RSpec.describe Idv::DocumentCaptureController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'document_capture',
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      }
+      }.merge(ab_test_args)
     end
     let(:result) { { success: true, errors: {} } }
 

@@ -14,7 +14,11 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def new
-      form = WebauthnVisitForm.new(current_user)
+      form = WebauthnVisitForm.new(
+        user: current_user,
+        url_options: url_options,
+        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -151,7 +155,7 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      handle_remember_device
+      handle_remember_device_preference(params[:remember_device])
       if form.platform_authenticator?
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,

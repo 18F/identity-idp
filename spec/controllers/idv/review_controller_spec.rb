@@ -25,9 +25,14 @@ RSpec.describe Idv::ReviewController do
     idv_session
   end
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_analytics
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -255,6 +260,7 @@ RSpec.describe Idv::ReviewController do
           gpo_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: nil,
+          **ab_test_args,
         )
       end
     end
@@ -277,6 +283,7 @@ RSpec.describe Idv::ReviewController do
           gpo_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: anything,
+          **ab_test_args,
         )
         expect(@analytics).to have_logged_event(
           'IdV: final resolution',
@@ -613,6 +620,7 @@ RSpec.describe Idv::ReviewController do
                       gpo_verification_pending: false,
                       proofing_components: nil,
                       deactivation_reason: nil,
+                      **ab_test_args,
                     )
                     expect(@analytics).to have_logged_event(
                       'IdV: final resolution',
@@ -622,6 +630,7 @@ RSpec.describe Idv::ReviewController do
                       gpo_verification_pending: false,
                       proofing_components: nil,
                       deactivation_reason: nil,
+                      **ab_test_args,
                     )
                   end
 

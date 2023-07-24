@@ -88,7 +88,7 @@ RSpec.describe Telephony::AlertSender do
     it 'warns if the link is longer than 160 characters' do
       long_link = 'a' * 161
 
-      expect(Telephony).to receive(:log_warn)
+      expect(Telephony).to receive(:log_warn).and_call_original
 
       subject.send_doc_auth_link(
         to: recipient,

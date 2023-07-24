@@ -6,6 +6,13 @@ RSpec.describe Users::SessionsController, devise: true do
 
   describe 'GET /users/sign_in' do
     it 'clears the session when user is not yet 2fa-ed' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with(
+        'Sign in page visited',
+        flash: nil,
+        stored_location: nil,
+      )
+      expect(@analytics).to receive(:track_event).with('Partially authenticated user logged out')
       sign_in_before_2fa
 
       get :new

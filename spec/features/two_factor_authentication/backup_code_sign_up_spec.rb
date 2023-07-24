@@ -39,6 +39,7 @@ RSpec.feature 'sign up with backup code' do
       expect(page).to \
         have_content t('two_factor_authentication.login_options.backup_code_info')
       visit login_two_factor_backup_code_path
+      uncheck(t('forms.messages.remember_device'))
       fill_in :backup_code_verification_form_backup_code, with: codes[index]
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1

@@ -1,4 +1,6 @@
 class Profile < ApplicationRecord
+  self.ignored_columns += %w[reproof_at]
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -31,7 +33,7 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   def fraud_review_pending?
-    fraud_review_pending_at.present?
+    fraud_pending_reason.present? && !fraud_rejection?
   end
 
   def fraud_rejection?
@@ -98,11 +100,24 @@ class Profile < ApplicationRecord
     track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
+  def activate_after_fraud_review_unnecessary
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+  end
+
   def activate_after_passing_in_person
     transaction do
       update!(
-        deactivation_reason: nil,
         fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+        deactivation_reason: nil,
       )
       activate
     end
@@ -123,10 +138,6 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def has_deactivation_reason?
-    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
-  end
-
   def has_fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end
@@ -135,10 +146,29 @@ class Profile < ApplicationRecord
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
-  def deactivate_for_fraud_review(fraud_pending_reason:)
+  def deactivate_for_fraud_review
+    ##
+    # This is temporary. We are working on changing the way fraud review status
+    # is computed. The goal is that a profile is only in fraud review when
+    # `fraud_review_pending_at` is set. We will set this immediatly if a user
+    # verifies with phone and when a user enters their GPO code.
+    #
+    # We currently look at `fraud_pending_reason` to determine if a user is in
+    # fraud review. This allows us to change the writes on
+    # `fraud_review_pending_at` without side-effects.
+    #
+    # Once the writes on `fraud_review_pending_at` are correct we can move the
+    # reads to determine a user is fraud review pending to that column. At that
+    # point we can set `fraud_pending_reason` when we create a profile and
+    # deactivate the profile at the appropriate time for the given context
+    # (i.e. immediatly for phone and after GPO code entry for GPO).
+    #
+    if fraud_pending_reason.nil?
+      raise 'Attempting to deactivate a profile with a nil fraud pending reason'
+    end
+
     update!(
       active: false,
-      fraud_pending_reason: fraud_pending_reason,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )
