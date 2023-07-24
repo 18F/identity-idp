@@ -61,6 +61,7 @@ stages:
   - after_test
   - review
   - scan
+  - dast
 
 workflow:
   rules:
@@ -403,7 +404,7 @@ include:
   
 # Enable DAST Scan
 dast-scan:
-  stage: scan
+  stage: dast
   variables:
     DAST_WEBSITE: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
