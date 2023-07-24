@@ -10,7 +10,7 @@ class TroubleshootingOptionsComponent < BaseComponent
   end
 
   def options
-    @options_from_constructor + get_slot(:options)
+    @options_from_constructor.map(&method(:render)) + get_slot(:options)
   end
 
   def options?
