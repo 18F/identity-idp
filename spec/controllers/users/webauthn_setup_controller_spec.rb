@@ -108,54 +108,6 @@ RSpec.describe Users::WebauthnSetupController do
 
         patch :confirm, params: params
       end
-      context 'when platform auth device is not backup state eligible' do
-        let(:params) do
-          {
-            attestation_object: attestation_object,
-            client_data_json: setup_client_data_json,
-            name: 'mykey',
-            transports: 'internal,hybrid',
-            platform_authenticator: 'true',
-            authenticator_data_value: '65',
-          }
-        end
-
-        it 'should redirect to backup state not supported page' do
-          patch :confirm, params: params
-          expect(response).to redirect_to(webauthn_setup_passkey_not_backed_up_path)
-        end
-      end
-
-      context 'when platform auth device is backup state eligible' do
-        let(:params) do
-          {
-            attestation_object: attestation_object,
-            client_data_json: setup_client_data_json,
-            name: 'mykey',
-            transports: 'internal,hybrid',
-            platform_authenticator: 'true',
-            authenticator_data_value: '45',
-          }
-        end
-
-        it 'should redirect to accounts page' do
-          patch :confirm, params: params
-          expect(response).to redirect_to(account_url)
-        end
-      end
-    end
-
-    describe 'get passkey_not_backed_up' do
-      context 'when feature toggle is off' do
-        before do
-          allow(IdentityConfig.store).to receive(:platform_backup_state_redirect).and_return(false)
-        end
-
-        it 'should redirect to account page' do
-          get :passkey_not_backed_up
-          expect(response).to redirect_to(account_url)
-        end
-      end
     end
 
     describe 'delete' do

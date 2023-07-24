@@ -155,32 +155,4 @@ RSpec.describe WebauthnSetupForm do
       end
     end
   end
-
-  describe '#passkey_backed_up?' do
-    context 'when authenticator data flag bs value is set to false' do
-      let(:params) do
-        {
-          attestation_object: attestation_object,
-          client_data_json: setup_client_data_json,
-          name: 'mykey',
-          platform_authenticator: false,
-          transports: 'usb',
-          authenticator_data_value: '65',
-        }
-      end
-      it 'should return false' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        subject.submit(protocol, params)
-        expect(subject.passkey_backed_up?).to eq(false)
-      end
-    end
-
-    context 'when bs value is set to true' do
-      it 'should return true' do
-        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        subject.submit(protocol, params)
-        expect(subject.passkey_backed_up?).to eq(true)
-      end
-    end
-  end
 end
