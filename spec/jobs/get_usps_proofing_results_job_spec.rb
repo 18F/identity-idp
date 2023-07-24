@@ -1142,7 +1142,12 @@ RSpec.describe GetUspsProofingResultsJob do
 
         context 'sms notifications enabled' do
           let(:pending_enrollment) do
-            create(:in_person_enrollment, :pending, :with_notification_phone_configuration)
+            create(
+              :in_person_enrollment,
+              :pending,
+              :with_notification_phone_configuration,
+              capture_secondary_id_enabled: true,
+            )
           end
 
           before do
@@ -1179,6 +1184,32 @@ RSpec.describe GetUspsProofingResultsJob do
           context 'enrollment has failed proofing' do
             it 'invokes the SendProofingNotificationJob for the enrollment' do
               stub_request_failed_proofing_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
+          end
+
+          context 'enrollment has failed proofing due to unsupported secondary ID' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_passed_proofing_secondary_id_type_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
+          end
+
+          context 'enrollment has failed proofing due to unsupported ID type' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_passed_proofing_unsupported_id_results
 
               expect(pending_enrollment.notification_phone_configuration).to_not be_nil
               expect(pending_enrollment.notification_sent_at).to be_nil

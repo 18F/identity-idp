@@ -212,6 +212,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -373,6 +375,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
