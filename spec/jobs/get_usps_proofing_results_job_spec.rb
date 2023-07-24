@@ -217,38 +217,13 @@ RSpec.describe GetUspsProofingResultsJob do
   describe '#perform' do
     describe 'IPP enabled' do
       describe 'DAV not enabled' do
-        # let!(:pending_enrollments) do
         let!(:pending_enrollments) do
-          # [
           locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
           build_list(:in_person_enrollment, 5, :pending) do |record, i|
             record.issuer = 'http://localhost:3000'
             record.selected_location_details = { name: locations[i] }
             record.save!
           end
-          #  create(
-          #    :in_person_enrollment, :pending,
-          #    selected_location_details: { name: 'BALTIMORE' },
-          #    issuer: 'http://localhost:3000'
-          #  ),
-          #  create(
-          #    :in_person_enrollment, :pending,
-          #    selected_location_details: { name: 'FRIENDSHIP' }
-          #  ),
-          #  create(
-          #    :in_person_enrollment, :pending,
-          #    selected_location_details: { name: 'WASHINGTON' }
-          #  ),
-          #  create(
-          #    :in_person_enrollment, :pending,
-          #    selected_location_details: { name: 'ARLINGTON' }
-          #  ),
-          #  create(
-          #    :in_person_enrollment, :pending,
-          #    selected_location_details: { name: 'DEANWOOD' }
-          #  ),
-          # ]
-          # end
         end
         let(:pending_enrollment) { pending_enrollments.first }
 
