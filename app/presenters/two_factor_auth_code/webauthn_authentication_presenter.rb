@@ -17,12 +17,7 @@ module TwoFactorAuthCode
     end
 
     def webauthn_help
-      if service_provider_mfa_policy.phishing_resistant_required? &&
-         service_provider_mfa_policy.allow_user_to_switch_method?
-        t('instructions.mfa.webauthn.confirm_webauthn_or_aal3')
-      elsif service_provider_mfa_policy.phishing_resistant_required?
-        t('instructions.mfa.webauthn.confirm_webauthn_only')
-      elsif platform_authenticator?
+      if platform_authenticator?
         t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)
       else
         t('instructions.mfa.webauthn.confirm_webauthn')
@@ -45,32 +40,8 @@ module TwoFactorAuthCode
       end
     end
 
-    def link_text
-      if service_provider_mfa_policy.phishing_resistant_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          t('two_factor_authentication.webauthn_piv_available')
-        else
-          ''
-        end
-      else
-        super
-      end
-    end
-
-    def link_path
-      if service_provider_mfa_policy.phishing_resistant_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          login_two_factor_piv_cac_url
-        else
-          ''
-        end
-      else
-        super
-      end
-    end
-
     def troubleshooting_options
-      options = [choose_another_method_troubleshooting_option].select(&:present?)
+      options = [choose_another_method_troubleshooting_option]
       if platform_authenticator?
         options << BlockLinkComponent.new(
           url: help_center_redirect_path(
