@@ -22,8 +22,13 @@ namespace :profiles do
     )
 
     profiles.each do |profile|
+      if profile.fraud_pending_reason.blank?
+        warn "Profile ##{profile.id} does not have a fraud pending reason!"
+        break
+      end
+
       warn "#{profile.id},#{profile.fraud_review_pending_at},#{profile.fraud_rejection_at}"
-      profile.update!(fraud_review_pending_at: nil) if update_profiles
+      profile.update!(fraud_review_pending_at: nil, fraud_rejection_at: nil) if update_profiles
     end
   end
 
