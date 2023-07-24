@@ -150,7 +150,9 @@ end
 
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
-    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
+    expect(NewRelic::Agent).to receive(:notice_error).with(
+      instance_of(error_type),
+    ).at_least(1).times
     job.perform(Time.zone.now)
 
     expect(job_analytics).to have_logged_event(
@@ -215,9 +217,9 @@ RSpec.describe GetUspsProofingResultsJob do
   describe '#perform' do
     describe 'IPP enabled' do
       describe 'DAV not enabled' do
-       # let!(:pending_enrollments) do
-        let!(:pending_enrollments) {
-          #[
+        # let!(:pending_enrollments) do
+        let!(:pending_enrollments) do
+          # [
           locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
           build_list(:in_person_enrollment, 5, :pending) do |record, i|
             record.issuer = 'http://localhost:3000'
@@ -245,9 +247,9 @@ RSpec.describe GetUspsProofingResultsJob do
           #    :in_person_enrollment, :pending,
           #    selected_location_details: { name: 'DEANWOOD' }
           #  ),
-          #]
-       # end
-        }
+          # ]
+          # end
+        end
         let(:pending_enrollment) { pending_enrollments.first }
 
         before do
@@ -436,7 +438,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs failure details' do
             allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
             allow(proofer).to receive(:request_proofing_results).and_raise(error)
-            expect(NewRelic::Agent).to receive(:notice_error).with(error)
+            expect(NewRelic::Agent).to receive(:notice_error).with(error).at_least(1).times
 
             job.perform(Time.zone.now)
 
@@ -891,8 +893,10 @@ RSpec.describe GetUspsProofingResultsJob do
           context 'when an enrollment code is invalid' do
             # this enrollment code is hardcoded into the fixture
             # request_unexpected_invalid_enrollment_code_response.json
-            let(:pending_enrollment) do
-              create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456')
+            let(:pending_enrollments) do
+              [
+                create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456'),
+              ]
             end
             before(:each) do
               stub_request_unexpected_invalid_enrollment_code
@@ -916,8 +920,10 @@ RSpec.describe GetUspsProofingResultsJob do
           context 'when a unique id is invalid' do
             # this unique id is hardcoded into the fixture
             # request_unexpected_invalid_applicant_response.json
-            let(:pending_enrollment) do
-              create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi')
+            let(:pending_enrollments) do
+              [
+                create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi'),
+              ]
             end
             before(:each) do
               stub_request_unexpected_invalid_applicant
@@ -1007,7 +1013,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::BadRequestError))
+              with(instance_of(Faraday::BadRequestError)).at_least(1).times
             job.perform(Time.zone.now)
           end
         end
@@ -1033,7 +1039,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::ClientError))
+              with(instance_of(Faraday::ClientError)).at_least(1).times
             job.perform(Time.zone.now)
           end
         end
@@ -1053,7 +1059,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::ServerError))
+              with(instance_of(Faraday::ServerError)).at_least(5).times
             job.perform(Time.zone.now)
           end
         end
