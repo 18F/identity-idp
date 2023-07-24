@@ -40,8 +40,8 @@ module InPerson
         to: phone, message: message,
         country_code: Phonelib.parse(phone).country
       )
-      handle_telephony_result(enrollment: enrollment, phone: phone, telephony_result: response)
-      # if notification sent successful
+      handle_telephony_response(enrollment: enrollment, phone: phone, telephony_response: response)
+
       enrollment.update(notification_sent_at: Time.zone.now) if response.success?
 
       log_job_completed(enrollment: enrollment)
@@ -56,26 +56,16 @@ module InPerson
         )
     end
 
-    def handle_telephony_result(enrollment:, phone:, telephony_result:)
-      if telephony_result.success?
-        analytics(user: enrollment.user).
-          idv_in_person_usps_proofing_results_notification_sent_attempted(
-            success: true,
-            enrollment_code: enrollment.enrollment_code,
-            enrollment_id: enrollment.id,
-            telephony_result: telephony_result,
-          )
-      else
-        analytics(user: enrollment.user).
-          idv_in_person_usps_proofing_results_notification_sent_attempted(
-            success: false,
-            enrollment_code: enrollment.enrollment_code,
-            enrollment_id: enrollment.id,
-            telephony_result: telephony_result,
-          )
-        if telephony_result.error&.is_a?(Telephony::OptOutError)
-          PhoneNumberOptOut.mark_opted_out(phone)
-        end
+    def handle_telephony_response(enrollment:, phone:, telephony_response:)
+      analytics(user: enrollment.user).
+        idv_in_person_usps_proofing_results_notification_sent_attempted(
+          success: telephony_response.success?,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
+          telephony_response: telephony_response.to_h,
+        )
+      if telephony_response.error&.is_a?(Telephony::OptOutError)
+        PhoneNumberOptOut.mark_opted_out(phone)
       end
     end
 
