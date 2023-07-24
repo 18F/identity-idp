@@ -2,7 +2,6 @@ module Idv
   class WelcomeController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
     include GettingStartedAbTestConcern
 
     before_action :confirm_welcome_needed
@@ -37,7 +36,7 @@ module Idv
         step: 'welcome',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }
+      }.merge(ab_test_analytics_buckets)
     end
 
     def create_document_capture_session
