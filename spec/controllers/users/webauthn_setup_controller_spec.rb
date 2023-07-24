@@ -70,7 +70,7 @@ RSpec.describe Users::WebauthnSetupController do
           client_data_json: setup_client_data_json,
           name: 'mykey',
           transports: 'usb',
-          authenticator_data_value: '45',
+          authenticator_data_value: '65',
         }
       end
 
@@ -92,6 +92,14 @@ RSpec.describe Users::WebauthnSetupController do
           success: true,
           errors: {},
           in_multi_mfa_selection_flow: false,
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: false,
+            bs: false,
+            at: true,
+            ed: false,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
