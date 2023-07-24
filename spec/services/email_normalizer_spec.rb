@@ -24,20 +24,37 @@ RSpec.describe EmailNormalizer do
 
     context 'with a Google Apps domain' do
       let(:email) { 'foo.bar.baz+123@example.com' }
+      let(:rails_offline) { false }
 
-      before do
-        dns = instance_double(
-          'Resolv::DNS',
-          getresources: [
-            Resolv::DNS::Resource::IN::MX.new(1, Resolv::DNS::Name.new(%w[abcd l google com])),
-          ],
-        )
+      before { stub_const('ENV', 'RAILS_OFFLINE' => (rails_offline ? 'TRUE' : nil)) }
 
-        allow(Resolv::DNS).to receive(:open).and_yield(dns)
+      context 'in offline mode' do
+        let(:rails_offline) { true }
+
+        it 'does not make any network requests and assumes non-Google Apps' do
+          expect(Resolv::DNS).to_not receive(:open)
+
+          expect(normalized_email).to eq(email)
+        end
       end
 
-      it 'still removes . and anything after the +' do
-        expect(normalized_email).to eq('foobarbaz@example.com')
+      context 'with "real DNS" enabled' do
+        let(:rails_offline) { false }
+
+        before do
+          dns = instance_double(
+            'Resolv::DNS',
+            getresources: [
+              Resolv::DNS::Resource::IN::MX.new(1, Resolv::DNS::Name.new(%w[abcd l google com])),
+            ],
+          )
+
+          allow(Resolv::DNS).to receive(:open).and_yield(dns)
+        end
+
+        it 'still removes . and anything after the +' do
+          expect(normalized_email).to eq('foobarbaz@example.com')
+        end
       end
     end
   end
