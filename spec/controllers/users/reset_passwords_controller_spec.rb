@@ -236,7 +236,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: [password_error_message],
-            password_confirmation: ['is too short (minimum is 12 characters)'],
+            password_confirmation: [t('errors.messages.too_short.other', count: Devise.password_length.first)],
             **password_token_error,
           },
           error_details: reset_password_error_details,
@@ -276,7 +276,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: [password_error_message],
-            password_confirmation: ['is too short (minimum is 12 characters)'],
+            password_confirmation: [t('errors.messages.too_short.other', count: Devise.password_length.first)],
           },
           error_details: {
             password: [:too_short],

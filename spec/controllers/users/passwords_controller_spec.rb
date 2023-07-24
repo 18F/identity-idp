@@ -136,7 +136,10 @@ RSpec.describe Users::PasswordsController do
                   count: Devise.password_length.first,
                 ),
               ],
-              password_confirmation: ['is too short (minimum is 12 characters)'],
+              password_confirmation: [t(
+                'errors.messages.too_short.other',
+                count: Devise.password_length.first,
+              )],
             },
             error_details: password_short_error,
           )
