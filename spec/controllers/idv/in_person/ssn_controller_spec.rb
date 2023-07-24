@@ -100,7 +100,7 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           irs_reproofing: false,
           step: 'ssn',
-        }
+        }.merge(ab_test_args)
       end
 
       it 'renders the show template' do
@@ -234,7 +234,7 @@ RSpec.describe Idv::InPerson::SsnController do
             },
             error_details: { ssn: [:invalid] },
             pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
-          }
+          }.merge(ab_test_args)
         end
 
         render_views
