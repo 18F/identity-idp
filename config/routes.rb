@@ -218,7 +218,6 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
     delete '/webauthn_setup' => 'users/webauthn_setup#delete'
-    get '/webauthn_setup/passkey_not_backed_up' => 'users/webauthn_setup#passkey_not_backed_up'
     get '/webauthn_setup_delete' => 'users/webauthn_setup#show_delete'
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp

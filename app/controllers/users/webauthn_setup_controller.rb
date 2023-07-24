@@ -10,7 +10,6 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
     before_action :confirm_recently_authenticated_2fa
-    before_action :passkey_backed_up_feature_on?, only: %i[passkey_not_backed_up]
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -68,10 +67,6 @@ module Users
       end
     end
 
-    def passkey_not_backed_up
-      @continue_path = next_setup_path || after_mfa_setup_path
-    end
-
     def delete
       if MfaPolicy.new(current_user).multiple_factors_enabled?
         handle_successful_delete
@@ -112,11 +107,6 @@ module Users
 
     def exclude_credentials
       current_user.webauthn_configurations.map(&:credential_id)
-    end
-
-    def passkey_backed_up_feature_on?
-      redirect_to account_url unless
-        FeatureManagement.platform_backup_state_redirect?
     end
 
     def handle_successful_delete
@@ -168,10 +158,6 @@ module Users
         )
         Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
-        if FeatureManagement.platform_backup_state_redirect? && !form.passkey_backed_up?
-          redirect_to webauthn_setup_passkey_not_backed_up_path
-          return
-        end
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,

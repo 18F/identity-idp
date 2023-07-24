@@ -42,11 +42,6 @@ class WebauthnSetupForm
     !!@platform_authenticator
   end
 
-  def passkey_backed_up?
-    return false unless @authenticator_data_flags.present?
-    @authenticator_data_flags[:bs]
-  end
-
   private
 
   attr_reader :success, :transports, :invalid_transports
@@ -102,18 +97,16 @@ class WebauthnSetupForm
   end
 
   def process_authenticator_data_value(data_value)
-    return unless data_value.present?
-    # Ensure that its an int
-    return unless data_value.scan(/\D/).empty?
-    data_int_value = data_value.to_i
+    data_int_value = Integer(data_value, 10)
     {
-      up: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 0)),
-      uv: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 2)),
-      be: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 3)),
-      bs: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 4)),
-      at: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 6)),
-      ed: ActiveModel::Type::Boolean.new.cast(data_int_value & (1 << 7)),
+      up: (data_int_value & (1 << 0)).positive?,
+      uv: (data_int_value & (1 << 2)).positive?,
+      be: (data_int_value & (1 << 3)).positive?,
+      bs: (data_int_value & (1 << 4)).positive?,
+      at: (data_int_value & (1 << 6)).positive?,
+      ed: (data_int_value & (1 << 7)).positive?,
     }
+    rescue ArgumentError
   end
 
   def create_webauthn_configuration
