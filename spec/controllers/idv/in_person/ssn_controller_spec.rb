@@ -167,6 +167,16 @@ RSpec.describe Idv::InPerson::SsnController do
           }
         end
 
+        let(:idv_session) do
+          {
+            applicant: Idp::Constants::MOCK_IDV_APPLICANT,
+            resolution_successful: true,
+            profile_confirmation: true,
+            vendor_phone_confirmation: true,
+            user_phone_confirmation: true,
+          }
+        end
+
         it 'sends analytics_visited event' do
           put :update, params: params
 
@@ -188,12 +198,6 @@ RSpec.describe Idv::InPerson::SsnController do
         end
 
         it 'invalidates steps after ssn' do
-          subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
-          subject.idv_session.resolution_successful = true
-          subject.idv_session.profile_confirmation = true
-          subject.idv_session.vendor_phone_confirmation = true
-          subject.idv_session.user_phone_confirmation = true
-
           put :update, params: params
 
           expect(subject.idv_session.applicant).to be_blank
@@ -201,7 +205,6 @@ RSpec.describe Idv::InPerson::SsnController do
           expect(subject.idv_session.profile_confirmation).to be_blank
           expect(subject.idv_session.vendor_phone_confirmation).to be_blank
           expect(subject.idv_session.user_phone_confirmation).to be_blank
-
         end
 
         it 'redirects to the expected page' do
