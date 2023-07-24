@@ -33,9 +33,10 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     started_at = Time.zone.now
-    enrollments.each do |enroll|
-      enroll.update(last_batch_claim_at: started_at)
-    end
+    enrollments.update(last_batch_claim_at: started_at)
+   # enrollments.each do |enroll|
+   #   enroll.update(last_batch_claim_at: started_at)
+   # end
     enrollments = InPersonEnrollment.needs_usps_status_check_batch(started_at) if
       enrollments.size > 0
     analytics.idv_in_person_usps_proofing_results_job_started(
@@ -43,9 +44,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
-
+    puts("---------> fahr be they #{enrollments.size}")
     check_enrollments(enrollments)
-
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
@@ -88,7 +88,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   def check_enrollment(enrollment)
     # Add a unique ID for enrollments that don't have one
     enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
-
     status_check_attempted_at = Time.zone.now
     enrollment_outcomes[:enrollments_checked] += 1
     response = nil
@@ -97,15 +96,20 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.unique_id, enrollment.enrollment_code
     )
   rescue Faraday::BadRequestError => err
+    puts('bad request')
     # 400 status code. This is used for some status updates and some common client errors
     handle_bad_request_error(err, enrollment)
   rescue Faraday::ClientError, Faraday::ServerError, Faraday::Error => err
+    puts('server error')
     # 4xx, 5xx and any other Faraday error besides a 400 status code.
     # These errors may or may not have a response body that we can pull info from.
     handle_client_or_server_error(err, enrollment)
   rescue StandardError => err
+    puts('standard error')
+    puts("#{err}")
     handle_standard_error(err, enrollment)
   else
+    puts('process time')
     process_enrollment_response(enrollment, response)
   ensure
     # Record the attempt to update the enrollment
