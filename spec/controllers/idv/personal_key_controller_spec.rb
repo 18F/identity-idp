@@ -90,7 +90,8 @@ RSpec.describe Idv::PersonalKeyController do
       context 'profile is pending from a different session' do
         context 'profile is pending due to fraud review' do
           before do
-            profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
+            profile.fraud_pending_reason = 'threatmetrix_review'
+            profile.deactivate_for_fraud_review
             subject.idv_session.profile_id = nil
           end
 
@@ -290,7 +291,8 @@ RSpec.describe Idv::PersonalKeyController do
 
       context 'profile is in fraud_review' do
         before do
-          profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
+          profile.fraud_pending_reason = 'threatmetrix_review'
+          profile.deactivate_for_fraud_review
         end
 
         it 'redirects to idv please call path' do
