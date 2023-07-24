@@ -635,6 +635,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
 
           it 'logs details about the success' do
+            job.perform(Time.zone.now)
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',

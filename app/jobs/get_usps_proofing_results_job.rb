@@ -229,7 +229,6 @@ class GetUspsProofingResultsJob < ApplicationJob
         job_name: self.class.name,
       )
     enrollment.update(status_check_completed_at: Time.zone.now)
-    enrollment.update(status_check_completed_at: Time.zone.now)
   end
 
   def handle_expired_status_update(enrollment, response, response_message)
@@ -461,11 +460,10 @@ class GetUspsProofingResultsJob < ApplicationJob
     sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
                       DEFAULT_EMAIL_DELAY_IN_HOURS
     wait_until = enrollment.proofed_at + sms_delay_hours
-    if wait_until > Time.zone.now
-      InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
-    else
-      InPerson::SendProofingNotificationJob.perform_later(enrollment.id)
-    end
+    InPerson::SendProofingNotificationJob.set(
+      wait_until: wait_until,
+      queue: :intentionally_delayed,
+    ).perform_later(enrollment.id)
   end
 
   def email_analytics_attributes(enrollment)
