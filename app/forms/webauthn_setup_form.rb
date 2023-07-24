@@ -98,6 +98,7 @@ class WebauthnSetupForm
 
   def process_authenticator_data_value(data_value)
     data_int_value = Integer(data_value, 10)
+    # bits defined using https://w3c.github.io/webauthn/#sctn-authenticator-data
     {
       up: (data_int_value & (1 << 0)).positive?,
       uv: (data_int_value & (1 << 2)).positive?,
@@ -106,7 +107,7 @@ class WebauthnSetupForm
       at: (data_int_value & (1 << 6)).positive?,
       ed: (data_int_value & (1 << 7)).positive?,
     }
-    rescue ArgumentError
+  rescue ArgumentError
   end
 
   def create_webauthn_configuration

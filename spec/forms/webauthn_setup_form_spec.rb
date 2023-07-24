@@ -13,7 +13,7 @@ RSpec.describe WebauthnSetupForm do
       name: 'mykey',
       platform_authenticator: false,
       transports: 'usb',
-      authenticator_data_value: '45',
+      authenticator_data_value: '153',
     }
   end
   let(:subject) { WebauthnSetupForm.new(user, user_session) }
@@ -29,6 +29,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn: 1 },
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
@@ -67,6 +75,40 @@ RSpec.describe WebauthnSetupForm do
             ['internal', 'hybrid'],
           )
         end
+
+        context 'with non backed up option data flags' do
+          let(:params) do
+            {
+              attestation_object: attestation_object,
+              client_data_json: setup_client_data_json,
+              name: 'mykey',
+              platform_authenticator: false,
+              transports: 'usb',
+              authenticator_data_value: '65',
+            }
+          end
+
+          it 'includes data flags with bs set as false ' do
+            result = subject.submit(protocol, params)
+            
+            expect(result.to_h).to eq(
+              success: true,
+              errors: {},
+              enabled_mfa_methods_count: 1,
+              mfa_method_counts: { webauthn: 1 },
+              multi_factor_auth_method: 'webauthn',
+              authenticator_data_flags: {
+                up: true,
+                uv: false,
+                be: false,
+                bs: false,
+                at: true,
+                ed: false,
+              },
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
+            )
+          end
+        end
       end
 
       context 'with invalid transports' do
@@ -82,13 +124,21 @@ RSpec.describe WebauthnSetupForm do
 
         it 'includes unknown transports in extra analytics' do
           result = subject.submit(protocol, params)
-
+          
           expect(result.to_h).to eq(
             success: true,
             errors: {},
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
+            authenticator_data_flags: {
+              up: true,
+              uv: false,
+              be: true,
+              bs: true,
+              at: false,
+              ed: true,
+            },
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
             unknown_transports: ['wrong'],
           )
@@ -104,6 +154,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
@@ -137,6 +195,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
