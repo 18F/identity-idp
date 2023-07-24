@@ -126,11 +126,14 @@ interface AcuantCameraUICallbacks {
    * Optional frame available callback
    */
   onFrameAvailable?: (response: AcuantDetectedResult) => void;
+  /**
+   * Callback that occurs when there is a failure.
+   */
+  onFailure: (response: AcuantFailureCallback) => void;
 }
 
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
-  onFailure: AcuantFailureCallback,
   options?: AcuantCameraUIOptions,
 ) => void;
 
@@ -304,8 +307,8 @@ function AcuantCamera({
         {
           onCaptured: onCropStart,
           onCropped,
+          onFailure: onImageCaptureFailure,
         },
-        onImageCaptureFailure,
         {
           text: {
             NONE: t('doc_auth.info.capture_status_none'),

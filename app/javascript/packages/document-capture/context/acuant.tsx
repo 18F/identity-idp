@@ -13,7 +13,7 @@ declare let AcuantCamera: AcuantCameraInterface;
 declare global {
   interface AcuantJavascriptWebSdkInterface {
     initialize: AcuantInitialize;
-    startWorkers: AcuantWorkersInitialize;
+    start: AcuantWorkersInitialize;
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
@@ -247,7 +247,7 @@ function AcuantContextProvider({
       window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
-          window.AcuantJavascriptWebSdk.startWorkers(() => {
+          window.AcuantJavascriptWebSdk.start(() => {
             window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {
