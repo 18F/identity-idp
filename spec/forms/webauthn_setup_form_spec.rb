@@ -90,7 +90,7 @@ RSpec.describe WebauthnSetupForm do
 
           it 'includes data flags with bs set as false ' do
             result = subject.submit(protocol, params)
-            
+
             expect(result.to_h).to eq(
               success: true,
               errors: {},
@@ -124,7 +124,7 @@ RSpec.describe WebauthnSetupForm do
 
         it 'includes unknown transports in extra analytics' do
           result = subject.submit(protocol, params)
-          
+
           expect(result.to_h).to eq(
             success: true,
             errors: {},
