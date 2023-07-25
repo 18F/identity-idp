@@ -11,7 +11,7 @@ module TwoFactorAuthentication
     def mfa_configuration_description
       return '' if !disabled?
       t(
-        'two_factor_authentication.two_factor_choice_options.no_count_configuration_added'
+        'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
       )
     end
 
