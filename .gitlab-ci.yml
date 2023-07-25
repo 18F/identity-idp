@@ -320,13 +320,16 @@ review-app:
         {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
         {"name": "POSTGRES_WORKER_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_WORKER_PASSWORD", "value": "postgres"},
-        {"name": "LOGIN_ENV", "value": "dev"},
         {"name": "RAILS_OFFLINE", "value": "true"},
         {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2"},
         {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1"},
         {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379"},
         {"name": "ASSET_HOST", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"}
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "LOGIN_DOMAIN", "value": "identitysandbox.gov"},
+        {"name": "LOGIN_HOST_ROLE", "value": "idp" },
+        {"name": "LOGIN_DATACENTER", "value": "true" },
+        {"name": "LOGIN_ENV", "value": "dev" }
       ]
       EOF
       )
@@ -343,13 +346,16 @@ review-app:
         {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
         {"name": "POSTGRES_WORKER_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_WORKER_PASSWORD", "value": "postgres"},
-        {"name": "LOGIN_ENV", "value": "dev"},
         {"name": "RAILS_OFFLINE", "value": "true"},
         {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2"},
         {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1"},
         {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379"},
         {"name": "ASSET_HOST", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
-        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"}
+        {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
+        {"name": "LOGIN_DOMAIN", "value": "identitysandbox.gov"},
+        {"name": "LOGIN_HOST_ROLE", "value": "worker" },
+        {"name": "LOGIN_DATACENTER", "value": "true" },
+        {"name": "LOGIN_ENV", "value": "dev" }
       ]
       EOF
       )
