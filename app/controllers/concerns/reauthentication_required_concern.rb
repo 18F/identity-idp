@@ -29,7 +29,7 @@ module ReauthenticationRequiredConcern
     store_location(request.url)
     user_session[:context] = 'reauthentication'
 
-    redirect_to login_two_factor_options_path(reauthn: true)
+    redirect_to login_two_factor_options_path
   end
 
   def store_location(url)
