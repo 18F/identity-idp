@@ -162,8 +162,8 @@ en:
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your driver’s license or state ID card. We use this information to
-        verify your identity.
+        reading your driver’s license or state ID card. We use this information
+        to verify your identity.
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
