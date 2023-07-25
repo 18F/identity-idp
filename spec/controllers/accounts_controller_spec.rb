@@ -131,7 +131,7 @@ RSpec.describe AccountsController do
     it 'redirects to 2FA options' do
       post :reauthentication
 
-      expect(response).to redirect_to login_two_factor_options_url(reauthn: true)
+      expect(response).to redirect_to login_two_factor_options_url
     end
 
     it 'sets context to authentication' do

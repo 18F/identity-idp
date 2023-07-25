@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -288,11 +288,6 @@ class ApplicationController < ActionController::Base
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
   end
 
   def confirm_user_is_not_suspended

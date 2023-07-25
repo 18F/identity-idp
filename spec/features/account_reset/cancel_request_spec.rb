@@ -34,7 +34,7 @@ RSpec.describe 'Account Reset Request: Cancellation' do
 
         expect(page).
           to have_current_path(
-            login_two_factor_path(otp_delivery_preference: 'sms', reauthn: 'false'),
+            login_two_factor_path(otp_delivery_preference: 'sms'),
           )
       end
     end
