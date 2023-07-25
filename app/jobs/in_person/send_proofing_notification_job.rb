@@ -45,6 +45,14 @@ module InPerson
       enrollment.update(notification_sent_at: Time.zone.now) if response.success?
 
       log_job_completed(enrollment: enrollment)
+    rescue StandardError => err
+      analytics(user: enrollment&.user || AnonymousUser.new).
+        idv_in_person_send_proofing_notification_job_exception(
+          enrollment_code: enrollment&.code,
+          enrollment_id: enrollment_id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+        )
     end
 
     private

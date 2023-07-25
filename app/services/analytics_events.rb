@@ -1773,6 +1773,29 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks exceptions that are raised when running InPerson::SendProofingNotificationJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_exception(
+    enrollment_code:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Track sms notification attempt
   # @param [boolean] success sms notification successful or not
   # @param [String] enrollment_code enrollment_code

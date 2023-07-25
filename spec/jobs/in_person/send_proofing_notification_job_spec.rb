@@ -185,6 +185,23 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
         end
       end
+      context 'when an exception is raised' do
+        it 'logs the exception details' do
+          allow(InPersonEnrollment).
+            to receive(:find_by).
+            and_raise(ActiveRecord::DatabaseConnectionError)
+
+          job.perform(passed_enrollment.id)
+
+          expect(analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Exception raised',
+            enrollment_code: nil,
+            enrollment_id: passed_enrollment.id,
+            exception_class: 'ActiveRecord::DatabaseConnectionError',
+            exception_message: 'Database connection error',
+          )
+        end
+      end
     end
   end
 end
