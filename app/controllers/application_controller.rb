@@ -360,6 +360,8 @@ class ApplicationController < ActionController::Base
 
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
       login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+      login_two_factor_webauthn_url(platform: true)
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
       login_two_factor_webauthn_url
     else
