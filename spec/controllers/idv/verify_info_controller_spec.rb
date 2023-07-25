@@ -17,7 +17,11 @@ RSpec.describe Idv::VerifyInfoController do
       flow_path: 'standard',
       irs_reproofing: false,
       step: 'verify',
-    }
+    }.merge(ab_test_args)
+  end
+
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
   end
 
   before do
@@ -26,6 +30,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_idv_steps_before_verify_step(user)
     subject.idv_session.flow_path = 'standard'
     subject.user_session['idv/doc_auth'] = flow_session
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -59,7 +64,7 @@ RSpec.describe Idv::VerifyInfoController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'verify',
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do

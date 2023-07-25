@@ -16,21 +16,16 @@ import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
-import AcuantCamera from './acuant-camera';
+import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type {
-  AcuantSuccessResponse,
-  AcuantDocumentType,
-  AcuantCaptureFailureError,
-} from './acuant-camera';
+import type { AcuantSuccessResponse, AcuantCaptureFailureError } from './acuant-camera';
 
-type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
-type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
+type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
 
 interface ImageAnalyticsPayload {
@@ -61,7 +56,7 @@ interface ImageAnalyticsPayload {
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel | string;
+  documentType: string;
   dpi: number;
   moire: number;
   glare: number;
@@ -132,21 +127,12 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
   error instanceof Error;
 
 /**
- * Returns a human-readable document label corresponding to the given document type constant.
- *
+ * Returns a human-readable document label corresponding to the given document type constant,
+ * such as "id" "passport" or "none"
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
-  switch (documentType) {
-    case 0:
-      return 'none';
-    case 1:
-      return 'id';
-    case 2:
-      return 'passport';
-    default:
-      return `An error in document type returned: ${documentType}`;
-  }
-}
+const getDocumentTypeLabel = (documentType: AcuantDocumentType): string =>
+  AcuantDocumentType[documentType]?.toLowerCase() ??
+  `An error in document type returned: ${documentType}`;
 
 export function getNormalizedAcuantCaptureFailureMessage(
   error: AcuantCaptureFailureError,
@@ -438,15 +424,19 @@ function AcuantCapture(
     const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
+    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
-    if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
-      assessment = 'glare';
-    } else if (isAssessedAsBlurry) {
+    if (isAssessedAsBlurry) {
       setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
       assessment = 'blurry';
+    } else if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
+      assessment = 'glare';
+    } else if (isAssessedAsUnsupported) {
+      setOwnErrorMessage(t('doc_auth.errors.card_type'));
+      assessment = 'unsupported';
     } else {
       assessment = 'success';
     }
@@ -456,6 +446,7 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
+      isAssessedAsUnsupported,
       documentType: getDocumentTypeLabel(cardtype),
       dpi,
       moire,
@@ -475,7 +466,11 @@ function AcuantCapture(
       onChangeAndResetError(data, analyticsPayload);
       onResetFailedCaptureAttempts();
     } else {
-      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
+      onFailedCaptureAttempt({
+        isAssessedAsGlare,
+        isAssessedAsBlurry,
+        isAssessedAsUnsupported,
+      });
     }
 
     setIsCapturingEnvironment(false);
@@ -584,3 +579,4 @@ function AcuantCapture(
 }
 
 export default forwardRef(AcuantCapture);
+export { AcuantDocumentType };

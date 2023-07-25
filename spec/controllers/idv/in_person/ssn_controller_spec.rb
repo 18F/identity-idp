@@ -14,12 +14,17 @@ RSpec.describe Idv::InPerson::SsnController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     subject.user_session['idv/in_person'] = flow_session
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -88,7 +93,7 @@ RSpec.describe Idv::InPerson::SsnController do
             flow_path: 'standard',
             irs_reproofing: false,
             step: 'ssn',
-          }
+          }.merge(ab_test_args)
         end
 
         it 'renders the show template' do

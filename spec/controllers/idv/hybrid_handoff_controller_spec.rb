@@ -5,12 +5,17 @@ RSpec.describe Idv::HybridHandoffController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -46,9 +51,11 @@ RSpec.describe Idv::HybridHandoffController do
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
     let(:analytics_args) do
-      { step: 'hybrid_handoff',
+      {
+        step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -141,17 +148,21 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'hybrid flow' do
       let(:analytics_args) do
-        { success: true,
+        {
+          success: true,
           errors: { message: nil },
           destination: :link_sent,
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
-          telephony_response: { errors: {},
-                                message_id: 'fake-message-id',
-                                request_id: 'fake-message-request-id',
-                                success: true } }
+          telephony_response: {
+            errors: {},
+            message_id: 'fake-message-id',
+            request_id: 'fake-message-request-id',
+            success: true,
+          },
+        }.merge(ab_test_args)
       end
 
       it 'sends analytics_submitted event for hybrid' do
@@ -164,14 +175,16 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'desktop flow' do
       let(:analytics_args) do
-        { success: true,
+        {
+          success: true,
           errors: {},
           destination: :document_capture,
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
-          skip_upload_step: false }
+          skip_upload_step: false,
+        }.merge(ab_test_args)
       end
 
       it 'sends analytics_submitted event for desktop' do

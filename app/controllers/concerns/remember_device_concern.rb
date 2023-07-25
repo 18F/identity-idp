@@ -1,12 +1,12 @@
 module RememberDeviceConcern
   extend ActiveSupport::Concern
 
-  def save_user_opted_remember_device_pref
-    cookies.encrypted[:user_opted_remember_device_preference] = params[:remember_device]
+  def save_user_opted_remember_device_pref(remember_device_preference)
+    cookies.encrypted[:user_opted_remember_device_preference] = remember_device_preference
   end
 
-  def save_remember_device_preference
-    return if params[:remember_device] != '1' && params[:remember_device] != 'true'
+  def save_remember_device_preference(remember_device_preference)
+    return if remember_device_preference != '1' && remember_device_preference != 'true'
     cookies.encrypted[:remember_device] = {
       value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
       expires: remember_device_cookie_expiration,

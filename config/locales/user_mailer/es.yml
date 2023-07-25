@@ -214,8 +214,7 @@ es:
       help_html: Si no realizó este cambio, %{disavowal_link_html}. Para más ayuda,
         visite el %{app_name_html} %{help_link_html} o el %{contact_link_html}.
       info_html: '<p>Su cuenta %{app_name} acaba de iniciar sesión en un nuevo
-        dispositivo.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>'
+        dispositivo.</p><br/><p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
     password_changed:
       disavowal_link: restablecer su contraseña
@@ -256,11 +255,12 @@ es:
         %{app_name}</a></strong> y asegúrese de reconocer toda la información en
         la página de su cuenta, incluidos los métodos que utiliza para la
         autenticación de dos factores, como el número de teléfono, la aplicación
-        de autenticación, o la clave de seguridad.</li><li><strong>En la página
-        de su cuenta %{app_name}, solicite una nueva clave personal.</strong>
-        Recuerde, nunca lo comparta a menos que lo esté utilizando para iniciar
-        sesión en un sitio web de confianza que utiliza
-        %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
+        de autenticación, o la clave de seguridad.</li><li><strong>En <a
+        href="%{account_url}">la página de su cuenta %{app_name}</a>, solicite
+        una nueva clave personal.</strong> Recuerde, nunca lo comparta a menos
+        que lo esté utilizando para iniciar sesión en un sitio web de confianza
+        que utiliza %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de
+        %{app_name}
       intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
     phone_added:

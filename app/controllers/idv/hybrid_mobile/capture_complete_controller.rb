@@ -22,7 +22,7 @@ module Idv
           step: 'capture_complete',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(ab_test_analytics_buckets)
       end
     end
   end

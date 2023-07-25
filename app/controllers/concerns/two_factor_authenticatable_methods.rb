@@ -85,9 +85,9 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_remember_device
-    save_user_opted_remember_device_pref
-    save_remember_device_preference
+  def handle_remember_device_preference(remember_device_preference)
+    save_user_opted_remember_device_pref(remember_device_preference)
+    save_remember_device_preference(remember_device_preference)
   end
 
   # Method will be renamed in the next refactor.
