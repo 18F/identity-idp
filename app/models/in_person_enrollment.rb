@@ -53,8 +53,16 @@ class InPersonEnrollment < ApplicationRecord
   def self.needs_usps_status_check(check_interval)
     where(status: :pending).
       and(
-        where(status_check_attempted_at: check_interval).
-        or(where(status_check_attempted_at: nil)),
+        where(last_batch_claim_at: check_interval).
+        or(where(last_batch_claim_at: nil)),
+      ).
+      order(status_check_attempted_at: :asc)
+  end
+
+  def self.needs_usps_status_check_batch(batch_at)
+    where(status: :pending).
+      and(
+        where(last_batch_claim_at: batch_at),
       ).
       order(status_check_attempted_at: :asc)
   end
@@ -62,8 +70,8 @@ class InPersonEnrollment < ApplicationRecord
   # Does this enrollment need a status check via the USPS API?
   def needs_usps_status_check?(check_interval)
     pending? && (
-      status_check_attempted_at.nil? ||
-      check_interval.cover?(status_check_attempted_at)
+      last_batch_claim_at.nil? ||
+      check_interval.cover?(last_batch_claim_at)
     )
   end
 

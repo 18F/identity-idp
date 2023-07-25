@@ -149,7 +149,7 @@ end
 
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
-    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type))
+    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type)).at_least(1).times
     job.perform(Time.zone.now)
 
     expect(job_analytics).to have_logged_event(
@@ -215,35 +215,19 @@ RSpec.describe GetUspsProofingResultsJob do
     describe 'IPP enabled' do
       describe 'DAV not enabled' do
         let!(:pending_enrollments) do
-          [
-            create(
-              :in_person_enrollment, :pending, :with_notification_phone_configuration,
-              selected_location_details: { name: 'BALTIMORE' },
-              issuer: 'http://localhost:3000'
-            ),
-            create(
-              :in_person_enrollment, :pending,
-              selected_location_details: { name: 'FRIENDSHIP' }
-            ),
-            create(
-              :in_person_enrollment, :pending,
-              selected_location_details: { name: 'WASHINGTON' }
-            ),
-            create(
-              :in_person_enrollment, :pending,
-              selected_location_details: { name: 'ARLINGTON' }
-            ),
-            create(
-              :in_person_enrollment, :pending,
-              selected_location_details: { name: 'DEANWOOD' }
-            ),
-          ]
+          locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
+          build_list(:in_person_enrollment, 5, :pending) do |record, i|
+            record.issuer = 'http://localhost:3000'
+            record.selected_location_details = { name: locations[i] }
+            record.save!
+          end
         end
-        let(:pending_enrollment) { pending_enrollments[0] }
+        let(:pending_enrollment) { pending_enrollments.first }
 
         before do
+          enrollment_record = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return([pending_enrollment])
+            and_return(enrollment_record)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -261,8 +245,9 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'records the last attempted status check regardless of response code and contents' do
+          enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(pending_enrollments)
+            and_return(enrollment_records)
           stub_request_proofing_results_with_responses(
             request_failed_proofing_results_args,
             request_in_progress_proofing_results_args,
@@ -306,8 +291,9 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message when the job starts' do
+          enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(pending_enrollments)
+            and_return(enrollment_records)
           stub_request_proofing_results_with_responses(
             request_failed_proofing_results_args,
             request_in_progress_proofing_results_args,
@@ -326,8 +312,9 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
+          enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(pending_enrollments)
+            and_return(enrollment_records)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
             request_in_progress_proofing_results_args,
@@ -358,8 +345,9 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'logs a message with counts of various outcomes when the job completes (errored = 0)' do
+          enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(pending_enrollments)
+            and_return(enrollment_records)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
           )
@@ -388,7 +376,7 @@ RSpec.describe GetUspsProofingResultsJob do
         it 'logs a message with counts of various outcomes when the job completes
         (no enrollments)' do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return([])
+            and_return(InPersonEnrollment.none)
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
           )
@@ -422,7 +410,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs failure details' do
             allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
             allow(proofer).to receive(:request_proofing_results).and_raise(error)
-            expect(NewRelic::Agent).to receive(:notice_error).with(error)
+            expect(NewRelic::Agent).to receive(:notice_error).with(error).at_least(1).times
 
             job.perform(Time.zone.now)
 
@@ -442,8 +430,9 @@ RSpec.describe GetUspsProofingResultsJob do
           let(:request_delay_ms) { 750 }
 
           it 'adds a delay between requests to USPS' do
+            enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
             allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return(pending_enrollments)
+              and_return(enrollment_records)
             stub_request_passed_proofing_results
             expect(job).to receive(:sleep).exactly(pending_enrollments.length - 1).times.
               with(0.75)
@@ -456,10 +445,10 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'generates a backwards-compatible unique ID' do
             pending_enrollment.update(unique_id: nil)
             stub_request_passed_proofing_results
-            expect(pending_enrollment).to receive(:usps_unique_id).and_call_original
+            expect_any_instance_of(InPersonEnrollment).to receive(:usps_unique_id).and_call_original
 
             job.perform(Time.zone.now)
-
+            pending_enrollment.reload
             expect(pending_enrollment.unique_id).not_to be_nil
           end
         end
@@ -644,6 +633,7 @@ RSpec.describe GetUspsProofingResultsJob do
               and_return(true)
             expect do
               job.perform(Time.zone.now)
+              pending_enrollment.reload
             end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
               with(pending_enrollment.id).on_queue(:intentionally_delayed)
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -684,6 +674,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs failure details' do
             job.perform(Time.zone.now)
 
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -722,6 +713,7 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs fraud failure details' do
             job.perform(Time.zone.now)
 
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -760,7 +752,8 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs a message about the unsupported ID' do
             job.perform Time.zone.now
-
+          
+            pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -878,8 +871,10 @@ RSpec.describe GetUspsProofingResultsJob do
           context 'when an enrollment code is invalid' do
             # this enrollment code is hardcoded into the fixture
             # request_unexpected_invalid_enrollment_code_response.json
-            let(:pending_enrollment) do
-              create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456')
+            let(:pending_enrollments) do
+              [
+                create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456')
+              ]
             end
             before(:each) do
               stub_request_unexpected_invalid_enrollment_code
@@ -903,8 +898,10 @@ RSpec.describe GetUspsProofingResultsJob do
           context 'when a unique id is invalid' do
             # this unique id is hardcoded into the fixture
             # request_unexpected_invalid_applicant_response.json
-            let(:pending_enrollment) do
-              create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi')
+            let(:pending_enrollments) do
+              [
+                create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi')
+              ]
             end
             before(:each) do
               stub_request_unexpected_invalid_applicant
@@ -994,7 +991,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::BadRequestError))
+              with(instance_of(Faraday::BadRequestError)).at_least(1).times
             job.perform(Time.zone.now)
           end
         end
@@ -1020,7 +1017,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::ClientError))
+              with(instance_of(Faraday::ClientError)).at_least(1).times
             job.perform(Time.zone.now)
           end
         end
@@ -1040,7 +1037,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs the error to NewRelic' do
             expect(NewRelic::Agent).to receive(:notice_error).
-              with(instance_of(Faraday::ServerError))
+              with(instance_of(Faraday::ServerError)).at_least(1).times
             job.perform(Time.zone.now)
           end
         end
@@ -1116,8 +1113,8 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return([pending_enrollment])
+          #allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          #  and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -1140,6 +1137,8 @@ RSpec.describe GetUspsProofingResultsJob do
               and_return(true)
             expect do
               job.perform Time.zone.now
+
+              pending_enrollment.reload
             end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
               with(pending_enrollment.id).on_queue(:intentionally_delayed)
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
