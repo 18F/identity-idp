@@ -499,6 +499,10 @@ function AcuantCapture(
       );
 
       refreshAcuantFailureCookie();
+    } else if (error === undefined) {
+      // Show a more generic error message when there's a cropping error.
+      // Errors with a value of `undefined` are cropping errors.
+      setOwnErrorMessage(t('errors.general'));
     } else {
       setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
     }
