@@ -195,6 +195,8 @@ RSpec.describe GetUspsProofingResultsJob do
   end
 
   before do
+    allow(IdentityConfig.store).
+      to(receive(:in_person_results_delay_in_hours).and_return(nil))
     allow(Rails).to receive(:cache).and_return(
       ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
     )
@@ -485,7 +487,7 @@ RSpec.describe GetUspsProofingResultsJob do
               end.to have_enqueued_mail(UserMailer, :in_person_deadline_passed).with(
                 params: { user: user, email_address: user.email_addresses.first },
                 args: [{ enrollment: pending_enrollment }],
-              ).on_queue(:default)
+              ).at(:no_wait).on_queue(:default)
               pending_enrollment.reload
               expect(pending_enrollment.deadline_passed_sent).to be true
               expect(job_analytics).to have_logged_event(
@@ -605,14 +607,12 @@ RSpec.describe GetUspsProofingResultsJob do
                 to(receive(:in_person_results_delay_in_hours).and_return(0))
               user = pending_enrollment.user
 
-              freeze_time do
-                expect do
-                  job.perform(Time.zone.now)
-                end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
-                  params: { user: user, email_address: user.email_addresses.first },
-                  args: [{ enrollment: pending_enrollment }],
-                ).on_queue(:default)
-              end
+              expect do
+                job.perform(Time.zone.now)
+              end.to have_enqueued_mail(UserMailer, :in_person_verified).with(
+                params: { user: user, email_address: user.email_addresses.first },
+                args: [{ enrollment: pending_enrollment }],
+              ).at(:no_wait).on_queue(:default)
             end
           end
         end
@@ -631,14 +631,19 @@ RSpec.describe GetUspsProofingResultsJob do
               request_passed_proofing_results_response,
           )
 
-          it 'logs details about the success' do
+          it 'invokes the SendProofingNotificationJob and logs details about the success' do
             allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
               and_return(true)
-            expect do
-              job.perform(Time.zone.now)
-              pending_enrollment.reload
-            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
-              with(pending_enrollment.id).on_queue(:intentionally_delayed)
+            expected_wait_until = nil
+            freeze_time do
+              expected_wait_until = 1.hour.from_now
+              expect do
+                job.perform(Time.zone.now)
+                pending_enrollment.reload
+              end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id).at(expected_wait_until).on_queue(:intentionally_delayed)
+            end
+
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
               'GetUspsProofingResultsJob: Enrollment status updated',
@@ -654,7 +659,7 @@ RSpec.describe GetUspsProofingResultsJob do
               enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              wait_until: nil,
+              wait_until: expected_wait_until,
               job_name: 'GetUspsProofingResultsJob',
             )
           end
@@ -675,7 +680,11 @@ RSpec.describe GetUspsProofingResultsJob do
           )
 
           it 'logs failure details' do
-            job.perform(Time.zone.now)
+            expected_wait_until = nil
+            freeze_time do
+              expected_wait_until = 1.hour.from_now
+              job.perform(Time.zone.now)
+            end
 
             pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -693,7 +702,7 @@ RSpec.describe GetUspsProofingResultsJob do
               enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              wait_until: nil,
+              wait_until: expected_wait_until,
               job_name: 'GetUspsProofingResultsJob',
             )
           end
@@ -714,7 +723,11 @@ RSpec.describe GetUspsProofingResultsJob do
           )
 
           it 'logs fraud failure details' do
-            job.perform(Time.zone.now)
+            expected_wait_until = nil
+            freeze_time do
+              expected_wait_until = 1.hour.from_now
+              job.perform(Time.zone.now)
+            end
 
             pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -733,7 +746,7 @@ RSpec.describe GetUspsProofingResultsJob do
               enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              wait_until: nil,
+              wait_until: expected_wait_until,
               job_name: 'GetUspsProofingResultsJob',
             )
           end
@@ -754,7 +767,11 @@ RSpec.describe GetUspsProofingResultsJob do
           )
 
           it 'logs a message about the unsupported ID' do
-            job.perform Time.zone.now
+            expected_wait_until = nil
+            freeze_time do
+              expected_wait_until = 1.hour.from_now
+              job.perform Time.zone.now
+            end
 
             pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
@@ -773,7 +790,7 @@ RSpec.describe GetUspsProofingResultsJob do
               enrollment_code: pending_enrollment.enrollment_code,
               service_provider: anything,
               timestamp: anything,
-              wait_until: nil,
+              wait_until: expected_wait_until,
               job_name: 'GetUspsProofingResultsJob',
             )
           end
@@ -1138,12 +1155,13 @@ RSpec.describe GetUspsProofingResultsJob do
           it 'logs a message about enrollment with secondary ID' do
             allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
               and_return(true)
-            expect do
-              job.perform Time.zone.now
-
-              pending_enrollment.reload
-            end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
-              with(pending_enrollment.id).on_queue(:intentionally_delayed)
+            freeze_time do
+              expect do
+                job.perform Time.zone.now
+                pending_enrollment.reload
+              end.to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id).at(1.hour.from_now).on_queue(:intentionally_delayed)
+            end
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(pending_enrollment.profile.active).to eq(false)
             expect(job_analytics).to have_logged_event(
