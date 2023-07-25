@@ -639,7 +639,7 @@ RSpec.describe GetUspsProofingResultsJob do
               request_passed_proofing_results_response,
           )
 
-          it 'logs details about the success' do
+          it 'invokes the SendProofingNotificationJob and logs details about the success' do
             allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
               and_return(true)
             expected_wait_until = nil
