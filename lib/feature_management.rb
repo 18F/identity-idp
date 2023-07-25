@@ -74,10 +74,6 @@ class FeatureManagement
     Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
 
-  def self.platform_backup_state_redirect?
-    IdentityConfig.store.platform_backup_state_redirect
-  end
-
   def self.enable_saml_cert_rotation?
     IdentityConfig.store.saml_secret_rotation_enabled
   end

@@ -83,7 +83,6 @@ RSpec.describe Users::WebauthnSetupController do
 
       before do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        allow(IdentityConfig.store).to receive(:platform_backup_state_redirect).and_return(true)
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
