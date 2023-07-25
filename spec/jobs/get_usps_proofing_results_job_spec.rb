@@ -149,7 +149,8 @@ end
 
 RSpec.shared_examples 'enrollment_encountering_an_error_that_has_a_nil_response' do |error_type:|
   it 'logs that response is not present' do
-    expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(error_type)).at_least(1).times
+    expect(NewRelic::Agent).to receive(:notice_error).
+      with(instance_of(error_type)).at_least(1).times
     job.perform(Time.zone.now)
 
     expect(job_analytics).to have_logged_event(
@@ -216,7 +217,10 @@ RSpec.describe GetUspsProofingResultsJob do
       describe 'DAV not enabled' do
         let!(:pending_enrollments) do
           locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
-          build_list(:in_person_enrollment, 5, :pending, :with_notification_phone_configuration ) do |record, i|
+          build_list(
+            :in_person_enrollment, 5, :pending,
+            :with_notification_phone_configuration
+          ) do |record, i|
             record.issuer = 'http://localhost:3000'
             record.selected_location_details = { name: locations[i] }
             record.save!
@@ -322,7 +326,6 @@ RSpec.describe GetUspsProofingResultsJob do
             request_failed_proofing_results_args,
             request_expired_proofing_results_args,
           )
-          binding.pry
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
@@ -752,7 +755,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'logs a message about the unsupported ID' do
             job.perform Time.zone.now
-          
+
             pending_enrollment.reload
             expect(pending_enrollment.proofed_at).to eq(transaction_end_date_time)
             expect(job_analytics).to have_logged_event(
@@ -873,7 +876,7 @@ RSpec.describe GetUspsProofingResultsJob do
             # request_unexpected_invalid_enrollment_code_response.json
             let(:pending_enrollments) do
               [
-                create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456')
+                create(:in_person_enrollment, :pending, enrollment_code: '1234567890123456'),
               ]
             end
             before(:each) do
@@ -900,7 +903,7 @@ RSpec.describe GetUspsProofingResultsJob do
             # request_unexpected_invalid_applicant_response.json
             let(:pending_enrollments) do
               [
-                create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi')
+                create(:in_person_enrollment, :pending, unique_id: '123456789abcdefghi'),
               ]
             end
             before(:each) do
@@ -1113,7 +1116,7 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-          #allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          # allow(InPersonEnrollment).to receive(:needs_usps_status_check).
           #  and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
