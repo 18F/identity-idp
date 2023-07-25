@@ -13,10 +13,11 @@ declare let AcuantCamera: AcuantCameraInterface;
 declare global {
   interface AcuantJavascriptWebSdkInterface {
     initialize: AcuantInitialize;
-    start: AcuantWorkersInitialize;
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
+    start?: AcuantWorkersInitialize;
+    startWorkers?: AcuantWorkersInitialize;
   }
 }
 
@@ -137,6 +138,7 @@ interface AcuantContextInterface {
   endpoint: string | null;
 }
 
+// if needed, could add acuant sdk version to the below
 const AcuantContext = createContext<AcuantContextInterface>({
   isReady: false,
   isAcuantLoaded: false,
@@ -163,7 +165,19 @@ AcuantContext.displayName = 'AcuantContext';
  */
 const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   if (window.AcuantJavascriptWebSdk) {
-    return window.AcuantJavascriptWebSdk;
+    return {
+      ...window.AcuantJavascriptWebSdk,
+      start(...args) {
+        if (
+          typeof window.AcuantJavascriptWebSdk.startWorkers === 'function' &&
+          typeof window.AcuantJavascriptWebSdk.start !== 'function'
+        ) {
+          window.AcuantJavascriptWebSdk.startWorkers(...args);
+        } else {
+          window.AcuantJavascriptWebSdk.start(...args);
+        }
+      },
+    };
   }
   if (typeof AcuantJavascriptWebSdk === 'undefined') {
     // eslint-disable-next-line no-console
