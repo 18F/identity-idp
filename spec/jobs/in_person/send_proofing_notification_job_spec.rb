@@ -55,10 +55,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_send_proofing_notifications_enabled) { true }
       it 'returns without doing anything' do
         expect(analytics).not_to receive(
-          :idv_in_person_usps_proofing_results_notification_job_started,
+          :idv_in_person_send_proofing_notification_job_started,
         )
         expect(analytics).not_to receive(
-          :idv_in_person_usps_proofing_results_notification_job_completed,
+          :idv_in_person_send_proofing_notification_job_completed,
         )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
@@ -70,10 +70,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_send_proofing_notifications_enabled) { false }
       it 'returns without doing anything' do
         expect(analytics).not_to receive(
-          :idv_in_person_usps_proofing_results_notification_job_started,
+          :idv_in_person_send_proofing_notification_job_started,
         )
         expect(analytics).not_to receive(
-          :idv_in_person_usps_proofing_results_notification_job_completed,
+          :idv_in_person_send_proofing_notification_job_completed,
         )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
@@ -87,10 +87,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         it 'returns without doing anything' do
           bad_id = (InPersonEnrollment.all.pluck(:id).max || 0) + 1
           expect(analytics).not_to receive(
-            :idv_in_person_usps_proofing_results_notification_job_started,
+            :idv_in_person_send_proofing_notification_job_started,
           )
           expect(analytics).to receive(
-            :idv_in_person_usps_proofing_results_notification_job_skipped,
+            :idv_in_person_send_proofing_notification_job_skipped,
           )
           job.perform(bad_id)
         end
@@ -98,10 +98,10 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       context 'without notification phone notification' do
         it 'returns without doing anything' do
           expect(analytics).not_to receive(
-            :idv_in_person_usps_proofing_results_notification_job_started,
+            :idv_in_person_send_proofing_notification_job_started,
           )
           expect(analytics).to receive(
-            :idv_in_person_usps_proofing_results_notification_job_skipped,
+            :idv_in_person_send_proofing_notification_job_skipped,
           )
           job.perform(passed_enrollment_without_notification.id)
         end
@@ -113,13 +113,13 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           freeze_time do
             now = Time.zone.now
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_started,
+              :idv_in_person_send_proofing_notification_job_started,
             )
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_completed,
+              :idv_in_person_send_proofing_notification_job_completed,
             )
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_sent_attempted,
+              :idv_in_person_send_proofing_notification_attempted,
             )
             expect(passed_enrollment.reload.notification_sent_at).to be_nil
 
@@ -134,13 +134,13 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           freeze_time do
             now = Time.zone.now
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_started,
+              :idv_in_person_send_proofing_notification_job_started,
             )
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_completed,
+              :idv_in_person_send_proofing_notification_job_completed,
             )
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_sent_attempted,
+              :idv_in_person_send_proofing_notification_attempted,
             )
             job.perform(failing_enrollment.id)
             expect(failing_enrollment.reload.notification_sent_at).to eq(now)
@@ -151,13 +151,13 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
           freeze_time do
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_started,
+              :idv_in_person_send_proofing_notification_job_started,
             )
             expect(analytics).to receive(
-              :idv_in_person_usps_proofing_results_notification_job_completed,
+              :idv_in_person_send_proofing_notification_job_completed,
             )
             expect(analytics).not_to receive(
-              :idv_in_person_usps_proofing_results_notification_sent_attempted,
+              :idv_in_person_send_proofing_notification_attempted,
             )
             job.perform(expired_enrollment.id)
             expect(expired_enrollment.reload.notification_sent_at).to be_nil
@@ -170,7 +170,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           allow(Telephony).to receive(:send_notification).and_return(sms_opt_out_response)
 
           expect(analytics).to receive(
-            :idv_in_person_usps_proofing_results_notification_sent_attempted,
+            :idv_in_person_send_proofing_notification_attempted,
           )
           job.perform(passed_enrollment.id)
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
@@ -179,7 +179,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           allow(Telephony).to receive(:send_notification).and_return(sms_failure_response)
 
           expect(analytics).to receive(
-            :idv_in_person_usps_proofing_results_notification_sent_attempted,
+            :idv_in_person_send_proofing_notification_attempted,
           )
           job.perform(passed_enrollment.id)
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
