@@ -295,7 +295,7 @@ RSpec.describe Users::WebauthnSetupController do
         it 'should direct user to second mfa suggestion page' do
           patch :confirm, params: params
 
-          expect(response).to redirect_to(auth_method_confirmation_url)
+          expect(response).to redirect_to(second_mfa_setup_url)
         end
       end
 
@@ -397,7 +397,7 @@ RSpec.describe Users::WebauthnSetupController do
         it 'should direct user to second mfa suggestion page' do
           patch :confirm, params: params
 
-          expect(response).to redirect_to(account_url)
+          expect(response).to redirect_to(second_mfa_setup_url)
         end
       end
     end
