@@ -268,7 +268,9 @@ class User < ApplicationRecord
         (!last_personal_key_at || last_personal_key_at < window_finish) &&
         (window_start..window_finish).cover?(active_profile.verified_at)
 
-      encrypted_pii_too_short || inside_broken_key_window
+      # TODO: Figure this out 🤔
+      # encrypted_pii_too_short || inside_broken_key_window
+      false || inside_broken_key_window
     else
       false
     end

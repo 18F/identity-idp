@@ -86,8 +86,8 @@ module IdvStepHelper
   end
 
   def complete_review_step(user = user_with_2fa)
-    password = user.password || user_password
-    fill_in 'Password', with: password
+    # password = user.password || user_password
+    # fill_in 'Password', with: password
     click_idv_continue
   end
 

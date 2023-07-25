@@ -25,6 +25,7 @@ module UserAccessKeyOverrides
       password: @password,
       user_uuid: uuid || generate_uuid,
     )
+    generate_password_pii_encryption_key_pair(@password)
   end
 
   def valid_personal_key?(normalized_personal_key)
@@ -43,6 +44,7 @@ module UserAccessKeyOverrides
       user_uuid: uuid || generate_uuid,
     )
     self.encrypted_recovery_code_digest_generated_at = Time.zone.now
+    generate_recovery_pii_encryption_key_pair(personal_key)
   end
 
   # This is a callback initiated by Devise after successfully authenticating.
@@ -65,6 +67,28 @@ module UserAccessKeyOverrides
     Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
       encrypted_password_digest,
     ).password_salt
+  end
+
+  def generate_password_pii_encryption_key_pair(password)
+    key_pair = generate_pii_encryption_key_pair(password)
+    self.password_encrypted_pii_encryption_key = key_pair.first
+    self.password_pii_encryption_public_key = key_pair.last
+  end
+
+  def generate_recovery_pii_encryption_key_pair(personal_key)
+    key_pair = generate_pii_encryption_key_pair(personal_key)
+    self.recovery_encrypted_pii_encryption_key = key_pair.first
+    self.recovery_pii_encryption_public_key = key_pair.last
+  end
+
+  def generate_pii_encryption_key_pair(secret)
+    user_key = OpenSSL::PKey::EC.generate('secp384r1')
+    encrypted_private_key = Encryption::Encryptors::UserPrivateKeyEncryptor.new(secret).encrypt(
+      user_key,
+      user_uuid: self.uuid,
+    )
+    public_key = Base64.strict_encode64(user_key.public_to_der)
+    [encrypted_private_key, public_key]
   end
 
   private

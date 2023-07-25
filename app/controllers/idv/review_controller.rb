@@ -9,28 +9,11 @@ module Idv
 
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
-    before_action :confirm_current_password, only: [:create]
 
     helper_method :step_indicator_step
 
     rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
                 with: :handle_request_enroll_exception
-
-    def confirm_current_password
-      return if valid_password?
-
-      analytics.idv_review_complete(
-        success: false,
-        gpo_verification_pending: current_user.gpo_verification_pending_profile?,
-        fraud_review_pending: fraud_review_pending?,
-        fraud_rejection: fraud_rejection?,
-        **ab_test_analytics_buckets,
-      )
-      irs_attempts_api_tracker.idv_password_entered(success: false)
-
-      flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to idv_review_url
-    end
 
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
@@ -100,7 +83,7 @@ module Idv
     end
 
     def init_profile
-      idv_session.create_profile_from_applicant_with_password(password)
+      idv_session.create_profile_from_applicant
 
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
@@ -115,14 +98,6 @@ module Idv
           sp_name: decorated_session.sp_name,
         )
       end
-    end
-
-    def valid_password?
-      current_user.valid_password?(password)
-    end
-
-    def password
-      params.fetch(:user, {})[:password].presence
     end
 
     def personal_key_confirmed

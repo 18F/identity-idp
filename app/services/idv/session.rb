@@ -47,8 +47,8 @@ module Idv
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 
-    def create_profile_from_applicant_with_password(user_password)
-      profile_maker = build_profile_maker(user_password)
+    def create_profile_from_applicant
+      profile_maker = build_profile_maker('')
       profile = profile_maker.save_profile(
         deactivation_reason: deactivation_reason,
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
@@ -61,7 +61,7 @@ module Idv
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
 
-      cache_encrypted_pii(user_password)
+      cache_encrypted_pii
       associate_in_person_enrollment_with_profile
 
       if profile.active?
@@ -84,9 +84,9 @@ module Idv
       !phone_confirmed? || address_verification_mechanism == 'gpo'
     end
 
-    def cache_encrypted_pii(password)
+    def cache_encrypted_pii
       cacher = Pii::Cacher.new(current_user, session)
-      cacher.save(password, profile)
+      cacher.save_decrypted_pii_json(Pii::Attributes.new_from_hash(applicant).to_json)
     end
 
     def vendor_params

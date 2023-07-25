@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_25_154442) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -595,6 +595,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.datetime "suspended_at"
     t.datetime "reinstated_at"
+    t.string "password_pii_encryption_public_key"
+    t.string "password_encrypted_pii_encryption_key"
+    t.string "recovery_pii_encryption_public_key"
+    t.string "recovery_encrypted_pii_encryption_key"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end

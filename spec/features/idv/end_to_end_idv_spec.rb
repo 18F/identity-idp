@@ -200,10 +200,10 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_content(t('idv.messages.review.phone_verified'))
 
     # does not move ahead with incorrect password
-    fill_in 'Password', with: 'this is not the right password'
-    click_idv_continue
-    expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(idv_review_path)
+    # fill_in 'Password', with: 'this is not the right password'
+    # click_idv_continue
+    # expect(page).to have_content(t('idv.errors.incorrect_password'))
+    # expect(page).to have_current_path(idv_review_path)
   end
 
   def validate_review_submit(user)

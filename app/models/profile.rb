@@ -194,15 +194,25 @@ class Profile < ApplicationRecord
   end
 
   def decrypt_pii(password)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+    encryptor = Encryption::Encryptors::EccPiiEncryptor.new
+    decrypted_json = encryptor.decrypt(
+      encrypted_pii,
+      user.password_encrypted_pii_encryption_key,
+      password,
+      user_uuid: user.uuid,
+    )
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
   # @return [Pii::Attributes]
   def recover_pii(personal_key)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
-    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+    encryptor = Encryption::Encryptors::EccPiiEncryptor.new
+    decrypted_recovery_json = encryptor.decrypt(
+      encrypted_pii_recovery,
+      user.recovery_encrypted_pii_encryption_key,
+      personal_key,
+      user_uuid: user.uuid,
+    )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
@@ -211,18 +221,23 @@ class Profile < ApplicationRecord
   def encrypt_pii(pii, password)
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    encryptor = Encryption::Encryptors::EccPiiEncryptor.new
+
+    self.encrypted_pii = encryptor.encrypt(
+      pii.to_json,
+      user.password_pii_encryption_public_key,
+    )
     encrypt_recovery_pii(pii)
   end
 
   # @param [Pii::Attributes] pii
   def encrypt_recovery_pii(pii)
     personal_key = personal_key_generator.create
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(
-      personal_key_generator.normalize(personal_key),
+    encryptor = Encryption::Encryptors::EccPiiEncryptor.new
+    self.encrypted_pii_recovery = encryptor.encrypt(
+      pii.to_json,
+      user.recovery_pii_encryption_public_key,
     )
-    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     @personal_key = personal_key
   end
 

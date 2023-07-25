@@ -13,4 +13,11 @@ module Ial2ProfileConcern
       end
     end
   end
+
+  def generate_pii_key_for_keyless_user(password)
+    return unless current_user.password_pii_encryption_public_key.nil?
+
+    current_user.generate_password_pii_encryption_key_pair(password)
+    current_user.save!
+  end
 end
