@@ -216,7 +216,7 @@ RSpec.describe GetUspsProofingResultsJob do
       describe 'DAV not enabled' do
         let!(:pending_enrollments) do
           locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
-          build_list(:in_person_enrollment, 5, :pending) do |record, i|
+          build_list(:in_person_enrollment, 5, :pending, :with_notification_phone_configuration ) do |record, i|
             record.issuer = 'http://localhost:3000'
             record.selected_location_details = { name: locations[i] }
             record.save!
@@ -322,7 +322,7 @@ RSpec.describe GetUspsProofingResultsJob do
             request_failed_proofing_results_args,
             request_expired_proofing_results_args,
           )
-
+          binding.pry
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
