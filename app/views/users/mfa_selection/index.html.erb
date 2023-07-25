@@ -4,6 +4,25 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<h2 class="margin-top-2 margin-bottom-1">
+  <%= t('headings.account.two_factor') %>
+</h2>
+
+<div class="grid-row grid-gap">
+  <div class="tablet:grid-col">
+    <ul class="usa-icon-list">
+      <% @presenter.options.each do |option| %>
+        <% if option.mfa_configuration_count > 0 %>
+          <%= render(option) do %>
+            <li class="usa-icon-list__item">
+              <%= render partial: 'partials/multi_factor_authentication/selected_mfa_options', locals: { option: option } %>
+            </li>
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+   
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off' },
                     method: :patch,

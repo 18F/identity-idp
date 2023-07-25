@@ -1,0 +1,6 @@
+<div class="usa-icon-list__icon text-green">
+    <%= render IconComponent.new(icon: :check_circle, class: 'display-block', width: 24, height: 24) %>
+</div>
+<div class="usa-icon-list__content">
+    <%= option.label %> <% if option.type != 'backup_code' && option.type != 'piv_cac' %>( <%= option.mfa_configuration_count %> added )<% end %>
+</div>
