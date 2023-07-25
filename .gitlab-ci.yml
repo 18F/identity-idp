@@ -329,7 +329,8 @@ review-app:
         {"name": "LOGIN_DOMAIN", "value": "identitysandbox.gov"},
         {"name": "LOGIN_HOST_ROLE", "value": "idp" },
         {"name": "LOGIN_DATACENTER", "value": "true" },
-        {"name": "LOGIN_ENV", "value": "dev" }
+        {"name": "LOGIN_ENV", "value": "$CI_ENVIRONMENT_SLUG" },
+        {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" }
       ]
       EOF
       )
@@ -355,7 +356,8 @@ review-app:
         {"name": "LOGIN_DOMAIN", "value": "identitysandbox.gov"},
         {"name": "LOGIN_HOST_ROLE", "value": "worker" },
         {"name": "LOGIN_DATACENTER", "value": "true" },
-        {"name": "LOGIN_ENV", "value": "dev" }
+        {"name": "LOGIN_ENV", "value": "$CI_ENVIRONMENT_SLUG" },
+        {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" }
       ]
       EOF
       )
