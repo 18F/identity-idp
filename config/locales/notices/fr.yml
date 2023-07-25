@@ -18,8 +18,6 @@ fr:
         text_html: Ou, %{link_html} en utilisant une adresse courriel différente.
     maintenance:
       contact_us: Nous contacter
-      currently_under_maintenance_html: Nous sommes actuellement <b>en maintenance
-        jusqu’au %{finish}</b> pour certains de nos services.
       need_assistance: Besoin d’assistance?
     password_changed: Vous avez changé votre mot de passe.
     phone_confirmed: Un téléphone a été ajouté à votre compte.
