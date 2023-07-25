@@ -30,7 +30,8 @@ module Idv
         flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
         redirect_to idv_come_back_later_url
       else
-        redirect_to idv_review_url
+        init_profile
+        redirect_to idv_come_back_later_url
       end
     end
 
@@ -104,6 +105,12 @@ module Idv
 
     def pii_locked?
       !Pii::Cacher.new(current_user, user_session).exists_in_session?
+    end
+
+    def init_profile
+      idv_session.create_profile_from_applicant
+      current_user.send_email_to_all_addresses(:letter_reminder)
+      analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
     end
   end
 end

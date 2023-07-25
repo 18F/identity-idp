@@ -34,7 +34,8 @@ module Idv
         idv_session.user_phone_confirmation = true
         save_in_person_notification_phone
         flash[:success] = t('idv.messages.review.phone_verified')
-        redirect_to idv_review_url
+        init_profile
+        redirect_to idv_personal_key_url
       else
         handle_otp_confirmation_failure
       end
@@ -98,6 +99,19 @@ module Idv
         user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
         irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
+    end
+
+    def init_profile
+      idv_session.create_profile_from_applicant
+
+      if idv_session.profile.active?
+        event, _disavowal_token = create_user_event(:account_verified)
+        UserAlerts::AlertUserAboutAccountVerified.call(
+          user: current_user,
+          date_time: event.created_at,
+          sp_name: decorated_session.sp_name,
+        )
+      end
     end
   end
 end

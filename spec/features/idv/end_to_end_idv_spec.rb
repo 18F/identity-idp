@@ -43,9 +43,9 @@ RSpec.describe 'Identity verification', :js do
     try_to_skip_ahead_from_phone
     complete_otp_verification_page(user)
 
-    validate_review_page
-    complete_review_step(user)
-    validate_review_submit(user)
+    # validate_review_page
+    # complete_review_step(user)
+    # validate_review_submit(user)
 
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
