@@ -30,7 +30,7 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:verify_phone, :view, true)
 
-        analytics.idv_phone_of_record_visited
+        analytics.idv_phone_of_record_visited(**ab_test_analytics_buckets)
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.missing?
         analytics.proofing_address_result_missing
