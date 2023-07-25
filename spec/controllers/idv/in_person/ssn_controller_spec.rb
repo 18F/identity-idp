@@ -182,7 +182,7 @@ RSpec.describe Idv::InPerson::SsnController do
           }
         end
 
-        it 'sends analytics_visited event' do
+        it 'sends analytics_submitted event' do
           put :update, params: params
 
           expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
