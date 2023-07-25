@@ -366,8 +366,8 @@ review-app:
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./charts
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
-    - echo "To access the rails console, first run `aws-vault exec sandbox-power -- aws eks update-kubeconfig --name review_app`"
-    - echo "Then run `aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-identity-idp-chart-idp -n review-apps -- /app/bin/rails console`"
+    - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name review_app'"
+    - echo "Then run 'aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-identity-idp-chart-idp -n review-apps -- /app/bin/rails console'"
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
