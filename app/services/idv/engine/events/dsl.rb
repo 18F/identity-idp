@@ -1,10 +1,59 @@
 module Idv::Engine::Events::Dsl
   def self.included(base)
+    # The module Dsl is included in will be used to define a set of available events
     base.extend(DslMethods)
+
+    # When _that_ module is then included somewhere else, it will make several helper
+    # methods available for interacting with the events defined.
+    base.class_eval do
+      def self.included(base)
+        base.class_variable_set(:@@root_namespaces, @root_namespaces.dup.freeze)
+        base.extend(HelperMethods)
+      end
+    end
+  end
+
+  module DslMethods
+    def namespace(name, &block)
+      @root_namespaces ||= []
+      @root_namespaces << Objects::Namespace.new(name, &block)
+    end
+  end
+
+  module Objects
+    class Namespace
+      attr_reader :name, :events
+      def initialize(name, &block)
+        @name = name
+        @namespaces = []
+        @events = []
+
+        instance_eval(&block)
+      end
+
+      def event(name, &block)
+        puts "event #{name}"
+        @events << Event.new(name, &block)
+      end
+
+      def namespace(name, &block)
+        puts "namespace #{name}"
+        @namespaces << Namespace.new(name, &block)
+      end
+    end
+
+    class Event
+      attr_reader :name
+      def initialize(name)
+        @name = name
+      end
+    end
   end
 
   module HelperMethods
     def event_namespaces
+      (self.class_variable_get(:@@root_namespaces) || []).
+        pluck(:name)
     end
 
     # Takes an aribitrary event name and splits it out into [namespace, event_name]
@@ -48,96 +97,6 @@ module Idv::Engine::Events::Dsl
       event_handlers.each do |block|
         instance_eval(block)
       end
-    end
-  end
-
-  module DslMethods
-    def included(base)
-      # When the DSL module is itself included, add some helper methods
-      base.extend(HelperMethods)
-
-      # Add methods for each event
-      @all_events.each do |event|
-      end
-    end
-
-    def description(desc)
-      raise 'description  must be inside an event block' unless @current_event
-      raise "multiple descriptions for event #{current_event[:name]}" if @current_event[:description]
-      puts "description self is #{self.inspect}"
-      puts "self.class is #{self.class}"
-      @current_event[:description] = desc
-    end
-
-    def event(name, &block)
-      name = name.to_sym if name.is_a?(String)
-      raise 'name must be a symbol or string' if !name.is_a?(Symbol)
-
-      current_namespace = @namespace_stack.last
-      raise "#{name} event must be added to a namespace" unless current_namespace
-
-      if current_namespace[:events][name]
-        raise "Event #{name} already defined for namespace #{current_namespace[:full_name]}"
-      end
-
-      @current_event = {
-        name: name,
-        full_name: "#{current_namespace[:full_name]}.#{name}",
-      }
-
-      current_namespace[:events][name] = @current_event
-
-      @all_events ||= []
-      @all_events << @current_event
-
-      instance_eval(&block)
-
-      raise "Event #{@current_event[:full_name]} is missing description" unless @current_event[:description]
-    ensure
-      @current_event = nil
-    end
-
-    def namespace(name, &block)
-      @namespaces ||= []
-      @namespace_stack ||= []
-
-      name = name.to_sym if name.is_a?(String)
-      raise 'name must be a symbol or string' if !name.is_a?(Symbol)
-
-      current_namespace = @namespace_stack.last
-      new_namespace = nil
-
-      if current_namespace
-        new_namespace = current_namespace[:namespaces].find { |n| n[:name] == name }
-      end
-
-      if !new_namespace
-        new_namespace = {
-          name: name,
-          full_name: "#{current_namespace ? "#{current_namespace[:full_name]}." : ""}#{name}",
-          events: {},
-          namespaces: [],
-        }
-        if current_namespace
-          current_namespace[:namespaces] << new_namespace
-        else
-          @namespaces << new_namespace
-        end
-      end
-
-      @namespace_stack << new_namespace
-
-      begin
-        instance_eval(&block)
-      ensure
-        @namespace_stack.pop
-      end
-    end
-
-    def payload(payload = nil)
-      raise 'payload must be inside an event block' unless @current_event
-      raise "multiple payloads for event #{@current_event[:name]}" if @current_event[:payload]
-      @current_event[:payload] = payload
     end
   end
 end
