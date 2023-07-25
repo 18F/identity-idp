@@ -7,12 +7,12 @@ class UserSessionContext
     context == AUTHENTICATION_CONTEXT
   end
 
-  def self.reauthentication_context?(context)
-    context == REAUTHENTICATION_CONTEXT
+  def self.reauthentication_context?(context, user_fully_authenticated)
+    context == REAUTHENTICATION_CONTEXT && user_fully_authenticated
   end
 
-  def self.authentication_or_reauthentication_context?(context)
-    authentication_context?(context) || reauthentication_context?(context)
+  def self.authentication_or_reauthentication_context?(context, user_fully_authenticated)
+    authentication_context?(context) || reauthentication_context?(context, user_fully_authenticated)
   end
 
   def self.confirmation_context?(context)

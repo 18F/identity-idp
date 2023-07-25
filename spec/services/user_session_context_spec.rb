@@ -28,13 +28,28 @@ RSpec.describe UserSessionContext do
   describe '.reauthentication_context?' do
     it 'returns true when context is reauthn context' do
       expect(
-        UserSessionContext.reauthentication_context?(UserSessionContext::REAUTHENTICATION_CONTEXT),
+        UserSessionContext.reauthentication_context?(
+          UserSessionContext::REAUTHENTICATION_CONTEXT,
+          true,
+        ),
       ).to eq true
+    end
+
+    it 'returns false when context is reauthn context and user is not fully authenticated' do
+      expect(
+        UserSessionContext.reauthentication_context?(
+          UserSessionContext::REAUTHENTICATION_CONTEXT,
+          false,
+        ),
+      ).to eq false
     end
 
     it 'returns false when context is default context' do
       expect(
-        UserSessionContext.reauthentication_context?(UserSessionContext::AUTHENTICATION_CONTEXT),
+        UserSessionContext.reauthentication_context?(
+          UserSessionContext::AUTHENTICATION_CONTEXT,
+          false,
+        ),
       ).to eq false
     end
   end
@@ -44,20 +59,30 @@ RSpec.describe UserSessionContext do
       expect(
         UserSessionContext.authentication_or_reauthentication_context?(
           UserSessionContext::AUTHENTICATION_CONTEXT,
+          false,
         ),
       ).to eq true
 
       expect(
         UserSessionContext.authentication_or_reauthentication_context?(
           UserSessionContext::REAUTHENTICATION_CONTEXT,
+          true,
         ),
       ).to eq true
+
+      expect(
+        UserSessionContext.authentication_or_reauthentication_context?(
+          UserSessionContext::REAUTHENTICATION_CONTEXT,
+          false,
+        ),
+      ).to eq false
     end
 
     it 'returns false when context is confirmation context' do
       expect(
-        UserSessionContext.authentication_context?(
+        UserSessionContext.authentication_or_reauthentication_context?(
           UserSessionContext::CONFIRMATION_CONTEXT,
+          true,
         ),
       ).to eq false
     end
