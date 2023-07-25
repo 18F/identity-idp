@@ -48,6 +48,7 @@ class Profile < ApplicationRecord
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
       *(:fraud_check_pending if has_fraud_deactivation_reason?),
+      # extract into dedicated method:
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
