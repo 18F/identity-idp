@@ -122,7 +122,7 @@ RSpec.describe WebauthnSetupForm do
             }
           end
 
-          it 'sets authenticator_data_flag as nil ' do
+          it 'should not include authenticator data flag' do
             result = subject.submit(protocol, params)
 
             expect(result.to_h).to eq(
@@ -131,7 +131,6 @@ RSpec.describe WebauthnSetupForm do
               enabled_mfa_methods_count: 1,
               mfa_method_counts: { webauthn: 1 },
               multi_factor_auth_method: 'webauthn',
-              authenticator_data_flags: nil,
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
             )
           end
