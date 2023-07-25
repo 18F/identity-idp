@@ -120,7 +120,7 @@ class WebauthnSetupForm
       name: name,
       platform_authenticator: platform_authenticator,
       transports: transports.presence,
-      authenticator_data_flags: authenticator_data_flags.presence,
+      authenticator_data_flags: authenticator_data_flags,
     )
   end
 
@@ -139,7 +139,7 @@ class WebauthnSetupForm
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      authenticator_data_flags: authenticator_data_flags.presence,
+      authenticator_data_flags: authenticator_data_flags,
       unknown_transports: invalid_transports.presence,
     }.compact
   end
