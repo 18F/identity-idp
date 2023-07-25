@@ -61,6 +61,7 @@ module TwoFactorAuthentication
 
     def handle_result(result)
       if result.success?
+        handle_remember_device_preference(backup_code_params[:remember_device])
         handle_valid_verification_for_authentication_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
         )
@@ -72,7 +73,7 @@ module TwoFactorAuthentication
     end
 
     def backup_code_params
-      params.require(:backup_code_verification_form).permit :backup_code
+      params.require(:backup_code_verification_form).permit(:backup_code, :remember_device)
     end
 
     def handle_valid_backup_code

@@ -8,17 +8,18 @@ import MarketingSiteContext from '../context/marketing-site';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 import { InPersonContext } from '../context';
-import InPersonUspsOutageAlert from './in-person-usps-outage-alert';
+import InPersonOutageAlert from './in-person-outage-alert';
 
 function InPersonPrepareStep({ toPreviousStep }) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
-  const { inPersonURL, inPersonUspsOutageMessageEnabled } = useContext(InPersonContext);
+  const { inPersonURL, inPersonOutageMessageEnabled, inPersonOutageExpectedUpdateDate } =
+    useContext(InPersonContext);
 
   return (
     <>
-      {inPersonUspsOutageMessageEnabled && <InPersonUspsOutageAlert />}
+      {inPersonOutageMessageEnabled && inPersonOutageExpectedUpdateDate && <InPersonOutageAlert />}
 
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 

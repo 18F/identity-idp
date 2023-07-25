@@ -53,14 +53,6 @@ module TwoFactorAuthenticatableMethods
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
   end
 
-  def require_current_password
-    redirect_to user_password_confirm_url
-  end
-
-  def current_password_required?
-    user_session[:current_password_required] == true
-  end
-
   def check_already_authenticated
     return unless UserSessionContext.authentication_context?(context)
     return unless user_fully_authenticated?
@@ -93,9 +85,9 @@ module TwoFactorAuthenticatableMethods
     ).call
   end
 
-  def handle_remember_device
-    save_user_opted_remember_device_pref
-    save_remember_device_preference
+  def handle_remember_device_preference(remember_device_preference)
+    save_user_opted_remember_device_pref(remember_device_preference)
+    save_remember_device_preference(remember_device_preference)
   end
 
   # Method will be renamed in the next refactor.

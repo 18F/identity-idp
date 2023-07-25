@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe MfaConfirmationPresenter do
   let(:user) { create(:user, :with_phone) }
-  let(:presenter) { described_class.new(user) }
+  let(:presenter) do
+    described_class.new
+  end
 
   describe '#heading?' do
     it 'supplies a message' do
@@ -24,6 +26,25 @@ RSpec.describe MfaConfirmationPresenter do
     it 'supplies a message' do
       expect(presenter.button).
         to eq(t('mfa.add'))
+    end
+  end
+
+  describe '#show_skip_additional_mfa_link?' do
+    it 'returns true' do
+      expect(presenter.show_skip_additional_mfa_link?).to eq(true)
+    end
+
+    context 'when show_skip_additional_mfa_link is false' do
+      let(:show_skip_additional_mfa_link) { false }
+      let(:presenter) do
+        described_class.new(
+          show_skip_additional_mfa_link: show_skip_additional_mfa_link,
+        )
+      end
+
+      it 'returns false' do
+        expect(presenter.show_skip_additional_mfa_link?).to eq(false)
+      end
     end
   end
 end

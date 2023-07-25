@@ -227,6 +227,7 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return user_two_factor_authentication_url unless user_fully_authenticated?
+    return user_please_call_url if current_user.suspended?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
@@ -293,6 +294,10 @@ class ApplicationController < ActionController::Base
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
+  end
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 
   def confirm_two_factor_authenticated
@@ -366,12 +371,17 @@ class ApplicationController < ActionController::Base
     MfaPolicy.new(current_user).two_factor_enabled?
   end
 
+  # Prevent the session from being written back to the session store at the end of the request.
+  def skip_session_commit
+    request.session_options[:skip] = true
+  end
+
   def skip_session_expiration
     @skip_session_expiration = true
   end
 
   def skip_session_load
-    request.session_options[:skip] = true
+    skip_session_commit
     @skip_session_load = true
   end
 
@@ -411,12 +421,6 @@ class ApplicationController < ActionController::Base
     url = if request_url.path.match?('saml')
             sp_session[:final_auth_request] = true
             complete_saml_url
-          elsif IdentityConfig.store.rewrite_oidc_request_prompt
-            # Login.gov redirects to the orginal request_url after a user authenticates
-            # replace prompt=login with prompt=select_account to prevent sign_out
-            # which should only ever occur once when the user
-            # lands on Login.gov with prompt=login
-            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
           else
             sp_session[:request_url]
           end

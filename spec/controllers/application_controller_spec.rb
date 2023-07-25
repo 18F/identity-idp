@@ -188,6 +188,26 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#confirm_user_is_not_suspended' do
+    controller do
+      before_action :confirm_user_is_not_suspended
+
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    context 'when user is suspended' do
+      it 'redirects to users please call page' do
+        user = create(:user, :suspended)
+        sign_in user
+        get :index
+
+        expect(response).to redirect_to user_please_call_url
+      end
+    end
+  end
+
   describe '#confirm_two_factor_authenticated' do
     controller do
       before_action :confirm_two_factor_authenticated
@@ -326,6 +346,20 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#skip_session_commit' do
+    controller do
+      before_action :skip_session_commit
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    it 'tells rack not to commit session' do
+      get :index
+      expect(request.session_options[:skip]).to eql(true)
+    end
+  end
+
   describe '#redirect_with_flash_if_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
@@ -439,13 +473,6 @@ RSpec.describe ApplicationController do
       let(:sp_session_request_url) { '/openid_connect/authorize' }
       it 'returns the original request' do
         expect(url_with_updated_params).to eq '/openid_connect/authorize'
-      end
-    end
-
-    context 'with a url that has prompt=login' do
-      let(:sp_session_request_url) { '/authorize?prompt=login' }
-      it 'changes it to prompt=select_account' do
-        expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
       end
     end
 

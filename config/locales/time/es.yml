@@ -2,6 +2,7 @@
 es:
   date:
     day_names:
+      -  # empty item to have correct weekday offset for %A
       - lunes
       - martes
       - miércoles
@@ -11,6 +12,7 @@ es:
       - domingo
     formats:
       long: '%-d de %B de %Y'
+      short: '%A, %-d de %B'
     month_names:
       -
       - enero
@@ -35,4 +37,5 @@ es:
       event_timestamp_js: '%{day} de %{month} de %{year} a las %{hour}:%{minute}'
       event_timestamp_utc: '%e de %B de %Y a las %H:%M UTC'
       event_timestamp_with_zone: '%e de %B de %Y a las %H:%M %Z'
+      sms_date: '%m/%d/%Y'
     pm: PM

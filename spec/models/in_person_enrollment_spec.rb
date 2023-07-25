@@ -363,4 +363,84 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(enrollment.minutes_since_last_status_update).to eq(nil)
     end
   end
+
+  describe 'when notification_sent_at is updated' do
+    context 'enrollment has a notification phone configuration' do
+      let!(:enrollment) do
+        create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+      end
+
+      it 'destroys the notification phone configuration' do
+        expect(enrollment.notification_phone_configuration).to_not be_nil
+
+        enrollment.update(notification_sent_at: Time.zone.now)
+
+        expect(enrollment.reload.notification_phone_configuration).to be_nil
+      end
+    end
+
+    context 'enrollment does not have a notification phone configuration' do
+      let!(:enrollment) { create(:in_person_enrollment, :passed) }
+
+      it 'does not raise an error' do
+        expect(enrollment.notification_phone_configuration).to be_nil
+        expect { enrollment.update!(notification_sent_at: Time.zone.now) }.to_not raise_error
+      end
+    end
+  end
+
+  describe 'skip_notification_sent_at_set?' do
+    let(:passed_enrollment) do
+      create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+    end
+    let(:expired_enrollment) do
+      create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
+    end
+    let(:incomplete_enrollment) do
+      create(:in_person_enrollment, :with_notification_phone_configuration)
+    end
+    let(:passed_enrollment_without_notification) do
+      create(:in_person_enrollment, :passed)
+    end
+    let(:failed_enrollment_without_notification) do
+      create(:in_person_enrollment, :failed)
+    end
+
+    it 'returns false when status of passed/failed/expired and notification configuration' do
+      expect(passed_enrollment.skip_notification_sent_at_set?).to eq(false)
+      expect(expired_enrollment.skip_notification_sent_at_set?).to eq(false)
+    end
+    it 'returns false when status of incomplete or without notification configuration' do
+      expect(incomplete_enrollment.skip_notification_sent_at_set?).to eq(true)
+      expect(passed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+      expect(failed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+    end
+  end
+
+  describe 'user cancelling their enrollment' do
+    context 'user has a notification phone number stored' do
+      it 'deletes the notification phone number' do
+        enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+        config_id = enrollment.notification_phone_configuration.id
+        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not eq(nil)
+
+        enrollment.cancelled!
+        enrollment.reload
+
+        expect(enrollment.notification_phone_configuration).to eq(nil)
+        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to eq(nil)
+      end
+    end
+
+    context 'user has a "nil" for their notification phone number' do
+      it 'does nothing' do
+        enrollment = create(:in_person_enrollment, :pending, notification_phone_configuration: nil)
+
+        enrollment.cancelled!
+        enrollment.reload
+
+        expect(enrollment.notification_phone_configuration).to eq(nil)
+      end
+    end
+  end
 end

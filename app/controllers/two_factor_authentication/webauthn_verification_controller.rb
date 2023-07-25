@@ -27,8 +27,6 @@ module TwoFactorAuthentication
       handle_webauthn_result(result)
     end
 
-    def error; end
-
     private
 
     def handle_webauthn_result(result)
@@ -49,15 +47,14 @@ module TwoFactorAuthentication
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
         )
       end
-      handle_remember_device
+      handle_remember_device_preference(params[:remember_device])
       redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_webauthn
-      is_platform_auth = params[:platform].to_s == 'true'
-      if is_platform_auth
+      if platform_authenticator?
         flash[:error] = t(
-          'two_factor_authentication.webauthn_error.multiple_methods',
+          'two_factor_authentication.webauthn_error.try_again',
           link: view_context.link_to(
             t('two_factor_authentication.webauthn_error.additional_methods_link'),
             login_two_factor_options_path,
@@ -82,7 +79,7 @@ module TwoFactorAuthentication
         data: { credentials:, user_opted_remember_device_cookie: },
         service_provider: current_sp,
         remember_device_default: remember_device_default,
-        platform_authenticator: params[:platform].to_s == 'true',
+        platform_authenticator: platform_authenticator?,
       )
     end
 
@@ -92,14 +89,16 @@ module TwoFactorAuthentication
     end
 
     def credentials
-      MfaContext.new(current_user).webauthn_configurations.map do |configuration|
-        { id: configuration.credential_id, transports: configuration.transports }
-      end.to_json
+      MfaContext.new(current_user).webauthn_configurations.
+        select { |configuration| configuration.platform_authenticator? == platform_authenticator? }.
+        map do |configuration|
+          { id: configuration.credential_id, transports: configuration.transports }
+        end
     end
 
     def analytics_properties
       auth_method = if form&.webauthn_configuration&.platform_authenticator ||
-                       params[:platform].to_s == 'true'
+                       platform_authenticator?
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
                     else
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
@@ -127,6 +126,10 @@ module TwoFactorAuthentication
 
     def check_sp_required_mfa
       check_sp_required_mfa_bypass(auth_method: 'webauthn')
+    end
+
+    def platform_authenticator?
+      params[:platform].to_s == 'true'
     end
   end
 end

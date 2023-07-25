@@ -5,12 +5,17 @@ RSpec.describe Idv::HybridHandoffController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
     subject.user_session['idv/doc_auth'] = {}
     subject.idv_session.idv_consent_given = true
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -44,11 +49,13 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth upload visited' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff visited' }
     let(:analytics_args) do
-      { step: 'upload',
+      {
+        step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -137,46 +144,61 @@ RSpec.describe Idv::HybridHandoffController do
   end
 
   describe '#update' do
-    let(:analytics_name) { 'IdV: doc auth upload submitted' }
+    let(:analytics_name) { 'IdV: doc auth hybrid handoff submitted' }
 
     context 'hybrid flow' do
       let(:analytics_args) do
-        { success: true,
+        {
+          success: true,
           errors: { message: nil },
           destination: :link_sent,
           flow_path: 'hybrid',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
-          telephony_response: { errors: {},
-                                message_id: 'fake-message-id',
-                                request_id: 'fake-message-request-id',
-                                success: true } }
+          telephony_response: {
+            errors: {},
+            message_id: 'fake-message-id',
+            request_id: 'fake-message-request-id',
+            success: true,
+          },
+        }.merge(ab_test_args)
       end
 
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: { doc_auth: { phone: '202-555-5555' } }
 
+        expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
 
     context 'desktop flow' do
       let(:analytics_args) do
-        { success: true,
+        {
+          success: true,
           errors: {},
           destination: :document_capture,
           flow_path: 'standard',
-          step: 'upload',
+          step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
-          skip_upload_step: false }
+          skip_upload_step: false,
+        }.merge(ab_test_args)
       end
 
       it 'sends analytics_submitted event for desktop' do
         put :update, params: { type: 'desktop' }
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      it 'sends irs_attempts_api_tracking' do
+        expect(@irs_attempts_api_tracker).to receive(
+          :idv_document_upload_method_selected,
+        ).with({ upload_method: 'desktop' })
+
+        put :update, params: { type: 'desktop' }
       end
     end
   end

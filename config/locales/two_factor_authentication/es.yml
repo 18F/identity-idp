@@ -29,7 +29,7 @@ es:
       warning_html: <strong>Solo ha configurado códigos de respaldo en su cuenta.
         </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
         cuenta mediante otro método de autenticación.
-    choose_another_option: '‹ Elige otra opción'
+    choose_another_option: '‹ Elige otra opción de seguridad'
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
@@ -40,6 +40,7 @@ es:
       correcto para esta cuenta. Si es así, puede haber un problema con su
       PIV/CAC, PIN o algo salió mal de nuestra parte. Intente nuevamente o elija
       otro método de autenticación.
+    learn_more: Más información sobre las opciones de autenticación.
     login_intro: Usted configuró esto cuando creó su cuenta.
     login_options:
       auth_app: Aplicación de autenticación
@@ -136,7 +137,6 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
-        learn_more: Más información sobre las opciones de autenticación.
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
@@ -197,27 +197,13 @@ es:
       seguridad. Para poder acceder a su información, deberá verificar su
       identidad a través de un dispositivo físico como una clave de seguridad o
       identificación de empleado gubernamental (PIV/CAC)
+    webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
-      error_page_text: Tiene habilitado el desbloqueo facial o táctil para esta
-        cuenta. Utilice cada vez el mismo dispositivo y perfil de navegador.
-      multiple_methods: El desbloqueo facial o táctil no fue exitoso. Por favor,
-        inténtelo de nuevo o %{link}.
-      title: No podemos reconocer su dispositivo
-    webauthn_fallback:
-      question: '¿No dispone de su llave de seguridad?'
+      try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
+        nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
-    webauthn_platform_fallback:
-      question: '¿No dispone de tu dispositivo?'
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
-    webauthn_platform_verified:
-      header: Dispositivo verificado
-      info: Hemos verificado su dispositivo. Haga clic en continuar para iniciar
-        sesión.
     webauthn_use_key: Usar llave de seguridad
-    webauthn_verified:
-      header: Llave de seguridad verificada
-      info: Hemos verificado su llave de seguridad. Haga clic en continuar para
-        iniciar sesión.

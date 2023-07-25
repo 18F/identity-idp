@@ -47,18 +47,6 @@ RSpec.describe SendSignUpEmailConfirmation do
       end
     end
 
-    context 'when the user is suspended' do
-      before { user.suspend! }
-      it 'sends the suspended user the email stating the account cannot be created' do
-        subject.call(request_id: request_id, instructions: instructions)
-        expect_delivered_email_count(1)
-        expect_delivered_email(
-          to: [email_address.email],
-          subject: t('user_mailer.suspended_create_account.subject'),
-        )
-      end
-    end
-
     it 'updates the confirmation values on the email address for the user' do
       subject.call(request_id: request_id)
 

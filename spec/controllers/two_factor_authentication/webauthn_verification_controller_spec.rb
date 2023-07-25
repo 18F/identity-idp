@@ -59,7 +59,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'assigns presenter instance variable with initialized credentials' do
-          get :show, params: { platform: true }
+          get :show
 
           presenter = assigns(:presenter)
 
@@ -68,8 +68,34 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             [
               id: webauthn_configuration.credential_id,
               transports: webauthn_configuration.transports,
-            ].to_json,
+            ],
           )
+        end
+
+        context 'with multiple webauthn configured' do
+          let!(:webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:)
+          end
+
+          it 'filters credentials based on requested authenticator attachment' do
+            get :show
+
+            expect(assigns(:presenter).credentials).to eq(
+              [
+                id: webauthn_configuration.credential_id,
+                transports: webauthn_configuration.transports,
+              ],
+            )
+
+            get :show, params: { platform: true }
+
+            expect(assigns(:presenter).credentials).to eq(
+              [
+                id: webauthn_platform_configuration.credential_id,
+                transports: webauthn_platform_configuration.transports,
+              ],
+            )
+          end
         end
       end
     end
@@ -219,7 +245,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         it 'displays flash error message' do
           patch :confirm, params: params
           expect(flash[:error]).to eq t(
-            'two_factor_authentication.webauthn_error.multiple_methods',
+            'two_factor_authentication.webauthn_error.try_again',
             link: view_context.link_to(
               t('two_factor_authentication.webauthn_error.additional_methods_link'),
               login_two_factor_options_path,

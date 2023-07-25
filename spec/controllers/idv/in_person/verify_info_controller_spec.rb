@@ -13,9 +13,14 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:user) { build(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -64,7 +69,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         step: 'verify',
         same_address_as_id: true,
         pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do

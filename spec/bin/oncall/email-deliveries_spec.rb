@@ -55,7 +55,7 @@ RSpec.describe EmailDeliveries do
         and_return(instance_double('Reporting::CloudwatchClient', fetch: email_events))
     end
 
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     let(:events_log) do
       [
         { '@timestamp' => '2023-01-01 00:00:01', 'user_id' => 'abc123', 'ses_message_id' => 'message-1' },
@@ -71,7 +71,7 @@ RSpec.describe EmailDeliveries do
         { '@timestamp' => '2023-01-01 00:00:04', 'ses_message_id' => 'message-2', 'event_type' => 'Bounce' },
       ]
     end
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
 
     it 'prints a table of events by message ID' do
       run

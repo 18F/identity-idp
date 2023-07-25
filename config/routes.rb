@@ -115,7 +115,6 @@ Rails.application.routes.draw do
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
-      get '/login/two_factor/webauthn_error' => 'two_factor_authentication/webauthn_verification#error'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
       post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -131,9 +130,6 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
-
-      get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
-      post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
     end
 
     if IdentityConfig.store.enable_test_routes
@@ -275,6 +271,7 @@ Rails.application.routes.draw do
 
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
+    get '/user_please_call' => 'users/please_call#show'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
@@ -333,6 +330,8 @@ Rails.application.routes.draw do
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
+      get '/getting_started' => 'getting_started#show'
+      put '/getting_started' => 'getting_started#update'
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
@@ -378,6 +377,9 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
+      get '/in_person_proofing/ssn' => 'in_person/ssn#show'
+      put '/in_person_proofing/ssn' => 'in_person/ssn#update'
+
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
@@ -397,7 +399,6 @@ Rails.application.routes.draw do
       if FeatureManagement.gpo_verification_enabled?
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
-        post '/usps' => 'gpo#update'
       end
 
       # deprecated routes

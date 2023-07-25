@@ -21,39 +21,13 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   end
 
   context 'in doc auth with an authenticated user' do
-    let(:need_irs_reproofing) { false }
-
     before do
-      allow(user).to receive(:reproof_for_irs?).and_return(need_irs_reproofing)
       assign(:current_user, user)
-
       render
-    end
-
-    it 'does not render the IRS reproofing explanation' do
-      expect(rendered).not_to have_text(t('doc_auth.info.irs_reproofing_explanation'))
     end
 
     it 'renders a link to return to the SP' do
       expect(rendered).to have_link(t('links.cancel'))
-    end
-
-    context 'when trying to log in to the IRS' do
-      let(:need_irs_reproofing) { true }
-
-      it 'renders the IRS reproofing explanation' do
-        expect(rendered).to have_text(t('doc_auth.info.irs_reproofing_explanation'))
-      end
-    end
-  end
-
-  context 'in recovery without an authenticated user' do
-    let(:user_fully_authenticated) { false }
-
-    it 'renders a link to return to the MFA step' do
-      render
-
-      expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
   end
 
