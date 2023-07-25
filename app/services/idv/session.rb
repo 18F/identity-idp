@@ -102,7 +102,11 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.in_person_enrollment? && current_user.establishing_in_person_enrollment
+      # TODO: consolidate booleans into single User instance method
+      return unless (
+        current_user.in_person_enrollment? &&
+        current_user.establishing_in_person_enrollment
+      )
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
