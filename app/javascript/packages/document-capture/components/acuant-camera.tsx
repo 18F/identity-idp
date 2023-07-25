@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+
 import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useImmutableCallback } from '@18f/identity-react-hooks';
@@ -286,6 +287,8 @@ function AcuantCamera({
 }: AcuantCameraContextProps) {
   const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
+  // The onCropped callback doesn't seem to be called when the crop fails
+  // instead, onImageCaptureFailure is called directly with`error === undefined`.
   const onCropped = useImmutableCallback(
     (response) => {
       if (response) {
