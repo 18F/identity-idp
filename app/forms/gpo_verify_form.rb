@@ -17,8 +17,8 @@ class GpoVerifyForm
 
   def submit
     result = valid?
-    # TODO: Come up with a good name for this and make it part of the fraud review checker
     threatmetrix_check_failed = pending_profile&.fraud_pending_reason.present?
+
     if result
       pending_profile&.remove_gpo_deactivation_reason
       if pending_in_person_enrollment?
