@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 56acfd79af4f7290305fefca86230c5c93012f54
-  branch: mitchellhenke/allow-skipping-s3-config
+  revision: 9e2e0441cd93307cbfc5d5b8d4b3b7b4219394fb
+  tag: v3.4.2
   specs:
-    identity-hostdata (3.4.1)
+    identity-hostdata (3.4.2)
       activesupport (>= 6.1, < 8)
       aws-sdk-s3 (~> 1.8)
 
