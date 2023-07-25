@@ -215,7 +215,7 @@ export interface AcuantSuccessResponse {
   /**
    * Document type
    */
-  cardtype: AcuantDocumentType;
+  cardType: AcuantDocumentType;
   /**
    * Detected image glare
    */

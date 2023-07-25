@@ -21,7 +21,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardtype: AcuantDocumentType.ID,
+  cardType: AcuantDocumentType.ID,
   dpi: 519,
   moire: 99,
   moireraw: 99,
@@ -567,7 +567,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCropped({
             ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            cardtype: AcuantDocumentType.PASSPORT,
+            cardType: AcuantDocumentType.PASSPORT,
           });
         }),
       });
@@ -819,7 +819,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardtype: incorrectCardType });
+          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardType: incorrectCardType });
         }),
       });
 
