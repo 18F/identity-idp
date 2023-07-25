@@ -16,7 +16,7 @@ module InPerson
         analytics(user: enrollment&.user || AnonymousUser.new).
           idv_in_person_send_proofing_notification_job_skipped(
             enrollment_code: enrollment&.enrollment_code,
-            enrollment_id: enrollment&.id,
+            enrollment_id: enrollment_id,
           )
         return
       end
