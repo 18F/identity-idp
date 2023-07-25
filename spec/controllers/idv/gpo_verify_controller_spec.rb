@@ -203,7 +203,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_reject',
               user: user,
             )
@@ -240,7 +239,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_reject',
               user: user,
             )
@@ -278,7 +276,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_review',
               user: user,
             )
