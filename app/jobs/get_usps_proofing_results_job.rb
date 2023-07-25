@@ -41,7 +41,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
-
     check_enrollments(enrollments)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
