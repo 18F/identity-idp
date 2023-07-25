@@ -1,13 +1,85 @@
-module Idv::Engine::Events::Dsl
-  def self.included(base)
-    # The module Dsl is included in will be used to define a set of available events
-    base.extend(DslMethods)
+# This file defines a domain-specific language (DSL) for configuring events inside an IdvEngine.
 
-    # When _that_ module is then included somewhere else, it will make several helper
-    # methods available for interacting with the events defined.
+module Idv::Engine::Events::Dsl
+  class Namespace
+    attr_reader :name, :events, :namespaces
+    def initialize(name, parent, &block)
+      @name = name
+      @parent = parent
+      @namespaces = []
+      @events = []
+
+      instance_eval(&block)
+    end
+
+    def method_missing(symbol, *args)
+      namespace = namespaces.find { |el| el.name == symbol }
+      return namespace if namespace
+
+      event = events.find { |el| el.name == symbol }
+      return event if event
+
+      super(symbol, *args)
+    end
+
+    def description(value = nil)
+      @description = value unless value.nil?
+      @description
+    end
+
+    def event(name, &block)
+      @events << Event.new(name, self, &block)
+    end
+
+    def full_name
+      if parent
+        "#{parent.full_name}.#{name}"
+      else
+        name.to_s
+      end
+    end
+
+    def namespace(name, &block)
+      @namespaces << Namespace.new(name, self, &block)
+    end
+  end
+
+  class Event
+    attr_reader :name, :namespace
+
+    def initialize(name, namespace)
+      @name = name
+      @namespace = namespace
+    end
+
+    def description(value = nil)
+      @description = value unless value.nil?
+      @description
+    end
+
+    def full_name
+      return "#{namespace.full_name}.#{name}"
+    end
+  end
+
+  def self.included(base)
     base.class_eval do
+      # Make a `namespace` method available for defining root namespaces.
+      def self.namespace(name, &block)
+        @root_namespaces ||= []
+        @root_namespaces << Namespace.new(name, nil, &block)
+      end
+
+      # When our module is itself included, capture the state of the root namespaces
+      # and add helper methods for working with them.
       def self.included(base)
-        base.class_variable_set(:@@root_namespaces, @root_namespaces.dup.freeze)
+        root_namespaces = @root_namespaces.dup.freeze
+        base.class_variable_set(:@@root_namespaces, root_namespaces)
+
+        root_namespaces.each do |namespace|
+          base.define_method(namespace.name) { namespace }
+        end
+
         base.extend(HelperMethods)
       end
     end
@@ -20,61 +92,35 @@ module Idv::Engine::Events::Dsl
     end
   end
 
-  module Objects
-    class Namespace
-      attr_reader :name, :events
-      def initialize(name, &block)
-        @name = name
-        @namespaces = []
-        @events = []
-
-        instance_eval(&block)
-      end
-
-      def event(name, &block)
-        puts "event #{name}"
-        @events << Event.new(name, &block)
-      end
-
-      def namespace(name, &block)
-        puts "namespace #{name}"
-        @namespaces << Namespace.new(name, &block)
-      end
-    end
-
-    class Event
-      attr_reader :name
-      def initialize(name)
-        @name = name
-      end
-    end
-  end
-
   module HelperMethods
-    def event_namespaces
-      (self.class_variable_get(:@@root_namespaces) || []).
-        pluck(:name)
-    end
+    def get_event(*event_name)
+      og_event_name = event_name.dup
+      context = @@root_namespaces || []
+      until event_name.empty?
+        item = event_name.shift
+        next_context_item = context.find { |i| i.name == item }
+        raise "Invalid event name: #{og_event_name}" unless next_context_item
+        if event_name.empty?
+          raise "#{og_event_name} is a namespace, not an event" unless next_context_item.is_a?(Event)
+          return next_context_item
+        end
 
-    # Takes an aribitrary event name and splits it out into [namespace, event_name]
-    # where namespaces is an array.
-    def parse_event_name(event_name)
-      raise ArgumentError if event_name.nil?
+        if next_context_item.is_a?(Event)
+          raise "#{next_context_item.full_name} is an Event, not a Namespace"
+        end
 
-      event_name = [event_name] if !event_name.is_a?(Enumerable)
-      event_name = event_name.map do |part|
-        part = part.to_sym if part.is_a?(String)
-        part
+        if event_name.length == 1
+          context = next_context_item.events
+        else
+          context = next_context_item.namespaces
+        end
       end
-
-      candidates = @all_events.filter | ev |
-                   ev[:name] == event_name
     end
 
     def on(*event_name, &block)
-      namespace, event_name = parse_event_name(event_name)
+      event = get_event(*event_name)
 
-      dot_separated_namespace = namespace.join('.')
+      raise "Unknown event: #{event_name}" unless event
 
       @handlers_by_namespace ||= {}
       @handlers_by_namespace[dot_separated_namespace] ||= {}
