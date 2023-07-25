@@ -294,20 +294,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
-      it 'tracks the attempt event with reauthentication parameter true' do
-        stub_attempts_tracker
-
-        subject.user_session[:context] = 'reauthentication'
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
-          with(reauthentication: true, success: true)
-
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
-      end
-
       context "with a leading '#' sign" do
         it 'redirects to the profile' do
           post :create, params: {

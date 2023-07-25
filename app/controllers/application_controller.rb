@@ -284,8 +284,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? &&
-      user_signed_in? &&
+    user_signed_in? &&
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?

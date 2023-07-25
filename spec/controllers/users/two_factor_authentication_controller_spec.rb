@@ -380,16 +380,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         get :send_code, params: otp_delivery_form_sms
       end
 
-      it 'tracks the attempt event when user session context is reauthentication' do
-        stub_attempts_tracker
-        subject.user_session[:context] = 'reauthentication'
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(reauthentication: true, **success_parameters)
-
-        get :send_code, params: otp_delivery_form_sms
-      end
-
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).

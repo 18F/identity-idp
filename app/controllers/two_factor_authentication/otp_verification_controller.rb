@@ -92,7 +92,10 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if params[:otp_delivery_preference] == 'sms'
 
-      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
+      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(
+        context,
+        user_fully_authenticated?,
+      )
 
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_is_confirmed)
 
@@ -130,12 +133,15 @@ module TwoFactorAuthentication
 
       analytics.track_mfa_submit_event(properties)
 
-      if UserSessionContext.reauthentication_context?(context)
+      if UserSessionContext.reauthentication_context?(context, user_fully_authenticated?)
         irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
           reauthentication: true,
           success: properties[:success],
         )
-      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
+      elsif UserSessionContext.authentication_or_reauthentication_context?(
+        context,
+        user_fully_authenticated?,
+      )
         irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
           reauthentication: false,
           success: properties[:success],
@@ -185,7 +191,10 @@ module TwoFactorAuthentication
     end
 
     def display_phone_to_deliver_to
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(
+        context,
+        user_fully_authenticated?,
+      )
         phone_configuration.masked_phone
       else
         user_session[:unconfirmed_phone]
