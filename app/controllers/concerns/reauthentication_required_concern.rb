@@ -2,7 +2,6 @@ module ReauthenticationRequiredConcern
   include MfaSetupConcern
 
   def confirm_recently_authenticated_2fa
-    @reauthn = reauthn?
     return unless user_fully_authenticated?
     non_remembered_device_authentication = user_session[:auth_method].present? &&
                                            user_session[:auth_method] != 'remember_device'

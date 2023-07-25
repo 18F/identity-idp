@@ -50,7 +50,7 @@ module Users
 
     def backup_code_redirect
       return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-      redirect_to login_two_factor_backup_code_url(reauthn_params)
+      redirect_to login_two_factor_backup_code_url
     end
 
     def redirect_on_nothing_enabled
@@ -136,7 +136,6 @@ module Users
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
         otp_delivery_preference: phone_configuration.delivery_preference,
-        reauthn: reauthn?,
       )
     end
 
@@ -213,7 +212,6 @@ module Users
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
           otp_make_default_number: default,
-          reauthn: reauthn?,
         )
       elsif @telephony_result.error.is_a?(Telephony::OptOutError)
         # clear message from https://github.com/18F/identity-idp/blob/7ad3feab24f6f9e0e45224d9e9be9458c0a6a648/app/controllers/users/phones_controller.rb#L40
@@ -357,26 +355,16 @@ module Users
 
     def redirect_url
       if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
-        login_two_factor_piv_cac_url(reauthn_params)
+        login_two_factor_piv_cac_url
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
         login_two_factor_webauthn_url(webauthn_params)
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
-        login_two_factor_authenticator_url(reauthn_params)
-      end
-    end
-
-    def reauthn_params
-      if reauthn?
-        { reauthn: reauthn? }
-      else
-        {}
+        login_two_factor_authenticator_url
       end
     end
 
     def webauthn_params
-      params = reauthn_params
-      params[:platform] = current_user.webauthn_configurations.platform_authenticators.present?
-      params
+      { platform: current_user.webauthn_configurations.platform_authenticators.present? }
     end
 
     def handle_too_many_confirmation_sends
