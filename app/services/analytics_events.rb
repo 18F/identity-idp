@@ -1787,7 +1787,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'GetUspsProofingResultsJob: Exception raised',
+      'SendProofingNotificationJob: Exception raised',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       exception_class: exception_class,

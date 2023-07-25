@@ -194,7 +194,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           job.perform(passed_enrollment.id)
 
           expect(analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Exception raised',
+            'SendProofingNotificationJob: Exception raised',
             enrollment_code: nil,
             enrollment_id: passed_enrollment.id,
             exception_class: 'ActiveRecord::DatabaseConnectionError',
