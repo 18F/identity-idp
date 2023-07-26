@@ -102,7 +102,7 @@ RSpec.feature 'idv phone step', :js do
         expect(phone_field.value).to be_empty
       end
 
-      it 'succeeds to otp verificaiton with valid number resubmission' do
+      it 'succeeds to otp verification with valid number resubmission' do
         click_idv_send_security_code
         click_on t('idv.failure.phone.warning.try_again_button')
 
