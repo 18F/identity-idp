@@ -14,7 +14,7 @@ module Idv
 
           render json: locations.to_json
         end
-  
+
         protected
 
         def proofer
