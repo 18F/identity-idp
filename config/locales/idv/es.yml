@@ -174,6 +174,10 @@ es:
       ssn_label: Número de Seguro Social
       state: Estado
       zipcode: Código postal
+    getting_started:
+      no_js_header: Debe habilitar JavaScript para verificar su identidad.
+      no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
+        habilitar JavaScript para continuar con este proceso.'
     images:
       come_back_later: Carta con una marca de verificación
     index:
@@ -220,6 +224,11 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
+        failed_number:
+          alert_text: No pudimos asociarlo a este número.
+          gpo_alert_html: Si no dispone de <strong>otro</strong> número de teléfono,
+            %{link_html}.
+          gpo_verify_link: realice la verificación por correo
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)

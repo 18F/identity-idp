@@ -13,10 +13,4 @@ RSpec.describe TwoFactorAuthCode::PersonalKeyPresenter do
         t('two_factor_authentication.personal_key_fallback.question')
     end
   end
-
-  describe '#help_text' do
-    it 'returns blank' do
-      expect(presenter.help_text).to eq ''
-    end
-  end
 end

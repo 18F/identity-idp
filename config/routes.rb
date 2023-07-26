@@ -115,7 +115,6 @@ Rails.application.routes.draw do
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
-      get '/login/two_factor/webauthn_error', to: redirect('/login/two_factor/webauthn')
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
       post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -331,6 +330,8 @@ Rails.application.routes.draw do
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
+      get '/getting_started' => 'getting_started#show'
+      put '/getting_started' => 'getting_started#update'
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
@@ -375,6 +376,9 @@ Rails.application.routes.draw do
       get '/capture-doc' => 'hybrid_mobile/entry#show',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
+
+      get '/in_person_proofing/ssn' => 'in_person/ssn#show'
+      put '/in_person_proofing/ssn' => 'in_person/ssn#update'
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',

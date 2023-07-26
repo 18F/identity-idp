@@ -133,14 +133,22 @@ class InPersonEnrollment < ApplicationRecord
     end
   end
 
-  def skip_notification_sent_at_set?
-    !notification_phone_configuration.present? || (!self.passed? && !self.failed? && !self.expired?)
+  def eligible_for_notification?
+    self.notification_phone_configuration.present? &&
+      (self.passed? || self.failed? || self.expired?)
   end
 
   private
 
   def on_status_updated
+    if enrollment_will_be_cancelled? && notification_phone_configuration.present?
+      notification_phone_configuration.destroy!
+    end
     self.status_updated_at = Time.zone.now
+  end
+
+  def enrollment_will_be_cancelled?
+    status_change_to_be_saved&.last == 'cancelled'
   end
 
   def set_unique_id

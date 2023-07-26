@@ -3,7 +3,6 @@ module Idv
     class VerifyInfoController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
-      include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include VerifyInfoConcern
 
@@ -52,14 +51,18 @@ module Idv
       end
 
       def prev_url
-        idv_in_person_step_url(step: :ssn)
+        if IdentityConfig.store.in_person_ssn_info_controller_enabled
+          idv_in_person_proofing_ssn_url
+        else
+          idv_in_person_step_url(step: :ssn)
+        end
       end
 
       def pii
         @pii = flow_session[:pii_from_user]
       end
 
-      # override StepUtilitiesConcern
+      # override IdvSession concern
       def flow_session
         user_session.fetch('idv/in_person', {})
       end
@@ -70,7 +73,7 @@ module Idv
           step: 'verify',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args).
+        }.merge(ab_test_analytics_buckets).
           merge(**extra_analytics_properties)
       end
 

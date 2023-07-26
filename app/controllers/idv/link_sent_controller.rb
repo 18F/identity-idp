@@ -3,7 +3,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
@@ -63,7 +62,7 @@ module Idv
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+      }.merge(ab_test_analytics_buckets)
     end
 
     def handle_document_verification_success(get_results_response)

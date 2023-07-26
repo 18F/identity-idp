@@ -37,10 +37,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def help_text
-      ''
-    end
-
     def header
       if platform_authenticator?
         t('two_factor_authentication.webauthn_platform_header_text')

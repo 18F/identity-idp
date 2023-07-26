@@ -577,10 +577,7 @@ RSpec.describe User do
   describe '#fraud_review_pending?' do
     it 'returns true if fraud review is pending' do
       user = create(:user)
-      user.profiles.create(
-        active: false,
-        fraud_review_pending_at: 15.days.ago,
-      )
+      create(:profile, :fraud_review_pending, user: user)
 
       expect(user.fraud_review_pending?).to eq true
     end
@@ -589,10 +586,7 @@ RSpec.describe User do
   describe '#fraud_rejection?' do
     it 'returns true if fraud rejection' do
       user = create(:user)
-      user.profiles.create(
-        active: false,
-        fraud_rejection_at: 15.days.ago,
-      )
+      create(:profile, :fraud_rejection, user: user)
 
       expect(user.fraud_rejection?).to eq true
     end
@@ -602,10 +596,7 @@ RSpec.describe User do
     context 'with a fraud review pending profile' do
       it 'returns the profile pending review' do
         user = create(:user)
-        profile = user.profiles.create(
-          active: false,
-          fraud_review_pending_at: 15.days.ago,
-        )
+        profile = create(:profile, :fraud_review_pending, user: user)
 
         expect(user.fraud_review_pending_profile).to eq(profile)
       end
@@ -621,10 +612,7 @@ RSpec.describe User do
     context 'with a fraud rejection profile' do
       it 'returns the profile with rejection' do
         user = create(:user)
-        profile = user.profiles.create(
-          active: false,
-          fraud_rejection_at: 15.days.ago,
-        )
+        profile = create(:profile, :fraud_rejection, user: user)
 
         expect(user.fraud_rejection_profile).to eq(profile)
       end
@@ -701,7 +689,7 @@ RSpec.describe User do
   end
 
   describe 'user suspension' do
-    let(:user) { User.new }
+    let(:user) { create(:user) }
     let(:cannot_reinstate_message) { :user_is_not_suspended }
     let(:cannot_suspend_message) { :user_already_suspended }
 
@@ -780,6 +768,10 @@ RSpec.describe User do
           UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
         end
 
+        it 'creates SuspendedEmail records for each email address' do
+          expect { user.suspend! }.to(change { SuspendedEmail.count }.by(1))
+        end
+
         it 'updates the suspended_at attribute with the current time' do
           expect do
             user.suspend!
@@ -834,9 +826,17 @@ RSpec.describe User do
 
     describe '#reinstate!' do
       before do
-        user.suspended_at = Time.zone.now
+        user.suspend!
         user.reinstated_at = nil
       end
+
+      it 'destroys SuspendedEmail records for each email address' do
+        email_address = user.email_addresses.last
+        expect { user.reinstate! }.
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.
+            from(email_address).to(nil))
+      end
+
       it 'updates the reinstated_at attribute with the current time' do
         expect do
           user.reinstate!

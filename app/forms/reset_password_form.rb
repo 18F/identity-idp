@@ -10,6 +10,8 @@ class ResetPasswordForm
     @user = user
     @reset_password_token = @user.reset_password_token
     @validate_confirmation = validate_confirmation
+    @active_profile = user.active_profile
+    @pending_profile = user.pending_profile
   end
 
   def submit(params)
@@ -25,7 +27,7 @@ class ResetPasswordForm
 
   private
 
-  attr_reader :success
+  attr_reader :success, :active_profile, :pending_profile
 
   def valid_token
     if !user.persisted?
@@ -57,11 +59,9 @@ class ResetPasswordForm
   end
 
   def mark_profile_inactive
-    profile = user.active_profile
-    return if profile.blank?
+    return if active_profile.blank?
 
-    @profile_deactivated = true
-    profile&.deactivate(:password_reset)
+    active_profile.deactivate(:password_reset)
     Funnel::DocAuth::ResetSteps.call(user.id)
     user.proofing_component&.destroy
   end
@@ -84,7 +84,9 @@ class ResetPasswordForm
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      profile_deactivated: (@profile_deactivated == true),
+      profile_deactivated: active_profile.present?,
+      pending_profile_invalidated: pending_profile.present?,
+      pending_profile_pending_reasons: (pending_profile&.pending_reasons || [])&.join(','),
     }
   end
 end
