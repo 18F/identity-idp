@@ -114,9 +114,9 @@ es:
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
         warning:
-          attempts:
-            one: Por razones de seguridad, dispone de un solo intento.
-            other: Por razones de seguridad, le quedan %{count} intentos.
+          attempts_html:
+            one: Por razones de seguridad, dispone de <strong>un solo intento</strong>.
+            other: Por razones de seguridad, le quedan <strong>%{count} intentos</strong>.
           gpo:
             button: Verificar por correo
             explanation: Si no dispones de otro número de teléfono para intentarlo,
