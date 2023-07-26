@@ -2,7 +2,7 @@ module Idv
   module InPerson
     module Public
       class MockAddressSearchController < ApplicationController
-        protect_from_forgery with: :null_session
+        skip_forgery_protection if: :should_skip_forgery_protection?
   
         def addresses
           addresses = geocoder.find_address_candidates(SingleLine: '')
@@ -23,6 +23,10 @@ module Idv
 
         def proofer
           UspsInPersonProofing::Mock::Proofer.new
+        end
+
+        def should_skip_forgery_protection?
+          IdentityConfig.store.in_person_enable_public_address_search
         end
       end
     end

@@ -129,8 +129,10 @@ module Identity
         origins IdentityCors.allowed_origins_static_sites
         resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
-        resource '/api/addresses', headers: :any, methods: [:post]
-        resource '/api/usps_locations', headers: :any, methods: [:post]
+        if IdentityConfig.store.in_person_enable_public_address_search
+          resource '/api/addresses', headers: :any, methods: [:post]
+          resource '/api/usps_locations', headers: :any, methods: [:post]
+        end
       end
     end
 

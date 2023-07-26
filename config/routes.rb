@@ -11,8 +11,11 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/api/addresses' => 'idv/in_person/public/mock_address_search#addresses'
-  post '/api/usps_locations' => 'idv/in_person/public/mock_address_search#usps_locations'
+
+  if IdentityConfig.store.in_person_enable_public_address_search
+    post '/api/addresses' => 'idv/in_person/public/mock_address_search#addresses'
+    post '/api/usps_locations' => 'idv/in_person/public/mock_address_search#usps_locations'
+  end
 
   namespace :api do
     namespace :internal do
