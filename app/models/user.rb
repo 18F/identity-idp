@@ -198,10 +198,6 @@ class User < ApplicationRecord
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
-  def in_person_enrollment?
-    proofing_component&.document_check == Idp::Constants::Vendors::USPS
-  end
-
   ##
   # @param [String] issuer
   # @return [Boolean] Whether the user should receive a survey for completing in-person proofing
