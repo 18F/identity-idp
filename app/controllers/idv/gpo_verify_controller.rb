@@ -99,7 +99,7 @@ module Idv
     def render_rate_limited
       irs_attempts_api_tracker.idv_gpo_verification_rate_limited
       analytics.rate_limit_reached(
-        throttle_type: :verify_gpo_key,
+        limiter_type: :verify_gpo_key,
       )
 
       @expires_at = rate_limiter.expires_at

@@ -523,7 +523,7 @@ RSpec.describe Idv::PhoneController do
           expect(@analytics).to have_logged_event(
             'Rate Limit Reached',
             {
-              throttle_type: :proof_address,
+              limiter_type: :proof_address,
               step_name: :phone,
             },
           )

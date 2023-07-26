@@ -173,7 +173,7 @@ module Idv
 
     def rate_limited_failure
       analytics.rate_limit_reached(
-        throttle_type: :idv_send_link,
+        limiter_type: :idv_send_link,
       )
       message = I18n.t(
         'errors.doc_auth.send_link_limited',

@@ -3644,11 +3644,11 @@ module AnalyticsEvents
   end
 
   # Tracks when a user triggered a rate limit throttle
-  # @param [String] throttle_type
-  def rate_limit_reached(throttle_type:, **extra)
+  # @param [String] limiter_type
+  def rate_limit_reached(limiter_type:, **extra)
     track_event(
       'Rate Limit Reached',
-      throttle_type: throttle_type,
+      limiter_type: limiter_type,
       **extra,
     )
   end

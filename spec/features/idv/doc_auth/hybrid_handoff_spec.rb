@@ -168,7 +168,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       end
       expect(fake_analytics).to have_logged_event(
         'Rate Limit Reached',
-        throttle_type: :idv_send_link,
+        limiter_type: :idv_send_link,
       )
 
       # Manual expiration is needed for now since the RateLimiter uses

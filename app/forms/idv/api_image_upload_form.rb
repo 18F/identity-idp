@@ -205,7 +205,7 @@ module Idv
     end
 
     def track_rate_limited
-      analytics.rate_limit_reached(throttle_type: :idv_doc_auth)
+      analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 

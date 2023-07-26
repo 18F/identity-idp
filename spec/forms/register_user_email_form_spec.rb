@@ -128,7 +128,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(analytics).to have_logged_event(
           'Rate Limit Reached',
-          throttle_type: :reg_confirmed_email,
+          limiter_type: :reg_confirmed_email,
         )
       end
     end
@@ -188,7 +188,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(analytics).to have_logged_event(
           'Rate Limit Reached',
-          throttle_type: :reg_unconfirmed_email,
+          limiter_type: :reg_unconfirmed_email,
         )
       end
     end

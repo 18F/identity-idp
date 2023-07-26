@@ -125,7 +125,7 @@ class RegisterUserEmailForm
 
     if @rate_limited
       @analytics.rate_limit_reached(
-        throttle_type: :reg_unconfirmed_email,
+        limiter_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: false,
@@ -142,7 +142,7 @@ class RegisterUserEmailForm
 
     if @rate_limited
       @analytics.rate_limit_reached(
-        throttle_type: :reg_confirmed_email,
+        limiter_type: :reg_confirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: true,

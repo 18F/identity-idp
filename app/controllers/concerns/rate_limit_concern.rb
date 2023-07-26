@@ -21,7 +21,7 @@ module RateLimitConcern
   end
 
   def track_rate_limited_event(rate_limit_type)
-    analytics_args = { throttle_type: rate_limit_type }
+    analytics_args = { limiter_type: rate_limit_type }
     throttle_context = 'single-session'
 
     if rate_limit_type == :proof_address
