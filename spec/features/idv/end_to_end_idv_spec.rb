@@ -165,6 +165,10 @@ RSpec.describe 'Identity verification', :js do
       t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
     )
 
+    # displays phone number by default
+    phone_field = find_field(t('two_factor_authentication.phone_label'))
+    expect(phone_field.value).not_to be_empty
+
     # displays error if invalid phone number is entered
     fill_in :idv_phone_form_phone, with: '578190'
     click_idv_send_security_code
