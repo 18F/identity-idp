@@ -285,7 +285,7 @@ en:
       state_id:
         cancel_button: Exit %{app_name}
         explanation: |
-          Unfortunately, we’re experiencing technical difficulties
+          Unfortunately, we’re experiencing technical difficulties 
           with IDs from your state and are currently unable to verify your information.
         heading: We are working to resolve an error
         next_steps:
