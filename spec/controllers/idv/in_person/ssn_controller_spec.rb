@@ -8,8 +8,7 @@ RSpec.describe Idv::InPerson::SsnController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_user => pii_from_user,
-      :flow_path => 'standard'
-    }
+      :flow_path => 'standard' }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -129,7 +128,7 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     context 'with an ssn in session' do
-      let(:referer) { idv_in_person_step_url(step: :address)}
+      let(:referer) { idv_in_person_step_url(step: :address) }
       before do
         flow_session[:pii_from_user][:ssn] = ssn
         request.env['HTTP_REFERER'] = referer
