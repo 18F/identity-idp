@@ -307,7 +307,7 @@ fr:
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
     warning:
-      attempts:
+      attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative.</strong>
         other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
       sessions:
