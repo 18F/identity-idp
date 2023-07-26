@@ -315,9 +315,9 @@ class User < ApplicationRecord
     active_identities.find_by(service_provider: service_provider.issuer)
   end
 
-  # def active_or_pending_profile
-  #   active_profile || pending_profile
-  # end
+  def active_or_pending_profile
+    active_profile || pending_profile
+  end
 
   def identity_not_verified?
     !identity_verified?
