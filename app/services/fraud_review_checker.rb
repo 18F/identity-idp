@@ -10,14 +10,15 @@ class FraudReviewChecker
   end
 
   def fraud_review_pending?
-    user&.fraud_review_pending_profile.present?
+    user&.fraud_review_pending?
   end
 
   def fraud_rejection?
-    user&.fraud_rejection_profile.present?
+    user&.fraud_rejection?
   end
 
   def fraud_review_eligible?
-    !!user&.fraud_review_pending_profile&.fraud_review_pending_at&.after?(30.days.ago)
+    return false unless fraud_review_pending?
+    !!user&.current_profile&.fraud_review_pending_at&.after?(30.days.ago)
   end
 end

@@ -94,16 +94,20 @@ class User < ApplicationRecord
     identities.where('session_uuid IS NOT ?', nil).order(last_authenticated_at: :asc) || []
   end
 
+  def current_profile
+    Profile.order(created_at: :desc).first
+  end
+
   def active_profile
-    @active_profile ||= profiles.verified.find(&:active?)
+    current_profile if current_profile&.active?
+  end
+
+  def pending_profile
+    current_profile if current_profile&.pending_reasons&.any?
   end
 
   def pending_profile?
     pending_profile.present?
-  end
-
-  def gpo_verification_pending_profile?
-    gpo_verification_pending_profile.present?
   end
 
   def suspended?
@@ -133,60 +137,64 @@ class User < ApplicationRecord
     analytics.user_reinstated(success: true)
   end
 
-  def pending_profile
-    return @pending_profile if defined?(@pending_profile)
+  # def pending_profile
+  #   return @pending_profile if defined?(@pending_profile)
 
-    @pending_profile = begin
-      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-        profiles.where.not(gpo_verification_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_pending_reason: nil),
-      ).order(created_at: :desc).first
+  #   @pending_profile = begin
+  #     pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
+  #       profiles.where.not(gpo_verification_pending_at: nil),
+  #     ).or(
+  #       profiles.where.not(fraud_pending_reason: nil),
+  #     ).order(created_at: :desc).first
 
-      if pending.blank?
-        nil
-      elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
-        # Profiles that are cancelled for reasons that do not require further verification steps
-        # are not pending profiles
-        nil
-      elsif active_profile.present? && active_profile.activated_at > pending.created_at
-        # If there is an active profile that is older than this pending profile that means the user
-        # has proofed since this profile was created. That profile takes precedence and there is no
-        # pending profile
-        nil
-      else
-        pending
-      end
-    end
-  end
+  #     if pending.blank?
+  #       nil
+  #     elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
+  #       # Profiles that are cancelled for reasons that do not require further verification steps
+  #       # are not pending profiles
+  #       nil
+  #     elsif active_profile.present? && active_profile.activated_at > pending.created_at
+  #       # If there is an active profile that is older than this pending profile that means the user
+  #       # has proofed since this profile was created. That profile takes precedence and there is no
+  #       # pending profile
+  #       nil
+  #     else
+  #       pending
+  #     end
+  #   end
+  # end
 
-  def gpo_verification_pending_profile
-    pending_profile if pending_profile&.gpo_verification_pending?
+  # def gpo_verification_pending_profile
+  #   pending_profile if pending_profile&.gpo_verification_pending?
+  # end
+
+  def gpo_verification_pending_profile?
+    current_profile&.gpo_verification_pending?
   end
 
   def fraud_review_pending?
-    fraud_review_pending_profile.present?
+    current_profile&.fraud_review_pending?
   end
 
   def fraud_rejection?
-    fraud_rejection_profile.present?
+    current_profile&.fraud_rejection?
   end
 
-  def fraud_review_pending_profile
-    pending_profile if pending_profile&.fraud_review_pending?
-  end
+  # def fraud_review_pending_profile
+  #   pending_profile if pending_profile&.fraud_review_pending?
+  # end
 
-  def fraud_rejection_profile
-    pending_profile if pending_profile&.fraud_rejection?
-  end
+  # def fraud_rejection_profile
+  #   pending_profile if pending_profile&.fraud_rejection?
+  # end
 
   def in_person_pending_profile?
-    in_person_pending_profile.present?
+    current_profile&.in_person_verification_pending?
   end
 
-  def in_person_pending_profile
-    pending_profile if pending_profile&.in_person_verification_pending?
-  end
+  # def in_person_pending_profile
+  #   pending_profile if pending_profile&.in_person_verification_pending?
+  # end
 
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
@@ -307,16 +315,16 @@ class User < ApplicationRecord
     active_identities.find_by(service_provider: service_provider.issuer)
   end
 
-  def active_or_pending_profile
-    active_profile || pending_profile
-  end
+  # def active_or_pending_profile
+  #   active_profile || pending_profile
+  # end
 
   def identity_not_verified?
     !identity_verified?
   end
 
   def identity_verified?(service_provider: nil)
-    active_profile.present? && !reproof_for_irs?(service_provider: service_provider)
+    current_profile&.active? && !reproof_for_irs?(service_provider: service_provider)
   end
 
   def reproof_for_irs?(service_provider:)
@@ -328,8 +336,9 @@ class User < ApplicationRecord
   # This user's most recently activated profile that has also been deactivated
   # due to a password reset, or nil if there is no such profile
   def password_reset_profile
-    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
-    profile if profile&.password_reset?
+    current_profile if current_profile&.password_reset?
+    # profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    # profile if profile&.password_reset?
   end
 
   def qrcode(otp_secret_key)

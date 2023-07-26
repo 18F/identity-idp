@@ -28,7 +28,7 @@ namespace :users do
       end
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
-        profile = user.fraud_review_pending_profile
+        profile = user.current_profile
         profile.activate_after_passing_review
 
         if profile.active?
@@ -75,7 +75,7 @@ namespace :users do
       end
 
       if FraudReviewChecker.new(user).fraud_review_eligible?
-        profile = user.fraud_review_pending_profile
+        profile = user.current_profile
 
         profile.reject_for_fraud(notify_user: true)
         STDOUT.puts "User's profile has been deactivated due to fraud rejection."
