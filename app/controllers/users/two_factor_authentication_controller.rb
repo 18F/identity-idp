@@ -172,11 +172,6 @@ module Users
       )
     end
 
-    def reauthn_param
-      otp_form = params.permit(otp_delivery_selection_form: [:reauthn])
-      super || otp_form.dig(:otp_delivery_selection_form, :reauthn)
-    end
-
     def handle_valid_otp_params(otp_delivery_selection_result, method, default = nil)
       otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
 

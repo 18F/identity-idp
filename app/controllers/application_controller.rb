@@ -257,10 +257,6 @@ class ApplicationController < ActionController::Base
       current_user.password_reset_profile.updated_at
   end
 
-  def reauthn_param
-    params[:reauthn]
-  end
-
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
     analytics.invalid_authenticity_token(
