@@ -11,13 +11,20 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
+  STATUS_ESTABLISHING = 'establishing'
+  STATUS_PENDING = 'pending'
+  STATUS_PASSED = 'passed'
+  STATUS_FAILED = 'failed'
+  STATUS_EXPIRED = 'expired'
+  STATUS_CANCELLED = 'cancelled'
+
   enum status: {
-    establishing: 0,
-    pending: 1,
-    passed: 2,
-    failed: 3,
-    expired: 4,
-    cancelled: 5,
+    STATUS_ESTABLISHING.to_sym => 0,
+    STATUS_PENDING.to_sym => 1,
+    STATUS_PASSED.to_sym => 2,
+    STATUS_FAILED.to_sym => 3,
+    STATUS_EXPIRED.to_sym => 4,
+    STATUS_CANCELLED.to_sym => 5,
   }
 
   validate :profile_belongs_to_user
@@ -148,7 +155,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def enrollment_will_be_cancelled?
-    status_change_to_be_saved&.last == 'cancelled'
+    status_change_to_be_saved&.last == STATUS_CANCELLED
   end
 
   def set_unique_id

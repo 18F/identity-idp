@@ -303,7 +303,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'returns nil if enrollment has not been established' do
-      enrollment.status = 'establishing'
+      enrollment.status = InPersonEnrollment::STATUS_ESTABLISHING
       enrollment.enrollment_established_at = nil
 
       expect(enrollment.minutes_since_established).to eq(nil)
