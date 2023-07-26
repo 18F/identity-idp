@@ -292,9 +292,9 @@ es:
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
         parte, tal vez no podamos verificar su identidad en estos momentos.
     warning:
-      attempts:
-        one: Por motivos de seguridad, le quedan un intento.
-        other: Por motivos de seguridad, le quedan %{count} intentos.
+      attempts_html:
+        one: Por motivos de seguridad, le quedan <strong>un intento.</strong>
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
       sessions:
         heading: No encontramos registros que coincidan con sus datos personales
       state_id:
