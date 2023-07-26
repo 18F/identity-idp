@@ -70,8 +70,8 @@ module Telephony
 
   class ThrottledError < TelephonyError
     def friendly_error_message_key
-      # i18n-tasks-use t('telephony.error.friendly_message.throttled')
-      'telephony.error.friendly_message.throttled'
+      # i18n-tasks-use t('telephony.error.friendly_message.rate_limited')
+      'telephony.error.friendly_message.rate_limited'
     end
   end
 

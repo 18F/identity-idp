@@ -44,7 +44,7 @@ es:
           Pruebe la opción de llamada telefónica.
         temporary_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        throttled: Ese número está experimentando un alto volumen de mensajes. Por
+        rate_limited: Ese número está experimentando un alto volumen de mensajes. Por
           favor, inténtelo de nuevo más tarde.
         timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         unknown_failure: Estamos experimentando dificultades técnicas. Por favor,

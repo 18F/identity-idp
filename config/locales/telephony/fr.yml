@@ -45,7 +45,7 @@ fr:
           messages textuels. Veuillez essayer l’option d’appel téléphonique.
         temporary_failure: Nous rencontrons des difficultés techniques. Veuillez
           réessayer plus tard.
-        throttled: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
+        rate_limited: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
           plus tard.
         timeout: Le serveur a pris trop de temps pour répondre. Veuillez réessayer.
         unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer

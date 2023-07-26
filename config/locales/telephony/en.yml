@@ -42,7 +42,7 @@ en:
         sms_unsupported: The phone number entered doesn’t support text messaging. Try
           the Phone call option.
         temporary_failure: We are experiencing technical difficulties.  Please try again later.
-        throttled: That number is experiencing high message volume.  Please try again
+        rate_limited: That number is experiencing high message volume.  Please try again
           later.
         timeout: The server took too long to respond. Please try again.
         unknown_failure: We are experiencing technical difficulties.  Please try again later.
