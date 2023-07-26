@@ -32,7 +32,7 @@ module RateLimitConcern
     end
 
     irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: throttle_context)
-    analytics.throttler_rate_limit_triggered(**analytics_args)
+    analytics.rate_limit_reached(**analytics_args)
   end
 
   def rate_limited_redirect(rate_limit_type)

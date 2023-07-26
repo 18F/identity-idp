@@ -53,7 +53,7 @@ module Users
     end
 
     def render_rate_limited
-      analytics.throttler_rate_limit_triggered(
+      analytics.rate_limit_reached(
         throttle_type: :verify_personal_key,
       )
 

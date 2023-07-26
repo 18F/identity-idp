@@ -172,7 +172,7 @@ module Idv
     end
 
     def rate_limited_failure
-      analytics.throttler_rate_limit_triggered(
+      analytics.rate_limit_reached(
         throttle_type: :idv_send_link,
       )
       message = I18n.t(

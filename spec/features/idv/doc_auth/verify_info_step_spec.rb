@@ -165,7 +165,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
+        'Rate Limit Reached',
         throttle_type: :idv_resolution,
         step_name: 'verify_info',
       )
@@ -215,7 +215,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
+        'Rate Limit Reached',
         throttle_type: :proof_ssn,
         step_name: 'verify_info',
       )
@@ -248,7 +248,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       expect(page).to have_current_path(idv_phone_path)
       expect(fake_analytics).not_to have_logged_event(
-        'Throttler Rate Limit Triggered',
+        'Rate Limit Reached',
         throttle_type: :proof_ssn,
         step_name: 'verify_info',
       )
