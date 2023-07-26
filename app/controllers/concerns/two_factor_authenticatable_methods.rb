@@ -16,10 +16,7 @@ module TwoFactorAuthenticatableMethods
     PushNotification::HttpPush.deliver(event)
 
     if context && type
-      if UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
@@ -33,10 +30,7 @@ module TwoFactorAuthenticatableMethods
     analytics.multi_factor_auth_max_sends
 
     if context && phone
-      if UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
           phone_number: phone,
         )
@@ -192,10 +186,7 @@ module TwoFactorAuthenticatableMethods
   def generic_data
     {
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-      reauthn: UserSessionContext.reauthentication_context?(
-        user_session[:context],
-        user_fully_authenticated?,
-      ),
+      reauthn: UserSessionContext.reauthentication_context?(user_session[:context]),
     }
   end
 end

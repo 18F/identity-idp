@@ -7,7 +7,6 @@ RSpec.describe OtpDeliverySelectionForm do
       build(:user),
       phone_to_deliver_to,
       'authentication',
-      false,
     )
   end
 
@@ -59,7 +58,6 @@ RSpec.describe OtpDeliverySelectionForm do
           build_stubbed(:user),
           nil,
           'authentication',
-          false,
         )
 
         expect(subject.submit(otp_delivery_preference: 'foo').to_h).to include(
@@ -78,7 +76,6 @@ RSpec.describe OtpDeliverySelectionForm do
           user,
           '+12423270143',
           'authentication',
-          false,
         )
         attributes = { otp_delivery_preference: 'sms' }
 
@@ -99,7 +96,6 @@ RSpec.describe OtpDeliverySelectionForm do
           user,
           '+17035551212',
           'authentication',
-          false,
         )
 
         expect(UpdateUser).to_not receive(:new)

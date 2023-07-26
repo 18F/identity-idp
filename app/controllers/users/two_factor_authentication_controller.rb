@@ -78,10 +78,7 @@ module Users
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.otp_delivery_selection(**result.to_h)
-      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      phone_is_confirmed = UserSessionContext.authentication_or_reauthentication_context?(context)
       phone_capabilities = PhoneNumberCapabilities.new(
         parsed_phone,
         phone_confirmed: phone_is_confirmed,
@@ -168,7 +165,7 @@ module Users
 
     def otp_delivery_selection_form
       @otp_delivery_selection_form ||= OtpDeliverySelectionForm.new(
-        current_user, phone_to_deliver_to, context, user_fully_authenticated?
+        current_user, phone_to_deliver_to, context
       )
     end
 
@@ -231,7 +228,7 @@ module Users
         success: @telephony_result.success?,
       )
 
-      if UserSessionContext.reauthentication_context?(context, user_fully_authenticated?)
+      if UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
           success: @telephony_result.success?,
           reauthentication: true,
@@ -239,10 +236,7 @@ module Users
           otp_delivery_method: otp_delivery_preference,
           failure_reason: irs_attempts_api_tracker.parse_failure_reason(@telephony_result),
         )
-      elsif UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent(
           success: @telephony_result.success?,
           reauthentication: false,
@@ -300,10 +294,7 @@ module Users
         },
       }
 
-      if UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         Telephony.send_authentication_otp(**otp_params)
       else
         Telephony.send_confirmation_otp(**otp_params)
@@ -327,10 +318,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      if UserSessionContext.authentication_or_reauthentication_context?(
-        context,
-        user_fully_authenticated?,
-      )
+      if UserSessionContext.authentication_or_reauthentication_context?(context)
         return phone_configuration&.phone
       end
 
@@ -341,10 +329,7 @@ module Users
       @otp_rate_limiter ||= OtpRateLimiter.new(
         phone: phone_to_deliver_to,
         user: current_user,
-        phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(
-          context,
-          user_fully_authenticated?,
-        ),
+        phone_confirmed: UserSessionContext.authentication_or_reauthentication_context?(context),
       )
     end
 

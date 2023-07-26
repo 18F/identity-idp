@@ -2,16 +2,15 @@ class OtpDeliverySelectionForm
   include ActiveModel::Model
   include OtpDeliveryPreferenceValidator
 
-  attr_reader :otp_delivery_preference, :phone, :context, :user_fully_authenticated
+  attr_reader :otp_delivery_preference, :phone, :context
 
   validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
   validates :phone, presence: true
 
-  def initialize(user, phone_to_deliver_to, context, user_fully_authenticated)
+  def initialize(user, phone_to_deliver_to, context)
     @user = user
     @phone = PhoneFormatter.format(phone_to_deliver_to)
     @context = context
-    @user_fully_authenticated = user_fully_authenticated
   end
 
   def submit(params)
@@ -54,9 +53,6 @@ class OtpDeliverySelectionForm
   end
 
   def confirmed_phone?
-    UserSessionContext.authentication_or_reauthentication_context?(
-      context,
-      user_fully_authenticated,
-    )
+    UserSessionContext.authentication_or_reauthentication_context?(context)
   end
 end
