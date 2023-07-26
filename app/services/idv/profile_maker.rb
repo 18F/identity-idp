@@ -2,11 +2,18 @@ module Idv
   class ProfileMaker
     attr_reader :pii_attributes
 
-    def initialize(applicant:, user:, user_password:, initiating_service_provider: nil)
+    def initialize(
+      applicant:,
+      user:,
+      user_password:,
+      initiating_service_provider: nil,
+      in_person_verification_pending: false
+    )
       self.pii_attributes = Pii::Attributes.new_from_hash(applicant)
       self.user = user
       self.user_password = user_password
       self.initiating_service_provider = initiating_service_provider
+      self.in_person_verification_pending = in_person_verification_pending
     end
 
     def save_profile(
@@ -33,7 +40,13 @@ module Idv
       user.proofing_component&.as_json || {}
     end
 
-    attr_accessor :user, :user_password, :phone_confirmed, :initiating_service_provider
+    attr_accessor(
+      :user,
+      :user_password,
+      :phone_confirmed,
+      :initiating_service_provider,
+      :in_person_verification_pending,
+    )
     attr_writer :pii_attributes
   end
 end
