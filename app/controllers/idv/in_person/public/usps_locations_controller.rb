@@ -1,25 +1,16 @@
 module Idv
   module InPerson
     module Public
-      class MockAddressSearchController < ApplicationController
+      class UspsLocationsController < ApplicationController
         skip_forgery_protection if: :should_skip_forgery_protection?
-  
-        def addresses
-          addresses = geocoder.find_address_candidates(SingleLine: '')
-  
-          render json: addresses.to_json
-        end
-  
-        def usps_locations
+
+        def index
           locations = proofer.request_facilities('')
+
           render json: locations.to_json
         end
   
         protected
-  
-        def geocoder
-          ArcgisApi::Mock::Geocoder.new
-        end
 
         def proofer
           UspsInPersonProofing::Mock::Proofer.new

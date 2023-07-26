@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   if IdentityConfig.store.in_person_enable_public_address_search
-    post '/api/addresses' => 'idv/in_person/public/mock_address_search#addresses'
-    post '/api/usps_locations' => 'idv/in_person/public/mock_address_search#usps_locations'
+    post '/api/addresses' => 'idv/in_person/public/address_search#index'
+    post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   end
 
   namespace :api do
