@@ -172,7 +172,7 @@ RSpec.describe GpoVerifyForm do
 
         it 'notes that threatmetrix failed' do
           result = subject.submit
-          expect(result.extra).to include(threatmetrix_check_failed: true)
+          expect(result.extra).to include(fraud_check_failed: true)
         end
 
         context 'threatmetrix is not required for verification' do
@@ -194,7 +194,7 @@ RSpec.describe GpoVerifyForm do
 
           it 'notes that threatmetrix failed' do
             result = subject.submit
-            expect(result.extra).to include(threatmetrix_check_failed: true)
+            expect(result.extra).to include(fraud_check_failed: true)
           end
         end
       end
