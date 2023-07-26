@@ -4,23 +4,27 @@ class UserSessionContext
   REAUTHENTICATION_CONTEXT = 'reauthentication'.freeze
   CONFIRMATION_CONTEXT = 'confirmation'.freeze
 
+  def self.context(user_session)
+    user_session[CONTEXT_KEY] || AUTHENTICATION_CONTEXT
+  end
+
   def self.authentication_context?(user_session)
-    user_session[CONTEXT_KEY] == AUTHENTICATION_CONTEXT
+    context == AUTHENTICATION_CONTEXT
   end
 
   def self.reauthentication_context?(user_session)
-    user_session[CONTEXT_KEY] == REAUTHENTICATION_CONTEXT
+    context == REAUTHENTICATION_CONTEXT
   end
 
   def self.authentication_or_reauthentication_context?(user_session)
-    context = user_session[CONTEXT_KEY]
+    fetched_context = context
 
-    context == AUTHENTICATION_CONTEXT ||
-      context == REAUTHENTICATION_CONTEXT
+    fetch_context == AUTHENTICATION_CONTEXT ||
+      fetch_context == REAUTHENTICATION_CONTEXT
   end
 
   def self.confirmation_context?(user_session)
-    user_session[CONTEXT_KEY] == CONFIRMATION_CONTEXT
+    context == CONFIRMATION_CONTEXT
   end
 
   def self.set_authentication_context!(user_session)

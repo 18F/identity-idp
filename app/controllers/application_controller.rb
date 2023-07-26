@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
   end
 
   def context
-    user_session[:context] || UserSessionContext::AUTHENTICATION_CONTEXT
+    UserSessionContext.context(user_session)
   end
 
   def current_sp

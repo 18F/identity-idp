@@ -16,9 +16,9 @@ module TwoFactorAuthenticatableMethods
     PushNotification::HttpPush.deliver(event)
 
     if context && type
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(user_session)
         irs_attempts_api_tracker.mfa_login_rate_limited(mfa_device_type: type)
-      elsif UserSessionContext.confirmation_context?(context)
+      elsif UserSessionContext.confirmation_context?(user_session)
         irs_attempts_api_tracker.mfa_enroll_rate_limited(mfa_device_type: type)
       end
     end
@@ -30,11 +30,11 @@ module TwoFactorAuthenticatableMethods
     analytics.multi_factor_auth_max_sends
 
     if context && phone
-      if UserSessionContext.authentication_or_reauthentication_context?(context)
+      if UserSessionContext.authentication_or_reauthentication_context?(user_session)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
           phone_number: phone,
         )
-      elsif UserSessionContext.confirmation_context?(context)
+      elsif UserSessionContext.confirmation_context?(user_session)
         irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
           phone_number: phone,
         )
@@ -54,7 +54,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def check_already_authenticated
-    return unless UserSessionContext.authentication_context?(context)
+    return unless UserSessionContext.authentication_context?(user_session)
     return unless user_fully_authenticated?
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
@@ -186,7 +186,7 @@ module TwoFactorAuthenticatableMethods
   def generic_data
     {
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-      reauthn: UserSessionContext.reauthentication_context?(user_session[:context]),
+      reauthn: UserSessionContext.reauthentication_context?(user_session),
     }
   end
 end
