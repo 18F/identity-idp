@@ -256,7 +256,7 @@ RSpec.describe RequestPasswordReset do
           to_not(change { user.reload.reset_password_token })
 
         expect(analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
+          'Rate Limit Reached',
           throttle_type: :reset_password_email,
         )
         expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_rate_limited).with(
