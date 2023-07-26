@@ -121,7 +121,8 @@ fr:
         warning:
           attempts_html:
             one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
-            other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
+            other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+              tentatives</strong>.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
@@ -309,7 +310,8 @@ fr:
     warning:
       attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative.</strong>
-        other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
+        other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+          tentatives</strong>.
       sessions:
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
           personnelles
