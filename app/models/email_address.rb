@@ -6,7 +6,9 @@ class EmailAddress < ApplicationRecord
   belongs_to :user, inverse_of: :email_addresses
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
-  has_one :suspended_email, dependent: :destroy
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_one :suspended_email
+  # rubocop:enable Rails/HasManyOrHasOneDependent
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
 
