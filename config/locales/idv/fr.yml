@@ -119,7 +119,7 @@ fr:
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
-          attempts:
+          attempts_html:
             one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
             other: Pour des raisons de sécurité, il vous reste <strong>%{count} tentatives</strong>.
           gpo:
