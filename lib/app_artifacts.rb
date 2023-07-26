@@ -36,7 +36,7 @@ class AppArtifacts
     private
 
     def read_artifact(path)
-      if Identity::Hostdata.in_datacenter?
+      if Identity::Hostdata.in_datacenter? && !ENV['LOGIN_SKIP_REMOTE_CONFIG']
         secrets_s3.read_file(path)
       else
         read_local_artifact(path)

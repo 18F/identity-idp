@@ -245,10 +245,6 @@ class Profile < ApplicationRecord
     proofing_components['address_check'] == 'lexis_nexis_address'
   end
 
-  def has_proofed_before?
-    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
-  end
-
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new
   end

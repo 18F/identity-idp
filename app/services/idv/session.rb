@@ -129,6 +129,16 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
+    def failed_phone_step_numbers
+      session[:failed_phone_step_params] ||= []
+    end
+
+    def add_failed_phone_step_number(phone)
+      parsed_phone = Phonelib.parse(phone)
+      phone_e164 = parsed_phone.e164
+      failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
+    end
+
     def in_person_enrollment?
       current_user.proofing_component&.document_check == Idp::Constants::Vendors::USPS
     end

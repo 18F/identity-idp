@@ -35,28 +35,6 @@ RSpec.describe 'idv/getting_started/show' do
     end
   end
 
-  context 'during the acuant maintenance window' do
-    let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
-    let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
-    let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
-
-    before do
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
-    end
-
-    around do |ex|
-      travel_to(now) { ex.run }
-    end
-
-    it 'renders the warning banner but no other content' do
-      render
-
-      expect(rendered).to have_content('We are currently under maintenance')
-      expect(rendered).to_not have_content(t('doc_auth.headings.welcome'))
-    end
-  end
-
   it 'includes code to track clicks on the consent checkbox' do
     selector = [
       'lg-click-observer[event-name="IdV: consent checkbox toggled"]',
