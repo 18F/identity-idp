@@ -5,7 +5,7 @@ module Idv
         skip_forgery_protection if: :should_skip_forgery_protection?
   
         def index
-          addresses = geocoder.find_address_candidates(SingleLine: '')
+          addresses = geocoder.find_address_candidates(SingleLine: params[:address]).slice(0, 1)
   
           render json: addresses.to_json
         end
