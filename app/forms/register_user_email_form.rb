@@ -179,6 +179,7 @@ class RegisterUserEmailForm
   end
 
   def blocked_email_address
-    @blocked_email_address ||= SuspendedEmail.blocked_email_address(email)
+    return @blocked_email_address if defined?(@blocked_email_address)
+    @blocked_email_address = SuspendedEmail.find_with_email(email)
   end
 end

@@ -12,7 +12,7 @@ RSpec.describe SuspendedEmail, type: :model do
   describe '.generate_email_digest' do
     it 'generates the correct digest for a given email' do
       email = 'test@example.com'
-      expected_digest = OpenSSL::Digest.hexdigest('SHA256', 'test@example.com')
+      expected_digest = Digest::SHA256.hexdigest('test@example.com')
 
       expect(SuspendedEmail.generate_email_digest(email)).to eq(expected_digest)
     end
@@ -23,7 +23,7 @@ RSpec.describe SuspendedEmail, type: :model do
       it 'returns nil' do
         email = 'not_blocked@example.com'
 
-        expect(SuspendedEmail.blocked_email_address(email)).to be_nil
+        expect(SuspendedEmail.find_with_email(email)).to be_nil
       end
     end
 
@@ -37,7 +37,7 @@ RSpec.describe SuspendedEmail, type: :model do
           email_address: blocked_email,
         )
 
-        expect(SuspendedEmail.blocked_email_address('blocked@example.com')).to eq(blocked_email)
+        expect(SuspendedEmail.find_with_email('blocked@example.com')).to eq(blocked_email)
       end
     end
   end

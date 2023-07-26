@@ -769,14 +769,7 @@ RSpec.describe User do
         end
 
         it 'creates SuspendedEmail records for each email address' do
-          user_email_address = user.email_addresses.last
-          expect(SuspendedEmail).to receive(:generate_email_digest).with(user_email_address.email).
-            and_return('digest1')
-          expect(SuspendedEmail).to receive(:create!).with(
-            digested_base_email: 'digest1',
-            email_address: user_email_address,
-          )
-          user.suspend!
+          expect { user.suspend! }.to(change { SuspendedEmail.count }.by(1))
         end
 
         it 'updates the suspended_at attribute with the current time' do
@@ -833,20 +826,15 @@ RSpec.describe User do
 
     describe '#reinstate!' do
       before do
-        user.suspended_at = Time.zone.now
+        user.suspend!
         user.reinstated_at = nil
       end
 
       it 'destroys SuspendedEmail records for each email address' do
-        suspended_email = double
-        expect(SuspendedEmail).to receive(:generate_email_digest).
-          with(user.email_addresses.last.email).
-          and_return('digest1')
-        expect(SuspendedEmail).to receive(:find_by).with(
-          digested_base_email: 'digest1',
-        ).and_return(suspended_email)
-        expect(suspended_email).to receive(:destroy)
-        user.reinstate!
+        email_address = user.email_addresses.last
+        expect { user.reinstate! }.to change {
+                                        SuspendedEmail.find_with_email(email_address.email)
+                                      }.from(email_address).to(nil)
       end
 
       it 'updates the reinstated_at attribute with the current time' do
