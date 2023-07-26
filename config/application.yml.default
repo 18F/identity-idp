@@ -26,8 +26,6 @@ allowed_ialmax_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
-acuant_maintenance_window_start:
-acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
 acuant_assure_id_url: ''
@@ -139,7 +137,6 @@ in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
 in_person_proofing_enabled: false
-in_person_send_proofing_notifications_enabled: false
 in_person_enrollment_validity_in_days: 30
 in_person_enrollments_ready_job_email_body_pattern: '\A\s*(?<enrollment_code>\d{16})\s*\Z'
 in_person_enrollments_ready_job_cron: '0/10 * * * *'

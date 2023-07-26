@@ -130,7 +130,7 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Essayez <strtong>un autre<strong> numéro que vous utilisez
+          next_steps_html: 'Essayez <strong>un autre</strong> numéro que vous utilisez
             souvent et depuis longtemps. Il peut s’agir d’un numéro
             professionnel ou personnel.'
           try_again_button: 'Essayez un autre numéro'
@@ -237,6 +237,11 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
+        failed_number:
+          alert_text: Nous n’avons pas pu vous associer à ce numéro.
+          gpo_alert_html: Si vous n’avez pas <strong>d’autre</strong> numéro de téléphone
+            à essayer, %{link_html}.
+          gpo_verify_link: vérifiez plutôt par courrier
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
