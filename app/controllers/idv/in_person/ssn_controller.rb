@@ -6,7 +6,6 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
-      before_action :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
@@ -84,10 +83,6 @@ module Idv
 
       def updating_ssn?
         flow_session.dig(:pii_from_user, :ssn).present?
-      end
-
-      def renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
-        render_not_found unless IdentityConfig.store.in_person_ssn_info_controller_enabled
       end
 
       def confirm_in_person_address_step_complete
