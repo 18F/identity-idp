@@ -671,7 +671,7 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
+  # @param [Integer] remaining_attempts how many attempts the user has left before we rate limit them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
     track_event(
@@ -2152,14 +2152,14 @@ module AnalyticsEvents
   end
 
   # @param ['warning','jobfail','failure'] type
-  # @param [Time] throttle_expires_at when the throttle expires
+  # @param [Time] limiter_expires_at when the rate limit expires
   # @param [Integer] remaining_attempts number of attempts remaining
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
-    throttle_expires_at: nil,
+    limiter_expires_at: nil,
     remaining_attempts: nil,
     **extra
   )
@@ -2168,7 +2168,7 @@ module AnalyticsEvents
       {
         type: type,
         proofing_components: proofing_components,
-        throttle_expires_at: throttle_expires_at,
+        limiter_expires_at: limiter_expires_at,
         remaining_attempts: remaining_attempts,
         **extra,
       }.compact,
@@ -3643,7 +3643,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user triggered a rate limit throttle
+  # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type
   def rate_limit_reached(limiter_type:, **extra)
     track_event(
