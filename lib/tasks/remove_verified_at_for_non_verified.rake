@@ -60,9 +60,9 @@ namespace :profiles do
         gpo_verification_pending_at IS NOT NULL')
 
     if profiles.empty?
-      warn 'remove errant verified_at from profiles was successful'
+      warn 'remove verified_at from profiles that were not verified was successful'
     else
-      warn "remove errant verified_at from profiles left #{profiles.count} rows"
+      warn "remove verified_at from profiles that were not verified left #{profiles.count} rows"
     end
   end
 end
