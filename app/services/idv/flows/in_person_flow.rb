@@ -6,7 +6,6 @@ module Idv
       STEPS = {
         state_id: Idv::Steps::InPerson::StateIdStep, # info from state id
         address: Idv::Steps::InPerson::AddressStep,  # entering the address
-        ssn: Idv::Steps::InPerson::SsnStep, # enter SSN
       }.freeze
 
       ACTIONS = {
@@ -15,7 +14,6 @@ module Idv
         cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
         redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
         redo_address: Idv::Actions::InPerson::RedoAddressAction,
-        redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
