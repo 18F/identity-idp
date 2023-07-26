@@ -32,14 +32,14 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.
-      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
-        %{timeout}. Vous pouvez également revenir en arrière et choisir
-        d’utiliser votre ordinateur à la place.
       rate_limited_heading: Nous n’avons pas pu vérifier votre identité
       rate_limited_subheading: Essayez de prendre de nouvelles photos.
       rate_limited_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
         vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
+      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
+        %{timeout}. Vous pouvez également revenir en arrière et choisir
+        d’utiliser votre ordinateur à la place.
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un

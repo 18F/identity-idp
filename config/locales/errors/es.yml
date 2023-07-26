@@ -28,14 +28,14 @@ es:
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
+      rate_limited_heading: No pudimos verificar la identificación
+      rate_limited_subheading: Intente tomar nuevas fotografías.
+      rate_limited_text_html: 'Por su seguridad, limitamos el número de veces que
+        puede intentar verificar un documento en línea. <strong>Inténtelo de
+        nuevo en %{timeout}.</strong>'
       send_link_throttle: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
         en %{timeout}. También puede retroceder y elegir utilizar su computadora
         como alternativa.
-      rate_limited_heading: No pudimos verificar la identificación
-      rate_limited_subheading: Intente tomar nuevas fotografías.
-      rate_limited_text_html: 'Por su seguridad, limitamos el número de veces que puede
-        intentar verificar un documento en línea. <strong>Inténtelo de nuevo en
-        %{timeout}.</strong>'
     general: '¡Oops! Algo salió mal. Inténtelo de nuevo.'
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
