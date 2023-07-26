@@ -9,18 +9,28 @@ RSpec.describe Idv::InPerson::Public::AddressSearchController do
            params:
             { address: '100 main' }
     end
-
-    context 'with feature flag on' do
-      it 'is successful and has a response' do
+    context 'with feature flag off' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_public_address_search_enabled).
+          and_return(false)
+      end
+  
+      it 'is a 400' do
         action
-        expect(response).to be_ok
+
+        expect(response).to be_bad_request
       end
     end
 
-    context 'with feature flag off' do
-      it 'is a 400' do
+    context 'with feature flag on' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_public_address_search_enabled).
+          and_return(true)
+      end
+
+      it 'is successful and has a response' do
         action
-        expect(response).to be_bad_request
+        expect(response).to be_ok
       end
     end
   end
