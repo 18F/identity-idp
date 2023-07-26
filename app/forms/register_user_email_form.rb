@@ -114,7 +114,7 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
-      throttled: @rate_limited,
+      rate_limited: @rate_limited,
     }
   end
 

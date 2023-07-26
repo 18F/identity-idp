@@ -3873,14 +3873,14 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success
-  # @param [Boolean] throttled
+  # @param [Boolean] rate_limited
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(
     success:,
-    throttled:,
+    rate_limited:,
     errors:,
     error_details: nil,
     user_id: nil,
@@ -3891,7 +3891,7 @@ module AnalyticsEvents
       'User Registration: Email Submitted',
       {
         success: success,
-        throttled: throttled,
+        rate_limited: rate_limited,
         errors: errors,
         error_details: error_details,
         user_id: user_id,
