@@ -17,7 +17,7 @@ module Idv
         end
 
         def should_skip_forgery_protection?
-          IdentityConfig.store.in_person_enable_public_address_search
+          IdentityConfig.store.in_person_public_address_search_enabled
         end
       end
     end

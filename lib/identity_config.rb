@@ -231,7 +231,7 @@ class IdentityConfig
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
     config.add(:in_person_proofing_enabled, type: :boolean)
-    config.add(:in_person_enable_public_address_search, type: :boolean)
+    config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_enrollments_ready_job_email_body_pattern, type: :string)
     config.add(:in_person_enrollments_ready_job_cron, type: :string)

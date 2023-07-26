@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
-  if IdentityConfig.store.in_person_enable_public_address_search
+  if IdentityConfig.store.in_person_public_address_search_enabled
     post '/api/addresses' => 'idv/in_person/public/address_search#index'
     post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
   end
