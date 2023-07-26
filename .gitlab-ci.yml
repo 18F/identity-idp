@@ -411,7 +411,7 @@ dast:
   variables:
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
-    DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion.enabled=true -config connection.proxyChain.exclusions.exclusion.regex=127.0.0.1"
+    DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion.enabled=true -config globalexcludeurl.url_list.url.regex='((?!http:\/\/127\.0\.0\.1\/).*)$'"
   before_script:
     - 'export http_proxy=http://obproxy.login.gov.internal:3128/'
   needs:
