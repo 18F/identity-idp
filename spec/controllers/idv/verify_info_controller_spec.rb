@@ -142,7 +142,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ throttle_context: 'multi-session' })
+          with({ limiter_context: 'multi-session' })
 
         get :show
       end
@@ -164,7 +164,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ throttle_context: 'single-session' })
+          with({ limiter_context: 'single-session' })
 
         get :show
       end
@@ -431,7 +431,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ throttle_context: 'multi-session' })
+          with({ limiter_context: 'multi-session' })
 
         put :update
       end
@@ -453,7 +453,7 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'logs the correct attempts event' do
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ throttle_context: 'single-session' })
+          with({ limiter_context: 'single-session' })
 
         put :update
       end

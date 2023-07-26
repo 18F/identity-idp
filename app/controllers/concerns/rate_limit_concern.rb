@@ -22,16 +22,16 @@ module RateLimitConcern
 
   def track_rate_limited_event(rate_limit_type)
     analytics_args = { limiter_type: rate_limit_type }
-    throttle_context = 'single-session'
+    limiter_context = 'single-session'
 
     if rate_limit_type == :proof_address
       analytics_args[:step_name] = :phone
     elsif rate_limit_type == :proof_ssn
       analytics_args[:step_name] = 'verify_info'
-      throttle_context = 'multi-session'
+      limiter_context = 'multi-session'
     end
 
-    irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: throttle_context)
+    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: limiter_context)
     analytics.rate_limit_reached(**analytics_args)
   end
 
