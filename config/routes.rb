@@ -14,7 +14,9 @@ Rails.application.routes.draw do
 
   if IdentityConfig.store.in_person_public_address_search_enabled
     post '/api/addresses' => 'idv/in_person/public/address_search#index'
+    match '/api/addresses' => 'idv/in_person/public/address_search#options', via: :options
     post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
+    match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
   end
 
   namespace :api do

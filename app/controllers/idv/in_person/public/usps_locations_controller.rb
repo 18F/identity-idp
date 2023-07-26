@@ -15,6 +15,10 @@ module Idv
           render json: locations.to_json
         end
 
+        def options
+          head :ok
+        end
+
         protected
 
         def proofer

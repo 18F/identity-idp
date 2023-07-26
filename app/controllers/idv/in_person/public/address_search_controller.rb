@@ -10,6 +10,10 @@ module Idv
           render json: addresses.to_json
         end
 
+        def options
+          head :ok
+        end
+
         protected
 
         def geocoder
