@@ -122,6 +122,13 @@ class User < ApplicationRecord
     OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
+    email_addresses.flat_map do |email_address|
+      digested_base_email = SuspendedEmail.generate_email_digest(email_address.email)
+      SuspendedEmail.create!(
+        digested_base_email: digested_base_email,
+        email_address: email_address,
+      )
+    end
   end
 
   def reinstate!
@@ -131,6 +138,10 @@ class User < ApplicationRecord
     end
     update!(reinstated_at: Time.zone.now)
     analytics.user_reinstated(success: true)
+    email_addresses.flat_map do |email_address|
+      digested_base_email = SuspendedEmail.generate_email_digest(email_address.email)
+      SuspendedEmail.find_by(digested_base_email: digested_base_email)&.destroy
+    end
   end
 
   def pending_profile

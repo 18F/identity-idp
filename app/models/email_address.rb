@@ -6,6 +6,7 @@ class EmailAddress < ApplicationRecord
   belongs_to :user, inverse_of: :email_addresses
   validates :encrypted_email, presence: true
   validates :email_fingerprint, presence: true
+  has_many :suspended_emails, inverse_of: :email_address, dependent: :destroy
 
   scope :confirmed, -> { where('confirmed_at IS NOT NULL') }
 

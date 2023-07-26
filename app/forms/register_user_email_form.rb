@@ -85,6 +85,8 @@ class RegisterUserEmailForm
     # already taken and if so, we act as if the user registration was successful.
     if email_address_record&.user&.suspended?
       send_suspended_user_email(email_address_record)
+    elsif blocked_email_address
+      send_suspended_user_email(blocked_email_address)
     elsif email_taken? && user_unconfirmed?
       update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
@@ -174,5 +176,9 @@ class RegisterUserEmailForm
 
   def email_request_id(request_id)
     request_id if request_id.present? && ServiceProviderRequestProxy.find_by(uuid: request_id)
+  end
+
+  def blocked_email_address
+    @blocked_email_address ||= SuspendedEmail.blocked_email_address(email)
   end
 end
