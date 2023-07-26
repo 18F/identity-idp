@@ -3,7 +3,6 @@ module MfaSetupConcern
 
   def next_setup_path
     if suggest_second_mfa?
-      puts('send to conf page')
       auth_method_confirmation_url
     elsif next_setup_choice
       confirmation_path
