@@ -2,7 +2,9 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
-<p><%= t('instructions.password.password_key') %></p>
+<p id="password-description">
+  <%= t('instructions.password.password_key') %>
+</p>
 
 <%= simple_form_for(
       @reset_password_form,

@@ -83,11 +83,11 @@ RSpec.describe SignUp::PasswordsController do
           {
             password:
               [t(
-                'errors.attributes.password.too_short.other',
+                'errors.attributes.password.too_short',
                 count: Devise.password_length.first,
               )],
             password_confirmation:
-              [I18n.t('errors.messages.too_short.other', count: Devise.password_length.first)],
+              [I18n.t('errors.messages.too_short', count: Devise.password_length.first)],
           }
         end
         let(:error_details) do

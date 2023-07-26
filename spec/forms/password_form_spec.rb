@@ -33,11 +33,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user, validate_confirmation) }
-
-        let(:validate_confirmation) do
-          { validate_confirmation: true }
-        end
+        subject(:form) { described_class.new(user, validate_confirmation: true) }
 
         let(:password_confirmation) { password }
 
@@ -67,11 +63,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user, validate_confirmation) }
-
-        let(:validate_confirmation) do
-          { validate_confirmation: true }
-        end
+        subject(:form) { described_class.new(user, validate_confirmation: true) }
 
         context 'when the passwords are invalid' do
           let(:password_confirmation) { password }

@@ -6,10 +6,10 @@ class ResetPasswordForm
 
   validate :valid_token
 
-  def initialize(user, options = {})
+  def initialize(user, validate_confirmation: false)
     @user = user
     @reset_password_token = @user.reset_password_token
-    @validate_confirmation = options.fetch(:validate_confirmation, false)
+    @validate_confirmation = validate_confirmation
   end
 
   def submit(params)
