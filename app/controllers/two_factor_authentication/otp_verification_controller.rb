@@ -259,7 +259,7 @@ module TwoFactorAuthentication
 
     def reset_otp_session_data
       user_session.delete(:unconfirmed_phone)
-      user_session[:context] = 'authentication'
+      UserSessionContext.set_authentication_context!(session: user_session)
     end
   end
 end
