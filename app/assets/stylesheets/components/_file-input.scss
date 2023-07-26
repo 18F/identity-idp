@@ -1,4 +1,5 @@
 @use 'uswds-core' as *;
+@use '../utilities/typography' as *;
 
 // ===============================================
 // Pending upstream Login Design System revisions:
@@ -45,9 +46,9 @@
 
 .usa-file-input__banner-text {
   @include u-font-family('sans');
+  @extend %h2;
   color: color('primary');
   display: block;
-  font-size: 1.625rem;
   letter-spacing: 0.4px;
   line-height: 1.5;
   // For content to appear as vertically centered, offset the larger line-height of the banner to
