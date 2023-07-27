@@ -16,11 +16,6 @@ en:
       use_diff_email:
         link: create a new account
         text_html: Or, %{link_html} using a different email address.
-    maintenance:
-      contact_us: Contact us
-      currently_under_maintenance_html: We are currently <b>under maintenance until
-        %{finish}</b> for some of our services.
-      need_assistance: Need assistance?
     password_changed: You changed your password.
     phone_confirmed: A phone was added to your account.
     piv_cac_configured: A PIV/CAC card was added to your account.

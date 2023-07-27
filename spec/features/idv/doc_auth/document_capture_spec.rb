@@ -67,7 +67,7 @@ RSpec.feature 'document capture step', :js do
           timeout = distance_of_time_in_words(
             RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
-          message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+          message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
           expect(page).to have_current_path(idv_session_errors_throttled_path)
         end

@@ -366,7 +366,7 @@ module Users
 
     def handle_too_many_confirmation_sends
       flash[:error] = t(
-        'errors.messages.phone_confirmation_throttled',
+        'errors.messages.phone_confirmation_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
           [phone_confirmation_rate_limiter.expires_at, Time.zone.now].compact.max,
