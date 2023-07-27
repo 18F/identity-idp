@@ -24,8 +24,8 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   it 'shows remaining attempts' do
     expect(rendered).to have_text(
       strip_tags(
-        t('idv.warning.attempts_html', count: remaining_attempts)
-      )
+        t('idv.warning.attempts_html', count: remaining_attempts),
+      ),
     )
   end
 
@@ -40,8 +40,8 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
       expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
       expect(rendered).to have_text(
         strip_tags(
-          t('idv.warning.attempts_html', count: remaining_attempts)
-        )
+          t('idv.warning.attempts_html', count: remaining_attempts),
+        ),
       )
       expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
     end
