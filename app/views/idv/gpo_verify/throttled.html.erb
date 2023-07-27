@@ -4,7 +4,7 @@
 
 <p>
   <%= t(
-        'errors.verify_profile.throttled',
+        'errors.verify_profile.rate_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
           [@expires_at, Time.zone.now].compact.max,

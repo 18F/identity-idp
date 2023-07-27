@@ -108,7 +108,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
-        expect(response.error).to eq(Telephony::ThrottledError.new(raised_error_message))
+        expect(response.error).to eq(Telephony::RateLimitedError.new(raised_error_message))
         expect(response.extra[:delivery_status]).to eq('THROTTLED')
         expect(response.extra[:request_id]).to eq('fake-message-request-id')
       end

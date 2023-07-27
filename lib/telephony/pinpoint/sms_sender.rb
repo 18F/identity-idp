@@ -8,7 +8,7 @@ module Telephony
         'OPT_OUT' => OptOutError,
         'PERMANENT_FAILURE' => PermanentFailureError,
         'TEMPORARY_FAILURE' => TemporaryFailureError,
-        'THROTTLED' => ThrottledError,
+        'THROTTLED' => RateLimitedError,
         'TIMEOUT' => TimeoutError,
         'UNKNOWN_FAILURE' => UnknownFailureError,
       }.freeze
