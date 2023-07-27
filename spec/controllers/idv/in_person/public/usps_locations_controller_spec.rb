@@ -9,10 +9,10 @@ RSpec.describe Idv::InPerson::Public::UspsLocationsController do
            params: {
              address: {
                address: '87060 Colby Radial, Stephenmouth, OK 73339-7909',
-               zip_code: '74120',
-               state: 'WA',
-               city: 'Lake Dallas',
-               street_address: '2215 Merrill Wells',
+               zip_code: '73339',
+               state: 'OK',
+               city: 'Stephenmouth',
+               street_address: '87060 Colby Radial',
              },
            }
     end
