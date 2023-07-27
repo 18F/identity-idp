@@ -4,10 +4,10 @@ class UpdateUserPasswordForm
 
   delegate :personal_key, to: :encryptor
 
-  def initialize(user, user_session = nil, validate_confirmation: false)
+  def initialize(user, user_session = nil)
     @user = user
     @user_session = user_session
-    @validate_confirmation = validate_confirmation
+    @validate_confirmation = true
   end
 
   def submit(params)

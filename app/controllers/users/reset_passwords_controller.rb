@@ -45,7 +45,7 @@ module Users
     # PUT /resource/password
     def update
       self.resource = user_matching_token(user_params[:reset_password_token])
-      @reset_password_form = ResetPasswordForm.new(resource, validate_confirmation: true)
+      @reset_password_form = ResetPasswordForm.new(resource)
 
       result = @reset_password_form.submit(user_params)
 
