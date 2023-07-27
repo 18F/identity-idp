@@ -176,7 +176,7 @@ module Idv
         throttle_type: :idv_send_link,
       )
       message = I18n.t(
-        'errors.doc_auth.send_link_throttle',
+        'errors.doc_auth.send_link_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
           [rate_limiter.expires_at, Time.zone.now].compact.max,

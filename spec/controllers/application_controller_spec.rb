@@ -36,7 +36,9 @@ RSpec.describe ApplicationController do
         cookie_expiration = controller_set_cookies['sp_issuer'][:expires]
 
         expect(cookies[:sp_issuer]).to eq(sp.issuer)
-        expect(cookie_expiration).to be_within(3.seconds).of(15.minutes.from_now)
+        expect(cookie_expiration).to be_within(3.seconds).of(
+          IdentityConfig.store.session_timeout_in_minutes.minutes.from_now,
+        )
       end
     end
 

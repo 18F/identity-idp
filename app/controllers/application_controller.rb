@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -257,10 +257,6 @@ class ApplicationController < ActionController::Base
       current_user.password_reset_profile.updated_at
   end
 
-  def reauthn_param
-    params[:reauthn]
-  end
-
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
     analytics.invalid_authenticity_token(
@@ -284,16 +280,10 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? &&
-      user_signed_in? &&
+    user_signed_in? &&
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
   end
 
   def confirm_user_is_not_suspended
@@ -360,6 +350,8 @@ class ApplicationController < ActionController::Base
 
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
       login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+      login_two_factor_webauthn_url(platform: true)
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
       login_two_factor_webauthn_url
     else

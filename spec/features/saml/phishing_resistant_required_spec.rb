@@ -21,16 +21,55 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer,
-            authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
-          },
-        )
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer,
+              authn_context: Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
     end
   end
@@ -52,15 +91,52 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          },
-        )
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: sp1_issuer, authn_context: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
     end
   end
@@ -82,15 +158,52 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: aal3_issuer, authn_context: nil
-          },
-        )
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
+
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: aal3_issuer, authn_context: nil
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: aal3_issuer, authn_context: nil
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_saml_authn_request_url(
+            overrides: {
+              issuer: aal3_issuer, authn_context: nil
+            },
+          )
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
 
       it 'does not allow an already signed in user to bypass phishing-resistant auth' do

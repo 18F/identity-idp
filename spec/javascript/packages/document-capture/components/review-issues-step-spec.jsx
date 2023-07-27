@@ -55,7 +55,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
+    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
@@ -89,7 +89,7 @@ describe('document-capture/components/review-issues-step', () => {
       </InPersonContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
+    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
     expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
     expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
@@ -131,7 +131,7 @@ describe('document-capture/components/review-issues-step', () => {
       </I18nContext.Provider>,
     );
 
-    expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
+    expect(getByText('errors.doc_auth.rate_limited_heading')).to.be.ok();
     expect(getByText('One attempt remaining')).to.be.ok();
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
