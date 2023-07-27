@@ -54,30 +54,23 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       let(:in_person_proofing_enabled) { false }
       let(:in_person_send_proofing_notifications_enabled) { true }
       it 'returns without doing anything' do
-        expect(analytics).not_to receive(
-          :idv_in_person_send_proofing_notification_job_started,
-        )
-        expect(analytics).not_to receive(
-          :idv_in_person_send_proofing_notification_job_completed,
-        )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
         job.perform(passed_enrollment.id)
+
+        expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
+        expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job completed')
       end
     end
     context 'job disabled' do
       let(:in_person_proofing_enabled) { true }
       let(:in_person_send_proofing_notifications_enabled) { false }
       it 'returns without doing anything' do
-        expect(analytics).not_to receive(
-          :idv_in_person_send_proofing_notification_job_started,
-        )
-        expect(analytics).not_to receive(
-          :idv_in_person_send_proofing_notification_job_completed,
-        )
         expect(job).not_to receive(:poll)
         expect(job).not_to receive(:process_batch)
         job.perform(passed_enrollment.id)
+        expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
+        expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job completed')
       end
     end
     context 'ipp and job enabled' do
@@ -86,35 +79,23 @@ RSpec.describe InPerson::SendProofingNotificationJob do
       context 'enrollment does not exist' do
         it 'returns without doing anything' do
           bad_id = (InPersonEnrollment.all.pluck(:id).max || 0) + 1
-          expect(analytics).not_to receive(
-            :idv_in_person_send_proofing_notification_job_started,
-          )
-          expect(analytics).to receive(
-            :idv_in_person_send_proofing_notification_job_skipped,
-          )
           job.perform(bad_id)
+          expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
+          expect(analytics).to have_logged_event('SendProofingNotificationJob: job skipped')
         end
       end
       context 'enrollment has an unsupported status' do
         it 'returns without doing anything' do
-          expect(analytics).not_to receive(
-            :idv_in_person_send_proofing_notification_job_started,
-          )
-          expect(analytics).to receive(
-            :idv_in_person_send_proofing_notification_job_skipped,
-          )
           job.perform(expired_enrollment.id)
+          expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
+          expect(analytics).to have_logged_event('SendProofingNotificationJob: job skipped')
         end
       end
       context 'without notification phone notification' do
         it 'returns without doing anything' do
-          expect(analytics).not_to receive(
-            :idv_in_person_send_proofing_notification_job_started,
-          )
-          expect(analytics).to receive(
-            :idv_in_person_send_proofing_notification_job_skipped,
-          )
           job.perform(passed_enrollment_without_notification.id)
+          expect(analytics).not_to have_logged_event('SendProofingNotificationJob: job started')
+          expect(analytics).to have_logged_event('SendProofingNotificationJob: job skipped')
         end
       end
       context 'with notification phone configuration' do
@@ -123,18 +104,14 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           freeze_time do
             now = Time.zone.now
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_started,
-            )
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_completed,
-            )
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_attempted,
-            )
             expect(passed_enrollment.reload.notification_sent_at).to be_nil
 
             job.perform(passed_enrollment.id)
+            expect(analytics).to have_logged_event('SendProofingNotificationJob: job started')
+            expect(analytics).to have_logged_event('SendProofingNotificationJob: job completed')
+            expect(analytics).to have_logged_event(
+              'SendProofingNotificationJob: in person notification SMS send attempted'
+            )
             expect(passed_enrollment.reload.notification_sent_at).to eq(now)
             expect(passed_enrollment.reload.notification_phone_configuration).to be_nil
           end
@@ -144,16 +121,12 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           freeze_time do
             now = Time.zone.now
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_started,
-            )
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_completed,
-            )
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_attempted,
-            )
             job.perform(failing_enrollment.id)
+            expect(analytics).to have_logged_event('SendProofingNotificationJob: job started')
+            expect(analytics).to have_logged_event('SendProofingNotificationJob: job completed')
+            expect(analytics).to have_logged_event(
+              'SendProofingNotificationJob: in person notification SMS send attempted'
+            )
             expect(failing_enrollment.reload.notification_sent_at).to eq(now)
             expect(failing_enrollment.reload.notification_phone_configuration).to be_nil
           end
@@ -163,19 +136,19 @@ RSpec.describe InPerson::SendProofingNotificationJob do
         it 'logs sms send failure when number is opt out and enrollment not updated' do
           allow(Telephony).to receive(:send_notification).and_return(sms_opt_out_response)
 
-          expect(analytics).to receive(
-            :idv_in_person_send_proofing_notification_attempted,
-          )
           job.perform(passed_enrollment.id)
+          expect(analytics).to have_logged_event(
+            'SendProofingNotificationJob: in person notification SMS send attempted'
+          )
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
         end
         it 'logs sms send failure for delivery failure' do
           allow(Telephony).to receive(:send_notification).and_return(sms_failure_response)
 
-          expect(analytics).to receive(
-            :idv_in_person_send_proofing_notification_attempted,
-          )
           job.perform(passed_enrollment.id)
+          expect(analytics).to have_logged_event(
+            'SendProofingNotificationJob: in person notification SMS send attempted'
+          )
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
         end
       end
@@ -188,7 +161,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           job.perform(passed_enrollment.id)
 
           expect(analytics).to have_logged_event(
-            'SendProofingNotificationJob: Exception raised',
+            'SendProofingNotificationJob: exception raised',
             enrollment_code: nil,
             enrollment_id: passed_enrollment.id,
             exception_class: 'ActiveRecord::DatabaseConnectionError',
