@@ -12,6 +12,7 @@ import {
   transformKeys,
   snakeCase,
   LocationQuery,
+  // todo: this will have to be removed
   LOCATIONS_URL,
   PostOffice,
 } from '@18f/identity-address-search';
@@ -106,6 +107,7 @@ interface FullAddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
+  // todo: add configurable URL here
 }
 
 function FullAddressSearch({
