@@ -95,6 +95,17 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           job.perform(bad_id)
         end
       end
+      context 'enrollment has an unsupported status' do
+        it 'returns without doing anything' do
+          expect(analytics).not_to receive(
+            :idv_in_person_send_proofing_notification_job_started,
+          )
+          expect(analytics).to receive(
+            :idv_in_person_send_proofing_notification_job_skipped,
+          )
+          job.perform(expired_enrollment.id)
+        end
+      end
       context 'without notification phone notification' do
         it 'returns without doing anything' do
           expect(analytics).not_to receive(
@@ -145,23 +156,6 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             job.perform(failing_enrollment.id)
             expect(failing_enrollment.reload.notification_sent_at).to eq(now)
             expect(failing_enrollment.reload.notification_phone_configuration).to be_nil
-          end
-        end
-        it 'sends no notification and phone removed when enrollment expired' do
-          allow(Telephony).to receive(:send_notification).and_return(sms_success_response)
-          freeze_time do
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_started,
-            )
-            expect(analytics).to receive(
-              :idv_in_person_send_proofing_notification_job_completed,
-            )
-            expect(analytics).not_to receive(
-              :idv_in_person_send_proofing_notification_attempted,
-            )
-            job.perform(expired_enrollment.id)
-            expect(expired_enrollment.reload.notification_sent_at).to be_nil
-            expect(expired_enrollment.reload.notification_phone_configuration).to be_nil
           end
         end
       end

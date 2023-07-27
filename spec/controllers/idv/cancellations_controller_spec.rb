@@ -239,7 +239,7 @@ RSpec.describe Idv::CancellationsController do
           delete :destroy
 
           pending_enrollment.reload
-          expect(pending_enrollment.status).to eq('cancelled')
+          expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
           expect(user.reload.pending_in_person_enrollment).to be_blank
         end
 
@@ -249,7 +249,7 @@ RSpec.describe Idv::CancellationsController do
           delete :destroy
 
           establishing_enrollment.reload
-          expect(establishing_enrollment.status).to eq('cancelled')
+          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
           expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
         end
 

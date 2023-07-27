@@ -629,7 +629,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: true,
             email_type: 'Success',
-            enrollment_status: 'passed',
+            enrollment_status: InPersonEnrollment::STATUS_PASSED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_results_response,
           )
@@ -675,7 +675,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_proofing_results_response,
           )
@@ -717,7 +717,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed fraud suspected',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_suspected_fraud_proofing_results_response,
           )
@@ -760,7 +760,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed unsupported ID type',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_unsupported_id_results_response,
           )
@@ -803,7 +803,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'deadline passed',
-            enrollment_status: 'expired',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_expired_proofing_results_response,
           )
@@ -833,7 +833,7 @@ RSpec.describe GetUspsProofingResultsJob do
             it 'treats the enrollment as incomplete' do
               job.perform(Time.zone.now)
 
-              expect(pending_enrollment.status).to eq('pending')
+              expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
               # we pass the expiration message to analytics
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Enrollment incomplete',
@@ -855,7 +855,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'deadline passed',
-            enrollment_status: 'expired',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_unexpected_expired_proofing_results_response,
           )
@@ -1141,7 +1141,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed unsupported secondary ID',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_secondary_id_type_results_response,
           )
