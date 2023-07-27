@@ -282,7 +282,7 @@ RSpec.feature 'Sign Up' do
     visit authenticator_setup_path
 
     expect(page).
-      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
