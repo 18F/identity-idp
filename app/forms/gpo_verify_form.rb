@@ -83,7 +83,6 @@ class GpoVerifyForm
 
   def pending_in_person_enrollment?
     pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
-    binding.pry unless pending_profile.in_person_verification_pending?
   end
 
   def threatmetrix_enabled?
