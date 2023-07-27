@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.feature 'Multi Two Factor Authentication' do
+  include WebAuthnHelper
   describe 'When the user has not set up 2FA' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
@@ -134,6 +135,38 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
+    end
+
+    scenario 'user can select Platform auth as only MFA cant skip second mfa' do
+      mock_webauthn_setup_challenge
+      create(:webauthn_configuration, :platform_authenticator, user:)
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('webauthn_platform')
+
+      click_continue
+
+      expect(page).to have_current_path webauthn_setup_path(platform: true)
+
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key_on_setup
+
+      expect(page).to have_current_path(
+        auth_method_confirmation_path,
+      )
+
+      expect(page).to_not have_button(t('mfa.skip'))
+
+      click_link t('mfa.add')
+
+      expect(page).to have_current_path(second_mfa_setup_path)
+
+      click_continue
+
+      expect(page).to have_current_path(second_mfa_setup_path)
+      expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
     end
   end
 
