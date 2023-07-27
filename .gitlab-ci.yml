@@ -9,6 +9,11 @@ variables:
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:6915b54a913ebcb9066fdfaa88c3d42bda1f4505cfb59b9d5848576705954621'
+  #DAST Variables
+  DAST_VERSION: 4
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  DAST_IMAGE_SUFFIX: ""
+
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -367,7 +372,7 @@ review-app:
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./charts
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
-    - echo https://${CI_ENVIRONMENT_SLUG}.review-apps > environment_url.txt
+    - echo https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov > environment_url.txt
   artifacts:
     paths: [environment_url.txt]
     when: always
@@ -404,17 +409,70 @@ stop-review-app:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: DAST.gitlab-ci.yml
+ # - template: DAST.gitlab-ci.yml
   
+
 # Enable DAST Scan
+dast:
+  stage: dast
+  image:
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
+  variables:
+    GIT_STRATEGY: none
+    DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+    DAST_BROWSER_SCAN: "true" 
+  environment:
+    http_proxy: http://obproxy.login.gov.internal:3128
+    https_proxy: http://obproxy.login.gov.internal:3128
+    HTTP_PROXY: http://obproxy.login.gov.internal:3128
+    HTTPS_PROXY: http://obproxy.login.gov.internal:3128
+    no_proxy: "localhost,127.0.0.1,169.254.169.254,169.254.169.123"
+    NO_PROXY: "localhost,127.0.0.1,169.254.169.254,169.254.169.123"
+  allow_failure: true
+  script:
+    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
+    - /analyze
+  artifacts:
+    reports:
+      dast: gl-dast-report.json
+  rules:
+    - if: $DAST_DISABLED == 'true' || $DAST_DISABLED == '1'
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $DAST_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED == 'true'
+      when: never
+    - if: $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME &&
+          $REVIEW_DISABLED == '1'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true" &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+      variables:
+        DAST_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bdast\b/
+  after_script:
+    # Remove any debug.log files because they might contain secrets.
+    - rm -f /zap/wrk/**/debug.log
+    - cp -r /zap/wrk dast_artifacts
+  needs:
+    - job: review-app
+
 dast:
   variables:
     #DAST_WEBSITE: https://IDP_APP
-    DAST_FULL_SCAN_ENABLED: "true" # do a full scan
-    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
+#    DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+#    DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     #DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=false -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion[0].name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion[0].regex=false  -config connection.proxyChain.exclusions.exclusion[0].enabled=true  -config connection.proxyChain.exclusions.exclusion[1].name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion[1].regex=false -config connection.proxyChain.exclusions.exclusion[1].enabled=true -config connection.proxyChain.exclusions.exclusion[2].name=localhost -config connection.proxyChain.exclusions.exclusion[2].regex=false -config connection.proxyChain.exclusions.exclusion[2].enabled=true"
-  needs:
-    - job: review-app
+#  needs:
+#    - job: review-app
   
 # Export the automated ECR scan results into a format Gitlab can use
 # Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
