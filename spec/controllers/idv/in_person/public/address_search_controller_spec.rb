@@ -5,9 +5,7 @@ RSpec.describe Idv::InPerson::Public::AddressSearchController do
 
   describe '#index' do
     subject(:action) do
-      post :index,
-           params:
-            { address: '100 main' }
+      post :index, params: { address: '100 main' }
     end
 
     context 'with feature flag off' do
