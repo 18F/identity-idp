@@ -23,7 +23,7 @@ class GpoVerifyForm
       pending_profile&.remove_gpo_deactivation_reason
       if pending_profile&.pending_in_person_enrollment?
         # note: pending_profile is not active here
-        pending_profile&.deactivate_for_in_person_verification(pii)
+        pending_profile&.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
