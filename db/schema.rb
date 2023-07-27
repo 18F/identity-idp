@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_20_183509) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_27_195406) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
 
@@ -446,10 +445,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_183509) do
     t.datetime "fraud_rejection_at"
     t.datetime "gpo_verification_pending_at"
     t.integer "fraud_pending_reason"
+    t.datetime "in_person_verification_pending_at"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
+    t.index ["in_person_verification_pending_at"], name: "index_profiles_on_in_person_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
