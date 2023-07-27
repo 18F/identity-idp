@@ -9,13 +9,7 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
     allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).and_return(true)
   end
 
-  context 'in_person_ssn_info_controller_enabled is true' do
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
-        and_return(true)
-    end
-
-    context 'when visiting ssn for the first time' do
+context 'when visiting ssn for the first time' do
       it 'displays correct heading and button text', allow_browser_log: true do
         complete_idv_steps_before_ssn
         # ssn page
@@ -148,5 +142,4 @@ RSpec.describe 'doc auth IPP ssn step', js: true do
         expect(page).to have_content(t('doc_auth.headings.ssn_update'))
       end
     end
-  end
 end

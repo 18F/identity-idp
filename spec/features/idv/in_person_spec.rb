@@ -179,7 +179,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_verify_info_path)
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')

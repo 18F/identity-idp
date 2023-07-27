@@ -10,7 +10,6 @@ module Idv
 
       ACTIONS = {
         cancel_update_address: Idv::Actions::InPerson::CancelUpdateAddressAction,
-        cancel_update_ssn: Idv::Actions::InPerson::CancelUpdateSsnAction,
         cancel_update_state_id: Idv::Actions::InPerson::CancelUpdateStateIdAction,
         redo_state_id: Idv::Actions::InPerson::RedoStateIdAction,
         redo_address: Idv::Actions::InPerson::RedoAddressAction,
