@@ -34,7 +34,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(current_path).to eq account_path
+      expect(current_path).to eq second_mfa_setup_path
     end
 
     scenario 'user can select 2 MFA methods and then chooses another method during' do
@@ -74,7 +74,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       check t('forms.messages.remember_device')
       click_submit_default
 
-      expect(current_path).to eq account_path
+      expect(current_path).to eq second_mfa_setup_path
     end
 
     scenario 'user can select 2 MFA methods and complete after reauthn window' do

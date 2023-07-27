@@ -16,8 +16,6 @@ module MfaSetupConcern
         )
       end
       second_mfa_setup_url
-      # user_session.delete(:mfa_selections)
-      # nil
     end
   end
 
