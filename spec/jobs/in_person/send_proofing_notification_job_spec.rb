@@ -110,7 +110,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             expect(analytics).to have_logged_event('SendProofingNotificationJob: job started')
             expect(analytics).to have_logged_event('SendProofingNotificationJob: job completed')
             expect(analytics).to have_logged_event(
-              'SendProofingNotificationJob: in person notification SMS send attempted'
+              'SendProofingNotificationJob: in person notification SMS send attempted',
             )
             expect(passed_enrollment.reload.notification_sent_at).to eq(now)
             expect(passed_enrollment.reload.notification_phone_configuration).to be_nil
@@ -125,7 +125,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
             expect(analytics).to have_logged_event('SendProofingNotificationJob: job started')
             expect(analytics).to have_logged_event('SendProofingNotificationJob: job completed')
             expect(analytics).to have_logged_event(
-              'SendProofingNotificationJob: in person notification SMS send attempted'
+              'SendProofingNotificationJob: in person notification SMS send attempted',
             )
             expect(failing_enrollment.reload.notification_sent_at).to eq(now)
             expect(failing_enrollment.reload.notification_phone_configuration).to be_nil
@@ -138,7 +138,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           job.perform(passed_enrollment.id)
           expect(analytics).to have_logged_event(
-            'SendProofingNotificationJob: in person notification SMS send attempted'
+            'SendProofingNotificationJob: in person notification SMS send attempted',
           )
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
         end
@@ -147,7 +147,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
           job.perform(passed_enrollment.id)
           expect(analytics).to have_logged_event(
-            'SendProofingNotificationJob: in person notification SMS send attempted'
+            'SendProofingNotificationJob: in person notification SMS send attempted',
           )
           expect(passed_enrollment.reload.notification_sent_at).to be_nil
         end
