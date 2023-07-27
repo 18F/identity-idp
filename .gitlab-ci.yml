@@ -367,7 +367,7 @@ review-app:
       --set-json idp.ingress.hosts="[{\"host\": \"$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov\", \"paths\": [{\"path\": \"/\", \"pathType\": \"Prefix\"}]}]"
       $CI_ENVIRONMENT_SLUG ./charts
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
-    #- echo https://${CI_ENVIRONMENT_SLUG}.review-app.identitysandbox.gov > environment_url.txt
+    - echo https://${CI_ENVIRONMENT_SLUG}.review-apps > environment_url.txt
   artifacts:
     paths: [environment_url.txt]
     when: always
@@ -408,12 +408,8 @@ include:
   
 # Enable DAST Scan
 dast:
-  services: # use services to link your app container to the dast job
-    - name:  $CI_ENVIRONMENT_SLUG-identity-idp-chart-idp.review-apps
-      alias: IDP_APP
-
   variables:
-    DAST_WEBSITE: https://IDP_APP
+    #DAST_WEBSITE: https://IDP_APP
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" # use the browser-based GitLab DAST crawler
     #DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=false -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion[0].name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion[0].regex=false  -config connection.proxyChain.exclusions.exclusion[0].enabled=true  -config connection.proxyChain.exclusions.exclusion[1].name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion[1].regex=false -config connection.proxyChain.exclusions.exclusion[1].enabled=true -config connection.proxyChain.exclusions.exclusion[2].name=localhost -config connection.proxyChain.exclusions.exclusion[2].regex=false -config connection.proxyChain.exclusions.exclusion[2].enabled=true"
