@@ -3645,6 +3645,7 @@ module AnalyticsEvents
 
   # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type
+  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
   def rate_limit_reached(limiter_type:, **extra)
     track_event(
       'Rate Limit Reached',
