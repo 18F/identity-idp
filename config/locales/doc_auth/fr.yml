@@ -150,17 +150,17 @@ fr:
         text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     headings:
       address: Mettre à jour votre adresse postale
-      back: Verso
+      back: Verso de votre permis de conduire ou de votre carte d’identité de l’État
       capture_complete: Nous avons vérifié votre document d’identité
       capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
         pièce d’identité. Si les informations ci-dessous sont incorrectes,
         veuillez %{link_html} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
-      document_capture: Ajoutez votre carte d’identité délivrée par l’État
+      document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      front: Recto
+      front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
@@ -195,8 +195,8 @@ fr:
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
-        vous en lisant votre pièce d’identité délivrée par l’État. Nous
-        utilisons ces informations pour vérifier votre identité.
+        vous en lisant votre permis de conduire ou votre carte d’identité de
+        l’État. Nous utilisons ces informations pour vérifier votre identité.
       getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité

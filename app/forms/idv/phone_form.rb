@@ -5,7 +5,7 @@ module Idv
     ALL_DELIVERY_METHODS = [:sms, :voice].freeze
 
     attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code,
-                :otp_delivery_preference
+                :otp_delivery_preference, :failed_phone_numbers
 
     validate :validate_valid_phone_for_allowed_countries
     validate :validate_phone_delivery_methods
@@ -19,12 +19,14 @@ module Idv
       user:,
       previous_params:,
       allowed_countries: nil,
-      delivery_methods: ALL_DELIVERY_METHODS
+      delivery_methods: ALL_DELIVERY_METHODS,
+      failed_phone_numbers: []
     )
       previous_params ||= {}
       @user = user
       @allowed_countries = allowed_countries
       @delivery_methods = delivery_methods
+      @failed_phone_numbers = failed_phone_numbers
 
       @international_code, @phone = determine_initial_values(
         **previous_params.
@@ -59,9 +61,12 @@ module Idv
         international_code ||= country_code_for(phone)
       end
 
-      phone = PhoneFormatter.format(phone, country_code: international_code)
-
-      [international_code, phone]
+      if failed_phone_numbers.include?(Phonelib.parse(phone).e164)
+        [nil, nil]
+      else
+        phone = PhoneFormatter.format(phone, country_code: international_code)
+        [international_code, phone]
+      end
     end
 
     def country_code_for(phone)

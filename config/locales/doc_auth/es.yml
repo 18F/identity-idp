@@ -144,17 +144,17 @@ es:
         text4: Su contraseña guarda y encripta su información personal.
     headings:
       address: Actualice su dirección postal
-      back: Parte Trasera
+      back: Reverso de su licencia de conducir o identificación estatal
       capture_complete: Verificamos su identificación
       capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
         información que aparece a continuación es incorrecta, por favor,
         %{link_html} de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos
       capture_troubleshooting_tips: '¿Tiene problemas para agregar su identificación emitida por el estado?'
-      document_capture: Añada su documento de identidad expedido por el estado
+      document_capture: Incluir fotos de su identificación
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
-      front: Parte Delantera
+      front: Anverso de su licencia de conducir o identificación estatal
       getting_started: Vamos a verificar su identidad para %{sp_name}
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
@@ -190,7 +190,7 @@ es:
       capture_status_small_document: Muévete mas cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
-        leyendo su documento de identidad expedido por el Estado. Usamos esta
+        leyendo su licencia de conducir o identificación estatal. Usamos esta
         información para verificar su identidad.
       getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
         y no alguien que se hace pasar por usted. %{link_html}'

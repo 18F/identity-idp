@@ -6,14 +6,17 @@ import type { WebauthnVerifyButtonDataset } from './webauthn-verify-button-eleme
 
 describe('WebauthnVerifyButtonElement', () => {
   const verifyWebauthnDevice = sinon.stub();
+  const trackError = sinon.stub();
 
   before(async () => {
     quibble('./verify-webauthn-device', verifyWebauthnDevice);
+    quibble('@18f/identity-analytics', { trackError });
     await import('./webauthn-verify-button-element');
   });
 
   beforeEach(() => {
     verifyWebauthnDevice.reset();
+    trackError.reset();
   });
 
   after(() => {
@@ -78,13 +81,33 @@ describe('WebauthnVerifyButtonElement', () => {
     });
   });
 
-  it('submits with error name as input on thrown error', async () => {
+  it('submits with error name as input on thrown expected error', async () => {
+    const { form } = createElement();
+
+    verifyWebauthnDevice.throws(new DOMException('', 'NotAllowedError'));
+
+    const button = screen.getByRole('button', { name: 'Authenticate' });
+    await userEvent.click(button);
+    await expect(form.submit).to.eventually.be.called();
+
+    expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+      credential_id: '',
+      authenticator_data: '',
+      client_data_json: '',
+      signature: '',
+      webauthn_error: 'NotAllowedError',
+    });
+    expect(trackError).not.to.have.been.called();
+  });
+
+  it('submits with error name as input and logs on thrown unexpected error', async () => {
     const { form } = createElement();
 
     class CustomError extends Error {
       name = 'CustomError';
     }
-    verifyWebauthnDevice.throws(new CustomError());
+    const error = new CustomError();
+    verifyWebauthnDevice.throws(error);
 
     const button = screen.getByRole('button', { name: 'Authenticate' });
     await userEvent.click(button);
@@ -97,6 +120,7 @@ describe('WebauthnVerifyButtonElement', () => {
       signature: '',
       webauthn_error: 'CustomError',
     });
+    expect(trackError).to.have.been.calledWith(error);
   });
 
   it('submits with verify result on successful verification', async () => {

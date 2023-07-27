@@ -118,7 +118,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)
                 : ReviewIssuesStep,
-            title: t('errors.doc_auth.throttled_heading'),
+            title: t('errors.doc_auth.rate_limited_heading'),
           },
         ] as FormStep[]
       ).concat(inPersonSteps)
