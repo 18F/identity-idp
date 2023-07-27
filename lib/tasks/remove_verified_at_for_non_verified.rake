@@ -5,7 +5,7 @@ namespace :profiles do
   # Usage:
   #
   # Print errant profiles
-  # bundle exec rake profiles:remove_verified_at_from_non_verified_profiles_profiles
+  # bundle exec rake profiles:remove_verified_at_from_non_verified_profiles
   #
   # Commit updates
   # bundle exec rake profiles:remove_verified_at_from_non_verified_profiles UPDATE_PROFILES=true
