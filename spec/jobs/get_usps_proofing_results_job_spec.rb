@@ -218,14 +218,24 @@ RSpec.describe GetUspsProofingResultsJob do
     describe 'IPP enabled' do
       describe 'DAV not enabled' do
         let!(:pending_enrollments) do
-          locations = ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD']
-          build_list(
-            :in_person_enrollment, 5, :pending,
-            :with_notification_phone_configuration
-          ) do |record, i|
-            record.issuer = 'http://localhost:3000'
-            record.selected_location_details = { name: locations[i] }
-            record.save!
+
+          ['BALTIMORE', 'FRIENDSHIP', 'WASHINGTON', 'ARLINGTON', 'DEANWOOD'].map do |name|
+            create(
+              :in_person_enrollment,
+              :pending,
+              :with_notification_phone_configuration,
+              issuer: 'http://localhost:3000',
+              selected_location_details: { name: name },
+            )
+          
+
+         # build_list(
+         #   :in_person_enrollment, 5, :pending,
+         #   :with_notification_phone_configuration
+         # ) do |record, i|
+         #   record.issuer = 'http://localhost:3000'
+         #   record.selected_location_details = { name: locations[i] }
+         #   record.save!
           end
         end
         let(:pending_enrollment) { pending_enrollments.first }
