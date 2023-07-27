@@ -22,7 +22,8 @@ class GpoVerifyForm
       pending_profile&.remove_gpo_deactivation_reason
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
-        pending_profile&.deactivate(:in_person_verification_pending)
+        # note: pending_profile is not active here
+        pending_profile&.deactivate_for_in_person_verification
       elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_review_checker.fraud_check_failed?

@@ -143,6 +143,10 @@ class Profile < ApplicationRecord
     fraud_review_pending? || fraud_rejection?
   end
 
+  def deactivate_for_in_person_verification
+    deactivate(:in_person_verification_pending)
+  end
+
   def deactivate_for_gpo_verification
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
