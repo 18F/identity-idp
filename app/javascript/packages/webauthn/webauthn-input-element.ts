@@ -2,27 +2,23 @@ import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
 
 export class WebauthnInputElement extends HTMLElement {
   connectedCallback() {
-    this.toggleVisibleIfSupported();
+    this.toggleVisibleIfPasskeySupported();
   }
 
   get isPlatform(): boolean {
     return this.hasAttribute('platform');
   }
 
-  get isOnlyPasskeySupported(): boolean {
-    return this.hasAttribute('passkey-supported-only');
-  }
-
   get showUnsupportedPasskey(): boolean {
     return this.hasAttribute('show-unsupported-passkey');
   }
 
-  isSupported(): boolean {
-    return !this.isPlatform || !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
-  }
+  toggleVisibleIfPasskeySupported() {
+    if (!this.hasAttribute('hidden')) {
+      return;
+    }
 
-  toggleVisibleIfSupported() {
-    if (this.isSupported()) {
+    if (isWebauthnPasskeySupported()) {
       this.hidden = false;
     } else if (this.showUnsupportedPasskey) {
       this.hidden = false;
