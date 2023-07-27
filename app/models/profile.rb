@@ -48,7 +48,6 @@ class Profile < ApplicationRecord
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
       *(:fraud_check_pending if has_fraud_deactivation_reason?),
-      # extract into dedicated method:
       *(:in_person_verification_pending if in_person_verification_pending?),
     ]
   end
@@ -141,6 +140,11 @@ class Profile < ApplicationRecord
 
   def has_fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
+  end
+
+  def in_person_verification_pending?
+    # note: deactivation reason will be replaced by timestamp column
+    deactivation_reason == 'in_person_verification_pending'
   end
 
   def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
