@@ -65,6 +65,26 @@
         required: true,
         class: 'margin-bottom-4',
       ) %>
+  <%= render AlertComponent.new(
+        type: :warning,
+        class: 'margin-bottom-4',
+        id: 'phone-already-submitted-alert',
+        data: {
+          failed_phone_numbers: @idv_form.failed_phone_numbers,
+        },
+        hidden: true,
+      ) do %>
+    <%= t('idv.messages.phone.failed_number.alert_text') %>
+    <% if gpo_letter_available %>
+      <%= t(
+            'idv.messages.phone.failed_number.gpo_alert_html',
+            link_html: link_to(
+              t('idv.messages.phone.failed_number.gpo_verify_link'),
+              idv_gpo_path,
+            ),
+          ) %>
+    <% end %>
+  <% end %>
 
   <h2><%= t('idv.titles.otp_delivery_method') %></h2>
   <p><%= t('idv.messages.otp_delivery_method_description') %></p>
@@ -115,4 +135,4 @@
 
 <%= render 'idv/doc_auth/cancel', step: 'phone' %>
 
-<% javascript_packs_tag_once 'form-steps-wait' %>
+<% javascript_packs_tag_once 'form-steps-wait', 'idv-phone-alert' %>
