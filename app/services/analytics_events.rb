@@ -3235,6 +3235,17 @@ module AnalyticsEvents
     track_event('Proofing Document Result Missing')
   end
 
+  # Tracks when a user triggered a rate limiter
+  # @param [String] limiter_type
+  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
+  def rate_limit_reached(limiter_type:, **extra)
+    track_event(
+      'Rate Limit Reached',
+      limiter_type: limiter_type,
+      **extra,
+    )
+  end
+
   # Rate limit triggered
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
@@ -3641,17 +3652,6 @@ module AnalyticsEvents
         success: success,
         **extra,
       },
-    )
-  end
-
-  # Tracks when a user triggered a rate limiter
-  # @param [String] limiter_type
-  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
-  def rate_limit_reached(limiter_type:, **extra)
-    track_event(
-      'Rate Limit Reached',
-      limiter_type: limiter_type,
-      **extra,
     )
   end
 
