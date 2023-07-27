@@ -106,11 +106,14 @@ RSpec.describe Idv::GettingStartedController do
 
     let(:skip_upload) { nil }
 
+    let(:skip_hybrid_handoff) { nil }
+
     let(:params) do
       {
         doc_auth: {
           ial2_consent_given: 1,
         },
+        skip_hybrid_handoff: skip_hybrid_handoff,
         skip_upload: skip_upload,
       }.compact
     end
@@ -156,6 +159,30 @@ RSpec.describe Idv::GettingStartedController do
 
     context 'skip_upload present in params' do
       let(:skip_upload) { '' }
+      it 'sets flow_path to standard' do
+        expect do
+          put :update, params: params
+        end.to change {
+          subject.idv_session.flow_path
+        }.from(nil).to('standard')
+      end
+
+      it 'sets flow_session[:skip_upload_step] to true' do
+        expect do
+          put :update, params: params
+        end.to change {
+          subject.flow_session[:skip_upload_step]
+        }.from(nil).to(true)
+      end
+
+      it 'redirects to hybrid handoff' do
+        put :update, params: params
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
+    context 'skip_hybrid_handoff present in params' do
+      let(:skip_hybrid_handoff) { '' }
       it 'sets flow_path to standard' do
         expect do
           put :update, params: params
