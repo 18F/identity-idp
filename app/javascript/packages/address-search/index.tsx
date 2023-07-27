@@ -8,6 +8,7 @@ import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 
+// todo: make this configurable
 export const LOCATIONS_URL = new URL(
   '/verify/in_person/usps_locations',
   window.location.href,
@@ -93,6 +94,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
+// todo: make URL configurable
 export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
 
 function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
@@ -171,6 +173,8 @@ interface AddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
+  addressSearchUrl: string;
+  locationsUrl: string;
 }
 
 function AddressSearch({
@@ -180,6 +184,8 @@ function AddressSearch({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
+  addressSearchUrl,
+  locationsUrl,
 }: AddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
