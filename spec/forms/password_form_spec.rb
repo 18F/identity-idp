@@ -4,7 +4,7 @@ RSpec.describe PasswordForm, type: :model do
   subject(:form) { described_class.new(user) }
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
-  let(:password_confirmation) { nil }
+  let(:password_confirmation) { password }
   let(:extra) do
     {
       user_id: user.uuid,
@@ -106,6 +106,7 @@ RSpec.describe PasswordForm, type: :model do
       let(:params) do
         {
           password: password,
+          password_confirmation: password,
           request_id: request_id,
         }
       end
