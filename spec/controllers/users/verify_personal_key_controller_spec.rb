@@ -41,7 +41,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
         get :new
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
     end
 
@@ -67,7 +67,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
         get :new
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
     end
   end
@@ -177,7 +177,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
         max_attempts = RateLimiter.max_attempts(:verify_personal_key)
         max_attempts.times { post :create, params: personal_key_bad_params }
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
 
       it 'tracks irs attempts api for relevant users' do
