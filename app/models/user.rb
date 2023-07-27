@@ -33,6 +33,11 @@ class User < ApplicationRecord
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
+  has_one :current_profile,
+          -> { order(created_at: :desc) },
+          class_name: 'Profile',
+          dependent: :destroy,
+          inverse_of: :user
   has_one :account_reset_request, dependent: :destroy
   has_many :phone_configurations, dependent: :destroy, inverse_of: :user
   has_many :email_addresses, dependent: :destroy, inverse_of: :user
@@ -59,12 +64,6 @@ class User < ApplicationRecord
           -> { where(status: :establishing).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
-
-  has_one :current_profile,
-          -> { order(created_at: :desc) },
-          class_name: 'Profile',
-          dependent: :destroy,
-          inverse_of: :user
 
   attr_accessor :asserted_attributes, :email
 
