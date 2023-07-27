@@ -249,9 +249,16 @@ analytics_events: public/api/_analytics-events.json ## Generates a JSON file tha
 lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
-lint_analytics_events_sorted:
-	@test "$(shell grep '^  def ' app/services/analytics_events.rb)" = "$(shell grep '^  def ' app/services/analytics_events.rb | sort)" \
-		|| (echo 'Error: methods in analytics_events.rb are not sorted alphabetically' && exit 1)
+lint_analytics_events_sorted: tmp/analytics_events.txt tmp/analytics_events_sorted.txt
+	@( \
+		diff $^ | \
+		sed 's/[<>]   def //' | \
+		sed -E 's/^[0-9]+[ade][0-9]+//' | \
+		sed -E 's/\(.*//' | sort | uniq \
+	) && ( \
+		echo "\n👆 Check those events to make sure they're sorted correctly in analytics_events.rb." && \
+		exit 1 \
+	)
 
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
@@ -299,3 +306,9 @@ clobber_logs: ## Purges logs and tmp/
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
+
+tmp/analytics_events.txt: app/services/analytics_events.rb
+	@grep '^  def ' $< > $@
+
+tmp/analytics_events_sorted.txt: app/services/analytics_events.rb
+	@grep '^  def ' $< | sort > $@	
