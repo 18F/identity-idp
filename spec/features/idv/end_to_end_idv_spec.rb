@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
+  include InPersonHelper
 
   # Needed specs:
   # unsupervised proofing happy path mobile only
@@ -9,9 +10,11 @@ RSpec.describe 'Identity verification', :js do
   # verify by mail
   # in person proofing
 
+  let(:sp) { :oidc }
+
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
-    visit_idp_from_sp_with_ial2(:oidc)
+    visit_idp_from_sp_with_ial2(sp)
     user = sign_up_and_2fa_ial1_user
 
     validate_welcome_page
@@ -54,6 +57,66 @@ RSpec.describe 'Identity verification', :js do
     click_agree_and_continue
 
     validate_return_to_sp
+  end
+
+  context 'with an sp that allows in person proofing' do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+
+      ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
+        update(in_person_proofing_enabled: true)
+    end
+
+    scenario 'In person proofing verify by mail', allow_browser_log: true do
+      visit_idp_from_sp_with_ial2(sp)
+      user = sign_up_and_2fa_ial1_user
+
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps(user)
+
+      enter_gpo_flow
+
+#      validate_send_a_letter_page
+      gpo_step
+
+      complete_review_step(user)
+
+#      validate_letter_on_the_way_page
+      expect(page).to have_current_path(idv_come_back_later_path)
+
+      # Exit Login.gov and return to SP
+      click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
+      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+
+      # sign out
+      visit sign_out_url
+
+      # sign in
+      visit_idp_from_sp_with_ial2(sp)
+
+      user.password = Features::SessionHelper::VALID_PASSWORD
+      sign_in_live_with_2fa(user)
+
+      # Create and fill in confirmation code
+
+      otp = 'ABC123'
+      create(
+        :gpo_confirmation_code,
+        profile: User.find(user.id).pending_profile,
+        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      )
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      acknowledge_and_confirm_personal_key
+
+binding.pry
+      # expect(page).to have_current_path(account_path)
+      # expect(page).not_to have_content(t('headings.account.verified_account'))
+      # verify gpo code
+      # verify IPP barcode
+      # return to SP
+    end
   end
 
   def validate_welcome_page
