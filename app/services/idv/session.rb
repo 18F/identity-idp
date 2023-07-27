@@ -50,7 +50,6 @@ module Idv
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
-        deactivation_reason: deactivation_reason,
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
       )
@@ -74,10 +73,6 @@ module Idv
           pii,
         )
       end
-    end
-
-    def deactivation_reason
-      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?
@@ -235,6 +230,7 @@ module Idv
         user: current_user,
         user_password: user_password,
         initiating_service_provider: service_provider,
+        in_person_verification_pending: in_person_enrollment?,
       )
     end
 
