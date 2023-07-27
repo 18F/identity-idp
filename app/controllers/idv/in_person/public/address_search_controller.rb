@@ -2,7 +2,11 @@ module Idv
   module InPerson
     module Public
       class AddressSearchController < ApplicationController
-        skip_forgery_protection if: :should_skip_forgery_protection?
+        include RenderConditionConcern
+
+        check_or_render_not_found -> { enabled? }
+
+        skip_forgery_protection
 
         def index
           addresses = geocoder.find_address_candidates(SingleLine: params[:address]).slice(0, 1)
@@ -20,7 +24,7 @@ module Idv
           ArcgisApi::Mock::Geocoder.new
         end
 
-        def should_skip_forgery_protection?
+        def enabled?
           IdentityConfig.store.in_person_public_address_search_enabled
         end
       end

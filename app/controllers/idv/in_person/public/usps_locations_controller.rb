@@ -2,7 +2,11 @@ module Idv
   module InPerson
     module Public
       class UspsLocationsController < ApplicationController
-        skip_forgery_protection if: :should_skip_forgery_protection?
+        include RenderConditionConcern
+
+        check_or_render_not_found -> { enabled? }
+
+        skip_forgery_protection
 
         def index
           candidate = UspsInPersonProofing::Applicant.new(
@@ -25,7 +29,7 @@ module Idv
           UspsInPersonProofing::Mock::Proofer.new
         end
 
-        def should_skip_forgery_protection?
+        def enabled?
           IdentityConfig.store.in_person_public_address_search_enabled
         end
 
