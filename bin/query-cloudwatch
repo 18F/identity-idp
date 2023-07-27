@@ -28,6 +28,7 @@ class QueryCloudwatch
     :complete,
     :progress,
     :wait_duration,
+    :count_distinct,
     keyword_init: true,
   )
 
@@ -38,12 +39,11 @@ class QueryCloudwatch
   end
 
   def run(stdout: STDOUT)
-    cloudwatch_client.fetch(
-      query: config.query,
-      from: config.from,
-      to: config.to,
-    ) do |row|
-      stdout.puts format_response(row)
+    if config.count_distinct
+      result = fetch
+      stdout.puts result
+    else
+      fetch { |row| stdout.puts format_response(row) }
     end
   rescue Interrupt
     # catch interrupts (ctrl-c) and directly exit, this skips printing the backtrace
@@ -64,13 +64,21 @@ class QueryCloudwatch
     end
   end
 
+  def fetch(&block)
+    cloudwatch_client.fetch(
+      query: config.query,
+      from: config.from,
+      to: config.to,
+    )
+  end
+
   def cloudwatch_client
     @cloudwatch_client ||= Reporting::CloudwatchClient.new(
       ensure_complete_logs: config.complete,
       log_group_name: config.group,
       progress: config.progress,
       slice_interval: config.slice,
-      **config.to_h.slice(:wait_duration).compact,
+      **config.to_h.slice(:wait_duration, :count_distinct).compact,
     )
   end
 
@@ -84,6 +92,7 @@ class QueryCloudwatch
       to: now,
       complete: false,
       progress: true,
+      count_distinct: nil,
     )
 
     # rubocop:disable Metrics/BlockLength
@@ -202,6 +211,10 @@ class QueryCloudwatch
 
       opts.on('--[no-]progress', 'whether or not show a progress bar, defaults to on') do |progress|
         config.progress = progress
+      end
+
+      opts.on('--count-distinct FIELD', 'get distinct count for given field') do |count_distinct|
+        config.count_distinct = count_distinct
       end
 
       opts.on('-h', '--help', 'Prints this help') do

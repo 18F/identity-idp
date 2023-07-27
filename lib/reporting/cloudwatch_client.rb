@@ -8,7 +8,12 @@ module Reporting
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
 
-    attr_reader :num_threads, :wait_duration, :slice_interval, :logger, :log_group_name
+    attr_reader :num_threads,
+                :wait_duration,
+                :slice_interval,
+                :logger,
+                :log_group_name,
+                :count_distinct
 
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
@@ -27,7 +32,8 @@ module Reporting
       slice_interval: 1.day,
       logger: nil,
       progress: true,
-      log_group_name: 'prod_/srv/idp/shared/log/events.log'
+      log_group_name: 'prod_/srv/idp/shared/log/events.log',
+      count_distinct: nil
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
@@ -36,6 +42,7 @@ module Reporting
       @logger = logger
       @progress = progress
       @log_group_name = log_group_name
+      @count_distinct = count_distinct
     end
 
     # Either both (from, to) or time_slices must be provided
@@ -73,6 +80,15 @@ module Reporting
           format: 'Querying log slices %j%% [%c/%C] |%B| %a',
           output: @progress.respond_to?(:fileno) ? @progress : STDERR,
         )
+      end
+
+      if count_distinct
+        @ensure_complete_logs = true
+        query = [
+          query,
+          "| stats count(*) by #{count_distinct}",
+          "| limit #{MAX_RESULTS_LIMIT}",
+        ].join("\n")
       end
 
       log(:debug, "starting query, queue_size=#{queue.length} num_threads=#{num_threads}")
@@ -143,6 +159,10 @@ module Reporting
 
       @progress_bar&.finish
 
+      if count_distinct
+        results = results.sum
+      end
+
       results
     ensure
       threads&.each(&:kill)
@@ -205,9 +225,13 @@ module Reporting
     # @param [Array<Array<Aws::CloudWatchLogs::Types::ResultField>>] results
     # @return [Array<Hash>]
     def parse_results(results)
-      results.map do |row|
-        row.map { |cell| [cell.field, cell.value] }.to_h.tap do |h|
-          h.delete('@ptr') # just noise
+      if count_distinct
+        [results.size]
+      else
+        results.map do |row|
+          row.map { |cell| [cell.field, cell.value] }.to_h.tap do |h|
+            h.delete('@ptr') # just noise
+          end
         end
       end
     end
