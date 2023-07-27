@@ -5,7 +5,6 @@ RSpec.feature 'getting started step' do
   include DocAuthHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:maintenance_window) { [] }
   let(:sp_name) { 'Test SP' }
 
   before do

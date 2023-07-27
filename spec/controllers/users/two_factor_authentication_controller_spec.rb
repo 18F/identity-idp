@@ -623,7 +623,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
           expect(flash[:error]).to eq(
             I18n.t(
-              'errors.messages.phone_confirmation_throttled',
+              'errors.messages.phone_confirmation_limited',
               timeout: timeout,
             ),
           )
@@ -676,7 +676,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
           expect(flash[:error]).to eq(
             I18n.t(
-              'errors.messages.phone_confirmation_throttled',
+              'errors.messages.phone_confirmation_limited',
               timeout: timeout,
             ),
           )
