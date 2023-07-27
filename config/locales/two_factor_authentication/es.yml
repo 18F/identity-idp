@@ -175,9 +175,6 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      unused_backup_code:
-        one: '(%{count} código sin usar)'
-        other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
