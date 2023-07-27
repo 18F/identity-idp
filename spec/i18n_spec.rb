@@ -24,6 +24,7 @@ module I18n
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'time.formats.sms_date' }, # for us date format
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'mailer.logo' }, # "logo is logo" in English, French and Spanish
@@ -104,6 +105,18 @@ RSpec.describe 'I18n' do
     missing_interpolation_argument_keys -= ALLOWED_INTERPOLATION_MISMATCH_KEYS
 
     expect(missing_interpolation_argument_keys).to be_empty
+  end
+
+  it 'has matching HTML tags' do
+    i18n.data[i18n.base_locale].select_keys do |key, _node|
+      if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+        next
+      end
+
+      html_unique_tags = i18n.locales.map { |locale| i18n.t(key, locale)&.scan(/<.+?>/) }.uniq
+
+      expect(html_unique_tags.size).to eq(1), "HTML tag mismatch for key #{key}"
+    end
   end
 
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))

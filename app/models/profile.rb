@@ -1,4 +1,6 @@
 class Profile < ApplicationRecord
+  self.ignored_columns += %w[reproof_at]
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -98,11 +100,24 @@ class Profile < ApplicationRecord
     track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
+  def activate_after_fraud_review_unnecessary
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+  end
+
   def activate_after_passing_in_person
     transaction do
       update!(
-        deactivation_reason: nil,
         fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+        deactivation_reason: nil,
       )
       activate
     end
@@ -123,10 +138,6 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def has_deactivation_reason?
-    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
-  end
-
   def has_fraud_deactivation_reason?
     fraud_review_pending? || fraud_rejection?
   end
@@ -135,10 +146,9 @@ class Profile < ApplicationRecord
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
-  def deactivate_for_fraud_review(fraud_pending_reason:)
+  def deactivate_for_fraud_review
     update!(
       active: false,
-      fraud_pending_reason: fraud_pending_reason,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )
@@ -212,10 +222,6 @@ class Profile < ApplicationRecord
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
-  def has_proofed_before?
-    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
   def irs_attempts_api_tracker

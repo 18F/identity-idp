@@ -73,6 +73,6 @@ fr:
     verify_email: Consultez vos courriels
     verify_personal_key: Vérifier votre clé personnelle
     webauthn_platform_setup:
-      new: Utilisez votre appareil
+      new: Déverrouillage facial ou tactile
     webauthn_setup:
       new: Ajoutez votre clé de sécurité

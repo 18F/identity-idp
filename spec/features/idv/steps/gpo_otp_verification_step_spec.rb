@@ -18,8 +18,7 @@ RSpec.feature 'idv gpo otp verification step' do
         ssn: '123-45-6789',
         dob: '1970-01-01',
       },
-      fraud_review_pending_at: fraud_review_pending_timestamp,
-      fraud_rejection_at: fraud_rejection_timestamp,
+      fraud_pending_reason: fraud_pending_reason,
     )
   end
   let(:gpo_confirmation_code) do
@@ -31,8 +30,7 @@ RSpec.feature 'idv gpo otp verification step' do
   end
   let(:user) { profile.user }
   let(:threatmetrix_enabled) { false }
-  let(:fraud_review_pending_timestamp) { nil }
-  let(:fraud_rejection_timestamp) { nil }
+  let(:fraud_pending_reason) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
   let(:fraud_review_pending) { false }
@@ -46,7 +44,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
   context 'ThreatMetrix disabled, but we have ThreatMetrix status on proofing component' do
     let(:threatmetrix_enabled) { false }
-    let(:fraud_review_pending_timestamp) { 1.day.ago }
+    let(:fraud_pending_reason) { 'threatmetrix_review' }
     it_behaves_like 'gpo otp verification'
   end
 
@@ -54,26 +52,25 @@ RSpec.feature 'idv gpo otp verification step' do
     let(:threatmetrix_enabled) { true }
 
     context 'ThreatMetrix says "pass"' do
-      let(:fraud_review_pending_timestamp) { nil }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'ThreatMetrix says "review"' do
-      let(:fraud_review_pending_timestamp) { 1.day.ago }
+      let(:fraud_pending_reason) { 'threatmetrix_review' }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'ThreatMetrix says "reject"' do
-      let(:fraud_rejection_timestamp) { 1.day.ago }
+      let(:fraud_pending_reason) { 'threatmetrix_reject' }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
     end
 
     context 'No ThreatMetrix result on proofing component' do
-      let(:fraud_review_pending_timestamp) { nil }
+      let(:fraud_pending_reason) { nil }
       it_behaves_like 'gpo otp verification'
     end
   end

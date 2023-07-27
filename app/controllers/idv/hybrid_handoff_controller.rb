@@ -3,13 +3,12 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      analytics.idv_doc_auth_upload_visited(**analytics_arguments)
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -38,11 +37,10 @@ module Idv
     end
 
     def handle_phone_submission
-      rate_limiter.increment!
       return rate_limited_failure if rate_limiter.limited?
-      idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
+      rate_limiter.increment!
+      idv_session.phone_for_mobile_flow = formatted_destination_phone
       idv_session.flow_path = 'hybrid'
-      flow_session[:flow_path] = 'hybrid' # temp addition for 50/50 remove in future deploy
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
@@ -62,10 +60,9 @@ module Idv
       else
         redirect_to idv_hybrid_handoff_url
         idv_session.flow_path = nil
-        flow_session[:flow_path] = nil # temp added for 50/50, remove in future deploy
       end
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(telephony_form_response.to_h),
       )
     end
@@ -99,7 +96,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
-          flow_path: idv_session.flow_path || flow_session[:flow_path], # remove in future deploy
+          flow_path: idv_session.flow_path,
         },
       )
     end
@@ -116,10 +113,9 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
       redirect_to idv_document_capture_url
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
@@ -156,11 +152,11 @@ module Idv
 
     def analytics_arguments
       {
-        step: 'upload',
+        step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,
-      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
+      }.compact.merge(ab_test_analytics_buckets)
     end
 
     def form_response(destination:)
@@ -180,7 +176,7 @@ module Idv
         throttle_type: :idv_send_link,
       )
       message = I18n.t(
-        'errors.doc_auth.send_link_throttle',
+        'errors.doc_auth.send_link_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
           [rate_limiter.expires_at, Time.zone.now].compact.max,
@@ -214,14 +210,11 @@ module Idv
       setup_for_redo if params[:redo]
 
       idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
-      # next line temp added for 50/50, remove in future deploy
-      flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
-      # flow_session temp added for 50/50, remove in future deploy.
-      return if !idv_session.flow_path && !flow_session[:flow_path]
+      return if !idv_session.flow_path
 
-      if idv_session.flow_path == 'standard' || flow_session[:flow_path] == 'standard'
+      if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
-      elsif idv_session.flow_path == 'hybrid' || flow_session[:flow_path] == 'hybrid'
+      elsif idv_session.flow_path == 'hybrid'
         redirect_to idv_link_sent_url
       end
     end
@@ -230,10 +223,8 @@ module Idv
       flow_session[:redo_document_capture] = true
       if flow_session[:skip_upload_step]
         idv_session.flow_path = 'standard'
-        flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
       else
         idv_session.flow_path = nil
-        flow_session[:flow_path] = nil # temp added for 50/50, remove in future deploy
       end
     end
 

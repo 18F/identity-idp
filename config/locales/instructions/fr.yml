@@ -32,12 +32,12 @@ fr:
           votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>
           <p><strong>Vous n’avez pas de compte %{app_name}?</strong>
           %{create_account}</p>'
-        add_from_sign_in_html: '<strong> Instructions: </ strong> insérez votre PIV ou
-          votre CAC dans <strong> “AJOUTER PIV / CAC” </ strong>. Vous devez
-          <strong> choisir un certificat </ strong> (le bon en a probablement
-          votre nom) et <strong> saisir votre code confidentiel </ strong>
-          (votre code confidentiel a été créé lors de la configuration de votre
-          PIV / CAC). ).'
+        add_from_sign_in_html: '<strong> Instructions: </strong> insérez votre PIV ou
+          votre CAC dans <strong> “AJOUTER PIV / CAC” </strong>. Vous devez
+          <strong> choisir un certificat </strong> (le bon en a probablement
+          votre nom) et <strong> saisir votre code confidentiel </strong> (votre
+          code confidentiel a été créé lors de la configuration de votre PIV /
+          CAC). ).'
         already_associated_html: Veuillez choisir un certificat associé à une autre
           carte PIV/CAC ou contactez votre administrateur afin de vérifier que
           votre carte PIV/CAC est bien à jour. Si vous pensez que c’est une
@@ -95,6 +95,8 @@ fr:
           gouvernement (PIV ou CAC) pour accéder à vos informations.
         confirm_webauthn_platform: Vous avez activé le déverrouillage facial ou tactile
           pour votre compte %{app_name}.
+      webauthn_platform:
+        learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
       wrong_number: Vous avez entré un mauvais numéro de téléphone?
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir

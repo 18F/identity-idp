@@ -55,13 +55,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  client_id: client_id,
                  prompt: 'select_account',
                  referer: nil,
-                 user_sp_authorized: true,
                  allow_prompt_login: true,
                  errors: {},
                  unauthorized_scope: true,
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
+                 scope: 'openid')
+          expect(@analytics).to receive(:track_event).
+            with('OpenID Connect: authorization request handoff',
+                 success: true,
+                 client_id: client_id,
+                 user_sp_authorized: true,
                  code_digest: kind_of(String))
           expect(@analytics).to receive(:track_event).
             with(
@@ -119,13 +123,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      client_id: client_id,
                      prompt: 'select_account',
                      referer: nil,
-                     user_sp_authorized: true,
                      allow_prompt_login: true,
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
-                     scope: 'openid profile',
+                     scope: 'openid profile')
+              expect(@analytics).to receive(:track_event).
+                with('OpenID Connect: authorization request handoff',
+                     success: true,
+                     client_id: client_id,
+                     user_sp_authorized: true,
                      code_digest: kind_of(String))
               expect(@analytics).to receive(:track_event).
                 with(
@@ -152,21 +160,73 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(controller).to redirect_to(idv_url)
             end
 
-            context 'user is under fraud review' do
-              let(:user) { create(:profile, :fraud_review_pending).user }
+            context 'user has a pending profile' do
+              context 'user has a gpo pending profile' do
+                let(:user) { create(:profile, :verify_by_mail_pending).user }
 
-              it 'redirects to fraud review page if fraud review is pending' do
-                action
-                expect(controller).to redirect_to(idv_please_call_url)
+                it 'redirects to gpo verify page' do
+                  action
+                  expect(controller).to redirect_to(idv_gpo_verify_url)
+                end
               end
-            end
 
-            context 'user is rejected due to fraud' do
-              let(:user) { create(:profile, :fraud_rejection).user }
+              context 'user has an in person pending profile' do
+                let(:user) { create(:profile, :in_person_verification_pending).user }
 
-              it 'redirects to fraud rejection page if user is fraud rejected ' do
-                action
-                expect(controller).to redirect_to(idv_not_verified_url)
+                it 'redirects to in person ready to verify page' do
+                  action
+                  expect(controller).to redirect_to(idv_in_person_ready_to_verify_url)
+                end
+              end
+
+              context 'user is under fraud review' do
+                let(:user) { create(:profile, :fraud_review_pending).user }
+
+                it 'redirects to fraud review page if fraud review is pending' do
+                  action
+                  expect(controller).to redirect_to(idv_please_call_url)
+                end
+              end
+
+              context 'user is rejected due to fraud' do
+                let(:user) { create(:profile, :fraud_rejection).user }
+
+                it 'redirects to fraud rejection page if user is fraud rejected ' do
+                  action
+                  expect(controller).to redirect_to(idv_not_verified_url)
+                end
+              end
+
+              context 'user has two pending reasons' do
+                context 'user has gpo and fraud review pending' do
+                  let(:user) do
+                    create(
+                      :profile,
+                      :verify_by_mail_pending,
+                      :fraud_review_pending,
+                    ).user
+                  end
+
+                  it 'redirects to gpo verify page' do
+                    action
+                    expect(controller).to redirect_to(idv_gpo_verify_url)
+                  end
+                end
+
+                context 'user has gpo and in person pending' do
+                  let(:user) do
+                    create(
+                      :profile,
+                      :verify_by_mail_pending,
+                      :in_person_verification_pending,
+                    ).user
+                  end
+
+                  it 'redirects to gpo verify page' do
+                    action
+                    expect(controller).to redirect_to(idv_gpo_verify_url)
+                  end
+                end
               end
             end
           end
@@ -225,13 +285,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        client_id: client_id,
                        prompt: 'select_account',
                        referer: nil,
-                       user_sp_authorized: true,
                        allow_prompt_login: true,
                        errors: {},
                        unauthorized_scope: false,
                        user_fully_authenticated: true,
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
+                       success: true,
+                       client_id: client_id,
+                       user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(
@@ -271,13 +335,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        client_id: client_id,
                        prompt: 'select_account',
                        referer: nil,
-                       user_sp_authorized: true,
                        allow_prompt_login: true,
                        errors: {},
                        unauthorized_scope: false,
                        user_fully_authenticated: true,
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
+                       success: true,
+                       client_id: client_id,
+                       user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(
@@ -318,13 +386,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
                        client_id: client_id,
                        prompt: 'select_account',
                        referer: nil,
-                       user_sp_authorized: true,
                        allow_prompt_login: true,
                        errors: {},
                        unauthorized_scope: false,
                        user_fully_authenticated: true,
                        acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
-                       scope: 'openid profile',
+                       scope: 'openid profile')
+                expect(@analytics).to receive(:track_event).
+                  with('OpenID Connect: authorization request handoff',
+                       success: true,
+                       client_id: client_id,
+                       user_sp_authorized: true,
                        code_digest: kind_of(String))
                 expect(@analytics).to receive(:track_event).
                   with(
@@ -407,8 +479,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  error_details: hash_including(:prompt),
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
-                 code_digest: nil)
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -439,8 +510,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  error_details: hash_including(:client_id),
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
-                 scope: 'openid',
-                 code_digest: nil)
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
@@ -489,6 +559,20 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       it 'redirects to SP landing page with the request_id in the params' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('OpenID Connect: authorization request',
+               success: true,
+               client_id: client_id,
+               prompt: 'select_account',
+               referer: nil,
+               allow_prompt_login: true,
+               errors: {},
+               unauthorized_scope: true,
+               user_fully_authenticated: false,
+               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+               scope: 'openid')
+
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
 

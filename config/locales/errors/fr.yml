@@ -14,6 +14,9 @@ fr:
         e-mail.
     attributes:
       password:
+        avoid_using_phrases_that_are_easily_guessed: Évitez d’utiliser des suites de
+          caractères faciles à deviner, telles que des parties de votre adresse
+          électronique ou des dates personnelles.
         too_short:
           one: Le mot de passe doit comporter au moins un caractère
           other: Le mot de passe doit comporter au moins %{count} caractères
@@ -29,14 +32,14 @@ fr:
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
         un lien avec des instructions.
-      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
-        %{timeout}. Vous pouvez également revenir en arrière et choisir
-        d’utiliser votre ordinateur à la place.
-      throttled_heading: Nous n’avons pas pu vérifier votre identité
-      throttled_subheading: Essayez de prendre de nouvelles photos.
-      throttled_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
+      rate_limited_heading: Nous n’avons pas pu vérifier votre identité
+      rate_limited_subheading: Essayez de prendre de nouvelles photos.
+      rate_limited_text_html: 'Pour votre sécurité, nous limitons le nombre de fois où
         vous pouvez tenter de vérifier un document en ligne. <strong>Veuillez
         réessayer dans %{timeout}.</strong>'
+      send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans
+        %{timeout}. Vous pouvez également revenir en arrière et choisir
+        d’utiliser votre ordinateur à la place.
     general: Oups, une erreur s’est produite. Veuillez essayer de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects un
@@ -80,7 +83,7 @@ fr:
       phone_carrier: Nous nous excusons, car nous ne pouvons pas prendre en charge cet
         opérateur téléphonique pour le moment. Veuillez sélectionner un autre
         numéro puis réessayer.
-      phone_confirmation_throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
+      phone_confirmation_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
         entré en tant qu’authentificateur. Veuillez utiliser un numéro de
         téléphone différent.
@@ -123,19 +126,24 @@ fr:
       must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:
-      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
+      rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     verify_profile:
-      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
+      rate_limited: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_platform_setup:
-      already_registered: Le déverrouillage facial ou tactile est déjà enregistré.
-        Veuillez essayer une autre méthode de plateforme pour vous connecter.
+      account_setup_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
+        déverrouillage tactile. Veuillez réessayer ou %{link}.
+      already_registered: Le déverrouillage facial ou le déverrouillage tactile est
+        déjà enregistré sur cet appareil. Veuillez essayer d’ajouter une autre
+        méthode d’authentification.
       attestation_error: Désolé, mais votre déverrouillage facial ou tactile ne semble
         pas fonctionner. Veuillez vous assurer que votre appareil est répertorié
         sur https://fidoalliance.org/certification/fido-certified-products/ et
         si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
         contacter à %{link}.
-      general_error: Une erreur s’est produite lors de l’ajout de votre méthode
-        d’authentification. Veuillez réessayer.
+      choose_another_method: choisir une autre méthode d’authentification
+      general_error: Nous n’avons pas pu ajouter le déverrouillage facial ni le
+        déverrouillage tactile. Veuillez réessayer ou choisir une autre méthode
+        d’authentification.
       not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge
         le déverrouillage du visage ou du toucher.
       unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom

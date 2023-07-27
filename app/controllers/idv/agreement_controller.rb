@@ -2,7 +2,6 @@ module Idv
   class AgreementController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
@@ -43,13 +42,12 @@ module Idv
         step: 'agreement',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }
+      }.merge(ab_test_analytics_buckets)
     end
 
     def skip_to_capture
       flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
-      flow_session[:flow_path] = 'standard' # temp added for 50/50, remove in future deploy
     end
 
     def consent_form_params

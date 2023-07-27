@@ -11,8 +11,10 @@ import { InPersonLocations } from '@18f/identity-document-capture';
 
 export { InPersonLocations } from '@18f/identity-document-capture';
 
-export const LOCATIONS_URL = globalThis?.USPS_LOCATIONS_URL || '/verify/in_person/usps_locations';
-export const ADDRESS_SEARCH_URL = globalThis?.ADDRESS_SEARCH_URL || '/api/addresses';
+export const LOCATIONS_URL = new URL(
+  '/verify/in_person/usps_locations',
+  window.location.href,
+).toString();
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -93,6 +95,8 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
 
   return formatLocations(response);
 };
+
+export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
 
 function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
   return request<Location[]>(ADDRESS_SEARCH_URL, {

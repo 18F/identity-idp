@@ -13,6 +13,9 @@ en:
       voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your
         one-time code is, %{code}. Again, your one-time code is %{code}. This
         code expires in %{expiration} minutes.
+    confirmation_ipp_enrollment_result:
+      sms: |-
+        %{app_name}: You attempted to verify your identity at a Post Office on %{proof_date}. Check your email for your result.
     confirmation_otp:
       sms: |-
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
@@ -36,11 +39,11 @@ en:
         invalid_phone_number: The phone number entered is not valid.
         opt_out: The phone number entered has opted out of text messages.
         permanent_failure: The phone number entered is not valid.
+        rate_limited: That number is experiencing high message volume.  Please try again
+          later.
         sms_unsupported: The phone number entered doesn’t support text messaging. Try
           the Phone call option.
         temporary_failure: We are experiencing technical difficulties.  Please try again later.
-        throttled: That number is experiencing high message volume.  Please try again
-          later.
         timeout: The server took too long to respond. Please try again.
         unknown_failure: We are experiencing technical difficulties.  Please try again later.
         voice_unsupported: Invalid phone number. Check that you’ve entered the correct

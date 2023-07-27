@@ -8,7 +8,7 @@ module Telephony
         'OPT_OUT' => OptOutError,
         'PERMANENT_FAILURE' => PermanentFailureError,
         'TEMPORARY_FAILURE' => TemporaryFailureError,
-        'THROTTLED' => ThrottledError,
+        'THROTTLED' => RateLimitedError,
         'TIMEOUT' => TimeoutError,
         'UNKNOWN_FAILURE' => UnknownFailureError,
       }.freeze
@@ -30,7 +30,7 @@ module Telephony
       # rubocop:disable Metrics/BlockLength
       # rubocop:disable Lint/UnusedMethodArgument
       # @return [Response]
-      def send(message:, to:, country_code:, otp: nil)
+      def deliver(message:, to:, country_code:, otp: nil)
         if Telephony.config.pinpoint.sms_configs.empty?
           return PinpointHelper.handle_config_failure(:sms)
         end

@@ -3,12 +3,12 @@ RSpec.describe Telephony::Test::VoiceSender do
     Telephony::Test::Call.clear_calls
   end
 
-  describe '#send' do
+  describe '#deliver' do
     it 'adds the call to the call stack' do
       call_body = 'This is a test'
       phone = '+1 (202) 555-5000'
 
-      response = subject.send(message: call_body, to: phone, country_code: 'US')
+      response = subject.deliver(message: call_body, to: phone, country_code: 'US')
 
       last_call = Telephony::Test::Call.calls.last
 
@@ -21,7 +21,7 @@ RSpec.describe Telephony::Test::VoiceSender do
     end
 
     it 'simulates a telephony error' do
-      response = subject.send(message: 'test', to: '+1 (225) 555-1000', country_code: 'US')
+      response = subject.deliver(message: 'test', to: '+1 (225) 555-1000', country_code: 'US')
 
       last_call = Telephony::Test::Call.calls.last
 
@@ -33,7 +33,7 @@ RSpec.describe Telephony::Test::VoiceSender do
     end
 
     it 'simulates an invalid calling area error' do
-      response = subject.send(message: 'test', to: '+1 (225) 555-2000', country_code: 'US')
+      response = subject.deliver(message: 'test', to: '+1 (225) 555-2000', country_code: 'US')
 
       last_call = Telephony::Test::Call.calls.last
 

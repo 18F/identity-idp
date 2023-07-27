@@ -46,13 +46,42 @@ module Idv
         sp_return_url_resolver.homepage_url if service_provider
       end
 
-      def usps_outage_message_enabled
-        IdentityConfig.store.in_person_usps_outage_message_enabled
+      def outage_message_enabled?
+        IdentityConfig.store.in_person_outage_message_enabled == true && outage_dates_present?
+      end
+
+      def formatted_outage_expected_update_date
+        format_outage_date(outage_expected_update_date)
+      end
+
+      def formatted_outage_emailed_by_date
+        format_outage_date(outage_emailed_by_date)
+      end
+
+      def outage_dates_present?
+        outage_expected_update_date.present? && outage_emailed_by_date.present?
+        formatted_outage_expected_update_date
+        formatted_outage_emailed_by_date
+        true
+      rescue
+        false
       end
 
       private
 
       attr_reader :enrollment
+
+      def outage_expected_update_date
+        IdentityConfig.store.in_person_outage_expected_update_date
+      end
+
+      def outage_emailed_by_date
+        IdentityConfig.store.in_person_outage_emailed_by_date
+      end
+
+      def format_outage_date(date)
+        I18n.l(date.to_date, format: :short)
+      end
 
       def localized_hours(hours)
         case hours

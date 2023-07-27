@@ -14,6 +14,9 @@ fr:
         est %{code}. Votre code à usage unique est %{code}. Une fois de plus,
         votre code à usage unique est %{code}. Ce code expire dans %{expiration}
         minutes.
+    confirmation_ipp_enrollment_result:
+      sms: |-
+        %{app_name}: Vous avez tenté de vérifier votre identité dans un bureau de poste le %{proof_date}. Vérifiez votre e-mail pour votre résultat.
     confirmation_otp:
       sms: |-
         %{app_name}: Votre code à usage unique est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez pas partager ce code avec personne.
@@ -38,12 +41,12 @@ fr:
         invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
         opt_out: Le numéro de téléphone entré a désactivé les messages texte.
         permanent_failure: Le numéro de téléphone entré n’est pas valide.
+        rate_limited: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
+          plus tard.
         sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les
           messages textuels. Veuillez essayer l’option d’appel téléphonique.
         temporary_failure: Nous rencontrons des difficultés techniques. Veuillez
           réessayer plus tard.
-        throttled: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
-          plus tard.
         timeout: Le serveur a pris trop de temps pour répondre. Veuillez réessayer.
         unknown_failure: Nous rencontrons des difficultés techniques. Veuillez réessayer
           plus tard.

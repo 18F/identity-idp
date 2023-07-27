@@ -16,7 +16,7 @@ module Telephony
     end
 
     def send_authentication_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: authentication_message,
         to: recipient_phone,
         otp: otp,
@@ -27,7 +27,7 @@ module Telephony
     end
 
     def send_confirmation_otp
-      response = adapter.send(
+      response = adapter.deliver(
         message: confirmation_message,
         to: recipient_phone,
         otp: otp,
@@ -89,8 +89,8 @@ module Telephony
           country_code: country_code,
         },
       )
-      output = response.to_h.merge(extra).to_json
-      Telephony.config.logger.info(output)
+      output = response.to_h.merge(extra)
+      Telephony.log_info(event: output)
     end
 
     def otp_transformed_for_channel

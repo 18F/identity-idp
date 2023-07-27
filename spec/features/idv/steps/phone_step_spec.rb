@@ -11,56 +11,6 @@ RSpec.feature 'idv phone step', :js do
     allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
   end
 
-  context 'defaults on page load' do
-    before do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-    end
-
-    it 'selects sms delivery option by default' do
-      expect(page).to have_checked_field(
-        t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
-      )
-    end
-
-    it 'displays the success banner as a flash message' do
-      expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    end
-  end
-
-  context 'with valid information' do
-    it 'redirects to the otp confirmation step when the phone matches the 2fa phone number' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-
-      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      click_idv_send_security_code
-
-      expect(page).to have_content(t('titles.idv.enter_one_time_code', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_otp_verification_path)
-    end
-  end
-
-  context 'with invalid form information' do
-    it 'displays error message if no phone number is entered' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step
-      fill_in('idv_phone_form_phone', with: '') # clear the pre-populated phone number
-      click_idv_send_security_code
-      expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('errors.messages.phone_required'))
-    end
-
-    it 'displays error message if an invalid phone number is entered' do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step
-      fill_in :idv_phone_form_phone, with: '578190'
-      click_idv_send_security_code
-      expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
-    end
-  end
-
   context 'after submitting valid information' do
     it 'is re-entrant before confirming OTP' do
       first_phone_number = '7032231234'
@@ -110,27 +60,6 @@ RSpec.feature 'idv phone step', :js do
     end
   end
 
-  it 'does not allow the user to advance without completing' do
-    start_idv_from_sp
-    complete_idv_steps_before_phone_step
-
-    # Try to skip ahead to review step
-    visit idv_review_path
-
-    expect(page).to have_current_path(idv_phone_path)
-  end
-
-  it 'requires the user to complete the doc auth before completing' do
-    start_idv_from_sp
-    sign_in_and_2fa_user(user_with_2fa)
-    # Try to advance ahead to the phone step
-    visit idv_phone_path
-
-    # Expect to land on doc auth
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
-    expect(page).to have_current_path(idv_welcome_path)
-  end
-
   it 'allows resubmitting form' do
     start_idv_from_sp
     complete_idv_steps_before_phone_step(user)
@@ -147,14 +76,123 @@ RSpec.feature 'idv phone step', :js do
   end
 
   context "when the user's information cannot be verified" do
-    it 'reports the number the user entered' do
+    before do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
+    end
+
+    it 'reports the number the user entered' do
       click_idv_send_security_code
 
       expect(page).to have_content(t('idv.failure.phone.warning.heading'))
       expect(page).to have_content('+1 703-555-5555')
+    end
+
+    context 'resubmission after number failed verification' do
+      it 'phone field is empty after invalid submission' do
+        phone_field = find_field(t('two_factor_authentication.phone_label'))
+
+        expect(phone_field.value).not_to be_empty
+
+        click_idv_send_security_code
+        click_on t('idv.failure.phone.warning.try_again_button')
+
+        expect(page).to have_current_path(idv_phone_path)
+        expect(phone_field.value).to be_empty
+      end
+
+      it 'succeeds to otp verification with valid number resubmission' do
+        click_idv_send_security_code
+        click_on t('idv.failure.phone.warning.try_again_button')
+
+        expect(page).to have_current_path(idv_phone_path)
+
+        fill_out_phone_form_ok
+        click_idv_send_security_code
+        expect(page).to have_current_path(idv_otp_verification_path)
+      end
+
+      context 'displays alert message if same nubmer is resubmitted' do
+        context 'gpo verification is enabled' do
+          it 'includes verify link' do
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+
+            fill_out_phone_form_fail
+
+            expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+            expect(page).to have_content(
+              strip_tags(
+                t(
+                  'idv.messages.phone.failed_number.gpo_alert_html',
+                  link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                ),
+              ),
+            )
+
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+          end
+        end
+
+        context 'gpo verification is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(false)
+          end
+
+          it 'does not display verify link' do
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+
+            fill_out_phone_form_fail
+
+            expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+            expect(page).not_to have_content(
+              strip_tags(
+                t(
+                  'idv.messages.phone.failed_number.gpo_alert_html',
+                  link_html: t('idv.messages.phone.failed_number.gpo_verify_link'),
+                ),
+              ),
+            )
+
+            click_idv_send_security_code
+            click_on t('idv.failure.phone.warning.try_again_button')
+
+            expect(page).to have_current_path(idv_phone_path)
+          end
+        end
+      end
+    end
+
+    context 'phone number submission times out' do
+      it 'does not display failed alert message' do
+        timeout_phone_number = '7035555888'
+        start_idv_from_sp
+        complete_idv_steps_before_phone_step
+        fill_out_phone_form_ok(timeout_phone_number)
+        click_idv_send_security_code
+        click_on t('idv.failure.button.warning')
+
+        expect(page).to have_current_path(idv_phone_path)
+
+        fill_out_phone_form_ok(timeout_phone_number)
+
+        expect(page).not_to have_content(t('idv.messages.phone.failed_number.alert_text'))
+
+        click_idv_send_security_code
+        click_on t('idv.failure.button.warning')
+
+        expect(page).to have_current_path(idv_phone_path)
+      end
     end
 
     it 'goes to the cancel page when cancel link is clicked' do
@@ -232,6 +270,7 @@ RSpec.feature 'idv phone step', :js do
         click_idv_continue_for_step(:phone)
         click_on t('idv.failure.phone.warning.try_again_button')
       end
+      fill_out_phone_form_fail
       click_idv_continue_for_step(:phone)
     end
 

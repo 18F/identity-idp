@@ -2,7 +2,6 @@ module Idv
   class SsnController < ApplicationController
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
     include Steps::ThreatMetrixStepHelper
     include ThreatMetrixConcern
 
@@ -90,7 +89,7 @@ module Idv
         step: 'ssn',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+      }.merge(ab_test_analytics_buckets)
     end
 
     def updating_ssn?

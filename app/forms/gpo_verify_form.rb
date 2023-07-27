@@ -17,19 +17,18 @@ class GpoVerifyForm
 
   def submit
     result = valid?
-    threatmetrix_check_failed = fraud_review_checker.fraud_check_failed?
+    fraud_check_failed = pending_profile&.fraud_pending_reason.present?
+
     if result
       pending_profile&.remove_gpo_deactivation_reason
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
-      elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
-        bump_fraud_review_pending_timestamps
+      elsif fraud_check_failed && threatmetrix_enabled?
+        pending_profile&.deactivate_for_fraud_review
+      elsif fraud_check_failed
+        pending_profile&.activate_after_fraud_review_unnecessary
       else
-        pending_profile&.update!(
-          fraud_review_pending_at: nil,
-          fraud_rejection_at: nil,
-        )
         activate_profile
       end
     else
@@ -42,7 +41,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
-        threatmetrix_check_failed: threatmetrix_check_failed,
+        fraud_check_failed: fraud_check_failed,
       },
     )
   end
@@ -57,10 +56,6 @@ class GpoVerifyForm
     return if otp.blank? || pending_profile.blank?
 
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
-  end
-
-  def bump_fraud_review_pending_timestamps
-    pending_profile&.bump_fraud_review_pending_timestamps
   end
 
   def validate_otp_not_expired

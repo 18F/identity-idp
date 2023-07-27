@@ -75,6 +75,51 @@ RSpec.feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
+    scenario 'user can select 2 MFA methods and complete after reauthn window' do
+      allow(IdentityConfig.store).to receive(:reauthn_window).and_return(10)
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('backup_code')
+      click_2fa_option('auth_app')
+
+      click_continue
+
+      expect(current_path).to eq authenticator_setup_path
+      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      secret = find('#qr-code').text
+      totp = generate_totp_code(secret)
+
+      fill_in :code, with: totp
+      check t('forms.messages.remember_device')
+      click_submit_default
+
+      expect(current_path).to eq backup_code_setup_path
+      travel_to((IdentityConfig.store.reauthn_window + 5).seconds.from_now) do
+        click_continue
+        expect(current_path).to eq login_two_factor_options_path
+
+        find("label[for='two_factor_options_form_selection_auth_app']").click
+        click_on t('forms.buttons.continue')
+
+        totp = generate_totp_code(secret)
+        fill_in :code, with: totp
+
+        click_submit_default
+        click_continue
+
+        expect(page).to have_link(t('components.download_button.label'))
+
+        click_continue
+
+        expect(page).to have_content(t('notices.backup_codes_configured'))
+
+        expect(current_path).to eq account_path
+      end
+    end
+
     scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
 

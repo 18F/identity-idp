@@ -1,8 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe WebauthnVisitForm do
+  include ActionView::Helpers::UrlHelper
+  include Rails.application.routes.url_helpers
+
   let(:user) { build(:user) }
-  let(:subject) { WebauthnVisitForm.new(user) }
+  let(:url_options) { {} }
+  let(:subject) do
+    WebauthnVisitForm.new(
+      user: user,
+      url_options:,
+      in_mfa_selection_flow: true,
+    )
+  end
 
   describe '#submit' do
     it 'returns FormResponse with success: true if there are no errors' do
@@ -90,13 +100,42 @@ RSpec.describe WebauthnVisitForm do
 
         it 'returns FormResponse with success: false with an unrecognized error' do
           params = { error: 'foo', platform: 'true' }
-          errors = { foo: [I18n.t('errors.webauthn_platform_setup.general_error')] }
+          errors = { foo: [I18n.t(
+            'errors.webauthn_platform_setup.account_setup_error',
+            link: link_to(
+              I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+              authentication_methods_setup_path,
+            ),
+          )] }
 
           expect(subject.submit(params).to_h).to include(
             success: false,
             errors: errors,
             error_details: hash_including(*errors.keys),
           )
+        end
+
+        context 'when a user is not in mfa selection' do
+          let(:subject) do
+            WebauthnVisitForm.new(
+              user: user,
+              url_options: {},
+              in_mfa_selection_flow: false,
+            )
+          end
+
+          it 'returns FormResponse with success: false with an unrecognized error' do
+            params = { error: 'foo', platform: 'true' }
+            errors = { foo: [I18n.t(
+              'errors.webauthn_platform_setup.general_error',
+            )] }
+
+            expect(subject.submit(params).to_h).to include(
+              success: false,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+            )
+          end
         end
       end
     end

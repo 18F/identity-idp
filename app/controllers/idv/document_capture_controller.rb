@@ -4,8 +4,6 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
-    include StepUtilitiesConcern
-    include RateLimitConcern
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
@@ -52,7 +50,6 @@ module Idv
 
     def confirm_hybrid_handoff_complete
       return if idv_session.flow_path.present?
-      return if flow_session[:flow_path].present? # remove in future deploy
 
       redirect_to idv_hybrid_handoff_url
     end
@@ -78,7 +75,7 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: flow_session[:redo_document_capture],
-      }.compact.merge(**acuant_sdk_ab_test_analytics_args)
+      }.compact.merge(ab_test_analytics_buckets)
     end
 
     def handle_stored_result

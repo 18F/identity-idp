@@ -16,7 +16,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'redirects to the profile and sets auth_method' do
-        cfg = subject.current_user.auth_app_configurations.first
+        cfg = controller.current_user.auth_app_configurations.first
         expect(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
@@ -39,11 +39,14 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'tracks the valid authentication event' do
+        cfg = controller.current_user.auth_app_configurations.first
+
         attributes = {
           success: true,
           errors: {},
           multi_factor_auth_method: 'totp',
-          auth_app_configuration_id: subject.current_user.auth_app_configurations.first.id,
+          multi_factor_auth_method_created_at: cfg.created_at,
+          auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
@@ -99,6 +102,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           success: false,
           errors: {},
           multi_factor_auth_method: 'totp',
+          multi_factor_auth_method_created_at: nil,
           auth_app_configuration_id: nil,
         }
 

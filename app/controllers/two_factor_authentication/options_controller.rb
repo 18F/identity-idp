@@ -48,7 +48,7 @@ module TwoFactorAuthentication
       TwoFactorLoginOptionsPresenter.new(
         user: current_user,
         view: view_context,
-        user_session_context: context,
+        reauthentication_context: UserSessionContext.reauthentication_context?(context),
         service_provider: current_sp,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,

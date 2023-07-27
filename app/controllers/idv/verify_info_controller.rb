@@ -1,7 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
-    include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
@@ -29,7 +28,6 @@ module Idv
         if flow_session['redo_document_capture']
           flow_session.delete('redo_document_capture')
           idv_session.flow_path ||= 'standard'
-          flow_session[:flow_path] ||= 'standard' # temp added for 50/50, remove in future deploy
         end
 
         redirect_to idv_verify_info_url
@@ -53,7 +51,7 @@ module Idv
         step: 'verify',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+      }.merge(ab_test_analytics_buckets)
     end
 
     # copied from verify_step

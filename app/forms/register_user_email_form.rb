@@ -83,7 +83,11 @@ class RegisterUserEmailForm
   def process_successful_submission(request_id, instructions)
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
-    if email_taken? && user_unconfirmed?
+    if email_address_record&.user&.suspended?
+      send_suspended_user_email(email_address_record)
+    elsif blocked_email_address
+      send_suspended_user_email(blocked_email_address)
+    elsif email_taken? && user_unconfirmed?
       update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
     elsif email_taken?
@@ -149,6 +153,13 @@ class RegisterUserEmailForm
     end
   end
 
+  def send_suspended_user_email(suspended_email_record)
+    UserMailer.with(
+      user: suspended_email_record.user,
+      email_address: suspended_email_record,
+    ).suspended_create_account.deliver_now_or_later
+  end
+
   def user_unconfirmed?
     existing_user.email_addresses.none?(&:confirmed?)
   end
@@ -165,5 +176,10 @@ class RegisterUserEmailForm
 
   def email_request_id(request_id)
     request_id if request_id.present? && ServiceProviderRequestProxy.find_by(uuid: request_id)
+  end
+
+  def blocked_email_address
+    return @blocked_email_address if defined?(@blocked_email_address)
+    @blocked_email_address = SuspendedEmail.find_with_email(email)
   end
 end

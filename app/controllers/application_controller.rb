@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -227,6 +227,7 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return user_two_factor_authentication_url unless user_fully_authenticated?
+    return user_please_call_url if current_user.suspended?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
@@ -256,10 +257,6 @@ class ApplicationController < ActionController::Base
       current_user.password_reset_profile.updated_at
   end
 
-  def reauthn_param
-    params[:reauthn]
-  end
-
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
     analytics.invalid_authenticity_token(
@@ -283,16 +280,14 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? &&
-      user_signed_in? &&
+    user_signed_in? &&
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
   end
 
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 
   def confirm_two_factor_authenticated
@@ -355,6 +350,8 @@ class ApplicationController < ActionController::Base
 
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
       login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+      login_two_factor_webauthn_url(platform: true)
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
       login_two_factor_webauthn_url
     else
@@ -366,12 +363,17 @@ class ApplicationController < ActionController::Base
     MfaPolicy.new(current_user).two_factor_enabled?
   end
 
+  # Prevent the session from being written back to the session store at the end of the request.
+  def skip_session_commit
+    request.session_options[:skip] = true
+  end
+
   def skip_session_expiration
     @skip_session_expiration = true
   end
 
   def skip_session_load
-    request.session_options[:skip] = true
+    skip_session_commit
     @skip_session_load = true
   end
 
@@ -411,12 +413,6 @@ class ApplicationController < ActionController::Base
     url = if request_url.path.match?('saml')
             sp_session[:final_auth_request] = true
             complete_saml_url
-          elsif IdentityConfig.store.rewrite_oidc_request_prompt
-            # Login.gov redirects to the orginal request_url after a user authenticates
-            # replace prompt=login with prompt=select_account to prevent sign_out
-            # which should only ever occur once when the user
-            # lands on Login.gov with prompt=login
-            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
           else
             sp_session[:request_url]
           end

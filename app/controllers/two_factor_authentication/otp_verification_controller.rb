@@ -21,7 +21,7 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
-        handle_remember_device
+        handle_remember_device_preference(params[:remember_device])
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
@@ -51,7 +51,7 @@ module TwoFactorAuthentication
     end
 
     def otp_verification_form
-      OtpVerificationForm.new(current_user, sanitized_otp_code)
+      OtpVerificationForm.new(current_user, sanitized_otp_code, phone_configuration)
     end
 
     def redirect_if_blank_phone
@@ -102,7 +102,7 @@ module TwoFactorAuthentication
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: capabilities.unsupported_location,
       )
-      redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)
+      redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
     end
 
     def phone

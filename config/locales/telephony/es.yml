@@ -13,6 +13,9 @@ es:
       voice: ¡Hola! Su código único de seis %{format_type} de %{app_name} es %{code},
         Su código único es %{code}, De nuevo, Su código único de es %{code},
         Este código expira en %{expiration} minutos.
+    confirmation_ipp_enrollment_result:
+      sms: |-
+        %{app_name}: Intentó verificar su identidad en una oficina postal en %{proof_date}. Revise su correo electrónico para ver su resultado.
     confirmation_otp:
       sms: |-
         %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
@@ -37,12 +40,12 @@ es:
         opt_out: El número de teléfono ingresado ha sido excluido de los mensajes de
           texto.
         permanent_failure: El número de teléfono ingresado no es válido.
+        rate_limited: Ese número está experimentando un alto volumen de mensajes. Por
+          favor, inténtelo de nuevo más tarde.
         sms_unsupported: El número de teléfono ingresado no admite mensajes de texto.
           Pruebe la opción de llamada telefónica.
         temporary_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        throttled: Ese número está experimentando un alto volumen de mensajes. Por
-          favor, inténtelo de nuevo más tarde.
         timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         unknown_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.

@@ -576,23 +576,51 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      context 'USPS outage message' do
+      context 'Outage message' do
+        let(:formatted_date) { 'Tuesday, October 31' }
+        let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
+        let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
+
         it 'renders a warning when the flag is enabled' do
-          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+            and_return(in_person_outage_emailed_by_date)
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+            and_return(in_person_outage_expected_update_date)
 
           expect(mail.html_part.body).
             to have_content(
-              t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+              t(
+                'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+                date: formatted_date,
+              ),
             )
         end
-        it 'does not renders a warning when the flag is disabled' do
-          allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+
+        it 'does not render a warning when outage dates are not included' do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+            and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+            and_return('')
+          allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+            and_return('')
+
+          expect(mail.html_part.body).to_not have_content(
+            t(
+              'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+              date: formatted_date,
+            ),
+          )
+        end
+
+        it 'does not render a warning when the flag is disabled' do
+          allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
             and_return(false)
 
           expect(mail.html_part.body).
             to_not have_content(
-              t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+              t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
             )
         end
       end
@@ -784,6 +812,35 @@ RSpec.describe UserMailer, type: :mailer do
         to have_content(
           t(
             'user_mailer.suspended_reset_password.message',
+            support_code: IdentityConfig.store.account_suspended_support_code,
+            contact_number: IdentityConfig.store.idv_contact_phone_number,
+          ),
+        )
+    end
+  end
+
+  describe '#suspended_create_account' do
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).suspended_create_account
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.suspended_create_account.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content(
+          t(
+            'user_mailer.suspended_create_account.message',
+            app_name: APP_NAME,
             support_code: IdentityConfig.store.account_suspended_support_code,
             contact_number: IdentityConfig.store.idv_contact_phone_number,
           ),

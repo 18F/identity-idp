@@ -682,6 +682,28 @@ module AnalyticsEvents
     )
   end
 
+  def idv_doc_auth_getting_started_submitted(**extra)
+    track_event('IdV: doc auth getting_started submitted', **extra)
+  end
+
+  def idv_doc_auth_getting_started_visited(**extra)
+    track_event('IdV: doc auth getting_started visited', **extra)
+  end
+
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # @identity.idp.previous_event_name IdV: doc auth upload submitted
+  def idv_doc_auth_hybrid_handoff_submitted(**extra)
+    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+  end
+
+  # Desktop user has reached the above "hybrid handoff" view
+  # @identity.idp.previous_event_name IdV: doc auth upload visited
+  def idv_doc_auth_hybrid_handoff_visited(**extra)
+    track_event('IdV: doc auth hybrid handoff visited', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
     track_event('IdV: doc auth link_sent submitted', **extra)
@@ -723,6 +745,8 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [String] user_id
   # @param [String] flow_path
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -731,6 +755,8 @@ module AnalyticsEvents
     flow_path:,
     attempts: nil,
     user_id: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -741,6 +767,8 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       user_id: user_id,
       flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -758,6 +786,8 @@ module AnalyticsEvents
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -772,6 +802,8 @@ module AnalyticsEvents
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -789,6 +821,8 @@ module AnalyticsEvents
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
       vendor_request_time_in_ms: vendor_request_time_in_ms,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
   end
@@ -799,6 +833,8 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
+  # @param [String] front_image_fingerprint Fingerprint of front image data
+  # @param [String] back_image_fingerprint Fingerprint of back image data
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -807,6 +843,8 @@ module AnalyticsEvents
     pii_like_keypaths:,
     flow_path:,
     user_id: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
     **extra
   )
     track_event(
@@ -817,21 +855,10 @@ module AnalyticsEvents
       remaining_attempts: remaining_attempts,
       pii_like_keypaths: pii_like_keypaths,
       flow_path: flow_path,
+      front_image_fingerprint: front_image_fingerprint,
+      back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
-  end
-
-  # The "hybrid handoff" step: Desktop user has submitted their choice to
-  # either continue via desktop ("document_capture" destination) or switch
-  # to mobile phone ("send_link" destination) to perform document upload.
-  # Mobile users still log this event but with skip_upload_step = true
-  def idv_doc_auth_upload_submitted(**extra)
-    track_event('IdV: doc auth upload submitted', **extra)
-  end
-
-  # Desktop user has reached the above "hybrid handoff" view
-  def idv_doc_auth_upload_visited(**extra)
-    track_event('IdV: doc auth upload visited', **extra)
   end
 
   def idv_doc_auth_verify_proofing_results(**extra)
@@ -1433,6 +1460,103 @@ module AnalyticsEvents
   def idv_in_person_ready_to_verify_what_to_bring_link_clicked(**extra)
     track_event(
       'IdV: user clicked what to bring link on ready to verify page',
+      **extra,
+    )
+  end
+
+  # Track sms notification attempt
+  # @param [boolean] success sms notification successful or not
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_attempted(
+    success:,
+    enrollment_code:,
+    enrollment_id:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: in person notification SMS send attempted',
+      success: success,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # Track sms notification job completion
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_completed(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running InPerson::SendProofingNotificationJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_exception(
+    enrollment_code:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: Exception raised',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Track sms notification job skipped
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job started
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_started(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
@@ -2209,6 +2333,22 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job completed
+  def idv_usps_auth_token_refresh_job_completed(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job started
+  def idv_usps_auth_token_refresh_job_started(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
@@ -2302,6 +2442,7 @@ module AnalyticsEvents
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
+  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
   # @param [Integer] piv_cac_configuration_id
   # @param [Integer] key_id
@@ -2317,6 +2458,7 @@ module AnalyticsEvents
     errors: nil,
     context: nil,
     multi_factor_auth_method: nil,
+    multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
     key_id: nil,
@@ -2335,6 +2477,7 @@ module AnalyticsEvents
       errors: errors,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
       piv_cac_configuration_id: piv_cac_configuration_id,
       key_id: key_id,
@@ -2719,6 +2862,22 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a sucessful openid authorization request is returned
+  # @param [String] client_id
+  # @param [String] code_digest hash of returned "code" param
+  def openid_connect_authorization_handoff(
+    client_id:,
+    code_digest:,
+    **extra
+  )
+    track_event(
+      'OpenID Connect: authorization request handoff',
+      client_id: client_id,
+      code_digest: code_digest,
+      **extra,
+    )
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
@@ -2741,14 +2900,12 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
-  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
-    code_digest:,
     **extra
   )
     track_event(
@@ -2758,7 +2915,6 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
-      code_digest: code_digest,
       **extra,
     )
   end
@@ -2816,6 +2972,13 @@ module AnalyticsEvents
       error: error,
       context: context,
       country: country,
+      **extra,
+    )
+  end
+
+  def partial_authentication_log_out(**extra)
+    track_event(
+      'Partially authenticated user logged out',
       **extra,
     )
   end
@@ -3873,13 +4036,23 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user is suspended and attempts to sign in, triggering the please call page.
+  def user_suspended_please_call_visited(**extra)
+    track_event(
+      'User Suspension: Please call visited',
+      **extra,
+    )
+  end
+
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
+  # @param [Boolean] second_address_line_present
   # @param [String] service_provider
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
+    second_address_line_present:,
     service_provider:,
     **extra
   )
@@ -3887,6 +4060,7 @@ module AnalyticsEvents
       'USPS IPPaaS enrollment created',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      second_address_line_present: second_address_line_present,
       service_provider: service_provider,
       **extra,
     )

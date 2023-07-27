@@ -11,6 +11,7 @@ RSpec.describe Idv::PhoneController do
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
   let(:international_phone) { '+81 54 354 3643' }
+  let(:timeout_phone) { '7035555888' }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -328,6 +329,7 @@ RSpec.describe Idv::PhoneController do
           )
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
+          expect(subject.idv_session.failed_phone_step_numbers).to be_empty
         end
 
         context 'with full vendor outage' do
@@ -440,6 +442,22 @@ RSpec.describe Idv::PhoneController do
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy
+        expect(subject.idv_session.failed_phone_step_numbers).to contain_exactly('+17035555555')
+      end
+
+      it 'renders timeout page and does not set phone confirmation' do
+        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
+        stub_verify_steps_one_and_two(user)
+
+        put :create, params: { idv_phone_form: { phone: timeout_phone } }
+
+        expect(response).to redirect_to idv_phone_path
+        get :new
+        expect(response).to redirect_to idv_phone_errors_timeout_path
+
+        expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
+        expect(subject.idv_session.user_phone_confirmation).to be_falsy
+        expect(subject.idv_session.failed_phone_step_numbers).to be_empty
       end
 
       it 'tracks event with invalid phone' do

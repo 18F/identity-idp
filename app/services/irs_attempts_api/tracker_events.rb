@@ -276,15 +276,6 @@ module IrsAttemptsApi
       )
     end
 
-    # The user, who had previously successfully confirmed their identity, has
-    # reproofed. All the normal events are also sent, this simply notes that
-    # this is the second (or more) time they have gone through the process successfully.
-    def idv_reproof
-      track_event(
-        :idv_reproof,
-      )
-    end
-
     # @param [String] ssn
     # User entered in SSN number during Identity verification
     def idv_ssn_submitted(ssn:)
@@ -373,14 +364,6 @@ module IrsAttemptsApi
         :logged_in_password_change,
         success: success,
         failure_reason: failure_reason,
-      )
-    end
-
-    # A logged-in user has been rate limited from submitting a password to reauthenticate prior to
-    # changing their profile too many times
-    def logged_in_profile_change_reauthentication_rate_limited
-      track_event(
-        :logged_in_profile_change_reauthentication_rate_limited,
       )
     end
 

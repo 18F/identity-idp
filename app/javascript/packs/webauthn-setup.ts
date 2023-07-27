@@ -1,9 +1,10 @@
 import {
-  isWebauthnSupported,
   enrollWebauthnDevice,
   extractCredentials,
+  isExpectedWebauthnError,
   longToByteArray,
 } from '@18f/identity-webauthn';
+import { trackError } from '@18f/identity-analytics';
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
 
@@ -32,9 +33,6 @@ export function reloadWithError(
 }
 
 function webauthn() {
-  if (!isWebauthnSupported()) {
-    reloadWithError('NotSupportedError');
-  }
   const form = document.getElementById('webauthn_form') as HTMLFormElement;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -72,7 +70,13 @@ function webauthn() {
           result.transports.join();
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
-      .catch((err) => reloadWithError(err.name, { force: true }));
+      .catch((error: Error) => {
+        if (!isExpectedWebauthnError(error)) {
+          trackError(error);
+        }
+
+        reloadWithError(error.name, { force: true });
+      });
   });
 }
 

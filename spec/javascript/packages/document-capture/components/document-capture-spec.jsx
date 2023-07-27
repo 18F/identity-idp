@@ -16,6 +16,7 @@ import DocumentCapture from '@18f/identity-document-capture/components/document-
 import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox } from '@18f/identity-test-helpers';
+import { AcuantDocumentType } from '@18f/identity-document-capture/components/acuant-camera';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -91,6 +92,7 @@ describe('document-capture/components/document-capture', () => {
         image: {
           data: validUpload,
         },
+        cardtype: AcuantDocumentType.ID,
       });
     });
 
@@ -259,15 +261,9 @@ describe('document-capture/components/document-capture', () => {
       </UploadContextProvider>,
     );
 
-    sandbox
-      .stub(window, 'fetch')
-      .withArgs(endpoint)
-      .resolves(
-        new Response(JSON.stringify({ redirect: '#teapot' }), {
-          status: 418,
-          url: endpoint,
-        }),
-      );
+    const response = new Response(JSON.stringify({ redirect: '#teapot' }), { status: 418 });
+    sandbox.stub(response, 'url').get(() => endpoint);
+    sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
 
     const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
     const backImage = getByLabelText('doc_auth.headings.document_capture_back');
@@ -320,15 +316,12 @@ describe('document-capture/components/document-capture', () => {
           </UploadContextProvider>,
         );
 
-        sandbox
-          .stub(window, 'fetch')
-          .withArgs(endpoint)
-          .resolves(
-            new Response(JSON.stringify({ success: false, remaining_attempts: 1, errors: [{}] }), {
-              status: 400,
-              url: endpoint,
-            }),
-          );
+        const response = new Response(
+          JSON.stringify({ success: false, remaining_attempts: 1, errors: [{}] }),
+          { status: 400 },
+        );
+        sandbox.stub(response, 'url').get(() => endpoint);
+        sandbox.stub(global, 'fetch').withArgs(endpoint).resolves(response);
 
         expect(queryByText('idv.troubleshooting.options.verify_in_person')).not.to.exist();
         await userEvent.click(getByText('forms.buttons.submit.default'));

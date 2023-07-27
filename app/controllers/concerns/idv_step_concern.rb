@@ -5,6 +5,7 @@ module IdvStepConcern
   include RateLimitConcern
   include FraudReviewConcern
   include Idv::OutageConcern
+  include Idv::AbTestAnalyticsConcern
 
   included do
     before_action :confirm_two_factor_authenticated
@@ -29,9 +30,12 @@ module IdvStepConcern
     flow_session['pii_from_doc']
   end
 
-  # copied from doc_auth_controller
+  def pii_from_user
+    flow_session['pii_from_user']
+  end
+
   def flow_path
-    idv_session.flow_path || flow_session[:flow_path]
+    idv_session.flow_path
   end
 
   private

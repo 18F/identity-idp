@@ -1,6 +1,7 @@
 class AccountsController < ApplicationController
   include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
+  before_action :confirm_user_is_not_suspended
 
   layout 'account_side_nav'
 
@@ -25,6 +26,6 @@ class AccountsController < ApplicationController
     user_session[:stored_location] = account_url
     user_session[:context] = 'reauthentication'
 
-    redirect_to login_two_factor_options_path(reauthn: true)
+    redirect_to login_two_factor_options_path
   end
 end

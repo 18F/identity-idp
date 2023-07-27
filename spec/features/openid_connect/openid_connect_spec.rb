@@ -24,12 +24,7 @@ RSpec.describe 'OpenID Connect' do
     expect(certs_response[:keys].find { |key| key[:kid] == kid }).to be
   end
 
-  context 'with client_secret_jwt and disabling rewrite_oidc_request_prompt' do
-    before do
-      allow(IdentityConfig.store).to receive(:rewrite_oidc_request_prompt).
-        and_return(false)
-    end
-
+  context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
       oidc_end_client_secret_jwt(prompt: 'login')
     end
