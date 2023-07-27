@@ -6,12 +6,15 @@ RSpec.describe Idv::InPerson::Public::UspsLocationsController do
   describe '#index' do
     subject(:action) do
       post :index,
-           params:
-            { address: { address: '87060 Colby Radial, Stephenmouth, OK 73339-7909',
-                         zip_code: '74120',
-                         state: 'WA',
-                         city: 'Lake Dallas',
-                         street_address: '2215 Merrill Wells' } }
+           params: {
+             address: {
+               address: '87060 Colby Radial, Stephenmouth, OK 73339-7909',
+               zip_code: '74120',
+               state: 'WA',
+               city: 'Lake Dallas',
+               street_address: '2215 Merrill Wells',
+             },
+           }
     end
 
     context 'with feature flag on' do
