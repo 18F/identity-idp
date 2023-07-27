@@ -421,15 +421,14 @@ dast:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" 
-  environment:
-    http_proxy: http://obproxy.login.gov.internal:3128
-    https_proxy: http://obproxy.login.gov.internal:3128
-    HTTP_PROXY: http://obproxy.login.gov.internal:3128
-    HTTPS_PROXY: http://obproxy.login.gov.internal:3128
-    no_proxy: "localhost,127.0.0.1,169.254.169.254,169.254.169.123"
-    NO_PROXY: "localhost,127.0.0.1,169.254.169.254,169.254.169.123"
   allow_failure: true
   script:
+    - export http_proxy="http://obproxy.login.gov.internal:3128"
+    - export http_proxy="http://obproxy.login.gov.internal:3128"
+    - export HTTP_PROXY="http://obproxy.login.gov.internal:3128"
+    - export HTTPS_PROXY="http://obproxy.login.gov.internal:3128"
+    - export no_proxy="localhost,127.0.0.1,169.254.169.254,169.254.169.123"
+    - export NO_PROXY="localhost,127.0.0.1,169.254.169.254,169.254.169.123"
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
     - /analyze
