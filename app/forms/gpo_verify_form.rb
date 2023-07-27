@@ -21,7 +21,7 @@ class GpoVerifyForm
 
     if result
       pending_profile&.remove_gpo_deactivation_reason
-      if pending_in_person_enrollment?
+      if pending_profile&.pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         # note: pending_profile is not active here
         pending_profile&.deactivate(:in_person_verification_pending)
@@ -41,7 +41,7 @@ class GpoVerifyForm
       extra: {
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: pending_in_person_enrollment?,
+        pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
         fraud_check_failed: fraud_check_failed,
       },
     )
@@ -80,10 +80,6 @@ class GpoVerifyForm
 
   def reset_sensitive_fields
     self.otp = nil
-  end
-
-  def pending_in_person_enrollment?
-    pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def threatmetrix_enabled?
