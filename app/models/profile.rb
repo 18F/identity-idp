@@ -143,7 +143,7 @@ class Profile < ApplicationRecord
     fraud_review_pending? || fraud_rejection?
   end
 
-  def deactivate_for_in_person_verification(pii)
+  def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
     transaction do
       UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
       deactivate(:in_person_verification_pending)

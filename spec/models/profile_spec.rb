@@ -882,7 +882,7 @@ RSpec.describe Profile do
 
   # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
   # TODO: related: should we test against an active profile here?
-  describe '#deactivate_for_in_person_verification' do
+  describe '#deactivate_for_in_person_verification_and_schedule_enrollment' do
     it 'sets deactivation reason to in_person_verification_pending' do
       profile = create(:profile, user: user)
 
@@ -894,7 +894,7 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
-      profile.deactivate_for_in_person_verification
+      profile.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
