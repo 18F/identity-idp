@@ -1,5 +1,7 @@
+import { trackError } from '@18f/identity-analytics';
 import verifyWebauthnDevice from './verify-webauthn-device';
 import type { VerifyCredentialDescriptor } from './verify-webauthn-device';
+import isExpectedWebauthnError from './is-expected-error';
 
 export interface WebauthnVerifyButtonDataset extends DOMStringMap {
   credentials: string;
@@ -50,6 +52,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
       this.setInputValue('client_data_json', result.clientDataJSON);
       this.setInputValue('signature', result.signature);
     } catch (error) {
+      if (!isExpectedWebauthnError(error)) {
+        trackError(error);
+      }
+
       this.setInputValue('webauthn_error', error.name);
     }
 

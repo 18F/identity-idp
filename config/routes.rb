@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
+  post '/api/address_search' => 'idv/in_person/public/address_search#index'
+  match '/api/address_search' => 'idv/in_person/public/address_search#options', via: :options
+  post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
+  match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+
   namespace :api do
     namespace :internal do
       get '/sessions' => 'sessions#show'

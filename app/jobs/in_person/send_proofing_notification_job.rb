@@ -26,12 +26,6 @@ module InPerson
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
         )
-      if enrollment.expired?
-        # no sending message for expired status
-        enrollment.notification_phone_configuration&.destroy
-        log_job_completed(enrollment: enrollment)
-        return
-      end
 
       # send notification and log result when success or failed
       phone = enrollment.notification_phone_configuration.formatted_phone

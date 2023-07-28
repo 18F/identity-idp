@@ -146,7 +146,9 @@ class User < ApplicationRecord
       pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
         profiles.where.not(gpo_verification_pending_at: nil),
       ).or(
-        profiles.where.not(fraud_pending_reason: nil),
+        profiles.where.not(fraud_review_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_rejection_at: nil),
       ).order(created_at: :desc).first
 
       if pending.blank?

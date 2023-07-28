@@ -53,8 +53,8 @@ module Users
     end
 
     def render_rate_limited
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :verify_personal_key,
+      analytics.rate_limit_reached(
+        limiter_type: :verify_personal_key,
       )
 
       irs_attempts_api_tracker.personal_key_reactivation_rate_limited

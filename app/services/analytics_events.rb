@@ -671,7 +671,8 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
+  # @param [Integer] remaining_attempts how many attempts the user has left before
+  #                  we rate limit them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
     track_event(
@@ -1478,7 +1479,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person notification SMS send attempted',
+      'SendProofingNotificationJob: in person notification SMS send attempted',
       success: success,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
@@ -1497,7 +1498,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      'SendProofingNotificationJob: job completed',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1518,7 +1519,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: Exception raised',
+      'SendProofingNotificationJob: exception raised',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -1537,7 +1538,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      'SendProofingNotificationJob: job skipped',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1554,7 +1555,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      'SendProofingNotificationJob: job started',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -2152,14 +2153,14 @@ module AnalyticsEvents
   end
 
   # @param ['warning','jobfail','failure'] type
-  # @param [Time] throttle_expires_at when the throttle expires
+  # @param [Time] limiter_expires_at when the rate limit expires
   # @param [Integer] remaining_attempts number of attempts remaining
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
-    throttle_expires_at: nil,
+    limiter_expires_at: nil,
     remaining_attempts: nil,
     **extra
   )
@@ -2168,7 +2169,7 @@ module AnalyticsEvents
       {
         type: type,
         proofing_components: proofing_components,
-        throttle_expires_at: throttle_expires_at,
+        limiter_expires_at: limiter_expires_at,
         remaining_attempts: remaining_attempts,
         **extra,
       }.compact,
@@ -3234,6 +3235,17 @@ module AnalyticsEvents
     track_event('Proofing Document Result Missing')
   end
 
+  # Tracks when a user triggered a rate limiter
+  # @param [String] limiter_type
+  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
+  def rate_limit_reached(limiter_type:, **extra)
+    track_event(
+      'Rate Limit Reached',
+      limiter_type: limiter_type,
+      **extra,
+    )
+  end
+
   # Rate limit triggered
   # @param [String] type
   def rate_limit_triggered(type:, **extra)
@@ -3643,16 +3655,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user triggered a rate limit throttle
-  # @param [String] throttle_type
-  def throttler_rate_limit_triggered(throttle_type:, **extra)
-    track_event(
-      'Throttler Rate Limit Triggered',
-      throttle_type: throttle_type,
-      **extra,
-    )
-  end
-
   # Tracks when a user visits TOTP device setup
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
@@ -3873,14 +3875,14 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success
-  # @param [Boolean] throttled
+  # @param [Boolean] rate_limited
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(
     success:,
-    throttled:,
+    rate_limited:,
     errors:,
     error_details: nil,
     user_id: nil,
@@ -3891,7 +3893,7 @@ module AnalyticsEvents
       'User Registration: Email Submitted',
       {
         success: success,
-        throttled: throttled,
+        rate_limited: rate_limited,
         errors: errors,
         error_details: error_details,
         user_id: user_id,
