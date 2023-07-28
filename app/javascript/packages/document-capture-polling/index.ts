@@ -31,6 +31,7 @@ enum ResultType {
   SUCCESS = 'SUCCESS',
   CANCELLED = 'CANCELLED',
   THROTTLED = 'THROTTLED',
+  RATE_LIMITED = 'RATE_LIMITED',
 }
 
 /**
