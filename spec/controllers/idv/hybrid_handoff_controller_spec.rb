@@ -125,13 +125,28 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to render_template :show
       end
 
-      it 'redirects to document_capture on a mobile device' do
-        subject.idv_session.flow_path = 'standard'
-        subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+      context 'skip_upload_step is set on flow_session' do
+        before do
+          subject.user_session['idv/doc_auth'][:skip_upload_step] = true
+        end
+        it 'redirects to document_capture' do
+          subject.idv_session.flow_path = 'standard'
+          get :show, params: { redo: true }
 
-        get :show, params: { redo: true }
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
+      end
 
-        expect(response).to redirect_to(idv_document_capture_url)
+      context 'idv_session.skip_hybrid_handoff? is true' do
+        before do
+          subject.idv_session.skip_hybrid_handoff = true
+        end
+        it 'redirects to document_capture' do
+          subject.idv_session.flow_path = 'standard'
+          get :show, params: { redo: true }
+
+          expect(response).to redirect_to(idv_document_capture_url)
+        end
       end
 
       it 'adds redo_document_capture to analytics' do

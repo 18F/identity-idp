@@ -16,6 +16,7 @@ module Idv
       profile_id
       profile_step_params
       resolution_successful
+      skip_hybrid_handoff
       threatmetrix_review_status
       user_phone_confirmation
       vendor_phone_confirmation
@@ -204,6 +205,10 @@ module Idv
     def invalidate_phone_step!
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
+    end
+
+    def skip_hybrid_handoff?
+      !!session[:skip_hybrid_handoff]
     end
 
     private

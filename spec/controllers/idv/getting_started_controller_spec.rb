@@ -175,6 +175,14 @@ RSpec.describe Idv::GettingStartedController do
         }.from(nil).to(true)
       end
 
+      it 'sets idv_session.skip_hybrid_handoff? to true' do
+        expect do
+          put :update, params: params
+        end.to change {
+          subject.idv_session.skip_hybrid_handoff?
+        }.from(false).to(true)
+      end
+
       it 'redirects to hybrid handoff' do
         put :update, params: params
         expect(response).to redirect_to(idv_hybrid_handoff_url)
