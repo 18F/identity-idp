@@ -86,8 +86,14 @@ RSpec.describe Idv::PhoneErrorsController do
       end
     end
 
-    # context 'the user has not submtted a phone number' do
-    # end
+    context 'the user has not submtted a phone number' do
+      let(:user) { create(:user) }
+      it 'redirects to phone step' do
+        get action
+
+        expect(response).to redirect_to(idv_phone_url)
+      end
+    end
   end
 
   let(:idv_session) { double }
