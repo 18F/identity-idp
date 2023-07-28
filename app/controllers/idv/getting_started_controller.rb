@@ -65,7 +65,6 @@ module Idv
     end
 
     def skip_to_capture
-      flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
 
       # Store that we're skipping hybrid handoff so if the user
