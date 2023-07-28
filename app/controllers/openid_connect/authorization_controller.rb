@@ -6,6 +6,7 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
+    include ForcedReauthenticationConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :pre_validate_authorize_form, only: [:index]
@@ -125,12 +126,16 @@ module OpenidConnect
     end
 
     def sign_out_if_prompt_param_is_login_and_user_is_signed_in
+      if @authorize_form.prompt != 'login'
+        set_issuer_forced_reauthentication(@authorize_form.service_provider.issuer, false)
+      end
       return unless user_signed_in? && @authorize_form.prompt == 'login'
       return if session[:oidc_state_for_login_prompt] == @authorize_form.state
       return if check_sp_handoff_bounced
       unless sp_session[:request_url] == request.original_url
         sign_out
         session[:oidc_state_for_login_prompt] = @authorize_form.state
+        set_issuer_forced_reauthentication(@authorize_form.service_provider.issuer, true)
       end
     end
 
