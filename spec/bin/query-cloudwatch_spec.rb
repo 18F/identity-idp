@@ -12,6 +12,7 @@ RSpec.describe QueryCloudwatch do
 
     before do
       allow(QueryCloudwatch).to receive(:exit)
+      allow(Reporting::CloudwatchClient).to receive(:MAX_RESULTS_LIMIT).and_return(10_000)
     end
 
     context 'with no arguments' do
@@ -162,9 +163,23 @@ RSpec.describe QueryCloudwatch do
     context 'with --count-distinct' do
       let(:argv) { required_parameters + %w[--count-distinct properties.user_id] }
 
-      it 'assigns the slice duration' do
+      it 'assigns the count_distinct field config' do
         config = parse!
         expect(config.count_distinct).to eq('properties.user_id')
+      end
+
+      it 'revises the query' do
+        config = parse!
+        expect(config.query).to eq <<~STR.chomp
+          fields @message
+          | stats count(*) by properties.user_id
+          | limit 10000
+        STR
+      end
+
+      it 'toggles complete config' do
+        config = parse!
+        expect(config.complete).to eq(true)
       end
     end
 
