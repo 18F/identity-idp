@@ -8,11 +8,7 @@ module Reporting
     DEFAULT_WAIT_DURATION = 3
     MAX_RESULTS_LIMIT = 10_000
 
-    attr_reader :num_threads,
-                :wait_duration,
-                :slice_interval,
-                :logger,
-                :log_group_name
+    attr_reader :num_threads, :wait_duration, :slice_interval, :logger, :log_group_name
 
     # @param [Boolean] ensure_complete_logs when true, will detect when queries return exactly
     #  10,000 rows (Cloudwatch Insights max limit) and then recursively split the query window into
