@@ -56,7 +56,10 @@ module Idv
     def update_tracking
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_letter_sent, :update, true)
-      analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
+      analytics.idv_gpo_address_letter_requested(
+        resend: resend_requested?,
+        **ab_test_analytics_buckets,
+      )
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
