@@ -38,7 +38,7 @@
   <% if FeatureManagement.enable_load_testing_mode? %>
     <%= link_to(
           'CONFIRM NOW',
-          sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+          sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email)&.confirmation_token),
           id: 'confirm-now',
         ) %>
   <% end %>
