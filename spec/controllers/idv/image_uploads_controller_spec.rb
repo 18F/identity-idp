@@ -249,10 +249,10 @@ RSpec.describe Idv::ImageUploadsController do
           'IdV: doc auth image upload form submitted',
           success: false,
           errors: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,

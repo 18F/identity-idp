@@ -152,4 +152,101 @@ RSpec.describe Idv::InPerson::SsnController do
       end
     end
   end
+
+  describe '#update' do
+    context 'when in_person_ssn_info_controller_enabled is true' do
+      context 'valid ssn' do
+        let(:params) { { doc_auth: { ssn: ssn } } }
+        let(:analytics_name) { 'IdV: doc auth ssn submitted' }
+        let(:analytics_args) do
+          {
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            irs_reproofing: false,
+            step: 'ssn',
+            success: true,
+            errors: {},
+            same_address_as_id: true,
+            pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
+          }.merge(ab_test_args)
+        end
+
+        let(:idv_session) do
+          {
+            applicant: Idp::Constants::MOCK_IDV_APPLICANT,
+            resolution_successful: true,
+            profile_confirmation: true,
+            vendor_phone_confirmation: true,
+            user_phone_confirmation: true,
+          }
+        end
+
+        it 'sends analytics_submitted event' do
+          put :update, params: params
+
+          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+        end
+
+        it 'logs attempts api event' do
+          expect(@irs_attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+            ssn: ssn,
+          )
+
+          put :update, params: params
+        end
+
+        it 'merges ssn into pii session value' do
+          put :update, params: params
+
+          expect(flow_session[:pii_from_user][:ssn]).to eq(ssn)
+        end
+
+        it 'invalidates steps after ssn' do
+          put :update, params: params
+
+          expect(subject.idv_session.applicant).to be_blank
+          expect(subject.idv_session.resolution_successful).to be_blank
+          expect(subject.idv_session.profile_confirmation).to be_blank
+          expect(subject.idv_session.vendor_phone_confirmation).to be_blank
+          expect(subject.idv_session.user_phone_confirmation).to be_blank
+        end
+
+        it 'redirects to the expected page' do
+          put :update, params: params
+
+          expect(response).to redirect_to idv_in_person_verify_info_url
+        end
+      end
+
+      context 'invalid ssn' do
+        let(:params) { { doc_auth: { ssn: 'i am not an ssn' } } }
+        let(:analytics_name) { 'IdV: doc auth ssn submitted' }
+        let(:analytics_args) do
+          {
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            irs_reproofing: false,
+            step: 'ssn',
+            success: false,
+            errors: {
+              ssn: ['Enter a nine-digit Social Security number'],
+            },
+            error_details: { ssn: [:invalid] },
+            same_address_as_id: true,
+            pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
+          }.merge(ab_test_args)
+        end
+
+        render_views
+
+        it 'renders the show template with an error message' do
+          put :update, params: params
+
+          expect(response).to have_rendered(:show)
+          expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+          expect(response.body).to include('Enter a nine-digit Social Security number')
+        end
+      end
+    end
+  end
 end
