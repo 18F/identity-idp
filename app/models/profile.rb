@@ -142,6 +142,18 @@ class Profile < ApplicationRecord
     fraud_review_pending? || fraud_rejection?
   end
 
+  def in_person_verification_pending?
+    # note: deactivation reason will be replaced by timestamp column
+    deactivation_reason == 'in_person_verification_pending'
+  end
+
+  def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+    transaction do
+      UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
+      deactivate(:in_person_verification_pending)
+    end
+  end
+
   def deactivate_for_gpo_verification
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
@@ -217,6 +229,10 @@ class Profile < ApplicationRecord
 
     return unless values.all?(&:present?)
     values.join(':')
+  end
+
+  def pending_in_person_enrollment?
+    proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def includes_phone_check?

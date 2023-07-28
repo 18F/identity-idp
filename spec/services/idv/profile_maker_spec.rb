@@ -6,6 +6,7 @@ RSpec.describe Idv::ProfileMaker do
     let(:user) { create(:user, :fully_registered) }
     let(:user_password) { user.password }
     let(:initiating_service_provider) { nil }
+    let(:in_person_verification_pending) { false }
 
     subject do
       described_class.new(
@@ -13,6 +14,7 @@ RSpec.describe Idv::ProfileMaker do
         user: user,
         user_password: user_password,
         initiating_service_provider: initiating_service_provider,
+        in_person_verification_pending: in_person_verification_pending,
       )
     end
 
