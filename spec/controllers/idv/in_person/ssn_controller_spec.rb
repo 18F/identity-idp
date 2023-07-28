@@ -8,6 +8,7 @@ RSpec.describe Idv::InPerson::SsnController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :pii_from_user => pii_from_user,
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
       :flow_path => 'standard' }
   end
 
@@ -127,6 +128,12 @@ RSpec.describe Idv::InPerson::SsnController do
       )
     end
 
+    it 'adds a session id to flow session' do
+      get :show
+      puts "id: #{flow_session[:threatmetrix_session_id]}"
+      expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
+    end
+
     context 'with an ssn in session' do
       let(:referer) { idv_in_person_step_url(step: :address) }
       before do
@@ -215,6 +222,14 @@ RSpec.describe Idv::InPerson::SsnController do
           put :update, params: params
 
           expect(response).to redirect_to idv_in_person_verify_info_url
+        end
+
+        it 'does not change threatmetrix_session_id when updating ssn' do
+          flow_session[:pii_from_user][:ssn] = ssn
+          put :update, params: params
+          session_id = flow_session[:threatmetrix_session_id]
+          subject.threatmetrix_view_variables
+          expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
         end
       end
 
