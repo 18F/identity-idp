@@ -4,12 +4,6 @@ RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
   include InPersonHelper
 
-  # Needed specs:
-  # unsupervised proofing happy path mobile only
-  # hybrid mobile end to end (edit hybrid_mobile_spec)
-  # verify by mail
-  # in person proofing
-
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
   let(:return_sp_url) { 'https://example.com/' }
