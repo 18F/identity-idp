@@ -41,6 +41,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
+  const locationsUrl = LOCATIONS_URL;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -74,7 +75,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(LOCATIONS_URL, {
+        await request(locationsUrl, {
           json: selected,
           method: 'PUT',
         });
@@ -119,7 +120,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabledAddressSearch}
-        locationsUrl={LOCATIONS_URL}
+        locationsUrl={locationsUrl}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

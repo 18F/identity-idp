@@ -110,7 +110,6 @@ interface FullAddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
-  // todo: add configurable URL here
   locationsUrl: string;
 }
 
