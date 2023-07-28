@@ -11,7 +11,7 @@ import { InPersonContext } from '../context';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
-const DUMMY_LOCATIONS_URL = `https://login.gov${LOCATIONS_URL}`;
+const DUMMY_LOCATIONS_URL = new URL(LOCATIONS_URL, window.location.href).toString();
 
 const USPS_RESPONSE = [
   {
@@ -89,7 +89,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   context('USPS request returns an error', () => {
     beforeEach(() => {
-      server.use(rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))));
+      server.use(rest.post(DUMMY_LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))));
     });
 
     it('displays a try again error message', async () => {
@@ -306,7 +306,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
 
   it('displays correct pluralization for multiple location results', async () => {
     server.resetHandlers();
-    server.use(rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
+    server.use(rest.post(DUMMY_LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(USPS_RESPONSE))));
     const { findByLabelText, findByText } = render(
       <I18nContext.Provider
         value={
