@@ -11,6 +11,8 @@ RSpec.describe 'Identity verification', :js do
   # in person proofing
 
   let(:sp) { :oidc }
+  let(:sp_name) { 'Test SP' }
+  let(:return_sp_url) { 'https://example.com/' }
 
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
@@ -53,7 +55,7 @@ RSpec.describe 'Identity verification', :js do
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
 
-    validate_idv_completed_page
+    validate_idv_completed_page(user)
     click_agree_and_continue
 
     validate_return_to_sp
@@ -75,47 +77,48 @@ RSpec.describe 'Identity verification', :js do
       complete_all_in_person_proofing_steps(user)
 
       enter_gpo_flow
-
-#      validate_send_a_letter_page
       gpo_step
 
       complete_review_step(user)
 
-#      validate_letter_on_the_way_page
-      expect(page).to have_current_path(idv_come_back_later_path)
+      validate_come_back_later_page
+      complete_come_back_later
+      validate_return_to_sp
 
-      # Exit Login.gov and return to SP
-      click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
-
-      # sign out
       visit sign_out_url
 
-      # sign in
       visit_idp_from_sp_with_ial2(sp)
 
       user.password = Features::SessionHelper::VALID_PASSWORD
       sign_in_live_with_2fa(user)
 
-      # Create and fill in confirmation code
-
-      otp = 'ABC123'
-      create(
-        :gpo_confirmation_code,
-        profile: User.find(user.id).pending_profile,
-        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      )
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      complete_gpo_verification(user)
+      expect(user.identity_verified?).to be(false)
 
       acknowledge_and_confirm_personal_key
 
-binding.pry
-      # expect(page).to have_current_path(account_path)
-      # expect(page).not_to have_content(t('headings.account.verified_account'))
-      # verify gpo code
-      # verify IPP barcode
-      # return to SP
+      # click return to sp link
+      click_on t(
+        'in_person_proofing.body.barcode.return_to_partner_link',
+        sp_name: sp_name,
+      )
+
+      expect(current_url).to eq(return_sp_url)
+      visit account_path
+
+      visit sign_out_url
+      user.reload
+
+      mark_in_person_enrollment_passed(user)
+
+      # sign in
+      visit_idp_from_sp_with_ial2(sp)
+      sign_in_live_with_2fa(user)
+
+      validate_idv_completed_page(user)
+      click_agree_and_continue
+
+      validate_return_to_sp
     end
   end
 
@@ -283,12 +286,18 @@ binding.pry
     expect(GpoConfirmation.count).to eq(0)
   end
 
+  def validate_come_back_later_page
+    expect(page).to have_current_path(idv_come_back_later_path)
+    expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+  end
+
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
-  def validate_idv_completed_page
+  def validate_idv_completed_page(user)
+    expect(user.identity_verified?).to be(true)
     expect(current_path).to eq sign_up_completed_path
     expect(page).to have_content t(
       'titles.sign_up.completion_ial2',

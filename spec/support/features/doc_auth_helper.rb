@@ -149,6 +149,22 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_send_link
   end
 
+  def complete_gpo_verification(user)
+    otp = 'ABC123'
+    create(
+      :gpo_confirmation_code,
+      profile: User.find(user.id).pending_profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+    )
+    fill_in t('forms.verify_profile.name'), with: otp
+    click_button t('forms.verify_profile.submit')
+  end
+
+  def complete_come_back_later
+    # Exit Login.gov and return to SP
+    click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
+  end
+
   def complete_all_doc_auth_steps(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     complete_verify_step
