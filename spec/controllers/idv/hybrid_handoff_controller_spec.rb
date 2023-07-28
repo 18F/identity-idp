@@ -183,7 +183,6 @@ RSpec.describe Idv::HybridHandoffController do
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
           irs_reproofing: false,
-          skip_upload_step: false,
         }.merge(ab_test_args)
       end
 

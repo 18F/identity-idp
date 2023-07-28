@@ -165,7 +165,6 @@ module Idv
         errors: {},
         extra: {
           destination: destination,
-          skip_upload_step: mobile_device?,
           flow_path: idv_session.flow_path,
         },
       )
