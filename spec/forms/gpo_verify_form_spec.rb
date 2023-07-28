@@ -143,7 +143,7 @@ RSpec.describe GpoVerifyForm do
 
           enrollment.reload
 
-          expect(enrollment.status).to eq('pending')
+          expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)
         end

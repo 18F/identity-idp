@@ -410,7 +410,7 @@ RSpec.describe Idv::ReviewController do
 
             enrollment.reload
 
-            expect(enrollment.status).to eq('pending')
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
             expect(enrollment.user_id).to eq(user.id)
             expect(enrollment.enrollment_code).to be_a(String)
             expect(enrollment.profile).to eq(user.profiles.last)
@@ -451,7 +451,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -481,7 +481,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -499,7 +499,7 @@ RSpec.describe Idv::ReviewController do
 
               enrollment.reload
 
-              expect(enrollment.status).to eq('pending')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
               expect(enrollment.profile).to eq(user.profiles.last)
@@ -551,7 +551,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end

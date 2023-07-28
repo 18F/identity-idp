@@ -1478,7 +1478,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'IdV: in person notification SMS send attempted',
+      'SendProofingNotificationJob: in person notification SMS send attempted',
       success: success,
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
@@ -1497,7 +1497,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      'SendProofingNotificationJob: job completed',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1518,7 +1518,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationJob: Exception raised',
+      'SendProofingNotificationJob: exception raised',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       exception_class: exception_class,
@@ -1537,7 +1537,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      'SendProofingNotificationJob: job skipped',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
@@ -1554,7 +1554,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      'SendProofingNotificationJob: job started',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
       **extra,
