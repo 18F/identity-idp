@@ -51,7 +51,7 @@ module Idv
       render 'idv/session_errors/failure'
     end
 
-    def throttled
+    def rate_limited
       rate_limiter = RateLimiter.new(user: idv_session_user, rate_limit_type: :idv_doc_auth)
       log_event(based_on_limiter: rate_limiter)
       @expires_at = rate_limiter.expires_at

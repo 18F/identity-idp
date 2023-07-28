@@ -128,7 +128,7 @@ describe('DocumentCapturePolling', () => {
     sandbox
       .stub(global, 'fetch')
       .withArgs('/status')
-      .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#throttled' }) });
+      .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#rate_limited' }) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     await flushPromises(); // Flush `fetch`
@@ -139,7 +139,7 @@ describe('DocumentCapturePolling', () => {
       isCancelled: false,
       isThrottled: true,
     });
-    expect(window.location.hash).to.equal('#throttled');
+    expect(window.location.hash).to.equal('#rate_limited');
   });
 
   it('polls until max, then showing form to submit', async () => {
