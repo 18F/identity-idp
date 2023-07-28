@@ -8,12 +8,6 @@ import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 
-// todo: make this configurable
-// export const LOCATIONS_URL = new URL(
-//  '/verify/in_person/usps_locations',
-//  window.location.href,
-// ).toString();
-
 export interface FormattedLocation {
   formattedCityStateZip: string;
   distance: string;
@@ -97,10 +91,10 @@ const requestUspsLocations = async (
   return formatLocations(response);
 };
 
-// todo: make URL configurable
-// export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
-
-function requestAddressCandidates(unvalidatedAddressInput: string, addressSearchUrl: string): Promise<Location[]> {
+function requestAddressCandidates(
+  unvalidatedAddressInput: string,
+  addressSearchUrl: string,
+): Promise<Location[]> {
   return request<Location[]>(addressSearchUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -129,7 +123,9 @@ function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
     data: addressCandidates,
     isLoading: isLoadingCandidates,
     error: addressError,
-  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery, addressSearchUrl) : null));
+  } = useSWR([addressQuery], () =>
+    addressQuery ? requestAddressCandidates(addressQuery, addressSearchUrl) : null,
+  );
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
@@ -157,9 +153,7 @@ function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
     isLoading: isLoadingLocations,
     error: uspsError,
   } = useSWR([foundAddress], ([address]) =>
-    address
-      ? requestUspsLocations(locationsUrl, address)
-      : null,
+    address ? requestUspsLocations(locationsUrl, address) : null,
   );
 
   return {

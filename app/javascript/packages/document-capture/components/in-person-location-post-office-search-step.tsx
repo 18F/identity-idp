@@ -7,7 +7,6 @@ import AddressSearch, {
   transformKeys,
   snakeCase,
   LocationQuery,
-//  LOCATIONS_URL,
 } from '@18f/identity-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
@@ -37,7 +36,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   const mountedRef = useRef(false);
 
   // this is the place to start and should be the only place to set up the locationsUrl
-  const locationsUrl = LOCATIONS_URL; //'/verify/in_person/usps_locations'
+  const locationsUrl = LOCATIONS_URL; // '/verify/in_person/usps_locations'
   const addressSearchUrl = ADDRESS_SEARCH_URL; // '/api/addresses'
 
   useEffect(() => {

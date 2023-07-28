@@ -3,18 +3,14 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import {
-  transformKeys,
-  snakeCase,
-  LocationQuery,
-//  LOCATIONS_URL,
-} from '@18f/identity-address-search';
+import { transformKeys, snakeCase, LocationQuery } from '@18f/identity-address-search';
 import FullAddressSearch from './in-person-full-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
 function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   onChange,
@@ -46,9 +42,6 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
 
-  // this is the gold standard! Entrez-vous
-  const locationsUrl = '/verify/in_person/usps_locations'
-  const addressSearchUrl = '/api/addresses/'
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -81,7 +74,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationsUrl, {
+        await request(LOCATIONS_URL, {
           json: selected,
           method: 'PUT',
         });
@@ -126,9 +119,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabledAddressSearch}
-        // todo: provide URL as a prop here as well
-        locationsUrl={locationsUrl}
-        addressSearchUrl={addressSearchUrl}
+        locationsUrl={LOCATIONS_URL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

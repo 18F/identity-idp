@@ -5,7 +5,7 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
-import AddressSearch, { ADDRESS_SEARCH_URL, LOCATIONS_URL } from '.';
+import AddressSearch from '.';
 
 const DEFAULT_RESPONSE = [
   {
@@ -21,14 +21,17 @@ const DEFAULT_RESPONSE = [
   },
 ];
 
+const LOCATIONS_DUMMY_URL = '/api/locations';
+const ADDRESSES_DUMMY_URL = '/api/addresses';
+
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
   context('when an address is found', () => {
     let server: SetupServer;
     before(() => {
       server = setupServer(
-        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(LOCATIONS_DUMMY_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESSES_DUMMY_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
       );
       server.listen();
     });
@@ -45,6 +48,8 @@ describe('AddressSearch', () => {
           <AddressSearch
             onFoundAddress={handleAddressFound}
             onFoundLocations={handleLocationsFound}
+            locationsUrl={LOCATIONS_DUMMY_URL}
+            addressSearchUrl={ADDRESSES_DUMMY_URL}
           />
         </SWRConfig>,
       );
