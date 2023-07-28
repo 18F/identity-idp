@@ -52,7 +52,7 @@ module Idv
     def track_event(type:)
       attributes = { type: type }
       if type == :failure
-        attributes[:throttle_expires_at] = @expires_at
+        attributes[:limiter_expires_at] = @expires_at
       else
         attributes[:remaining_attempts] = @remaining_attempts
       end
