@@ -2,6 +2,7 @@ module Idv
   class GpoController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
+    include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
@@ -81,7 +82,11 @@ module Idv
     end
 
     def resend_letter
-      analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: true)
+      analytics.idv_gpo_address_letter_enqueued(
+        enqueued_at: Time.zone.now,
+        resend: true,
+        **ab_test_analytics_buckets,
+      )
       confirmation_maker = confirmation_maker_perform
       send_reminder
       return unless FeatureManagement.reveal_gpo_code?
