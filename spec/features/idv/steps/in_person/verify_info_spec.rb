@@ -57,7 +57,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).not_to have_text('bad address')
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_fail
     click_doc_auth_back_link
@@ -120,7 +120,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).not_to have_text('bad address')
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_in t('idv.form.ssn_label'), with: '900-12-2345'
     click_button t('forms.buttons.submit.update')
