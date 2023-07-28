@@ -86,6 +86,7 @@ RSpec.describe 'Identity verification', :js do
       validate_return_to_sp
 
       visit sign_out_url
+      user.reload
 
       visit_idp_from_sp_with_ial2(sp)
 
@@ -96,14 +97,13 @@ RSpec.describe 'Identity verification', :js do
 
       acknowledge_and_confirm_personal_key
 
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       # click return to sp link
       click_on t(
         'in_person_proofing.body.barcode.return_to_partner_link',
         sp_name: sp_name,
       )
-
       expect(current_url).to eq(return_sp_url)
-      visit account_path
 
       visit sign_out_url
       user.reload
