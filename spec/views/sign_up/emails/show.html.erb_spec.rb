@@ -58,7 +58,6 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
   context 'when email address not found' do
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
-      allow(EmailAddress).to receive(:find_with_email).with(email).and_return(nil)
 
       render
     end
