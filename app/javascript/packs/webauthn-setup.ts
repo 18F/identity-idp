@@ -1,4 +1,10 @@
-import { enrollWebauthnDevice, extractCredentials, longToByteArray } from '@18f/identity-webauthn';
+import {
+  enrollWebauthnDevice,
+  extractCredentials,
+  isExpectedWebauthnError,
+  longToByteArray,
+} from '@18f/identity-webauthn';
+import { trackError } from '@18f/identity-analytics';
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
 
@@ -60,11 +66,20 @@ function webauthn() {
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
+        (
+          document.getElementById('authenticator_data_value') as HTMLInputElement
+        ).value = `${result.authenticatorDataValue}`;
         (document.getElementById('transports') as HTMLInputElement).value =
           result.transports.join();
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
-      .catch((err) => reloadWithError(err.name, { force: true }));
+      .catch((error: Error) => {
+        if (!isExpectedWebauthnError(error)) {
+          trackError(error);
+        }
+
+        reloadWithError(error.name, { force: true });
+      });
   });
 }
 

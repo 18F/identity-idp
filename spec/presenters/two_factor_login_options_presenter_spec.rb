@@ -7,13 +7,13 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
-  let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
+  let(:reauthentication_context) { false }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      user_session_context: user_session_context,
+      reauthentication_context: reauthentication_context,
       service_provider: nil,
       phishing_resistant_required: false,
       piv_cac_required: false,
@@ -79,13 +79,13 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     subject(:cancel_link) { presenter.cancel_link }
 
     context 'default user session context' do
-      let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
+      let(:reauthentication_context) { false }
 
       it { should eq sign_out_path }
     end
 
     context 'reauthentication user session context' do
-      let(:user_session_context) { UserSessionContext::REAUTHENTICATION_CONTEXT }
+      let(:reauthentication_context) { true }
 
       it { should eq account_path }
     end

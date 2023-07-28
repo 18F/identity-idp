@@ -67,7 +67,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
   end
 
   describe '#show' do
-    let(:reauthn_param) { { reauthn: 'true' } }
     let(:with_default_phone) { { with: { phone: '+1 (703) 555-1212' } } }
     context 'when user is piv/cac enabled' do
       it 'renders the piv/cac entry screen' do
@@ -98,12 +97,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         expect(response).to redirect_to login_two_factor_authenticator_path
       end
-
-      it 'passes reauthn parameter on redirect' do
-        get :show, params: reauthn_param
-
-        expect(response).to redirect_to login_two_factor_authenticator_path(**reauthn_param)
-      end
     end
 
     context 'when user is authenticated with a remembered device via phone' do
@@ -132,24 +125,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).to redirect_to(account_path)
       end
-
-      it 'does redirect to sms if reauthn parameter is true' do
-        user = create(:user, :with_phone, **with_default_phone)
-        stub_sign_in_before_2fa(user)
-
-        cookies.encrypted[:remember_device] = {
-          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
-          expires: 2.days.from_now,
-        }
-
-        get :show, params: reauthn_param
-
-        expect(Telephony::Test::Message.messages.length).to eq(1)
-        expect(Telephony::Test::Call.calls.length).to eq(0)
-        expect(response).to redirect_to(
-          login_two_factor_path(**otp_preference_sms, **reauthn_param),
-        )
-      end
     end
 
     context 'when user is authenticated with an expired remembered device' do
@@ -163,11 +138,11 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             expires: 2.days.ago,
           }
 
-          get :show, params: reauthn_param
+          get :show
         end
 
         expect(response).to redirect_to(
-          login_two_factor_path(**otp_preference_sms, **reauthn_param),
+          login_two_factor_path(**otp_preference_sms),
         )
       end
     end
@@ -187,12 +162,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         expect(response).to redirect_to login_two_factor_backup_code_url
       end
-
-      it 'passes reauthn parameter on redirect' do
-        get :show, params: reauthn_param
-
-        expect(response).to redirect_to login_two_factor_backup_code_url(**reauthn_param)
-      end
     end
 
     context 'when user is webauthn enabled' do
@@ -204,15 +173,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         get :show
 
         expect(response).to redirect_to login_two_factor_webauthn_path(platform: false)
-      end
-
-      it 'passes reauthn parameter on redirect' do
-        get :show, params: reauthn_param
-
-        expect(response).to redirect_to login_two_factor_webauthn_path(
-          **reauthn_param,
-          platform: false,
-        )
       end
 
       it 'passes the platform parameter if the user has a platform autheticator' do
@@ -243,7 +203,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(Telephony::Test::Message.messages.length).to eq(1)
         expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).
-          to redirect_to login_two_factor_path(**otp_preference_sms, reauthn: false)
+          to redirect_to login_two_factor_path(**otp_preference_sms)
       end
 
       context 'when no options are enabled and available for use' do
@@ -339,7 +299,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(**otp_preference_sms, reauthn: false),
+          login_two_factor_path(**otp_preference_sms),
         )
       end
 
@@ -376,16 +336,6 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         stub_attempts_tracker
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
           with(reauthentication: false, **success_parameters)
-
-        get :send_code, params: otp_delivery_form_sms
-      end
-
-      it 'tracks the attempt event when user session context is reauthentication' do
-        stub_attempts_tracker
-        subject.user_session[:context] = 'reauthentication'
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
-          with(reauthentication: true, **success_parameters)
 
         get :send_code, params: otp_delivery_form_sms
       end
@@ -505,7 +455,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false),
+          login_two_factor_path(otp_delivery_preference: 'voice'),
         )
       end
 
@@ -623,7 +573,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
           expect(flash[:error]).to eq(
             I18n.t(
-              'errors.messages.phone_confirmation_throttled',
+              'errors.messages.phone_confirmation_limited',
               timeout: timeout,
             ),
           )
@@ -676,7 +626,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
           expect(flash[:error]).to eq(
             I18n.t(
-              'errors.messages.phone_confirmation_throttled',
+              'errors.messages.phone_confirmation_limited',
               timeout: timeout,
             ),
           )

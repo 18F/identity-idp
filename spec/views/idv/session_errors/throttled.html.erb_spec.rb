@@ -46,13 +46,13 @@ RSpec.describe 'idv/session_errors/throttled.html.erb' do
 
   context 'with liveness feature disabled' do
     it 'renders expected heading' do
-      expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
+      expect(rendered).to have_text(t('errors.doc_auth.rate_limited_heading'))
     end
   end
 
   context 'with liveness feature enabled' do
     it 'renders expected heading' do
-      expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
+      expect(rendered).to have_text(t('errors.doc_auth.rate_limited_heading'))
     end
   end
 end

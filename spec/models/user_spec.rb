@@ -689,7 +689,7 @@ RSpec.describe User do
   end
 
   describe 'user suspension' do
-    let(:user) { User.new }
+    let(:user) { create(:user) }
     let(:cannot_reinstate_message) { :user_is_not_suspended }
     let(:cannot_suspend_message) { :user_already_suspended }
 
@@ -768,6 +768,10 @@ RSpec.describe User do
           UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
         end
 
+        it 'creates SuspendedEmail records for each email address' do
+          expect { user.suspend! }.to(change { SuspendedEmail.count }.by(1))
+        end
+
         it 'updates the suspended_at attribute with the current time' do
           expect do
             user.suspend!
@@ -822,9 +826,17 @@ RSpec.describe User do
 
     describe '#reinstate!' do
       before do
-        user.suspended_at = Time.zone.now
+        user.suspend!
         user.reinstated_at = nil
       end
+
+      it 'destroys SuspendedEmail records for each email address' do
+        email_address = user.email_addresses.last
+        expect { user.reinstate! }.
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.
+            from(email_address).to(nil))
+      end
+
       it 'updates the reinstated_at attribute with the current time' do
         expect do
           user.reinstate!

@@ -59,8 +59,8 @@ RSpec.describe Users::VerifyPersonalKeyController do
           'Personal key reactivation: Personal key form visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_personal_key,
+          'Rate Limit Reached',
+          limiter_type: :verify_personal_key,
         ).once
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited)
@@ -168,8 +168,8 @@ RSpec.describe Users::VerifyPersonalKeyController do
           pii_like_keypaths: pii_like_keypaths_errors,
         ).once
         expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_personal_key,
+          'Rate Limit Reached',
+          limiter_type: :verify_personal_key,
         ).once
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
