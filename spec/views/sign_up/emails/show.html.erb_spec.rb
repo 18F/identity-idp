@@ -28,8 +28,7 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
   context 'when enable_load_testing_mode? is true and email address found' do
     before do
       allow(FeatureManagement).to receive(:enable_load_testing_mode?).and_return(true)
-      email_address = instance_double(EmailAddress, confirmation_token: 'some_token')
-      allow(EmailAddress).to receive(:find_with_email).with(email).and_return(email_address)
+      create(:email_address, confirmation_token: 'some_token', email: email)
 
       render
     end
