@@ -180,8 +180,15 @@ RSpec.describe Idv::HybridHandoffController do
         }.merge(ab_test_args)
       end
 
+      let(:params) do
+        {
+          type: 'mobile',
+          doc_auth: { phone: '202-555-5555' },
+        }
+      end
+
       it 'sends analytics_submitted event for hybrid' do
-        put :update, params: { doc_auth: { phone: '202-555-5555' } }
+        put :update, params: params
 
         expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
@@ -201,8 +208,14 @@ RSpec.describe Idv::HybridHandoffController do
         }.merge(ab_test_args)
       end
 
+      let(:params) do
+        {
+          type: 'desktop',
+        }
+      end
+
       it 'sends analytics_submitted event for desktop' do
-        put :update, params: { type: 'desktop' }
+        put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end

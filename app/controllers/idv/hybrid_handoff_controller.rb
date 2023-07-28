@@ -23,17 +23,11 @@ module Idv
         upload_method: params[:type],
       )
 
-      # See the simple_form_for in
-      # app/views/idv/doc_auth/upload.html.erb
-      if hybrid_flow_chosen?
+      if params[:type] == 'mobile'
         handle_phone_submission
       else
         bypass_send_link_steps
       end
-    end
-
-    def hybrid_flow_chosen?
-      params[:type] != 'desktop' && !mobile_device?
     end
 
     def handle_phone_submission
@@ -127,12 +121,6 @@ module Idv
         flow_session: flow_session,
         idv_phone_form: build_form,
       }
-    end
-
-    def mobile_device?
-      # See app/javascript/packs/document-capture-welcome.js
-      # And app/controllers/idv/agreement_controller.rb
-      !!flow_session[:skip_upload_step]
     end
 
     def build_form
