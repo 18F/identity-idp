@@ -20,7 +20,6 @@ module Idv
     end
 
     def update
-      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
       skip_to_capture if params[:skip_hybrid_handoff] || params[:skip_upload]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
@@ -68,6 +67,10 @@ module Idv
     def skip_to_capture
       flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
+
+      # Store that we're skipping hybrid handoff so if the user
+      # tries to redo document capture they can skip it then too.
+      idv_session.skip_hybrid_handoff = true
     end
 
     def consent_form_params
