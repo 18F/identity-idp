@@ -89,7 +89,6 @@ RSpec.describe 'Identity verification', :js do
 
       visit_idp_from_sp_with_ial2(sp)
 
-      user.password = Features::SessionHelper::VALID_PASSWORD
       sign_in_live_with_2fa(user)
 
       complete_gpo_verification(user)
