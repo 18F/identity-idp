@@ -421,7 +421,7 @@ dast:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" 
-    #DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128"
+    DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion(0).name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion(0).regex=false  -config connection.proxyChain.exclusions.exclusion(0).enabled=true  -config connection.proxyChain.exclusions.exclusion(1).name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion(1).regex=false -config connection.proxyChain.exclusions.exclusion(1).enabled=true -config connection.proxyChain.exclusions.exclusion(2).name=localhost -config connection.proxyChain.exclusions.exclusion(2).regex=false -config connection.proxyChain.exclusions.exclusion(2).enabled=true"
   allow_failure: true
   script:
     - export http_proxy="http://obproxy.login.gov.internal:3128"
