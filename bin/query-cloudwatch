@@ -69,6 +69,7 @@ class QueryCloudwatch
       query: config.query,
       from: config.from,
       to: config.to,
+      &block
     )
   end
 
