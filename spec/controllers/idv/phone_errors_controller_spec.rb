@@ -11,6 +11,10 @@ RSpec.describe Idv::PhoneErrorsController do
     context 'the user is authenticated and has not confirmed their phone' do
       let(:user) { create(:user) }
 
+      before do
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+      end
+
       it 'renders the error' do
         get action
 
@@ -46,6 +50,10 @@ RSpec.describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
       let(:idv_session_user_phone_confirmation) { true }
 
+      before do
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+      end
+
       it 'redirects to the review url' do
         get action
 
@@ -79,6 +87,9 @@ RSpec.describe Idv::PhoneErrorsController do
         get action
       end
     end
+
+    # context 'the user has not submtted a phone number' do
+    # end
   end
 
   let(:idv_session) { double }
@@ -114,42 +125,48 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    it 'assigns phone' do
-      get action
-      expect(assigns(:phone)).to eql(phone)
-    end
-
-    it 'assigns country_code' do
-      get action
-      expect(assigns(:country_code)).to eql(country_code)
-    end
-
-    context 'not knowing about a phone just entered' do
-      let(:previous_phone_step_params) { nil }
-      it 'does not crash' do
-        get action
-      end
-    end
-
     context 'with rate limit attempts' do
       before do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
-      it 'assigns remaining count' do
+      it 'assigns phone' do
         get action
-
-        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:phone)).to eql(phone)
       end
 
-      it 'logs an event' do
+      it 'assigns country_code' do
         get action
+        expect(assigns(:country_code)).to eql(country_code)
+      end
 
-        expect(@analytics).to have_received(:track_event).with(
-          'IdV: phone error visited',
-          type: action,
-          remaining_attempts: 4,
-        )
+      context 'not knowing about a phone just entered' do
+        let(:previous_phone_step_params) { nil }
+        it 'does not crash' do
+          get action
+        end
+      end
+
+      context 'with rate limit attempts' do
+        # before do
+        #   RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+        # end
+
+        it 'assigns remaining count' do
+          get action
+
+          expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
+        end
+
+        it 'logs an event' do
+          get action
+
+          expect(@analytics).to have_received(:track_event).with(
+            'IdV: phone error visited',
+            type: action,
+            remaining_attempts: 4,
+          )
+        end
       end
     end
   end
