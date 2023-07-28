@@ -14,7 +14,10 @@ import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
-export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+export const LOCATIONS_URL = new URL(
+  '/verify/in_person/usps_locations',
+  window.location.href,
+).toString();
 export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
