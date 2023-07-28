@@ -569,7 +569,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Australia',
@@ -587,7 +587,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(0)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Algeria',
@@ -607,12 +607,12 @@ RSpec.feature 'Sign in' do
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
-      visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
+      visit login_two_factor_path(otp_delivery_preference: 'voice')
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -658,7 +658,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,

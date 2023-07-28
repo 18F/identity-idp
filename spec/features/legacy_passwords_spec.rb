@@ -14,7 +14,7 @@ RSpec.feature 'legacy passwords' do
     signin(user.email, 'legacy password')
 
     expect(page).to have_current_path(
-      login_otp_path(otp_delivery_preference: :sms, reauthn: false),
+      login_otp_path(otp_delivery_preference: :sms),
     )
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     expect(

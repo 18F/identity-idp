@@ -43,7 +43,11 @@ module Idv
       @idv_result = async_state.result
 
       success = idv_result[:success]
-      handle_successful_proofing_attempt if success
+      if success
+        handle_successful_proofing_attempt
+      else
+        handle_failed_proofing_attempt
+      end
 
       delete_async
       FormResponse.new(
@@ -117,7 +121,7 @@ module Idv
 
     def rate_limited_result
       @attempts_tracker.idv_phone_otp_sent_rate_limited
-      @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
+      @analytics.rate_limit_reached(limiter_type: :proof_address, step_name: :phone)
       FormResponse.new(success: false)
     end
 
@@ -169,6 +173,12 @@ module Idv
 
     def delete_async
       idv_session.idv_phone_step_document_capture_session_uuid = nil
+    end
+
+    def handle_failed_proofing_attempt
+      return if failure_reason == :timeout
+
+      idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
     end
   end
 end

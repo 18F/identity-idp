@@ -118,7 +118,7 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
           'Aws::PinpointSMSVoice::Errors::LimitExceededException: This is a test message'
 
         expect(response.success?).to eq(false)
-        expect(response.error).to eq(Telephony::ThrottledError.new(error_message))
+        expect(response.error).to eq(Telephony::RateLimitedError.new(error_message))
       end
     end
 

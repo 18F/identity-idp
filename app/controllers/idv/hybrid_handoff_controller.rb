@@ -172,11 +172,11 @@ module Idv
     end
 
     def rate_limited_failure
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :idv_send_link,
+      analytics.rate_limit_reached(
+        limiter_type: :idv_send_link,
       )
       message = I18n.t(
-        'errors.doc_auth.send_link_throttle',
+        'errors.doc_auth.send_link_limited',
         timeout: distance_of_time_in_words(
           Time.zone.now,
           [rate_limiter.expires_at, Time.zone.now].compact.max,

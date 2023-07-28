@@ -9,7 +9,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     @presenter = TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      user_session_context: UserSessionContext::AUTHENTICATION_CONTEXT,
+      reauthentication_context: false,
       service_provider: nil,
       phishing_resistant_required: false,
       piv_cac_required: false,
