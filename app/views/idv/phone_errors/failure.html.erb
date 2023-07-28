@@ -42,9 +42,6 @@
       <% end %>
     <% end %>
     <%= render PageFooterComponent.new do %>
-      <%= link_to(
-            t('links.cancel'),
-            return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
-          ) %>
+      <%= link_to(t('links.cancel'), idv_cancel_path) %>
     <% end %>
 
