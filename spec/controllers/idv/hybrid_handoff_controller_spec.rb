@@ -156,6 +156,31 @@ RSpec.describe Idv::HybridHandoffController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
     end
+
+    context 'hybrid flow is not available' do
+      before do
+        allow(FeatureManagement).to receive(:idv_allow_hybrid_flow?).and_return(false)
+      end
+
+      it 'redirects the user straight to document capture' do
+        get :show
+        expect(response).to redirect_to(idv_document_capture_url)
+      end
+      it 'does not set flow_session[:skip_upload_step]' do
+        expect do
+          get :show
+        end.not_to change {
+          subject.flow_session[:skip_upload_step]
+        }.from(nil)
+      end
+      it 'does not set idv_session.skip_hybrid_handoff' do
+        expect do
+          get :show
+        end.not_to change {
+          subject.idv_session.skip_hybrid_handoff?
+        }.from(false)
+      end
+    end
   end
 
   describe '#update' do

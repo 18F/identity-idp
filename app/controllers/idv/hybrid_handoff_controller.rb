@@ -196,8 +196,20 @@ module Idv
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
 
-      idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
-      return if !idv_session.flow_path
+      if idv_session.skip_hybrid_handoff?
+        # We previously skipped hybrid handoff. Keep doing that.
+        idv_session.flow_path = 'standard'
+      elsif flow_session[:skip_upload_step]
+        # TEMP: Will be removing :skip_upload_step in future commit
+        idv_session.flow_path = 'standard'
+      end
+
+      if !FeatureManagement.idv_allow_hybrid_flow?
+        # When hybrid flow is unavailable, skip it.
+        # But don't store that we skipped it in idv_session, in case it is back to
+        # available when the user tries to redo document capture.
+        idv_session.flow_path = 'standard'
+      end
 
       if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
