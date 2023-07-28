@@ -21,8 +21,8 @@ const DEFAULT_RESPONSE = [
   },
 ];
 
-const LOCATIONS_DUMMY_URL = '/api/locations';
-const ADDRESSES_DUMMY_URL = '/api/addresses';
+const LOCATIONS_DUMMY_URL = 'https://login.gov/api/locations';
+const ADDRESSES_DUMMY_URL = 'https://login.gov/api/addresses';
 
 describe('AddressSearch', () => {
   const sandbox = useSandbox();

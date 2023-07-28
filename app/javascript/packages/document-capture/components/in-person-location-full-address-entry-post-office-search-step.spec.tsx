@@ -11,6 +11,8 @@ import { InPersonContext } from '../context';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
+const DUMMY_LOCATIONS_URL = `https://login.gov${LOCATIONS_URL}`;
+
 const USPS_RESPONSE = [
   {
     address: '100 Main St E, Bronwood, Georgia, 39826',
@@ -63,7 +65,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     server.resetHandlers();
     // todo: should we return USPS_RESPONSE here?
     server.use(
-      rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+      rest.post(DUMMY_LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
     );
   });
 
