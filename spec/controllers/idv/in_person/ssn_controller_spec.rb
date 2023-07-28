@@ -130,7 +130,6 @@ RSpec.describe Idv::InPerson::SsnController do
 
     it 'adds a session id to flow session' do
       get :show
-      puts "id: #{flow_session[:threatmetrix_session_id]}"
       expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
     end
 
