@@ -9,10 +9,10 @@ import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 
 // todo: make this configurable
-export const LOCATIONS_URL = new URL(
-  '/verify/in_person/usps_locations',
-  window.location.href,
-).toString();
+// export const LOCATIONS_URL = new URL(
+//  '/verify/in_person/usps_locations',
+//  window.location.href,
+// ).toString();
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -85,8 +85,11 @@ export const transformKeys = (location: object, predicate: (key: string) => stri
     {},
   );
 
-const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(LOCATIONS_URL, {
+const requestUspsLocations = async (
+  locationsUrl: string,
+  address: LocationQuery,
+): Promise<FormattedLocation[]> => {
+  const response = await request<PostOffice[]>(locationsUrl, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -95,17 +98,17 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
 };
 
 // todo: make URL configurable
-export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
+// export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
 
-function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
-  return request<Location[]>(ADDRESS_SEARCH_URL, {
+function requestAddressCandidates(unvalidatedAddressInput: string, addressSearchUrl: string): Promise<Location[]> {
+  return request<Location[]>(addressSearchUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     json: { address: unvalidatedAddressInput },
   });
 }
 
-function useUspsLocations() {
+function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
@@ -126,7 +129,7 @@ function useUspsLocations() {
     data: addressCandidates,
     isLoading: isLoadingCandidates,
     error: addressError,
-  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery) : null));
+  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery, addressSearchUrl) : null));
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
@@ -153,7 +156,11 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
+  } = useSWR([foundAddress], ([address]) =>
+    address
+      ? requestUspsLocations(locationsUrl, address)
+      : null,
+  );
 
   return {
     foundAddress,
@@ -197,7 +204,7 @@ function AddressSearch({
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
-  } = useUspsLocations();
+  } = useUspsLocations(locationsUrl, addressSearchUrl);
 
   const onTextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;

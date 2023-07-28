@@ -26,6 +26,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # prepare page
       complete_prepare_step(user)
 
+      binding.pry
       # location page
       complete_location_step
 

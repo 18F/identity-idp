@@ -7,13 +7,16 @@ import AddressSearch, {
   transformKeys,
   snakeCase,
   LocationQuery,
-  LOCATIONS_URL,
+//  LOCATIONS_URL,
 } from '@18f/identity-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+
+export const LOCATIONS_URL = '/verify/in_person/usps_locations';
+export const ADDRESS_SEARCH_URL = '/api/addresses';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonURL } = useContext(InPersonContext);
@@ -32,6 +35,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
+
+  // this is the place to start and should be the only place to set up the locationsUrl
+  const locationsUrl = LOCATIONS_URL; //'/verify/in_person/usps_locations'
+  const addressSearchUrl = ADDRESS_SEARCH_URL; // '/api/addresses'
 
   useEffect(() => {
     mountedRef.current = true;
@@ -65,7 +72,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(LOCATIONS_URL, {
+        await request(locationsUrl, {
           json: selected,
           method: 'PUT',
         });
@@ -112,6 +119,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onError={setApiError}
         disabled={disabledAddressSearch}
         // todo: add both URL values as props here
+        locationsUrl={locationsUrl}
+        addressSearchUrl={addressSearchUrl}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
