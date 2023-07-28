@@ -54,8 +54,8 @@ module Idv
       end
 
       def rate_limited_response
-        @flow.analytics.throttler_rate_limit_triggered(
-          throttle_type: :idv_doc_auth,
+        @flow.analytics.rate_limit_reached(
+          limiter_type: :idv_doc_auth,
         )
         @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
         redirect_to rate_limited_url

@@ -148,7 +148,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     # proof_ssn_max_attempts is 10, vs 5 for resolution, so it doesn't get triggered
     it 'rate limits resolution and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'single-session' })
+        with({ limiter_context: 'single-session' })
 
       (max_resolution_attempts - 2).times do
         click_idv_continue
@@ -165,8 +165,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :idv_resolution,
+        'Rate Limit Reached',
+        limiter_type: :idv_resolution,
         step_name: 'verify_info',
       )
 
@@ -211,12 +211,12 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
     it 'rate limits ssn and continues when it expires' do
       expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'multi-session' })
+        with({ limiter_context: 'multi-session' })
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :proof_ssn,
+        'Rate Limit Reached',
+        limiter_type: :proof_ssn,
         step_name: 'verify_info',
       )
 
@@ -248,8 +248,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       expect(page).to have_current_path(idv_phone_path)
       expect(fake_analytics).not_to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :proof_ssn,
+        'Rate Limit Reached',
+        limiter_type: :proof_ssn,
         step_name: 'verify_info',
       )
     end

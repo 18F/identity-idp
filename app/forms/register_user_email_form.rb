@@ -114,7 +114,7 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
-      throttled: @rate_limited,
+      rate_limited: @rate_limited,
     }
   end
 
@@ -124,8 +124,8 @@ class RegisterUserEmailForm
     @rate_limited = rate_limiter.limited?
 
     if @rate_limited
-      @analytics.throttler_rate_limit_triggered(
-        throttle_type: :reg_unconfirmed_email,
+      @analytics.rate_limit_reached(
+        limiter_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: false,
@@ -141,8 +141,8 @@ class RegisterUserEmailForm
     @rate_limited = rate_limiter.limited?
 
     if @rate_limited
-      @analytics.throttler_rate_limit_triggered(
-        throttle_type: :reg_confirmed_email,
+      @analytics.rate_limit_reached(
+        limiter_type: :reg_confirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: true,

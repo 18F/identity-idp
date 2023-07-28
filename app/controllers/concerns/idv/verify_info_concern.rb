@@ -107,15 +107,15 @@ module Idv
 
     def idv_failure_log_rate_limited(rate_limit_type)
       if rate_limit_type == :proof_ssn
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :proof_ssn,
+        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'multi-session')
+        analytics.rate_limit_reached(
+          limiter_type: :proof_ssn,
           step_name: STEP_NAME,
         )
       elsif rate_limit_type == :idv_resolution
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :idv_resolution,
+        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'single-session')
+        analytics.rate_limit_reached(
+          limiter_type: :idv_resolution,
           step_name: STEP_NAME,
         )
       end
