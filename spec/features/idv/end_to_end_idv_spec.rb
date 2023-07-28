@@ -5,8 +5,6 @@ RSpec.describe 'Identity verification', :js do
   include InPersonHelper
 
   let(:sp) { :oidc }
-  let(:sp_name) { 'Test SP' }
-  let(:return_sp_url) { 'https://example.com/' }
 
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
@@ -92,12 +90,7 @@ RSpec.describe 'Identity verification', :js do
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      # click return to sp link
-      click_on t(
-        'in_person_proofing.body.barcode.return_to_partner_link',
-        sp_name: sp_name,
-      )
-      expect(current_url).to eq(return_sp_url)
+      visit_sp_from_in_person_ready_to_verify
 
       visit sign_out_url
       user.reload

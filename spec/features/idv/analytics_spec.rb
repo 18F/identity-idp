@@ -278,7 +278,7 @@ RSpec.feature 'Analytics Regression', js: true do
       complete_review_step(user)
       acknowledge_and_confirm_personal_key
       visit_help_center
-      visit_sp
+      visit_sp_from_in_person_ready_to_verify
     end
 
     it 'records all of the events', allow_browser_log: true do
