@@ -1,44 +1,56 @@
 require 'rails_helper'
 
 RSpec.describe BackupCodeVerificationForm do
-  let(:form) { described_class.new(user) }
-  let(:user) { create(:user, :fully_registered) }
-  let(:backup_codes) do
-    BackupCodeGenerator.new(user).create
+  subject(:result) { described_class.new(user).submit(params).to_h }
+
+  let(:user) { create(:user) }
+  let(:backup_codes) { BackupCodeGenerator.new(user).create }
+  let(:backup_code_config) do
+    BackupCodeConfiguration.find_with_code(code: code, user_id: user.id)
   end
-  let(:params) do
-    {
-      backup_code: code,
-    }
-  end
-  subject(:result) { form.submit(params) }
 
   describe '#submit' do
+    let(:params) do
+      {
+        backup_code: code,
+      }
+    end
+
     context 'with a valid backup code' do
       let(:code) { backup_codes.first }
-      let(:backup_code_config) do
-        BackupCodeConfiguration.find_with_code(code: code, user_id: user.id)
+      let(:expected_response) do
+        {
+          success: true,
+          errors: {},
+          multi_factor_auth_method: 'backup_code',
+          multi_factor_auth_method_created_at: backup_code_config.created_at,
+        }
       end
 
       it 'returns succcess' do
-        expect(result.success?).to eq(true)
-        expect(result.extra[:multi_factor_auth_method]).to eq('backup_code')
-        expect(result.extra[:multi_factor_auth_method_created_at]).
-          to eq(backup_code_config.created_at)
+        expect(result).to eq(expected_response)
       end
 
       it 'marks code as used' do
-        subject
-
-        expect(backup_code_config.reload.used_at).not_to eq(nil)
+        expect { subject }.to change {
+                                backup_code_config.reload.used_at
+                              }.from(nil).to kind_of(Time)
       end
     end
 
     context 'with an invalid backup code' do
       let(:code) { 'invalid' }
+      let(:expected_response) do
+        {
+          success: false,
+          errors: {},
+          multi_factor_auth_method: 'backup_code',
+          multi_factor_auth_method_created_at: nil,
+        }
+      end
 
       it 'returns failure' do
-        expect(result.success?).to eq(false)
+        expect(result).to eq(expected_response)
       end
     end
   end
