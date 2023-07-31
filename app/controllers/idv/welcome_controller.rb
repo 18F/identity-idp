@@ -42,7 +42,6 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
-      flow_session[:document_capture_session_uuid] = document_capture_session.uuid
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 

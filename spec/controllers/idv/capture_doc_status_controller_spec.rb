@@ -9,8 +9,12 @@ RSpec.describe Idv::CaptureDocStatusController do
 
   describe '#show' do
     let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
-    let(:flow_session) { { document_capture_session_uuid: document_capture_session.uuid } }
-    let(:idv_session) { {} }
+    let(:flow_session) { {} }
+    let(:idv_session) do
+      {
+        document_capture_session_uuid: document_capture_session.uuid,
+      }
+    end
 
     before do
       allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(flow_session)
@@ -118,20 +122,6 @@ RSpec.describe Idv::CaptureDocStatusController do
 
         expect(response.status).to eq(200)
       end
-
-      context 'when document_capture_session_uuid is stored in idv_session' do
-        let(:flow_session) { {} }
-        let(:idv_session) do
-          {
-            document_capture_session_uuid: document_capture_session.uuid,
-          }
-        end
-        it 'returns success' do
-          get :show
-
-          expect(response.status).to eq(200)
-        end
-      end
     end
 
     context 'when capture succeeded with barcode attention' do
@@ -210,12 +200,12 @@ RSpec.describe Idv::CaptureDocStatusController do
         let(:result) { nil }
         let(:flow_session) do
           {
-            document_capture_session_uuid: document_capture_session.uuid,
+            had_barcode_attention_error: true,
           }
         end
         let(:idv_session) do
           {
-            had_barcode_attention_error: true,
+            document_capture_session_uuid: document_capture_session.uuid,
           }
         end
 

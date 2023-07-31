@@ -56,7 +56,7 @@ module Idv
     end
 
     def document_capture_session_uuid
-      idv_session.document_capture_session_uuid || flow_session[:document_capture_session_uuid]
+      idv_session.document_capture_session_uuid
     end
 
     def rate_limiter
