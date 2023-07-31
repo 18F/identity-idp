@@ -7,7 +7,6 @@ RSpec.feature 'idv gpo otp verification step' do
   let(:profile) do
     create(
       :profile,
-      deactivation_reason: 3,
       gpo_verification_pending_at: 2.days.ago,
       pii: {
         address1: '1 Secure Way',
