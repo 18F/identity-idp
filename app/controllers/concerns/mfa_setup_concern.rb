@@ -14,8 +14,12 @@ module MfaSetupConcern
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
           success: true,
         )
+        second_mfa_setup_url
+      else 
+        user_session.delete(:mfa_selections)
+        nil
       end
-      second_mfa_setup_url
+      
     end
   end
 
