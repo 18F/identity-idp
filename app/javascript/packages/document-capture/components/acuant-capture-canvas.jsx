@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef } from 'react';
 
-import AcuantContext from '../context/acuant';
 import { getAssetPath } from '@18f/identity-assets';
-import useAcuantTapOrAutoCapture from '../hooks/use-acuant-tap-or-auto-capture';
 import { useI18n } from '@18f/identity-react-i18n';
+import AcuantContext from '../context/acuant';
+import useAcuantTapOrAutoCapture from '../hooks/use-acuant-tap-or-auto-capture';
 
 /**
  * Defines a property on the given object, calling the change callback when that property is set to
