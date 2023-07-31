@@ -67,6 +67,7 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   sharpnessScoreThreshold: number;
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
+  isAssessedAsUnsupported: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -308,9 +309,7 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    */
-  function addInfoToAnalyticsPayload<P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload>(
-    payload: P,
-  ): P {
+  function addInfoToAnalyticsPayload(payload: ImageAnalyticsPayload | AcuantImageAnalyticsPayload) {
     const enhancedPayload = { ...payload, attempt };
     incrementAttempt();
     return enhancedPayload;
@@ -442,7 +441,7 @@ function AcuantCapture(
       assessment = 'success';
     }
 
-    const analyticsPayload: AcuantImageAnalyticsPayload = addInfoToAnalyticsPayload({
+    const analyticsPayload = addInfoToAnalyticsPayload({
       width,
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
