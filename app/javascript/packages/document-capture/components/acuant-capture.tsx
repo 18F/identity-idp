@@ -252,6 +252,7 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
+    acuantCaptureType,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -310,7 +311,7 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt };
+    const enhancedPayload = { ...payload, attempt, acuantCaptureType };
     incrementAttempt();
     return enhancedPayload;
   }
