@@ -5,11 +5,11 @@ import AcuantContext, {
   dirname,
 } from '@18f/identity-document-capture/context/acuant';
 import { AnalyticsContext, DeviceContext } from '@18f/identity-document-capture';
-import { render, useAcuant } from '../../../support/document-capture';
 
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
 import { useContext } from 'react';
+import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/context/acuant', () => {
   const { initialize } = useAcuant();
