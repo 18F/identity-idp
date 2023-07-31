@@ -145,7 +145,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    current_profile if current_profile&.pending_reasons&.any?
+    current_profile if current_profile&.pending?
   end
 
   def gpo_verification_pending_profile

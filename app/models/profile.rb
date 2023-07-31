@@ -47,7 +47,19 @@ class Profile < ApplicationRecord
     gpo_verification_pending_at.present?
   end
 
+  def pending?
+    pending_reasons.any?
+  end
+
   def pending_reasons
+    ##
+    # If profiles have been deactivated because of verification_cancelled or encryption_error
+    # or password reset then they are no longer pending and thus have no pending reasons
+    #
+    if deactivation_reason.present? && deactivation_reason != 'in_person_verification_pending'
+      return []
+    end
+
     [
       *(:gpo_verification_pending if gpo_verification_pending?),
       *(:fraud_check_pending if has_fraud_deactivation_reason?),

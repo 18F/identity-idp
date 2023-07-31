@@ -46,6 +46,23 @@ RSpec.describe Profile do
     end
   end
 
+  # TODO
+  describe '#pending?' do
+    it 'returns false if the profile has no pending reasons'
+
+    it 'returns true if the profile is GPO pending'
+
+    it 'returns true if the profile is in-person pending'
+
+    it 'returns true if the user if fraud review pending'
+
+    it 'returns false if the user cancelled verification'
+
+    it 'returns false if a pending profile was deactivate for an encryption error'
+
+    it 'returns false if a profile is pending password reset'
+  end
+
   describe '#pending_in_person_enrollment?' do
     it 'returns true if the document_check component is usps' do
       profile = create(:profile, proofing_components: { document_check: 'usps' })

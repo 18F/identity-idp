@@ -179,12 +179,33 @@ RSpec.describe User do
 
   context 'when user has multiple profiles' do
     describe '#active_profile' do
-      it 'returns the only active profile' do
+      it 'returns the only the latest profile if it is active' do
         user = create(:user, :fully_registered)
-        profile1 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
-        _profile2 = create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
+        _profile1 = create(
+          :profile,
+          :verified,
+          user: user,
+          pii: { first_name: 'Jane' },
+          created_at: 1.day.ago,
+        )
+        profile2 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Susan' })
 
-        expect(user.active_profile).to eq profile1
+        expect(user.active_profile).to eq profile2
+      end
+
+      it 'returns nil if the latest profile is not active' do
+        user = create(:user, :fully_registered)
+        create(
+          :profile,
+          :active,
+          :verified,
+          user: user,
+          pii: { first_name: 'Jane' },
+          created_at: 1.day.ago,
+        )
+        create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
+
+        expect(user.active_profile).to eq nil
       end
     end
   end
@@ -577,13 +598,13 @@ RSpec.describe User do
       end
 
       it 'returns nil if the active profile is newer than the pending profile' do
-        allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: Time.zone.now))
+        create(:profile, :active, :verified, user: user)
 
         expect(user.pending_profile).to be_nil
       end
 
       it 'returns the profile if the active profile is older than the pending profile' do
-        allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 3.days.ago))
+        create(:profile, :active, :verified, created_at: 3.days.ago, user: user)
 
         expect(user.pending_profile).to eq pending
       end
@@ -1390,13 +1411,13 @@ RSpec.describe User do
 
     context 'with an active profile' do
       let(:active_profile) do
-        build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
+        build(:profile, :active, :verified, created_at: 1.day.ago, pii: { first_name: 'Jane' })
       end
 
       before do
         user.profiles << [
           active_profile,
-          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
+          build(:profile, :verified, created_at: 5.days.ago, pii: { first_name: 'Susan' }),
         ]
       end
 
@@ -1405,14 +1426,16 @@ RSpec.describe User do
       context 'when the active profile is deactivated due to password reset' do
         before { active_profile.deactivate(:password_reset) }
 
-        it { expect(user.password_reset_profile).to eq(active_profile) }
+        it do
+          expect(user.password_reset_profile).to eq(active_profile)
+        end
 
         context 'with a previously-cancelled pending profile' do
           before do
-            user.profiles << build(:profile, :verification_cancelled)
+            create(:profile, :verification_cancelled, user: user)
           end
 
-          it { expect(user.password_reset_profile).to eq(active_profile) }
+          it { expect(user.password_reset_profile).to eq(nil) }
         end
       end
     end
