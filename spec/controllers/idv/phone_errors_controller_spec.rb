@@ -13,6 +13,9 @@ RSpec.describe Idv::PhoneErrorsController do
 
       context 'the user has not submtted a phone number' do
         it 'redirects to phone step' do
+          allow(idv_session).to receive(:previous_phone_step_params).
+            and_return(nil)
+
           get action
 
           expect(response).to redirect_to(idv_phone_url)
@@ -20,18 +23,18 @@ RSpec.describe Idv::PhoneErrorsController do
       end
 
       context 'with already submitted phone number' do
-        let(:phone_step_params) do
-          {
-            phone: '(703) 555-5555',
-            international_code: 'US',
-            otp_delivery_preference: 'sms',
-          }
-        end
+        # let(:phone_step_params) do
+        #   {
+        #     phone: '(703) 555-5555',
+        #     international_code: 'US',
+        #     otp_delivery_preference: 'sms',
+        #   }
+        # end
 
-        before do
-          allow(idv_session).to receive(:previous_phone_step_params).
-            and_return(phone_step_params)
-        end
+        # before do
+        #   allow(idv_session).to receive(:previous_phone_step_params).
+        #     and_return(phone_step_params)
+        # end
 
         context 'the user has not confirmed their phone' do
           it 'renders the error' do
