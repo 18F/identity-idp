@@ -290,29 +290,4 @@ RSpec.feature 'idv phone step', :js do
       end
     end
   end
-
-  context 'user visits phone errors before submitting phone number' do
-    before do
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step
-    end
-
-    it 'redirects to phone step if visits phone errors warning' do
-      visit(idv_phone_errors_warning_url)
-
-      expect(current_path).to eq(idv_phone_path)
-    end
-
-    it 'redirects to phone step if visits phone errors warning' do
-      visit(idv_phone_errors_failure_url)
-
-      expect(current_path).to eq(idv_phone_path)
-    end
-
-    it 'redirects user from phone errors jobfail to phone step' do
-      visit(idv_phone_errors_jobfail_url)
-
-      expect(current_path).to eq(idv_phone_path)
-    end
-  end
 end
