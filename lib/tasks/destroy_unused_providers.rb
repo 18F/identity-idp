@@ -29,12 +29,14 @@ class DestroyUnusedProviders
 
       records.destroy_records
     end
+    nil
   end
 
   class DestroyableRecords
-    attr_reader :sp, :int
+    attr_reader :sp, :int, :issuer
 
     def initialize(issuer)
+      @issuer = issuer
       @sp = ServiceProvider.includes(:in_person_enrollments).find_by_issuer(issuer)
       @int = Agreements::Integration.includes(:partner_account, iaa_orders: [:iaa_gtc]).find_by_issuer(issuer)
     end
@@ -94,6 +96,8 @@ class DestroyUnusedProviders
 
       puts "Destroying service provider issuer #{sp.issuer}"
       sp.destroy!
+
+      puts "ServiceProvider with issuer #{issuer} and associated records has been destroyed."
     end
   end
 end
