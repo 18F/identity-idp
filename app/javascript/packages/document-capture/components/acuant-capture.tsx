@@ -308,9 +308,9 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    */
-  function getAddAttemptAnalyticsPayload<
-    P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
-  >(payload: P): P {
+  function addInfoToAnalyticsPayload<P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload>(
+    payload: P,
+  ): P {
     const enhancedPayload = { ...payload, attempt };
     incrementAttempt();
     return enhancedPayload;
@@ -324,7 +324,7 @@ function AcuantCapture(
     if (nextValue) {
       const { width, height } = await getImageDimensions(nextValue);
 
-      analyticsPayload = getAddAttemptAnalyticsPayload({
+      analyticsPayload = addInfoToAnalyticsPayload({
         width,
         height,
         mimeType: nextValue.type,
@@ -442,7 +442,7 @@ function AcuantCapture(
       assessment = 'success';
     }
 
-    const analyticsPayload: AcuantImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
+    const analyticsPayload: AcuantImageAnalyticsPayload = addInfoToAnalyticsPayload({
       width,
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
