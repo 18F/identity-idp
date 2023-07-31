@@ -7,6 +7,7 @@ import { arrayBufferToBase64 } from './converters';
  * and when support changes.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAttestationResponse/getTransports#browser_compatibility
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAttestationResponse/getAuthenticatorData#browser_compatibility
  */
 interface AuthenticatorAttestationResponseBrowserSupport
   extends Omit<AuthenticatorAttestationResponse, 'getAuthenticatorData' | 'getTransports'> {
