@@ -66,7 +66,7 @@ module Idv
       end
 
       def rate_limited_url
-        idv_session_errors_throttled_url
+        idv_session_errors_rate_limited_url
       end
 
       # Ideally we would not have to re-implement the EffectiveUser mixin

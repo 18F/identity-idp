@@ -367,7 +367,6 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
-      get '/session/errors/throttled' => 'session_errors#rate_limited'
       get '/session/errors/rate_limited' => 'session_errors#rate_limited'
       get '/setup_errors', to: redirect('/please_call')
       get '/not_verified' => 'not_verified#show'
@@ -412,6 +411,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
       get '/doc_auth/:step', to: redirect('/verify/welcome')
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
+      get '/session/errors/throttled', to: redirect('/verify/session/errors/rate_limited')
     end
 
     # Old paths to GPO outside of IdV.
