@@ -23,17 +23,11 @@ module Idv
         upload_method: params[:type],
       )
 
-      # See the simple_form_for in
-      # app/views/idv/doc_auth/upload.html.erb
-      if hybrid_flow_chosen?
+      if params[:type] == 'mobile'
         handle_phone_submission
       else
         bypass_send_link_steps
       end
-    end
-
-    def hybrid_flow_chosen?
-      params[:type] != 'desktop' && !mobile_device?
     end
 
     def handle_phone_submission
@@ -129,12 +123,6 @@ module Idv
       }
     end
 
-    def mobile_device?
-      # See app/javascript/packs/document-capture-welcome.js
-      # And app/controllers/idv/agreement_controller.rb
-      !!flow_session[:skip_upload_step]
-    end
-
     def build_form
       Idv::PhoneForm.new(
         previous_params: {},
@@ -165,15 +153,14 @@ module Idv
         errors: {},
         extra: {
           destination: destination,
-          skip_upload_step: mobile_device?,
           flow_path: idv_session.flow_path,
         },
       )
     end
 
     def rate_limited_failure
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :idv_send_link,
+      analytics.rate_limit_reached(
+        limiter_type: :idv_send_link,
       )
       message = I18n.t(
         'errors.doc_auth.send_link_limited',
@@ -209,8 +196,20 @@ module Idv
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
 
-      idv_session.flow_path = 'standard' if flow_session[:skip_upload_step]
-      return if !idv_session.flow_path
+      if idv_session.skip_hybrid_handoff?
+        # We previously skipped hybrid handoff. Keep doing that.
+        idv_session.flow_path = 'standard'
+      elsif flow_session[:skip_upload_step]
+        # TEMP: Will be removing :skip_upload_step in future commit
+        idv_session.flow_path = 'standard'
+      end
+
+      if !FeatureManagement.idv_allow_hybrid_flow?
+        # When hybrid flow is unavailable, skip it.
+        # But don't store that we skipped it in idv_session, in case it is back to
+        # available when the user tries to redo document capture.
+        idv_session.flow_path = 'standard'
+      end
 
       if idv_session.flow_path == 'standard'
         redirect_to idv_document_capture_url
@@ -221,7 +220,13 @@ module Idv
 
     def setup_for_redo
       flow_session[:redo_document_capture] = true
+
+      # If we previously skipped hybrid handoff for the user (because they're on a mobile
+      # device with a camera), skip it _again_ here.
+
       if flow_session[:skip_upload_step]
+        idv_session.flow_path = 'standard'
+      elsif idv_session.skip_hybrid_handoff?
         idv_session.flow_path = 'standard'
       else
         idv_session.flow_path = nil

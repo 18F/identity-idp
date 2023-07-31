@@ -95,8 +95,8 @@ RSpec.describe Idv::GpoVerifyController do
           'IdV: GPO verification visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_gpo_key,
+          'Rate Limit Reached',
+          limiter_type: :verify_gpo_key,
         ).once
 
         action
@@ -347,8 +347,8 @@ RSpec.describe Idv::GpoVerifyController do
           ).exactly(max_attempts).times
 
           expect(@analytics).to receive(:track_event).with(
-            'Throttler Rate Limit Triggered',
-            throttle_type: :verify_gpo_key,
+            'Rate Limit Reached',
+            limiter_type: :verify_gpo_key,
           ).once
 
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once

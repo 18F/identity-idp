@@ -233,7 +233,7 @@ RSpec.describe Idv::PhoneErrorsController do
           expect(@analytics).to have_received(:track_event).with(
             'IdV: phone error visited',
             type: action,
-            throttle_expires_at: attempted_at + rate_limit_window,
+            limiter_expires_at: attempted_at + rate_limit_window,
           )
         end
       end
