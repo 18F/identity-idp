@@ -141,8 +141,8 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'merges ssn into pii session value' do
         put :update, params: params
 
-          expect(flow_session[:pii_from_user][:ssn]).to eq(ssn)
-        end
+        expect(flow_session[:pii_from_user][:ssn]).to eq(ssn)
+      end
 
       it 'invalidates steps after ssn' do
         put :update, params: params
@@ -157,28 +157,28 @@ RSpec.describe Idv::InPerson::SsnController do
       it 'redirects to the expected page' do
         put :update, params: params
 
-          expect(response).to redirect_to idv_in_person_verify_info_url
-        end
+        expect(response).to redirect_to idv_in_person_verify_info_url
       end
+    end
 
-      context 'invalid ssn' do
-        let(:params) { { doc_auth: { ssn: 'i am not an ssn' } } }
-        let(:analytics_name) { 'IdV: doc auth ssn submitted' }
-        let(:analytics_args) do
-          {
-            analytics_id: 'In Person Proofing',
-            flow_path: 'standard',
-            irs_reproofing: false,
-            step: 'ssn',
-            success: false,
-            errors: {
-              ssn: ['Enter a nine-digit Social Security number'],
-            },
-            error_details: { ssn: [:invalid] },
-            same_address_as_id: true,
-            pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
-          }.merge(ab_test_args)
-        end
+    context 'invalid ssn' do
+      let(:params) { { doc_auth: { ssn: 'i am not an ssn' } } }
+      let(:analytics_name) { 'IdV: doc auth ssn submitted' }
+      let(:analytics_args) do
+        {
+          analytics_id: 'In Person Proofing',
+          flow_path: 'standard',
+          irs_reproofing: false,
+          step: 'ssn',
+          success: false,
+          errors: {
+            ssn: ['Enter a nine-digit Social Security number'],
+          },
+          error_details: { ssn: [:invalid] },
+          same_address_as_id: true,
+          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
+        }.merge(ab_test_args)
+      end
 
       render_views
 
