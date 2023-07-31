@@ -20,7 +20,7 @@ RSpec.feature 'Backup codes' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(second_mfa_setup_url)
+      expect(page).to have_current_path(account_two_factor_authentication_path)
     end
 
     it 'allows you to delete the backup codes' do
@@ -65,7 +65,7 @@ RSpec.feature 'Backup codes' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(second_mfa_setup_url)
+      expect(page).to have_current_path(account_two_factor_authentication_path)
 
       expect(page).to have_content(expected_message)
     end
