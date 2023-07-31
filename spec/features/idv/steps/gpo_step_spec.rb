@@ -27,14 +27,6 @@ RSpec.feature 'idv gpo step' do
 
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
-    let(:otp) { 'ABC123' }
-    let(:gpo_confirmation_code) do
-      create(
-        :gpo_confirmation_code,
-        profile: User.find(user.id).pending_profile,
-        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      )
-    end
 
     it 'allows the user to resend a letter and redirects to the come back later step', :js do
       complete_idv_and_return_to_gpo_step
@@ -64,9 +56,7 @@ RSpec.feature 'idv gpo step' do
       expect(page).to have_current_path(idv_gpo_verify_path)
 
       # complete verification: end to end gpo test
-      gpo_confirmation_code
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      complete_gpo_verification(user)
 
       expect(user.identity_verified?).to be(true)
 
@@ -77,14 +67,12 @@ RSpec.feature 'idv gpo step' do
       it 'does not 500' do
         create(:profile, :with_pii, user: user, gpo_verification_pending_at: 1.day.ago)
         create(:piv_cac_configuration, user: user, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
-        gpo_confirmation_code
 
         signin_with_piv(user)
         fill_in t('account.index.password'), with: user.password
         click_button t('forms.buttons.submit.default')
 
-        fill_in t('forms.verify_profile.name'), with: otp
-        click_button t('forms.verify_profile.submit')
+        complete_gpo_verification(user)
 
         expect(user.identity_verified?).to be(true)
 
