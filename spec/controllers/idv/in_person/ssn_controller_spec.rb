@@ -24,7 +24,9 @@ RSpec.describe Idv::InPerson::SsnController do
     allow(subject).to receive(:pii_from_user).and_return(pii_from_user)
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
-    subject.user_session['idv/in_person'] = flow_session
+    stub_analytics
+    stub_attempts_tracker
+    allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
@@ -173,7 +175,8 @@ RSpec.describe Idv::InPerson::SsnController do
               ssn: ['Enter a nine-digit Social Security number'],
             },
             error_details: { ssn: [:invalid] },
-            pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+            same_address_as_id: true,
+            pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
           }.merge(ab_test_args)
         end
 
