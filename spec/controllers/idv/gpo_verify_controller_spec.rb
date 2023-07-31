@@ -63,7 +63,7 @@ RSpec.describe Idv::GpoVerifyController do
 
         action
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
 
       context 'but that profile is > 30 days old' do
@@ -101,7 +101,7 @@ RSpec.describe Idv::GpoVerifyController do
 
         action
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
     end
   end
@@ -373,7 +373,7 @@ RSpec.describe Idv::GpoVerifyController do
             },
           )
 
-          expect(response).to render_template('idv/gpo_verify/throttled')
+          expect(response).to render_template('idv/gpo_verify/rate_limited')
         end
       end
 
