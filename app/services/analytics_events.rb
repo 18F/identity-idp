@@ -2977,13 +2977,6 @@ module AnalyticsEvents
     )
   end
 
-  def partial_authentication_log_out(**extra)
-    track_event(
-      'Partially authenticated user logged out',
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # The user updated their password

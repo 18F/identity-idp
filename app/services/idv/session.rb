@@ -6,6 +6,8 @@ module Idv
       flow_path
       go_back_path
       gpo_code_verified
+      had_barcode_attention_error
+      had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
       personal_key
@@ -16,6 +18,7 @@ module Idv
       profile_id
       profile_step_params
       resolution_successful
+      skip_hybrid_handoff
       threatmetrix_review_status
       user_phone_confirmation
       vendor_phone_confirmation
@@ -50,7 +53,6 @@ module Idv
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
-        deactivation_reason: deactivation_reason,
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
       )
@@ -74,10 +76,6 @@ module Idv
           pii,
         )
       end
-    end
-
-    def deactivation_reason
-      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?
@@ -139,7 +137,7 @@ module Idv
     end
 
     def in_person_enrollment?
-      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+      current_user.proofing_component&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def verify_info_step_complete?
@@ -206,6 +204,10 @@ module Idv
       session[:user_phone_confirmation] = nil
     end
 
+    def skip_hybrid_handoff?
+      !!session[:skip_hybrid_handoff]
+    end
+
     private
 
     attr_accessor :user_session
@@ -234,6 +236,7 @@ module Idv
         user: current_user,
         user_password: user_password,
         initiating_service_provider: service_provider,
+        in_person_verification_pending: in_person_enrollment?,
       )
     end
 

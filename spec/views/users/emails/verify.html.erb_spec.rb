@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'sign_up/emails/show.html.erb' do
+RSpec.describe 'users/emails/verify.html.erb' do
   let(:email) { 'foo@bar.com' }
   before do
     allow(view).to receive(:email).and_return(email)

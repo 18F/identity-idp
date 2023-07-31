@@ -82,9 +82,18 @@ module Idv
     def had_barcode_attention_result?
       if session_result
         flow_session[:had_barcode_attention_error] = session_result.attention_with_barcode?
+        idv_session.had_barcode_attention_error = session_result.attention_with_barcode?
       end
 
       flow_session[:had_barcode_attention_error]
+    end
+
+    def idv_session
+      @idv_session ||= Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        service_provider: current_sp,
+      )
     end
   end
 end

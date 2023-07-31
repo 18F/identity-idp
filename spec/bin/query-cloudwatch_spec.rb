@@ -12,6 +12,7 @@ RSpec.describe QueryCloudwatch do
 
     before do
       allow(QueryCloudwatch).to receive(:exit)
+      allow(Reporting::CloudwatchClient).to receive(:MAX_RESULTS_LIMIT).and_return(10_000)
     end
 
     context 'with no arguments' do
@@ -159,6 +160,29 @@ RSpec.describe QueryCloudwatch do
       end
     end
 
+    context 'with --count-distinct' do
+      let(:argv) { required_parameters + %w[--count-distinct properties.user_id] }
+
+      it 'assigns the count_distinct field config' do
+        config = parse!
+        expect(config.count_distinct).to eq('properties.user_id')
+      end
+
+      it 'revises the query' do
+        config = parse!
+        expect(config.query).to eq <<~STR.chomp
+          fields @message
+          | stats count(*) by properties.user_id
+          | limit 10000
+        STR
+      end
+
+      it 'toggles complete config' do
+        config = parse!
+        expect(config.complete).to eq(true)
+      end
+    end
+
     def build_stdin_without_query
       StringIO.new.tap do |io|
         allow(io).to receive(:tty?).and_return(true)
@@ -172,6 +196,7 @@ RSpec.describe QueryCloudwatch do
 
   describe '#run' do
     let(:format) { :csv }
+    let(:count_distinct) { nil }
     let(:config) do
       QueryCloudwatch::Config.new(
         group: 'foobar',
@@ -182,6 +207,7 @@ RSpec.describe QueryCloudwatch do
         wait_duration: 0,
         query: 'fields @timestamp, @message',
         format: format,
+        count_distinct: count_distinct,
       )
     end
     let(:query_cloudwatch) { QueryCloudwatch.new(config) }
@@ -230,6 +256,15 @@ RSpec.describe QueryCloudwatch do
           {"@timestamp":"timestamp-1","@message":"message-1"}
           {"@timestamp":"timestamp-2","@message":"message-2"}
         STR
+      end
+    end
+
+    context 'with count distinct' do
+      let(:count_distinct) { '@message' }
+
+      it 'outputs sum count' do
+        run
+        expect(stdout.string.strip).to eq '2'
       end
     end
   end
