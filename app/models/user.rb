@@ -60,6 +60,12 @@ class User < ApplicationRecord
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
 
+  has_one :current_profile,
+          -> { order(created_at: :desc) },
+          class_name: 'Profile',
+          dependent: :destroy,
+          inverse_of: :user
+
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
@@ -95,7 +101,7 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    @active_profile ||= profiles.verified.find(&:active?)
+    current_profile if current_profile&.active?
   end
 
   def pending_profile?
@@ -140,34 +146,7 @@ class User < ApplicationRecord
   end
 
   def pending_profile
-    return @pending_profile if defined?(@pending_profile)
-
-    @pending_profile = begin
-      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-        profiles.where.not(gpo_verification_pending_at: nil),
-      ).or(
-        profiles.where.not(in_person_verification_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_review_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_rejection_at: nil),
-      ).order(created_at: :desc).first
-
-      if pending.blank?
-        nil
-      elsif pending.password_reset? || pending.encryption_error? || pending.verification_cancelled?
-        # Profiles that are cancelled for reasons that do not require further verification steps
-        # are not pending profiles
-        nil
-      elsif active_profile.present? && active_profile.activated_at > pending.created_at
-        # If there is an active profile that is older than this pending profile that means the user
-        # has proofed since this profile was created. That profile takes precedence and there is no
-        # pending profile
-        nil
-      else
-        pending
-      end
-    end
+    current_profile if current_profile&.pending_reasons&.any?
   end
 
   def gpo_verification_pending_profile
@@ -335,11 +314,8 @@ class User < ApplicationRecord
     !active_profile.initiating_service_provider&.irs_attempts_api_enabled
   end
 
-  # This user's most recently activated profile that has also been deactivated
-  # due to a password reset, or nil if there is no such profile
   def password_reset_profile
-    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
-    profile if profile&.password_reset?
+    current_profile if current_profile&.password_reset?
   end
 
   def qrcode(otp_secret_key)
