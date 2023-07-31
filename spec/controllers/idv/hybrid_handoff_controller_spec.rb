@@ -217,6 +217,24 @@ RSpec.describe Idv::HybridHandoffController do
           put :update, params: params
         end
       end
+
+      context 'document_capture_session_uuid in idv_session' do
+        let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
+        before do
+          subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+        end
+
+        it 'sends a doc auth link' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(
+              link: a_string_including(document_capture_session_uuid),
+            ),
+          ).and_call_original
+
+          put :update, params: params
+        end
+      end
     end
 
     context 'desktop flow' do
