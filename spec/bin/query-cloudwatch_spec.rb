@@ -12,7 +12,7 @@ RSpec.describe QueryCloudwatch do
 
     before do
       allow(QueryCloudwatch).to receive(:exit)
-      allow(Reporting::CloudwatchClient).to receive(:MAX_RESULTS_LIMIT).and_return(10_000)
+      stub_const('Reporting::CloudwatchClient::MAX_RESULTS_LIMIT', 10_000)
     end
 
     context 'with no arguments' do
