@@ -47,8 +47,7 @@ module Idv
     end
 
     def confirm_idv_phone_step_submitted
-      rate_limiter = RateLimiter.new(user: current_user, rate_limit_type: :proof_address)
-      redirect_to idv_phone_url if rate_limiter.attempts.zero?
+      redirect_to idv_phone_url if idv_session.previous_phone_step_params.nil?
     end
 
     def ignore_form_step_wait_requests
