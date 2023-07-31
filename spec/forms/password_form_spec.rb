@@ -107,23 +107,41 @@ RSpec.describe PasswordForm, type: :model do
         {
           password: password,
           password_confirmation: password,
-          request_id: request_id,
+          request_id: 'foo',
         }
       end
-      let(:request_id) { 'foo' }
-      let(:request_id_present) { true }
+      let(:expected_response) do
+        {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          request_id_present: true,
+        }
+      end
 
       it 'tracks that it is present' do
-        expect(result.success?).to eq true
-        expect(result.extra).to eq extra
+        expect(result.to_h).to eq(expected_response)
       end
 
       context 'when the request_id is not properly encoded' do
-        let(:request_id) { "\xFFbar\xF8" }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password,
+            request_id: "\xFFbar\xF8",
+          }
+        end
+        let(:expected_response) do
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            request_id_present: true,
+          }
+        end
 
         it 'does not throw an exception' do
-          expect(result.success?).to eq true
-          expect(result.extra).to eq extra
+          expect(result.to_h).to eq(expected_response)
         end
       end
     end
