@@ -118,6 +118,20 @@ RSpec.describe Idv::CaptureDocStatusController do
 
         expect(response.status).to eq(200)
       end
+
+      context 'when document_capture_session_uuid is stored in idv_session' do
+        let(:flow_session) { {} }
+        let(:idv_session) do
+          {
+            document_capture_session_uuid: document_capture_session.uuid,
+          }
+        end
+        it 'returns success' do
+          get :show
+
+          expect(response.status).to eq(200)
+        end
+      end
     end
 
     context 'when capture succeeded with barcode attention' do
