@@ -310,7 +310,9 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    */
-  function addInfoToAnalyticsPayload(payload: ImageAnalyticsPayload | AcuantImageAnalyticsPayload) {
+  function addInfoToAnalyticsPayload<P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload>(
+    payload: P,
+  ): P {
     incrementAttempt();
     const acuantTapOrAutoCapture = captureType;
     const enhancedPayload = { ...payload, attempt, acuantTapOrAutoCapture };
