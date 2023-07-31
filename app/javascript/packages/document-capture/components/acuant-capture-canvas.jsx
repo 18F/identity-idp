@@ -1,7 +1,9 @@
-import { useContext, useEffect, useRef, useState } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { useContext, useEffect, useRef } from 'react';
+
 import { getAssetPath } from '@18f/identity-assets';
+import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
+import useAcuantTapOrAutoCapture from '../hooks/use-acuant-tap-or-auto-capture';
 
 /**
  * Capture type.
@@ -35,7 +37,7 @@ function AcuantCaptureCanvas() {
   const { isReady } = useContext(AcuantContext);
   const { t } = useI18n();
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
-  const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
+  const { captureType, setCaptureType } = useAcuantTapOrAutoCapture();
 
   useEffect(() => {
     function onAcuantCameraCreated() {
