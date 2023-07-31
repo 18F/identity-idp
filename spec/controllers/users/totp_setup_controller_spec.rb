@@ -140,8 +140,8 @@ RSpec.describe Users::TotpSetupController, devise: true do
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
 
-        it 'redirects to second mfa setup page with a success message' do
-          expect(response).to redirect_to(second_mfa_setup_url)
+        it 'redirects to account_path with a success message' do
+          expect(response).to redirect_to(account_path)
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
           result = {
