@@ -58,7 +58,7 @@ RSpec.feature 'idv gpo step' do
       # complete verification: end to end gpo test
       complete_gpo_verification(user)
 
-      expect(user.identity_verified?).to be(true)
+      expect(user.reload.identity_verified?).to be(true)
 
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
     end
