@@ -23,6 +23,7 @@ import DeviceContext from '../context/device';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
+import useAcuantTapOrAutoCapture from '../hooks/use-acuant-tap-or-auto-capture';
 import useCookie from '../hooks/use-cookie';
 import useCounter from '../hooks/use-counter';
 
@@ -274,6 +275,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
+  const { captureType } = useAcuantTapOrAutoCapture();
 
   const {
     failedCaptureAttempts,
@@ -311,7 +313,7 @@ function AcuantCapture(
    */
   function addInfoToAnalyticsPayload(payload: ImageAnalyticsPayload | AcuantImageAnalyticsPayload) {
     incrementAttempt();
-    const acuantTapOrAutoCapture = 'TAP';
+    const acuantTapOrAutoCapture = captureType;
     const enhancedPayload = { ...payload, attempt, acuantTapOrAutoCapture };
     return enhancedPayload;
   }
