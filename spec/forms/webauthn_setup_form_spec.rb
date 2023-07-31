@@ -77,62 +77,39 @@ RSpec.describe WebauthnSetupForm do
         end
 
         context 'with non backed up option data flags' do
-          let(:params) do
-            {
-              attestation_object: attestation_object,
-              client_data_json: setup_client_data_json,
-              name: 'mykey',
-              platform_authenticator: false,
-              transports: 'usb',
-              authenticator_data_value: '65',
-            }
-          end
+          let(:params) { super().merge(authenticator_data_value: '65') }
 
           it 'includes data flags with bs set as false ' do
             result = subject.submit(protocol, params)
 
-            expect(result.to_h).to eq(
-              success: true,
-              errors: {},
-              enabled_mfa_methods_count: 1,
-              mfa_method_counts: { webauthn: 1 },
-              multi_factor_auth_method: 'webauthn',
-              authenticator_data_flags: {
-                up: true,
-                uv: false,
-                be: false,
-                bs: false,
-                at: true,
-                ed: false,
-              },
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
+            expect(result.to_h[:authenticator_data_flags]).to eq(
+              up: true,
+              uv: false,
+              be: false,
+              bs: false,
+              at: true,
+              ed: false,
             )
           end
         end
 
-        context 'when user enters in a non number value' do
-          let(:params) do
-            {
-              attestation_object: attestation_object,
-              client_data_json: setup_client_data_json,
-              name: 'mykey',
-              platform_authenticator: false,
-              transports: 'usb',
-              authenticator_data_value: 'bad_error',
-            }
-          end
+        context 'when authenticator_data_value is not a number' do
+          let(:params) { super().merge(authenticator_data_value: 'bad_error') }
 
           it 'should not include authenticator data flag' do
             result = subject.submit(protocol, params)
 
-            expect(result.to_h).to eq(
-              success: true,
-              errors: {},
-              enabled_mfa_methods_count: 1,
-              mfa_method_counts: { webauthn: 1 },
-              multi_factor_auth_method: 'webauthn',
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
-            )
+            expect(result.to_h[:authenticator_data_flags]).to be_nil
+          end
+        end
+
+        context 'when authenticator_data_value is missing' do
+          let(:params) { super().merge(authenticator_data_value: nil) }
+
+          it 'should not include authenticator data flag' do
+            result = subject.submit(protocol, params)
+
+            expect(result.to_h[:authenticator_data_flags]).to be_nil
           end
         end
       end
