@@ -6,6 +6,7 @@ module Idv
       flow_path
       go_back_path
       gpo_code_verified
+      had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
