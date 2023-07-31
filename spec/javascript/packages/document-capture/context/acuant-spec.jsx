@@ -1,14 +1,15 @@
-import sinon from 'sinon';
-import { useContext } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
-import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import AcuantContext, {
-  dirname,
   Provider as AcuantContextProvider,
   DEFAULT_ACCEPTABLE_GLARE_SCORE,
   DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+  dirname,
 } from '@18f/identity-document-capture/context/acuant';
+import { AnalyticsContext, DeviceContext } from '@18f/identity-document-capture';
 import { render, useAcuant } from '../../../support/document-capture';
+
+import { renderHook } from '@testing-library/react-hooks';
+import sinon from 'sinon';
+import { useContext } from 'react';
 
 describe('document-capture/context/acuant', () => {
   const { initialize } = useAcuant();
@@ -32,6 +33,8 @@ describe('document-capture/context/acuant', () => {
       'isCameraSupported',
       'isActive',
       'setIsActive',
+      'acuantCaptureType',
+      'setAcuantCaptureType',
       'credentials',
       'endpoint',
       'glareThreshold',
