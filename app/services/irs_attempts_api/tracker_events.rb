@@ -276,15 +276,6 @@ module IrsAttemptsApi
       )
     end
 
-    # The user, who had previously successfully confirmed their identity, has
-    # reproofed. All the normal events are also sent, this simply notes that
-    # this is the second (or more) time they have gone through the process successfully.
-    def idv_reproof
-      track_event(
-        :idv_reproof,
-      )
-    end
-
     # @param [String] ssn
     # User entered in SSN number during Identity verification
     def idv_ssn_submitted(ssn:)
@@ -306,12 +297,12 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] throttle_context - Either single-session or multi-session
+    # @param [String] limiter_context - Either single-session or multi-session
     # Track when idv verification is rate limited during idv flow
-    def idv_verification_rate_limited(throttle_context:)
+    def idv_verification_rate_limited(limiter_context:)
       track_event(
         :idv_verification_rate_limited,
-        throttle_context: throttle_context,
+        limiter_context: limiter_context,
       )
     end
 

@@ -212,6 +212,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -244,8 +246,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-    # destroy phone number for expired
-    enrollment.notification_phone_configuration&.destroy
+
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err
@@ -309,6 +310,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -342,6 +346,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_verified_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -365,6 +372,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -393,9 +402,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       handle_unsupported_status(enrollment, response)
     end
-
-    # invoke job to send sms notification
-    send_enrollment_status_sms_notification(enrollment: enrollment)
   end
 
   def send_verified_email(user, enrollment)

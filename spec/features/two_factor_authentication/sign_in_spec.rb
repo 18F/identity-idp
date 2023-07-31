@@ -494,7 +494,7 @@ RSpec.feature 'Two Factor Authentication' do
       user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
-      expect(current_path).to eq root_path
+      expect(current_path).to eq login_two_factor_options_path
     end
   end
 

@@ -103,7 +103,7 @@ function ReviewIssuesStep({
       return (
         <>
           <Warning
-            heading={t('errors.doc_auth.throttled_heading')}
+            heading={t('errors.doc_auth.rate_limited_heading')}
             actionText={t('idv.failure.button.warning')}
             actionOnClick={onWarningPageDismissed}
             location="doc_auth_review_issues"
@@ -137,7 +137,7 @@ function ReviewIssuesStep({
 
     return (
       <Warning
-        heading={t('errors.doc_auth.throttled_heading')}
+        heading={t('errors.doc_auth.rate_limited_heading')}
         actionText={t('idv.failure.button.try_online')}
         actionOnClick={onWarningPageDismissed}
         location="doc_auth_review_issues"
@@ -150,7 +150,7 @@ function ReviewIssuesStep({
           />
         }
       >
-        <h2>{t('errors.doc_auth.throttled_subheading')}</h2>
+        <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
         {!!unknownFieldErrors &&
           unknownFieldErrors
             .filter((error) => !['front', 'back'].includes(error.field!))

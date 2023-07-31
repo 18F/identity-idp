@@ -40,7 +40,7 @@ module Idv
         )
 
         if form_response.success?
-          flow_session['pii_from_user'][:ssn] = params[:doc_auth][:ssn]
+          flow_session[:pii_from_user][:ssn] = params[:doc_auth][:ssn]
           idv_session.invalidate_steps_after_ssn!
           redirect_to idv_in_person_verify_info_url
         else
@@ -78,7 +78,8 @@ module Idv
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(ab_test_analytics_buckets)
+        }.merge(ab_test_analytics_buckets).
+          merge(**extra_analytics_properties)
       end
 
       def updating_ssn?

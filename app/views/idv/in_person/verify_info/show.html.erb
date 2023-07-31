@@ -18,23 +18,6 @@ locals:
   <!-- Needed by form steps wait javascript -->
 </div>
 
-<% if @had_barcode_read_failure %>
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-        text_tag: 'div',
-      ) do %>
-    <%= t(
-          'doc_auth.headings.capture_scan_warning_html',
-          link_html: link_to(
-            t('doc_auth.headings.capture_scan_warning_link'),
-            idv_hybrid_handoff_url(redo: true),
-            'aria-label': t('doc_auth.headings.capture_scan_warning_link'),
-          ),
-        ) %>
-  <% end %>
-<% end %>
-
 <% title t('titles.idv.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>

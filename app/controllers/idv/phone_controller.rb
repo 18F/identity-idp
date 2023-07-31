@@ -44,7 +44,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
 
-      analytics.idv_phone_confirmation_form_submitted(**result.to_h)
+      analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],
@@ -141,6 +141,7 @@ module Idv
         previous_params: idv_session.previous_phone_step_params,
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
+        failed_phone_numbers: idv_session.failed_phone_step_numbers,
       )
     end
 

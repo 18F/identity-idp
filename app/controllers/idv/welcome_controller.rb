@@ -17,8 +17,6 @@ module Idv
     end
 
     def update
-      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
-
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session

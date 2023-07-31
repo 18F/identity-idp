@@ -114,9 +114,9 @@ es:
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
         warning:
-          attempts:
-            one: Por razones de seguridad, dispone de un solo intento.
-            other: Por razones de seguridad, le quedan %{count} intentos.
+          attempts_html:
+            one: Por razones de seguridad, le queda <strong>un solo intento</strong>.
+            other: Por razones de seguridad, le quedan <strong>%{count} intentos</strong>.
           gpo:
             button: Verificar por correo
             explanation: Si no dispones de otro número de teléfono para intentarlo,
@@ -224,6 +224,11 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
+        failed_number:
+          alert_text: No pudimos asociarlo a este número.
+          gpo_alert_html: Si no dispone de <strong>otro</strong> número de teléfono,
+            %{link_html}.
+          gpo_verify_link: realice la verificación por correo
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
@@ -287,9 +292,9 @@ es:
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
         parte, tal vez no podamos verificar su identidad en estos momentos.
     warning:
-      attempts:
-        one: Por motivos de seguridad, le quedan un intento.
-        other: Por motivos de seguridad, le quedan %{count} intentos.
+      attempts_html:
+        one: Por motivos de seguridad, le queda <strong>un intento</strong>.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
       sessions:
         heading: No encontramos registros que coincidan con sus datos personales
       state_id:

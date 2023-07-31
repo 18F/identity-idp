@@ -104,7 +104,11 @@ module Idv
 
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
-        analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
+        analytics.idv_gpo_address_letter_enqueued(
+          enqueued_at: Time.zone.now,
+          resend: false,
+          **ab_test_analytics_buckets,
+        )
       end
 
       if idv_session.profile.active?

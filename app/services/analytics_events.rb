@@ -666,7 +666,8 @@ module AnalyticsEvents
   end
 
   # @param [String] step_name which step the user was on
-  # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
+  # @param [Integer] remaining_attempts how many attempts the user has left before
+  #                  we rate limit them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
   def idv_doc_auth_exception_visited(step_name:, remaining_attempts:, **extra)
     track_event(
@@ -1459,6 +1460,103 @@ module AnalyticsEvents
     )
   end
 
+  # Track sms notification attempt
+  # @param [boolean] success sms notification successful or not
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_attempted(
+    success:,
+    enrollment_code:,
+    enrollment_id:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: in person notification SMS send attempted',
+      success: success,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # Track sms notification job completion
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_completed(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running InPerson::SendProofingNotificationJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_exception(
+    enrollment_code:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: exception raised',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Track sms notification job skipped
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job started
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_started(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing switch_back step
   def idv_in_person_switch_back_submitted(flow_path:, **extra)
@@ -1713,76 +1811,6 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
-      **extra,
-    )
-  end
-
-  # Track sms notification job completion
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_completed(enrollment_code:,
-                                                                     enrollment_id:,
-                                                                     **extra)
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification job skipped
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_skipped(
-    enrollment_code:,
-    enrollment_id:,
-    **extra
-  )
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification job started
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_started(enrollment_code:,
-                                                                   enrollment_id:,
-                                                                   **extra)
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification attempt
-  # @param [boolean] success sms notification successful or not
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Telephony::Response] telephony_result
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_sent_attempted(
-    success:,
-    enrollment_code:,
-    enrollment_id:,
-    telephony_result:,
-    **extra
-  )
-    track_event(
-      'IdV: in person notification SMS send attempted',
-      success: success,
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      telephony_result: telephony_result,
       **extra,
     )
   end
@@ -2120,14 +2148,14 @@ module AnalyticsEvents
   end
 
   # @param ['warning','jobfail','failure'] type
-  # @param [Time] throttle_expires_at when the throttle expires
+  # @param [Time] limiter_expires_at when the rate limit expires
   # @param [Integer] remaining_attempts number of attempts remaining
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # When a user gets an error during the phone finder flow of IDV
   def idv_phone_error_visited(
     type:,
     proofing_components: nil,
-    throttle_expires_at: nil,
+    limiter_expires_at: nil,
     remaining_attempts: nil,
     **extra
   )
@@ -2136,7 +2164,7 @@ module AnalyticsEvents
       {
         type: type,
         proofing_components: proofing_components,
-        throttle_expires_at: throttle_expires_at,
+        limiter_expires_at: limiter_expires_at,
         remaining_attempts: remaining_attempts,
         **extra,
       }.compact,
@@ -2944,13 +2972,6 @@ module AnalyticsEvents
     )
   end
 
-  def partial_authentication_log_out(**extra)
-    track_event(
-      'Partially authenticated user logged out',
-      **extra,
-    )
-  end
-
   # @param [Boolean] success
   # @param [Hash] errors
   # The user updated their password
@@ -3200,6 +3221,17 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # Tracks when a user triggered a rate limiter
+  # @param [String] limiter_type
+  # @identity.idp.previous_event_name Throttler Rate Limit Triggered
+  def rate_limit_reached(limiter_type:, **extra)
+    track_event(
+      'Rate Limit Reached',
+      limiter_type: limiter_type,
+      **extra,
+    )
   end
 
   # Rate limit triggered
@@ -3611,16 +3643,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user triggered a rate limit throttle
-  # @param [String] throttle_type
-  def throttler_rate_limit_triggered(throttle_type:, **extra)
-    track_event(
-      'Throttler Rate Limit Triggered',
-      throttle_type: throttle_type,
-      **extra,
-    )
-  end
-
   # Tracks when a user visits TOTP device setup
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
@@ -3841,14 +3863,14 @@ module AnalyticsEvents
 
   # Tracks when user submits registration email
   # @param [Boolean] success
-  # @param [Boolean] throttled
+  # @param [Boolean] rate_limited
   # @param [Hash] errors
   # @param [Hash] error_details
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(
     success:,
-    throttled:,
+    rate_limited:,
     errors:,
     error_details: nil,
     user_id: nil,
@@ -3859,7 +3881,7 @@ module AnalyticsEvents
       'User Registration: Email Submitted',
       {
         success: success,
-        throttled: throttled,
+        rate_limited: rate_limited,
         errors: errors,
         error_details: error_details,
         user_id: user_id,

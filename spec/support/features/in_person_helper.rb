@@ -220,4 +220,11 @@ module InPersonHelper
     pii_from_user[:state] = state
     pii_from_user[:zipcode] = zipcode
   end
+
+  def mark_in_person_enrollment_passed(user)
+    enrollment = user.in_person_enrollments.last
+    expect(enrollment).to_not be_nil
+    enrollment.profile.activate_after_passing_in_person
+    enrollment.update(status: :passed)
+  end
 end

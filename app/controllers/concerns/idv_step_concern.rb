@@ -77,4 +77,16 @@ module IdvStepConcern
 
     redirect_to idv_otp_verification_url
   end
+
+  def extra_analytics_properties
+    extra = {
+      pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+    }
+
+    unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
+      extra[:same_address_as_id] =
+        flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
+    end
+    extra
+  end
 end

@@ -40,12 +40,12 @@ es:
         opt_out: El número de teléfono ingresado ha sido excluido de los mensajes de
           texto.
         permanent_failure: El número de teléfono ingresado no es válido.
+        rate_limited: Ese número está experimentando un alto volumen de mensajes. Por
+          favor, inténtelo de nuevo más tarde.
         sms_unsupported: El número de teléfono ingresado no admite mensajes de texto.
           Pruebe la opción de llamada telefónica.
         temporary_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.
-        throttled: Ese número está experimentando un alto volumen de mensajes. Por
-          favor, inténtelo de nuevo más tarde.
         timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         unknown_failure: Estamos experimentando dificultades técnicas. Por favor,
           inténtelo de nuevo más tarde.

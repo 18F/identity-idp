@@ -144,7 +144,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       freeze_time do
         idv_send_link_max_attempts.times do
           expect(page).to_not have_content(
-            I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
+            I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
           )
 
           fill_in :doc_auth_phone, with: '415-555-0199'
@@ -161,14 +161,14 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         expect(page).to have_content(
           I18n.t(
-            'errors.doc_auth.send_link_throttle',
+            'errors.doc_auth.send_link_limited',
             timeout: timeout,
           ),
         )
       end
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :idv_send_link,
+        'Rate Limit Reached',
+        limiter_type: :idv_send_link,
       )
 
       # Manual expiration is needed for now since the RateLimiter uses

@@ -61,9 +61,15 @@ RSpec.feature 'Changing authentication factor' do
         visit manage_password_path
         complete_2fa_confirmation_without_entering_otp
 
+        # Canceling from MFA prompt
+        click_on t('links.cancel')
+        expect(current_path).to eq account_path
+
+        # Canceling from MFA selection
+        visit manage_password_path
+        complete_2fa_confirmation_without_entering_otp
         click_on t('two_factor_authentication.login_options_link_text')
         click_on t('links.cancel')
-
         expect(current_path).to eq account_path
       end
     end

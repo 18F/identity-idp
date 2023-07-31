@@ -219,7 +219,7 @@ RSpec.describe GetUspsProofingResultsJob do
         let!(:pending_enrollments) do
           [
             create(
-              :in_person_enrollment, :pending, :with_notification_phone_configuration,
+              :in_person_enrollment, :pending,
               selected_location_details: { name: 'BALTIMORE' },
               issuer: 'http://localhost:3000'
             ),
@@ -484,11 +484,8 @@ RSpec.describe GetUspsProofingResultsJob do
 
           it 'sends deadline passed email on response with expired status' do
             stub_request_expired_proofing_results
-            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
-              and_return(true)
             user = pending_enrollment.user
             expect(pending_enrollment.deadline_passed_sent).to be false
-            expect(pending_enrollment.notification_phone_configuration).not_to be_nil
             freeze_time do
               expect do
                 job.perform(Time.zone.now)
@@ -507,8 +504,6 @@ RSpec.describe GetUspsProofingResultsJob do
                 wait_until: nil,
                 job_name: 'GetUspsProofingResultsJob',
               )
-              expect(pending_enrollment.notification_phone_configuration).to be_nil
-              expect(pending_enrollment.notification_sent_at).to be_nil
             end
           end
 
@@ -634,7 +629,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: true,
             email_type: 'Success',
-            enrollment_status: 'passed',
+            enrollment_status: InPersonEnrollment::STATUS_PASSED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_results_response,
           )
@@ -680,7 +675,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_proofing_results_response,
           )
@@ -722,7 +717,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed fraud suspected',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_failed_suspected_fraud_proofing_results_response,
           )
@@ -765,7 +760,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed unsupported ID type',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_unsupported_id_results_response,
           )
@@ -808,7 +803,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'deadline passed',
-            enrollment_status: 'expired',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_expired_proofing_results_response,
           )
@@ -838,7 +833,7 @@ RSpec.describe GetUspsProofingResultsJob do
             it 'treats the enrollment as incomplete' do
               job.perform(Time.zone.now)
 
-              expect(pending_enrollment.status).to eq('pending')
+              expect(pending_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
               # we pass the expiration message to analytics
               expect(job_analytics).to have_logged_event(
                 'GetUspsProofingResultsJob: Enrollment incomplete',
@@ -860,7 +855,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'deadline passed',
-            enrollment_status: 'expired',
+            enrollment_status: InPersonEnrollment::STATUS_EXPIRED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_unexpected_expired_proofing_results_response,
           )
@@ -1146,7 +1141,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'enrollment_with_a_status_update',
             passed: false,
             email_type: 'Failed unsupported secondary ID',
-            enrollment_status: 'failed',
+            enrollment_status: InPersonEnrollment::STATUS_FAILED,
             response_json: UspsInPersonProofing::Mock::Fixtures.
               request_passed_proofing_secondary_id_type_results_response,
           )
@@ -1170,6 +1165,87 @@ RSpec.describe GetUspsProofingResultsJob do
                 job_name: 'GetUspsProofingResultsJob',
               ),
             )
+          end
+        end
+
+        context 'sms notifications enabled' do
+          let(:pending_enrollment) do
+            create(
+              :in_person_enrollment,
+              :pending,
+              :with_notification_phone_configuration,
+              capture_secondary_id_enabled: true,
+            )
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+              and_return(true)
+          end
+
+          context 'enrollment is expired' do
+            it 'deletes the notification phone configuration without sending an sms' do
+              stub_request_expired_proofing_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+
+              job.perform(Time.zone.now)
+
+              expect(pending_enrollment.reload.notification_phone_configuration).to be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+            end
+          end
+
+          context 'enrollment has passed proofing' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_passed_proofing_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
+          end
+
+          context 'enrollment has failed proofing' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_failed_proofing_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
+          end
+
+          context 'enrollment has failed proofing due to unsupported secondary ID' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_passed_proofing_secondary_id_type_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
+          end
+
+          context 'enrollment has failed proofing due to unsupported ID type' do
+            it 'invokes the SendProofingNotificationJob for the enrollment' do
+              stub_request_passed_proofing_unsupported_id_results
+
+              expect(pending_enrollment.notification_phone_configuration).to_not be_nil
+              expect(pending_enrollment.notification_sent_at).to be_nil
+
+              expect { job.perform(Time.zone.now) }.
+                to have_enqueued_job(InPerson::SendProofingNotificationJob).
+                with(pending_enrollment.id)
+            end
           end
         end
       end

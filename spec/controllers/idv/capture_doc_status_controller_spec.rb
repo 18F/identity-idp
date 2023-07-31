@@ -10,10 +10,12 @@ RSpec.describe Idv::CaptureDocStatusController do
   describe '#show' do
     let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
     let(:flow_session) { { document_capture_session_uuid: document_capture_session.uuid } }
+    let(:idv_session) { {} }
 
     before do
       allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(flow_session)
       controller.user_session['idv/doc_auth'] = flow_session if user
+      controller.user_session[:idv] = idv_session if user
     end
 
     context 'when unauthenticated' do
@@ -28,6 +30,7 @@ RSpec.describe Idv::CaptureDocStatusController do
 
     context 'when flow session expires' do
       let(:flow_session) { nil }
+      let(:idv_session) { nil }
 
       it 'returns unauthorized' do
         get :show
@@ -38,6 +41,7 @@ RSpec.describe Idv::CaptureDocStatusController do
 
     context 'when session does not exist' do
       let(:flow_session) { {} }
+      let(:idv_session) { {} }
 
       it 'returns unauthorized' do
         get :show
@@ -145,6 +149,7 @@ RSpec.describe Idv::CaptureDocStatusController do
           get :show
 
           expect(flow_session[:had_barcode_attention_error]).to eq(true)
+          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
         end
       end
 
@@ -163,6 +168,7 @@ RSpec.describe Idv::CaptureDocStatusController do
           get :show
 
           expect(flow_session[:had_barcode_attention_error]).to eq(true)
+          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
         end
       end
 
@@ -178,6 +184,7 @@ RSpec.describe Idv::CaptureDocStatusController do
 
         before do
           flow_session[:had_barcode_attention_error] = true
+          idv_session[:had_barcode_attention_error] = true
           document_capture_session.update(ocr_confirmation_pending: false)
         end
 
@@ -185,6 +192,7 @@ RSpec.describe Idv::CaptureDocStatusController do
           get :show
 
           expect(flow_session[:had_barcode_attention_error]).to eq(false)
+          expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(false)
         end
       end
 
@@ -193,6 +201,11 @@ RSpec.describe Idv::CaptureDocStatusController do
         let(:flow_session) do
           {
             document_capture_session_uuid: document_capture_session.uuid,
+            had_barcode_attention_error: true,
+          }
+        end
+        let(:idv_session) do
+          {
             had_barcode_attention_error: true,
           }
         end
@@ -212,6 +225,7 @@ RSpec.describe Idv::CaptureDocStatusController do
             get :show
 
             expect(flow_session[:had_barcode_attention_error]).to eq(true)
+            expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
           end
         end
 
@@ -230,6 +244,7 @@ RSpec.describe Idv::CaptureDocStatusController do
             get :show
 
             expect(flow_session[:had_barcode_attention_error]).to eq(true)
+            expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
           end
         end
       end
