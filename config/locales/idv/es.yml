@@ -115,7 +115,7 @@ es:
           intentarlo.
         warning:
           attempts_html:
-            one: Por razones de seguridad, dispone de <strong>un solo intento</strong>.
+            one: Por razones de seguridad, le queda <strong>un solo intento</strong>.
             other: Por razones de seguridad, le quedan <strong>%{count} intentos</strong>.
           gpo:
             button: Verificar por correo
