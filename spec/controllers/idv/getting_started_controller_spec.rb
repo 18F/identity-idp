@@ -121,9 +121,21 @@ RSpec.describe Idv::GettingStartedController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'creates a document capture session' do
+    it 'creates a document capture session and stores it in flow_session' do
       expect { put :update, params: params }.
         to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
+    end
+
+    it 'creates a document capture session and stores it in idv_session' do
+      expect { put :update, params: params }.
+        to change { subject.idv_session.document_capture_session_uuid }.from(nil)
+    end
+
+    it 'sets flow_session and idv_session document_capture_session_uuid to same value' do
+      put :update, params: params
+      expect(subject.user_session['idv/doc_auth'][:document_capture_session_uuid]).to eql(
+        subject.idv_session.document_capture_session_uuid,
+      )
     end
 
     context 'with previous establishing in-person enrollments' do
