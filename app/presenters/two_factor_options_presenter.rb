@@ -50,7 +50,7 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def form_legend 
+  def form_legend
     t('two_factor_authentication.form_legend')
   end
 
