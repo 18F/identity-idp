@@ -20,4 +20,24 @@ RSpec.describe PasswordConfirmationComponent, type: :component do
       type: :checkbox,
     )
   end
+
+  context 'with labels passed in' do
+    subject(:rendered) do
+      render_inline PasswordConfirmationComponent.new(
+        form:,
+        password_label: password_label,
+        confirmation_label: confirmation_label,
+      )
+    end
+    let(:password_label) { 'edited password label' }
+    let(:confirmation_label) { 'edited password confirmation label' }
+
+    it 'renders custom password label' do
+      expect(rendered).to have_content(password_label)
+    end
+
+    it 'renders custom password confirmation label' do
+      expect(rendered).to have_content(confirmation_label)
+    end
+  end
 end
