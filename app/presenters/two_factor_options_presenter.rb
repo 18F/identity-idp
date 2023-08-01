@@ -50,10 +50,6 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def form_legend
-    t('two_factor_authentication.form_legend')
-  end
-
   def show_skip_additional_mfa_link?
     @show_skip_additional_mfa_link
   end
