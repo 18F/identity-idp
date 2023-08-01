@@ -46,6 +46,15 @@ module TwoFactorAuthCode
       end
     end
 
+    def troubleshooting_options
+      options = []
+      if service_provider_mfa_policy.allow_user_to_switch_method?
+        options << choose_another_method_troubleshooting_option
+      end
+      options << learn_more_about_authentication_options_troubleshooting_option
+      options
+    end
+
     def cancel_link
       if reauthn
         account_path
@@ -54,17 +63,12 @@ module TwoFactorAuthCode
       end
     end
 
-    def piv_cac_service_link
-      login_two_factor_piv_cac_present_piv_cac_url
+    def redirect_location_step
+      :piv_cac_verification
     end
 
-    def fallback_question
-      return if @hide_fallback_question
-      if service_provider_mfa_policy.allow_user_to_switch_method?
-        t('two_factor_authentication.piv_cac_fallback.question')
-      else
-        ''
-      end
+    def piv_cac_service_link
+      login_two_factor_piv_cac_present_piv_cac_url
     end
   end
 end

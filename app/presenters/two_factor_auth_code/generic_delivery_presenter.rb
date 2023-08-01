@@ -27,8 +27,30 @@ module TwoFactorAuthCode
       login_two_factor_options_path
     end
 
-    def fallback_links
-      raise NotImplementedError
+    def redirect_location_step; end
+
+    def troubleshooting_options
+      [
+        choose_another_method_troubleshooting_option,
+        learn_more_about_authentication_options_troubleshooting_option,
+      ].select(&:present?)
+    end
+
+    def choose_another_method_troubleshooting_option
+      return if link_path.blank?
+      BlockLinkComponent.new(url: link_path).with_content(link_text)
+    end
+
+    def learn_more_about_authentication_options_troubleshooting_option
+      BlockLinkComponent.new(
+        url: help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-options',
+          flow: :two_factor_authentication,
+          step: redirect_location_step,
+        ),
+        new_tab: true,
+      ).with_content(t('two_factor_authentication.learn_more'))
     end
 
     def remember_device_box_checked?

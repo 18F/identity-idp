@@ -110,23 +110,36 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     end
   end
 
-  describe '#fallback_question' do
+  describe '#troubleshooting_options' do
     context 'when the user can switch to a different method' do
       let(:allow_user_to_switch_method) { true }
+      let(:phishing_resistant_required) { false }
 
-      it 'returns a question about switching methods' do
-        expect(presenter.fallback_question).to eq(
-          t('two_factor_authentication.piv_cac_fallback.question'),
-        )
+      it 'includes option to choose another authentication method' do
+        expect(presenter.troubleshooting_options.size).to eq(2)
+        expect(presenter.troubleshooting_options.first).to satisfy do |c|
+          c.url == login_two_factor_options_path &&
+            c.content == t('two_factor_authentication.login_options_link_text')
+        end
+      end
+
+      context 'when phishing resistant method is required' do
+        let(:phishing_resistant_required) { true }
+
+        it 'includes option to use another phishing resistant method' do
+          expect(presenter.troubleshooting_options.size).to eq(2)
+          expect(presenter.troubleshooting_options.first).to satisfy do |c|
+            c.url == login_two_factor_webauthn_url &&
+              c.content == t('two_factor_authentication.piv_cac_webauthn_available')
+          end
+        end
       end
     end
 
     context 'when the user cannot switch to a different method' do
       let(:allow_user_to_switch_method) { false }
 
-      it 'returns an empty string' do
-        expect(presenter.fallback_question).to eq('')
-      end
+      it { expect(presenter.troubleshooting_options.size).to eq(1) }
     end
   end
 

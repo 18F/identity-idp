@@ -155,6 +155,51 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
+  describe '#troubleshooting_options' do
+    context 'when the user can switch to a different method' do
+      let(:allow_user_to_switch_method) { true }
+      let(:phishing_resistant_required) { false }
+
+      it 'includes option to choose another authentication method' do
+        expect(presenter.troubleshooting_options.size).to eq(2)
+        expect(presenter.troubleshooting_options.first).to satisfy do |c|
+          c.url == login_two_factor_options_path &&
+            c.content == t('two_factor_authentication.login_options_link_text')
+        end
+      end
+
+      context 'with platform authenticator' do
+        let(:platform_authenticator) { true }
+
+        it 'includes option to learn more about face or touch unlock' do
+          expect(presenter.troubleshooting_options.size).to eq(3)
+          expect(presenter.troubleshooting_options[1]).to satisfy do |c|
+            c.content == t('instructions.mfa.webauthn_platform.learn_more_help')
+          end
+        end
+      end
+
+      context 'when phishing resistant method is required' do
+        let(:phishing_resistant_required) { true }
+
+        it 'includes option to use another phishing resistant method' do
+          expect(presenter.troubleshooting_options.size).to eq(2)
+          expect(presenter.troubleshooting_options.first).to satisfy do |c|
+            c.url == login_two_factor_piv_cac_url &&
+              c.content == t('two_factor_authentication.webauthn_piv_available')
+          end
+        end
+      end
+    end
+
+    context 'when the user cannot switch to a different method' do
+      let(:allow_user_to_switch_method) { false }
+      let(:phishing_resistant_required) { true }
+
+      it { expect(presenter.troubleshooting_options.size).to eq(1) }
+    end
+  end
+
   describe '#cancel_link' do
     let(:locale) { LinkLocaleResolver.locale }
 
