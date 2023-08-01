@@ -226,9 +226,9 @@ es:
           código único. Esto es para ayudar a verificar su identidad.
         failed_number:
           alert_text: No pudimos asociarlo a este número.
-          gpo_alert_html: Si no dispone de <strong>otro</strong> número de teléfono,
-            %{link_html}.
-          gpo_verify_link: realice la verificación por correo
+          gpo_alert_html: Pruebe con <strong>otro</strong> número o %{link_html}.
+          gpo_verify_link: verifique por correo
+          try_again_html: Pruebe con <strong>otro</strong> número.
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
