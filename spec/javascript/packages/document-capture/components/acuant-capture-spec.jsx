@@ -1006,6 +1006,7 @@ describe('document-capture/components/acuant-capture', () => {
       width: sinon.match.number,
       attempt: sinon.match.number,
       size: sinon.match.number,
+      acuantCaptureType: sinon.match.string,
     });
   });
 
