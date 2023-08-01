@@ -9,10 +9,4 @@ if (isCameraCapableMobile()) {
   input.type = 'hidden';
   input.name = 'skip_hybrid_handoff';
   form.appendChild(input);
-
-  // TEMP: Send skip_upload as well to account for 50/50 state during deploy
-  const compatibilityInput = document.createElement('input');
-  compatibilityInput.type = 'hidden';
-  compatibilityInput.name = 'skip_upload';
-  form.appendChild(compatibilityInput);
 }
