@@ -134,7 +134,7 @@ interface AcuantContextInterface {
   isCameraSupported: boolean | null;
   isActive: boolean;
   setIsActive: (nextIsActive: boolean) => void;
-  acuantCaptureMode: AcuantCapAtureMode;
+  acuantCaptureMode: AcuantCaptureMode;
   setAcuantCaptureMode: (type: AcuantCaptureMode) => void;
   credentials: string | null;
   glareThreshold: number;
