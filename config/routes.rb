@@ -367,7 +367,8 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
-      get '/session/errors/throttled' => 'session_errors#throttled'
+      get '/session/errors/throttled' => 'session_errors#rate_limited'
+      get '/session/errors/rate_limited' => 'session_errors#rate_limited'
       get '/setup_errors', to: redirect('/please_call')
       get '/not_verified' => 'not_verified#show'
       get '/please_call' => 'please_call#show'

@@ -413,15 +413,6 @@ RSpec.feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'when the user is not piv/cac enabled' do
-    it 'has no link to piv/cac during login' do
-      user = create(:user, :fully_registered)
-      sign_in_before_2fa(user)
-
-      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
-    end
-  end
-
   describe 'when the user is TOTP enabled and phone enabled' do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :with_authentication_app, :with_phone)

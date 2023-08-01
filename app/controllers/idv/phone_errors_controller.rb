@@ -5,6 +5,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
+    before_action :confirm_idv_phone_step_submitted
     before_action :set_gpo_letter_available
     before_action :ignore_form_step_wait_requests
 
@@ -43,6 +44,10 @@ module Idv
     def confirm_idv_phone_step_needed
       return unless user_fully_authenticated?
       redirect_to idv_review_url if idv_session.user_phone_confirmation == true
+    end
+
+    def confirm_idv_phone_step_submitted
+      redirect_to idv_phone_url if idv_session.previous_phone_step_params.nil?
     end
 
     def ignore_form_step_wait_requests
