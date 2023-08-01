@@ -6,14 +6,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def initialize(
     user:,
     view:,
-    user_session_context:,
+    reauthentication_context:,
     service_provider:,
     phishing_resistant_required:,
     piv_cac_required:
   )
     @user = user
     @view = view
-    @user_session_context = user_session_context
+    @reauthentication_context = reauthentication_context
     @service_provider = service_provider
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
@@ -60,7 +60,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def cancel_link
-    if UserSessionContext.reauthentication_context?(@user_session_context)
+    if @reauthentication_context
       account_path
     else
       sign_out_path

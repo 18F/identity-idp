@@ -122,14 +122,14 @@ RSpec.feature 'Sign Up' do
 
     # whether it says '9 minutes' or '10 minutes' depends on how
     # slowly the test runs.
-    throttled_message = I18n.t(
+    rate_limited_message = I18n.t(
       'errors.messages.phone_confirmation_limited',
       timeout: '(10|9) minutes',
     )
 
     expect(current_path).to eq(authentication_methods_setup_path)
 
-    expect(page).to have_content(/#{throttled_message}/)
+    expect(page).to have_content(/#{rate_limited_message}/)
   end
 
   context 'with js', js: true do
@@ -282,7 +282,7 @@ RSpec.feature 'Sign Up' do
     visit authenticator_setup_path
 
     expect(page).
-      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do

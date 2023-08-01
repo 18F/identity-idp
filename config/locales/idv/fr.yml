@@ -119,9 +119,10 @@ fr:
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
-          attempts:
-            one: Pour des raisons de sécurité, il vous reste une tentative.
-            other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+          attempts_html:
+            one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+            other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+              tentatives</strong>.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
@@ -307,9 +308,10 @@ fr:
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
     warning:
-      attempts:
-        one: Pour des raisons de sécurité, il vous reste une tentative.
-        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      attempts_html:
+        one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+        other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+          tentatives</strong>.
       sessions:
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
           personnelles

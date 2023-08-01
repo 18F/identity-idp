@@ -76,8 +76,8 @@ RSpec.feature 'document capture step', :js do
       it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :idv_doc_auth,
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
         )
       end
 

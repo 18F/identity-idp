@@ -64,8 +64,8 @@ module IdvStepHelper
     click_link t('in_person_proofing.body.barcode.learn_more')
   end
 
-  def visit_sp
-    click_sp_link
+  def visit_sp_from_in_person_ready_to_verify
+    click_sp_link_in_person_ready_to_verify
   end
 
   def sp_friendly_name
@@ -76,7 +76,7 @@ module IdvStepHelper
     t('in_person_proofing.body.barcode.return_to_partner_link', sp_name: sp_friendly_name)
   end
 
-  def click_sp_link
+  def click_sp_link_in_person_ready_to_verify
     expect(page).to have_content(sp_text)
     click_link(link_text)
   end

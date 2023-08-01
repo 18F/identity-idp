@@ -66,7 +66,7 @@ RSpec.feature 'taking an action that revokes remember device' do
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                      login_two_factor_path(otp_delivery_preference: :sms)
                     elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
                       login_two_factor_backup_code_path
                     end

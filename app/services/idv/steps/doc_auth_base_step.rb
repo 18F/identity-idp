@@ -54,8 +54,8 @@ module Idv
       end
 
       def rate_limited_response
-        @flow.analytics.throttler_rate_limit_triggered(
-          throttle_type: :idv_doc_auth,
+        @flow.analytics.rate_limit_reached(
+          limiter_type: :idv_doc_auth,
         )
         @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
         redirect_to rate_limited_url
@@ -116,14 +116,6 @@ module Idv
 
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
-      end
-
-      def track_document_state(state)
-        return unless IdentityConfig.store.state_tracking_enabled && state
-        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
-        return unless doc_auth_log
-        doc_auth_log.state = state
-        doc_auth_log.save!
       end
 
       delegate :idv_session, :session, :flow_path, to: :@flow

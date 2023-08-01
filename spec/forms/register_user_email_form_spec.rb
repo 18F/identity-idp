@@ -100,7 +100,7 @@ RSpec.describe RegisterUserEmailForm do
       let(:extra_params) do
         {
           email_already_exists: true,
-          throttled: false,
+          rate_limited: false,
           user_id: existing_user.uuid,
           domain_name: email_domain,
         }
@@ -127,8 +127,8 @@ RSpec.describe RegisterUserEmailForm do
         end
 
         expect(analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :reg_confirmed_email,
+          'Rate Limit Reached',
+          limiter_type: :reg_confirmed_email,
         )
       end
     end
@@ -147,7 +147,7 @@ RSpec.describe RegisterUserEmailForm do
       let(:extra_params) do
         {
           email_already_exists: true,
-          throttled: false,
+          rate_limited: false,
           user_id: existing_user.uuid,
           domain_name: email_domain,
         }
@@ -187,8 +187,8 @@ RSpec.describe RegisterUserEmailForm do
         end
 
         expect(analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :reg_unconfirmed_email,
+          'Rate Limit Reached',
+          limiter_type: :reg_unconfirmed_email,
         )
       end
     end
@@ -218,7 +218,7 @@ RSpec.describe RegisterUserEmailForm do
         submit_form = subject.submit(email: unregistered_email_address, terms_accepted: '1')
         extra = {
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
           domain_name: email_domain,
         }
@@ -250,7 +250,7 @@ RSpec.describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: anonymous_uuid,
           domain_name: invalid_email,
         }
@@ -269,7 +269,7 @@ RSpec.describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: anonymous_uuid,
           domain_name: 'çà.com',
         }
@@ -292,7 +292,7 @@ RSpec.describe RegisterUserEmailForm do
 
         extra = {
           email_already_exists: true,
-          throttled: false,
+          rate_limited: false,
           user_id: email_address.user.uuid,
           domain_name: blocked_domain,
         }
@@ -341,7 +341,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
         }
 
@@ -367,7 +367,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: User.find_with_email(unregistered_email_address).uuid,
         }
 
@@ -385,7 +385,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: anonymous_uuid,
         }
 
@@ -406,7 +406,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           domain_name: email_domain,
           email_already_exists: true,
-          throttled: false,
+          rate_limited: false,
           user_id: email_address.user.uuid,
         }
 
@@ -424,7 +424,7 @@ RSpec.describe RegisterUserEmailForm do
         extra = {
           domain_name: email_domain,
           email_already_exists: false,
-          throttled: false,
+          rate_limited: false,
           user_id: anonymous_uuid,
         }
         submit_form = subject.submit(

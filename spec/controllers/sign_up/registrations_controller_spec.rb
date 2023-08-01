@@ -78,7 +78,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: true,
-          throttled: false,
+          rate_limited: false,
           errors: {},
           email_already_exists: false,
           user_id: user.uuid,
@@ -128,7 +128,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
       analytics_hash = {
         success: true,
-        throttled: false,
+        rate_limited: false,
         errors: {},
         email_already_exists: true,
         user_id: existing_user.uuid,
@@ -154,7 +154,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
 
       analytics_hash = {
         success: false,
-        throttled: false,
+        rate_limited: false,
         errors: { email: [t('valid_email.validations.email.invalid')] },
         error_details: { email: [:invalid] },
         email_already_exists: false,

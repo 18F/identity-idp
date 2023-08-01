@@ -11,13 +11,20 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
+  STATUS_ESTABLISHING = 'establishing'
+  STATUS_PENDING = 'pending'
+  STATUS_PASSED = 'passed'
+  STATUS_FAILED = 'failed'
+  STATUS_EXPIRED = 'expired'
+  STATUS_CANCELLED = 'cancelled'
+
   enum status: {
-    establishing: 0,
-    pending: 1,
-    passed: 2,
-    failed: 3,
-    expired: 4,
-    cancelled: 5,
+    STATUS_ESTABLISHING.to_sym => 0,
+    STATUS_PENDING.to_sym => 1,
+    STATUS_PASSED.to_sym => 2,
+    STATUS_FAILED.to_sym => 3,
+    STATUS_EXPIRED.to_sym => 4,
+    STATUS_CANCELLED.to_sym => 5,
   }
 
   validate :profile_belongs_to_user
@@ -134,21 +141,20 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def eligible_for_notification?
-    self.notification_phone_configuration.present? &&
-      (self.passed? || self.failed? || self.expired?)
+    self.notification_phone_configuration.present? && (self.passed? || self.failed?)
   end
 
   private
 
   def on_status_updated
-    if enrollment_will_be_cancelled? && notification_phone_configuration.present?
+    if enrollment_will_be_cancelled_or_expired? && notification_phone_configuration.present?
       notification_phone_configuration.destroy!
     end
     self.status_updated_at = Time.zone.now
   end
 
-  def enrollment_will_be_cancelled?
-    status_change_to_be_saved&.last == 'cancelled'
+  def enrollment_will_be_cancelled_or_expired?
+    [STATUS_CANCELLED, STATUS_EXPIRED].include? status_change_to_be_saved&.last
   end
 
   def set_unique_id

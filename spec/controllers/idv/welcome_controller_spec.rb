@@ -122,7 +122,7 @@ RSpec.describe Idv::WelcomeController do
       it 'cancels all previous establishing enrollments' do
         put :update
 
-        expect(enrollment.reload.status).to eq('cancelled')
+        expect(enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(user.establishing_in_person_enrollment).to be_blank
       end
     end
