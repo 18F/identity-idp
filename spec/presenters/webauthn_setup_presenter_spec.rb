@@ -71,12 +71,6 @@ RSpec.describe WebauthnSetupPresenter do
     it { is_expected.to eq(t('forms.webauthn_setup.continue')) }
   end
 
-  describe '#setup_heading' do
-    subject { presenter.setup_heading }
-
-    it { is_expected.to eq(t('forms.webauthn_setup.instructions_title')) }
-  end
-
   context 'with platform_authenticator' do
     let(:platform_authenticator) { true }
 
@@ -114,12 +108,6 @@ RSpec.describe WebauthnSetupPresenter do
       subject { presenter.button_text }
 
       it { is_expected.to eq(t('forms.webauthn_platform_setup.continue')) }
-    end
-
-    describe '#setup_heading' do
-      subject { presenter.setup_heading }
-
-      it { is_expected.to eq(t('forms.webauthn_platform_setup.instructions_title')) }
     end
   end
 end
