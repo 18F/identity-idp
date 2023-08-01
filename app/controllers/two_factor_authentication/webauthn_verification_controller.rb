@@ -107,7 +107,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
-        multi_factor_auth_method_created_at: form&.webauthn_configuration&.created_at&.to_i,
+        multi_factor_auth_method_created_at: form&.webauthn_configuration&.created_at&.to_datetime&.to_i,
       }
     end
 
