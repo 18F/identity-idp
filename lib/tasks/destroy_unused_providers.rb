@@ -2,28 +2,32 @@
 
 # Remove unused issuers
 #
-# When the IdP gets deployed, it generates a list of issuers that need to be removed and emails them to us.
-# These emails are available in Zendesk - check the "Suspended Tickets" bucket for the most recent ticket titled
+# When the IdP gets deployed, it generates a list of issuers that need to be removed and emails them
+# to us. These emails are available in Zendesk - check the "Suspended Tickets" bucket for the most
+# recent ticket titled:
 # "[production] identity-idp error: ServiceProviderSeeder::ExtraServiceProviderError".
 #
-# This script iterates over a list of those issuers, outputs the data that is to be deleted, and then
-# requires user confirmation before deleting the issuer and associated models.
+# This script iterates over a list of those issuers, outputs the data that is to be deleted, and
+# then requires user confirmation before deleting the issuer and associated models.
 
 class DestroyUnusedProviders
   attr_reader :destroy_list
   def initialize(unused_issuers)
-    @destroy_list = unused_issuers.map {|issuer| DestroyableRecords.new(issuer)}
+    @destroy_list = unused_issuers.map { |issuer| DestroyableRecords.new(issuer) }
   end
 
   def run
     @destroy_list.each do |records|
       records.print_data
 
-      puts "Type 'yes' and hit enter to continue and destroy this service provider and associated records:\n"
+      Rails.logger.debug do
+        "Type 'yes' and hit enter to continue and " \
+                         "destroy this service provider and associated records:\n"
+      end
       continue = gets.chomp
 
-      if continue != "yes"
-        puts "You have indicated there is an issue. Aborting script"
+      if continue != 'yes'
+        Rails.logger.debug 'You have indicated there is an issue. Aborting script'
         break
       end
 
@@ -37,8 +41,11 @@ class DestroyUnusedProviders
 
     def initialize(issuer)
       @issuer = issuer
-      @sp = ServiceProvider.includes(:in_person_enrollments).find_by_issuer(issuer)
-      @int = Agreements::Integration.includes(:partner_account, iaa_orders: [:iaa_gtc]).find_by_issuer(issuer)
+      @sp = ServiceProvider.includes(:in_person_enrollments).find_by(issuer: issuer)
+      @int = Agreements::Integration.includes(
+        :partner_account,
+        iaa_orders: [:iaa_gtc],
+      ).find_by(issuer: issuer)
     end
 
     def integration_usages
@@ -54,52 +61,54 @@ class DestroyUnusedProviders
     end
 
     def iaa_gtc
-
     end
 
     def print_data
-      puts "You are about to delete a service provider with issuer #{sp.issuer}"
-      puts "The partner is #{int.partner_account.name}"
-      puts "\n\n"
+      Rails.logger.debug { "You are about to delete a service provider with issuer #{sp.issuer}" }
+      Rails.logger.debug { "The partner is #{int.partner_account.name}" }
+      Rails.logger.debug "\n\n"
 
-      puts "Attributes:"
-      puts sp.attributes
-      puts "\n"
+      Rails.logger.debug 'Attributes:'
+      Rails.logger.debug sp.attributes
+      Rails.logger.debug "\n"
 
-      puts "********"
-      puts "Integration:"
-      puts int.attributes
-      puts "\n"
+      Rails.logger.debug '********'
+      Rails.logger.debug 'Integration:'
+      Rails.logger.debug int.attributes
+      Rails.logger.debug "\n"
 
-      puts "********"
-      puts "This provider has #{in_person_enrollments.size} in person enrollments that will be destroyed"
-      puts "\n"
-
-      puts "*******"
-      puts "These are the IAA orders that will be affected: \n"
-      iaa_orders.each do |iaa_order|
-        puts "#{iaa_order.iaa_gtc.gtc_number} #{iaa_order.order_number}"
+      Rails.logger.debug '********'
+      Rails.logger.debug do
+        "This provider has #{in_person_enrollments.size} in person enrollments " \
+                         "that will be destroyed"
       end
-      puts "\n"
+      Rails.logger.debug "\n"
+
+      Rails.logger.debug '*******'
+      Rails.logger.debug "These are the IAA orders that will be affected: \n"
+      iaa_orders.each do |iaa_order|
+        Rails.logger.debug "#{iaa_order.iaa_gtc.gtc_number} #{iaa_order.order_number}"
+      end
+      Rails.logger.debug "\n"
     end
 
     def destroy_records
-      puts "Destroying integration usages"
+      Rails.logger.debug 'Destroying integration usages'
       integration_usages.each do |iu|
         iu.destroy!
       end
       int.reload
 
-      puts "Destroying integration with issuer #{int.issuer}"
+      Rails.logger.debug { "Destroying integration with issuer #{int.issuer}" }
       int.destroy!
       sp.reload
 
-      puts "Destroying service provider issuer #{sp.issuer}"
+      Rails.logger.debug { "Destroying service provider issuer #{sp.issuer}" }
       sp.destroy!
 
-      puts "ServiceProvider with issuer #{issuer} and associated records has been destroyed."
+      Rails.logger.debug do
+        "ServiceProvider with issuer #{issuer} and associated records has been destroyed."
+      end
     end
   end
 end
-
-

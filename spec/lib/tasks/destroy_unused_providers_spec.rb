@@ -43,17 +43,17 @@ RSpec.describe DestroyUnusedProviders::DestroyableRecords do
     before { subject.destroy_records }
 
     it 'destroys the integration usages' do
-      deleted_iu = Agreements::IntegrationUsage.find_by_id(iu.id)
+      deleted_iu = Agreements::IntegrationUsage.find_by(id: iu.id)
       expect(deleted_iu).to be nil
     end
 
     it 'destroys the integration' do
-      deleted_int = Agreements::Integration.find_by_id(integration.id)
+      deleted_int = Agreements::Integration.find_by(id: integration.id)
       expect(deleted_int).to be nil
     end
 
     it 'destroys the service_provider' do
-      deleted_sp = ServiceProvider.find_by_id(service_provider.id)
+      deleted_sp = ServiceProvider.find_by(id: service_provider.id)
       expect(deleted_sp).to be nil
     end
 
