@@ -14,12 +14,6 @@ html.js .no-js {
   transform: scale(0.7);
 }
 
-@include at-media('tablet') {
-  .sm-left-align {
-    text-align: left;
-  }
-}
-
 .half-center {
   margin: 0 auto;
   text-align: center;
