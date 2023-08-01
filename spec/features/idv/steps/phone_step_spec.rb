@@ -163,6 +163,7 @@ RSpec.feature 'idv phone step', :js do
                 ),
               ),
             )
+            expect(page).to have_content(t('idv.messages.phone.failed_number.try_again_html'))
 
             click_idv_send_security_code
             click_on t('idv.failure.phone.warning.try_again_button')
