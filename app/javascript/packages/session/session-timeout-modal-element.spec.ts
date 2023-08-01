@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
+import '@18f/identity-modal/modal-element';
 import './session-timeout-modal-element';
 import type SessionTimeoutModalElement from './session-timeout-modal-element';
 
@@ -30,36 +31,55 @@ describe('SessionTimeoutModalElement', () => {
   }
 
   describe('#scheduleStatusCheck', () => {
-    context('timeout after warning offset', () => {
-      it('schedules at warning offset', () => {
-        sandbox.stub(window, 'setTimeout');
+    context('modal not visible', () => {
+      context('warning offset in the future', () => {
+        it('schedules at warning offset', () => {
+          sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffsetInMilliseconds: 1000 });
-        element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1001) });
+          const element = createElement({ warningOffsetInMilliseconds: 1000 });
+          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1001) });
 
-        expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
+          expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
+        });
+      });
+
+      context('warning offset in the past', () => {
+        it('immediately calls checkStatus', () => {
+          sandbox.stub(window, 'setTimeout');
+
+          const element = createElement({ warningOffsetInMilliseconds: 1000 });
+          sandbox.stub(element, 'checkStatus');
+          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 999) });
+
+          expect(window.setTimeout).not.to.have.been.called();
+          expect(element.checkStatus).to.have.been.called();
+        });
       });
     });
 
-    context('timeout before warning offset', () => {
-      it('schedules at timeout', () => {
-        sandbox.stub(window, 'setTimeout');
+    context('modal visible', () => {
+      context('timeout in the past', () => {
+        it('does not schedule status check', () => {
+          sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffsetInMilliseconds: 1000 });
-        element.scheduleStatusCheck({ timeout: new Date(Date.now() + 999) });
+          const element = createElement({ warningOffsetInMilliseconds: 1000 });
+          sandbox.stub(element.modal, 'isVisible').get(() => true);
+          element.scheduleStatusCheck({ timeout: new Date(Date.now() - 1) });
 
-        expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 999);
+          expect(window.setTimeout).not.to.have.been.called();
+        });
       });
-    });
 
-    context('timeout before now', () => {
-      it('does not schedule', () => {
-        sandbox.stub(window, 'setTimeout');
+      context('timeout in the future', () => {
+        it('schedules status check for timeout', () => {
+          sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffsetInMilliseconds: 1000 });
-        element.scheduleStatusCheck({ timeout: new Date(Date.now() - 1) });
+          const element = createElement({ warningOffsetInMilliseconds: 1000 });
+          sandbox.stub(element.modal, 'isVisible').get(() => true);
+          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1) });
 
-        expect(window.setTimeout).not.to.have.been.called();
+          expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
+        });
       });
     });
   });

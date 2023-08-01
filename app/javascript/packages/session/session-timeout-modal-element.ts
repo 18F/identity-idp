@@ -78,13 +78,14 @@ class SessionTimeoutModalElement extends HTMLElement {
 
   scheduleStatusCheck({ timeout }: { timeout: Date }) {
     const timeoutFromNow = timeout.valueOf() - Date.now();
-    const delay =
-      timeoutFromNow < this.warningOffsetInMilliseconds
-        ? timeoutFromNow
-        : timeoutFromNow - this.warningOffsetInMilliseconds;
+    const delay = this.modal.isVisible
+      ? timeoutFromNow
+      : timeoutFromNow - this.warningOffsetInMilliseconds;
 
     if (delay > 0) {
       this.statusCheckTimeout = window.setTimeout(() => this.checkStatus(), delay);
+    } else if (!this.modal.isVisible) {
+      this.checkStatus();
     }
   }
 }
