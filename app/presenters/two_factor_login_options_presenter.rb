@@ -1,7 +1,10 @@
 class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user
+  attr_reader :user, :phishing_resistant_required, :piv_cac_required
+
+  alias_method :phishing_resistant_required?, :phishing_resistant_required
+  alias_method :piv_cac_required?, :piv_cac_required
 
   def initialize(
     user:,
@@ -29,6 +32,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def info
     t('two_factor_authentication.login_intro')
+  end
+
+  def restricted_options_warning_text
+    if piv_cac_required?
+      t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name:)
+    elsif phishing_resistant_required?
+      t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name:)
+    end
   end
 
   def options
@@ -106,5 +117,13 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_token_valid?
     user&.account_reset_request&.granted_token_valid?
+  end
+
+  def sp_name
+    if service_provider
+      service_provider.friendly_name
+    else
+      APP_NAME
+    end
   end
 end

@@ -761,11 +761,6 @@ RSpec.feature 'Sign in' do
 
       expect(page).to have_current_path login_two_factor_authenticator_path
     end
-
-    it 'does not display OTP Fallback text and links' do
-      expect(page).
-        to_not have_content t('two_factor_authentication.phone_fallback.question')
-    end
   end
 
   context 'visiting via SP1, then via SP2, then signing in' do

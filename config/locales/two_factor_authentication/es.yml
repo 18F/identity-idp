@@ -1,6 +1,12 @@
 ---
 es:
   two_factor_authentication:
+    aal2_request:
+      phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de
+        autenticación de alta seguridad, como el desbloqueo facial o táctil, una
+        llave de seguridad o una identificación de empleado público.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de
+        empleado público, un método de autenticación de alta seguridad.'
     account_reset:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
@@ -14,8 +20,6 @@ es:
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
-    backup_code_fallback:
-      question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
@@ -119,8 +123,6 @@ es:
         seleccionar un número de teléfono predeterminado.
       one_number_title: Este es tu número predeterminado
       title: '¿Es este tu número de teléfono predeterminado?'
-    personal_key_fallback:
-      question: '¿No tiene su clave personal?'
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de
       ingresarlo, se le dará una nueva clave.
@@ -128,8 +130,6 @@ es:
       delete:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
-    phone_fallback:
-      question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info: Le enviaremos un código de un solo uso cada vez que ingrese.
     phone_label: Número de teléfono
@@ -137,10 +137,7 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
-    piv_cac_fallback:
-      question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
-    piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:
@@ -150,8 +147,6 @@ es:
       google_policy_link: aplican la política de privacidad
       google_tos_link: las condiciones de servicio
       login_tos_link: las condiciones de uso
-    totp_fallback:
-      question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
     two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de
@@ -203,7 +198,6 @@ es:
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad
-    webauthn_piv_available: Utilice su PIV o CAC
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
     webauthn_use_key: Usar llave de seguridad
