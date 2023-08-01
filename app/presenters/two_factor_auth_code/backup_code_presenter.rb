@@ -9,5 +9,9 @@ module TwoFactorAuthCode
         sign_out_path
       end
     end
+
+    def redirect_location_step
+      :backup_code_verification
+    end
   end
 end

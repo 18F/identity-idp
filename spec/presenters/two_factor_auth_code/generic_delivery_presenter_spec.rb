@@ -31,7 +31,13 @@ RSpec.describe TwoFactorAuthCode::GenericDeliveryPresenter do
       it 'includes default troubleshooting options' do
         expect(presenter.troubleshooting_options.size).to eq(1)
         expect(presenter.troubleshooting_options[0]).to satisfy do |c|
-          c.new_tab? && c.content == t('two_factor_authentication.learn_more')
+          c.new_tab? &&
+            c.content == t('two_factor_authentication.learn_more') &&
+            c.url == help_center_redirect_path(
+              category: 'get-started',
+              article: 'authentication-options',
+              flow: :two_factor_authentication,
+            )
         end
       end
     end

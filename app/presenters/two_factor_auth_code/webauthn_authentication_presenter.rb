@@ -77,7 +77,7 @@ module TwoFactorAuthCode
             category: 'trouble-signing-in',
             article: 'face-or-touch-unlock',
             flow: :two_factor_authentication,
-            step: :webauthn_verification,
+            step: redirect_location_step,
           ),
           new_tab: true,
         ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help'))
@@ -92,6 +92,10 @@ module TwoFactorAuthCode
       else
         sign_out_path
       end
+    end
+
+    def redirect_location_step
+      :webauthn_verification
     end
 
     def multiple_factors_enabled?

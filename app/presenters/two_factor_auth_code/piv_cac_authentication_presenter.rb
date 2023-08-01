@@ -63,6 +63,10 @@ module TwoFactorAuthCode
       end
     end
 
+    def redirect_location_step
+      :piv_cac_verification
+    end
+
     def piv_cac_service_link
       login_two_factor_piv_cac_present_piv_cac_url
     end

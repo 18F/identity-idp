@@ -11,5 +11,9 @@ module TwoFactorAuthCode
         sign_out_path
       end
     end
+
+    def redirect_location_step
+      :totp_verification
+    end
   end
 end

@@ -27,6 +27,8 @@ module TwoFactorAuthCode
       login_two_factor_options_path
     end
 
+    def redirect_location_step; end
+
     def troubleshooting_options
       [
         choose_another_method_troubleshooting_option,
@@ -45,7 +47,7 @@ module TwoFactorAuthCode
           category: 'get-started',
           article: 'authentication-options',
           flow: :two_factor_authentication,
-          step: :webauthn_verification,
+          step: redirect_location_step,
         ),
         new_tab: true,
       ).with_content(t('two_factor_authentication.learn_more'))

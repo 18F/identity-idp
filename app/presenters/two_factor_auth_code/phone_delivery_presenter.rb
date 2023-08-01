@@ -65,6 +65,10 @@ module TwoFactorAuthCode
       end
     end
 
+    def redirect_location_step
+      :otp_confirmation
+    end
+
     private
 
     def troubleshoot_change_phone_or_method_option
