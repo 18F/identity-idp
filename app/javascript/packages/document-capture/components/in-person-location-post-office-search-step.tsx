@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { forceRedirect } from '@18f/identity-url';
+import { forceRedirect } from '@18f/identity-URL';
 import AddressSearch, {
   transformKeys,
   snakeCase,
@@ -38,9 +38,9 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
 
-  // this is the place to start and should be the only place to set up the locationsUrl
-  const locationsUrl = LOCATIONS_URL; // '/verify/in_person/usps_locations'
-  const addressSearchUrl = ADDRESS_SEARCH_URL; // '/api/addresses'
+  // this is the place to start and should be the only place to set up the locationsURL
+  const locationsURL = LOCATIONS_URL; // '/verify/in_person/usps_locations'
+  const addressSearchURL = ADDRESS_SEARCH_URL; // '/api/addresses'
 
   useEffect(() => {
     mountedRef.current = true;
@@ -74,7 +74,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationsUrl, {
+        await request(locationsURL, {
           json: selected,
           method: 'PUT',
         });
@@ -121,8 +121,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onError={setApiError}
         disabled={disabledAddressSearch}
         // todo: add both URL values as props here
-        locationsUrl={locationsUrl}
-        addressSearchUrl={addressSearchUrl}
+        locationsURL={locationsURL}
+        addressSearchURL={addressSearchURL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

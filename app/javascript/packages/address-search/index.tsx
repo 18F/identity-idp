@@ -80,10 +80,10 @@ export const transformKeys = (location: object, predicate: (key: string) => stri
   );
 
 const requestUspsLocations = async (
-  locationsUrl: string,
+  locationsURL: string,
   address: LocationQuery,
 ): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(locationsUrl, {
+  const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -93,16 +93,16 @@ const requestUspsLocations = async (
 
 function requestAddressCandidates(
   unvalidatedAddressInput: string,
-  addressSearchUrl: string,
+  addressSearchURL: string,
 ): Promise<Location[]> {
-  return request<Location[]>(addressSearchUrl, {
+  return request<Location[]>(addressSearchURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     json: { address: unvalidatedAddressInput },
   });
 }
 
-function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
+function useUspsLocations(locationsURL: string, addressSearchURL: string) {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
@@ -124,7 +124,7 @@ function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
     isLoading: isLoadingCandidates,
     error: addressError,
   } = useSWR([addressQuery], () =>
-    addressQuery ? requestAddressCandidates(addressQuery, addressSearchUrl) : null,
+    addressQuery ? requestAddressCandidates(addressQuery, addressSearchURL) : null,
   );
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -153,7 +153,7 @@ function useUspsLocations(locationsUrl: string, addressSearchUrl: string) {
     isLoading: isLoadingLocations,
     error: uspsError,
   } = useSWR([foundAddress], ([address]) =>
-    address ? requestUspsLocations(locationsUrl, address) : null,
+    address ? requestUspsLocations(locationsURL, address) : null,
   );
 
   return {
@@ -174,8 +174,8 @@ interface AddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
-  addressSearchUrl: string;
-  locationsUrl: string;
+  addressSearchURL: string;
+  locationsURL: string;
 }
 
 function AddressSearch({
@@ -185,8 +185,8 @@ function AddressSearch({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
-  addressSearchUrl,
-  locationsUrl,
+  addressSearchURL,
+  locationsURL,
 }: AddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
@@ -198,7 +198,7 @@ function AddressSearch({
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
-  } = useUspsLocations(locationsUrl, addressSearchUrl);
+  } = useUspsLocations(locationsURL, addressSearchURL);
 
   const onTextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;

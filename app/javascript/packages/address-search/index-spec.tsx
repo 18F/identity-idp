@@ -21,8 +21,8 @@ const DEFAULT_RESPONSE = [
   },
 ];
 
-const LOCATIONS_DUMMY_URL = 'https://login.gov/api/locations';
-const ADDRESSES_DUMMY_URL = 'https://login.gov/api/addresses';
+const LOCATIONS_URL = 'https://login.gov/api/locations';
+const ADDRESSES_URL = 'https://login.gov/api/addresses';
 
 describe('AddressSearch', () => {
   const sandbox = useSandbox();
@@ -30,8 +30,8 @@ describe('AddressSearch', () => {
     let server: SetupServer;
     before(() => {
       server = setupServer(
-        rest.post(LOCATIONS_DUMMY_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
-        rest.post(ADDRESSES_DUMMY_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
+        rest.post(ADDRESSES_URL, (_req, res, ctx) => res(ctx.json(DEFAULT_RESPONSE))),
       );
       server.listen();
     });
@@ -48,8 +48,8 @@ describe('AddressSearch', () => {
           <AddressSearch
             onFoundAddress={handleAddressFound}
             onFoundLocations={handleLocationsFound}
-            locationsUrl={LOCATIONS_DUMMY_URL}
-            addressSearchUrl={ADDRESSES_DUMMY_URL}
+            locationsURL={LOCATIONS_URL}
+            addressSearchURL={ADDRESSES_URL}
           />
         </SWRConfig>,
       );

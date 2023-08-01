@@ -30,10 +30,10 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
   }));
 
 const requestUspsLocations = async (
-  locationsUrl: string,
+  locationsURL: string,
   address: LocationQuery,
 ): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(locationsUrl, {
+  const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -41,7 +41,7 @@ const requestUspsLocations = async (
   return formatLocations(response);
 };
 
-function useUspsLocations(locationsUrl: string) {
+function useUspsLocations(locationsURL: string) {
   const [locationQuery, setLocationQuery] = useState<LocationQuery | null>(null);
   const validatedAddressFieldRef = useRef<HTMLFormElement>(null);
   const validatedCityFieldRef = useRef<HTMLFormElement>(null);
@@ -85,7 +85,7 @@ function useUspsLocations(locationsUrl: string) {
     isLoading: isLoadingLocations,
     error: uspsError,
   } = useSWR([locationQuery], ([address]) =>
-    address ? requestUspsLocations(locationsUrl, address) : null,
+    address ? requestUspsLocations(locationsURL, address) : null,
   );
 
   return {
@@ -110,7 +110,7 @@ interface FullAddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
-  locationsUrl: string;
+  locationsURL: string;
 }
 
 function FullAddressSearch({
@@ -119,7 +119,7 @@ function FullAddressSearch({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
-  locationsUrl,
+  locationsURL,
 }: FullAddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [addressValue, setAddressValue] = useState('');
@@ -136,7 +136,7 @@ function FullAddressSearch({
     validatedCityFieldRef,
     validatedStateFieldRef,
     validatedZipCodeFieldRef,
-  } = useUspsLocations(locationsUrl);
+  } = useUspsLocations(locationsURL);
 
   const inputChangeHandler =
     <T extends HTMLElement & { value: string }>(input) =>

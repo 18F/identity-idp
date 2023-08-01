@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { forceRedirect } from '@18f/identity-url';
+import { forceRedirect } from '@18f/identity-URL';
 import { transformKeys, snakeCase, LocationQuery } from '@18f/identity-address-search';
 import FullAddressSearch from './in-person-full-address-search';
 import BackButton from './back-button';
@@ -41,7 +41,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
-  const locationsUrl = LOCATIONS_URL;
+  const locationsURL = LOCATIONS_URL;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -75,7 +75,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationsUrl, {
+        await request(locationsURL, {
           json: selected,
           method: 'PUT',
         });
@@ -120,7 +120,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabledAddressSearch}
-        locationsUrl={locationsUrl}
+        locationsURL={locationsURL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
