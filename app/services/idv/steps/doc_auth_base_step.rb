@@ -26,25 +26,6 @@ module Idv
         ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
       end
 
-      # @param [DocAuth::Response,
-      #   DocumentCaptureSessionAsyncResult,
-      #   DocumentCaptureSessionResult] response
-      def extract_pii_from_doc(response, store_in_session: false)
-        pii_from_doc = response.pii_from_doc.merge(
-          uuid: effective_user.uuid,
-          phone: effective_user.phone_configurations.take&.phone,
-          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        )
-
-        flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-        if store_in_session
-          flow_session[:pii_from_doc] ||= {}
-          flow_session[:pii_from_doc].merge!(pii_from_doc)
-          idv_session.delete('applicant')
-        end
-        track_document_state(pii_from_doc[:state])
-      end
-
       def user_id_from_token
         flow_session[:doc_capture_user_id]
       end

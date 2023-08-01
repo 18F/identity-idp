@@ -85,7 +85,7 @@ module Idv
         idv_session.had_barcode_attention_error = session_result.attention_with_barcode?
       end
 
-      flow_session[:had_barcode_attention_error]
+      idv_session.had_barcode_attention_error
     end
 
     def idv_session
