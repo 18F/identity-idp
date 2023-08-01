@@ -110,7 +110,7 @@ interface AcuantContextProviderProps {
   children: ReactNode;
 }
 
-type AcuantCaptureType = 'AUTO' | 'TAP';
+export type AcuantCaptureType = 'AUTO' | 'TAP';
 
 /**
  * The minimum glare score value to be considered acceptable.

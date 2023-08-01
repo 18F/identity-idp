@@ -17,7 +17,7 @@ import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
 
 import AcuantCaptureCanvas from './acuant-capture-canvas';
-import AcuantContext from '../context/acuant';
+import AcuantContext, { AcuantCaptureType } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -54,6 +54,11 @@ interface ImageAnalyticsPayload {
    * Size of the image in bytes
    */
   size: number;
+  /**
+   * Whether the Acuant SDK captured the image automatically, or using the tap to
+   * capture functionality
+   */
+  acuantCaptureType?: AcuantCaptureType;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
