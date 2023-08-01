@@ -21,7 +21,7 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
     download_link = doc.at_css('a[download]')
     data_uri = Idv::DataUrlImage.new(download_link[:href])
 
-    expect(rendered).to have_content((t('components.download_button.label')))
+    expect(rendered).to have_content(t('components.download_button.label'))
     expect(data_uri.content_type).to include('text/plain')
     expect(data_uri.read).to eq(@codes.join("\n"))
   end
