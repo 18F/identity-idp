@@ -241,7 +241,7 @@ fr:
         failed_number:
           alert_text: Nous n’avons pas pu vous associer à ce numéro.
           gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
-          gpo_verify_link: vérifiez plutôt par courrier
+          gpo_verify_link: vérifiez par courrier
           try_again_html: Essayez un <strong>autre</strong> numéro.
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)

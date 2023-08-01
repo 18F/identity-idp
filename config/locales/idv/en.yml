@@ -216,7 +216,7 @@ en:
           This is to help verify your identity.
         failed_number:
           alert_text: We couldn’t match you to this number.
-          gpo_alert_html: Try <strong>another</strong> number or %{link_html} instead.
+          gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
           gpo_verify_link: verify by mail
           try_again_html: Try <strong>another</strong> number.
         rules:
