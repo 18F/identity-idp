@@ -16,9 +16,9 @@ class SessionTimeoutModalElement extends HTMLElement {
   }
 
   /**
-   * Amount of time before timeout to show modal, in milliseconds.
+   * Amount of time before timeout to show modal.
    */
-  get warningOffset(): number {
+  get warningOffsetInMilliseconds(): number {
     return Number(this.getAttribute('warning-offset-in-seconds')!) * 1000;
   }
 
@@ -60,8 +60,8 @@ class SessionTimeoutModalElement extends HTMLElement {
     const { isLive, timeout } = await requestSessionStatus();
 
     if (isLive) {
-      const timeRemaining = timeout.valueOf() - Date.now();
-      const showWarning = timeRemaining < this.warningOffset;
+      const millisecondsRemaining = timeout.valueOf() - Date.now();
+      const showWarning = millisecondsRemaining < this.warningOffsetInMilliseconds;
       if (showWarning) {
         this.modal.show();
         this.countdownElements.forEach((countdown) => {
@@ -79,7 +79,9 @@ class SessionTimeoutModalElement extends HTMLElement {
   scheduleStatusCheck({ timeout }: { timeout: Date }) {
     const timeoutFromNow = timeout.valueOf() - Date.now();
     const delay =
-      timeoutFromNow < this.warningOffset ? timeoutFromNow : timeoutFromNow - this.warningOffset;
+      timeoutFromNow < this.warningOffsetInMilliseconds
+        ? timeoutFromNow
+        : timeoutFromNow - this.warningOffsetInMilliseconds;
 
     if (delay > 0) {
       this.statusCheckTimeout = window.setTimeout(() => this.checkStatus(), delay);

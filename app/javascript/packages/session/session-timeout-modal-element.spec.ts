@@ -7,12 +7,12 @@ describe('SessionTimeoutModalElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
 
   function createElement({
-    warningOffset = 1000,
+    warningOffsetInMilliseconds = 1000,
     timeout = new Date(),
-  }: Partial<Pick<SessionTimeoutModalElement, 'warningOffset' | 'timeout'>>) {
+  }: Partial<Pick<SessionTimeoutModalElement, 'warningOffsetInMilliseconds' | 'timeout'>>) {
     document.body.innerHTML = `
       <lg-session-timeout-modal
-        warning-offset-in-seconds="${warningOffset / 1000}"
+        warning-offset-in-seconds="${warningOffsetInMilliseconds / 1000}"
         timeout="${timeout.toISOString()}"
       >
         <lg-modal>
@@ -34,7 +34,7 @@ describe('SessionTimeoutModalElement', () => {
       it('schedules at warning offset', () => {
         sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffset: 1000 });
+        const element = createElement({ warningOffsetInMilliseconds: 1000 });
         element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1001) });
 
         expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
@@ -45,7 +45,7 @@ describe('SessionTimeoutModalElement', () => {
       it('schedules at timeout', () => {
         sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffset: 1000 });
+        const element = createElement({ warningOffsetInMilliseconds: 1000 });
         element.scheduleStatusCheck({ timeout: new Date(Date.now() + 999) });
 
         expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 999);
@@ -56,7 +56,7 @@ describe('SessionTimeoutModalElement', () => {
       it('does not schedule', () => {
         sandbox.stub(window, 'setTimeout');
 
-        const element = createElement({ warningOffset: 1000 });
+        const element = createElement({ warningOffsetInMilliseconds: 1000 });
         element.scheduleStatusCheck({ timeout: new Date(Date.now() - 1) });
 
         expect(window.setTimeout).not.to.have.been.called();
