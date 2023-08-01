@@ -251,8 +251,6 @@ RSpec.feature 'Sign in' do
     end
 
     before :each do
-      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
@@ -301,8 +299,6 @@ RSpec.feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
-      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
 
@@ -373,16 +369,6 @@ RSpec.feature 'Sign in' do
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
-    end
-  end
-
-  describe 'session timeout configuration' do
-    it 'uses delay and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_start + session_timeout_warning) % 60).to eq 0
-    end
-
-    it 'uses frequency and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_frequency + session_timeout_warning) % 60).to eq 0
     end
   end
 
