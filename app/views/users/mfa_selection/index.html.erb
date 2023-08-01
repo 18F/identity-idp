@@ -13,11 +13,9 @@
     <ul class="usa-icon-list">
       <% @presenter.options.each do |option| %>
         <% if option.mfa_configuration_count > 0 %>
-          <%= render(option) do %>
-            <li class="usa-icon-list__item">
-              <%= render partial: 'partials/multi_factor_authentication/selected_mfa_options', locals: { option: option } %>
-            </li>
-          <% end %>
+          <li class="usa-icon-list__item padding-bottom-12px">
+            <%= render partial: 'partials/multi_factor_authentication/selected_mfa_options', locals: { option: option } %>
+          </li>
         <% end %>
       <% end %>
     </ul>
