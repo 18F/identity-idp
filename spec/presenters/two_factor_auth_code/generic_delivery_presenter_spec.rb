@@ -19,26 +19,13 @@ RSpec.describe TwoFactorAuthCode::GenericDeliveryPresenter do
           c.content == t('two_factor_authentication.login_options_link_text')
       end
       expect(presenter.troubleshooting_options[1]).to satisfy do |c|
-        c.content == t('two_factor_authentication.learn_more') && c.new_tab?
-      end
-    end
-
-    context 'with blank link path' do
-      before do
-        allow(presenter).to receive(:link_path).and_return('')
-      end
-
-      it 'includes default troubleshooting options' do
-        expect(presenter.troubleshooting_options.size).to eq(1)
-        expect(presenter.troubleshooting_options[0]).to satisfy do |c|
+        c.content == t('two_factor_authentication.learn_more') &&
           c.new_tab? &&
-            c.content == t('two_factor_authentication.learn_more') &&
-            c.url == help_center_redirect_path(
-              category: 'get-started',
-              article: 'authentication-options',
-              flow: :two_factor_authentication,
-            )
-        end
+          c.url == help_center_redirect_path(
+            category: 'get-started',
+            article: 'authentication-options',
+            flow: :two_factor_authentication,
+          )
       end
     end
   end

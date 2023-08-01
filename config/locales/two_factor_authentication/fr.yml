@@ -1,6 +1,14 @@
 ---
 fr:
   two_factor_authentication:
+    aal2_request:
+      phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode
+        d’authentification de haute sécurité, telle que le déverrouillage du
+        visage ou du tactile, une clé de sécurité ou un identifiant d’employé du
+        gouvernement.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre identifiant
+        d’employé du gouvernement, une méthode d’authentification de haute
+        sécurité.'
     account_reset:
       cancel_link: Annuler votre demande
       link: supprimer votre compte
@@ -138,7 +146,6 @@ fr:
         change_number: Utilisez un autre numéro de téléphone
         code_not_received: Je n’ai pas reçu mon code à usage unique
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
-    piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     recaptcha:
@@ -199,7 +206,6 @@ fr:
       try_again: Le déverrouillage facial ou tactile n’a pas fonctionné. Veuillez
         réessayer ou %{link}.
     webauthn_header_text: Connectez votre clé de sécurité
-    webauthn_piv_available: Utilisez votre PIV ou CAC
     webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
     webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
     webauthn_use_key: Utiliser la clé de sécurité
