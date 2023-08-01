@@ -17,7 +17,7 @@ RSpec.feature 'phone errors', :js do
       verify_phone_submitted(idv_phone_errors_failure_url, idv_phone_errors_failure_path)
     end
 
-    it 'only renders jobfaile after phone has been submitted' do
+    it 'only renders jobfail after phone has been submitted' do
       verify_phone_submitted(idv_phone_errors_jobfail_url, idv_phone_errors_jobfail_path)
     end
   end
