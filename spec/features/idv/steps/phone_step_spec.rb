@@ -235,6 +235,11 @@ RSpec.feature 'idv phone step', :js do
       click_idv_continue_for_step(:phone)
     end
 
+    it 'takes them to the IdV cancel screen if they hit cancel', js: true do
+      click_on 'Cancel'
+      expect(current_path).to eq(idv_cancel_path)
+    end
+
     it 'still lets them access the GPO flow and return to the error' do
       click_on t('idv.failure.phone.rate_limited.gpo.button')
       expect(page).to have_content(t('idv.titles.mail.verify'))
