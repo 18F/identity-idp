@@ -31,6 +31,7 @@ fr:
         téléphone, protégez votre compte à l’aide d’une autre méthode
         d’authentification.
     choose_another_option: '‹ Choisissez une autre option de sécurité'
+    form_legend: Choisissez vos méthodes d'authentification
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.

@@ -30,6 +30,7 @@ en:
         </strong>If you have access to another device, such as a phone, protect
         your account with another authentication method.
     choose_another_option: '‹ Choose another authentication method'
+    form_legend: Choose your authentication methods
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
