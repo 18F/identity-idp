@@ -6,9 +6,10 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import FullAddressSearch from './in-person-full-address-search';
-import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
+// import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
 describe('FullAddressSearch', () => {
+  const LOCATIONS_URL = 'https://login.gov/api/locations';
   const sandbox = useSandbox();
   context('when an address is found', () => {
     let server: SetupServer;
@@ -27,7 +28,7 @@ describe('FullAddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsUrl={LOCATIONS_URL} />
+          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
         </SWRConfig>,
       );
 

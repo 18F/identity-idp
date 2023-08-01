@@ -102,7 +102,13 @@ function requestAddressCandidates(
   });
 }
 
-function useUspsLocations(locationsURL: string, addressSearchURL: string) {
+function useUspsLocations({
+  locationsURL,
+  addressSearchURL,
+}: {
+  locationsURL: string;
+  addressSearchURL: string;
+}) {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
@@ -198,7 +204,7 @@ function AddressSearch({
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
-  } = useUspsLocations(locationsURL, addressSearchURL);
+  } = useUspsLocations({ locationsURL, addressSearchURL });
 
   const onTextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;

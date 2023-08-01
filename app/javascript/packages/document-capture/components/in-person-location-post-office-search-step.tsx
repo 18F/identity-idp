@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
-import { forceRedirect } from '@18f/identity-URL';
+import { forceRedirect } from '@18f/identity-url';
 import AddressSearch, {
   transformKeys,
   snakeCase,
