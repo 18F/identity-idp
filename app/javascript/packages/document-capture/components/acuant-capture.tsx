@@ -17,7 +17,7 @@ import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
 
 import AcuantCaptureCanvas from './acuant-capture-canvas';
-import AcuantContext, { AcuantCaptureType } from '../context/acuant';
+import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -58,7 +58,7 @@ interface ImageAnalyticsPayload {
    * Whether the Acuant SDK captured the image automatically, or using the tap to
    * capture functionality
    */
-  acuantCaptureType?: AcuantCaptureType;
+  acuantCaptureMode?: AcuantCaptureMode;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
@@ -258,7 +258,7 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
-    acuantCaptureType,
+    acuantCaptureMode,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -317,7 +317,7 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt, acuantCaptureType };
+    const enhancedPayload = { ...payload, attempt, acuantCaptureMode };
     incrementAttempt();
     return enhancedPayload;
   }

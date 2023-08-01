@@ -110,7 +110,7 @@ interface AcuantContextProviderProps {
   children: ReactNode;
 }
 
-export type AcuantCaptureType = 'AUTO' | 'TAP';
+export type AcuantCaptureMode = 'AUTO' | 'TAP';
 
 /**
  * The minimum glare score value to be considered acceptable.
@@ -134,8 +134,8 @@ interface AcuantContextInterface {
   isCameraSupported: boolean | null;
   isActive: boolean;
   setIsActive: (nextIsActive: boolean) => void;
-  acuantCaptureType: AcuantCaptureType;
-  setAcuantCaptureType: (type: AcuantCaptureType) => void;
+  acuantCaptureMode: AcuantCapAtureMode;
+  setAcuantCaptureMode: (type: AcuantCaptureMode) => void;
   credentials: string | null;
   glareThreshold: number;
   sharpnessThreshold: number;
@@ -149,8 +149,8 @@ const AcuantContext = createContext<AcuantContextInterface>({
   isCameraSupported: null as boolean | null,
   isActive: false,
   setIsActive: () => {},
-  acuantCaptureType: 'AUTO',
-  setAcuantCaptureType: () => {},
+  acuantCaptureMode: 'AUTO',
+  setAcuantCaptureMode: () => {},
   credentials: null,
   glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
@@ -219,7 +219,7 @@ function AcuantContextProvider({
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
-  const [acuantCaptureType, setAcuantCaptureType] = useState<AcuantCaptureType>('AUTO');
+  const [acuantCaptureMode, setAcuantCaptureMode] = useState<AcuantCaptureMode>('AUTO');
 
   const value = useObjectMemo({
     isReady,
@@ -228,8 +228,8 @@ function AcuantContextProvider({
     isCameraSupported,
     isActive,
     setIsActive,
-    acuantCaptureType,
-    setAcuantCaptureType,
+    acuantCaptureMode,
+    setAcuantCaptureMode,
     endpoint,
     credentials,
     glareThreshold,
