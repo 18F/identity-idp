@@ -48,19 +48,47 @@ RSpec.describe Profile do
 
   # TODO
   describe '#pending?' do
-    it 'returns false if the profile has no pending reasons'
+    it 'returns false if the profile has no pending reasons' do
+      profile = create(:profile, :verified)
 
-    it 'returns true if the profile is GPO pending'
+      expect(profile.pending?).to eq(false)
+    end
 
-    it 'returns true if the profile is in-person pending'
+    it 'returns true if the profile is GPO pending' do
+      profile = create(:profile, :verify_by_mail_pending)
 
-    it 'returns true if the user if fraud review pending'
+      expect(profile.pending?).to eq(true)
+    end
 
-    it 'returns false if the user cancelled verification'
+    it 'returns true if the profile is in-person pending' do
+      profile = create(:profile, :in_person_verification_pending)
 
-    it 'returns false if a pending profile was deactivate for an encryption error'
+      expect(profile.pending?).to eq(true)
+    end
 
-    it 'returns false if a profile is pending password reset'
+    it 'returns true if the user if fraud review pending' do
+      profile = create(:profile, :fraud_review_pending)
+
+      expect(profile.pending?).to eq(true)
+    end
+
+    it 'returns false if the user cancelled verification' do
+      profile = create(:profile, :verification_cancelled, :verify_by_mail_pending)
+
+      expect(profile.pending?).to eq(false)
+    end
+
+    it 'returns false if a pending profile was deactivate for an encryption error' do
+      profile = create(:profile, :encryption_error, :verify_by_mail_pending)
+
+      expect(profile.pending?).to eq(false)
+    end
+
+    it 'returns false if a profile is pending password reset' do
+      profile = create(:profile, :password_reset)
+
+      expect(profile.pending?).to eq(false)
+    end
   end
 
   describe '#pending_in_person_enrollment?' do
