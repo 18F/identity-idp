@@ -47,6 +47,8 @@ module DocAuth
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
 
+    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
+
     def generate_doc_auth_errors(response_info)
       alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
         0 : response_info[:alert_failure_count]
@@ -56,6 +58,9 @@ module DocAuth
 
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
       return image_metric_errors.to_h unless image_metric_errors.empty?
+
+      doc_type_errors = get_id_type_errors(response_info[:classification_info])
+      return doc_type_errors.to_h unless doc_type_errors.nil? || doc_type_errors.empty?
 
       alert_errors = get_error_messages(response_info)
 
@@ -96,6 +101,13 @@ module DocAuth
     end
 
     # private
+
+    def get_id_type_errors(classification_info)
+      return unless classification_info.present?
+      return if SUPPORTED_ID_CLASSNAME.include?(classification_info.dig('Back', 'ClassName')) &&
+                SUPPORTED_ID_CLASSNAME.include?(classification_info.dig('Front', 'ClassName'))
+      ErrorResult.new(Errors::DOC_TYPE_CHECK, ID)
+    end
 
     def get_image_metric_errors(processed_image_metrics)
       dpi_threshold = config&.dpi_threshold&.to_i || 290

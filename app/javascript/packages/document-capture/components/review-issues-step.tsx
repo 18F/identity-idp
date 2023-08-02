@@ -5,6 +5,7 @@ import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
+import { replaceVariables } from '@18f/identity-i18n';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
@@ -49,6 +50,8 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
 
   isFailedResult?: boolean;
 
+  isFailedDocType?: boolean;
+
   captureHints?: boolean;
 
   pii?: PII;
@@ -59,7 +62,7 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
  */
 const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
 
-const DISPLAY_ATTEMPTS = 3;
+const DISPLAY_ATTEMPTS = 100;
 
 function ReviewIssuesStep({
   value = {},
@@ -70,6 +73,7 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   remainingAttempts = Infinity,
   isFailedResult = false,
+  isFailedDocType = false,
   pii,
   captureHints = false,
 }: ReviewIssuesStepProps) {
@@ -98,8 +102,41 @@ function ReviewIssuesStep({
     if (pii) {
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
-
+    // ipp disabled
     if (!inPersonURL || isFailedResult) {
+      if (isFailedDocType) {
+        return (
+          <>
+            <Warning
+              heading={t('errors.doc_auth.doc_type_not_supported_heading')}
+              actionText={t('idv.failure.button.warning')}
+              actionOnClick={onWarningPageDismissed}
+              location="doc_auth_review_issues"
+              remainingAttempts={remainingAttempts}
+              troubleshootingOptions={
+                <DocumentCaptureTroubleshootingOptions
+                  location="post_submission_warning"
+                  showAlternativeProofingOptions={!isFailedResult}
+                  showSPOption={false}
+                  heading={t('components.troubleshooting_options.ipp_heading')}
+                />
+              }
+            >
+              {!!unknownFieldErrors &&
+                unknownFieldErrors
+                  .filter((error) => !['front', 'back'].includes(error.field!))
+                  .map(({ error }) => (
+                    <p key={error.message}>
+                      {formatWithStrongNoWrap(
+                        replaceVariables(error.message, { attempt: remainingAttempts }),
+                      )}
+                    </p>
+                  ))}
+            </Warning>
+            <Cancel />
+          </>
+        );
+      }
       return (
         <>
           <Warning
@@ -134,6 +171,37 @@ function ReviewIssuesStep({
         </>
       );
     }
+    // ipp enabled
+
+    if (isFailedDocType) {
+      return (
+        <Warning
+          heading={t('errors.doc_auth.doc_type_not_supported_heading')}
+          actionText={t('idv.failure.button.try_online')}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
+          remainingAttempts={remainingAttempts}
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={!isFailedResult}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!unknownFieldErrors &&
+            unknownFieldErrors
+              .filter((error) => !['front', 'back'].includes(error.field!))
+              .map(({ error }) => (
+                <p key={error.message}>
+                  {formatWithStrongNoWrap(
+                    replaceVariables(error.message, { attempt: remainingAttempts }),
+                  )}
+                </p>
+              ))}
+        </Warning>
+      );
+    }
 
     return (
       <Warning
@@ -164,7 +232,51 @@ function ReviewIssuesStep({
       </Warning>
     );
   }
+  // hasDismissed = true
+  if (isFailedDocType) {
+    return (
+      <>
+        <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
+        {!!unknownFieldErrors &&
+          unknownFieldErrors
+            .filter((error) => !['front', 'back'].includes(error.field!))
+            .map(({ error }) => (
+              <p key={error.message}>
+                {formatWithStrongNoWrap(
+                  replaceVariables(error.message, { attempt: remainingAttempts }),
+                )}
+              </p>
+            ))}
+        {captureHints && (
+          <>
+            <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
+            <ul>
+              <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
+              <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
+              <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
+              <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
+            </ul>
+          </>
+        )}
+        {DOCUMENT_SIDES.map((side) => (
+          <DocumentSideAcuantCapture
+            key={side}
+            side={side}
+            registerField={registerField}
+            value={value[side]}
+            onChange={onChange}
+            errors={errors}
+            onError={onError}
+            className="document-capture-review-issues-step__input"
+          />
+        ))}
 
+        <FormStepsButton.Submit />
+        <DocumentCaptureTroubleshootingOptions />
+        <Cancel />
+      </>
+    );
+  }
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>

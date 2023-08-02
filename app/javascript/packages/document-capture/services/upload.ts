@@ -39,6 +39,8 @@ export class UploadFormEntriesError extends FormError {
 
   isFailedResult = false;
 
+  isFailedDocType = false;
+
   pii?: PII;
 
   hints = false;
@@ -116,6 +118,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     }
 
     error.isFailedResult = !!result.result_failed;
+
+    error.isFailedDocType = !result.doc_type_supported;
 
     throw error;
   }

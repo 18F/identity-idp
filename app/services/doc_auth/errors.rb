@@ -5,12 +5,14 @@ module DocAuth
     PIXEL_DEPTH_FAILURE = 'pixel_depth_failure' # 439
     IMAGE_SIZE_FAILURE = 'image_size_failure' # 440
     # Alerts
+    CARD_TYPE = 'card_type'
     BARCODE_CONTENT_CHECK = 'barcode_content_check'
     BARCODE_READ_CHECK = 'barcode_read_check'
     BIRTH_DATE_CHECKS = 'birth_date_checks'
     CONTROL_NUMBER_CHECK = 'control_number_check'
     DOC_CROSSCHECK = 'doc_crosscheck'
     DOC_NUMBER_CHECKS = 'doc_number_checks'
+    DOC_TYPE_CHECK = 'doc_type_check'
     DOCUMENT_EXPIRED_CHECK = 'doc_expired_check' # document has expired
     EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
     FULL_NAME_CHECK = 'full_name_check'
@@ -48,6 +50,7 @@ module DocAuth
       CONTROL_NUMBER_CHECK,
       DOC_CROSSCHECK,
       DOC_NUMBER_CHECKS,
+      DOC_TYPE_CHECK,
       EXPIRATION_CHECKS,
       FULL_NAME_CHECK,
       GENERAL_ERROR,
@@ -88,6 +91,7 @@ module DocAuth
       DOC_CROSSCHECK => { long_msg: DOC_CROSSCHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       DOCUMENT_EXPIRED_CHECK => { long_msg: DOCUMENT_EXPIRED_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       DOC_NUMBER_CHECKS => { long_msg: DOC_NUMBER_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      DOC_TYPE_CHECK => {long_msg: DOC_TYPE_CHECK, field_msg: CARD_TYPE, hints: true},
       EXPIRATION_CHECKS => { long_msg: EXPIRATION_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       FULL_NAME_CHECK => { long_msg: FULL_NAME_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       ISSUE_DATE_CHECKS => { long_msg: ISSUE_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },

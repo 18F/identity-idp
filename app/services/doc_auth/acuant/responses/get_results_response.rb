@@ -42,6 +42,11 @@ module DocAuth
           end
         end
 
+        def id_type_supported?
+          return false unless ID_TYPE_SLUGS.keys.include? classification_info.dig('Front', 'ClassName')
+          ID_TYPE_SLUGS.keys.include? classification_info.dig('Back', 'ClassName')
+        end
+
         private
 
         attr_reader :http_response
@@ -125,6 +130,7 @@ module DocAuth
         end
 
         def successful_result?
+          #(passed_result? || attention_with_barcode?) && id_type_supported?
           passed_result? || attention_with_barcode?
         end
 

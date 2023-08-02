@@ -22,12 +22,14 @@ en:
         barcode_read_check: We couldn’t read the barcode on the back of your ID. Try
           taking a new picture.
         birth_date_checks: We couldn’t read the birth date on your ID. Try taking new pictures.
+        card_type: Try again with your driver’s license or state ID card.
         control_number_check: We couldn’t read the reference number on the back of your
           ID. Try taking a new picture.
         doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged, or the
           front and the back of the ID don’t match. Try taking new pictures.
         doc_number_checks: We couldn’t read the document number on your ID. Try taking
           new pictures.
+        doc_type_check: Other forms of ID are not accepted. For security reasons, you have <strong>%{attempt} attempts</strong> remaining.
         expiration_checks: The document has expired, or we couldn’t read the expiration
           date on your ID. If your ID is not expired, try taking new pictures.
         full_name_check: We couldn’t read the full name on your ID. Try taking new pictures.
