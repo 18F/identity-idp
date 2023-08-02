@@ -199,6 +199,7 @@ class OpenidConnectTokenForm
       user_id: identity&.user&.uuid,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
       code_verifier_present: code_verifier.present?,
+      service_provider_pkce: service_provider&.pkce,
     }
   end
 
