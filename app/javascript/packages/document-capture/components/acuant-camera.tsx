@@ -129,7 +129,7 @@ interface AcuantCameraUICallbacks {
   /**
    * Callback that occurs when there is a failure.
    */
-  onFailure: (response: AcuantFailureCallback) => void;
+  onFailure: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
 type AcuantCameraUIStart = (
