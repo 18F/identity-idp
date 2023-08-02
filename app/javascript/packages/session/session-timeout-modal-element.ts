@@ -8,11 +8,11 @@ class SessionTimeoutModalElement extends HTMLElement {
 
   connectedCallback() {
     this.bindButtonEvents();
-    this.scheduleStatusCheck({ timeout: this.timeout });
+    this.scheduleStatusCheck();
   }
 
   disconnectedCallback() {
-    window.clearTimeout(this.statusCheckTimeout);
+    this.clearScheduledStatusCheck();
   }
 
   /**
@@ -22,8 +22,19 @@ class SessionTimeoutModalElement extends HTMLElement {
     return Number(this.getAttribute('warning-offset-in-seconds')!) * 1000;
   }
 
-  get timeout(): Date {
-    return new Date(this.getAttribute('timeout')!);
+  get timeout(): Date | null {
+    const timeout = this.getAttribute('timeout');
+    return timeout ? new Date(timeout) : null;
+  }
+
+  set timeout(timeout: Date | undefined) {
+    if (timeout) {
+      this.setAttribute('timeout', timeout.toISOString());
+    } else {
+      this.removeAttribute('timeout');
+    }
+
+    this.scheduleStatusCheck();
   }
 
   get timeoutURL(): string {
@@ -50,10 +61,12 @@ class SessionTimeoutModalElement extends HTMLElement {
     this.keepAliveButton.addEventListener('click', () => this.keepAlive());
   }
 
-  keepAlive() {
+  async keepAlive() {
+    this.clearScheduledStatusCheck();
     this.modal.hide();
     this.countdownElements.forEach((countdown) => countdown.stop());
-    extendSession();
+    const { timeout } = await extendSession();
+    this.timeout = timeout;
   }
 
   async checkStatus() {
@@ -61,7 +74,7 @@ class SessionTimeoutModalElement extends HTMLElement {
 
     if (isLive) {
       const millisecondsRemaining = timeout.valueOf() - Date.now();
-      const showWarning = millisecondsRemaining < this.warningOffsetInMilliseconds;
+      const showWarning = millisecondsRemaining <= this.warningOffsetInMilliseconds;
       if (showWarning) {
         this.modal.show();
         this.countdownElements.forEach((countdown) => {
@@ -70,14 +83,19 @@ class SessionTimeoutModalElement extends HTMLElement {
         });
       }
 
-      this.scheduleStatusCheck({ timeout });
+      this.timeout = timeout;
     } else {
       forceRedirect(this.timeoutURL);
     }
   }
 
-  scheduleStatusCheck({ timeout }: { timeout: Date }) {
-    const timeoutFromNow = timeout.valueOf() - Date.now();
+  scheduleStatusCheck() {
+    this.clearScheduledStatusCheck();
+    if (!this.timeout) {
+      return;
+    }
+
+    const timeoutFromNow = this.timeout.valueOf() - Date.now();
     const delay = this.modal.isVisible
       ? timeoutFromNow
       : timeoutFromNow - this.warningOffsetInMilliseconds;
@@ -87,6 +105,10 @@ class SessionTimeoutModalElement extends HTMLElement {
     } else if (!this.modal.isVisible) {
       this.checkStatus();
     }
+  }
+
+  clearScheduledStatusCheck() {
+    window.clearTimeout(this.statusCheckTimeout);
   }
 }
 

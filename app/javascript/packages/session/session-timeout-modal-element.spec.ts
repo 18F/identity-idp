@@ -1,26 +1,46 @@
 import sinon from 'sinon';
+import quibble from 'quibble';
+import { screen, waitFor } from '@testing-library/dom';
+import baseUserEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import '@18f/identity-modal/modal-element';
-import './session-timeout-modal-element';
+import type ModalElement from '@18f/identity-modal/modal-element';
 import type SessionTimeoutModalElement from './session-timeout-modal-element';
 
 describe('SessionTimeoutModalElement', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
+  const requestSessionStatus = sinon.stub();
+  const extendSession = sinon.stub();
+  const userEvent = baseUserEvent.setup({ advanceTimers: sandbox.clock.tick });
+
+  before(async () => {
+    quibble('./requests', { requestSessionStatus, extendSession });
+    await import('./session-timeout-modal-element');
+  });
+
+  beforeEach(() => {
+    requestSessionStatus.reset();
+    extendSession.reset();
+  });
+
+  after(() => {
+    quibble.reset();
+  });
 
   function createElement({
     warningOffsetInMilliseconds = 1000,
-    timeout = new Date(),
+    timeout,
   }: Partial<Pick<SessionTimeoutModalElement, 'warningOffsetInMilliseconds' | 'timeout'>>) {
     document.body.innerHTML = `
       <lg-session-timeout-modal
         warning-offset-in-seconds="${warningOffsetInMilliseconds / 1000}"
-        timeout="${timeout.toISOString()}"
+        ${timeout ? `timeout="${timeout.toISOString()}"` : ''}
       >
-        <lg-modal>
-          <button class="lg-session-timeout-modal__keep-alive-button">
+        <lg-modal role="dialog">
+          <button type="button" class="lg-session-timeout-modal__keep-alive-button">
             Stay Signed In
           </button>
-          <button class="lg-session-timeout-modal__sign-out-button">
+          <button type="button" class="lg-session-timeout-modal__sign-out-button">
             Sign Out
           </button>
         </lg-modal>
@@ -37,7 +57,7 @@ describe('SessionTimeoutModalElement', () => {
           sandbox.stub(window, 'setTimeout');
 
           const element = createElement({ warningOffsetInMilliseconds: 1000 });
-          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1001) });
+          element.timeout = new Date(Date.now() + 1001);
 
           expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
         });
@@ -49,7 +69,7 @@ describe('SessionTimeoutModalElement', () => {
 
           const element = createElement({ warningOffsetInMilliseconds: 1000 });
           sandbox.stub(element, 'checkStatus');
-          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 999) });
+          element.timeout = new Date(Date.now() + 999);
 
           expect(window.setTimeout).not.to.have.been.called();
           expect(element.checkStatus).to.have.been.called();
@@ -64,7 +84,7 @@ describe('SessionTimeoutModalElement', () => {
 
           const element = createElement({ warningOffsetInMilliseconds: 1000 });
           sandbox.stub(element.modal, 'isVisible').get(() => true);
-          element.scheduleStatusCheck({ timeout: new Date(Date.now() - 1) });
+          element.timeout = new Date(Date.now() - 1);
 
           expect(window.setTimeout).not.to.have.been.called();
         });
@@ -76,11 +96,41 @@ describe('SessionTimeoutModalElement', () => {
 
           const element = createElement({ warningOffsetInMilliseconds: 1000 });
           sandbox.stub(element.modal, 'isVisible').get(() => true);
-          element.scheduleStatusCheck({ timeout: new Date(Date.now() + 1) });
+          element.timeout = new Date(Date.now() + 1);
 
           expect(window.setTimeout).to.have.been.calledWith(sinon.match.func, 1);
         });
       });
     });
+  });
+
+  it('re-schedules status check after keeping session alive', async () => {
+    const timeout = new Date(Date.now() + 3000);
+    requestSessionStatus.resolves({ isLive: true, timeout });
+    createElement({ warningOffsetInMilliseconds: 1000, timeout });
+
+    const modal = screen.getByRole('dialog') as ModalElement;
+    expect(modal.isVisible).to.be.false();
+    sandbox.clock.tick(2000);
+
+    await waitFor(() => expect(modal.isVisible).to.be.true());
+
+    const nextTimeout = new Date(Date.now() + 3000);
+    extendSession.resolves({ isLive: true, timeout: nextTimeout });
+    requestSessionStatus.reset();
+    requestSessionStatus.resolves({ isLive: true, timeout: nextTimeout });
+
+    const keepAliveButton = screen.getByRole('button', { name: 'Stay Signed In' });
+    await userEvent.click(keepAliveButton);
+
+    await waitFor(() => expect(modal.isVisible).to.be.false());
+    expect(extendSession).to.have.been.called();
+
+    sandbox.clock.tick(1000);
+    expect(requestSessionStatus).not.to.have.been.called();
+
+    sandbox.clock.tick(1000);
+    expect(requestSessionStatus).to.have.been.called();
+    await waitFor(() => expect(modal.isVisible).to.be.true());
   });
 });
