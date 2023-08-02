@@ -48,6 +48,13 @@ RSpec.describe TwoFactorOptionsForm do
       expect(result.success?).to eq true
     end
 
+    it 'is unsuccessful if user has 1 method and its platform auth and no option' do
+      create(:webauthn_configuration, :platform_authenticator, user: user)
+
+      result = subject.submit(selection: [])
+      expect(result.success?).to eq false
+    end
+
     it 'includes analytics hash with a methods count of zero' do
       result = subject.submit(selection: 'piv_cac')
 
