@@ -27,7 +27,7 @@ class SessionTimeoutModalElement extends HTMLElement {
     return timeout ? new Date(timeout) : null;
   }
 
-  set timeout(timeout: Date | undefined) {
+  set timeout(timeout: Date | null) {
     if (timeout) {
       this.setAttribute('timeout', timeout.toISOString());
     } else {
@@ -66,7 +66,7 @@ class SessionTimeoutModalElement extends HTMLElement {
     this.modal.hide();
     this.countdownElements.forEach((countdown) => countdown.stop());
     const { timeout } = await extendSession();
-    this.timeout = timeout;
+    this.timeout = timeout || null;
   }
 
   async checkStatus() {
