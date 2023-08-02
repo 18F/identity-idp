@@ -1,5 +1,5 @@
 postgresql: &postgresql
-  adapter: postgis
+  adapter: postgresql
   encoding: utf8
   database: identity_idp_<%= Rails.env %>
   port: 5432
@@ -24,9 +24,11 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
+    adapter: postgis
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
+    adapter: postgis
     replica: true
   worker_jobs:
     <<: *defaults
@@ -36,6 +38,7 @@ development:
 test:
   primary: &test
     <<: *defaults
+    adapter: postgis
     pool: 10
     checkout_timeout: 10
     database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
@@ -44,6 +47,7 @@ test:
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *test
+    adapter: postgis
     replica: true
   worker_jobs:
     <<: *test
@@ -76,6 +80,7 @@ test:
 production:
   primary:
     <<: *defaults
+    adapter: postgis
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_username %>
     host: <%= IdentityConfig.store.database_socket.present? ?  IdentityConfig.store.database_socket : IdentityConfig.store.database_host %>
@@ -88,6 +93,7 @@ production:
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
+    adapter: postgis
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_readonly_username %>
     host: <%= IdentityConfig.store.database_read_replica_host %>
