@@ -35,6 +35,7 @@ FactoryBot.define do
 
     trait :in_person_verification_pending do
       deactivation_reason { :in_person_verification_pending }
+      in_person_verification_pending_at { 15.days.ago }
     end
 
     trait :fraud_pending_reason do

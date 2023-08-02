@@ -122,6 +122,7 @@ class Profile < ApplicationRecord
         fraud_review_pending_at: nil,
         fraud_rejection_at: nil,
         fraud_pending_reason: nil,
+        in_person_verification_pending_at: nil,
         deactivation_reason: nil,
       )
       activate
