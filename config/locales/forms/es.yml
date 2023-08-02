@@ -159,9 +159,6 @@ es:
       continue: Continuar
       info_text: Tendrá que configurar un método de autenticación adicional después de
         establecer el desbloqueo con la cara o con la huella digital.
-      instructions_text: Use el desbloqueo facial o táctil para acceder a su cuenta
-        con %{app_name}.
-      instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
       intro_html: '<p>Guarde la cara o la huella digital como credencial en su
         dispositivo. De esta forma, accederá a su cuenta con una de ellas.
         %{app_name} no almacena la cara ni la huella digital.</p><p>Es posible
@@ -174,11 +171,9 @@ es:
         huella digital, podrá distinguirlos.
     webauthn_setup:
       continue: Continuar
-      instructions_text: Presione el botón en su clave de seguridad para registrarlo
-        con %{app_name}
-      instructions_title: Conecte su llave de seguridad
       intro_html: '<p>Añada una clave de seguridad que cumpla el estándar FIDO como
         método de autenticación. Puede añadir tantas claves de seguridad como
         desee. Para empezar, primero asigne un apodo a su clave de
         seguridad.</p>'
       nickname: Apodo clave de seguridad
+      saving: Guardando sus credenciales …

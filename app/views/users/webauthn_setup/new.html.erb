@@ -45,11 +45,21 @@
           maxlength: 20,
         },
       ) %>
+  <div class="margin-y-4 text-center" id="spinner" hidden>
+    <%= image_tag(
+          asset_url('loading-badge.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
+    <strong class="display-block margin-top-2">
+      <%= t('forms.webauthn_setup.saving') %>
+    </strong>
+  </div>
   <%= f.input(
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
-        wrapper_html: { class: 'margin-top-4' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
@@ -61,20 +71,6 @@
         class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
       ) %>
 <% end %>
-
-<div class="spinner display-none margin-y-4" id='spinner'>
-  <div class='text-center'>
-    <%= image_tag(
-          asset_url('spinner.gif'),
-          srcset: asset_url('spinner@2x.gif'),
-          height: 144,
-          width: 144,
-          alt: '',
-        ) %>
-  </div>
-  <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
-  <p class='half-center'><%= @presenter.setup_instructions %></p>
-</div>
 
 <%= render 'shared/cancel_or_back_to_options' %>
 
