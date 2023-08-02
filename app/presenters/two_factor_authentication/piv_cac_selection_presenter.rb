@@ -15,6 +15,10 @@ module TwoFactorAuthentication
       )
     end
 
+    def mfa_added_label
+      ''
+    end
+
     def mfa_configuration_count
       user.piv_cac_configurations.count
     end

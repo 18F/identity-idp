@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      user&.auth_app_configurations&.any?
+      false
     end
 
     def mfa_configuration_count

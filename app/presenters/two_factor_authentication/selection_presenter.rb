@@ -43,6 +43,10 @@ module TwoFactorAuthentication
       )
     end
 
+    def mfa_added_label
+      "(#{mfa_configuration_description})"
+    end
+
     def disabled?
       false
     end
