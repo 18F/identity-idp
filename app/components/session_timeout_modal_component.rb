@@ -32,6 +32,7 @@ class SessionTimeoutModalComponent < BaseComponent
     render(
       ButtonComponent.new(
         type: :button,
+        **button_options,
         class: [*button_options[:class], 'lg-session-timeout-modal__keep-alive-button'],
       ),
       &block
