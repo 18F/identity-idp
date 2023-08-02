@@ -213,9 +213,13 @@ export interface AcuantSuccessResponse {
    */
   image: AcuantImage;
   /**
-   * Document type
+   * Document type for Acuant SDK 11.8.2
    */
-  cardType: AcuantDocumentType;
+  cardtype?: AcuantDocumentType | undefined;
+  /**
+   * Document type for Acuant SDK 11.9.1
+   */
+  cardType?: AcuantDocumentType | undefined;
   /**
    * Detected image glare
    */
