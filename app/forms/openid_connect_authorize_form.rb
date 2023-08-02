@@ -233,6 +233,7 @@ class OpenidConnectAuthorizeForm
       acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
       code_digest: code ? Digest::SHA256.hexdigest(code) : nil,
+      code_challenge_present: code_challenge.present?,
     }
   end
 

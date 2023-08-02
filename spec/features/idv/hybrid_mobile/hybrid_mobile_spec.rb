@@ -160,7 +160,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
 
       perform_in_browser(:desktop) do
-        expect(page).to have_current_path(idv_session_errors_throttled_path, wait: 10)
+        expect(page).to have_current_path(idv_session_errors_rate_limited_path, wait: 10)
       end
     end
   end
