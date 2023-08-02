@@ -391,6 +391,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def gpo_reminder
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: "GPO reminder")
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
