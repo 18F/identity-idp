@@ -635,7 +635,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
-        acuantCaptureMode: sinon.match.string,
+        acuantCaptureMode: 'AUTO',
       });
 
       expect(error).to.be.ok();
