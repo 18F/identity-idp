@@ -29,43 +29,6 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    it 'checks that feature flag is enabled' do
-      expect(subject).to have_actions(
-        :before,
-        :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set,
-      )
-    end
-
-    context 'when in_person_ssn_info_controller_enabled is not set' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
-          and_return(nil)
-      end
-
-      context('#renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set') do
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-    end
-
-    context 'when in_person_ssn_info_controller_enabled is false' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
-          and_return(false)
-      end
-
-      context('#renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set') do
-        it 'renders a 404' do
-          get :show
-
-          expect(response).to be_not_found
-        end
-      end
-    end
-
     context 'when in_person_ssn_info_controller_enabled is true' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_ssn_info_controller_enabled).
