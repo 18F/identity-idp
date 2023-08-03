@@ -447,7 +447,7 @@ GEM
     pg (1.4.5)
     pg_query (2.2.0)
       google-protobuf (>= 3.19.2)
-    phonelib (0.6.54)
+    phonelib (0.8.2)
     pkcs11 (0.3.4)
     premailer (1.21.0)
       addressable

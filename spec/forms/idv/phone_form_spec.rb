@@ -69,7 +69,7 @@ RSpec.describe Idv::PhoneForm do
         let(:optional_params) { { delivery_methods: [:sms] } }
 
         it 'uses the user phone number as the initial phone value' do
-          expect(subject.phone).to eq('+1 787 234 5678')
+          expect(subject.phone).to eq('+1 787-234-5678')
         end
         it 'infers the country code from the user phone number' do
           expect(subject.international_code).to eq('PR')
@@ -125,7 +125,7 @@ RSpec.describe Idv::PhoneForm do
           }
         end
         it 'uses the previously submitted phone + and infers country' do
-          expect(subject.phone).to eq('+1 787 234 5678')
+          expect(subject.phone).to eq('+1 787-234-5678')
           expect(subject.international_code).to eq('PR')
         end
       end
