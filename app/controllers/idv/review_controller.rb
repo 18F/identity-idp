@@ -108,6 +108,7 @@ module Idv
           enqueued_at: Time.zone.now,
           resend: false,
           phone_step_attempts: phone_step_attempts,
+          first_letter_requested_at: nil,
           **ab_test_analytics_buckets,
         )
       end
