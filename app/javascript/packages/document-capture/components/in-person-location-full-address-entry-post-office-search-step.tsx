@@ -74,7 +74,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationsURL, {
+        await request(LOCATIONS_URL, {
           json: selected,
           method: 'PUT',
         });
