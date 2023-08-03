@@ -154,6 +154,7 @@ RSpec.describe Idv::GpoController do
           'IdV: USPS address letter requested',
           resend: false,
           phone_step_attempts: 1,
+          first_letter_requested_at: nil,
           proofing_components: nil,
           **ab_test_args,
         )
@@ -178,7 +179,7 @@ RSpec.describe Idv::GpoController do
 
     context 'resending a letter' do
       let(:has_pending_profile) { true }
-      let(:pending_profile) { create(:profile) }
+      let(:pending_profile) { create(:profile, :verify_by_mail_pending) }
 
       before do
         stub_sign_in(user)
@@ -203,6 +204,7 @@ RSpec.describe Idv::GpoController do
           'IdV: USPS address letter requested',
           resend: true,
           phone_step_attempts: 1,
+          first_letter_requested_at: pending_profile.gpo_verification_pending_at,
           proofing_components: nil,
           **ab_test_args,
         )
@@ -210,6 +212,7 @@ RSpec.describe Idv::GpoController do
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter enqueued',
           resend: true,
+          first_letter_requested_at: pending_profile.gpo_verification_pending_at,
           enqueued_at: Time.zone.now,
           phone_step_attempts: 1,
           proofing_components: nil,
