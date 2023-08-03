@@ -79,10 +79,13 @@ export const transformKeys = (location: object, predicate: (key: string) => stri
     {},
   );
 
-const requestUspsLocations = async (
-  locationsURL: string,
-  address: LocationQuery,
-): Promise<FormattedLocation[]> => {
+const requestUspsLocations = async ({
+  locationsURL,
+  address,
+}: {
+  locationsURL: string;
+  address: LocationQuery;
+}): Promise<FormattedLocation[]> => {
   const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
@@ -91,10 +94,13 @@ const requestUspsLocations = async (
   return formatLocations(response);
 };
 
-function requestAddressCandidates(
-  unvalidatedAddressInput: string,
-  addressSearchURL: string,
-): Promise<Location[]> {
+function requestAddressCandidates({
+  unvalidatedAddressInput,
+  addressSearchURL,
+}: {
+  unvalidatedAddressInput: string;
+  addressSearchURL: string;
+}): Promise<Location[]> {
   return request<Location[]>(addressSearchURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -130,7 +136,9 @@ function useUspsLocations({
     isLoading: isLoadingCandidates,
     error: addressError,
   } = useSWR([addressQuery], () =>
-    addressQuery ? requestAddressCandidates(addressQuery, addressSearchURL) : null,
+    addressQuery
+      ? requestAddressCandidates({ unvalidatedAddressInput: addressQuery, addressSearchURL })
+      : null,
   );
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -159,7 +167,7 @@ function useUspsLocations({
     isLoading: isLoadingLocations,
     error: uspsError,
   } = useSWR([foundAddress], ([address]) =>
-    address ? requestUspsLocations(locationsURL, address) : null,
+    address ? requestUspsLocations({ locationsURL, address }) : null,
   );
 
   return {
