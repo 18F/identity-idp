@@ -5,7 +5,6 @@ import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import { Cancel } from '@18f/identity-verify-flow';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import { replaceVariables } from '@18f/identity-i18n';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
@@ -193,9 +192,7 @@ function ReviewIssuesStep({
           {!!unknownFieldErrors &&
             unknownFieldErrors
               .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => (
-                <DocTypeErrorMessage error={error} />
-              ))}
+              .map(({ error }) => <DocTypeErrorMessage error={error} />)}
         </Warning>
       );
     }
