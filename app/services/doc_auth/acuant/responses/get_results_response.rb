@@ -130,8 +130,7 @@ module DocAuth
         end
 
         def successful_result?
-          #(passed_result? || attention_with_barcode?) && id_type_supported?
-          passed_result? || attention_with_barcode?
+          (passed_result? || attention_with_barcode?) && id_type_supported?
         end
 
         def passed_result?
