@@ -41,6 +41,7 @@ class GpoVerifyForm
         enqueued_at: gpo_confirmation_code&.code_sent_at,
         which_letter: which_letter,
         letter_count: letter_count,
+        attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
         fraud_check_failed: fraud_check_failed,
@@ -72,6 +73,10 @@ class GpoVerifyForm
     return if !valid_otp?
 
     pending_profile.gpo_confirmation_codes.count
+  end
+
+  def attempts
+    RateLimiter.new(user: user, rate_limit_type: :verify_gpo_key).attempts
   end
 
   def validate_otp_not_expired
