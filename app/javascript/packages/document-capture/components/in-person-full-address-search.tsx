@@ -29,10 +29,13 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
     isPilot: !!po.is_pilot,
   }));
 
-const requestUspsLocations = async (
-  locationsURL: string,
-  address: LocationQuery,
-): Promise<FormattedLocation[]> => {
+const requestUspsLocations = async ({
+  address,
+  locationsURL,
+}: {
+  locationsURL: string;
+  address: LocationQuery;
+}): Promise<FormattedLocation[]> => {
   const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
@@ -85,7 +88,7 @@ function useUspsLocations(locationsURL: string) {
     isLoading: isLoadingLocations,
     error: uspsError,
   } = useSWR([locationQuery], ([address]) =>
-    address ? requestUspsLocations(locationsURL, address) : null,
+    address ? requestUspsLocations({ address, locationsURL }) : null,
   );
 
   return {
