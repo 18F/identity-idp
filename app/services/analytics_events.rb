@@ -644,7 +644,7 @@ module AnalyticsEvents
   end
 
   # User has consented to share information with document upload and may
-  # view the "hybrid handoff" step next unless "skip_upload" param is true
+  # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   def idv_doc_auth_agreement_submitted(**extra)
     track_event('IdV: doc auth agreement submitted', **extra)
   end

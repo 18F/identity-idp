@@ -164,14 +164,6 @@ RSpec.describe Idv::GettingStartedController do
         }.from(nil).to('standard')
       end
 
-      it 'sets flow_session[:skip_upload_step] to true' do
-        expect do
-          put :update, params: params
-        end.to change {
-          subject.flow_session[:skip_upload_step]
-        }.from(nil).to(true)
-      end
-
       it 'redirects to hybrid handoff' do
         put :update, params: params
         expect(response).to redirect_to(idv_hybrid_handoff_url)
