@@ -447,8 +447,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_143215) do
     t.datetime "gpo_verification_pending_at"
     t.integer "fraud_pending_reason"
     t.datetime "in_person_verification_pending_at"
-    t.text "encrypted_pii_mr"
-    t.text "encrypted_pii_recovery_mr"
+    t.text "encrypted_pii_multi_region"
+    t.text "encrypted_pii_recovery_multi_region"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
@@ -605,8 +605,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_143215) do
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.datetime "suspended_at"
     t.datetime "reinstated_at"
-    t.string "encrypted_password_digest_mr"
-    t.string "encrypted_recovery_code_digest_mr"
+    t.string "encrypted_password_digest_multi_region"
+    t.string "encrypted_recovery_code_digest_multi_region"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -626,7 +626,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_143215) do
     t.text "entry", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.text "entry_mr", null: false
+    t.text "entry_multi_region"
   end
 
   create_table "webauthn_configurations", force: :cascade do |t|

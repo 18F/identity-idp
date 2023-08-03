@@ -1,4 +1,4 @@
-class AddMrChiphertextColumns < ActiveRecord::Migration[7.0]
+class AddMultiRegionChiphertextColumns < ActiveRecord::Migration[7.0]
   def change
     add_column :users, :encrypted_password_digest_multi_region, :string
     add_column :users, :encrypted_recovery_code_digest_multi_region, :string
