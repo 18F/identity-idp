@@ -215,11 +215,11 @@ export interface AcuantSuccessResponse {
   /**
    * Document type for Acuant SDK 11.8.2
    */
-  cardtype?: AcuantDocumentType;
+  cardtype: AcuantDocumentType;
   /**
    * Document type for Acuant SDK 11.9.1
    */
-  cardType?: AcuantDocumentType;
+  cardType: AcuantDocumentType;
   /**
    * Detected image glare
    */
