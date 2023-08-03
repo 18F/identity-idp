@@ -116,7 +116,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabledAddressSearch}
-        // todo: add both URL values as props here
         locationsURL={LOCATIONS_URL}
         addressSearchURL={ADDRESSES_URL}
       />
