@@ -138,7 +138,6 @@ interface AcuantContextInterface {
   endpoint: string | null;
 }
 
-// if needed, could add acuant sdk version to the below
 const AcuantContext = createContext<AcuantContextInterface>({
   isReady: false,
   isAcuantLoaded: false,
