@@ -6,10 +6,9 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import FullAddressSearch from './in-person-full-address-search';
-// import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
+import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
 describe('FullAddressSearch', () => {
-  const LOCATIONS_URL = 'https://login.gov/api/locations';
   const sandbox = useSandbox();
   context('when an address is found', () => {
     let server: SetupServer;

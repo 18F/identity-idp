@@ -18,7 +18,7 @@ export const LOCATIONS_URL = new URL(
   '/verify/in_person/usps_locations',
   window.location.href,
 ).toString();
-export const ADDRESS_SEARCH_URL = '/api/addresses';
+export const ADDRESSES_URL = new URL('/api/addresses', window.location.href).toString();
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonURL } = useContext(InPersonContext);
@@ -37,10 +37,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
-
-  // this is the place to start and should be the only place to set up the locationsURL
-  const locationsURL = LOCATIONS_URL; // '/verify/in_person/usps_locations'
-  const addressSearchURL = ADDRESS_SEARCH_URL; // '/api/addresses'
 
   useEffect(() => {
     mountedRef.current = true;
@@ -74,7 +70,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
       const selected = transformKeys(selectedLocation, snakeCase);
       setInProgress(true);
       try {
-        await request(locationsURL, {
+        await request(LOCATIONS_URL, {
           json: selected,
           method: 'PUT',
         });
@@ -121,8 +117,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         onError={setApiError}
         disabled={disabledAddressSearch}
         // todo: add both URL values as props here
-        locationsURL={locationsURL}
-        addressSearchURL={addressSearchURL}
+        locationsURL={LOCATIONS_URL}
+        addressSearchURL={ADDRESSES_URL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

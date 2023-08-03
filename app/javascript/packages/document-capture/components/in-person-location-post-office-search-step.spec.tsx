@@ -7,7 +7,10 @@ import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
+import InPersonLocationPostOfficeSearchStep, {
+  ADDRESSES_URL,
+  LOCATIONS_URL,
+} from './in-person-location-post-office-search-step';
 
 const DEFAULT_RESPONSE = [
   {
@@ -55,8 +58,6 @@ const DEFAULT_PROPS = {
   registerField() {},
 };
 
-const LOCATIONS_URL = 'https://login.gov/api/locations';
-const ADDRESSES_URL = 'https://login.gov/api/addresses';
 describe('InPersonLocationPostOfficeSearchStep', () => {
   const wrapper: ComponentType = ({ children }) => (
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
