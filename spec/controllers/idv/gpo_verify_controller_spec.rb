@@ -327,7 +327,7 @@ RSpec.describe Idv::GpoVerifyController do
           fraud_check_failed: false,
           enqueued_at: nil,
           which_letter: nil,
-          letter_count: nil,
+          letter_count: 1,
           attempts: 1,
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
@@ -352,7 +352,6 @@ RSpec.describe Idv::GpoVerifyController do
       let(:max_attempts) { IdentityConfig.store.verify_gpo_key_max_attempts }
 
       context 'user is rate limited' do
-
         it 'renders the index page to show errors' do
           analytics_args = {
             success: false,
@@ -361,7 +360,7 @@ RSpec.describe Idv::GpoVerifyController do
             fraud_check_failed: false,
             enqueued_at: nil,
             which_letter: nil,
-            letter_count: nil,
+            letter_count: 1,
             attempts: 1,
             error_details: otp_code_incorrect,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
@@ -417,7 +416,7 @@ RSpec.describe Idv::GpoVerifyController do
             fraud_check_failed: false,
             enqueued_at: nil,
             which_letter: nil,
-            letter_count: nil,
+            letter_count: 1,
             attempts: 1,
             error_details: otp_code_incorrect,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],

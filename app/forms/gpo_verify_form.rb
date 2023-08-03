@@ -70,9 +70,7 @@ class GpoVerifyForm
   end
 
   def letter_count
-    return if !valid_otp?
-
-    pending_profile.gpo_confirmation_codes.count
+    pending_profile&.gpo_confirmation_codes&.count
   end
 
   def attempts
