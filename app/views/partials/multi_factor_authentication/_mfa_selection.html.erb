@@ -2,8 +2,6 @@
       'two_factor_options_form[selection][]',
       option.type,
       false,
-      # disabled: option.disabled? && option.type === 'piv_cac' || option.disabled? && option.type === 'backup_code' || option.disabled? && option.type === 'phone',
-      # checked: option.disabled? && option.type === 'piv_cac' || option.disabled? && option.type === 'backup_code',
       disabled: option.disabled?,
       checked: option.disabled?,
       class: 'usa-checkbox__input usa-checkbox__input--tile',
