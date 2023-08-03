@@ -39,6 +39,8 @@ class GpoVerifyForm
       errors: errors,
       extra: {
         enqueued_at: gpo_confirmation_code&.code_sent_at,
+        which_letter: which_letter,
+        letter_count: letter_count,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
         fraud_check_failed: fraud_check_failed,
@@ -46,7 +48,7 @@ class GpoVerifyForm
     )
   end
 
-  protected
+  private
 
   def pending_profile
     @pending_profile ||= user.pending_profile
@@ -56,6 +58,20 @@ class GpoVerifyForm
     return if otp.blank? || pending_profile.blank?
 
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
+  end
+
+  def which_letter
+    return if !valid_otp?
+    successful_code_sent_at = gpo_confirmation_code.code_sent_at
+    gpo_codes = pending_profile.gpo_confirmation_codes.sort_by(&:code_sent_at)
+    position = gpo_codes.find_index { |code| code.code_sent_at == successful_code_sent_at }
+    position + 1
+  end
+
+  def letter_count
+    return if !valid_otp?
+
+    pending_profile.gpo_confirmation_codes.count
   end
 
   def validate_otp_not_expired
