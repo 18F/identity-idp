@@ -67,9 +67,9 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except webauthn' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::PhoneSelectionPresenter,
-          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
