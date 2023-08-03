@@ -3,9 +3,14 @@ require 'rails_helper'
 RSpec.describe Idv::GpoController do
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_analytics
     stub_attempts_tracker
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -139,6 +144,19 @@ RSpec.describe Idv::GpoController do
 
         expect(response).to redirect_to idv_review_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
+      end
+
+      it 'sends USPS address letter requested analytics event with phone step attempts' do
+        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+        put :create
+
+        expect(@analytics).to have_logged_event(
+          'IdV: USPS address letter requested',
+          resend: false,
+          phone_step_attempts: 1,
+          proofing_components: nil,
+          **ab_test_args,
+        )
       end
 
       it 'logs attempts api tracking' do
