@@ -148,7 +148,6 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns flow session values as having received attention result' do
           get :show
 
-          expect(flow_session[:had_barcode_attention_error]).to eq(true)
           expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
         end
       end
@@ -167,7 +166,6 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns flow session values as having received attention result' do
           get :show
 
-          expect(flow_session[:had_barcode_attention_error]).to eq(true)
           expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
         end
       end
@@ -183,7 +181,6 @@ RSpec.describe Idv::CaptureDocStatusController do
         end
 
         before do
-          flow_session[:had_barcode_attention_error] = true
           idv_session[:had_barcode_attention_error] = true
           document_capture_session.update(ocr_confirmation_pending: false)
         end
@@ -191,7 +188,6 @@ RSpec.describe Idv::CaptureDocStatusController do
         it 'assigns flow session values as not having received attention result' do
           get :show
 
-          expect(flow_session[:had_barcode_attention_error]).to eq(false)
           expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(false)
         end
       end
@@ -201,7 +197,6 @@ RSpec.describe Idv::CaptureDocStatusController do
         let(:flow_session) do
           {
             document_capture_session_uuid: document_capture_session.uuid,
-            had_barcode_attention_error: true,
           }
         end
         let(:idv_session) do
@@ -224,7 +219,6 @@ RSpec.describe Idv::CaptureDocStatusController do
           it 'assigns flow session values as having received attention result' do
             get :show
 
-            expect(flow_session[:had_barcode_attention_error]).to eq(true)
             expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
           end
         end
@@ -243,7 +237,6 @@ RSpec.describe Idv::CaptureDocStatusController do
           it 'assigns flow session values as having received attention result' do
             get :show
 
-            expect(flow_session[:had_barcode_attention_error]).to eq(true)
             expect(controller.user_session[:idv][:had_barcode_attention_error]).to eq(true)
           end
         end
