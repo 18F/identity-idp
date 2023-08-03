@@ -271,8 +271,13 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
+      const start = async (...args) => {
+        const { onFailure } = args[0];
+        await onFailure('Camera not supported.', 'start-fail-code');
+      };
+
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
+        start,
       });
 
       const button = getByLabelText('Image');
@@ -301,11 +306,12 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsFake((_callbacks, onError) => {
+        start: sinon.stub().callsFake((callbacks) => {
+          const { onFailure } = callbacks;
           setTimeout(() => {
             const code = 'sequence-break-code';
             document.cookie = `AcuantCameraHasFailed=${code}`;
-            onError('iOS 15 sequence break', code);
+            onFailure('iOS 15 sequence break', code);
           }, 0);
         }),
       });
@@ -346,8 +352,13 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
+      const start = async (...args) => {
+        const { onFailure } = args[0];
+        await onFailure(new Error());
+      };
+
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start,
       });
 
       const button = getByLabelText('Image');
@@ -384,8 +395,13 @@ describe('document-capture/components/acuant-capture', () => {
       );
       outsideInput = getByTestId('outside-input');
 
+      const start = async (...args) => {
+        const { onFailure } = args[0];
+        await onFailure(new Error());
+      };
+
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start,
       });
 
       const button = getByLabelText('Image');
