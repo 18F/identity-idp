@@ -52,7 +52,7 @@ RSpec.feature 'mfa cta banner' do
 
       expect(page).to have_current_path(backup_code_setup_path)
       set_up_mfa_with_backup_codes
-      expect(page).to have_current_path(second_mfa_setup_path)
+      expect(page).to have_current_path(sign_up_completed_path)
       expect(page).not_to have_content(t('mfa.second_method_warning.text'))
     end
 
