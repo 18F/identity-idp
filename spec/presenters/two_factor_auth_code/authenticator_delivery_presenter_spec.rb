@@ -13,13 +13,6 @@ RSpec.describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
     end
   end
 
-  describe '#fallback_question' do
-    it 'supplies a fallback_question' do
-      expect(presenter.fallback_question).to \
-        eq(t('two_factor_authentication.totp_fallback.question'))
-    end
-  end
-
   it 'handles multiple locales' do
     I18n.available_locales.each do |locale|
       I18n.locale = locale

@@ -20,7 +20,7 @@ module Idv
     end
 
     def update
-      skip_to_capture if params[:skip_hybrid_handoff] || params[:skip_upload]
+      skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
 

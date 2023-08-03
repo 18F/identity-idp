@@ -51,6 +51,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           scope: 'openid',
           code_digest: nil,
           code_challenge_present: false,
+          service_provider_pkce: nil,
         )
       end
     end
@@ -74,6 +75,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             scope: 'openid',
             code_digest: nil,
             code_challenge_present: false,
+            service_provider_pkce: nil,
           )
         end
       end

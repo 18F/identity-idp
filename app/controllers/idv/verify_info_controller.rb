@@ -16,7 +16,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :view, true)
 
-      @had_barcode_read_failure = flow_session[:had_barcode_read_failure]
+      @had_barcode_read_failure = idv_session.had_barcode_read_failure
       process_async_state(load_async_state)
     end
 
