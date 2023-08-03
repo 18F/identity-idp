@@ -85,6 +85,13 @@ function ReviewIssuesStep({
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
   const { inPersonURL } = useContext(InPersonContext);
+
+  const DocTypeErrorMessage = ({ error }) => (
+    <p key={error.message}>
+      {error.message}{' '}
+      {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
+    </p>
+  );
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -125,13 +132,7 @@ function ReviewIssuesStep({
               {!!unknownFieldErrors &&
                 unknownFieldErrors
                   .filter((error) => !['front', 'back'].includes(error.field!))
-                  .map(({ error }) => (
-                    <p key={error.message}>
-                      {formatWithStrongNoWrap(
-                        replaceVariables(error.message, { attempt: remainingAttempts }),
-                      )}
-                    </p>
-                  ))}
+                  .map(({ error }) => <DocTypeErrorMessage error={error} />)}
             </Warning>
             <Cancel />
           </>
@@ -193,11 +194,7 @@ function ReviewIssuesStep({
             unknownFieldErrors
               .filter((error) => !['front', 'back'].includes(error.field!))
               .map(({ error }) => (
-                <p key={error.message}>
-                  {formatWithStrongNoWrap(
-                    replaceVariables(error.message, { attempt: remainingAttempts }),
-                  )}
-                </p>
+                <DocTypeErrorMessage error={error} />
               ))}
         </Warning>
       );
@@ -240,13 +237,7 @@ function ReviewIssuesStep({
         {!!unknownFieldErrors &&
           unknownFieldErrors
             .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => (
-              <p key={error.message}>
-                {formatWithStrongNoWrap(
-                  replaceVariables(error.message, { attempt: remainingAttempts }),
-                )}
-              </p>
-            ))}
+            .map(({ error }) => <DocTypeErrorMessage error={error} />)}
         {captureHints && (
           <>
             <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
