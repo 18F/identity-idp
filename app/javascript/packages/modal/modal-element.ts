@@ -9,10 +9,6 @@ class ModalElement extends HTMLElement {
     this.addEventListener('click', this.#handleDismiss);
   }
 
-  get isVisible(): boolean {
-    return this.classList.contains('is-visible');
-  }
-
   /**
    * Shows the modal dialog.
    */

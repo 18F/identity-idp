@@ -57,6 +57,14 @@ class SessionTimeoutModalElement extends HTMLElement {
     return Array.from(this.querySelectorAll('lg-countdown'));
   }
 
+  requestSessionStatus() {
+    return requestSessionStatus();
+  }
+
+  extendSession() {
+    return extendSession();
+  }
+
   bindButtonEvents() {
     this.keepAliveButton.addEventListener('click', () => this.keepAlive());
   }
@@ -65,12 +73,12 @@ class SessionTimeoutModalElement extends HTMLElement {
     this.clearScheduledStatusCheck();
     this.modal.hide();
     this.countdownElements.forEach((countdown) => countdown.stop());
-    const { timeout } = await extendSession();
+    const { timeout } = await this.extendSession();
     this.timeout = timeout || null;
   }
 
   async checkStatus() {
-    const { isLive, timeout } = await requestSessionStatus();
+    const { isLive, timeout } = await this.requestSessionStatus();
 
     if (isLive) {
       const millisecondsRemaining = timeout.valueOf() - Date.now();
@@ -91,19 +99,13 @@ class SessionTimeoutModalElement extends HTMLElement {
 
   scheduleStatusCheck() {
     this.clearScheduledStatusCheck();
-    if (!this.timeout) {
-      return;
-    }
+    if (this.timeout) {
+      const timeoutFromNow = this.timeout.valueOf() - Date.now();
+      const delay = this.modal.hidden
+        ? Math.max(timeoutFromNow - this.warningOffsetInMilliseconds, 0)
+        : timeoutFromNow;
 
-    const timeoutFromNow = this.timeout.valueOf() - Date.now();
-    const delay = this.modal.isVisible
-      ? timeoutFromNow
-      : timeoutFromNow - this.warningOffsetInMilliseconds;
-
-    if (delay > 0) {
       this.statusCheckTimeout = window.setTimeout(() => this.checkStatus(), delay);
-    } else if (!this.modal.isVisible) {
-      this.checkStatus();
     }
   }
 
