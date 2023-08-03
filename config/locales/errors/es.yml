@@ -26,6 +26,7 @@ es:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
         continuación y luego haga clic en continuar.
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
+      doc_type_not_supported_heading: We only accept a driver's license or a state ID
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       rate_limited_heading: No pudimos verificar la identificación

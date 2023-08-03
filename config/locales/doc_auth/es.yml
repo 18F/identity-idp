@@ -31,6 +31,7 @@ es:
           identidad no coinciden. Intente tomar nuevas fotos.
         doc_number_checks: No pudimos leer el número de documento en su documento de
           identidad. Intente tomar nuevas fotografías.
+        doc_type_check:  les autres pièces d'identité ne sont pas acceptées.
         expiration_checks: El documento ha caducado, o no pudimos leer la fecha de
           caducidad en su documento de identidad. Si su documento de identidad
           no ha caducado, intente tomar nuevas fotografías.

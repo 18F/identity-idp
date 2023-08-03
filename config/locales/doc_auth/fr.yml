@@ -32,6 +32,7 @@ fr:
           nouvelles photos.
         doc_number_checks: Nous n’avons pas pu lire le numéro du document sur votre
           carte d’identité. Essayez de prendre de nouvelles photos.
+        doc_type_check: No se aceptan otras formas de identificación.
         expiration_checks: Le document a expiré ou nous n’avons pas pu lire la date
           d’expiration sur votre carte d’identité. Si votre pièce d’identité
           n’est pas expirée, essayez de prendre de nouvelles photos.
