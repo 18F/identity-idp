@@ -131,7 +131,9 @@ module Idv
     end
 
     def user_phone?(phone)
-      MfaContext.new(user).phone_configurations.any? { |config| config.phone == phone }
+      MfaContext.new(user).phone_configurations.any? do |config|
+        PhoneFormatter.format(config.phone) == phone
+      end
     end
 
     def extra_analytics_attributes
