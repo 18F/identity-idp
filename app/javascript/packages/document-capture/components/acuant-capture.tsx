@@ -422,7 +422,7 @@ function AcuantCapture(
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
     let { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
-    if (cardType === undefined) {
+    if (!cardType) {
       const { cardtype } = nextCapture;
       cardType = cardtype;
     }
