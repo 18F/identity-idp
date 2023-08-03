@@ -71,7 +71,7 @@ module Idv
       current_user.gpo_verification_pending_profile?
     end
 
-    # Caveat: If the user succeeds on their final phone attempt, the proof_address
+    # Caveat: If the user succeeds on their final phone attempt, the :proof_address
     # RateLimiter is reset to 0. But they probably wouldn't be doing verify by mail
     # if they succeeded on the phone step.
     def phone_step_attempts
@@ -96,6 +96,7 @@ module Idv
       analytics.idv_gpo_address_letter_enqueued(
         enqueued_at: Time.zone.now,
         resend: true,
+        phone_step_attempts: phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       confirmation_maker = confirmation_maker_perform

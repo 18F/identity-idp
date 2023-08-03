@@ -146,7 +146,7 @@ RSpec.describe Idv::GpoController do
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
       end
 
-      it 'sends USPS address letter requested analytics event with phone step attempts' do
+      it 'logs USPS address letter requested analytics event with phone step attempts' do
         RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
         put :create
 
@@ -193,6 +193,28 @@ RSpec.describe Idv::GpoController do
       it 'calls GpoConfirmationMaker to send another letter with reveal_gpo_code on' do
         allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
         expect_resend_letter_to_send_letter_and_redirect(otp: true)
+      end
+
+      it 'logs USPS address letter analytics events with phone step attempts', :freeze_time do
+        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+        expect_resend_letter_to_send_letter_and_redirect(otp: false)
+
+        expect(@analytics).to have_logged_event(
+          'IdV: USPS address letter requested',
+          resend: true,
+          phone_step_attempts: 1,
+          proofing_components: nil,
+          **ab_test_args,
+        )
+
+        expect(@analytics).to have_logged_event(
+          'IdV: USPS address letter enqueued',
+          resend: true,
+          enqueued_at: Time.zone.now,
+          phone_step_attempts: 1,
+          proofing_components: nil,
+          **ab_test_args,
+        )
       end
 
       it 'logs attempts api tracking' do
