@@ -130,7 +130,6 @@ group :test do
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'tableparser', require: false
-  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end
