@@ -393,7 +393,11 @@ class UserMailer < ActionMailer::Base
 
   def gpo_reminder
     with_user_locale(user) do
-      mail(to: email_address.email, subject: "GPO reminder")
+      # raw_date_letter_was_sent = user&.pending_profile&.gpo_verification_pending_at
+      raw_date_letter_was_sent = Time.zone.now - 2.weeks
+      @date_letter_was_sent = raw_date_letter_was_sent.strftime(I18n.t('time.formats.event_date'))
+
+      mail(to: email_address.email, subject: "Finish verifying your identity")
     end
   end
 

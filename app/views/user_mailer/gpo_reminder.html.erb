@@ -1,25 +1,34 @@
 <p>
-  This is actually the shiny new GPO reminder email.
+  You requested a letter to verify your identity
+  on <strong><%= @date_letter_was_sent %></strong>. You'll need to
+  enter the code from the letter to finish verifying your identity.
+  <a href="https://www.google.com">Learn more about verifying your address by mail.</a>
 </p>
 
-<p class="lead">
-  <%= t('user_mailer.account_rejected.intro', app_name: APP_NAME) %>
-</p>
-
-<table class="spacer">
+<table class="button expanded large radius">
   <tbody>
     <tr>
-      <td class="s10" height="10px">
-          &nbsp;
+      <td>
+        <table style="margin-bottom: 1em; margin-top: 1em">
+          <tbody>
+            <tr>
+              <td style="text-align: center">
+                  <%= link_to "Finish verifying your identity",
+                              new_user_password_url,
+                              target: '_blank',
+                              class: 'float-center',
+                              align: 'center',
+                              rel: 'noopener' %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </td>
+      <td class="expander"></td>
     </tr>
   </tbody>
 </table>
 
-<table class="hr">
-  <tr>
-    <th>
-      &nbsp;
-    </th>
-  </tr>
-</table>
+<p>
+  If you didn't get this letter, <a href="https://www.google.com">sign in to request another letter.</a>
+</p>
