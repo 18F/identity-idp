@@ -107,6 +107,7 @@ module Idv
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
+          phone_step_attempts: phone_step_attempts,
           **ab_test_analytics_buckets,
         )
       end
@@ -119,6 +120,11 @@ module Idv
           sp_name: decorated_session.sp_name,
         )
       end
+    end
+
+    # Same as in GpoController
+    def phone_step_attempts
+      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
     end
 
     def valid_password?

@@ -674,6 +674,20 @@ RSpec.describe Idv::ReviewController do
           end.to(change { ActionMailer::Base.deliveries.count }.by(1))
         end
 
+        it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
+          RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(@analytics).to have_logged_event(
+            'IdV: USPS address letter enqueued',
+            resend: false,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: 1,
+            proofing_components: nil,
+            **ab_test_args,
+          )
+        end
+
         it 'redirects to come back later page' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
