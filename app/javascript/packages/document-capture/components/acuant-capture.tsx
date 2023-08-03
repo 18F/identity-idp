@@ -15,7 +15,6 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
 import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
-
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';

@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-
 import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import AnalyticsContext from './analytics';
