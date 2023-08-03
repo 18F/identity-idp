@@ -1,6 +1,5 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
-require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
 
 # temporary fix for local development feature tests
@@ -23,7 +22,6 @@ Capybara.register_driver :headless_chrome do |app|
                                  capabilities: [options]
 end
 Capybara.javascript_driver = :headless_chrome
-Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
   user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) ' \
