@@ -43,8 +43,8 @@ module DocAuth
         end
 
         def id_type_supported?
-          return false unless ID_TYPE_SLUGS.keys.include? classification_info.dig('Front', 'ClassName')
-          ID_TYPE_SLUGS.keys.include? classification_info.dig('Back', 'ClassName')
+          return false unless ID_TYPE_SLUGS.key? classification_info.dig('Front', 'ClassName')
+          ID_TYPE_SLUGS.key? classification_info.dig('Back', 'ClassName')
         end
 
         private
