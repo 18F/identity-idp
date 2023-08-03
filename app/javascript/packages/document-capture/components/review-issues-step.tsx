@@ -89,7 +89,7 @@ function ReviewIssuesStep({
   const DocTypeErrorMessage = ({ error }) => (
     <p key={error.message}>
       {error.message}{' '}
-      {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
+      {formatWithStrongNoWrap(t('idv.warning.attempts', { count: remainingAttempts }))}
     </p>
   );
   useEffect(() => onFailedSubmissionAttempt(), []);
