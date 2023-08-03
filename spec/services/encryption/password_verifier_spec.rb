@@ -47,7 +47,7 @@ RSpec.describe Encryption::PasswordVerifier do
       ).and_return('kms_ciphertext')
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
 
-      result = subject.digest(password: password, user_uuid: user_uuid)
+      result = subject.digest(password: password, user_uuid: user_uuid).single_region_ciphertext
 
       expect(JSON.parse(result, symbolize_names: true)).to eq(
         password_salt: salt,
@@ -59,24 +59,27 @@ RSpec.describe Encryption::PasswordVerifier do
 
   describe '#verify' do
     it 'returns true if the password does match' do
-      digest = subject.digest(password: password, user_uuid: user_uuid)
+      digest_pair = subject.digest(password: password, user_uuid: user_uuid)
 
-      result = subject.verify(digest: digest, password: password, user_uuid: user_uuid)
+      result = subject.verify(digest_pair: digest_pair, password: password, user_uuid: user_uuid)
 
       expect(result).to eq(true)
     end
 
     it 'returns false if the password does not match' do
-      digest = subject.digest(password: password, user_uuid: user_uuid)
+      digest_pair = subject.digest(password: password, user_uuid: user_uuid)
 
-      result = subject.verify(digest: digest, password: 'qwerty', user_uuid: user_uuid)
+      result = subject.verify(digest_pair: digest_pair, password: 'qwerty', user_uuid: user_uuid)
 
       expect(result).to eq(false)
     end
 
     it 'returns false for nonsense' do
       result = subject.verify(
-        digest: 'nonsense',
+        digest_pair: Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: 'nonsense',
+          multi_region_ciphertext: 'nonsense on stilts',
+        ),
         password: password,
         user_uuid: user_uuid,
       )
@@ -85,10 +88,13 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'allows verification of legacy UAK passwords' do
-      legacy_digest = Encryption::UakPasswordVerifier.digest(password)
+      legacy_digest_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: Encryption::UakPasswordVerifier.digest(password),
+        multi_region_ciphertext: nil,
+      )
 
       good_match_result = subject.verify(
-        digest: legacy_digest,
+        digest_pair: legacy_digest_pair,
         password: password,
         user_uuid: user_uuid,
       )
@@ -96,7 +102,7 @@ RSpec.describe Encryption::PasswordVerifier do
       expect(good_match_result).to eq(true)
 
       bad_match_result = subject.verify(
-        digest: legacy_digest,
+        digest_pair: legacy_digest_pair,
         password: 'fake news',
         user_uuid: user_uuid,
       )
@@ -115,7 +121,7 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the digest is fresh' do
-      digest = subject.digest(password: password, user_uuid: user_uuid)
+      digest = subject.digest(password: password, user_uuid: user_uuid).single_region_ciphertext
 
       result = subject.stale_digest?(digest)
 

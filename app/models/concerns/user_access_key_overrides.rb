@@ -10,7 +10,7 @@ module UserAccessKeyOverrides
   def valid_password?(password)
     result = Encryption::PasswordVerifier.new.verify(
       password: password,
-      digest: encrypted_password_digest,
+      digest_pair: password_regional_digest_pair,
       user_uuid: uuid,
     )
     @password = password if result
@@ -21,16 +21,24 @@ module UserAccessKeyOverrides
   def password=(new_password)
     @password = new_password
     return if @password.blank?
-    self.encrypted_password_digest = Encryption::PasswordVerifier.new.digest(
-      password: @password,
-      user_uuid: uuid || generate_uuid,
+    self.encrypted_password_digest, self.encrypted_password_digest_multi_region =
+      Encryption::PasswordVerifier.new.digest(
+        password: @password,
+        user_uuid: uuid || generate_uuid,
+      )
+  end
+
+  def password_regional_digest_pair
+    Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_password_digest,
+      multi_region_ciphertext: encrypted_password_digest_multi_region,
     )
   end
 
   def valid_personal_key?(normalized_personal_key)
     Encryption::PasswordVerifier.new.verify(
       password: normalized_personal_key,
-      digest: encrypted_recovery_code_digest,
+      digest_pair: recovery_code_regional_digest_pair,
       user_uuid: uuid,
     )
   end
@@ -38,11 +46,19 @@ module UserAccessKeyOverrides
   def personal_key=(new_personal_key)
     @personal_key = new_personal_key
     return if new_personal_key.blank?
-    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.new.digest(
-      password: new_personal_key,
-      user_uuid: uuid || generate_uuid,
-    )
+    self.encrypted_recovery_code_digest, self.encrypted_recovery_code_digest_multi_region =
+      Encryption::PasswordVerifier.new.digest(
+        password: new_personal_key,
+        user_uuid: uuid || generate_uuid,
+      )
     self.encrypted_recovery_code_digest_generated_at = Time.zone.now
+  end
+
+  def recovery_code_regional_digest_pair
+    Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_recovery_code_digest,
+      multi_region_ciphertext: encrypted_recovery_code_digest_multi_region,
+    )
   end
 
   # This is a callback initiated by Devise after successfully authenticating.
