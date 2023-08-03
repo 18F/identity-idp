@@ -41,7 +41,7 @@ module SamlAuthHelper
 
   def request_authn_contexts
     [
-      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     ]
   end
