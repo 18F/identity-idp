@@ -324,7 +324,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     context 'when the SP is in the AAMVA banlist' do
       it 'does not perform the state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
-          and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+          and_return("[\"#{OidcAuthHelper::OIDC_IAL1_ISSUER}\"]")
         user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).
