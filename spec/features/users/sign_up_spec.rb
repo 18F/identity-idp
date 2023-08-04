@@ -333,7 +333,7 @@ RSpec.feature 'Sign Up' do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
         click_confirmation_link_in_email(email)
-        submit_form_with_valid_password_confirmation
+        submit_form_with_valid_password
 
         expect(page).to have_current_path(authentication_methods_setup_path)
       end
