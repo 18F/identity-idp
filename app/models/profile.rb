@@ -17,6 +17,11 @@ class Profile < ApplicationRecord
   scope(:active, -> { where(active: true) })
   scope(:verified, -> { where.not(verified_at: nil) })
 
+  has_one :establishing_in_person_enrollment,
+          -> { where(status: :establishing).order(created_at: :desc) },
+          class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
+          dependent: :destroy
+
   enum deactivation_reason: {
     password_reset: 1,
     encryption_error: 2,
@@ -187,14 +192,28 @@ class Profile < ApplicationRecord
 
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+
+    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii,
+      multi_region_ciphertext: encrypted_pii_multi_region,
+    )
+
+    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
   # @return [Pii::Attributes]
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
-    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+
+    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii_recovery,
+      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
+    )
+
+    decrypted_recovery_json = encryptor.decrypt(
+      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+    )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
@@ -204,7 +223,9 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     encrypt_recovery_pii(pii)
   end
 
@@ -214,7 +235,9 @@ class Profile < ApplicationRecord
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     @personal_key = personal_key
   end
 

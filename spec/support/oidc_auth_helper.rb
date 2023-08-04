@@ -1,5 +1,6 @@
 module OidcAuthHelper
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
+  OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
   OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
 
   def sign_in_oidc_user(user)
@@ -57,7 +58,7 @@ module OidcAuthHelper
   def ial1_params(prompt: nil,
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
-                  client_id: OIDC_ISSUER,
+                  client_id: OIDC_IAL1_ISSUER,
                   tid: nil)
     ial1_params = {
       client_id: client_id,

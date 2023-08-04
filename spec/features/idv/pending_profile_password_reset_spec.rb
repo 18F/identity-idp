@@ -12,6 +12,8 @@ RSpec.describe 'Resetting password with a pending profile' do
 
     new_password = '$alty pickles'
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
 
     user.password = new_password
@@ -32,6 +34,10 @@ RSpec.describe 'Resetting password with a pending profile' do
 
     new_password = '$alty pickles'
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
 
     user.password = new_password
@@ -52,6 +58,8 @@ RSpec.describe 'Resetting password with a pending profile' do
 
     new_password = '$alty pickles'
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
 
     user.password = new_password

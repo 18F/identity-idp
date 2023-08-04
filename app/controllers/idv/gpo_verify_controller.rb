@@ -103,7 +103,7 @@ module Idv
       )
 
       @expires_at = rate_limiter.expires_at
-      render :throttled
+      render :rate_limited
     end
 
     def build_gpo_verify_form

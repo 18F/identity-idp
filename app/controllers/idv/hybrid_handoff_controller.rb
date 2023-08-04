@@ -62,7 +62,8 @@ module Idv
     end
 
     def send_link
-      session_uuid = flow_session[:document_capture_session_uuid]
+      session_uuid =
+        idv_session.document_capture_session_uuid || flow_session[:document_capture_session_uuid]
       update_document_capture_session_requested_at(session_uuid)
       Telephony.send_doc_auth_link(
         to: formatted_destination_phone,
@@ -199,9 +200,6 @@ module Idv
       if idv_session.skip_hybrid_handoff?
         # We previously skipped hybrid handoff. Keep doing that.
         idv_session.flow_path = 'standard'
-      elsif flow_session[:skip_upload_step]
-        # TEMP: Will be removing :skip_upload_step in future commit
-        idv_session.flow_path = 'standard'
       end
 
       if !FeatureManagement.idv_allow_hybrid_flow?
@@ -224,9 +222,7 @@ module Idv
       # If we previously skipped hybrid handoff for the user (because they're on a mobile
       # device with a camera), skip it _again_ here.
 
-      if flow_session[:skip_upload_step]
-        idv_session.flow_path = 'standard'
-      elsif idv_session.skip_hybrid_handoff?
+      if idv_session.skip_hybrid_handoff?
         idv_session.flow_path = 'standard'
       else
         idv_session.flow_path = nil

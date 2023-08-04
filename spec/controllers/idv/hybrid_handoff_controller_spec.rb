@@ -125,18 +125,6 @@ RSpec.describe Idv::HybridHandoffController do
         expect(response).to render_template :show
       end
 
-      context 'skip_upload_step is set on flow_session' do
-        before do
-          subject.user_session['idv/doc_auth'][:skip_upload_step] = true
-        end
-        it 'redirects to document_capture' do
-          subject.idv_session.flow_path = 'standard'
-          get :show, params: { redo: true }
-
-          expect(response).to redirect_to(idv_document_capture_url)
-        end
-      end
-
       context 'idv_session.skip_hybrid_handoff? is true' do
         before do
           subject.idv_session.skip_hybrid_handoff = true
@@ -165,13 +153,6 @@ RSpec.describe Idv::HybridHandoffController do
       it 'redirects the user straight to document capture' do
         get :show
         expect(response).to redirect_to(idv_document_capture_url)
-      end
-      it 'does not set flow_session[:skip_upload_step]' do
-        expect do
-          get :show
-        end.not_to change {
-          subject.flow_session[:skip_upload_step]
-        }.from(nil)
       end
       it 'does not set idv_session.skip_hybrid_handoff' do
         expect do
@@ -217,6 +198,42 @@ RSpec.describe Idv::HybridHandoffController do
 
         expect(subject.idv_session.phone_for_mobile_flow).to eq('+1 202-555-5555')
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'document_capture_session_uuid in flow_session' do
+        let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
+        before do
+          subject.flow_session[:document_capture_session_uuid] = document_capture_session_uuid
+        end
+
+        it 'sends a doc auth link' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(
+              link: a_string_including(document_capture_session_uuid),
+            ),
+          ).and_call_original
+
+          put :update, params: params
+        end
+      end
+
+      context 'document_capture_session_uuid in idv_session' do
+        let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
+        before do
+          subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+        end
+
+        it 'sends a doc auth link' do
+          expect(Telephony).to receive(:send_doc_auth_link).with(
+            hash_including(
+              link: a_string_including(document_capture_session_uuid),
+            ),
+          ).and_call_original
+
+          put :update, params: params
+        end
       end
     end
 

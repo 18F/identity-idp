@@ -34,7 +34,7 @@ module Idv
       return unless flow_session && document_capture_session
 
       if rate_limiter.limited?
-        idv_session_errors_throttled_url
+        idv_session_errors_rate_limited_url
       elsif user_has_establishing_in_person_enrollment?
         idv_in_person_url
       end
@@ -56,7 +56,7 @@ module Idv
     end
 
     def document_capture_session_uuid
-      flow_session[:document_capture_session_uuid]
+      idv_session.document_capture_session_uuid || flow_session[:document_capture_session_uuid]
     end
 
     def rate_limiter
@@ -81,11 +81,10 @@ module Idv
 
     def had_barcode_attention_result?
       if session_result
-        flow_session[:had_barcode_attention_error] = session_result.attention_with_barcode?
         idv_session.had_barcode_attention_error = session_result.attention_with_barcode?
       end
 
-      flow_session[:had_barcode_attention_error]
+      idv_session.had_barcode_attention_error
     end
 
     def idv_session

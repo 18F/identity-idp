@@ -20,7 +20,7 @@ module Idv
     end
 
     def update
-      skip_to_capture if params[:skip_hybrid_handoff] || params[:skip_upload]
+      skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
 
@@ -56,6 +56,7 @@ module Idv
         issuer: sp_session[:issuer],
       )
       flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 
     def cancel_previous_in_person_enrollments
@@ -65,7 +66,6 @@ module Idv
     end
 
     def skip_to_capture
-      flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
 
       # Store that we're skipping hybrid handoff so if the user

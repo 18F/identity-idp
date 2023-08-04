@@ -69,7 +69,7 @@ RSpec.feature 'document capture step', :js do
           )
           message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
-          expect(page).to have_current_path(idv_session_errors_throttled_path)
+          expect(page).to have_current_path(idv_session_errors_rate_limited_path)
         end
       end
 

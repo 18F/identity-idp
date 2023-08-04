@@ -33,7 +33,6 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
     around do |ex|
       ex.run
-
     ensure
       Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
     end
@@ -180,7 +179,6 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
     around do |ex|
       ex.run
-
     ensure
       Telephony::Pinpoint::SmsSender::CLIENT_POOL.clear
     end

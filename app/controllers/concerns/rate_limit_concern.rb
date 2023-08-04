@@ -40,7 +40,7 @@ module RateLimitConcern
     when :idv_resolution
       redirect_to idv_session_errors_failure_url
     when :idv_doc_auth
-      redirect_to idv_session_errors_throttled_url
+      redirect_to idv_session_errors_rate_limited_url
     when :proof_address
       redirect_to idv_phone_errors_failure_url
     when :proof_ssn

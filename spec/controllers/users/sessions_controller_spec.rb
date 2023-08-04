@@ -451,7 +451,7 @@ RSpec.describe Users::SessionsController, devise: true do
         stub_sign_in_before_2fa
         get :new
 
-        expect(response).to redirect_to login_two_factor_options_path
+        expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
 
