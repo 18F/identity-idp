@@ -6,6 +6,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
   include DocAuthHelper
 
   let(:phone_number) { '415-555-0199' }
+  let(:sp) { :oidc }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -22,7 +23,9 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     user = nil
 
     perform_in_browser(:desktop) do
-      user = sign_in_and_2fa_user
+      visit_idp_from_sp_with_ial2(sp)
+      user = sign_up_and_2fa_ial1_user
+
       complete_doc_auth_steps_before_hybrid_handoff_step
       clear_and_fill_in(:doc_auth_phone, phone_number)
       click_send_link
@@ -81,8 +84,10 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
 
       acknowledge_and_confirm_personal_key
 
-      expect(page).to have_current_path(account_path)
-      expect(page).to have_content(t('headings.account.verified_account'))
+      validate_idv_completed_page(user)
+      click_agree_and_continue
+
+      validate_return_to_sp
     end
   end
 
