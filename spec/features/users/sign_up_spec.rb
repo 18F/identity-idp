@@ -419,4 +419,31 @@ RSpec.feature 'Sign Up' do
     visit add_phone_path
     expect(page).to have_current_path add_phone_path
   end
+
+  describe 'visiting the homepage by clicking the logo image' do
+    context 'on the password confirmation screen' do
+      before do
+        confirm_email('test@test.com')
+      end
+
+      it 'returns them to the homepage' do
+        click_link APP_NAME, href: new_user_session_path
+
+        expect(current_path).to eq new_user_session_path
+      end
+    end
+
+    context 'on the MFA setup screen' do
+      before do
+        confirm_email('test@test.com')
+        submit_form_with_valid_password
+      end
+
+      it 'returns them to the MFA setup screen' do
+        click_link APP_NAME, href: new_user_session_path
+
+        expect(current_path).to eq authentication_methods_setup_path
+      end
+    end
+  end
 end

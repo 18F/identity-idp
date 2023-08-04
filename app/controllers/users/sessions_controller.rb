@@ -87,7 +87,7 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
-        redirect_to login_two_factor_options_path
+        redirect_to user_two_factor_authentication_url
       end
     end
 
