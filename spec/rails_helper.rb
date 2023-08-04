@@ -96,6 +96,7 @@ RSpec.configure do |config|
     default_url_options = ApplicationController.default_url_options.merge(host: server_domain)
     self.default_url_options = default_url_options
     allow(Rails.application.routes).to receive(:default_url_options).and_return(default_url_options)
+    Webdrivers::Chromedriver.required_version = '114.0.5735.90'
   end
 
   config.before(:each, type: :controller) do
