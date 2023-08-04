@@ -85,12 +85,14 @@ function ReviewIssuesStep({
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
   const { inPersonURL } = useContext(InPersonContext);
 
-  const DocTypeErrorMessage = ({ error }) => (
-    <p key={error.message}>
-      {error.message}{' '}
-      {formatWithStrongNoWrap(t('idv.warning.attempts', { count: remainingAttempts }))}
-    </p>
-  );
+  function DocTypeErrorMessage({ error }) {
+    return (
+      <p key={error.message}>
+        {error.message}{' '}
+        {formatWithStrongNoWrap(t('idv.warning.attempts_html', { count: remainingAttempts }))}
+      </p>
+    );
+  }
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -131,7 +133,7 @@ function ReviewIssuesStep({
               {!!unknownFieldErrors &&
                 unknownFieldErrors
                   .filter((error) => !['front', 'back'].includes(error.field!))
-                  .map(({ error }) => <DocTypeErrorMessage error={error} />)}
+                  .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
             </Warning>
             <Cancel />
           </>
@@ -192,7 +194,7 @@ function ReviewIssuesStep({
           {!!unknownFieldErrors &&
             unknownFieldErrors
               .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <DocTypeErrorMessage error={error} />)}
+              .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
         </Warning>
       );
     }
@@ -234,7 +236,7 @@ function ReviewIssuesStep({
         {!!unknownFieldErrors &&
           unknownFieldErrors
             .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => <DocTypeErrorMessage error={error} />)}
+            .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
         {captureHints && (
           <>
             <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>

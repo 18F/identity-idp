@@ -39,6 +39,33 @@ RSpec.feature 'document capture step', :js do
       end
     end
 
+    context 'wrong doc type is uploaded', allow_browser_log: true do
+      it 'try again and page show doc type inline error message' do
+        attach_images(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'ial2_test_credential_wrong_doc_type.yml'
+          ),
+        )
+        submit_images
+        message = strip_tags(t('errors.doc_auth.doc_type_not_supported_heading'))
+        expect(page).to have_content(message)
+        detail_message = strip_tags(t('doc_auth.errors.alerts.doc_type_check'))
+        security_message = strip_tags(
+          t(
+            'idv.warning.attempts_html',
+            count: IdentityConfig.store.doc_auth_max_attempts - 1,
+          ),
+        )
+        expect(page).to have_content(detail_message << ' ' << security_message)
+        expect(page).to have_current_path(idv_document_capture_path)
+        click_try_again
+        expect(page).to have_current_path(idv_document_capture_path)
+        inline_error = strip_tags(t('doc_auth.errors.card_type'))
+        expect(page).to have_content(inline_error)
+      end
+    end
+
     context 'rate limits calls to acuant', allow_browser_log: true do
       let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
       before do
