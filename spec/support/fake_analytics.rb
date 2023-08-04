@@ -104,6 +104,8 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
     else
       expect(actual.events[event]).to include(match(attributes_matcher))
     end
+
+    expect(actual.events).to have_length(1)
   end
 
   failure_message do |actual|
