@@ -1,8 +1,17 @@
 <p>
-  You requested a letter to verify your identity
-  on <strong><%= @date_letter_was_sent %></strong>. You'll need to
-  enter the code from the letter to finish verifying your identity.
-  <a href="https://www.google.com">Learn more about verifying your address by mail.</a>
+  <%=
+    t(
+      'idv.messages.gpo_reminder.body_html',
+      date_letter_was_sent: @date_letter_was_sent,
+    )
+  %>
+  <%=
+    link_to(
+      t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+      "https://www.google.com",
+      {style: "text-decoration: 'underline'"},
+     )
+  %>
 </p>
 
 <table class="button expanded large radius">
@@ -13,7 +22,7 @@
           <tbody>
             <tr>
               <td style="text-align: center">
-                  <%= link_to "Finish verifying your identity",
+                <%= link_to t('idv.messages.gpo_reminder.finish'),
                               new_user_password_url,
                               target: '_blank',
                               class: 'float-center',
@@ -30,5 +39,12 @@
 </table>
 
 <p>
-  If you didn't get this letter, <a href="https://www.google.com">sign in to request another letter.</a>
+  <%= t('idv.messages.gpo_reminder.did_not_get_a_letter') %>
+  <%=
+    link_to(
+      t('idv.messages.gpo_reminder.request_another_letter'),
+      'https://www.google.com',
+       {style: "text-decoration: 'underline'"}
+    )
+  %>
 </p>

@@ -233,6 +233,16 @@ en:
         resend_timeframe: Letters typically take 3 to 7 business days to arrive.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
+      gpo_reminder:
+        body_html: You requested a letter to verify your identity on
+          <strong>%{date_letter_was_sent}</strong>. You'll need to
+          enter the code from the letter to finish verifying your
+          identity. Sign back in to Login.gov to finish verifying your
+          identity.
+        did_not_get_a_letter: "If you didn't get this letter, "
+        finish: Finish verifying your identity
+        request_another_letter: sign in to request another letter
+        subject: Finish verifying your identity
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.

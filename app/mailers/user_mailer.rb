@@ -397,7 +397,7 @@ class UserMailer < ActionMailer::Base
       raw_date_letter_was_sent = Time.zone.now - 2.weeks
       @date_letter_was_sent = raw_date_letter_was_sent.strftime(I18n.t('time.formats.event_date'))
 
-      mail(to: email_address.email, subject: "Finish verifying your identity")
+      mail(to: email_address.email, subject: t('idv.messages.gpo_reminder.subject'))
     end
   end
 
