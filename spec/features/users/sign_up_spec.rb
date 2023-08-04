@@ -389,7 +389,7 @@ RSpec.feature 'Sign Up' do
   end
 
   it 'does not show the remember device option as the default when the SP is AAL2' do
-    ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server').update!(
+    ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: 2,
     )
     visit_idp_from_sp_with_ial1(:oidc)

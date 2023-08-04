@@ -10,7 +10,7 @@ RSpec.describe 'OpenID Connect' do
     visit_idp_from_ial1_oidc_sp
 
     cookie = cookies.find { |c| c.name == 'sp_issuer' }.value
-    expect(cookie).to eq(OidcAuthHelper::OIDC_ISSUER)
+    expect(cookie).to eq(OidcAuthHelper::OIDC_IAL1_ISSUER)
   end
 
   it 'receives an ID token with a kid that matches the certs endpooint' do
