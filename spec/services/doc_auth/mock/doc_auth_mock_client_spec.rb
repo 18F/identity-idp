@@ -114,14 +114,14 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     client.post_front_image(
       instance_id: instance_id,
       image: yaml,
-      )
+    )
     client.post_back_image(
       instance_id: instance_id,
       image: yaml,
-      )
+    )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
-      )
+    )
     expect(get_results_response.attention_with_barcode?).to eq(false)
     errors = get_results_response.errors
     expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)

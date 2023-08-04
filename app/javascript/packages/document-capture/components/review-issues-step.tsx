@@ -87,7 +87,7 @@ function ReviewIssuesStep({
 
   function DocTypeErrorMessage({ error }) {
     return (
-      <p key={error.message}>
+      <p key={`${error.message}-${remainingAttempts}`}>
         {error.message}{' '}
         {formatWithStrongNoWrap(t('idv.warning.attempts_html', { count: remainingAttempts }))}
       </p>
