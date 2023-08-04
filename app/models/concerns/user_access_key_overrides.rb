@@ -22,7 +22,7 @@ module UserAccessKeyOverrides
     @password = new_password
     return if @password.blank?
     self.encrypted_password_digest, self.encrypted_password_digest_multi_region =
-      Encryption::PasswordVerifier.new.digest_pair(
+      Encryption::PasswordVerifier.new.create_digest_pair(
         password: @password,
         user_uuid: uuid || generate_uuid,
       )
@@ -47,7 +47,7 @@ module UserAccessKeyOverrides
     @personal_key = new_personal_key
     return if new_personal_key.blank?
     self.encrypted_recovery_code_digest, self.encrypted_recovery_code_digest_multi_region =
-      Encryption::PasswordVerifier.new.digest_pair(
+      Encryption::PasswordVerifier.new.create_digest_pair(
         password: new_personal_key,
         user_uuid: uuid || generate_uuid,
       )
