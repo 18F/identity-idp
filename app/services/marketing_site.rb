@@ -4,11 +4,9 @@ class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
-    authentication-methods/which-authentication-method-should-i-use
     creating-an-account/authentication-application
     get-started/authentication-options
     manage-your-account/personal-key
-    signing-in/what-is-a-hardware-security-key
     trouble-signing-in/face-or-touch-unlock
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
@@ -63,20 +61,6 @@ class MarketingSite
     help_center_article_url(
       category: 'creating-an-account',
       article: 'authentication-application',
-    )
-  end
-
-  def self.help_which_authentication_method_url
-    help_center_article_url(
-      category: 'authentication-methods',
-      article: 'which-authentication-method-should-i-use',
-    )
-  end
-
-  def self.help_hardware_security_key_url
-    help_center_article_url(
-      category: 'signing-in',
-      article: 'what-is-a-hardware-security-key',
     )
   end
 
