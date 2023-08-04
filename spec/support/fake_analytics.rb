@@ -105,12 +105,30 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       expect(actual.events[event]).to include(match(attributes_matcher))
     end
 
-    expect(actual.events[event]).to have_attributes(size: 1)
+    if !allow_multiple_events?
+      expect(actual.events[event]).to have_attributes(size: 1)
+    end
+  end
+
+  chain :at_least_once do
+    @allow_multiple_events = true
   end
 
   failure_message do |actual|
     matching_events = actual.events[event]
-    if matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
+
+    if (matching_events&.length || 0) > 1 && !allow_multiple_events?
+      <<~MESSAGE
+        FakeAnalytics received too many #{event} events.
+        expected: 1
+        got:      #{matching_events.length}
+
+        Events received:
+
+        #{matching_events.map { |event| event.pretty_inspect }.join("\n")}
+
+      MESSAGE
+    elsif matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
       # We found one matching event. Let's show the user a diff of the actual and expected
       # attributes
       expected = attributes_matcher
@@ -154,5 +172,9 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
                        end,
       color: RSpec::Matchers.configuration.color?,
     )
+  end
+
+  def allow_multiple_events?
+    defined?(@allow_multiple_events) && @allow_multiple_events
   end
 end
