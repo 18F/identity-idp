@@ -1,6 +1,8 @@
 require 'rails_helper'
 
+# rubocop:disable Layout/LineLength
 RSpec.shared_examples 'expiring remember device for an sp config' do |expiration_time, protocol, aal|
+  # rubocop:enable Layout/LineLength
   before do
     user # Go through the signup flow and remember user before visiting SP
   end
