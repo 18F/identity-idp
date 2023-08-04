@@ -683,7 +683,7 @@ RSpec.describe Idv::ReviewController do
             resend: false,
             enqueued_at: Time.zone.now,
             phone_step_attempts: 1,
-            first_letter_requested_at: nil,
+            first_letter_requested_at: idv_session.profile.gpo_verification_pending_at,
             proofing_components: nil,
             **ab_test_args,
           )

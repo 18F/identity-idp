@@ -108,7 +108,7 @@ module Idv
           enqueued_at: Time.zone.now,
           resend: false,
           phone_step_attempts: phone_step_attempts,
-          first_letter_requested_at: nil,
+          first_letter_requested_at: first_letter_requested_at,
           **ab_test_analytics_buckets,
         )
       end
@@ -126,6 +126,11 @@ module Idv
     # Same as in GpoController
     def phone_step_attempts
       RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
+    end
+
+    # Same as in GpoController
+    def first_letter_requested_at
+      idv_session.profile.gpo_verification_pending_at
     end
 
     def valid_password?
