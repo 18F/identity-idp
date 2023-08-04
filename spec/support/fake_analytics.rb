@@ -133,11 +133,13 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       # attributes
       expected = attributes_matcher
       actual = matching_events.first
-      message = "Expected that FakeAnalytics would have received matching event #{event}\n"
-      message += "expected: #{expected}\n"
-      message += "     got: #{actual}\n\n"
-      message += "Diff:#{differ.diff(actual, expected)}"
-      message
+      <<~MESSAGE
+        Expected that FakeAnalytics would have received matching event #{event}
+        expected: #{expected}
+             got: #{actual}
+
+        Diff:#{differ.diff(actual, expected)}
+      MESSAGE
     elsif matching_events&.length == 1 &&
           attributes_matcher.instance_of?(RSpec::Matchers::BuiltIn::Include)
       # We found one matching event and an `include` matcher. Let's show the user a diff of the
@@ -146,14 +148,15 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
       actual_attrs = matching_events.first
       actual_compared = actual_attrs.slice(*expected.keys)
       actual_ignored = actual_attrs.except(*expected.keys)
-      message = "Expected that FakeAnalytics would have received matching event #{event}"
-      message += "expected: include #{expected}\n"
-      message += "     got: #{actual_attrs}\n\n"
-      message += "Diff:#{differ.diff(actual_compared, expected)}\n"
-      message += "Attributes ignored by the include matcher:#{differ.diff(
-        actual_ignored, {}
-      )}"
-      message
+
+      <<~MESSAGE
+        Expected that FakeAnalytics would have received matching event #{event}
+        expected: include #{expected}
+             got: #{actual_attrs}
+
+        Diff:#{differ.diff(actual_compared, expected)}
+        Attributes ignored by the include matcher:#{differ.diff(actual_ignored, {})}
+      MESSAGE
     else
       <<~MESSAGE
         Expected that FakeAnalytics would have received event #{event.inspect}
