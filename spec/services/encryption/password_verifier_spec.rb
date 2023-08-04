@@ -21,7 +21,7 @@ RSpec.describe Encryption::PasswordVerifier do
     end
   end
 
-  describe '#digest' do
+  describe '#digest_pair' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters
       # The newrelic_rpm gem added a call to `SecureRandom.hex(8)` in
@@ -47,7 +47,9 @@ RSpec.describe Encryption::PasswordVerifier do
       ).and_return('kms_ciphertext')
       expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
 
-      result = subject.digest(password: password, user_uuid: user_uuid).single_region_ciphertext
+      result = subject.digest_pair(
+        password: password, user_uuid: user_uuid,
+      ).single_region_ciphertext
 
       expect(JSON.parse(result, symbolize_names: true)).to eq(
         password_salt: salt,
@@ -59,7 +61,7 @@ RSpec.describe Encryption::PasswordVerifier do
 
   describe '#verify' do
     it 'returns true if the password does match' do
-      digest_pair = subject.digest(password: password, user_uuid: user_uuid)
+      digest_pair = subject.digest_pair(password: password, user_uuid: user_uuid)
 
       result = subject.verify(digest_pair: digest_pair, password: password, user_uuid: user_uuid)
 
@@ -67,7 +69,7 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the password does not match' do
-      digest_pair = subject.digest(password: password, user_uuid: user_uuid)
+      digest_pair = subject.digest_pair(password: password, user_uuid: user_uuid)
 
       result = subject.verify(digest_pair: digest_pair, password: 'qwerty', user_uuid: user_uuid)
 
@@ -121,7 +123,9 @@ RSpec.describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the digest is fresh' do
-      digest = subject.digest(password: password, user_uuid: user_uuid).single_region_ciphertext
+      digest = subject.digest_pair(
+        password: password, user_uuid: user_uuid,
+      ).single_region_ciphertext
 
       result = subject.stale_digest?(digest)
 

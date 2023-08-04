@@ -34,7 +34,7 @@ module Encryption
       @kms_client = KmsClient.new
     end
 
-    def digest(password:, user_uuid:)
+    def digest_pair(password:, user_uuid:)
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
       encrypted_password = encrypt_password(
