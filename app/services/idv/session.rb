@@ -57,8 +57,6 @@ module Idv
         gpo_verification_needed: gpo_verification_needed?,
       )
 
-      profile.activate unless profile.reason_not_to_activate
-
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
@@ -66,15 +64,16 @@ module Idv
       cache_encrypted_pii(user_password)
       associate_in_person_enrollment_with_profile
 
-      if profile.active?
-        move_pii_to_user_session
-      elsif address_verification_mechanism == 'gpo'
+      if address_verification_mechanism == 'gpo'
         create_gpo_entry
       elsif in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          current_user,
-          pii,
-        )
+        profile.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+      end
+
+      profile.activate unless profile.reason_not_to_activate
+
+      if profile.active?
+        move_pii_to_user_session
       end
     end
 
