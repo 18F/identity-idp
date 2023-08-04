@@ -30,7 +30,9 @@ module Users
       track_backup_codes_created
     end
 
-    def edit; end
+    def edit
+      analytics.backup_code_regenerate_visit
+    end
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
