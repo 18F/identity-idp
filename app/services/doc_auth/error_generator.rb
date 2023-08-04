@@ -105,7 +105,7 @@ module DocAuth
     def get_id_type_errors(classification_info)
       return unless classification_info.present?
       # only check front, expired one does not populate back side info
-      front_class = classification_info.dig('Front', 'ClassName')
+      front_class = classification_info.with_indifferent_access.dig('Front', 'ClassName')
       return if !front_class.present? ||
                 (SUPPORTED_ID_CLASSNAME.include? front_class) || front_class == 'Unknown'
       ErrorResult.new(Errors::DOC_TYPE_CHECK, ID)

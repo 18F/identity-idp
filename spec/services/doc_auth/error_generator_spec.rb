@@ -9,7 +9,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     )
   end
 
-  let(:front_classification_details) do
+  let(:passport_classification_details) do
     { ClassName: 'Passport',
       Issue: '2006',
       IssueType: 'ePassport',
@@ -17,7 +17,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       IssuerCode: 'USA',
       IssuerName: 'United States' }
   end
-  let(:back_classification_details) do
+  let(:unknown_classification_details) do
     { ClassName: 'Unknown',
       Issue: nil,
       IssueType: nil,
@@ -228,8 +228,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         doc_result: 'Failed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
-        classification_info: { Back: back_classification_details,
-                               Front: front_classification_details },
+        classification_info: { Back: unknown_classification_details,
+                               Front: passport_classification_details },
       )
 
       expect(warn_notifier).to receive(:call).
@@ -249,8 +249,8 @@ RSpec.describe DocAuth::ErrorGenerator do
         doc_result: 'Passed',
         passed: [{ name: 'Not a known alert', result: 'Passed' }],
         failed: [],
-        classification_info: { Back: back_classification_details,
-                               Front: front_classification_details },
+        classification_info: { Back: unknown_classification_details,
+                               Front: passport_classification_details },
       )
 
       expect(warn_notifier).to receive(:call).
@@ -262,6 +262,26 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:hints]).to eq(true)
+    end
+    it 'DocAuthResult is success with unknown doc type' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [
+          { name: 'Not a known alert', result: 'Failed' },
+        ],
+        classification_info: { Front: unknown_classification_details },
+      )
+
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message)).twice
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)
     end
   end
