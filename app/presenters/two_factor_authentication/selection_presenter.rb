@@ -37,18 +37,30 @@ module TwoFactorAuthentication
 
     def mfa_configuration_description
       return '' if mfa_configuration_count.zero?
-      t(
-        'two_factor_authentication.two_factor_choice_options.configurations_added',
-        count: mfa_configuration_count,
-      )
+      if single_configuration_only?
+        t('two_factor_authentication.two_factor_choice_options.no_count_configuration_added')
+      else
+        t(
+          'two_factor_authentication.two_factor_choice_options.configurations_added',
+          count: mfa_configuration_count,
+        )
+      end
     end
 
     def mfa_added_label
-      "(#{mfa_configuration_description})"
+      if single_configuration_only?
+        ''
+      else
+        "(#{mfa_configuration_description})"
+      end
+    end
+
+    def single_configuration_only?
+      false
     end
 
     def disabled?
-      false
+      single_configuration_only? && mfa_configuration_count > 0
     end
 
     private
