@@ -4,8 +4,19 @@ module TwoFactorAuthentication
       :backup_code
     end
 
-    def single_configuration_only?
-      true
+    def disabled?
+      user&.backup_code_configurations&.any?
+    end
+
+    def mfa_configuration_description
+      return '' if !disabled?
+      t(
+        'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
+      )
+    end
+
+    def mfa_added_label
+      ''
     end
 
     def mfa_configuration_count
