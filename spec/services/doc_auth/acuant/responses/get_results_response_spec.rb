@@ -57,6 +57,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           },
         },
         address_line2_present: true,
+        doc_type_supported: true,
       }
 
       processed_alerts = response_hash[:processed_alerts]
@@ -160,7 +161,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     end
   end
 
-  context 'with a failed result' do
+  context 'with a failed result of unknow document type' do
     let(:http_response) do
       instance_double(
         Faraday::Response,
@@ -353,7 +354,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     end
   end
 
-  describe  'with unspported id' do
+  describe  'with unsupported id' do
     context 'with successful response' do
       let(:http_response) do
         instance_double(
@@ -364,8 +365,8 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       let(:expected_errors) do
         {
           general: [DocAuth::Errors::DOC_TYPE_CHECK],
-          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
-          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          front: [DocAuth::Errors::CARD_TYPE],
+          back: [DocAuth::Errors::CARD_TYPE],
           hints: true,
         }
       end
@@ -408,6 +409,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             },
           },
           address_line2_present: true,
+          doc_type_supported: true,
         }
 
         processed_alerts = response_hash[:processed_alerts]

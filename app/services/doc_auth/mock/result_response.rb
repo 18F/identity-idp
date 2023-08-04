@@ -72,8 +72,8 @@ module DocAuth
       def id_type_supported?
         classification_info = classification_info_from_uploaded_file
         return true if classification_info.nil?
-        return false unless ID_TYPE_SLUGS.key? classification_info&.dig('Front', 'ClassName')
-        return ID_TYPE_SLUGS.key? classification_info&.dig('Back', 'ClassName')
+        front_class = classification_info&.dig('Front', 'ClassName')
+        return !front_class.present? || ID_TYPE_SLUGS.key?(front_class) || front_class == 'Unknown'
       end
 
       private

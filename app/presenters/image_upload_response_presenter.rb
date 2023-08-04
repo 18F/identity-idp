@@ -34,7 +34,10 @@ class ImageUploadResponsePresenter
     if success? && !attention_with_barcode?
       { success: true }
     else
-      json = { success: false, errors: errors, remaining_attempts: remaining_attempts , doc_type_supported: doc_type_supported?}
+      json = { success: false,
+               errors: errors,
+               remaining_attempts: remaining_attempts,
+               doc_type_supported: doc_type_supported? }
       if remaining_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
           json[:redirect] = idv_session_errors_rate_limited_url
@@ -75,6 +78,6 @@ class ImageUploadResponsePresenter
 
   def doc_type_supported?
     # default to true by assuming using supported doc type unless we clearly detect unsupported type
-    @form_response.respond_to?(:id_type_supported?) ?  @form_response.id_type_supported? : true
+    @form_response.respond_to?(:id_type_supported?) ? @form_response.id_type_supported? : true
   end
 end
