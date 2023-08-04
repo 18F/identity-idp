@@ -66,20 +66,6 @@ class MarketingSite
     )
   end
 
-  def self.help_which_authentication_method_url
-    help_center_article_url(
-      category: 'authentication-methods',
-      article: 'which-authentication-method-should-i-use',
-    )
-  end
-
-  def self.help_hardware_security_key_url
-    help_center_article_url(
-      category: 'signing-in',
-      article: 'what-is-a-hardware-security-key',
-    )
-  end
-
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end
