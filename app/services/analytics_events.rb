@@ -303,7 +303,6 @@ module AnalyticsEvents
     track_event('Doc Auth Warning', message: message, **extra)
   end
 
-
   # When a user views the add email address page
   def edit_password_visit
     track_event('Edit Password Page Visited')
