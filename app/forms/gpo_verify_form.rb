@@ -63,10 +63,8 @@ class GpoVerifyForm
 
   def which_letter
     return if !valid_otp?
-    successful_code_sent_at = gpo_confirmation_code.code_sent_at
-    gpo_codes = pending_profile.gpo_confirmation_codes.sort_by(&:code_sent_at)
-    position = gpo_codes.find_index { |code| code.code_sent_at == successful_code_sent_at }
-    position + 1
+    pending_profile.gpo_confirmation_codes.sort_by(&:code_sent_at).
+      index(gpo_confirmation_code) + 1
   end
 
   def letter_count

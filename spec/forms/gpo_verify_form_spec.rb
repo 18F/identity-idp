@@ -210,7 +210,7 @@ RSpec.describe GpoVerifyForm do
       end
     end
 
-    context 'three letters sent' do
+    describe '#which_letter with three letters sent' do
       let(:first_otp) { 'F' + otp }
       let(:second_otp) { 'S' + otp }
       let(:third_otp) { otp }
