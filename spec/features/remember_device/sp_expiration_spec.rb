@@ -115,7 +115,7 @@ RSpec.feature 'remember device sp expiration' do
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
 
-    ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server').update!(
+    ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER).update!(
       default_aal: aal,
       ial: ial,
     )
