@@ -61,7 +61,7 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
  */
 const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
 
-const DISPLAY_ATTEMPTS = 100;
+const DISPLAY_ATTEMPTS = 3;
 
 function ReviewIssuesStep({
   value = {},
