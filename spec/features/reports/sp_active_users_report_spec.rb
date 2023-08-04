@@ -13,7 +13,7 @@ RSpec.feature 'sp active users report' do
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
 
-    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server',
+    results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server_ial1',
                  app_id: nil,
                  total_ial1_active: 1,
                  total_ial2_active: 0 }].to_json
