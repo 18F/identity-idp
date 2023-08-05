@@ -71,8 +71,21 @@ RSpec.describe Idv::InPerson::SsnController do
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
 
+    it 'updates DocAuthLog ssn_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.ssn_view_count }.from(0).to(1),
+      )
+    end
+
+    it 'adds a session id to flow session' do
+      get :show
+      expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
+    end
+
     context 'with an ssn in session' do
-      let(:referer) { idv_document_capture_url }
+      let(:referer) { idv_in_person_step_url(step: :address) }
       before do
         flow_session[:pii_from_user][:ssn] = ssn
         request.env['HTTP_REFERER'] = referer
@@ -158,6 +171,14 @@ RSpec.describe Idv::InPerson::SsnController do
         put :update, params: params
 
         expect(response).to redirect_to idv_in_person_verify_info_url
+      end
+
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        flow_session[:pii_from_user][:ssn] = ssn
+        put :update, params: params
+        session_id = flow_session[:threatmetrix_session_id]
+        subject.threatmetrix_view_variables
+        expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
       end
     end
 

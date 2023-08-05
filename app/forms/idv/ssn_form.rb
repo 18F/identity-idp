@@ -53,4 +53,4 @@ module Idv
       raise ArgumentError, "#{key} is an invalid ssn attribute"
     end
   end
-  end
+end
