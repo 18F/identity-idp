@@ -13,6 +13,7 @@ class SessionTimeoutModalElement extends HTMLElement {
 
   disconnectedCallback() {
     this.clearScheduledStatusCheck();
+    this.modal.hide();
   }
 
   /**
