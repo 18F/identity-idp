@@ -231,32 +231,88 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.equal('https://example.com/?step=document_capture&location=post_submission_warning');
   });
 
-  it('renders error messages when doc type is not supported', async () => {
+  it('renders alternative error messages with in person and doc type is not supported', async () => {
     const { getByRole, getByText, getByLabelText } = render(
-      <I18nContext.Provider
-        value={
-          new I18n({
-            strings: {
-              'idv.warning.attempts_html': {
-                one: '<strong>One attempt</strong> remaining',
-                other: '<strong>%{count} attempts</strong> remaining',
+      <InPersonContext.Provider value={{ inPersonURL: 'http://example.com' }}>
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.warning.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining',
+                  other: '<strong>%{count} attempts</strong> remaining',
+                },
+                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.alerts.id_not_recognized': 'id not recognized',
               },
-              'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-            },
-          })
-        }
-      >
-        <ReviewIssuesStep
-          isFailedDocType
-          remainingAttempts={3}
-          unknownFieldErrors={[
-            {
-              field: 'general',
-              error: toFormEntryError({ field: 'gerneral', message: 'only state id' }),
-            },
-          ]}
-        />
-      </I18nContext.Provider>,
+            })
+          }
+        >
+          <ReviewIssuesStep
+            isFailedDocType
+            remainingAttempts={3}
+            unknownFieldErrors={[
+              {
+                field: 'general',
+                error: toFormEntryError({ field: 'gerneral', message: 'only state id' }),
+              },
+            ]}
+          />
+        </I18nContext.Provider>
+        ,
+      </InPersonContext.Provider>,
+    );
+    expect(getByText('doc type not supported')).to.be.ok();
+    expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
+    expect(getByText(/only state id/)).to.be.ok();
+    expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
+    ).to.exist();
+    expect(
+      getByRole('link', {
+        name: 'idv.troubleshooting.options.supported_documents links.new_tab',
+      }),
+    ).to.exist();
+
+    // click try again
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
+    // now use the alternative error message
+    expect(getByText(/id not recognized/)).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+  });
+
+  it('renders alternative error messages with not in person and doc type is not supported', async () => {
+    const { getByRole, getByText, getByLabelText } = render(
+      <InPersonContext.Provider value={{ inPersonURL: '' }}>
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.warning.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining',
+                  other: '<strong>%{count} attempts</strong> remaining',
+                },
+                'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
+                'doc_auth.errors.alerts.id_not_recognized': 'id not recognized',
+              },
+            })
+          }
+        >
+          <ReviewIssuesStep
+            isFailedDocType
+            remainingAttempts={3}
+            unknownFieldErrors={[
+              {
+                field: 'general',
+                error: toFormEntryError({ field: 'gerneral', message: 'only state id' }),
+              },
+            ]}
+          />
+        </I18nContext.Provider>
+        ,
+      </InPersonContext.Provider>,
     );
     expect(getByText('doc type not supported')).to.be.ok();
     expect(getByText(/3 attempts/, { selector: 'strong' })).to.be.ok();
@@ -273,7 +329,7 @@ describe('document-capture/components/review-issues-step', () => {
 
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByText(/only state id/)).to.be.ok();
+    expect(getByText(/id not recognized/)).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });

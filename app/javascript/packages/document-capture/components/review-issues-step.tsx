@@ -13,6 +13,7 @@ import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import { InPersonContext } from '../context';
+import UnknownError from './unknown-error';
 
 function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
@@ -84,15 +85,6 @@ function ReviewIssuesStep({
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
   const { inPersonURL } = useContext(InPersonContext);
-
-  function DocTypeErrorMessage({ error }) {
-    return (
-      <p key={`${error.message}-${remainingAttempts}`}>
-        {error.message}{' '}
-        {formatWithStrongNoWrap(t('idv.warning.attempts_html', { count: remainingAttempts }))}
-      </p>
-    );
-  }
   useEffect(() => onFailedSubmissionAttempt(), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
@@ -112,37 +104,14 @@ function ReviewIssuesStep({
     }
     // ipp disabled
     if (!inPersonURL || isFailedResult) {
-      if (isFailedDocType) {
-        return (
-          <>
-            <Warning
-              heading={t('errors.doc_auth.doc_type_not_supported_heading')}
-              actionText={t('idv.failure.button.warning')}
-              actionOnClick={onWarningPageDismissed}
-              location="doc_auth_review_issues"
-              remainingAttempts={remainingAttempts}
-              troubleshootingOptions={
-                <DocumentCaptureTroubleshootingOptions
-                  location="post_submission_warning"
-                  showAlternativeProofingOptions={!isFailedResult}
-                  showSPOption={false}
-                  heading={t('components.troubleshooting_options.ipp_heading')}
-                />
-              }
-            >
-              {!!unknownFieldErrors &&
-                unknownFieldErrors
-                  .filter((error) => !['front', 'back'].includes(error.field!))
-                  .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
-            </Warning>
-            <Cancel />
-          </>
-        );
-      }
       return (
         <>
           <Warning
-            heading={t('errors.doc_auth.rate_limited_heading')}
+            heading={
+              isFailedDocType
+                ? t('errors.doc_auth.doc_type_not_supported_heading')
+                : t('errors.doc_auth.rate_limited_heading')
+            }
             actionText={t('idv.failure.button.warning')}
             actionOnClick={onWarningPageDismissed}
             location="doc_auth_review_issues"
@@ -156,12 +125,13 @@ function ReviewIssuesStep({
               />
             }
           >
-            {!!unknownFieldErrors &&
-              unknownFieldErrors
-                .filter((error) => !['front', 'back'].includes(error.field!))
-                .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+            <UnknownError
+              unknownFieldErrors={unknownFieldErrors}
+              remainingAttempts={remainingAttempts}
+              isFailedDocType={isFailedDocType}
+            />
 
-            {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
               <p>
                 {formatWithStrongNoWrap(
                   t('idv.failure.attempts_html', { count: remainingAttempts }),
@@ -174,34 +144,13 @@ function ReviewIssuesStep({
       );
     }
     // ipp enabled
-
-    if (isFailedDocType) {
-      return (
-        <Warning
-          heading={t('errors.doc_auth.doc_type_not_supported_heading')}
-          actionText={t('idv.failure.button.try_online')}
-          actionOnClick={onWarningPageDismissed}
-          location="doc_auth_review_issues"
-          remainingAttempts={remainingAttempts}
-          troubleshootingOptions={
-            <DocumentCaptureTroubleshootingOptions
-              location="post_submission_warning"
-              showAlternativeProofingOptions={!isFailedResult}
-              heading={t('components.troubleshooting_options.ipp_heading')}
-            />
-          }
-        >
-          {!!unknownFieldErrors &&
-            unknownFieldErrors
-              .filter((error) => !['front', 'back'].includes(error.field!))
-              .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
-        </Warning>
-      );
-    }
-
     return (
       <Warning
-        heading={t('errors.doc_auth.rate_limited_heading')}
+        heading={
+          isFailedDocType
+            ? t('errors.doc_auth.doc_type_not_supported_heading')
+            : t('errors.doc_auth.rate_limited_heading')
+        }
         actionText={t('idv.failure.button.try_online')}
         actionOnClick={onWarningPageDismissed}
         location="doc_auth_review_issues"
@@ -214,13 +163,14 @@ function ReviewIssuesStep({
           />
         }
       >
-        <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
-        {!!unknownFieldErrors &&
-          unknownFieldErrors
-            .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        {!isFailedDocType && <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>}
+        <UnknownError
+          unknownFieldErrors={unknownFieldErrors}
+          remainingAttempts={remainingAttempts}
+          isFailedDocType={isFailedDocType}
+        />
 
-        {remainingAttempts <= DISPLAY_ATTEMPTS && (
+        {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
           <p>
             {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
           </p>
@@ -229,49 +179,16 @@ function ReviewIssuesStep({
     );
   }
   // hasDismissed = true
-  if (isFailedDocType) {
-    return (
-      <>
-        <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-        {!!unknownFieldErrors &&
-          unknownFieldErrors
-            .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => <DocTypeErrorMessage key={error.message} error={error} />)}
-        {captureHints && (
-          <>
-            <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-            <ul>
-              <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-              <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-              <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-              <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-            </ul>
-          </>
-        )}
-        {DOCUMENT_SIDES.map((side) => (
-          <DocumentSideAcuantCapture
-            key={side}
-            side={side}
-            registerField={registerField}
-            value={value[side]}
-            onChange={onChange}
-            errors={errors}
-            onError={onError}
-            className="document-capture-review-issues-step__input"
-          />
-        ))}
-
-        <FormStepsButton.Submit />
-        <DocumentCaptureTroubleshootingOptions />
-        <Cancel />
-      </>
-    );
-  }
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
+      <UnknownError
+        unknownFieldErrors={unknownFieldErrors}
+        remainingAttempts={remainingAttempts}
+        isFailedDocType={isFailedDocType}
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.alerts.id_not_recognized') : null}
+      />
+
       {captureHints && (
         <>
           <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
