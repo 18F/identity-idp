@@ -369,7 +369,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           {!value && !isValuePending && (
             <div className="usa-file-input__instructions" aria-hidden="true">
               {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
-              {!showInnerHint ? null : (
+              {showInnerHint && (
                 <span className="usa-file-input__drag-text" id={innerHintId}>
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
                     'lg-underline': ({ children }) => (
