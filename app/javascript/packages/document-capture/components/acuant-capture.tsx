@@ -23,7 +23,11 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type { AcuantSuccessResponse, AcuantCaptureFailureError } from './acuant-camera';
+import type {
+  AcuantSuccessResponse,
+  AcuantCaptureFailureError,
+  LegacyAcuantSuccessResponse,
+} from './acuant-camera';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -420,12 +424,12 @@ function AcuantCapture(
     }
   }
 
-  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    let { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
-    if (!cardType) {
-      const { cardtype } = nextCapture;
-      cardType = cardtype;
-    }
+  function onAcuantImageCaptureSuccess(
+    nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
+  ) {
+    const { image, dpi, moire, glare, sharpness } = nextCapture;
+    const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
+
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
     const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;

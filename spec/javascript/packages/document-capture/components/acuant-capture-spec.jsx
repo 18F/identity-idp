@@ -271,8 +271,7 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async (...args) => {
-        const { onFailure } = args[0];
+      const start = async ({ onFailure }) => {
         await onFailure('Camera not supported.', 'start-fail-code');
       };
 
@@ -352,8 +351,7 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
-      const start = async (...args) => {
-        const { onFailure } = args[0];
+      const start = async ({ onFailure }) => {
         await onFailure(new Error());
       };
 
@@ -395,8 +393,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
       outsideInput = getByTestId('outside-input');
 
-      const start = async (...args) => {
-        const { onFailure } = args[0];
+      const start = async ({ onFailure }) => {
         await onFailure(new Error());
       };
 

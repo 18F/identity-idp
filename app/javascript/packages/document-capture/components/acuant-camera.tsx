@@ -213,10 +213,6 @@ export interface AcuantSuccessResponse {
    */
   image: AcuantImage;
   /**
-   * Document type for Acuant SDK 11.8.2
-   */
-  cardtype: AcuantDocumentType;
-  /**
    * Document type for Acuant SDK 11.9.1
    */
   cardType: AcuantDocumentType;
@@ -241,6 +237,13 @@ export interface AcuantSuccessResponse {
    */
   dpi: number;
 }
+
+export type LegacyAcuantSuccessResponse = Omit<AcuantSuccessResponse, 'cardType'> & {
+  /**
+   * Document type for Acuant SDK 11.8.2
+   */
+  cardtype: AcuantDocumentType;
+};
 
 type AcuantSuccessCallback = (response: AcuantSuccessResponse) => void;
 
