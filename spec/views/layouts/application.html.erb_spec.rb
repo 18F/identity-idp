@@ -170,10 +170,9 @@ RSpec.describe 'layouts/application.html.erb' do
         allow(BrowserSupport).to receive(:supported?).and_return(false)
       end
 
-      it 'does not render error tracking scripts' do
+      it 'does not render error tracking script' do
         render
 
-        expect(rendered).not_to have_css('script[src$="track-errors-prelude.js"]', visible: :all)
         expect(rendered).not_to have_css('script[src$="track-errors.js"]', visible: :all)
       end
     end
@@ -183,10 +182,9 @@ RSpec.describe 'layouts/application.html.erb' do
         allow(BrowserSupport).to receive(:supported?).and_return(true)
       end
 
-      it 'renders error tracking scripts' do
+      it 'renders error tracking script' do
         render
 
-        expect(rendered).to have_css('script[src$="track-errors-prelude.js"]', visible: :all)
         expect(rendered).to have_css('script[src$="track-errors.js"]', visible: :all)
       end
     end
