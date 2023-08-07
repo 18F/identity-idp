@@ -4,6 +4,8 @@ import type { CountdownElement } from '@18f/identity-countdown/countdown-element
 import { requestSessionStatus, extendSession } from './requests';
 
 class SessionTimeoutModalElement extends HTMLElement {
+  forceRedirect = forceRedirect;
+
   statusCheckTimeout: number;
 
   connectedCallback() {
@@ -71,7 +73,7 @@ class SessionTimeoutModalElement extends HTMLElement {
   }
 
   onTimeout() {
-    forceRedirect(this.timeoutURL);
+    this.forceRedirect(this.timeoutURL);
   }
 
   async keepAlive() {
