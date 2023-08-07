@@ -55,9 +55,7 @@
       ) %>
   <meta content="#ffffff" name="theme-color" />
 
-  <% if BrowserSupport.supported?(request.user_agent) && IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
-    <%= render 'shared/newrelic/browser_instrumentation' %>
-  <% end %>
+  <%= render_javascript_pack_once_tags('track-errors-prelude') if BrowserSupport.supported?(request.user_agent) %>
 
   <%= yield(:head) if content_for?(:head) %>
 </head>
@@ -109,6 +107,7 @@
         false,
       ) %>
   <%= javascript_packs_tag_once('application', prepend: true) %>
+  <%= javascript_packs_tag_once('track-errors') if BrowserSupport.supported?(request.user_agent) %>
   <%= render_javascript_pack_once_tags %>
 
   <%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap && !session_with_trust? %>

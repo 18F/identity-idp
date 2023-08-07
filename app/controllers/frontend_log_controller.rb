@@ -11,6 +11,7 @@ class FrontendLogController < ApplicationController
   # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
+    'Frontend Error' => :frontend_error,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: location submitted' => :idv_in_person_location_submitted,
