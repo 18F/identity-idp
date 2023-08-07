@@ -725,6 +725,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'in_person_verification_pending' # to change
       expect(profile.fraud_review_pending?).to eq(true) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to_not be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -735,6 +736,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 

@@ -123,6 +123,7 @@ class Profile < ApplicationRecord
         fraud_rejection_at: nil,
         fraud_pending_reason: nil,
         deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
       )
       activate
     end
