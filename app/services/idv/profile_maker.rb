@@ -22,9 +22,7 @@ module Idv
     )
       profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
       profile.initiating_service_provider = initiating_service_provider
-      if in_person_verification_needed
-        profile.deactivation_reason = :in_person_verification_pending
-      end
+      profile.deactivate_for_in_person_verification if in_person_verification_needed
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
       profile.fraud_pending_reason = fraud_pending_reason
