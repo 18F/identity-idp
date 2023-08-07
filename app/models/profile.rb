@@ -152,6 +152,13 @@ class Profile < ApplicationRecord
     deactivation_reason == 'in_person_verification_pending'
   end
 
+  def deactivate_for_in_person_verification
+    transaction do
+      deactivate(:in_person_verification_pending) # to be deprecated
+      update!(active: false, in_person_verification_pending_at: Time.zone.now)
+    end
+  end
+
   def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
     transaction do
       UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
