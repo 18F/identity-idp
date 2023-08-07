@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneErrorsController do
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
+  before do
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
   shared_examples_for 'an idv phone errors controller action' do
     describe 'before_actions' do
       it 'includes before_actions from IdvSession' do
@@ -166,6 +174,7 @@ RSpec.describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
+          **ab_test_args,
         )
       end
     end
@@ -218,6 +227,7 @@ RSpec.describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
+          **ab_test_args,
         )
       end
     end
@@ -251,6 +261,7 @@ RSpec.describe Idv::PhoneErrorsController do
             'IdV: phone error visited',
             type: action,
             limiter_expires_at: attempted_at + rate_limit_window,
+            **ab_test_args,
           )
         end
       end
