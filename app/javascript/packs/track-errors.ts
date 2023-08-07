@@ -1,11 +1,13 @@
-/* eslint-disable no-underscore-dangle */
-
 import { trackError } from '@18f/identity-analytics';
-import type { WindowWithInitialErrors } from './track-errors-prelude';
+
+export interface WindowWithInitialErrors extends Window {
+  _e: ErrorEvent[];
+}
 
 declare let window: WindowWithInitialErrors;
 
+const { _e: initialErrors } = window;
+
 const handleErrorEvent = (event: ErrorEvent) => trackError(event.error);
-window._initialErrors!.forEach(handleErrorEvent);
-delete window._initialErrors;
+initialErrors.forEach(handleErrorEvent);
 window.addEventListener('error', handleErrorEvent);
