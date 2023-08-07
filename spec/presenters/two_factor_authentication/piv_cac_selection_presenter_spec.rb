@@ -24,7 +24,7 @@ RSpec.describe TwoFactorAuthentication::PivCacSelectionPresenter do
     it 'returns the translated string for added when user has configured this authenticator' do
       expect(presenter_with_mfa.mfa_configuration_description).to eq(
         t(
-          'two_factor_authentication.two_factor_choice_options.no_count_configuration_added'
+          'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
         ),
       )
     end
