@@ -37,8 +37,8 @@ describe('UnknownError', () => {
           new I18n({
             strings: {
               'idv.warning.attempts_html': {
-                one: '<strong>One attempt</strong> remaining',
-                other: '<strong>%{count} attempts</strong> remaining',
+                one: 'You have <strong>One attempt</strong> remaining',
+                other: 'You have<strong>%{count} attempts</strong> remaining',
               },
               'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
             },
@@ -70,8 +70,8 @@ describe('UnknownError', () => {
           new I18n({
             strings: {
               'idv.warning.attempts_html': {
-                one: '<strong>One attempt</strong> remaining',
-                other: '<strong>%{count} attempts</strong> remaining',
+                one: 'You have <strong>One attempt</strong> remaining',
+                other: 'You have <strong>%{count} attempts</strong> remaining',
               },
             },
           })
