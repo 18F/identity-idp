@@ -58,7 +58,7 @@
   <%# Prelude script for error tracking (see `track-errors`) %>
   <%= content_tag(
         :script,
-        '_e=[],window.addEventListener("error",(e)=>_e.push(e));',
+        '_e=[],addEventListener("error",(e)=>_e.push(e));',
         { nonce: content_security_policy_nonce },
         false,
       ) %>
