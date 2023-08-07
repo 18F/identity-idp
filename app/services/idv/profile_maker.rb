@@ -6,24 +6,23 @@ module Idv
       applicant:,
       user:,
       user_password:,
-      initiating_service_provider: nil,
-      in_person_verification_pending: false
+      initiating_service_provider: nil
     )
       self.pii_attributes = Pii::Attributes.new_from_hash(applicant)
       self.user = user
       self.user_password = user_password
       self.initiating_service_provider = initiating_service_provider
-      self.in_person_verification_pending = in_person_verification_pending
     end
 
     def save_profile(
       fraud_pending_reason:,
       gpo_verification_needed:,
+      in_person_verification_needed:,
       deactivation_reason: nil
     )
       profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
       profile.initiating_service_provider = initiating_service_provider
-      if in_person_verification_pending
+      if in_person_verification_needed
         profile.deactivation_reason = :in_person_verification_pending
       end
       profile.encrypt_pii(pii_attributes, user_password)

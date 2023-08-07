@@ -56,6 +56,7 @@ module Idv
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
+        in_person_verification_needed: in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -237,7 +238,6 @@ module Idv
         user: current_user,
         user_password: user_password,
         initiating_service_provider: service_provider,
-        in_person_verification_pending: in_person_enrollment?,
       )
     end
 
