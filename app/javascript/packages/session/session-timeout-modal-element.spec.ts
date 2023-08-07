@@ -74,4 +74,18 @@ describe('SessionTimeoutModalElement', () => {
     expect(requestSessionStatus).to.have.been.called();
     await waitFor(() => expect(modal.hidden).to.be.false());
   });
+
+  it('avoids infinite loops by treating a past timeout as equivalent to non-live', async () => {
+    const element = createElement({
+      warningOffsetInMilliseconds: 1000,
+      timeout: new Date(Date.now() + 2000),
+    });
+    const requestSessionStatus = sandbox.stub();
+    requestSessionStatus.resolves({ isLive: true, timeout: new Date(Date.now() - 1000) });
+    sandbox.stub(element, 'requestSessionStatus').callsFake(requestSessionStatus);
+    sandbox.stub(element, 'onTimeout');
+
+    sandbox.clock.tick(1000);
+    await expect(element.onTimeout).to.eventually.be.called();
+  });
 });

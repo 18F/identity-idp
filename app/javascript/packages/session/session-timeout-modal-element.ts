@@ -70,6 +70,10 @@ class SessionTimeoutModalElement extends HTMLElement {
     this.keepAliveButton.addEventListener('click', () => this.keepAlive());
   }
 
+  onTimeout() {
+    forceRedirect(this.timeoutURL);
+  }
+
   async keepAlive() {
     this.clearScheduledStatusCheck();
     this.modal.hide();
@@ -81,7 +85,7 @@ class SessionTimeoutModalElement extends HTMLElement {
   async checkStatus() {
     const { isLive, timeout } = await this.requestSessionStatus();
 
-    if (isLive) {
+    if (isLive && timeout.valueOf() > Date.now()) {
       const millisecondsRemaining = timeout.valueOf() - Date.now();
       const showWarning = millisecondsRemaining <= this.warningOffsetInMilliseconds;
       if (showWarning) {
@@ -94,7 +98,7 @@ class SessionTimeoutModalElement extends HTMLElement {
 
       this.timeout = timeout;
     } else {
-      forceRedirect(this.timeoutURL);
+      this.onTimeout();
     }
   }
 
