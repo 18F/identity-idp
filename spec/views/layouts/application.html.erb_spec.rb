@@ -164,26 +164,31 @@ RSpec.describe 'layouts/application.html.erb' do
     end
   end
 
-  context 'when new relic browser key and app id are present' do
-    it 'it render the new relic javascript' do
-      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('foo')
-      allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('foo')
-      allow(BrowserSupport).to receive(:supported?).and_return(true)
+  describe 'javascript error tracking' do
+    context 'when browser is unsupported' do
+      before do
+        allow(BrowserSupport).to receive(:supported?).and_return(false)
+      end
 
-      render
+      it 'does not render error tracking scripts' do
+        render
 
-      expect(view).to render_template(partial: 'shared/newrelic/_browser_instrumentation')
+        expect(rendered).not_to have_css('script[src$="track-errors-prelude.js"]', visible: :all)
+        expect(rendered).not_to have_css('script[src$="track-errors.js"]', visible: :all)
+      end
     end
-  end
 
-  context 'when new relic browser key and app id are not present' do
-    it 'it does not render the new relic javascript' do
-      allow(IdentityConfig.store).to receive(:newrelic_browser_key).and_return('')
-      allow(IdentityConfig.store).to receive(:newrelic_browser_app_id).and_return('')
+    context 'when browser is supported' do
+      before do
+        allow(BrowserSupport).to receive(:supported?).and_return(true)
+      end
 
-      render
+      it 'renders error tracking scripts' do
+        render
 
-      expect(view).to_not render_template(partial: 'shared/newrelic/_browser_instrumentation')
+        expect(rendered).to have_css('script[src$="track-errors-prelude.js"]', visible: :all)
+        expect(rendered).to have_css('script[src$="track-errors.js"]', visible: :all)
+      end
     end
   end
 end

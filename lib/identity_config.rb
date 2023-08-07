@@ -318,8 +318,6 @@ class IdentityConfig
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:min_password_score, type: :integer)
     config.add(:mx_timeout, type: :integer)
-    config.add(:newrelic_browser_app_id, type: :string)
-    config.add(:newrelic_browser_key, type: :string)
     config.add(:newrelic_license_key, type: :string)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)

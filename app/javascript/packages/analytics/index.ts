@@ -1,11 +1,4 @@
-import type { noticeError } from 'newrelic';
 import { getConfigValue } from '@18f/identity-config';
-
-type NewRelicAgent = { noticeError: typeof noticeError };
-
-interface NewRelicGlobals {
-  newrelic?: NewRelicAgent;
-}
 
 /**
  * Logs an event.
@@ -30,6 +23,7 @@ export function trackEvent(event: string, payload?: object) {
  *
  * @param error Error object.
  */
-export function trackError(error: Error) {
-  (globalThis as typeof globalThis & NewRelicGlobals).newrelic?.noticeError(error);
-}
+export const trackError = ({ name, message, stack }: Error) =>
+  trackEvent('Frontend Error', { name, message, stack });
+
+setTimeout(() => (window as any).foo(), 1);
