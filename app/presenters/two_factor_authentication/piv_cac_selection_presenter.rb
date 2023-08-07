@@ -4,12 +4,12 @@ module TwoFactorAuthentication
       :piv_cac
     end
 
-    def single_configuration_only?
-      true
+    def disabled?
+      user&.piv_cac_configurations&.any?
     end
 
     def mfa_configuration_count
-      user&.piv_cac_configurations&.count
+      user&.piv_cac_configurations.count
     end
   end
 end
