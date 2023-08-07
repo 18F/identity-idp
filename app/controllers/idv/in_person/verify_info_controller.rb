@@ -51,7 +51,7 @@ module Idv
       end
 
       def prev_url
-        idv_in_person_ssn_url
+        idv_in_person_proofing_ssn_url
       end
 
       def pii
