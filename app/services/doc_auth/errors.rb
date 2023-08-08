@@ -5,7 +5,6 @@ module DocAuth
     PIXEL_DEPTH_FAILURE = 'pixel_depth_failure' # 439
     IMAGE_SIZE_FAILURE = 'image_size_failure' # 440
     # Alerts
-    CARD_TYPE = 'card_type'
     BARCODE_CONTENT_CHECK = 'barcode_content_check'
     BARCODE_READ_CHECK = 'barcode_read_check'
     BIRTH_DATE_CHECKS = 'birth_date_checks'
@@ -39,6 +38,8 @@ module DocAuth
     GLARE_LOW_FIELD = 'glare_low_field'
     GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
     GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
+    # Doc type
+    CARD_TYPE = 'card_type'
     # Other
     FALLBACK_FIELD_LEVEL = 'fallback_field_level'
 

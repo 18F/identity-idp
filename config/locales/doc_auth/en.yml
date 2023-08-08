@@ -28,7 +28,6 @@ en:
           front and the back of the ID don’t match. Try taking new pictures.
         doc_number_checks: We couldn’t read the document number on your ID. Try taking
           new pictures.
-        doc_type_check: Other forms of ID are not accepted.
         expiration_checks: The document has expired, or we couldn’t read the expiration
           date on your ID. If your ID is not expired, try taking new pictures.
         full_name_check: We couldn’t read the full name on your ID. Try taking new pictures.
@@ -54,6 +53,10 @@ en:
           instead.
         failed: Camera failed to start, please try again.
       card_type: Try again with your driver’s license or state ID card.
+      doc:
+        doc_type_check: Other forms of ID are not accepted.
+        wrong_id_type: We only accept a driver’s license or a state ID card at this
+          time. Other forms of ID are not accepted.
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID

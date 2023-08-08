@@ -261,15 +261,15 @@ RSpec.describe DocAuthRouter do
         ),
       )
       allow(I18n).to receive(:t).and_call_original
-      allow(I18n).to receive(:t).with('doc_auth.errors.alerts.doc_type_check').and_return(
-        I18n.t('doc_auth.errors.alerts.doc_type_check', attempt: 2),
+      allow(I18n).to receive(:t).with('doc_auth.errors.doc.doc_type_check').and_return(
+        I18n.t('doc_auth.errors.doc.doc_type_check', attempt: 2),
       )
       response = proxy.post_images(front_image: 'a', back_image: 'b')
       expect(response.errors).to eq(
         front: [I18n.t('doc_auth.errors.card_type')],
         back: [I18n.t('doc_auth.errors.card_type')],
         general: [I18n.t(
-          'doc_auth.errors.alerts.doc_type_check', attempt: 2
+          'doc_auth.errors.doc.doc_type_check', attempt: 2
         )],
       )
     end

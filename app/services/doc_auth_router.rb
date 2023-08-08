@@ -21,9 +21,9 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_number_checks')
     DocAuth::Errors::DOC_NUMBER_CHECKS =>
       'doc_auth.errors.alerts.doc_number_checks',
-    # i18n-tasks-use t('doc_auth.errors.alerts.doc_type_check')
+    # i18n-tasks-use t('doc_auth.errors.doc.doc_type_check')
     DocAuth::Errors::DOC_TYPE_CHECK =>
-      'doc_auth.errors.alerts.doc_type_check',
+      'doc_auth.errors.doc.doc_type_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
     DocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
       'doc_auth.errors.alerts.expiration_checks',

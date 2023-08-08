@@ -31,7 +31,6 @@ es:
           identidad no coinciden. Intente tomar nuevas fotos.
         doc_number_checks: No pudimos leer el número de documento en su documento de
           identidad. Intente tomar nuevas fotografías.
-        doc_type_check: No se aceptan otras formas de identificación.
         expiration_checks: El documento ha caducado, o no pudimos leer la fecha de
           caducidad en su documento de identidad. Si su documento de identidad
           no ha caducado, intente tomar nuevas fotografías.
@@ -65,6 +64,10 @@ es:
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
+      doc:
+        doc_type_check: No se aceptan otras formas de identificación.
+        wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
+          identidad estatal. No se aceptan otras formas de identificación.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.

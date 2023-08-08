@@ -243,7 +243,8 @@ describe('document-capture/components/review-issues-step', () => {
                   other: '<strong>%{count} attempts</strong> remaining',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.alerts.id_not_recognized': 'id not recognized',
+                'doc_auth.errors.doc.wrong_id_type':
+                  "We only accept a driver's license or a state ID card at this time.",
               },
             })
           }
@@ -278,7 +279,9 @@ describe('document-capture/components/review-issues-step', () => {
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.try_online' }));
     // now use the alternative error message
-    expect(getByText(/id not recognized/)).to.be.ok();
+    expect(
+      getByText("We only accept a driver's license or a state ID card at this time."),
+    ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });
@@ -295,7 +298,8 @@ describe('document-capture/components/review-issues-step', () => {
                   other: '<strong>%{count} attempts</strong> remaining',
                 },
                 'errors.doc_auth.doc_type_not_supported_heading': 'doc type not supported',
-                'doc_auth.errors.alerts.id_not_recognized': 'id not recognized',
+                'doc_auth.errors.doc.wrong_id_type':
+                  "We only accept a driver's license or a state ID card at this time.",
               },
             })
           }
@@ -329,7 +333,9 @@ describe('document-capture/components/review-issues-step', () => {
 
     // click try again
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-    expect(getByText(/id not recognized/)).to.be.ok();
+    expect(
+      getByText("We only accept a driver's license or a state ID card at this time."),
+    ).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
   });

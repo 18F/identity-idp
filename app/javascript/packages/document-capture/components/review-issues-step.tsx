@@ -186,10 +186,10 @@ function ReviewIssuesStep({
         unknownFieldErrors={unknownFieldErrors}
         remainingAttempts={remainingAttempts}
         isFailedDocType={isFailedDocType}
-        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.alerts.id_not_recognized') : null}
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
       />
 
-      {captureHints && (
+      {!isFailedDocType && captureHints && (
         <>
           <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
           <ul>

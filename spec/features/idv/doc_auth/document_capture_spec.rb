@@ -50,7 +50,7 @@ RSpec.feature 'document capture step', :js do
         submit_images
         message = strip_tags(t('errors.doc_auth.doc_type_not_supported_heading'))
         expect(page).to have_content(message)
-        detail_message = strip_tags(t('doc_auth.errors.alerts.doc_type_check'))
+        detail_message = strip_tags(t('doc_auth.errors.doc.doc_type_check'))
         security_message = strip_tags(
           t(
             'idv.warning.attempts_html',
