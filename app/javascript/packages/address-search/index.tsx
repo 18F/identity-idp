@@ -11,11 +11,6 @@ import { InPersonLocations } from '@18f/identity-document-capture';
 
 export { InPersonLocations } from '@18f/identity-document-capture';
 
-export const LOCATIONS_URL = new URL(
-  '/verify/in_person/usps_locations',
-  window.location.href,
-).toString();
-
 export interface FormattedLocation {
   formattedCityStateZip: string;
   distance: string;
@@ -87,8 +82,14 @@ export const transformKeys = (location: object, predicate: (key: string) => stri
     {},
   );
 
-const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(LOCATIONS_URL, {
+const requestUspsLocations = async ({
+  locationsURL,
+  address,
+}: {
+  locationsURL: string;
+  address: LocationQuery;
+}): Promise<FormattedLocation[]> => {
+  const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -96,17 +97,27 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
-export const ADDRESS_SEARCH_URL = new URL('/api/addresses', window.location.href).toString();
-
-function requestAddressCandidates(unvalidatedAddressInput: string): Promise<Location[]> {
-  return request<Location[]>(ADDRESS_SEARCH_URL, {
+function requestAddressCandidates({
+  unvalidatedAddressInput,
+  addressSearchURL,
+}: {
+  unvalidatedAddressInput: string;
+  addressSearchURL: string;
+}): Promise<Location[]> {
+  return request<Location[]>(addressSearchURL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     json: { address: unvalidatedAddressInput },
   });
 }
 
-function useUspsLocations() {
+function useUspsLocations({
+  locationsURL,
+  addressSearchURL,
+}: {
+  locationsURL: string;
+  addressSearchURL: string;
+}) {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
@@ -127,7 +138,11 @@ function useUspsLocations() {
     data: addressCandidates,
     isLoading: isLoadingCandidates,
     error: addressError,
-  } = useSWR([addressQuery], () => (addressQuery ? requestAddressCandidates(addressQuery) : null));
+  } = useSWR([addressQuery], () =>
+    addressQuery
+      ? requestAddressCandidates({ unvalidatedAddressInput: addressQuery, addressSearchURL })
+      : null,
+  );
 
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
 
@@ -154,7 +169,9 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([foundAddress], ([address]) => (address ? requestUspsLocations(address) : null));
+  } = useSWR([foundAddress], ([address]) =>
+    address ? requestUspsLocations({ locationsURL, address }) : null,
+  );
 
   return {
     foundAddress,
@@ -174,6 +191,8 @@ interface AddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
+  addressSearchURL: string;
+  locationsURL: string;
 }
 
 export function AddressSearchInput({
@@ -183,6 +202,8 @@ export function AddressSearchInput({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
+  addressSearchURL,
+  locationsURL,
 }: AddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
@@ -194,7 +215,7 @@ export function AddressSearchInput({
     handleAddressSearch: onSearch,
     foundAddress,
     validatedFieldRef,
-  } = useUspsLocations();
+  } = useUspsLocations({ locationsURL, addressSearchURL });
 
   const onTextInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { target } = event;

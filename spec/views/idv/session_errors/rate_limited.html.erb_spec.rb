@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/session_errors/throttled.html.erb' do
+RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
 
@@ -23,7 +23,7 @@ RSpec.describe 'idv/session_errors/throttled.html.erb' do
       )
       expect(rendered).to have_link(
         t('idv.failure.exit.without_sp', app_name: APP_NAME),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'throttled'),
+        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'rate_limited'),
       )
     end
   end
@@ -39,7 +39,7 @@ RSpec.describe 'idv/session_errors/throttled.html.erb' do
       )
       expect(rendered).to have_link(
         t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'throttled'),
+        href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'rate_limited'),
       )
     end
   end

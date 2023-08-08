@@ -201,11 +201,11 @@ module Idv
       return unless document_capture_session
       return unless rate_limited?
 
-      errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :throttled)
+      errors.add(:limit, t('errors.doc_auth.rate_limited_heading'), type: :rate_limited)
     end
 
     def track_rate_limited
-      analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
       irs_attempts_api_tracker.idv_document_upload_rate_limited
     end
 

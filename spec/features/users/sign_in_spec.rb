@@ -142,7 +142,7 @@ RSpec.feature 'Sign in' do
     email = 'foo@bar.com'
     submit_form_with_valid_email(email)
     click_confirmation_link_in_email(email)
-    submit_form_with_valid_password_confirmation
+    submit_form_with_valid_password
     expect(page).to have_current_path(authentication_methods_setup_path)
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
@@ -760,11 +760,6 @@ RSpec.feature 'Sign in' do
       visit login_two_factor_path(otp_delivery_preference: 'voice')
 
       expect(page).to have_current_path login_two_factor_authenticator_path
-    end
-
-    it 'does not display OTP Fallback text and links' do
-      expect(page).
-        to_not have_content t('two_factor_authentication.phone_fallback.question')
     end
   end
 

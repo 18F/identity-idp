@@ -41,6 +41,10 @@ module IdvStepConcern
   private
 
   def confirm_ssn_step_complete
+    if IdentityConfig.store.in_person_ssn_info_controller_enabled
+      # mark ssn step as complete for FSM
+      flow_session['Idv::Steps::InPerson::SsnStep'] = true if flow_session.dig(:pii_from_user, :ssn)
+    end
     return if pii.present? && pii[:ssn].present?
     redirect_to prev_url
   end
@@ -76,5 +80,17 @@ module IdvStepConcern
     return if idv_session.address_step_complete?
 
     redirect_to idv_otp_verification_url
+  end
+
+  def extra_analytics_properties
+    extra = {
+      pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+    }
+
+    unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
+      extra[:same_address_as_id] =
+        flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
+    end
+    extra
   end
 end

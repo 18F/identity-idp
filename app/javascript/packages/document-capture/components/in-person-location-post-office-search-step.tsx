@@ -1,16 +1,18 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import AddressSearch, {
-  transformKeys,
-  snakeCase,
-  LOCATIONS_URL,
-} from '@18f/identity-address-search';
+import AddressSearch, { transformKeys, snakeCase } from '@18f/identity-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+
+export const LOCATIONS_URL = new URL(
+  '/verify/in_person/usps_locations',
+  window.location.href,
+).toString();
+export const ADDRESSES_URL = new URL('/api/addresses', window.location.href).toString();
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
   const { inPersonURL } = useContext(InPersonContext);
@@ -95,6 +97,8 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         handleFoundLocations={setLocationResults}
         handleLocationSelect={handleLocationSelect}
         disabled={disabledAddressSearch}
+        locationsURL={LOCATIONS_URL}
+        addressSearchURL={ADDRESSES_URL}
       />
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>

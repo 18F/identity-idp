@@ -134,22 +134,6 @@ fr:
       try_again: Utilisez un autre numéro de téléphone
     validation:
       required_checkbox: Veuillez cocher cette case pour continuer
-    verify_profile:
-      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
-      clear_and_start_over: Supprimez vos données et recommencez
-      instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
-        avez reçue.
-      name: Code à usage unique
-      return_to_profile: Retourner à votre profil
-      submit: Confirmer le compte
-      title: Confirmez votre compte
-      welcome_back: Content de vous revoir
-      welcome_back_description_html: '<p>Si vous avez reçu votre lettre, veuillez
-        entrer votre code à usage unique ci-dessous. </p> <p>Si votre lettre
-        n’est pas encore arrivée, veuillez être patient car les <strong>lettres
-        prennent généralement entre trois à sept jours ouvrables pour
-        arriver</strong>. Nous vous remercions de votre patience.</p>'
-      wrong_address: Pas la bonne adresse?
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
         l’utiliser pour accéder à votre compte %{app_name}.
@@ -165,10 +149,6 @@ fr:
       info_text: Vous aurez besoin de configurer une méthode d’authentification
         supplémentaire après que vous aurez configuré le déverrouillage facial
         ou le déverrouillage tactile.
-      instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
-        déverouillage facial pour accéder à votre compte avec %{app_name}.
-      instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
-        déverouillage facial pour accéder à votre compte.
       intro_html: '<p>Enregistrez votre visage ou votre empreinte digitale en tant
         qu’identifiant sur votre appareil, afin de pouvoir les utiliser pour
         accéder à votre compte. %{app_name} ne stocke pas votre visage ni votre
@@ -182,11 +162,9 @@ fr:
         reconnaître.
     webauthn_setup:
       continue: Continuer
-      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
-        l’enregistrer avec %{app_name}
-      instructions_title: Connectez votre clé de sécurité
       intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme
         méthode d’authentification. Vous pouvez ajouter autant de clés de
         sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
         à votre clé de sécurité.</p>'
       nickname: Pseudo clé de sécurité
+      saving: Enregistrement de vos informations d’identification …

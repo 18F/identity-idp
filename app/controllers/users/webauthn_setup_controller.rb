@@ -205,10 +205,11 @@ module Users
     def confirm_params
       params.permit(
         :attestation_object,
+        :authenticator_data_value,
         :client_data_json,
-        :transports,
         :name,
         :platform_authenticator,
+        :transports,
       )
     end
 

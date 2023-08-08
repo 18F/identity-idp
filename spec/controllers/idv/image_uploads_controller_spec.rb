@@ -205,7 +205,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       context 'when rate limited' do
-        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:redirect_url) { idv_session_errors_rate_limited_url }
         let(:error_json) do
           {
             success: false,

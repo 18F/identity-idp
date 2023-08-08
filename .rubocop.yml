@@ -932,6 +932,7 @@ Style/AndOr:
     - conditionals
 
 Style/ArgumentsForwarding:
+  UseAnonymousForwarding: false
   Enabled: true
 
 Style/ArrayJoin:

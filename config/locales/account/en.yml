@@ -80,7 +80,7 @@ en:
       add_email: Add email address
       add_federal_id: Add federal employee ID
       add_phone_number: Add phone number
-      add_platform_authenticator: Add Face or Touch Unlock
+      add_platform_authenticator: Add face or touch unlock
       add_security_key: Add security key
       close: Close
       connected_accounts: Your connected accounts

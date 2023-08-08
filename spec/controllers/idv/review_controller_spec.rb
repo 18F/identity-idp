@@ -410,7 +410,7 @@ RSpec.describe Idv::ReviewController do
 
             enrollment.reload
 
-            expect(enrollment.status).to eq('pending')
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
             expect(enrollment.user_id).to eq(user.id)
             expect(enrollment.enrollment_code).to be_a(String)
             expect(enrollment.profile).to eq(user.profiles.last)
@@ -451,7 +451,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -481,7 +481,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -499,7 +499,7 @@ RSpec.describe Idv::ReviewController do
 
               enrollment.reload
 
-              expect(enrollment.status).to eq('pending')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
               expect(enrollment.profile).to eq(user.profiles.last)
@@ -551,7 +551,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -672,6 +672,21 @@ RSpec.describe Idv::ReviewController do
                   user: { password: ControllerHelper::VALID_PASSWORD },
                 }
           end.to(change { ActionMailer::Base.deliveries.count }.by(1))
+        end
+
+        it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
+          RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(@analytics).to have_logged_event(
+            'IdV: USPS address letter enqueued',
+            resend: false,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: 1,
+            first_letter_requested_at: idv_session.profile.gpo_verification_pending_at,
+            proofing_components: nil,
+            **ab_test_args,
+          )
         end
 
         it 'redirects to come back later page' do

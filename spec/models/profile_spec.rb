@@ -46,6 +46,26 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#pending_in_person_enrollment?' do
+    it 'returns true if the document_check component is usps' do
+      profile = create(:profile, proofing_components: { document_check: 'usps' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(true)
+    end
+
+    it 'returns false if the document_check component is something else' do
+      profile = create(:profile, proofing_components: { document_check: 'something_else' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+
+    it 'returns false if proofing_components is blank' do
+      profile = create(:profile, proofing_components: '')
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+  end
+
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
@@ -66,6 +86,26 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#in_person_verification_pending?' do
+    it 'returns true if the deactivation_reason is in_person_verification_pending' do
+      profile = create(
+        :profile,
+        :in_person_verification_pending,
+        user: user,
+      )
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+    end
+  end
+
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
@@ -78,6 +118,41 @@ RSpec.describe Profile do
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match(ssn)
       expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
+
+      expect(profile.encrypted_pii_recovery).to be_present
+      expect(profile.encrypted_pii_multi_region).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
+    end
+
+    context 'with aws_kms_multi_region_write_enabled set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
+      end
+
+      it 'encrypts pii and stores the multi region ciphertext' do
+        expect(profile.encrypted_pii).to be_nil
+        expect(profile.encrypted_pii_recovery).to be_nil
+        expect(profile.encrypted_pii_multi_region).to be_nil
+        expect(profile.encrypted_pii_recovery_multi_region).to be_nil
+
+        profile.encrypt_pii(pii, user.password)
+
+        expect(profile.encrypted_pii).to be_present
+        expect(profile.encrypted_pii).to_not match 'Jane'
+        expect(profile.encrypted_pii).to_not match(ssn)
+
+        expect(profile.encrypted_pii_recovery).to be_present
+        expect(profile.encrypted_pii_recovery).to_not match 'Jane'
+        expect(profile.encrypted_pii_recovery).to_not match(ssn)
+
+        expect(profile.encrypted_pii_multi_region).to be_present
+        expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
+        expect(profile.encrypted_pii_multi_region).to_not match(ssn)
+
+        expect(profile.encrypted_pii_recovery_multi_region).to be_present
+        expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
+        expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
+      end
     end
 
     it 'generates new personal key' do
@@ -857,6 +932,32 @@ RSpec.describe Profile do
 
       expect(profile.fraud_review_pending_at).to_not eq nil
       expect(profile).to_not be_active
+    end
+  end
+
+  # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
+  # TODO: related: should we test against an active profile here?
+  describe '#deactivate_for_in_person_verification_and_schedule_enrollment' do
+    it 'sets deactivation reason to in_person_verification_pending' do
+      profile = create(:profile, user: user)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to be_nil # to change
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
+      profile.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('in_person_verification_pending') # changed
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
     end
   end
 

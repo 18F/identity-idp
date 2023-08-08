@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
+  post '/api/address_search' => 'idv/in_person/public/address_search#index'
+  match '/api/address_search' => 'idv/in_person/public/address_search#options', via: :options
+  post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
+  match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+
   namespace :api do
     namespace :internal do
       get '/sessions' => 'sessions#show'
@@ -362,7 +367,7 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
-      get '/session/errors/throttled' => 'session_errors#throttled'
+      get '/session/errors/rate_limited' => 'session_errors#rate_limited'
       get '/setup_errors', to: redirect('/please_call')
       get '/not_verified' => 'not_verified#show'
       get '/please_call' => 'please_call#show'
@@ -406,6 +411,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
       get '/doc_auth/:step', to: redirect('/verify/welcome')
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
+      get '/session/errors/throttled', to: redirect('/verify/session/errors/rate_limited')
     end
 
     # Old paths to GPO outside of IdV.
