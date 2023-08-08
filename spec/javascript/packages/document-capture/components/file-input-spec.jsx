@@ -233,8 +233,12 @@ describe('document-capture/components/file-input', () => {
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
-  it('has an appropriate 2-part aria-label with no input added', () => {
-    const { getByLabelText } = render(<FileInput label="File" />);
+  it('has an appropriate 2-part aria-label with no input added when on desktop', () => {
+    const { getByLabelText } = render(
+      <DeviceContext.Provider value={{ isMobile: false }}>
+        <FileInput label="File" bannerText="File" />
+      </DeviceContext.Provider>,
+    );
 
     const queryByAriaLabel = getByLabelText('File doc_auth.forms.choose_file_html');
 
@@ -315,7 +319,7 @@ describe('document-capture/components/file-input', () => {
       </DeviceContext.Provider>,
     );
 
-    expect(getByText('doc_auth.forms.choose_file_html', { hidden: true })).to.be.ok();
+    expect(() => getByText('doc_auth.forms.choose_file_html', { hidden: true })).to.throw();
 
     rerender(
       <DeviceContext.Provider value={{ isMobile: true }}>
