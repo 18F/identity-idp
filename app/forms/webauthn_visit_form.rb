@@ -66,7 +66,13 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_setup.not_supported')
     else
-      I18n.t('errors.webauthn_setup.general_error')
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link: link_to(
+          I18n.t('errors.webauthn_setup.additional_methods_link'),
+          authentication_methods_setup_path,
+        ),
+      )
     end
   end
 
