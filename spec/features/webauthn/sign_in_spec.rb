@@ -10,7 +10,7 @@ RSpec.feature 'webauthn sign in' do
   let(:user) { create(:user, :with_webauthn, with: { credential_id:, credential_public_key: }) }
   let(:general_error) do
     t(
-      'two_factor_authentication.webauthn_error.connect_html',
+      'two_factor_authentication.webauthn_error.connect',
       link: t('two_factor_authentication.webauthn_error.additional_methods_link'),
     )
   end

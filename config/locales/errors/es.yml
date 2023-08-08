@@ -147,8 +147,8 @@ es:
         https://fidoalliance.org/certification/fido-certified-products/. Si
         considera que se trata de un error nuestro, póngase en contacto con
         %{link}.
-      general_error_html: No hemos podido añadir la clave de seguridad. Inténtelo de
-        nuevo o %{link}.
+      general_error: No hemos podido añadir la clave de seguridad. Inténtelo de nuevo
+        o %{link}.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
         Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
         con las claves de seguridad FIDO.
