@@ -4,9 +4,6 @@ require 'selenium/webdriver'
 
 # temporary fix for local development feature tests
 # remove when we get a new working version of Chromedriver
-if ENV['CI'] != 'true'
-  Webdrivers::Chromedriver.required_version = '114.0.5735.90'
-end
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
