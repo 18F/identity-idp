@@ -149,7 +149,7 @@ module WebAuthnHelper
 
   # Deleting the trailing newline is necessary to prevent Capybara from auto-submitting forms
   def attestation_object
-    <<~HEREDOC.delete("\n")
+    <<~HEREDOC.chomp
       o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjESZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmV
       zzuoMdl2NBAAAAcAAAAAAAAAAAAAAAAAAAAAAAQLn4YFvuWwlaNTeJRgn0x4wX49WdBA/Lk4+K
       srOFic5IGbpxxG8d4sbnNZCxukExnrOpYPoW10R87VYeHog16C6lAQIDJiABIVggrXcdMAYcRG
