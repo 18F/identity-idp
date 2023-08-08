@@ -259,7 +259,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
-    it('shows error if capture fails', async () => {
+    it('shows error if capture fails: latest version of Acuant SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -277,6 +277,35 @@ describe('document-capture/components/acuant-capture', () => {
 
       initialize({
         start,
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await findByText('doc_auth.errors.camera.failed');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Camera not supported',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('shows error if capture fails: legacy version of Acuant SDK', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
       });
 
       const button = getByLabelText('Image');
