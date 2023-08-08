@@ -2,6 +2,7 @@ module DocAuth
   module Acuant
     module Responses
       class GetResultsResponse < DocAuth::Response
+        include ClassificationConcern
         attr_reader :config
 
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
@@ -40,12 +41,6 @@ module DocAuth
               (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
                alert['Key'] == BARCODE_COULD_NOT_BE_READ_ERROR)
           end
-        end
-
-        def id_type_supported?
-          front_class = classification_info&.dig('Front', 'ClassName')
-          return !front_class.present? ||
-                 (ID_TYPE_SLUGS.key? front_class) || front_class == 'Unknown'
         end
 
         private

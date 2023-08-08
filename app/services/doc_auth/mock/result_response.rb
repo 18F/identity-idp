@@ -1,6 +1,8 @@
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
+      include DocAuth::Acuant::ClassificationConcern
+
       attr_reader :uploaded_file, :config
 
       def initialize(uploaded_file, config)
@@ -69,13 +71,6 @@ module DocAuth
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
-      def id_type_supported?
-        classification_info = classification_info_from_uploaded_file
-        return true if classification_info.nil?
-        front_class = classification_info&.dig('Front', 'ClassName')
-        return !front_class.present? || ID_TYPE_SLUGS.key?(front_class) || front_class == 'Unknown'
-      end
-
       private
 
       def parsed_alerts
@@ -96,7 +91,7 @@ module DocAuth
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
       end
 
-      def classification_info_from_uploaded_file
+      def classification_info
         parsed_data_from_uploaded_file&.[]('classification_info')
       end
 
