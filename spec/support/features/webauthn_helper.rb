@@ -159,7 +159,7 @@ module WebAuthnHelper
   end
 
   def setup_client_data_json
-    <<~HEREDOC.delete("\n")
+    <<~HEREDOC.chomp
       eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
       FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVt
       cGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgiLCJvcmlnaW4iOiJodHRwOi8vbG9jYW
