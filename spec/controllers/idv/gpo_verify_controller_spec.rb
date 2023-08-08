@@ -19,6 +19,7 @@ RSpec.describe Idv::GpoVerifyController do
   let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
   let(:gpo_enabled) { true }
+  let(:params) { nil }
 
   before do
     stub_analytics
@@ -40,7 +41,7 @@ RSpec.describe Idv::GpoVerifyController do
 
   describe '#index' do
     subject(:action) do
-      get(:index)
+      get(:index, params: params)
     end
 
     context 'user has pending profile' do
@@ -53,9 +54,9 @@ RSpec.describe Idv::GpoVerifyController do
         expect(response).to render_template('idv/gpo_verify/index')
       end
 
-      it 'sets @user_can_request_another_gpo_code to true' do
+      it 'sets @should_prompt_user_to_request_another_letter to true' do
         action
-        expect(assigns(:user_can_request_another_gpo_code)).to eql(true)
+        expect(assigns(:should_prompt_user_to_request_another_letter)).to eql(true)
       end
 
       it 'shows rate limited page if user is rate limited' do
@@ -68,9 +69,21 @@ RSpec.describe Idv::GpoVerifyController do
 
       context 'but that profile is > 30 days old' do
         let(:profile_created_at) { 31.days.ago }
-        it 'sets @user_can_request_another_gpo_code to false' do
+        it 'sets @should_prompt_user_to_request_another_letter to false' do
           action
-          expect(assigns(:user_can_request_another_gpo_code)).to eql(false)
+          expect(assigns(:should_prompt_user_to_request_another_letter)).to eql(false)
+        end
+      end
+
+      context 'user clicked a "i did not receive my letter" link' do
+        let(:params) do
+          {
+            did_not_receive_letter: 1,
+          }
+        end
+        it 'sets @user_did_not_receive_letter to true' do
+          action
+          expect(assigns(:user_did_not_receive_letter)).to eql(true)
         end
       end
     end

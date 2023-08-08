@@ -7,7 +7,11 @@
       ) %>
 <% end %>
 
+<% if @user_did_not_receive_letter %>
+<% title t('idv.gpo.did_not_receive_letter.title') %>
+<% else %>
 <% title t('idv.gpo.title') %>
+<% end %>
 
 <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
   <p>
@@ -21,13 +25,40 @@
   </p>
 <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.gpo.title')) %>
-<%= t('idv.gpo.intro_html') %>
+<%= render PageHeadingComponent.new.with_content(
+      if @user_did_not_receive_letter
+        t('idv.gpo.did_not_receive_letter.title')
+      else
+        t('idv.gpo.title')
+      end,
+    ) %>
+
+<% if @user_did_not_receive_letter %>
+  <%= t(
+        'idv.gpo.did_not_receive_letter.intro_html',
+        request_new_letter_prompt: (
+          if @should_prompt_user_to_request_another_letter
+            t(
+              'idv.gpo.did_not_receive_letter.request_new_letter_prompt_html',
+              request_new_letter_link: link_to(t('idv.gpo.did_not_receive_letter.request_new_letter_link'), idv_gpo_path),
+            )
+          else
+            ''
+          end
+        ),
+      ) %>
+<% else %>
+  <%= t('idv.gpo.intro_html') %>
+<% end %>
 <hr class="margin-y-4" />
 <h2><%= t('idv.gpo.form.title') %></h2>
 
 <p class="margin-bottom-1">
-  <%= t('idv.gpo.form.instructions') %>
+  <%= if @user_did_not_receive_letter
+        t('idv.gpo.did_not_receive_letter.instructions')
+      else
+        t('idv.gpo.instructions')
+      end %>%
 </p>
 
 <%= simple_form_for(
@@ -53,8 +84,10 @@
   </div>
 <% end %>
 
-<% if @user_can_request_another_gpo_code %>
-  <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
+<% if @should_prompt_user_to_request_another_letter %>
+  <% unless @user_did_not_receive_letter %>
+    <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
+  <% end %>
 <% end %>
 
 <%= link_to t('idv.gpo.return_to_profile'), account_path %>

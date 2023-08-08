@@ -181,6 +181,15 @@ es:
     gpo:
       alert_info: 'Enviamos una carta con su código único a:'
       clear_and_start_over: Borrar su información y empezar de nuevo
+      did_not_receive_letter:
+        instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la
+          carta que recibió.
+        intro_html: '<p>%{request_new_letter_prompt} Tenga en cuenta que las cartas
+          <strong>suelen tardar entre 3 y 7 días laborables en llegar</strong>.
+          Gracias por su paciencia.</p>'
+        request_new_letter_link: solicitar una nueva
+        request_new_letter_prompt_html: Si no ha recibido su carta, puede %{request_new_letter_link}.
+        title: ¿No recibió su carta?
       form:
         instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
         otp_label: Código único
