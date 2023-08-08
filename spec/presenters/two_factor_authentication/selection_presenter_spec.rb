@@ -25,6 +25,28 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
     it { expect(presenter.disabled?).to eq(false) }
   end
 
+  describe '#single_configuration_only?' do
+    it { expect(presenter.single_configuration_only?).to eq(false) }
+  end
+
+  describe '#mfa_added_label' do
+    subject(:mfa_added_label) { presenter.mfa_added_label }
+
+    it 'is a count of configured MFAs' do
+      expect(presenter.mfa_added_label).to include('added')
+    end
+
+    context 'with single configuration only' do
+      before do
+        allow(presenter).to receive(:single_configuration_only?).and_return(true)
+      end
+
+      it 'is an empty string' do
+        expect(presenter.mfa_added_label).to eq('')
+      end
+    end
+  end
+
   describe '#label' do
     context 'with no configuration' do
       it 'raises with missing translation' do
