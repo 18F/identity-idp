@@ -3,6 +3,7 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
+      document_capture_session_uuid
       flow_path
       go_back_path
       gpo_code_verified

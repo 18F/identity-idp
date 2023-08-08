@@ -58,6 +58,8 @@ module Idv
         call(:usps_letter_sent, :update, true)
       analytics.idv_gpo_address_letter_requested(
         resend: resend_requested?,
+        first_letter_requested_at: first_letter_requested_at,
+        phone_step_attempts: phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
@@ -68,6 +70,17 @@ module Idv
 
     def resend_requested?
       current_user.gpo_verification_pending_profile?
+    end
+
+    # Caveat: If the user succeeds on their final phone attempt, the :proof_address
+    # RateLimiter is reset to 0. But they probably wouldn't be doing verify by mail
+    # if they succeeded on the phone step.
+    def phone_step_attempts
+      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
+    end
+
+    def first_letter_requested_at
+      current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
     end
 
     def confirm_mail_not_spammed
@@ -88,6 +101,8 @@ module Idv
       analytics.idv_gpo_address_letter_enqueued(
         enqueued_at: Time.zone.now,
         resend: true,
+        first_letter_requested_at: first_letter_requested_at,
+        phone_step_attempts: phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       confirmation_maker = confirmation_maker_perform

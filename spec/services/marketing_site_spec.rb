@@ -135,28 +135,6 @@ RSpec.describe MarketingSite do
     end
   end
 
-  describe '.help_authentication_app_url' do
-    subject(:url) { MarketingSite.help_authentication_app_url }
-
-    it_behaves_like 'a marketing site URL'
-
-    it 'points to the authentication app section of the help page' do
-      expect(url).to eq(
-        'https://www.login.gov/help/creating-an-account/authentication-application/',
-      )
-    end
-
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
-
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(url).to eq(
-          'https://www.login.gov/es/help/creating-an-account/authentication-application/',
-        )
-      end
-    end
-  end
-
   describe '.help_center_article_url' do
     let(:category) {}
     let(:article) {}

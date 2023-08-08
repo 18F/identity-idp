@@ -20,9 +20,10 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
   describe '#encrypt' do
     it 'returns encrypted text' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      ciphertext, ciphertext_multi_region = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to_not match plaintext
+      expect(ciphertext_multi_region).to eq(nil)
     end
 
     it 'uses layers KMS and AES to encrypt the plaintext' do
@@ -49,7 +50,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
       expected_ciphertext = Base64.strict_encode64('kms_ciphertext')
 
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      ciphertext, ciphertext_multi_region = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to eq(
         {
@@ -58,22 +59,24 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
           cost: '800$8$1$',
         }.to_json,
       )
+      expect(ciphertext_multi_region).to eq(nil)
     end
   end
 
   describe '#decrypt' do
     it 'returns the original text' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
-      decrypted_ciphertext = subject.decrypt(ciphertext, user_uuid: 'uuid-123-abc')
+      ciphertext_pair = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+
+      decrypted_ciphertext = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
 
       expect(decrypted_ciphertext).to eq(plaintext)
     end
 
     it 'requires the same password used for encrypt' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      ciphertext_pair = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
       new_encryptor = described_class.new('This is not the passowrd')
 
-      expect { new_encryptor.decrypt(ciphertext, user_uuid: 'uuid-123-abc') }.
+      expect { new_encryptor.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc') }.
         to raise_error Encryption::EncryptionError
     end
 
@@ -99,13 +102,16 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         with('aes_ciphertext', decoded_scrypt_digest).
         and_return(plaintext)
 
-      result = subject.decrypt(
-        {
+      ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: {
           encrypted_data: Base64.strict_encode64('kms_ciphertext'),
           salt: salt,
           cost: '800$8$1$',
-        }.to_json, user_uuid: 'uuid-123-abc'
+        }.to_json,
+        multi_region_ciphertext: nil,
       )
+
+      result = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
 
       expect(result).to eq(plaintext)
     end

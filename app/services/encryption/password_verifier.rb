@@ -34,18 +34,24 @@ module Encryption
       @kms_client = KmsClient.new
     end
 
-    def digest(password:, user_uuid:)
+    def create_digest_pair(password:, user_uuid:)
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
       encrypted_password = encrypt_password(
         password: password, user_uuid: user_uuid, salt: salt, cost: cost,
       )
-      PasswordDigest.new(
+      single_region_digest = PasswordDigest.new(
         encrypted_password: encrypted_password, password_salt: salt, password_cost: cost,
       ).to_s
+
+      RegionalCiphertextPair.new(
+        single_region_ciphertext: single_region_digest,
+        multi_region_ciphertext: nil,
+      )
     end
 
-    def verify(password:, digest:, user_uuid:)
+    def verify(password:, digest_pair:, user_uuid:)
+      digest = digest_pair.single_region_ciphertext
       password_digest = PasswordDigest.parse_from_string(digest)
       return verify_uak_digest(password, digest) if stale_digest?(digest)
 

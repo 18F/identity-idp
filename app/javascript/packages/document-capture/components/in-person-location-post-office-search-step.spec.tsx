@@ -6,9 +6,11 @@ import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
-import { ADDRESS_SEARCH_URL, LOCATIONS_URL } from '@18f/identity-address-search';
 import { ComponentType } from 'react';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
+import InPersonLocationPostOfficeSearchStep, {
+  ADDRESSES_URL,
+  LOCATIONS_URL,
+} from './in-person-location-post-office-search-step';
 
 const DEFAULT_RESPONSE = [
   {
@@ -78,9 +80,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
 
   context('initial ArcGIS API request throws an error', () => {
     beforeEach(() => {
-      server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) => res(ctx.json([]), ctx.status(422))),
-      );
+      server.use(rest.post(ADDRESSES_URL, (_req, res, ctx) => res(ctx.json([]), ctx.status(422))));
     });
 
     it('displays a try again error message', async () => {
@@ -106,7 +106,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('initial USPS API request throws an error', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.status(500))),
@@ -136,7 +136,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('initial API request is successful', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
@@ -261,7 +261,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
     it('displays correct pluralization for multiple location results', async () => {
       server.resetHandlers();
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(MULTI_LOCATION_RESPONSE))),
@@ -304,7 +304,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('subsequent network failures clear results', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),
@@ -329,7 +329,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       expect(result).to.exist();
 
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(
             ctx.json([
               {
@@ -366,7 +366,7 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
   context('user deletes text from searchbox after location results load', () => {
     beforeEach(() => {
       server.use(
-        rest.post(ADDRESS_SEARCH_URL, (_req, res, ctx) =>
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
           res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
         ),
         rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json([{ name: 'Baltimore' }]))),

@@ -481,11 +481,11 @@ RSpec.feature 'Two Factor Authentication' do
   end
 
   describe 'clicking the logo image during 2fa process' do
-    it 'returns them to the home page' do
+    it 'prompts them to 2FA' do
       user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
-      expect(current_path).to eq login_two_factor_options_path
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
     end
   end
 

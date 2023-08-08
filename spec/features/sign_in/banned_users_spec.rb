@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.feature 'Banning users for an SP' do
   include SamlAuthHelper
+  include OidcAuthHelper
 
   context 'a user is banned from all SPs' do
     it 'does not let the user sign in to any SP' do
@@ -45,7 +46,7 @@ RSpec.feature 'Banning users for an SP' do
     it 'bans the user from signing in to the banned SP but allows other sign ins' do
       user = create(:user, :fully_registered)
 
-      SignInRestriction.create(user: user, service_provider: 'urn:gov:gsa:openidconnect:sp:server')
+      SignInRestriction.create(user: user, service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
 
       sign_in_live_with_2fa(user)
       expect(current_path).to eq(account_path)

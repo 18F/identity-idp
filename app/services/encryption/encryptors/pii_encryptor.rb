@@ -47,10 +47,16 @@ module Encryption
         kms_encrypted_ciphertext = kms_client.encrypt(
           aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
         )
-        Ciphertext.new(kms_encrypted_ciphertext, salt, cost).to_s
+
+        RegionalCiphertextPair.new(
+          single_region_ciphertext: Ciphertext.new(kms_encrypted_ciphertext, salt, cost).to_s,
+          multi_region_ciphertext: nil,
+        )
       end
 
-      def decrypt(ciphertext_string, user_uuid: nil)
+      def decrypt(ciphertext_pair, user_uuid: nil)
+        ciphertext_string = ciphertext_pair.single_region_ciphertext
+
         ciphertext = Ciphertext.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)

@@ -56,7 +56,7 @@ module Idv
     end
 
     def document_capture_session_uuid
-      flow_session[:document_capture_session_uuid]
+      idv_session.document_capture_session_uuid || flow_session[:document_capture_session_uuid]
     end
 
     def rate_limiter
@@ -81,7 +81,6 @@ module Idv
 
     def had_barcode_attention_result?
       if session_result
-        flow_session[:had_barcode_attention_error] = session_result.attention_with_barcode?
         idv_session.had_barcode_attention_error = session_result.attention_with_barcode?
       end
 
