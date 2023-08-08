@@ -99,8 +99,6 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'capybara', git: 'https://github.com/mitchellhenke/capybara.git',
-                  branch: 'do-not-auto-submit-forms'
   gem 'erb_lint', '~> 0.3.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'

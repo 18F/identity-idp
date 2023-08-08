@@ -147,8 +147,9 @@ module WebAuthnHelper
     HEREDOC
   end
 
+  # Deleting the trailing newline is necessary to prevent Capybara from auto-submitting forms
   def attestation_object
-    <<~HEREDOC
+    <<~HEREDOC.delete("\n")
       o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVjESZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmV
       zzuoMdl2NBAAAAcAAAAAAAAAAAAAAAAAAAAAAAQLn4YFvuWwlaNTeJRgn0x4wX49WdBA/Lk4+K
       srOFic5IGbpxxG8d4sbnNZCxukExnrOpYPoW10R87VYeHog16C6lAQIDJiABIVggrXcdMAYcRG
@@ -158,7 +159,7 @@ module WebAuthnHelper
   end
 
   def setup_client_data_json
-    <<~HEREDOC
+    <<~HEREDOC.delete("\n")
       eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
       FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVt
       cGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgiLCJvcmlnaW4iOiJodHRwOi8vbG9jYW
@@ -167,7 +168,7 @@ module WebAuthnHelper
   end
 
   def verification_client_data_json
-    <<~HEREDOC
+    <<~HEREDOC.delete("\n")
       eyJjaGFsbGVuZ2UiOiJncjEycndSVVVIWnFvNkZFSV9ZbEFnIiwibmV3X2tleXNfbWF5X2JlX2
       FkZGVkX2hlcmUiOiJkbyBub3QgY29tcGFyZSBjbGllbnREYXRhSlNPTiBhZ2FpbnN0IGEgdGVt
       cGxhdGUuIFNlZSBodHRwczovL2dvby5nbC95YWJQZXgiLCJvcmlnaW4iOiJodHRwOi8vbG9jYW
@@ -184,7 +185,7 @@ module WebAuthnHelper
   end
 
   def signature
-    <<~HEREDOC
+    <<~HEREDOC.delete("\n")
       MEYCIQC7VHQpZasv8URBC/VYKWcuv4MrmV82UfsESKTGgV3r+QIhAO8iAduYC7XDHJjpKkrSKb
       B3/YJKhlr2AA5uw59+aFzk
     HEREDOC
