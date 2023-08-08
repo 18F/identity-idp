@@ -118,7 +118,7 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'simplecov', '~> 0.21.0', require: false
+  gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
   gem 'email_spec'
@@ -130,7 +130,6 @@ group :test do
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'tableparser', require: false
-  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end
