@@ -282,19 +282,6 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
   end
 
-  def validate_idv_completed_page(user)
-    expect(user.identity_verified?).to be(true)
-    expect(current_path).to eq sign_up_completed_path
-    expect(page).to have_content t(
-      'titles.sign_up.completion_ial2',
-      sp: 'Test SP',
-    )
-  end
-
-  def validate_return_to_sp
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
-  end
-
   def try_to_skip_ahead_before_signing_in
     visit idv_review_path
     expect(current_path).to eq(root_path)
