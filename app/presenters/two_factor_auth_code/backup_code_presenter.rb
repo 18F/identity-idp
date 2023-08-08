@@ -10,8 +10,8 @@ module TwoFactorAuthCode
       end
     end
 
-    def fallback_question
-      t('two_factor_authentication.backup_code_fallback.question')
+    def redirect_location_step
+      :backup_code_verification
     end
   end
 end

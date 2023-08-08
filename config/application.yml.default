@@ -132,6 +132,7 @@ idv_tmx_test_csp_disabled_emails: '[]'
 idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
+in_person_public_address_search_enabled: false
 in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
@@ -274,7 +275,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
-remember_device_expiration_hours_aal_2: 12
+remember_device_expiration_hours_aal_2: 0
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300

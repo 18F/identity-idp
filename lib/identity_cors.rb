@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class IdentityCors
-  FEDERALIST_REGEX = %r{\Ahttps://federalist-[0-9a-f-]+\.pages\.cloud\.gov\z}
+  FEDERALIST_REGEX = %r{\Ahttps://federalist-[0-9a-f-]+(\.sites)?\.pages\.cloud\.gov\z}
   STATIC_SITE_ALLOWED_ORIGINS = [
     'https://www.login.gov',
     'https://login.gov',

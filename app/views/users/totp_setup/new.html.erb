@@ -4,7 +4,16 @@
 
 <p>
   <%= t('forms.totp_setup.totp_intro') %>
-  <%= new_tab_link_to(t('links.what_is_totp'), MarketingSite.help_authentication_app_url) %>
+  <%= new_tab_link_to(
+        t('links.what_is_totp'),
+        help_center_redirect_path(
+          category: 'get-started',
+          article: 'authentication-options',
+          article_anchor: 'authentication-application',
+          flow: :two_factor_authentication,
+          step: :totp_setup,
+        ),
+      ) %>
 </p>
 
 <%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>

@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   let(:user) { User.new }
+  let(:phishing_resistant_required) { false }
+  let(:piv_cac_required) { false }
+
   before do
     allow(view).to receive(:user_session).and_return({})
     allow(view).to receive(:current_user).and_return(User.new)
@@ -9,10 +12,10 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     @presenter = TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      user_session_context: UserSessionContext::AUTHENTICATION_CONTEXT,
+      reauthentication_context: false,
       service_provider: nil,
-      phishing_resistant_required: false,
-      piv_cac_required: false,
+      phishing_resistant_required: phishing_resistant_required,
+      piv_cac_required: piv_cac_required,
     )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
@@ -61,6 +64,36 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
         'two_factor_options_form[selection]',
         with: :sms,
         disabled: true,
+      )
+    end
+  end
+
+  context 'with phishing resistant required' do
+    let(:phishing_resistant_required) { true }
+
+    before { render }
+
+    it 'displays warning text' do
+      expect(rendered).to have_selector(
+        '.usa-alert.usa-alert--warning',
+        text: strip_tags(
+          t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name: APP_NAME),
+        ),
+      )
+    end
+  end
+
+  context 'with piv cac required' do
+    let(:piv_cac_required) { true }
+
+    before { render }
+
+    it 'displays warning text' do
+      expect(rendered).to have_selector(
+        '.usa-alert.usa-alert--warning',
+        text: strip_tags(
+          t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
+        ),
       )
     end
   end

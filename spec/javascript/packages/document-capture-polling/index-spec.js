@@ -86,7 +86,7 @@ describe('DocumentCapturePolling', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
       isCancelled: false,
-      isThrottled: false,
+      isRateLimited: false,
     });
   });
 
@@ -119,7 +119,7 @@ describe('DocumentCapturePolling', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
       isCancelled: true,
-      isThrottled: false,
+      isRateLimited: false,
     });
     expect(subject.elements.form.submit).to.have.been.called();
   });
@@ -128,7 +128,7 @@ describe('DocumentCapturePolling', () => {
     sandbox
       .stub(global, 'fetch')
       .withArgs('/status')
-      .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#throttled' }) });
+      .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#rate_limited' }) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     await flushPromises(); // Flush `fetch`
@@ -137,9 +137,9 @@ describe('DocumentCapturePolling', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
       isCancelled: false,
-      isThrottled: true,
+      isRateLimited: true,
     });
-    expect(window.location.hash).to.equal('#throttled');
+    expect(window.location.hash).to.equal('#rate_limited');
   });
 
   it('polls until max, then showing form to submit', async () => {

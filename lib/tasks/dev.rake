@@ -90,9 +90,14 @@ namespace :dev do
       )
     end
     random = Random.new(num_users)
-    raw_enrollment_status = (ENV['ENROLLMENT_STATUS'] || 'pending')
+    raw_enrollment_status = (ENV['ENROLLMENT_STATUS'] || InPersonEnrollment::STATUS_PENDING)
     enrollment_status = InPersonEnrollment.statuses[raw_enrollment_status]
-    is_established = ['pending', 'passed', 'failed', 'expired'].include?(raw_enrollment_status)
+    is_established = [
+      InPersonEnrollment::STATUS_PENDING,
+      InPersonEnrollment::STATUS_PASSED,
+      InPersonEnrollment::STATUS_FAILED,
+      InPersonEnrollment::STATUS_EXPIRED,
+    ].include?(raw_enrollment_status)
 
     create_in_usps = !!ENV['CREATE_PENDING_ENROLLMENT_IN_USPS']
 
@@ -102,7 +107,8 @@ namespace :dev do
         user = User.find_with_email(email_addr)
         next if user.nil?
         if is_established
-          unless raw_enrollment_status == 'pending' && !user.pending_in_person_enrollment.nil?
+          unless raw_enrollment_status == InPersonEnrollment::STATUS_PENDING &&
+                 !user.pending_in_person_enrollment.nil?
             profile = Profile.new(user: user)
 
             # Convert index to a string of letters to be a valid last name for the USPS API
@@ -122,7 +128,7 @@ namespace :dev do
             )
             personal_key = profile.encrypt_pii(pii, pw)
 
-            if raw_enrollment_status === 'pending' && create_in_usps
+            if raw_enrollment_status === InPersonEnrollment::STATUS_PENDING && create_in_usps
               enrollment = InPersonEnrollment.find_or_initialize_by(
                 user: user,
                 status: :establishing,
@@ -158,7 +164,9 @@ namespace :dev do
                 enrollment_code: SecureRandom.hex(16),
               )
 
-              enrollment.profile.activate if raw_enrollment_status == 'passed'
+              if raw_enrollment_status == InPersonEnrollment::STATUS_PASSED
+                enrollment.profile.activate
+              end
             end
             Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
           end

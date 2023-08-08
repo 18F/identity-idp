@@ -2,9 +2,11 @@ module Idv
   class PhoneErrorsController < ApplicationController
     include StepIndicatorConcern
     include IdvSession
+    include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
+    before_action :confirm_idv_phone_step_submitted
     before_action :set_gpo_letter_available
     before_action :ignore_form_step_wait_requests
 
@@ -45,14 +47,18 @@ module Idv
       redirect_to idv_review_url if idv_session.user_phone_confirmation == true
     end
 
+    def confirm_idv_phone_step_submitted
+      redirect_to idv_phone_url if idv_session.previous_phone_step_params.nil?
+    end
+
     def ignore_form_step_wait_requests
       head(:no_content) if request.headers['HTTP_X_FORM_STEPS_WAIT']
     end
 
     def track_event(type:)
-      attributes = { type: type }
+      attributes = { type: type }.merge(ab_test_analytics_buckets)
       if type == :failure
-        attributes[:throttle_expires_at] = @expires_at
+        attributes[:limiter_expires_at] = @expires_at
       else
         attributes[:remaining_attempts] = @remaining_attempts
       end

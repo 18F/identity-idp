@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_25_135906) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_03_143215) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -447,6 +447,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_25_135906) do
     t.datetime "fraud_rejection_at"
     t.datetime "gpo_verification_pending_at"
     t.integer "fraud_pending_reason"
+    t.datetime "in_person_verification_pending_at"
+    t.text "encrypted_pii_multi_region"
+    t.text "encrypted_pii_recovery_multi_region"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
@@ -603,6 +606,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_25_135906) do
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.datetime "suspended_at"
     t.datetime "reinstated_at"
+    t.string "encrypted_password_digest_multi_region"
+    t.string "encrypted_recovery_code_digest_multi_region"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -622,6 +627,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_25_135906) do
     t.text "entry", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.text "entry_multi_region"
   end
 
   create_table "webauthn_configurations", force: :cascade do |t|
@@ -633,6 +639,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_25_135906) do
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "platform_authenticator"
     t.string "transports", array: true
+    t.jsonb "authenticator_data_flags"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

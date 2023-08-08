@@ -44,7 +44,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
 
-      analytics.idv_phone_confirmation_form_submitted(**result.to_h)
+      analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],

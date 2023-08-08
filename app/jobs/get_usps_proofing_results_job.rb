@@ -248,9 +248,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
-    # destroy phone number for expired enrollments
-    enrollment.notification_phone_configuration&.destroy
-
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err

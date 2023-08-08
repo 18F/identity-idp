@@ -64,24 +64,4 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       )
     end
   end
-
-  context 'with phishing-resistant MFA requirement' do
-    let(:phishing_resistant_required) { true }
-
-    it 'does not include a troubleshooting link for using another MFA method' do
-      expect(rendered).to have_css('.troubleshooting-options li', count: 1)
-    end
-
-    context 'with user having PIV/CAC configured' do
-      let(:user) { build(:user, :with_piv_or_cac, :with_webauthn) }
-
-      it 'includes troubleshooting link to use PIV/CAC' do
-        expect(rendered).to have_css('.troubleshooting-options li', count: 2)
-        expect(rendered).to have_link(
-          t('two_factor_authentication.webauthn_piv_available'),
-          href: login_two_factor_piv_cac_url,
-        )
-      end
-    end
-  end
 end

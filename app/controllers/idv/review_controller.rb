@@ -104,7 +104,13 @@ module Idv
 
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
-        analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
+        analytics.idv_gpo_address_letter_enqueued(
+          enqueued_at: Time.zone.now,
+          resend: false,
+          phone_step_attempts: phone_step_attempts,
+          first_letter_requested_at: first_letter_requested_at,
+          **ab_test_analytics_buckets,
+        )
       end
 
       if idv_session.profile.active?
@@ -115,6 +121,16 @@ module Idv
           sp_name: decorated_session.sp_name,
         )
       end
+    end
+
+    # Same as in GpoController
+    def phone_step_attempts
+      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
+    end
+
+    # Same as in GpoController
+    def first_letter_requested_at
+      idv_session.profile.gpo_verification_pending_at
     end
 
     def valid_password?

@@ -8,14 +8,15 @@ class ResetPasswordForm
 
   def initialize(user)
     @user = user
+    @reset_password_token = @user.reset_password_token
+    @validate_confirmation = true
     @active_profile = user.active_profile
     @pending_profile = user.pending_profile
-
-    self.reset_password_token = @user.reset_password_token
   end
 
   def submit(params)
-    self.password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
 
     @success = valid?
 

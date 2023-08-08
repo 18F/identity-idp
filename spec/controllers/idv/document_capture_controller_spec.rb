@@ -3,9 +3,13 @@ require 'rails_helper'
 RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
+  let(:document_capture_session_uuid) { 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e' }
+
+  let(:threatmetrix_session_id) { 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+
   let(:flow_session) do
-    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { document_capture_session_uuid: document_capture_session_uuid,
+      threatmetrix_session_id: threatmetrix_session_id }
   end
 
   let(:user) { create(:user) }
@@ -61,7 +65,7 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to receive(:render).with(
         :show,
         locals: hash_including(
-          document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+          document_capture_session_uuid: document_capture_session_uuid,
         ),
       ).and_call_original
 
@@ -130,7 +134,26 @@ RSpec.describe Idv::DocumentCaptureController do
 
         get :show
 
-        expect(response).to redirect_to(idv_session_errors_throttled_url)
+        expect(response).to redirect_to(idv_session_errors_rate_limited_url)
+      end
+    end
+
+    context 'document_capture_session_uuid is stored in idv_session' do
+      let(:flow_session) { { threatmetrix_session_id: threatmetrix_session_id } }
+      before do
+        subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
+      end
+      it 'renders the show template' do
+        expect(subject).to receive(:render).with(
+          :show,
+          locals: hash_including(
+            document_capture_session_uuid: document_capture_session_uuid,
+          ),
+        ).and_call_original
+
+        get :show
+
+        expect(response).to render_template :show
       end
     end
   end

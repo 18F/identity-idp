@@ -303,7 +303,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'returns nil if enrollment has not been established' do
-      enrollment.status = 'establishing'
+      enrollment.status = InPersonEnrollment::STATUS_ESTABLISHING
       enrollment.enrollment_established_at = nil
 
       expect(enrollment.minutes_since_established).to eq(nil)
@@ -412,11 +412,11 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'returns true when status of passed/failed/expired and notification configuration' do
       expect(passed_enrollment.eligible_for_notification?).to eq(true)
       expect(failed_enrollment.eligible_for_notification?).to eq(true)
-      expect(expired_enrollment.eligible_for_notification?).to eq(true)
     end
 
-    it 'returns false when status of incomplete or without notification configuration' do
+    it 'returns false when status of incomplete, expired, or without notification configuration' do
       expect(incomplete_enrollment.eligible_for_notification?).to eq(false)
+      expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
     end
@@ -446,6 +446,22 @@ RSpec.describe InPersonEnrollment, type: :model do
 
         expect(enrollment.notification_phone_configuration).to eq(nil)
       end
+    end
+  end
+
+  describe 'enrollment expires' do
+    it 'deletes the notification phone number' do
+      enrollment = create(
+        :in_person_enrollment, :establishing, :with_notification_phone_configuration
+      )
+      config_id = enrollment.notification_phone_configuration.id
+      expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not eq(nil)
+
+      enrollment.expired!
+      enrollment.reload
+
+      expect(enrollment.notification_phone_configuration).to eq(nil)
+      expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to eq(nil)
     end
   end
 end
