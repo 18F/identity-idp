@@ -47,6 +47,11 @@ module WebAuthnHelper
   end
 
   def mock_cancelled_webauthn_authentication
+    webauthn_general_error = t(
+      'two_factor_authentication.webauthn_error.connect_html',
+      link: t('two_factor_authentication.webauthn_error.additional_methods_link'),
+    )
+
     if javascript_enabled?
       page.evaluate_script(<<~JS)
         navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
@@ -68,7 +73,7 @@ module WebAuthnHelper
           wait: 5,
         )
       else
-        expect(page).to have_content(t('errors.general'), wait: 5)
+        expect(page).to have_content(webauthn_general_error, wait: 5)
       end
     else
       yield
