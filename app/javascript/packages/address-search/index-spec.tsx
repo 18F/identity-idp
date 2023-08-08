@@ -41,15 +41,16 @@ describe('AddressSearch', () => {
     });
 
     it('fires the callback with correct input', async () => {
-      const handleAddressFound = sandbox.stub();
-      const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText } = render(
+      const foundLocations = sandbox.stub();
+      const locationSelected = sandbox.stub();
+      const { findByText, findByLabelText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <AddressSearch
-            onFoundAddress={handleAddressFound}
-            onFoundLocations={handleLocationsFound}
+            handleFoundLocations={foundLocations}
+            handleLocationSelect={locationSelected}
             locationsURL={LOCATIONS_URL}
             addressSearchURL={ADDRESSES_URL}
+            registerField={() => {}}
           />
         </SWRConfig>,
       );
@@ -62,8 +63,14 @@ describe('AddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      await expect(handleAddressFound).to.eventually.be.called();
-      await expect(handleLocationsFound).to.eventually.be.called();
+      await userEvent.click(
+        (
+          await findAllByText('in_person_proofing.body.location.location_button')
+        )[0],
+      );
+
+      await expect(foundLocations).to.eventually.be.called();
+      await expect(locationSelected).to.eventually.be.called();
     });
   });
 });
