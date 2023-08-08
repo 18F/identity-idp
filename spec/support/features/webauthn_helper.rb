@@ -185,7 +185,7 @@ module WebAuthnHelper
   end
 
   def signature
-    <<~HEREDOC.delete("\n")
+    <<~HEREDOC.chomp
       MEYCIQC7VHQpZasv8URBC/VYKWcuv4MrmV82UfsESKTGgV3r+QIhAO8iAduYC7XDHJjpKkrSKb
       B3/YJKhlr2AA5uw59+aFzk
     HEREDOC
