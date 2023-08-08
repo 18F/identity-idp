@@ -287,6 +287,8 @@ function AddressSearch({
   registerField,
   handleLocationSelect,
   handleFoundLocations,
+  locationsURL,
+  addressSearchURL,
 }) {
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
@@ -314,6 +316,8 @@ function AddressSearch({
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabled}
+        locationsURL={locationsURL}
+        addressSearchURL={addressSearchURL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
