@@ -38,8 +38,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      cipher = instance_double(Encryption::AesCipher)
-      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+      cipher = subject.send(:aes_cipher)
       expect(cipher).to receive(:encrypt).
         with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
@@ -77,8 +76,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
         expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
         expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-        cipher = instance_double(Encryption::AesCipher)
-        expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+        cipher = subject.send(:aes_cipher)
         expect(cipher).to receive(:encrypt).
           with(plaintext, decoded_scrypt_digest).
           and_return('aes_ciphertext')
