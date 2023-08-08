@@ -902,7 +902,7 @@ Rails/Output:
     - spec/**/*.rb # in addition to default
 
 Rails/Pluck:
-  Enabled: true
+  Enabled: false
 
 Rails/PluckInWhere:
   Enabled: true
