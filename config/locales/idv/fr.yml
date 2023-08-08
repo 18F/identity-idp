@@ -189,18 +189,19 @@ fr:
     gpo:
       alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
       clear_and_start_over: Supprimez vos données et recommencez
-      instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
-        avez reçue.
-      name: Code à usage unique
+      form:
+        instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+          avez reçue.
+        otp_label: Code à usage unique
+        submit: Confirmer le compte
+        title: Confirmez votre compte
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
+        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+        arrivée, veuillez être patient car les <strong>lettres prennent
+        généralement entre trois à sept jours ouvrables pour arriver</strong>.
+        Nous vous remercions de votre patience.</p>'
       return_to_profile: Retourner à votre profil
-      submit: Confirmer le compte
-      title: Confirmez votre compte
-      welcome_back: Content de vous revoir
-      welcome_back_description_html: '<p>Si vous avez reçu votre lettre, veuillez
-        entrer votre code à usage unique ci-dessous. </p> <p>Si votre lettre
-        n’est pas encore arrivée, veuillez être patient car les <strong>lettres
-        prennent généralement entre trois à sept jours ouvrables pour
-        arriver</strong>. Nous vous remercions de votre patience.</p>'
+      title: Content de vous revoir
       wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet

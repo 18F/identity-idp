@@ -83,8 +83,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('idv.gpo.name'), with: otp
-      click_button t('idv.gpo.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
 
       profile.reload
 
@@ -111,8 +111,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('idv.gpo.name'), with: otp
-      click_button t('idv.gpo.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
 
       expect(user.events.account_verified.size).to eq 1
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))

@@ -21,13 +21,13 @@
   </p>
 <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.gpo.welcome_back')) %>
-<%= t('idv.gpo.welcome_back_description_html') %>
+<%= render PageHeadingComponent.new.with_content(t('idv.gpo.title')) %>
+<%= t('idv.gpo.intro_html') %>
 <hr class="margin-y-4" />
-<h2><%= t('idv.gpo.title') %></h2>
+<h2><%= t('idv.gpo.form.title') %></h2>
 
 <p class="margin-bottom-1">
-  <%= t('idv.gpo.instructions') %>
+  <%= t('idv.gpo.form.instructions') %>
 </p>
 
 <%= simple_form_for(
@@ -46,9 +46,9 @@
             input_html: {
               value: @code,
             },
-            label: t('idv.gpo.name'),
+            label: t('idv.gpo.form.otp_label'),
           ) %>
-      <%= f.submit t('idv.gpo.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
+      <%= f.submit t('idv.gpo.form.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
     </div>
   </div>
 <% end %>
