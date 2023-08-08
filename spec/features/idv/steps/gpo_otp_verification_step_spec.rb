@@ -75,6 +75,16 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
+  context 'coming from an "I did not receive my letter" link in a reminder email' do
+    it 'renders an alternate ui', :js do
+      visit idv_gpo_url(did_not_receive_letter: 1)
+      expect(current_path).to eql(root_path)
+      sign_in_and_2fa_user
+      expect(current_path).to eq idv_gpo_verify_path
+      expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
+    end
+  end
+
   context 'with gpo personal key after verification' do
     it 'shows the user a personal key after verification' do
       sign_in_live_with_2fa(user)
