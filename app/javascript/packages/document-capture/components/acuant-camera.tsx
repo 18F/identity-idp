@@ -7,7 +7,7 @@ import AcuantContext from '../context/acuant';
 declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
   interface Window {
-    AcuantCameraUI: AcuantCameraUIInterface;
+    AcuantCameraUI: AcuantCameraUIInterface | LegacyAcuantCameraUIInterface;
   }
 }
 
@@ -15,7 +15,7 @@ declare global {
  * Type definition for export only
  */
 type AcuantGlobals = {
-  AcuantCameraUI: AcuantCameraUIInterface;
+  AcuantCameraUI: AcuantCameraUIInterface | LegacyAcuantCameraUIInterface;
   AcuantCamera: AcuantCameraInterface;
 };
 export type AcuantGlobal = Window & AcuantGlobals;
@@ -132,6 +132,14 @@ interface AcuantCameraUICallbacks {
   onFailure: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
+export type LegacyAcuantCameraUICallbacks = Omit<AcuantCameraUICallbacks, 'onFailure'>;
+
+type LegacyAcuantCameraUIStart = (
+  callbacks: LegacyAcuantCameraUICallbacks,
+  onFailure: AcuantFailureCallback,
+  options?: AcuantCameraUIOptions,
+) => void;
+
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
   options?: AcuantCameraUIOptions,
@@ -147,6 +155,13 @@ interface AcuantCameraUIInterface {
    */
   end: () => void;
 }
+
+type LegacyAcuantCameraUIInterface = Omit<AcuantCameraUIInterface, 'start'> & {
+  /**
+   * Legacy Start capture
+   */
+  start: LegacyAcuantCameraUIStart;
+};
 
 type AcuantCameraStart = (
   callback: (response: AcuantImage) => void,
@@ -278,8 +293,19 @@ interface AcuantCameraContextProps {
  * scope.
  */
 const getActualAcuantCameraUI = (): AcuantCameraUIInterface => {
-  if (window.AcuantCameraUI) {
-    return window.AcuantCameraUI;
+  // evaluate the arguments the function start takes
+  // if the second argument is not a function, it is the current start method, so just return the AcuantCameraUIInterface as is
+  if (window.AcuantCameraUI && typeof window.AcuantCameraUI.start.arguments[1] !== 'function') {
+    return window.AcuantCameraUI as AcuantCameraUIInterface;
+  }
+  // if the second argument that start accepts is a function, then this is the legacy version of acuant SDK, so combine arguments[1] in with arguments[0] and return the start method that has two arguments
+  if (window.AcuantCameraUI && typeof window.AcuantCameraUI.start.arguments[1] === 'function') {
+    return {
+      ...window.AcuantCameraUI,
+      start(...args) {
+        window.AcuantCameraUI.start?.({ ...args[0], ...args[1] }, args[2]);
+      },
+    } as AcuantCameraUIInterface;
   }
   if (typeof AcuantCameraUI === 'undefined') {
     // eslint-disable-next-line no-console
