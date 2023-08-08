@@ -156,8 +156,8 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       profile: User.find(user.id).pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
-    fill_in t('forms.verify_profile.name'), with: otp
-    click_button t('forms.verify_profile.submit')
+    fill_in t('idv.gpo.name'), with: otp
+    click_button t('idv.gpo.submit')
   end
 
   def complete_come_back_later

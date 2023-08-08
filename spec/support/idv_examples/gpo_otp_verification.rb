@@ -8,8 +8,8 @@ RSpec.shared_examples 'gpo otp verification' do
     expect(page).to have_content t('idv.messages.gpo.resend')
 
     gpo_confirmation_code
-    fill_in t('forms.verify_profile.name'), with: otp
-    click_button t('forms.verify_profile.submit')
+    fill_in t('idv.gpo.name'), with: otp
+    click_button t('idv.gpo.submit')
 
     profile.reload
 
@@ -30,8 +30,8 @@ RSpec.shared_examples 'gpo otp verification' do
     sign_in_live_with_2fa(user)
 
     gpo_confirmation_code.update(code_sent_at: 11.days.ago)
-    fill_in t('forms.verify_profile.name'), with: otp
-    click_button t('forms.verify_profile.submit')
+    fill_in t('idv.gpo.name'), with: otp
+    click_button t('idv.gpo.submit')
 
     expect(current_path).to eq idv_gpo_verify_path
     expect(page).to have_content t('errors.messages.gpo_otp_expired')
