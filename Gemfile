@@ -99,7 +99,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.3.0', require: false
+  gem 'erb_lint', '~> 0.4.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -111,7 +111,7 @@ group :development, :test do
   gem 'psych'
   gem 'rspec-rails', '~> 6.0'
   gem 'rubocop', '~> 1.55.1', require: false
-  gem 'rubocop-performance', '~> 1.15.0', require: false
+  gem 'rubocop-performance', '~> 1.18.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 
