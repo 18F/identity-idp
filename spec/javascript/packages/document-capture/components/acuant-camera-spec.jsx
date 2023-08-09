@@ -24,7 +24,7 @@ describe('document-capture/components/acuant-camera', () => {
     initialize();
 
     expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
-    expect(window.AcuantCameraUI.start.getCall(0).args[1]).to.deep.equal({
+    expect(window.AcuantCameraUI.start.getCall(0).args[2]).to.deep.equal({
       text: {
         CAPTURING: 'doc_auth.info.capture_status_capturing',
         GOOD_DOCUMENT: null,

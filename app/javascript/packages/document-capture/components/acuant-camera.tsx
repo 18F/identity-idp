@@ -7,7 +7,7 @@ import AcuantContext from '../context/acuant';
 declare let AcuantCameraUI: AcuantCameraUIInterface;
 declare global {
   interface Window {
-    AcuantCameraUI: AcuantCameraUIInterface | LegacyAcuantCameraUIInterface;
+    AcuantCameraUI: AcuantCameraUIInterface;
   }
 }
 
@@ -15,7 +15,7 @@ declare global {
  * Type definition for export only
  */
 type AcuantGlobals = {
-  AcuantCameraUI: AcuantCameraUIInterface | LegacyAcuantCameraUIInterface;
+  AcuantCameraUI: AcuantCameraUIInterface;
   AcuantCamera: AcuantCameraInterface;
 };
 export type AcuantGlobal = Window & AcuantGlobals;
@@ -132,16 +132,9 @@ interface AcuantCameraUICallbacks {
   onFailure: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
-export type LegacyAcuantCameraUICallbacks = Omit<AcuantCameraUICallbacks, 'onFailure'>;
-
-type LegacyAcuantCameraUIStart = (
-  callbacks: LegacyAcuantCameraUICallbacks,
-  onFailure: AcuantFailureCallback,
-  options?: AcuantCameraUIOptions,
-) => void;
-
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
+  onFailureCallbackWithOptions: AcuantFailureCallback,
   options?: AcuantCameraUIOptions,
 ) => void;
 
@@ -155,13 +148,6 @@ interface AcuantCameraUIInterface {
    */
   end: () => void;
 }
-
-type LegacyAcuantCameraUIInterface = Omit<AcuantCameraUIInterface, 'start'> & {
-  /**
-   * Legacy Start capture
-   */
-  start: LegacyAcuantCameraUIStart;
-};
 
 type AcuantCameraStart = (
   callback: (response: AcuantImage) => void,
@@ -293,19 +279,8 @@ interface AcuantCameraContextProps {
  * scope.
  */
 const getActualAcuantCameraUI = (): AcuantCameraUIInterface => {
-  // evaluate the arguments the function start takes
-  // if the second argument is not a function, it is the current start method, so just return the AcuantCameraUIInterface as is
-  if (window.AcuantCameraUI && typeof window.AcuantCameraUI.start.arguments[1] !== 'function') {
-    return window.AcuantCameraUI as AcuantCameraUIInterface;
-  }
-  // if the second argument that start accepts is a function, then this is the legacy version of acuant SDK, so combine arguments[1] in with arguments[0] and return the start method that has two arguments
-  if (window.AcuantCameraUI && typeof window.AcuantCameraUI.start.arguments[1] === 'function') {
-    return {
-      ...window.AcuantCameraUI,
-      start(...args) {
-        window.AcuantCameraUI.start?.({ ...args[0], ...args[1] }, args[2]);
-      },
-    } as AcuantCameraUIInterface;
+  if (window.AcuantCameraUI) {
+    return window.AcuantCameraUI;
   }
   if (typeof AcuantCameraUI === 'undefined') {
     // eslint-disable-next-line no-console
@@ -334,7 +309,19 @@ function AcuantCamera({
   );
 
   useEffect(() => {
+    const textOptions = {
+      text: {
+        NONE: t('doc_auth.info.capture_status_none'),
+        SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+        BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
+        GOOD_DOCUMENT: null,
+        CAPTURING: t('doc_auth.info.capture_status_capturing'),
+        TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+      },
+    };
     if (isReady) {
+      const onImageCaptureFailureWithOptions = onImageCaptureFailure.bind({});
+      onImageCaptureFailureWithOptions.options = textOptions;
       window.AcuantCameraUI = getActualAcuantCameraUI();
       window.AcuantCameraUI.start(
         {
@@ -342,16 +329,8 @@ function AcuantCamera({
           onCropped,
           onFailure: onImageCaptureFailure,
         },
-        {
-          text: {
-            NONE: t('doc_auth.info.capture_status_none'),
-            SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
-            BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-            GOOD_DOCUMENT: null,
-            CAPTURING: t('doc_auth.info.capture_status_capturing'),
-            TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
-          },
-        },
+        onImageCaptureFailureWithOptions,
+        textOptions,
       );
       setIsActive(true);
     }
