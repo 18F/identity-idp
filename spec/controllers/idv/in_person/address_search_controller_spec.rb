@@ -86,7 +86,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
           expect(addresses.length).to eq 0
           expect(@analytics).to have_logged_event(
             'IdV: in person proofing location search submitted',
-            api_status_code: 400,
+            api_status_code: 422,
             success: false,
             errors: 'request is too many characters',
             result_total: 0,
@@ -106,7 +106,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
 
       it 'gets an empty pilot response' do
         response = get :index
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(422)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
       end
@@ -115,7 +115,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
         response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
-          api_status_code: 400,
+          api_status_code: 422,
           success: false,
           errors: 'ArcGIS error performing operation',
           result_total: 0,
@@ -137,7 +137,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
 
       it 'returns an error code' do
         response = get :index
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(422)
         addresses = JSON.parse(response.body)
         expect(addresses.length).to eq 0
 
@@ -157,7 +157,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
         response
         expect(@analytics).to have_logged_event(
           'IdV: in person proofing location search submitted',
-          api_status_code: 400,
+          api_status_code: 422,
           success: false,
           errors: 'ArcGIS error performing operation',
           result_total: 0,

@@ -33,7 +33,7 @@ module Idv
         remapped_error = case error
         when Faraday::Error,
              ActionController::InvalidAuthenticityToken
-          :bad_request
+          :unprocessable_entity
         else
           :internal_server_error
         end
