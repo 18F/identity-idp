@@ -29,7 +29,7 @@ module Users
     def confirm_current_password
       return if valid_password?
 
-      flash[:error] = t('idv.errors.incorrect_password')
+      flash.now[:error] = t('idv.errors.incorrect_password')
       analytics.account_delete_submitted(success: false)
       irs_attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
