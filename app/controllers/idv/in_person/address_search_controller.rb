@@ -44,17 +44,13 @@ module Idv
 
         errors ||= 'ArcGIS error performing operation'
 
-        response_status_code = if error.respond_to?(:response_status)
-                                 error.response_status
-                               end
-
         analytics.idv_in_person_locations_searched(
           success: false,
           errors: errors,
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: error.class,
           exception_message: error.message,
-          response_status_code: response_status_code,
+          response_status_code: error.try(:response_status),
         )
 
         analytics.idv_arcgis_request_failure(
@@ -63,7 +59,7 @@ module Idv
           exception_message: error.message,
           response_body_present: error.respond_to?(:response_body) && error.response_body.present?,
           response_body: error.respond_to?(:response_body) && error.response_body,
-          response_status_code: response_status_code,
+          response_status_code: error.try(:response_status),
         )
         render json: [], status: remapped_error
       end
