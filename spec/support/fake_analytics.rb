@@ -121,7 +121,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   failure_message do |actual|
     matching_events = actual.events[event]
 
-    if (matching_events&.length || 0) > 1 && !allow_multiple_events?
+    if matching_events&.length.to_i > 1 && !allow_multiple_events?
       <<~MESSAGE
         FakeAnalytics received too many #{event} events.
         expected: 1
@@ -130,14 +130,10 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
         Events received:
 
         #{matching_events.map do |event| 
-          [
-            event[:attributes].pretty_inspect,
-            "at",
-            clean_backtrace(event[:backtrace]).
-              take(1).
-              map { |line| "  #{line}" }.
-              join("\n"),
-          ].join("\n")
+          <<~EVENT
+            at #{first_relevant_backtrace_line(event[:backtrace])}:
+            #{event[:attributes].pretty_inspect.split("\n").map { |line| "  #{line}" }.join("\n")},
+          EVENT
         end.
         join("\n\n")}
 
@@ -192,22 +188,20 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   end
 
   def allow_multiple_events?
-    defined?(@allow_multiple_events) && @allow_multiple_events
+    !!@allow_multiple_events
   end
 
-  def clean_backtrace(backtrace)
+  def first_relevant_backtrace_line(backtrace)
     backtrace.
-      drop_while { |file| file.include?('fake_analytics') || file.include?('analytics_events') }.
-      map do |line|
-        if line.start_with?(Rails.root.to_s)
-          line
-        else
-          '...'
-        end
-      end.
-      each_with_object([]) do |line, ar|
-        ar << line if line != '...' || ar.last != '...'
-      end.
-      map { |line| line.sub("#{Rails.root}/", '') }
+      find do |line|
+        is_analytics_code = line.include?('fake_analytics') || line.include?('analytics_events')
+        next false if is_analytics_code
+
+        is_app_code = line.start_with?(Rails.root.to_s)
+
+        is_app_code
+      end&.
+      to_s&.
+      sub("#{Rails.root}/", '')
   end
 end
