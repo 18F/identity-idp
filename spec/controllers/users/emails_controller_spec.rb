@@ -10,6 +10,24 @@ RSpec.describe Users::EmailsController do
     end
   end
 
+  context 'user adds an email address' do
+    let(:user) { create(:user) }
+      before do
+        stub_sign_in(user)
+        stub_analytics
+        
+        while EmailPolicy.new(user).can_add_email?
+          email = Faker::Internet.safe_email
+          user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
+        end
+      end
+      it 'visits the add email page' do
+        get :show 
+        expect(@analytics).to receive(:track_event).with(hash_including('Add Email Address Page Visited'))
+      end
+  end
+
+
   describe '#limit' do
     context 'user exceeds email limit' do
       let(:user) { create(:user) }

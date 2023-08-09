@@ -140,4 +140,15 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(response).to redirect_to(backup_code_setup_url)
     end
   end
+
+  it 'visits the Backup codes regenerate page' do
+    user = create(:user, :fully_registered)
+    stub_sign_in(user)
+    analytics = stub_analytics
+    stub_attempts_tracker
+
+    get :edit
+
+    expect(@analytics).to receive(:track_event).with(hash_including('Backup Code Regenerate Visited'))
+  end
 end
