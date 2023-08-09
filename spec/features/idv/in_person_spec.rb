@@ -92,7 +92,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect_page_to_have_no_accessibility_violations(page)
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
@@ -224,7 +224,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.go_to_the_post_office'),
     )
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect_page_to_have_no_accessibility_violations(page)
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
@@ -396,7 +396,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
-      click_button t('forms.verify_profile.submit')
+      click_button t('idv.gpo.submit')
 
       # personal key
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
@@ -1009,7 +1009,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect_page_to_have_no_accessibility_violations(page)
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']

@@ -4,7 +4,7 @@ RSpec.describe Encryption::KmsClient do
   before do
     stub_const(
       'Encryption::KmsClient::KMS_CLIENT_POOL',
-      FakeConnectionPool.new { Aws::KMS::Client.new(region: aws_region) },
+      FakeConnectionPool.new { aws_kms_client },
     )
 
     # rubocop:disable Layout/LineLength
@@ -36,6 +36,7 @@ RSpec.describe Encryption::KmsClient do
     allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
   end
 
+  let(:aws_kms_client) { Aws::KMS::Client.new(region: aws_region) }
   let(:key_id) { 'key1' }
   let(:plaintext) { 'a' * 3000 + 'b' * 3000 + 'c' * 3000 }
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
@@ -69,6 +70,33 @@ RSpec.describe Encryption::KmsClient do
       it 'encrypts with KMS' do
         result = subject.encrypt(plaintext, encryption_context)
         expect(result).to eq(kms_ciphertext)
+      end
+    end
+
+    context 'with a KMS key ID specified' do
+      subject { described_class.new(kms_key_id: 'custom-key-id') }
+
+      before do
+        stub_mapped_aws_kms_client(
+          [
+            # rubocop:disable Layout/LineLength
+            { plaintext: 'a' * 3000, ciphertext: 'us-north-1:kms1', key_id: 'custom-key-id', region: 'us-north-1' },
+            { plaintext: 'b' * 3000, ciphertext: 'us-north-1:kms2', key_id: 'custom-key-id', region: 'us-north-1' },
+            { plaintext: 'c' * 3000, ciphertext: 'us-north-1:kms3', key_id: 'custom-key-id', region: 'us-north-1' },
+            # rubocop:enable Layout/LineLength
+          ],
+        )
+      end
+
+      it 'encrypts with the specified key ID' do
+        result = subject.encrypt(plaintext, encryption_context)
+
+        expect(result).to eq(kms_ciphertext)
+        expect(aws_kms_client.api_requests.count).to eq(3)
+
+        aws_kms_client.api_requests.each do |api_request|
+          expect(api_request[:params][:key_id]).to eq('custom-key-id')
+        end
       end
     end
 

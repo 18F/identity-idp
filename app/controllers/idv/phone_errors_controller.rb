@@ -2,6 +2,7 @@ module Idv
   class PhoneErrorsController < ApplicationController
     include StepIndicatorConcern
     include IdvSession
+    include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
@@ -55,7 +56,7 @@ module Idv
     end
 
     def track_event(type:)
-      attributes = { type: type }
+      attributes = { type: type }.merge(ab_test_analytics_buckets)
       if type == :failure
         attributes[:limiter_expires_at] = @expires_at
       else
