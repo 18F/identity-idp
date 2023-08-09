@@ -107,6 +107,8 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       classification_info:
           Front:
             ClassName: Tribal Identification
+          Back:
+            ClassName: Tribal Identification
     YAML
 
     create_document_response = client.create_document

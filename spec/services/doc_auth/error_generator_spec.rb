@@ -237,10 +237,9 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
       expect(output[:hints]).to eq(true)
     end
 
@@ -263,7 +262,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
       expect(output[:hints]).to eq(true)
     end
-    it 'DocAuthResult is success with unknown doc type' do
+    it 'DocAuthResult is failed with unknown doc type' do
       error_info = build_error_info(
         doc_result: 'Failed',
         failed: [
