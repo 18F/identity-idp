@@ -1,5 +1,5 @@
 require 'rails_helper'
-require './lib/tasks/destroy_unused_providers'
+require './lib/destroy_unused_providers'
 
 RSpec.describe DestroyUnusedProviders::DestroyableRecords do
   let(:iu) { create(:integration_usage) }
