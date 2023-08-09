@@ -104,11 +104,19 @@ module DocAuth
 
     def get_id_type_errors(classification_info)
       return unless classification_info.present?
-      # only check front, expired one does not populate back side info
-      front_class = classification_info.with_indifferent_access.dig('Front', 'ClassName')
-      return if !front_class.present? ||
-                (SUPPORTED_ID_CLASSNAME.include? front_class) || front_class == 'Unknown'
-      ErrorResult.new(Errors::DOC_TYPE_CHECK, ID)
+      error_result = ErrorResult.new
+      both_side_ok = true
+      %w[Front Back].each do |side|
+        side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
+        side_ok = !side_class.present? ||
+                  SUPPORTED_ID_CLASSNAME.include?(side_class) || side_class == 'Unknown'
+        both_side_ok &&= side_ok
+      end
+      unless both_side_ok
+        error_result.set_error(Errors::DOC_TYPE_CHECK)
+        error_result.add_side(ID)
+      end
+      return error_result
     end
 
     def get_image_metric_errors(processed_image_metrics)

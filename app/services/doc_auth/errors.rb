@@ -11,7 +11,6 @@ module DocAuth
     CONTROL_NUMBER_CHECK = 'control_number_check'
     DOC_CROSSCHECK = 'doc_crosscheck'
     DOC_NUMBER_CHECKS = 'doc_number_checks'
-    DOC_TYPE_CHECK = 'doc_type_check'
     DOCUMENT_EXPIRED_CHECK = 'doc_expired_check' # document has expired
     EXPIRATION_CHECKS = 'expiration_checks' # expiration date valid, expiration crosscheck
     FULL_NAME_CHECK = 'full_name_check'
@@ -39,6 +38,7 @@ module DocAuth
     GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
     GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
     # Doc type
+    DOC_TYPE_CHECK = 'doc_type_check'
     CARD_TYPE = 'card_type'
     # Other
     FALLBACK_FIELD_LEVEL = 'fallback_field_level'
