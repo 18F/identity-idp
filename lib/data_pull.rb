@@ -231,8 +231,8 @@ class DataPull
           else
             scope
           end
-        end.flat_map do |user|
-          user.identities.map do |identity|
+        end.each do |user|
+          user.identities.each do |identity|
             uuids << user.uuid
             external_uuid = user.agency_identities&.find do |a_i|
                               a_i.agency == identity.service_provider_record.agency
