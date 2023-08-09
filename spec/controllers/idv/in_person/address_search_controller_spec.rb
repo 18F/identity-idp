@@ -68,13 +68,14 @@ RSpec.describe Idv::InPerson::AddressSearchController do
             'message' => 'Unable to complete operation.',
           } }
         end
+        let(:parsed_response_body) { { details: response_body['error']['details'].join(', ') } }
 
         before do
           exception = Faraday::ClientError.new(
             RuntimeError.new(response_body['error']['message']),
             {
               status: response_body['error']['code'],
-              body: { details: response_body['error']['details'].join(', ') },
+              body: parsed_response_body,
             },
           )
           allow(geocoder).to receive(:find_address_candidates).and_raise(exception)
@@ -94,6 +95,26 @@ RSpec.describe Idv::InPerson::AddressSearchController do
             exception_message: 'Unable to complete operation.',
             response_status_code: 400,
           )
+        end
+
+        context 'with malformed response body details' do
+          let(:parsed_response_body) { response_body['error']['details'] }
+
+          it 'logs analytics event' do
+            response = get :index
+            addresses = JSON.parse(response.body)
+            expect(addresses.length).to eq 0
+            expect(@analytics).to have_logged_event(
+              'IdV: in person proofing location search submitted',
+              api_status_code: 422,
+              success: false,
+              errors: 'ArcGIS error performing operation',
+              result_total: 0,
+              exception_class: Faraday::ClientError,
+              exception_message: 'Unable to complete operation.',
+              response_status_code: 400,
+            )
+          end
         end
       end
     end

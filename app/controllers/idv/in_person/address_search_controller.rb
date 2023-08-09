@@ -39,7 +39,7 @@ module Idv
                          end
 
         errors = if error.respond_to?(:response_body)
-                   error.response_body && error.response_body[:details]
+                   error.response_body.is_a?(Hash) && error.response_body[:details]
                  end
 
         errors ||= 'ArcGIS error performing operation'
