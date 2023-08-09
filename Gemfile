@@ -84,14 +84,11 @@ gem 'zxcvbn', '0.1.9'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
-  gem 'binding_of_caller'
   gem 'derailed_benchmarks'
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
-  gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
-  gem 'rails-erd', '>= 1.6.0'
 end
 
 group :development, :test do
