@@ -84,7 +84,10 @@ class FakeAnalytics < Analytics
       attributes[:proofing_components] = attributes[:proofing_components].as_json.symbolize_keys
     end
     events[event] ||= []
-    events[event] << attributes
+    events[event] << {
+      attributes: attributes,
+      backtrace: Thread.current.backtrace,
+    }
     nil
   end
 
@@ -102,7 +105,8 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
     if attributes_matcher.nil?
       expect(actual.events).to have_key(event)
     else
-      expect(actual.events[event]).to include(match(attributes_matcher))
+      attributes_for_events = actual.events[event].pluck(:attributes)
+      expect(attributes_for_events).to include(match(attributes_matcher))
     end
 
     if !allow_multiple_events?
@@ -125,7 +129,17 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
 
         Events received:
 
-        #{matching_events.map { |event| event.pretty_inspect }.join("\n")}
+        #{matching_events.map do |event| 
+          [
+            event[:attributes].pretty_inspect,
+            "at",
+            clean_backtrace(event[:backtrace]).
+              take(1).
+              map { |line| "  #{line}" }.
+              join("\n"),
+          ].join("\n")
+        end.
+        join("\n\n")}
 
       MESSAGE
     elsif matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
@@ -179,5 +193,21 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
 
   def allow_multiple_events?
     defined?(@allow_multiple_events) && @allow_multiple_events
+  end
+
+  def clean_backtrace(backtrace)
+    backtrace.
+      drop_while { |file| file.include?('fake_analytics') || file.include?('analytics_events') }.
+      map do |line|
+        if line.start_with?(Rails.root.to_s)
+          line
+        else
+          '...'
+        end
+      end.
+      each_with_object([]) do |line, ar|
+        ar << line if line != '...' || ar.last != '...'
+      end.
+      map { |line| line.sub("#{Rails.root}/", '') }
   end
 end
