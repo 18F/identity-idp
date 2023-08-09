@@ -152,10 +152,7 @@ class Profile < ApplicationRecord
   end
 
   def deactivate_for_in_person_verification
-    transaction do
-      deactivate(:in_person_verification_pending) # to be deprecated
-      update!(active: false, in_person_verification_pending_at: Time.zone.now)
-    end
+    update!(active: false, in_person_verification_pending_at: Time.zone.now)
   end
 
   def deactivate_for_gpo_verification
