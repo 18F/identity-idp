@@ -4,7 +4,6 @@ class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
-    creating-an-account/authentication-application
     get-started/authentication-options
     manage-your-account/personal-key
     trouble-signing-in/face-or-touch-unlock
@@ -55,13 +54,6 @@ class MarketingSite
 
   def self.help_url
     URI.join(BASE_URL, locale_segment, 'help/').to_s
-  end
-
-  def self.help_authentication_app_url
-    help_center_article_url(
-      category: 'creating-an-account',
-      article: 'authentication-application',
-    )
   end
 
   def self.security_url

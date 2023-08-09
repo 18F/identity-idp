@@ -15,6 +15,7 @@ RSpec.describe Idv::PersonalKeyController do
     profile = profile_maker.save_profile(
       fraud_pending_reason: nil,
       gpo_verification_needed: false,
+      in_person_verification_needed: false,
     )
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id

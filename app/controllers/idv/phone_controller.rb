@@ -50,10 +50,13 @@ module Idv
         phone_number: step_params[:phone],
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      flash[:error] = result.first_error_message if !result.success?
-      return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
-      submit_proofing_attempt
-      redirect_to idv_phone_path
+      if result.success?
+        submit_proofing_attempt
+        redirect_to idv_phone_path
+      else
+        flash.now[:error] = result.first_error_message
+        render :new, locals: { gpo_letter_available: gpo_letter_available }
+      end
     end
 
     private

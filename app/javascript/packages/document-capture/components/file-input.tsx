@@ -34,9 +34,9 @@ interface FileInputProps {
   hint?: string;
 
   /**
-   * Optional banner overlay text
+   * Banner overlay text
    */
-  bannerText?: string;
+  bannerText: string;
 
   /**
    * Error message text to show on invalid file type selection
@@ -216,6 +216,7 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
   const hintId = `${inputId}-hint`;
   const innerHintId = `${hintId}-inner`;
   const labelId = `${inputId}-label`;
+  const showInnerHint: boolean = !value && !isValuePending && !isMobile;
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling
@@ -264,8 +265,13 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
     // When no file is selected, provide a slightly more verbose label
     // including the actual <label> contents and the prompt to drag a file or
     // choose from a folder.
+    if (showInnerHint) {
+      return {
+        'aria-labelledby': `${labelId} ${innerHintId}`,
+      };
+    }
     return {
-      'aria-labelledby': `${labelId} ${innerHintId}`,
+      'aria-labelledby': `${labelId}`,
     };
   }
 
@@ -362,8 +368,8 @@ function FileInput(props: FileInputProps, ref: ForwardedRef<any>) {
           )}
           {!value && !isValuePending && (
             <div className="usa-file-input__instructions" aria-hidden="true">
-              {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
-              {isMobile && bannerText ? null : (
+              <strong className="usa-file-input__banner-text">{bannerText}</strong>
+              {showInnerHint && (
                 <span className="usa-file-input__drag-text" id={innerHintId}>
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
                     'lg-underline': ({ children }) => (

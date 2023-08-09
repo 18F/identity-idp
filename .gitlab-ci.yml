@@ -450,7 +450,7 @@ ecr-scan:
     - echo $SCAN_FINDINGS
     - >
       echo $SCAN_FINDINGS |
-      jq -r '
+      jq -r 'if (.imageScanFindings.findings | length > 0) then
       {
         "version": "15.0.4",
         "scan": {
@@ -515,7 +515,10 @@ ecr-scan:
             }
           }
         ]
-      }' > gl-container-scanning-report.json
+      }
+      else
+        "No findings"
+      end' > gl-container-scanning-report.json
   artifacts:
     paths: 
       - gl-container-scanning-report.json
