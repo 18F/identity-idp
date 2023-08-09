@@ -320,8 +320,11 @@ function AcuantCamera({
       },
     };
     if (isReady) {
-      const onImageCaptureFailureWithOptions = onImageCaptureFailure.bind({});
-      onImageCaptureFailureWithOptions.options = textOptions;
+      const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
+      Object.keys(textOptions).forEach((key) => {
+        onFailureCallbackWithOptions[key] = textOptions[key];
+      });
+
       window.AcuantCameraUI = getActualAcuantCameraUI();
       window.AcuantCameraUI.start(
         {
@@ -329,7 +332,7 @@ function AcuantCamera({
           onCropped,
           onFailure: onImageCaptureFailure,
         },
-        onImageCaptureFailureWithOptions,
+        onFailureCallbackWithOptions,
         textOptions,
       );
       setIsActive(true);
