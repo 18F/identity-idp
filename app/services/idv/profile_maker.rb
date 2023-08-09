@@ -45,7 +45,6 @@ module Idv
       :user_password,
       :phone_confirmed,
       :initiating_service_provider,
-      :in_person_verification_pending,
     )
     attr_writer :pii_attributes
   end

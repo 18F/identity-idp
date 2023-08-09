@@ -78,6 +78,61 @@ RSpec.feature 'Sign in' do
     expect(current_path).to eq sign_up_completed_path
   end
 
+  scenario 'user with old terms of use can accept and continue to IAL1 SP' do
+    user = create(
+      :user,
+      :fully_registered,
+      :with_piv_or_cac,
+      accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.minute,
+    )
+    service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+    IdentityLinker.new(user, service_provider).link_identity(
+      verified_attributes: %w[openid email],
+    )
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    click_on t('account.login.piv_cac')
+    fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
+
+    expect(current_url).to eq rules_of_use_url
+    accept_rules_of_use_and_continue_if_displayed
+    expect(current_url).to start_with service_provider.redirect_uris.first
+  end
+
+  scenario 'user with old terms of use can accept and continue to IAL2 SP' do
+    user = create(
+      :user,
+      :fully_registered,
+      :with_piv_or_cac,
+      accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.minute,
+    )
+    create(
+      :profile,
+      :active,
+      :verified,
+      user: user,
+      pii: { first_name: 'John', ssn: '111223333' },
+    )
+    service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_ISSUER)
+    IdentityLinker.new(user, service_provider).link_identity(
+      verified_attributes: %w[email given_name family_name social_security_number address phone],
+      ial: 2,
+    )
+
+    visit_idp_from_sp_with_ial2(:oidc)
+    click_on t('account.login.piv_cac')
+    fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
+
+    expect(current_url).to eq capture_password_url
+
+    fill_in 'Password', with: user.password
+    click_submit_default
+
+    expect(current_url).to eq rules_of_use_url
+    accept_rules_of_use_and_continue_if_displayed
+    expect(current_url).to start_with service_provider.redirect_uris.first
+  end
+
   scenario 'user opts to add piv/cac card but gets an error' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     nonce = piv_cac_nonce_from_form_action

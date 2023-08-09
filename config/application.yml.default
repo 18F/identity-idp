@@ -58,6 +58,8 @@ aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
+aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
+aws_kms_multi_region_write_enabled: false
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
@@ -574,6 +576,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass

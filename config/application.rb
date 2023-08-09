@@ -36,7 +36,7 @@ module Identity
     )
     IdentityConfig.build_store(configuration)
 
-    AssetSources.manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
+    AssetSources.manifest_path = Rails.public_path.join('packs', 'manifest.json')
     AssetSources.cache_manifest = Rails.env.production? || Rails.env.test?
 
     console do
