@@ -259,6 +259,35 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
+    it('shows error if capture fails: legacy version of Acuant SDK', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await findByText('doc_auth.errors.camera.failed');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Camera not supported',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
     it('shows error if capture fails: latest version of Acuant SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
@@ -292,7 +321,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(document.activeElement).to.equal(button);
     });
 
-    it('shows error if capture fails: legacy version of Acuant SDK', async () => {
+    it('shows sequence break error: legacy version of SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -305,23 +334,35 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
+        start: sinon.stub().callsFake((_callbacks, onError) => {
+          setTimeout(() => {
+            const code = 'sequence-break-code';
+            document.cookie = `AcuantCameraHasFailed=${code}`;
+            onError('iOS 15 sequence break', code);
+          });
+        }),
       });
 
       const button = getByLabelText('Image');
       await userEvent.click(button);
 
-      await findByText('doc_auth.errors.camera.failed');
+      await findByText('doc_auth.errors.upload_error errors.messages.try_again');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
-        error: 'Camera not supported',
+        error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
-      expect(document.activeElement).to.equal(button);
+      await waitFor(() => document.activeElement === button);
+
+      const defaultPrevented = !fireEvent.click(button);
+
+      window.AcuantCameraUI.start.resetHistory();
+      expect(defaultPrevented).to.be.false();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
-    it('shows sequence break error', async () => {
+    it('shows sequence break error: latest version of SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -363,7 +404,43 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
-    it('calls onCameraAccessDeclined if camera access is declined', async () => {
+    it('calls onCameraAccessDeclined if camera access is declined: legacy version of SDK', async () => {
+      const trackEvent = sinon.spy();
+      const onCameraAccessDeclined = sinon.stub();
+      const { container, getByLabelText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture
+                label="Image"
+                name="test"
+                onCameraAccessDeclined={onCameraAccessDeclined}
+              />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await Promise.all([
+        expect(onCameraAccessDeclined).to.eventually.be.called(),
+        expect(window.AcuantCameraUI.end).to.eventually.be.called(),
+      ]);
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'User or system denied camera access',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('calls onCameraAccessDeclined if camera access is declined: latest version of SDK', async () => {
       const trackEvent = sinon.spy();
       const onCameraAccessDeclined = sinon.stub();
       const { container, getByLabelText } = render(
