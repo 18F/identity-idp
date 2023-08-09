@@ -83,6 +83,8 @@ module Users
     def next_step
       if ial_context.ial2_requested?
         capture_password_url
+      elsif !current_user.accepted_rules_of_use_still_valid?
+        rules_of_use_path
       else
         after_sign_in_path_for(current_user)
       end

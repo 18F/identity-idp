@@ -217,7 +217,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    service_provider_mfa_setup_url ||
+    accept_rules_of_use_url ||
+      service_provider_mfa_setup_url ||
       add_piv_cac_setup_url ||
       fix_broken_personal_key_url ||
       user_session.delete(:stored_location) ||
@@ -232,6 +233,10 @@ class ApplicationController < ActionController::Base
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_url
+  end
+
+  def accept_rules_of_use_url
+    rules_of_use_path unless current_user.accepted_rules_of_use_still_valid?
   end
 
   def after_mfa_setup_path
