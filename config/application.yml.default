@@ -64,6 +64,7 @@ backup_code_cost: '2000$8$1$'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
+consolidate_phone_controllers: false
 country_phone_number_overrides: '{}'
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
@@ -360,6 +361,7 @@ development:
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket: ''
   component_previews_enabled: true
+  consolidate_phone_controllers: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   database_host: ''

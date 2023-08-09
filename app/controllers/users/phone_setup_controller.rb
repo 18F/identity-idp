@@ -5,10 +5,10 @@ module Users
     include PhoneConfirmation
     include MfaSetupConcern
     include RecaptchaConcern
+    include ReauthenticationRequiredConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :confirm_user_in_account_setup
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
 
@@ -45,9 +45,13 @@ module Users
 
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_phone_setup_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      )
+      if in_multi_mfa_selection_flow?
+        analytics.user_registration_phone_setup_visit(
+          enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        )
+      else
+        analytics.add_phone_setup_visit
+      end
     end
 
     def set_setup_presenter
@@ -87,12 +91,6 @@ module Users
         :recaptcha_version,
         :recaptcha_mock_score,
       )
-    end
-
-    def confirm_user_in_account_setup
-      return if user_fully_authenticated? && in_multi_mfa_selection_flow?
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
-      redirect_to account_path
     end
   end
 end
