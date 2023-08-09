@@ -27,7 +27,7 @@ class Profile < ApplicationRecord
     encryption_error: 2,
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
-    in_person_verification_pending: 5,
+    in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
   }
 
   enum fraud_pending_reason: {
