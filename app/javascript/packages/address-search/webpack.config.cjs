@@ -30,5 +30,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     minimize: false,
+    sideEffects: true,
   },
 });
