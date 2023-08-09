@@ -111,12 +111,12 @@ module DocAuth
         side_ok = !side_class.present? ||
                   SUPPORTED_ID_CLASSNAME.include?(side_class) || side_class == 'Unknown'
         both_side_ok &&= side_ok
+        error_result.add_side(side.downcase.to_sym) unless side_ok
       end
       unless both_side_ok
         error_result.set_error(Errors::DOC_TYPE_CHECK)
-        error_result.add_side(ID)
       end
-      return error_result
+      error_result
     end
 
     def get_image_metric_errors(processed_image_metrics)
