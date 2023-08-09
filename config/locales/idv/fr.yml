@@ -108,20 +108,21 @@ fr:
           pour le moment. Veuillez réessayer.
         rate_limited:
           body: Pour des raisons de sécurité, nous limitons le nombre de tentatives de
-            vérification de votre numéro de téléphone en ligne. Vous devrez
-            attendre %{time_left} et recommencer avant d’essayer à nouveau de
-            vérifier votre identité par téléphone.
+            vérification de votre numéro de téléphone en ligne.
           gpo:
             button: Vérifier par courrier
-            prompt: Continuez maintenant en vérifiant par courrier, ce qui prend
-              généralement de 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
+          option_try_again_later_html: 'Annuler et recommencer après <b>%{time_left}</b>'
+          option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
+            <b>trois à sept jours ouvrables</b>.
+          options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
-          attempts:
-            one: Pour des raisons de sécurité, il vous reste une tentative.
-            other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+          attempts_html:
+            one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+            other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+              tentatives</strong>.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
@@ -130,7 +131,7 @@ fr:
             how_long_it_takes: Cette procédure prend typiquement 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vous associer à ce numéro
           learn_more_link: 'Apprenez-en plus sur quel numéro de téléphone utiliser'
-          next_steps_html: 'Essayez <strtong>un autre<strong> numéro que vous utilisez
+          next_steps_html: 'Essayez <strong>un autre</strong> numéro que vous utilisez
             souvent et depuis longtemps. Il peut s’agir d’un numéro
             professionnel ou personnel.'
           try_again_button: 'Essayez un autre numéro'
@@ -185,6 +186,22 @@ fr:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
         devez activer JavaScript pour poursuivre ce processus.'
+    gpo:
+      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      clear_and_start_over: Supprimez vos données et recommencez
+      instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+        avez reçue.
+      name: Code à usage unique
+      return_to_profile: Retourner à votre profil
+      submit: Confirmer le compte
+      title: Confirmez votre compte
+      welcome_back: Content de vous revoir
+      welcome_back_description_html: '<p>Si vous avez reçu votre lettre, veuillez
+        entrer votre code à usage unique ci-dessous. </p> <p>Si votre lettre
+        n’est pas encore arrivée, veuillez être patient car les <strong>lettres
+        prennent généralement entre trois à sept jours ouvrables pour
+        arriver</strong>. Nous vous remercions de votre patience.</p>'
+      wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
     index:
@@ -237,6 +254,11 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
+        failed_number:
+          alert_text: Nous n’avons pas pu vous associer à ce numéro.
+          gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
+          gpo_verify_link: vérifiez par courrier
+          try_again_html: Essayez un <strong>autre</strong> numéro.
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
@@ -302,9 +324,10 @@ fr:
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
     warning:
-      attempts:
-        one: Pour des raisons de sécurité, il vous reste une tentative.
-        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      attempts_html:
+        one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+        other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+          tentatives</strong>.
       sessions:
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
           personnelles

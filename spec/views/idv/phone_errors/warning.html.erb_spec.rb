@@ -49,9 +49,11 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
 
   it 'shows remaining attempts' do
     expect(rendered).to have_text(
-      t(
-        'idv.failure.phone.warning.attempts',
-        count: remaining_attempts,
+      strip_tags(
+        t(
+          'idv.failure.phone.warning.attempts_html',
+          count: remaining_attempts,
+        ),
       ),
     )
   end

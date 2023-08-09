@@ -6,23 +6,21 @@
   <%= render PageHeadingComponent.new.with_content(decorated_session.new_session_heading) %>
 <% end %>
 
-<div class='sm-left-align'>
-  <div class='margin-top-4'>
-    <div class='margin-left-1 margin-bottom-1 text-bold'>
-      <%= t('user_authorization_confirmation.currently_logged_in') %>
-    </div>
-    <div class='tablet:margin-left-1 tablet:margin-right-1' >
-      <ul class='margin-bottom-4 usa-list--unstyled border-bottom border-primary-light success-bullets requested-attributes'>
-        <li class='success-bullet border-top border-primary-light'>
-          <span class='text-bold'>
-            <%= t('help_text.requested_attributes.email') %>
-          </span>
-          <span class='padding-left-2'>
-            <%= @email %>
-          </span>
-        </li>
-      </ul>
-    </div>
+<div class='margin-top-4'>
+  <div class='margin-left-1 margin-bottom-1 text-bold'>
+    <%= t('user_authorization_confirmation.currently_logged_in') %>
+  </div>
+  <div class='tablet:margin-left-1 tablet:margin-right-1' >
+    <ul class='margin-bottom-4 usa-list--unstyled border-bottom border-primary-light success-bullets requested-attributes'>
+      <li class='success-bullet border-top border-primary-light'>
+        <span class='text-bold'>
+          <%= t('help_text.requested_attributes.email') %>
+        </span>
+        <span class='padding-left-2'>
+          <%= @email %>
+        </span>
+      </li>
+    </ul>
   </div>
 
   <div class='margin-top-4 text-center'>

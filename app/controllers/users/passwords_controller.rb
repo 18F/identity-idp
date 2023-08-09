@@ -41,7 +41,7 @@ module Users
     end
 
     def user_params
-      params.require(:update_user_password_form).permit(:password)
+      params.require(:update_user_password_form).permit(:password, :password_confirmation)
     end
 
     def handle_valid_password

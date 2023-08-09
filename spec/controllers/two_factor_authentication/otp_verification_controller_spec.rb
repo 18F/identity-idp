@@ -294,20 +294,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
       end
 
-      it 'tracks the attempt event with reauthentication parameter true' do
-        stub_attempts_tracker
-
-        subject.user_session[:context] = 'reauthentication'
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
-          with(reauthentication: true, success: true)
-
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
-      end
-
       context "with a leading '#' sign" do
         it 'redirects to the profile' do
           post :create, params: {
@@ -321,20 +307,28 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'with remember_device in the params' do
         it 'saves an encrypted cookie' do
-          remember_device_cookie = instance_double(RememberDeviceCookie)
-          allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
-          allow(RememberDeviceCookie).to receive(:new).and_return(remember_device_cookie)
+          freeze_time do
+            expect(cookies.encrypted[:remember_device]).to eq nil
+            post(
+              :create,
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+                remember_device: '1',
+              },
+            )
 
-          post(
-            :create,
-            params: {
-              code: subject.current_user.direct_otp,
-              otp_delivery_preference: 'sms',
-              remember_device: '1',
-            },
-          )
-
-          expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
+            remember_device_cookie = RememberDeviceCookie.from_json(
+              cookies.encrypted[:remember_device],
+            )
+            expiration_interval = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
+            expect(
+              remember_device_cookie.valid_for_user?(
+                user: subject.current_user,
+                expiration_interval: expiration_interval,
+              ),
+            ).to eq true
+          end
         end
       end
 
@@ -674,20 +668,28 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
       context 'with remember_device in the params' do
         it 'saves an encrypted cookie' do
-          remember_device_cookie = instance_double(RememberDeviceCookie)
-          allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
-          allow(RememberDeviceCookie).to receive(:new).and_return(remember_device_cookie)
+          freeze_time do
+            expect(cookies.encrypted[:remember_device]).to eq nil
+            post(
+              :create,
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+                remember_device: '1',
+              },
+            )
 
-          post(
-            :create,
-            params: {
-              code: subject.current_user.direct_otp,
-              otp_delivery_preference: 'sms',
-              remember_device: '1',
-            },
-          )
-
-          expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
+            remember_device_cookie = RememberDeviceCookie.from_json(
+              cookies.encrypted[:remember_device],
+            )
+            expiration_interval = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
+            expect(
+              remember_device_cookie.valid_for_user?(
+                user: subject.current_user,
+                expiration_interval: expiration_interval,
+              ),
+            ).to eq true
+          end
         end
       end
 

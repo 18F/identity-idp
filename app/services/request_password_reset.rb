@@ -24,7 +24,7 @@ RequestPasswordReset = RedactedStruct.new(
     rate_limiter = RateLimiter.new(user: user, rate_limit_type: :reset_password_email)
     rate_limiter.increment!
     if rate_limiter.limited?
-      analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
+      analytics.rate_limit_reached(limiter_type: :reset_password_email)
       irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
     elsif user.suspended?
       UserMailer.with(

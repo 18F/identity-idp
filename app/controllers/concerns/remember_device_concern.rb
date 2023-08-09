@@ -1,12 +1,12 @@
 module RememberDeviceConcern
   extend ActiveSupport::Concern
 
-  def save_user_opted_remember_device_pref
-    cookies.encrypted[:user_opted_remember_device_preference] = params[:remember_device]
+  def save_user_opted_remember_device_pref(remember_device_preference)
+    cookies.encrypted[:user_opted_remember_device_preference] = remember_device_preference
   end
 
-  def save_remember_device_preference
-    return if params[:remember_device] != '1' && params[:remember_device] != 'true'
+  def save_remember_device_preference(remember_device_preference)
+    return if remember_device_preference != '1' && remember_device_preference != 'true'
     cookies.encrypted[:remember_device] = {
       value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
       expires: remember_device_cookie_expiration,
@@ -69,7 +69,7 @@ module RememberDeviceConcern
     user_session[:auth_method] = TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE
     mark_user_session_authenticated(:device_remembered)
     handle_valid_remember_device_analytics(cookie_created_at: remember_device_cookie.created_at)
-    redirect_to after_sign_in_path_for(current_user) unless reauthn?
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def handle_valid_remember_device_analytics(cookie_created_at:)

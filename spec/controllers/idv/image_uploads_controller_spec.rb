@@ -205,7 +205,7 @@ RSpec.describe Idv::ImageUploadsController do
       end
 
       context 'when rate limited' do
-        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:redirect_url) { idv_session_errors_rate_limited_url }
         let(:error_json) do
           {
             success: false,
@@ -249,10 +249,10 @@ RSpec.describe Idv::ImageUploadsController do
           'IdV: doc auth image upload form submitted',
           success: false,
           errors: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,

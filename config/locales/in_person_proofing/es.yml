@@ -92,9 +92,10 @@ es:
         id_types:
           - Licencia para conducir estatal
           - Identificación estatal que no sea la licencia para conducir
-        info_html: Ingrese la información <strong>exactamente como aparece en su cédula
-          de identidad emitida por el estado.</strong> Utilizaremos esta
-          información para confirmar que coincide con su cédula en persona.
+        info_html: Ingrese la información <strong>exactamente como aparece en su
+          documento de identidad emitido por el estado.</strong> Utilizaremos
+          esta información para confirmar que coincide con su documento en
+          persona.
         learn_more_link: Obtenga más información sobre los documentos de identificación
           aceptados.
         questions: '¿Alguna pregunta?'
@@ -143,7 +144,7 @@ es:
         state_id_jurisdiction: Estado emisor
         state_id_jurisdiction_hint: Este es el estado que emitió su identificación
         state_id_jurisdiction_prompt: '- Seleccione -'
-        state_id_number: Número de cédula
+        state_id_number: Número de identidad
         state_id_number_hint_html: "Puede incluir letras, números y los siguientes
           símbolos: <span class='usa-sr-only'>espacios, </span><span
           aria-hidden='true'> </span> <span class='usa-sr-only'>barras
@@ -161,7 +162,7 @@ es:
       po_search:
         location: Encuentre una oficina de correos participante
       prepare: Verifique su identidad en persona
-      state_id_milestone_2: Ingresa la información de tu identificación emitida por el estado
+      state_id_milestone_2: Ingrese la información de su identificación emitida por el estado
       switch_back: Vuelva a su computadora para prepararse para verificar su identidad
         en persona
       update_address: Actualizar su dirección actual
@@ -190,7 +191,7 @@ es:
         heading: Muestre su licencia de conducir estatal o su tarjeta de identificación
           estatal de no conductor
         info: No debe estar caducada. Actualmente no aceptamos otras formas de
-          identificación, como pasaportes e identificaciones militares..
+          identificación, como pasaportes e identificaciones militares.
       what_to_do:
         heading: Colóquese en cualquier fila
         info: Dígale al empleado de la oficina de correos que está aquí para verificar

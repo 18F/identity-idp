@@ -68,7 +68,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
 
         expect(form.valid?).to eq(false)
-        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
+        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.rate_limited_heading')])
       end
     end
   end

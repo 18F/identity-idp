@@ -1,6 +1,4 @@
 class Profile < ApplicationRecord
-  self.ignored_columns += %w[reproof_at]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -16,6 +14,11 @@ class Profile < ApplicationRecord
 
   scope(:active, -> { where(active: true) })
   scope(:verified, -> { where.not(verified_at: nil) })
+
+  has_one :establishing_in_person_enrollment,
+          -> { where(status: :establishing).order(created_at: :desc) },
+          class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
+          dependent: :destroy
 
   enum deactivation_reason: {
     password_reset: 1,
@@ -33,7 +36,7 @@ class Profile < ApplicationRecord
   attr_reader :personal_key
 
   def fraud_review_pending?
-    fraud_pending_reason.present? && !fraud_rejection?
+    fraud_review_pending_at.present?
   end
 
   def fraud_rejection?
@@ -142,14 +145,25 @@ class Profile < ApplicationRecord
     fraud_review_pending? || fraud_rejection?
   end
 
+  def in_person_verification_pending?
+    # note: deactivation reason will be replaced by timestamp column
+    deactivation_reason == 'in_person_verification_pending'
+  end
+
+  def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+    transaction do
+      UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
+      deactivate(:in_person_verification_pending)
+    end
+  end
+
   def deactivate_for_gpo_verification
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
-  def deactivate_for_fraud_review(fraud_pending_reason:)
+  def deactivate_for_fraud_review
     update!(
       active: false,
-      fraud_pending_reason: fraud_pending_reason,
       fraud_review_pending_at: Time.zone.now,
       fraud_rejection_at: nil,
     )
@@ -176,14 +190,28 @@ class Profile < ApplicationRecord
 
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+
+    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii,
+      multi_region_ciphertext: encrypted_pii_multi_region,
+    )
+
+    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
   # @return [Pii::Attributes]
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
-    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+
+    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii_recovery,
+      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
+    )
+
+    decrypted_recovery_json = encryptor.decrypt(
+      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+    )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
@@ -193,7 +221,9 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     encrypt_recovery_pii(pii)
   end
 
@@ -203,7 +233,9 @@ class Profile < ApplicationRecord
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     @personal_key = personal_key
   end
 
@@ -220,13 +252,13 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
+  def pending_in_person_enrollment?
+    proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
+  end
+
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
-  end
-
-  def has_proofed_before?
-    Profile.where(user_id: user_id).where.not(activated_at: nil).where.not(id: self.id).exists?
   end
 
   def irs_attempts_api_tracker

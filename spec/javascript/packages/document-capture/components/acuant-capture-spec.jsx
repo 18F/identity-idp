@@ -754,6 +754,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: 'AUTO',
       });
 
       expect(error).to.be.ok();
@@ -809,6 +810,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: sinon.match.string,
       });
 
       expect(error).to.be.ok();
@@ -917,6 +919,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: sinon.match.string,
       });
     });
 
@@ -1125,6 +1128,7 @@ describe('document-capture/components/acuant-capture', () => {
       width: sinon.match.number,
       attempt: sinon.match.number,
       size: sinon.match.number,
+      acuantCaptureMode: sinon.match.string,
     });
   });
 

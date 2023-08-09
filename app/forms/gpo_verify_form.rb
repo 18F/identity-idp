@@ -17,15 +17,16 @@ class GpoVerifyForm
 
   def submit
     result = valid?
-    threatmetrix_check_failed = fraud_review_checker.fraud_check_failed?
+    fraud_check_failed = pending_profile&.fraud_pending_reason.present?
+
     if result
       pending_profile&.remove_gpo_deactivation_reason
-      if pending_in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
-        pending_profile&.deactivate(:in_person_verification_pending)
-      elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
-        bump_fraud_review_pending_timestamps
-      elsif fraud_review_checker.fraud_check_failed?
+      if pending_profile&.pending_in_person_enrollment?
+        # note: pending_profile is not active here
+        pending_profile&.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+      elsif fraud_check_failed && threatmetrix_enabled?
+        pending_profile&.deactivate_for_fraud_review
+      elsif fraud_check_failed
         pending_profile&.activate_after_fraud_review_unnecessary
       else
         activate_profile
@@ -38,14 +39,17 @@ class GpoVerifyForm
       errors: errors,
       extra: {
         enqueued_at: gpo_confirmation_code&.code_sent_at,
+        which_letter: which_letter,
+        letter_count: letter_count,
+        attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: pending_in_person_enrollment?,
-        threatmetrix_check_failed: threatmetrix_check_failed,
+        pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
+        fraud_check_failed: fraud_check_failed,
       },
     )
   end
 
-  protected
+  private
 
   def pending_profile
     @pending_profile ||= user.pending_profile
@@ -57,8 +61,18 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def bump_fraud_review_pending_timestamps
-    pending_profile&.bump_fraud_review_pending_timestamps
+  def which_letter
+    return if !valid_otp?
+    pending_profile.gpo_confirmation_codes.sort_by(&:code_sent_at).
+      index(gpo_confirmation_code) + 1
+  end
+
+  def letter_count
+    pending_profile&.gpo_confirmation_codes&.count
+  end
+
+  def attempts
+    RateLimiter.new(user: user, rate_limit_type: :verify_gpo_key).attempts
   end
 
   def validate_otp_not_expired
@@ -82,10 +96,6 @@ class GpoVerifyForm
 
   def reset_sensitive_fields
     self.otp = nil
-  end
-
-  def pending_in_person_enrollment?
-    pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def threatmetrix_enabled?

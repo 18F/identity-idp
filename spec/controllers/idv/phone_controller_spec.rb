@@ -11,6 +11,7 @@ RSpec.describe Idv::PhoneController do
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
   let(:international_phone) { '+81 54 354 3643' }
+  let(:timeout_phone) { '7035555888' }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -164,6 +165,13 @@ RSpec.describe Idv::PhoneController do
   end
 
   describe '#create' do
+    let(:ab_test_args) do
+      { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+    end
+
+    before do
+      allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    end
     context 'when form is invalid' do
       let(:improbable_phone_error) do
         {
@@ -231,6 +239,7 @@ RSpec.describe Idv::PhoneController do
           otp_delivery_preference: '🎷',
           types: [],
           proofing_components: nil,
+          **ab_test_args,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -277,6 +286,7 @@ RSpec.describe Idv::PhoneController do
           otp_delivery_preference: 'sms',
           types: [:fixed_or_mobile],
           proofing_components: nil,
+          **ab_test_args,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -328,6 +338,7 @@ RSpec.describe Idv::PhoneController do
           )
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
+          expect(subject.idv_session.failed_phone_step_numbers).to be_empty
         end
 
         context 'with full vendor outage' do
@@ -440,6 +451,22 @@ RSpec.describe Idv::PhoneController do
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy
+        expect(subject.idv_session.failed_phone_step_numbers).to contain_exactly('+17035555555')
+      end
+
+      it 'renders timeout page and does not set phone confirmation' do
+        user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
+        stub_verify_steps_one_and_two(user)
+
+        put :create, params: { idv_phone_form: { phone: timeout_phone } }
+
+        expect(response).to redirect_to idv_phone_path
+        get :new
+        expect(response).to redirect_to idv_phone_errors_timeout_path
+
+        expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
+        expect(subject.idv_session.user_phone_confirmation).to be_falsy
+        expect(subject.idv_session.failed_phone_step_numbers).to be_empty
       end
 
       it 'tracks event with invalid phone' do
@@ -503,9 +530,9 @@ RSpec.describe Idv::PhoneController do
 
         it 'tracks rate limited event' do
           expect(@analytics).to have_logged_event(
-            'Throttler Rate Limit Triggered',
+            'Rate Limit Reached',
             {
-              throttle_type: :proof_address,
+              limiter_type: :proof_address,
               step_name: :phone,
             },
           )

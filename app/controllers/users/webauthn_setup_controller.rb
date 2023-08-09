@@ -155,7 +155,7 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      handle_remember_device
+      handle_remember_device_preference(params[:remember_device])
       if form.platform_authenticator?
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
@@ -205,10 +205,11 @@ module Users
     def confirm_params
       params.permit(
         :attestation_object,
+        :authenticator_data_value,
         :client_data_json,
-        :transports,
         :name,
         :platform_authenticator,
+        :transports,
       )
     end
 

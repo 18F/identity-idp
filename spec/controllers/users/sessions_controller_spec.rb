@@ -4,16 +4,6 @@ RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
   let(:mock_valid_site) { 'http://example.com' }
 
-  describe 'GET /users/sign_in' do
-    it 'clears the session when user is not yet 2fa-ed' do
-      sign_in_before_2fa
-
-      get :new
-
-      expect(controller.current_user).to be nil
-    end
-  end
-
   describe 'GET /logout' do
     it 'tracks a logout event' do
       stub_analytics
@@ -457,13 +447,11 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     context 'with current user' do
-      it 'logs the user out' do
+      it 'redirects to 2FA' do
         stub_sign_in_before_2fa
-        subject.session[:logged_in] = true
         get :new
 
-        expect(request.path).to eq root_path
-        expect(subject.session[:logged_in]).to be_nil
+        expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
 

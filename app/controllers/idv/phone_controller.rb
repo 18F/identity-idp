@@ -30,7 +30,7 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
           call(:verify_phone, :view, true)
 
-        analytics.idv_phone_of_record_visited
+        analytics.idv_phone_of_record_visited(**ab_test_analytics_buckets)
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.missing?
         analytics.proofing_address_result_missing
@@ -44,16 +44,19 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verify_phone, :update, result.success?)
 
-      analytics.idv_phone_confirmation_form_submitted(**result.to_h)
+      analytics.idv_phone_confirmation_form_submitted(**result.to_h, **ab_test_analytics_buckets)
       irs_attempts_api_tracker.idv_phone_submitted(
         success: result.success?,
         phone_number: step_params[:phone],
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),
       )
-      flash[:error] = result.first_error_message if !result.success?
-      return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
-      submit_proofing_attempt
-      redirect_to idv_phone_path
+      if result.success?
+        submit_proofing_attempt
+        redirect_to idv_phone_path
+      else
+        flash.now[:error] = result.first_error_message
+        render :new, locals: { gpo_letter_available: gpo_letter_available }
+      end
     end
 
     private
@@ -141,6 +144,7 @@ module Idv
         previous_params: idv_session.previous_phone_step_params,
         allowed_countries:
           PhoneNumberCapabilities::ADDRESS_IDENTITY_PROOFING_SUPPORTED_COUNTRY_CODES,
+        failed_phone_numbers: idv_session.failed_phone_step_numbers,
       )
     end
 

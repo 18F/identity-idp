@@ -60,7 +60,13 @@ class TwoFactorOptionsForm
     mfa_user.enabled_mfa_methods_count == 0
   end
 
+  def platform_auth_only_option?
+    mfa_user.enabled_mfa_methods_count == 1 &&
+      mfa_user.webauthn_platform_configurations.count == 1
+  end
+
   def has_no_mfa_or_in_required_flow?
-    has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
+    has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow? ||
+      platform_auth_only_option?
   end
 end
