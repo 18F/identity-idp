@@ -92,6 +92,9 @@ export interface UploadErrorResponse {
    */
   result_failed: boolean;
 
+  /**
+   * Whether the doc type is clearly not supported type.
+   */
   doc_type_supported: boolean;
 }
 
