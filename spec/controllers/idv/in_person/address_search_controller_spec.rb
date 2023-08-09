@@ -212,7 +212,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
           result_total: 0,
           exception_class: StandardError,
           exception_message: 'error',
-          response_status_code: false,
+          response_status_code: nil,
         )
       end
 
@@ -223,7 +223,7 @@ RSpec.describe Idv::InPerson::AddressSearchController do
           api_status_code: 500,
           exception_class: StandardError,
           exception_message: 'error',
-          response_status_code: false,
+          response_status_code: nil,
           response_body_present: false,
           response_body: false,
         )
