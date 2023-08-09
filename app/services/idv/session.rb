@@ -56,6 +56,7 @@ module Idv
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
+        in_person_verification_needed: pending_in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -71,7 +72,7 @@ module Idv
         move_pii_to_user_session
       elsif address_verification_mechanism == 'gpo'
         create_gpo_entry
-      elsif in_person_enrollment?
+      elsif pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           pii,
@@ -101,7 +102,7 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless in_person_enrollment? && current_user.establishing_in_person_enrollment
+      return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
@@ -137,7 +138,7 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
-    def in_person_enrollment?
+    def pending_in_person_enrollment?
       current_user.proofing_component&.document_check == Idp::Constants::Vendors::USPS
     end
 
@@ -237,7 +238,6 @@ module Idv
         user: current_user,
         user_password: user_password,
         initiating_service_provider: service_provider,
-        in_person_verification_pending: in_person_enrollment?,
       )
     end
 
