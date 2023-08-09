@@ -84,7 +84,6 @@ gem 'zxcvbn', '0.1.9'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
-  gem 'binding_of_caller'
   gem 'derailed_benchmarks'
   gem 'guard-rspec', require: false
   gem 'irb'

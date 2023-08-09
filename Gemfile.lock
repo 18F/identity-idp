@@ -199,8 +199,6 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindata (2.4.14)
-    binding_of_caller (1.0.0)
-      debug_inspector (>= 0.0.1)
     bootsnap (1.15.0)
       msgpack (~> 1.2)
     brakeman (6.0.1)
@@ -241,7 +239,6 @@ GEM
       railties (>= 6.0.0)
     date (3.3.3)
     dead_end (4.0.0)
-    debug_inspector (1.1.0)
     derailed_benchmarks (2.1.2)
       benchmark-ips (~> 2)
       dead_end
@@ -732,7 +729,6 @@ DEPENDENCIES
   barby (~> 0.6.8)
   base32-crockford
   better_errors (>= 2.5.1)
-  binding_of_caller
   bootsnap (~> 1.0)
   brakeman
   browser
