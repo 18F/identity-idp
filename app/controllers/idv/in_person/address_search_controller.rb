@@ -31,12 +31,12 @@ module Idv
 
       def report_errors(error)
         remapped_error = case error
-        when Faraday::Error,
-             ActionController::InvalidAuthenticityToken
-          :unprocessable_entity
-        else
-          :internal_server_error
-        end
+                         when Faraday::Error,
+                              ActionController::InvalidAuthenticityToken
+                           :unprocessable_entity
+                         else
+                           :internal_server_error
+                         end
 
         errors = if error.respond_to?(:response_body)
                    error.response_body && error.response_body[:details]
