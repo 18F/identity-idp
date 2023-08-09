@@ -89,7 +89,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
-  gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end
