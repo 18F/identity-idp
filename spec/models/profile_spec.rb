@@ -87,7 +87,7 @@ RSpec.describe Profile do
   end
 
   describe '#in_person_verification_pending?' do
-    it 'returns true if the deactivation_reason is in_person_verification_pending' do
+    it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(
         :profile,
         :in_person_verification_pending,
@@ -98,7 +98,11 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+
+      # can be deleted when column is removed
+      expect(profile.deactivation_reason).to be_nil
+
+      expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
