@@ -414,7 +414,7 @@ RSpec.describe Idv::ReviewController do
             expect(enrollment.user_id).to eq(user.id)
             expect(enrollment.enrollment_code).to be_a(String)
             expect(enrollment.profile).to eq(user.profiles.last)
-            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+            expect(enrollment.profile.in_person_verification_pending_at).to be_present
           end
 
           it 'sends ready to verify email' do
@@ -503,7 +503,7 @@ RSpec.describe Idv::ReviewController do
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
               expect(enrollment.profile).to eq(user.profiles.last)
-              expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+              expect(enrollment.profile.in_person_verification_pending_at).to be_present
             end
           end
 
