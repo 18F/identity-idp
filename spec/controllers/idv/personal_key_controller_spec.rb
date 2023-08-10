@@ -107,7 +107,7 @@ RSpec.describe Idv::PersonalKeyController do
 
         context 'profile is pending due to in person proofing' do
           before do
-            profile.update!(deactivation_reason: :in_person_verification_pending)
+            profile.deactivate_for_in_person_verification
             subject.idv_session.profile_id = nil
           end
 
@@ -115,7 +115,7 @@ RSpec.describe Idv::PersonalKeyController do
             get :index
 
             expect(profile.user.pending_profile?).to eq true
-            expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+            expect(profile.in_person_verification_pending_at).to be_present
             expect(response).to_not be_redirect
           end
         end
