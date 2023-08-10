@@ -8,13 +8,15 @@ RSpec.describe Idv::GpoVerifyController do
   let(:user) { create(:user) }
   let(:profile_created_at) { Time.zone.now }
   let(:pending_profile) do
-    create(
-      :profile,
-      :with_pii,
-      user: user,
-      proofing_components: proofing_components,
-      created_at: profile_created_at,
-    )
+    if user
+      create(
+        :profile,
+        :with_pii,
+        user: user,
+        proofing_components: proofing_components,
+        created_at: profile_created_at,
+      )
+    end
   end
   let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
@@ -24,15 +26,18 @@ RSpec.describe Idv::GpoVerifyController do
   before do
     stub_analytics
     stub_attempts_tracker
-    stub_sign_in(user)
-    pending_user = stub_user_with_pending_profile(user)
-    create(
-      :gpo_confirmation_code,
-      profile: pending_profile,
-      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-    )
-    allow(pending_user).to receive(:gpo_verification_pending_profile?).
-      and_return(has_pending_profile)
+
+    if user
+      stub_sign_in(user)
+      pending_user = stub_user_with_pending_profile(user)
+      create(
+        :gpo_confirmation_code,
+        profile: pending_profile,
+        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      )
+      allow(pending_user).to receive(:gpo_verification_pending_profile?).
+        and_return(has_pending_profile)
+    end
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
@@ -115,6 +120,33 @@ RSpec.describe Idv::GpoVerifyController do
         action
 
         expect(response).to render_template(:rate_limited)
+      end
+    end
+
+    context 'session says user did not receive letter' do
+      before do
+        session[:gpo_user_did_not_receive_letter] = true
+        action
+      end
+      it 'redirects user to url with querystring' do
+        expect(response).to redirect_to(idv_gpo_verify_path(did_not_receive_letter: 1))
+      end
+      it 'clears session value' do
+        expect(session).not_to include(gpo_user_did_not_receive_letter: anything)
+      end
+    end
+
+    context 'querystring says user did not receive letter' do
+      let(:params) do
+        { did_not_receive_letter: 1 }
+      end
+
+      context 'not logged in' do
+        let(:user) { nil }
+
+        it 'sets value in session' do
+          expect { action }.to change { session[:gpo_user_did_not_receive_letter ] }.to eql(true)
+        end
       end
     end
   end

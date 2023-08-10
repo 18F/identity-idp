@@ -4,6 +4,7 @@ module Idv
     include StepIndicatorConcern
     include FraudReviewConcern
 
+    prepend_before_action :note_if_user_did_not_receive_letter
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
 
@@ -75,6 +76,20 @@ module Idv
 
     def account_not_ready_to_be_activated?
       fraud_check_failed? || pending_in_person_enrollment?
+    end
+
+    def note_if_user_did_not_receive_letter
+      if !current_user && params[:did_not_receive_letter]
+        # Stash that the user didn't receive their letter.
+        # Once the authentication process completes, they'll be redirected to complete their
+        # GPO verification...
+        session[:gpo_user_did_not_receive_letter] = true
+      end
+
+      if current_user && session.delete(:gpo_user_did_not_receive_letter)
+        # ...and we can pick things up here.
+        redirect_to idv_gpo_verify_path(did_not_receive_letter: 1)
+      end
     end
 
     def prepare_for_personal_key
