@@ -50,7 +50,6 @@ describe('AddressSearch', () => {
             handleLocationSelect={locationSelected}
             locationsURL={LOCATIONS_URL}
             addressSearchURL={ADDRESSES_URL}
-            registerField={() => {}}
           />
         </SWRConfig>,
       );
