@@ -65,8 +65,8 @@ RSpec.describe WebauthnVisitForm do
       it 'returns FormResponse with success: false with an unrecognized error' do
         params = { error: 'foo' }
         general_error = t(
-          'errors.webauthn_setup.general_error',
-          link: link_to(
+          'errors.webauthn_setup.general_error_html',
+          link_html: link_to(
             t('errors.webauthn_setup.additional_methods_link'),
             authentication_methods_setup_path,
           ),

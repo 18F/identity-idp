@@ -18,8 +18,8 @@ RSpec.feature 'webauthn sign up' do
 
   def expect_webauthn_setup_error
     expect(page).to have_content t(
-      'errors.webauthn_setup.general_error',
-      link: t('errors.webauthn_setup.additional_methods_link'),
+      'errors.webauthn_setup.general_error_html',
+      link_html: t('errors.webauthn_setup.additional_methods_link'),
     )
     expect(page).to have_current_path(webauthn_setup_path)
   end
