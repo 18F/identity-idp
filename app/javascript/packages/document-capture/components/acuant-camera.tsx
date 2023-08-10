@@ -126,11 +126,15 @@ interface AcuantCameraUICallbacks {
    * Optional frame available callback
    */
   onFrameAvailable?: (response: AcuantDetectedResult) => void;
+  /**
+   * Callback that occurs when there is a failure.
+   */
+  onFailure: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
 type AcuantCameraUIStart = (
   callbacks: AcuantCameraUICallbacks,
-  onFailure: AcuantFailureCallback,
+  onFailureCallbackWithOptions: AcuantFailureCallback,
   options?: AcuantCameraUIOptions,
 ) => void;
 
@@ -210,9 +214,9 @@ export interface AcuantSuccessResponse {
    */
   image: AcuantImage;
   /**
-   * Document type
+   * Document type for Acuant SDK 11.9.1
    */
-  cardtype: AcuantDocumentType;
+  cardType: AcuantDocumentType;
   /**
    * Detected image glare
    */
@@ -234,6 +238,13 @@ export interface AcuantSuccessResponse {
    */
   dpi: number;
 }
+
+export type LegacyAcuantSuccessResponse = Omit<AcuantSuccessResponse, 'cardType'> & {
+  /**
+   * Document type for Acuant SDK 11.8.2
+   */
+  cardtype: AcuantDocumentType;
+};
 
 type AcuantSuccessCallback = (response: AcuantSuccessResponse) => void;
 
@@ -298,24 +309,31 @@ function AcuantCamera({
   );
 
   useEffect(() => {
+    const textOptions = {
+      text: {
+        NONE: t('doc_auth.info.capture_status_none'),
+        SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+        BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
+        GOOD_DOCUMENT: null,
+        CAPTURING: t('doc_auth.info.capture_status_capturing'),
+        TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+      },
+    };
     if (isReady) {
+      const onFailureCallbackWithOptions = (...args) => onImageCaptureFailure(...args);
+      Object.keys(textOptions).forEach((key) => {
+        onFailureCallbackWithOptions[key] = textOptions[key];
+      });
+
       window.AcuantCameraUI = getActualAcuantCameraUI();
       window.AcuantCameraUI.start(
         {
           onCaptured: onCropStart,
           onCropped,
+          onFailure: onImageCaptureFailure,
         },
-        onImageCaptureFailure,
-        {
-          text: {
-            NONE: t('doc_auth.info.capture_status_none'),
-            SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
-            BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
-            GOOD_DOCUMENT: null,
-            CAPTURING: t('doc_auth.info.capture_status_capturing'),
-            TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
-          },
-        },
+        onFailureCallbackWithOptions,
+        textOptions,
       );
       setIsActive(true);
     }
