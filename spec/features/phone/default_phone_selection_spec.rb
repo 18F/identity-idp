@@ -147,7 +147,7 @@ RSpec.describe 'default phone selection' do
 
   def sign_in_visit_add_phone_path(user, phone_config2)
     sign_in_and_2fa_user(user)
-    visit add_phone_path(id: phone_config2.id)
+    visit phone_setup_path(id: phone_config2.id)
     expect(page).to have_content t('two_factor_authentication.otp_make_default_number.label')
   end
 end
