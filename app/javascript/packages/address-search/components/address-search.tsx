@@ -140,7 +140,7 @@ function AddressSearch({
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}
-          onSelect={onSelect}
+          onSelect={(...args) => onSelect(...args, locationResults)}
           address={foundAddress?.address || ''}
         />
       )}
