@@ -87,7 +87,6 @@ RSpec.describe Encryption::PasswordVerifier do
           { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
         ).and_return('single_region_kms_ciphertext')
 
-
         expect(multi_region_kms_client).to receive(:encrypt).with(
           encoded_scrypt_password,
           { 'user_uuid' => user_uuid, 'context' => 'password-digest' },

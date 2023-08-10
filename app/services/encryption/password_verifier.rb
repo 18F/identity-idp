@@ -48,7 +48,9 @@ module Encryption
         scrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
       single_region_digest = PasswordDigest.new(
-        encrypted_password: single_region_encrypted_password, password_salt: salt, password_cost: cost,
+        encrypted_password: single_region_encrypted_password,
+        password_salt: salt,
+        password_cost: cost,
       ).to_s
 
       multi_region_digest = nil
@@ -57,7 +59,9 @@ module Encryption
           scrypted_password, kms_encryption_context(user_uuid: user_uuid)
         )
         multi_region_digest = PasswordDigest.new(
-          encrypted_password: multi_region_encrypted_password, password_salt: salt, password_cost: cost,
+          encrypted_password: multi_region_encrypted_password,
+          password_salt: salt,
+          password_cost: cost,
         ).to_s
       end
 
