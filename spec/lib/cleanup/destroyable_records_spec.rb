@@ -1,14 +1,16 @@
 require 'rails_helper'
-require './lib/destroy_unused_providers'
+require './lib/cleanup/destroyable_records'
 
-RSpec.describe DestroyUnusedProviders::DestroyableRecords do
+RSpec.describe DestroyableRecords do
+  let(:stdout) { StringIO.new }
+  let(:stdin) { StringIO.new }
   let(:iu) { create(:integration_usage) }
   let(:iaa_order) { iu.iaa_order }
   let(:integration) { iu.integration }
   let(:service_provider) { integration.service_provider }
   let(:in_person_enrollment) {  create(:in_person_enrollment, service_provider: service_provider) }
 
-  subject(:destroyable_records) { described_class.new(service_provider.issuer) }
+  subject(:destroyable_records) { described_class.new(service_provider.issuer, stdout:, stdin:) }
 
   describe '#init' do
     it 'attaches the service_provider' do

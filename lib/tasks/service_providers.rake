@@ -16,7 +16,7 @@ namespace :service_providers do
   # ISSUERS=123abc,456def rake service_providers:destroy_unused_providers
   desc 'Destroy unused providers'
   task destroy_unused_providers: :environment do
-    require 'destroy_unused_providers'
+    require 'cleanup/destroy_unused_providers'
 
     issuers = ENV.fetch('ISSUERS', '').split(',')
     DestroyUnusedProviders.new(issuers).run
