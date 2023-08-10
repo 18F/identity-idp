@@ -12,11 +12,11 @@ RSpec.describe DestroyUnusedProviders::DestroyableRecords do
 
   describe '#init' do
     it 'attaches the service_provider' do
-      expect(subject.sp).to eq service_provider
+      expect(subject.service_provider).to eq service_provider
     end
 
     it 'attaches the integration' do
-      expect(subject.int).to eq integration
+      expect(subject.integration).to eq integration
     end
   end
 

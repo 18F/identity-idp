@@ -37,44 +37,44 @@ class DestroyUnusedProviders
   end
 
   class DestroyableRecords
-    attr_reader :sp, :int, :issuer
+    attr_reader :service_provider, :integration, :issuer
 
     def initialize(issuer)
       @issuer = issuer
-      @sp = ServiceProvider.includes(:in_person_enrollments).find_by(issuer: issuer)
-      @int = Agreements::Integration.includes(
+      @service_provider = ServiceProvider.includes(:in_person_enrollments).find_by(issuer: issuer)
+      @integration = Agreements::Integration.includes(
         :partner_account,
         iaa_orders: [:iaa_gtc],
       ).find_by(issuer: issuer)
     end
 
     def integration_usages
-      int.integration_usages
+      integration.integration_usages
     end
 
     def iaa_orders
-      int.iaa_orders
+      integration.iaa_orders
     end
 
     def in_person_enrollments
-      sp.in_person_enrollments
+      service_provider.in_person_enrollments
     end
 
     def iaa_gtc
     end
 
     def print_data
-      Rails.logger.debug { "You are about to delete a service provider with issuer #{sp.issuer}" }
-      Rails.logger.debug { "The partner is #{int.partner_account.name}" }
+      Rails.logger.debug { "You are about to delete a service provider with issuer #{service_provider.issuer}" }
+      Rails.logger.debug { "The partner is #{integration.partner_account.name}" }
       Rails.logger.debug "\n\n"
 
       Rails.logger.debug 'Attributes:'
-      Rails.logger.debug sp.attributes
+      Rails.logger.debug service_provider.attributes.to_yaml
       Rails.logger.debug "\n"
 
       Rails.logger.debug '********'
       Rails.logger.debug 'Integration:'
-      Rails.logger.debug int.attributes
+      Rails.logger.debug integration.attributes.to_yaml
       Rails.logger.debug "\n"
 
       Rails.logger.debug '********'
@@ -94,17 +94,17 @@ class DestroyUnusedProviders
 
     def destroy_records
       Rails.logger.debug 'Destroying integration usages'
-      integration_usages.each do |iu|
-        iu.destroy!
+      integration_usages.each do |integration_usage|
+        integration_usage.destroy!
       end
-      int.reload
+      integration.reload
 
-      Rails.logger.debug { "Destroying integration with issuer #{int.issuer}" }
-      int.destroy!
-      sp.reload
+      Rails.logger.debug { "Destroying integration with issuer #{integration.issuer}" }
+      integration.destroy!
+      service_provider.reload
 
-      Rails.logger.debug { "Destroying service provider issuer #{sp.issuer}" }
-      sp.destroy!
+      Rails.logger.debug { "Destroying service provider issuer #{service_provider.issuer}" }
+      service_provider.destroy!
 
       Rails.logger.debug do
         "ServiceProvider with issuer #{issuer} and associated records has been destroyed."
