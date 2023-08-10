@@ -10,11 +10,6 @@ RSpec.describe DestroyUnusedProviders::DestroyableRecords do
 
   subject(:destroyable_records) { described_class.new(service_provider.issuer) }
 
-  before do
-    # silencing output
-    allow_any_instance_of(DestroyUnusedProviders::DestroyableRecords).to receive(:puts)
-  end
-
   describe '#init' do
     it 'attaches the service_provider' do
       expect(subject.sp).to eq service_provider
