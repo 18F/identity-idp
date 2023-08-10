@@ -1,5 +1,5 @@
 namespace :profiles do
-  desc 'If a profile is in "in person pending" state, but does not have an in_person_verification_pending_at value, generate one.'
+  desc 'Backfill the in_person_verification_pending_at value column.'
 
   ##
   # Usage:
@@ -58,8 +58,10 @@ namespace :profiles do
   task validate_backfill_in_person_verification_pending_at: :environment do |_task, _args|
     ActiveRecord::Base.connection.execute('SET statement_timeout = 60000')
 
-    profiles = Profile.where(deactivation_reason: 'in_person_verification_pending',
-                             in_person_verification_pending_at: nil)
+    profiles = Profile.where(
+      deactivation_reason: 'in_person_verification_pending',
+      in_person_verification_pending_at: nil,
+    )
 
     warn "backfill_in_person_verification_pending_at left #{profiles.count} rows"
   end
