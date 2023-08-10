@@ -103,6 +103,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
 
       expect(profile.in_person_verification_pending_at).to be_present
+      expect(profile.in_person_verification_pending?).to eq(true)
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil

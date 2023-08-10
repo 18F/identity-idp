@@ -147,8 +147,7 @@ class Profile < ApplicationRecord
   end
 
   def in_person_verification_pending?
-    # note: deactivation reason will be replaced by timestamp column
-    deactivation_reason == 'in_person_verification_pending'
+    in_person_verification_pending_at.present?
   end
 
   def deactivate_for_in_person_verification
