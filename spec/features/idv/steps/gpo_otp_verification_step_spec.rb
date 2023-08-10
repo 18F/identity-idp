@@ -83,8 +83,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      fill_in t('idv.gpo.name'), with: otp
+      click_button t('idv.gpo.submit')
 
       profile.reload
 
@@ -111,8 +111,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      fill_in t('idv.gpo.name'), with: otp
+      click_button t('idv.gpo.submit')
 
       expect(user.events.account_verified.size).to eq 1
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
@@ -123,11 +123,11 @@ RSpec.feature 'idv gpo otp verification step' do
     sign_in_live_with_2fa(user)
 
     expect(current_path).to eq idv_gpo_verify_path
-    expect(page).to have_content t('forms.verify_profile.alert_info')
-    expect(page).to have_content t('forms.verify_profile.wrong_address')
+    expect(page).to have_content t('idv.gpo.alert_info')
+    expect(page).to have_content t('idv.gpo.wrong_address')
     expect(page).to have_content '1 Secure Way'
 
-    click_on t('forms.verify_profile.clear_and_start_over')
+    click_on t('idv.gpo.clear_and_start_over')
 
     expect(current_path).to eq idv_confirm_start_over_path
 
