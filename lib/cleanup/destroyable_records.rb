@@ -13,19 +13,6 @@ class DestroyableRecords
     ).find_by(issuer: issuer)
   end
 
-  def integration_usages
-    integration.integration_usages
-  end
-
-  def iaa_orders
-    integration.iaa_orders
-  end
-
-  def in_person_enrollments
-    service_provider.in_person_enrollments
-  end
-
-
   def print_data
     stdout.puts "You are about to delete a service provider with issuer #{service_provider.issuer}"
     stdout.puts "The partner is #{integration.partner_account.name}"
@@ -46,9 +33,9 @@ class DestroyableRecords
     stdout.puts "\n"
 
     stdout.puts '*******'
-    stdout.puts "These are the IAA orders that will be affected: \n"
+    stdout.puts 'These are the IAA orders that will be affected: \n'
     iaa_orders.each do |iaa_order|
-      stdout.puts "#{iaa_order.iaa_gtc.gtc_number} #{iaa_order.order_number}"
+      stdout.puts "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
     end
     stdout.puts "\n"
   end
@@ -71,4 +58,19 @@ class DestroyableRecords
       "ServiceProvider with issuer #{issuer} and associated records has been destroyed."
     end
   end
+
+  private
+
+  def integration_usages
+    integration.integration_usages
+  end
+
+  def iaa_orders
+    integration.iaa_orders
+  end
+
+  def in_person_enrollments
+    service_provider.in_person_enrollments
+  end
+
 end

@@ -13,28 +13,78 @@ RSpec.describe DestroyableRecords do
   subject(:destroyable_records) { described_class.new(service_provider.issuer, stdout:, stdin:) }
 
   describe '#init' do
-    it 'attaches the service_provider' do
+    it 'instantiates the service_provider' do
       expect(subject.service_provider).to eq service_provider
     end
 
-    it 'attaches the integration' do
+    it 'instantiates the integration' do
       expect(subject.integration).to eq integration
     end
-  end
 
-  describe 'integration_usages' do
-    it 'returns the integration usages associated with the integration' do
-      expect(subject.integration_usages).to eq integration.integration_usages
+    it 'instantiates the stdin' do
+      expect(subject.stdin).to eq stdin
+    end
+
+    it 'instantiates the stdout' do
+      expect(subject.stdout).to eq stdout
     end
   end
 
-  describe 'iaa_orders' do
-    it 'returns the iaa orders associated with the integration' do
-      expect(subject.iaa_orders).to eq integration.iaa_orders
+  describe '#print_data' do
+    before do
+      allow(stdout).to receive(:puts)
+    end
+
+    it 'prints the issuer' do
+      issuer = service_provider.issuer
+      expect(stdout).to receive(:puts).with(
+        "You are about to delete a service provider with issuer #{issuer}"
+      )
+
+      subject.print_data
+    end
+
+    it 'prints the partner account name' do
+      name = integration.partner_account.name
+      expect(stdout).to receive(:puts).with("The partner is #{name}")
+
+      subject.print_data
+    end
+
+    it 'prints the service provider attributes' do
+      freeze_time do
+        attributes = service_provider.attributes.to_yaml
+        expect(stdout).to receive(:puts).with attributes
+
+        subject.print_data
+      end
+    end
+
+    it 'prints the integration attributes' do
+      attributes = integration.attributes.to_yaml
+      expect(stdout).to receive(:puts).with attributes
+
+      subject.print_data
+    end
+
+    it 'prints the in-person enrollments size' do
+      size = service_provider.in_person_enrollments.size
+      msg = "This provider has #{size} in person enrollments " \
+        "that will be destroyed"
+      expect(stdout).to receive(:puts).with msg
+
+      subject.print_data
+    end
+
+    it 'prints affected iaa orders' do
+      expect(stdout).to receive(:puts).with 'These are the IAA orders that will be affected: \n'
+      msg = "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
+
+      subject.print_data
     end
   end
 
-  describe 'destroy_records' do
+  describe '#destroy_records' do
     let!(:iu2) { create(:integration_usage, iaa_order: iaa_order) }
 
     before { subject.destroy_records }
