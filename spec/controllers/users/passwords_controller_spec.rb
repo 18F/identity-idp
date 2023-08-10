@@ -1,6 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Users::PasswordsController do
+
+  context 'user visits add an email address page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :edit
+      expect(@analytics).to have_logged_event('Edit Password Page Visited')
+    end
+  end
+
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do

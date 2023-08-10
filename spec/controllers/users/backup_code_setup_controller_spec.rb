@@ -141,14 +141,16 @@ RSpec.describe Users::BackupCodeSetupController do
     end
   end
 
-  it 'visits the Backup codes regenerate page' do
-    user = create(:user, :fully_registered)
-    stub_sign_in(user)
-    analytics = stub_analytics
-    stub_attempts_tracker
-
-    get :edit
-
-    expect(@analytics).to receive(:track_event).with(hash_including('Backup Code Regenerate Visited'))
+  context 'user visits the Backup codes regenerate page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :edit
+      expect(@analytics).to have_logged_event('Backup Code Regenerate Visited', hash_including(request_came_from: anything))
+    end
   end
+  
 end
