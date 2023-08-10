@@ -90,7 +90,7 @@ RSpec.describe Encryption::PasswordVerifier do
         expect(multi_region_kms_client).to receive(:encrypt).with(
           encoded_scrypt_password,
           { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
-        ).and_return('multi_regionn_kms_ciphertext')
+        ).and_return('multi_region_kms_ciphertext')
 
         digest_pair = subject.create_digest_pair(
           password: password, user_uuid: user_uuid,
@@ -104,7 +104,7 @@ RSpec.describe Encryption::PasswordVerifier do
         expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
           password_salt: instance_of(String),
           password_cost: IdentityConfig.store.scrypt_cost,
-          encrypted_password: 'multi_regionn_kms_ciphertext',
+          encrypted_password: 'multi_region_kms_ciphertext',
         )
       end
     end
