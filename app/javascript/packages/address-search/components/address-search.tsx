@@ -103,8 +103,8 @@ export function AddressSearchInput({
 function AddressSearch({
   disabled = false,
   registerField,
-  handleLocationSelect,
-  handleFoundLocations,
+  handleLocationSelect: onSelect,
+  handleFoundLocations: onFoundLocations,
   locationsURL,
   addressSearchURL,
 }: AddressSearchProps) {
@@ -129,7 +129,7 @@ function AddressSearch({
         onFoundAddress={setFoundAddress}
         onFoundLocations={(locations) => {
           setLocationResults(locations);
-          handleFoundLocations && handleFoundLocations(locations);
+          onFoundLocations && onFoundLocations(locations);
         }}
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
@@ -140,7 +140,7 @@ function AddressSearch({
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations
           locations={locationResults}
-          onSelect={handleLocationSelect}
+          onSelect={onSelect}
           address={foundAddress?.address || ''}
         />
       )}
