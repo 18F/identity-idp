@@ -517,7 +517,32 @@ ecr-scan:
         ]
       }
       else
-        "No findings"
+      {
+        "version": "15.0.4",
+        "scan": {
+          "start_time": (now | strftime("%Y-%m-%dT%H:%M:%S")),
+          "end_time": (now | strftime("%Y-%m-%dT%H:%M:%S")),
+          "scanner": {
+            "id": "clair",
+            "name": "Amazon ECR Image Scan",
+            "version": "1.0.0",
+            "vendor": {
+              "name": "Amazon Web Services"
+            }
+          },
+          "analyzer": {
+            "id": "clair",
+            "name": "Amazon ECR Image Scan",
+            "version": "1.0.0",
+            "vendor": {
+              "name": "Amazon Web Services"
+            }
+          },
+          "status": "success",
+          "type": "container_scanning"
+        },
+        "vulnerabilities": []
+      }
       end' > gl-container-scanning-report.json
   artifacts:
     paths: 
