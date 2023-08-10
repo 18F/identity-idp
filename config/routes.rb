@@ -240,13 +240,8 @@ Rails.application.routes.draw do
     get '/manage/email/confirm_delete/:id' => 'users/emails#confirm_delete',
         as: :manage_email_confirm_delete
 
-    if IdentityConfig.store.consolidate_phone_controllers
-      get '/add/phone' => 'users/phone_setup#index'
-      post '/add/phone' => 'users/phone_setup#create'
-    else
-      get '/add/phone' => 'users/phones#add'
-      post '/add/phone' => 'users/phones#create'
-    end
+    get '/add/phone' => 'users/phone_setup#index'
+    post '/add/phone' => 'users/phone_setup#create'
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
