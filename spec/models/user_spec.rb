@@ -401,6 +401,12 @@ RSpec.describe User do
 
         expect(user.encrypted_password_digest_multi_region).to_not be_blank
         expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
+
+        expect(
+          user.encrypted_password_digest,
+        ).to_not eq(
+          user.encrypted_password_digest_multi_region,
+        )
       end
     end
   end
@@ -441,6 +447,12 @@ RSpec.describe User do
 
         expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
         expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
+
+        expect(
+          user.encrypted_recovery_code_digest,
+        ).to_not eq(
+          user.encrypted_recovery_code_digest_multi_region,
+        )
       end
     end
   end
