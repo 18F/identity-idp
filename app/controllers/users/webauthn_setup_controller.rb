@@ -193,8 +193,8 @@ module Users
         flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
         flash[:error] = t(
-          'errors.webauthn_setup.general_error',
-          link: view_context.link_to(
+          'errors.webauthn_setup.general_error_html',
+          link_html: view_context.link_to(
             t('errors.webauthn_setup.additional_methods_link'),
             authentication_methods_setup_path,
           ),

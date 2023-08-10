@@ -157,8 +157,8 @@ fr:
         https://fidoalliance.org/certification/fido-certified-products/. Si vous
         pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
         %{link}.
-      general_error: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
-        réessayer ou %{link}.
+      general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
+        réessayer ou %{link_html}.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
         FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent
         en charge les clés de sécurité FIDO.

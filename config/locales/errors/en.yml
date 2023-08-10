@@ -135,7 +135,7 @@ en:
         security key. Please make sure your device is listed at
         https://fidoalliance.org/certification/fido-certified-products/ and if
         you believe this is our error, please contact at %{link}.
-      general_error: We were unable to add security key. Please try again or %{link}.
+      general_error_html: We were unable to add security key. Please try again or %{link_html}.
       not_supported: Sorry, your browser does not support FIDO security keys. The
         latest versions of Chrome, Firefox, Edge, and Safari support FIDO
         security keys.
