@@ -1,10 +1,4 @@
-import type { ReactNode } from 'react';
-
-interface LocationCollectionProps {
-  className?: string;
-
-  children?: ReactNode;
-}
+import type { LocationCollectionProps } from '../types';
 
 function LocationCollection({ children, className }: LocationCollectionProps) {
   const classes = ['usa-collection', className].filter(Boolean).join(' ');

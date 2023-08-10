@@ -1,24 +1,7 @@
 import { useI18n } from '@18f/identity-react-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
-
-export interface FormattedLocation {
-  formattedCityStateZip: string;
-  distance: string;
-  id: number;
-  name: string;
-  saturdayHours: string;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-  isPilot: boolean;
-}
-
-interface InPersonLocationsProps {
-  locations: FormattedLocation[] | null | undefined;
-  onSelect;
-  address: string;
-}
+import type { InPersonLocationsProps } from '../types';
 
 function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
   const { t } = useI18n();

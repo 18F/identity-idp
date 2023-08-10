@@ -1,17 +1,6 @@
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
-
-interface LocationCollectionItemProps {
-  distance?: string;
-  formattedCityStateZip: string;
-  handleSelect: (event: React.MouseEvent, selection: number) => void;
-  name?: string;
-  saturdayHours: string;
-  selectId: number;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-}
+import type { LocationCollectionItemProps } from '../types';
 
 function LocationCollectionItem({
   distance,

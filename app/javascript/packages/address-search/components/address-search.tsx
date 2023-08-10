@@ -4,7 +4,7 @@ import { t } from '@18f/identity-i18n';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { InPersonLocations } from '@18f/identity-document-capture';
+import InPersonLocations from './in-person-locations';
 import type { AddressSearchProps, FormattedLocation, LocationQuery } from '../types';
 import useUspsLocations from '../hooks/use-usps-locations';
 
