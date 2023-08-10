@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Users::PasswordsController do
-
   context 'user visits add an email address page' do
     let(:user) { create(:user) }
     before do

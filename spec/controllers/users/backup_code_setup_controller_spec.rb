@@ -149,8 +149,10 @@ RSpec.describe Users::BackupCodeSetupController do
     end
     it 'renders the index view' do
       get :edit
-      expect(@analytics).to have_logged_event('Backup Code Regenerate Visited', hash_including(request_came_from: anything))
+      expect(@analytics).to have_logged_event(
+        'Backup Code Regenerate Visited',
+        hash_including(request_came_from: anything),
+      )
     end
   end
-  
 end
