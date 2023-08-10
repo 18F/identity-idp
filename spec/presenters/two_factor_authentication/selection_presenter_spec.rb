@@ -22,7 +22,49 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   end
 
   describe '#disabled?' do
-    it { expect(presenter.disabled?).to eq(false) }
+    let(:single_configuration_only) {}
+    let(:mfa_configuration_count) {}
+
+    before do
+      allow(presenter).to receive(:single_configuration_only?).and_return(single_configuration_only)
+      allow(presenter).to receive(:mfa_configuration_count).and_return(mfa_configuration_count)
+    end
+
+    context 'without single configuration restriction' do
+      let(:single_configuration_only) { false }
+
+      it 'is an mfa that allows multiple configurations' do
+        expect(presenter.disabled?).to eq(false)
+      end
+    end
+
+    context 'with single configuration only' do
+      let(:single_configuration_only) { false }
+
+      context 'with unimplemented mfa count (nil)' do
+        let(:mfa_configuration_count) { nil }
+
+        it 'is mfa with unimplemented mfa count and single config' do
+          expect(presenter.disabled?).to eq(false)
+        end
+      end
+    end
+
+    context 'with no configured mfas' do
+      let(:mfa_configuration_count) { 0 }
+
+      it 'is configured with no mfa' do
+        expect(presenter.disabled?).to eq(nil)
+      end
+    end
+
+    context 'with at least one configured mfa' do
+      let(:mfa_configuration_count) { 1 }
+
+      it 'is mfa with at least one configured' do
+        expect(presenter.disabled?).to eq(nil)
+      end
+    end
   end
 
   describe '#single_configuration_only?' do
@@ -31,7 +73,9 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
 
   describe '#mfa_added_label' do
     subject(:mfa_added_label) { presenter.mfa_added_label }
-
+    before do
+      allow(presenter).to receive(:mfa_configuration_count).and_return('1')
+    end
     it 'is a count of configured MFAs' do
       expect(presenter.mfa_added_label).to include('added')
     end
