@@ -31,22 +31,39 @@ module Encryption
 
     def initialize
       @aes_cipher = AesCipher.new
-      @kms_client = KmsClient.new
+      @single_region_kms_client = KmsClient.new(
+        kms_key_id: IdentityConfig.store.aws_kms_key_id,
+      )
+      @multi_region_kms_client = KmsClient.new(
+        kms_key_id: IdentityConfig.store.aws_kms_multi_region_key_id,
+      )
     end
 
     def create_digest_pair(password:, user_uuid:)
       salt = SecureRandom.hex(32)
       cost = IdentityConfig.store.scrypt_cost
-      encrypted_password = encrypt_password(
-        password: password, user_uuid: user_uuid, salt: salt, cost: cost,
+      scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
+
+      single_region_encrypted_password = single_region_kms_client.encrypt(
+        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
       single_region_digest = PasswordDigest.new(
-        encrypted_password: encrypted_password, password_salt: salt, password_cost: cost,
+        encrypted_password: single_region_encrypted_password, password_salt: salt, password_cost: cost,
       ).to_s
+
+      multi_region_digest = nil
+      if IdentityConfig.store.aws_kms_multi_region_write_enabled
+        multi_region_encrypted_password = multi_region_kms_client.encrypt(
+          scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+        )
+        multi_region_digest = PasswordDigest.new(
+          encrypted_password: multi_region_encrypted_password, password_salt: salt, password_cost: cost,
+        ).to_s
+      end
 
       RegionalCiphertextPair.new(
         single_region_ciphertext: single_region_digest,
-        multi_region_ciphertext: nil,
+        multi_region_ciphertext: multi_region_digest,
       )
     end
 
@@ -70,14 +87,7 @@ module Encryption
 
     private
 
-    attr_reader :kms_client, :aes_cipher
-
-    def encrypt_password(salt:, cost:, password:, user_uuid:)
-      scrypted_password = scrypt_password_digest(salt: salt, cost: cost, password: password)
-      kms_client.encrypt(
-        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
-      )
-    end
+    attr_reader :single_region_kms_client, :multi_region_kms_client, :aes_cipher
 
     def verify_password_against_digest(password:, password_digest:, user_uuid:)
       scrypted_password = scrypt_password_digest(
@@ -90,7 +100,7 @@ module Encryption
     end
 
     def decrypt_digest_with_kms(encrypted_password, user_uuid)
-      kms_client.decrypt(
+      single_region_kms_client.decrypt(
         encrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
     end
