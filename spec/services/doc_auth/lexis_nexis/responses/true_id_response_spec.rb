@@ -121,12 +121,24 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssueType' => "Driver's License - STAR",
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
+        classification_info: {
+          Front: {
+            ClassName: 'Drivers License',
+          },
+          Back: {
+            ClassName: 'Drivers License',
+          },
+        },
       )
     end
 
     it 'notes that address line 2 was present' do
       expect(response.pii_from_doc).to include(address2: 'APT 3E')
       expect(response.to_h).to include(address_line2_present: true)
+    end
+
+    it 'mark doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
     end
   end
 
@@ -312,6 +324,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIsGeneric' => 'false',
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
+        classification_info: {
+          Front: {
+            ClassName: 'Drivers License',
+          },
+          Back: {
+            ClassName: 'Drivers License',
+          },
+        },
       )
     end
   end
