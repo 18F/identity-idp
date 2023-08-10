@@ -64,6 +64,10 @@ es:
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
+      doc:
+        doc_type_check: No se aceptan otras formas de identificación.
+        wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
+          identidad estatal. No se aceptan otras formas de identificación.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
