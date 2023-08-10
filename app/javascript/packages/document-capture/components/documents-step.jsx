@@ -9,6 +9,7 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
+import TipList from './tip-list';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -50,13 +51,15 @@ function DocumentsStep({
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
-      <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.document_capture_id_text1')}</li>
-        <li>{t('doc_auth.tips.document_capture_id_text2')}</li>
-        <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
-        {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
-      </ul>
+      <TipList
+        title={t('doc_auth.tips.document_capture_header_text')}
+        items={[
+          t('doc_auth.tips.document_capture_id_text1'),
+          t('doc_auth.tips.document_capture_id_text2'),
+          t('doc_auth.tips.document_capture_id_text3'),
+        ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
+        translationNeeded={false}
+      />
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
           key={side}

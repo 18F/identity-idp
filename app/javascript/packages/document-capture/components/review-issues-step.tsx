@@ -14,6 +14,7 @@ import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import { InPersonContext } from '../context';
 import UnknownError from './unknown-error';
+import TipList from './tip-list';
 
 function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
@@ -102,80 +103,51 @@ function ReviewIssuesStep({
     if (pii) {
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
-    // ipp disabled
-    if (!inPersonURL || isFailedResult) {
-      return (
-        <>
-          <Warning
-            heading={
-              isFailedDocType
-                ? t('errors.doc_auth.doc_type_not_supported_heading')
-                : t('errors.doc_auth.rate_limited_heading')
-            }
-            actionText={t('idv.failure.button.warning')}
-            actionOnClick={onWarningPageDismissed}
-            location="doc_auth_review_issues"
-            remainingAttempts={remainingAttempts}
-            troubleshootingOptions={
-              <DocumentCaptureTroubleshootingOptions
-                location="post_submission_warning"
-                showAlternativeProofingOptions={!isFailedResult}
-                showSPOption={false}
-                heading={t('components.troubleshooting_options.ipp_heading')}
-              />
-            }
-          >
-            <UnknownError
-              unknownFieldErrors={unknownFieldErrors}
-              remainingAttempts={remainingAttempts}
-              isFailedDocType={isFailedDocType}
-            />
-
-            {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
-              <p>
-                {formatWithStrongNoWrap(
-                  t('idv.failure.attempts_html', { count: remainingAttempts }),
-                )}
-              </p>
-            )}
-          </Warning>
-          <Cancel />
-        </>
-      );
-    }
-    // ipp enabled
+    const heading = isFailedDocType
+      ? t('errors.doc_auth.doc_type_not_supported_heading')
+      : t('errors.doc_auth.rate_limited_heading');
+    const actionText =
+      !inPersonURL || isFailedResult
+        ? t('idv.failure.button.warning')
+        : t('idv.failure.button.try_online');
+    const subHeading = (!inPersonURL || isFailedResult) && !isFailedDocType && (
+      <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
+    );
+    const showSPOptions = !(!inPersonURL || isFailedResult);
+    const hasCancel = !inPersonURL || isFailedResult;
+    // Warning(try again screen)
     return (
-      <Warning
-        heading={
-          isFailedDocType
-            ? t('errors.doc_auth.doc_type_not_supported_heading')
-            : t('errors.doc_auth.rate_limited_heading')
-        }
-        actionText={t('idv.failure.button.try_online')}
-        actionOnClick={onWarningPageDismissed}
-        location="doc_auth_review_issues"
-        remainingAttempts={remainingAttempts}
-        troubleshootingOptions={
-          <DocumentCaptureTroubleshootingOptions
-            location="post_submission_warning"
-            showAlternativeProofingOptions={!isFailedResult}
-            heading={t('components.troubleshooting_options.ipp_heading')}
-          />
-        }
-      >
-        {!isFailedDocType && <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>}
-        <UnknownError
-          unknownFieldErrors={unknownFieldErrors}
+      <>
+        <Warning
+          heading={heading}
+          actionText={actionText}
+          actionOnClick={onWarningPageDismissed}
+          location="doc_auth_review_issues"
           remainingAttempts={remainingAttempts}
-          isFailedDocType={isFailedDocType}
-        />
+          troubleshootingOptions={
+            <DocumentCaptureTroubleshootingOptions
+              location="post_submission_warning"
+              showAlternativeProofingOptions={!isFailedResult}
+              showSPOption={showSPOptions}
+              heading={t('components.troubleshooting_options.ipp_heading')}
+            />
+          }
+        >
+          {!!subHeading && subHeading}
+          <UnknownError
+            unknownFieldErrors={unknownFieldErrors}
+            remainingAttempts={remainingAttempts}
+            isFailedDocType={isFailedDocType}
+          />
 
-        {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
-          <p>
-            {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
-          </p>
-        )}
-      </Warning>
+          {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
+            <p>
+              {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
+            </p>
+          )}
+        </Warning>
+        {hasCancel && <Cancel />}
+      </>
     );
   }
   // hasDismissed = true
@@ -190,16 +162,18 @@ function ReviewIssuesStep({
       />
 
       {!isFailedDocType && captureHints && (
-        <>
-          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-          <ul>
-            <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-            <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-          </ul>
-        </>
+        <TipList
+          title={t('doc_auth.tips.review_issues_id_header_text')}
+          items={[
+            t('doc_auth.tips.review_issues_id_text1'),
+            t('doc_auth.tips.review_issues_id_text2'),
+            t('doc_auth.tips.review_issues_id_text3'),
+            t('doc_auth.tips.review_issues_id_text4'),
+          ]}
+          translationNeeded={false}
+        />
       )}
+
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
           key={side}
