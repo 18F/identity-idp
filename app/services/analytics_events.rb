@@ -2267,6 +2267,7 @@ module AnalyticsEvents
     fraud_review_pending:,
     fraud_rejection:,
     gpo_verification_pending:,
+    in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -2277,6 +2278,7 @@ module AnalyticsEvents
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,
