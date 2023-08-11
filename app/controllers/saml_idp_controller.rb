@@ -17,7 +17,6 @@ class SamlIdpController < ApplicationController
 
   skip_before_action :verify_authenticity_token
   before_action :require_path_year
-  before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
   before_action :bump_auth_count, only: :auth
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
@@ -134,6 +133,7 @@ class SamlIdpController < ApplicationController
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
+      user_fully_authenticated: user_fully_authenticated?,
     )
   end
 
