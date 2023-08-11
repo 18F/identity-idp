@@ -29,6 +29,14 @@ RSpec.describe GpoReminderSender do
         expect { subject.send_emails }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
 
+      context 'and the user has multiple emails' do
+        let(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails) }
+
+        it 'sends an email to all of them' do
+          expect { subject.send_emails }.to change { ActionMailer::Base.deliveries.size }.by(2)
+        end
+      end
+
       context 'but a reminder has already been sent' do
         before { set_reminder_sent_at(Time.zone.now - 1.day) }
 
