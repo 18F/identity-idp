@@ -872,4 +872,41 @@ RSpec.describe UserMailer, type: :mailer do
       )
     end
   end
+
+  describe '#gpo_reminder' do
+    let(:date_letter_was_sent) { Date.new(1969, 7, 20) }
+
+    let(:user) do
+      user = create(:user, :with_pending_gpo_profile)
+      user.pending_profile.update(gpo_verification_pending_at: date_letter_was_sent)
+      user
+    end
+
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address).gpo_reminder
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the specified email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('idv.messages.gpo_reminder.subject')
+    end
+
+    it 'renders the body' do
+      expected_body = strip_tags(
+        t(
+          'idv.messages.gpo_reminder.body_html',
+          date_letter_was_sent: date_letter_was_sent.strftime(t('time.formats.event_date')),
+          app_name: APP_NAME,
+        ),
+      )
+
+      expect(mail.html_part.body).to have_content(expected_body)
+    end
+  end
 end
