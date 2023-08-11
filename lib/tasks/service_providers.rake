@@ -21,5 +21,4 @@ namespace :service_providers do
     issuers = ENV.fetch('ISSUERS', '').split(',')
     DestroyUnusedProviders.new(issuers).run
   end
-
 end

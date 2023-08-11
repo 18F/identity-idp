@@ -20,7 +20,6 @@ class DestroyUnusedProviders
 
   def run
     @destroy_list.each do |records|
-
       if records.service_provider.blank?
         stdout.puts "Issuer #{records.issuer} is not associated with a service provider."
         stdout.puts 'Please check if it has already been deleted'

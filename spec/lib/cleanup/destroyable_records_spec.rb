@@ -31,56 +31,53 @@ RSpec.describe DestroyableRecords do
   end
 
   describe '#print_data' do
-    before do
-      allow(stdout).to receive(:puts)
-    end
-
     it 'prints the issuer' do
       issuer = service_provider.issuer
-      expect(stdout).to receive(:puts).with(
-        "You are about to delete a service provider with issuer #{issuer}"
-      )
-
       subject.print_data
+
+      expect(stdout.string).to include(
+        "You are about to delete a service provider with issuer #{issuer}",
+      )
     end
 
     it 'prints the partner account name' do
       name = integration.partner_account.name
-      expect(stdout).to receive(:puts).with("The partner is #{name}")
-
       subject.print_data
+
+      expect(stdout.string).to include("The partner is #{name}")
     end
 
     it 'prints the service provider attributes' do
       freeze_time do
-        attributes = service_provider.attributes.to_yaml
-        expect(stdout).to receive(:puts).with attributes
-
+        attributes = JSON.parse(service_provider.to_json)
         subject.print_data
+
+        expect(stdout.string).to include attributes.to_yaml
       end
     end
 
     it 'prints the integration attributes' do
       attributes = integration.attributes.to_yaml
-      expect(stdout).to receive(:puts).with attributes
-
       subject.print_data
+
+      expect(stdout.string).to include attributes
     end
 
     it 'prints the in-person enrollments size' do
       size = service_provider.in_person_enrollments.size
       msg = "This provider has #{size} in person enrollments " \
         "that will be destroyed"
-      expect(stdout).to receive(:puts).with msg
-
       subject.print_data
+
+      expect(stdout.string).to include msg
     end
 
     it 'prints affected iaa orders' do
-      expect(stdout).to receive(:puts).with 'These are the IAA orders that will be affected: \n'
-      msg = "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
-
       subject.print_data
+
+      expect(stdout.string).to include 'These are the IAA orders that will be affected: \n'
+      msg = "#{iaa_order.iaa_gtc.gtc_number} Order #{iaa_order.order_number}"
+      expect(stdout.string).to include msg
     end
   end
 

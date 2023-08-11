@@ -19,7 +19,7 @@ class DestroyableRecords
     stdout.puts "\n\n"
 
     stdout.puts 'Attributes:'
-    stdout.puts service_provider.attributes.to_yaml
+    stdout.puts service_provider_attributes.to_yaml
     stdout.puts "\n"
 
     stdout.puts '********'
@@ -61,6 +61,10 @@ class DestroyableRecords
 
   private
 
+  def service_provider_attributes
+    JSON.parse(service_provider.to_json)
+  end
+
   def integration_usages
     integration.integration_usages
   end
@@ -72,5 +76,4 @@ class DestroyableRecords
   def in_person_enrollments
     service_provider.in_person_enrollments
   end
-
 end
