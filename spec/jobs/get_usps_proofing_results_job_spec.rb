@@ -345,11 +345,13 @@ RSpec.describe GetUspsProofingResultsJob do
             duration_seconds: anything,
             enrollments_checked: 5,
             enrollments_errored: 1,
+            enrollments_timed_out: 0,
             enrollments_expired: 1,
             enrollments_failed: 1,
             enrollments_in_progress: 1,
             enrollments_passed: 1,
             percent_enrollments_errored: 20.00,
+            percent_enrollments_timed_out: 0.00,
             job_name: 'GetUspsProofingResultsJob',
           )
 
@@ -373,11 +375,13 @@ RSpec.describe GetUspsProofingResultsJob do
             duration_seconds: anything,
             enrollments_checked: 5,
             enrollments_errored: 0,
+            enrollments_timed_out: 0,
             enrollments_expired: 0,
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 5,
             percent_enrollments_errored: 0.00,
+            percent_enrollments_timed_out: 0.00,
             job_name: 'GetUspsProofingResultsJob',
           )
 
@@ -402,11 +406,13 @@ RSpec.describe GetUspsProofingResultsJob do
             duration_seconds: anything,
             enrollments_checked: 0,
             enrollments_errored: 0,
+            enrollments_timed_out: 0,
             enrollments_expired: 0,
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 0,
             percent_enrollments_errored: 0.00,
+            percent_enrollments_timed_out: 0.00,
             job_name: 'GetUspsProofingResultsJob',
           )
 
