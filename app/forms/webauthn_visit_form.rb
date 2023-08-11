@@ -71,23 +71,37 @@ class WebauthnVisitForm
   end
 
   def webauthn_platform_general_error
-    I18n.t(
-      'errors.webauthn_platform_setup.account_setup_error',
-      link: link_to(
-        I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-        current_mfa_setup_path,
-      ),
-    )
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: link_to(
+          I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+          current_mfa_setup_path,
+        ),
+      )
+    end
   end
 
   def webauthn_general_error
-    I18n.t(
-      'errors.webauthn_setup.general_error_html',
-      link_html: link_to(
-        I18n.t('errors.webauthn_setup.additional_methods_link'),
-        current_mfa_setup_path,
-      ),
-    )
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: link_to(
+          I18n.t('errors.webauthn_setup.additional_methods_link'),
+          current_mfa_setup_path,
+        ),
+      )
+    end
   end
 
   def mfa_user

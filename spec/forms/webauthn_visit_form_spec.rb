@@ -134,10 +134,7 @@ RSpec.describe WebauthnVisitForm do
             params = { error: 'foo', platform: 'true' }
             errors = { foo: [I18n.t(
               'errors.webauthn_platform_setup.account_setup_error',
-              link: link_to(
-                I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-                account_path,
-              ),
+              link: I18n.t('errors.webauthn_platform_setup.choose_another_method'),
             )] }
 
             expect(subject.submit(params).to_h).to include(
