@@ -30,7 +30,9 @@ module Users
       track_backup_codes_created
     end
 
-    def edit; end
+    def edit
+      analytics.backup_code_regenerate_visit(**properties)
+    end
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
@@ -61,6 +63,10 @@ module Users
     def confirm_backup_codes; end
 
     private
+
+    def properties
+      ParseControllerFromReferer.new(request.referer).call
+    end
 
     def track_backup_codes_created
       analytics.backup_code_created(

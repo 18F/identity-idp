@@ -49,4 +49,8 @@ module DocumentCaptureStepHelper
   def api_image_submission_test_credential_part
     Faraday::FilePart.new('spec/fixtures/ial2_test_credential.yml', 'text/plain')
   end
+
+  def click_try_again
+    click_spinner_button_and_wait t('idv.failure.button.warning')
+  end
 end

@@ -69,6 +69,11 @@ fr:
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
         par l’État.
+      doc:
+        doc_type_check: Les autres pièces d’identité ne sont pas acceptées.
+        wrong_id_type: Nous n’acceptons que les permis de conduire ou les cartes
+          d’identité délivrées par l’État. Les autres pièces d’identité ne sont
+          pas acceptées.
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre

@@ -9,6 +9,7 @@ module Users
     before_action :confirm_recently_authenticated_2fa
 
     def show
+      analytics.add_email_visit
       @add_user_email_form = AddUserEmailForm.new
     end
 

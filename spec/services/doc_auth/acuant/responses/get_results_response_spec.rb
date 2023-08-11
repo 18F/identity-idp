@@ -57,6 +57,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           },
         },
         address_line2_present: true,
+        doc_type_supported: true,
       }
 
       processed_alerts = response_hash[:processed_alerts]
@@ -72,6 +73,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(processed_alerts).to include(expected_alerts)
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::PASSED)
       expect(response.result_code.billed?).to eq(true)
+      expect(response.id_type_supported?).to eq(true)
     end
 
     it 'parsed PII from the doc' do
@@ -159,7 +161,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     end
   end
 
-  context 'with a failed result' do
+  context 'with a failed result of unknow document type' do
     let(:http_response) do
       instance_double(
         Faraday::Response,
@@ -349,6 +351,82 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       end
 
       it { expect(attention_with_barcode).to eq(true) }
+    end
+  end
+
+  describe  'with unsupported id' do
+    context 'with successful response' do
+      let(:http_response) do
+        instance_double(
+          Faraday::Response,
+          body: AcuantFixtures.get_results_response_success_tribal_id,
+        )
+      end
+      let(:expected_errors) do
+        {
+          general: [DocAuth::Errors::DOC_TYPE_CHECK],
+          front: [DocAuth::Errors::CARD_TYPE],
+          back: [DocAuth::Errors::CARD_TYPE],
+          hints: true,
+        }
+      end
+      it 'generates error for doc type' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(expected_errors)
+        response_hash = response.to_h
+        expected_hash = {
+          success: false,
+          errors: expected_errors,
+          attention_with_barcode: false,
+          exception: nil,
+          billed: true,
+          vendor: 'Acuant',
+          doc_auth_result: 'Passed',
+          processed_alerts: a_hash_including(
+            failed: all(a_hash_including(:name, :result)),
+            passed: all(a_hash_including(:name, :result)),
+          ),
+          log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
+          image_metrics: a_hash_including(:back, :front),
+          alert_failure_count: 2,
+          tamper_result: 'Passed',
+          classification_info: {
+            'Back' => {
+              'ClassName' => 'Tribal Identification',
+              'Issue' => '2014',
+              'IssueType' => 'Back',
+              'Name' => 'Cowlitz Indian Tribe Back',
+              'IssuerCode' => 'ND',
+              'IssuerName' => 'Cowlitz Indian Tribe',
+            },
+            'Front' => {
+              'ClassName' => 'Tribal Identification',
+              'Issue' => '2014',
+              'IssueType' => 'Tribal Identification Card',
+              'Name' => 'Cowlitz Indian Tribe Tribal Identification',
+              'IssuerCode' => 'ND',
+              'IssuerName' => 'Cowlitz Indian Tribe',
+            },
+          },
+          address_line2_present: true,
+          doc_type_supported: true,
+        }
+
+        processed_alerts = response_hash[:processed_alerts]
+        expected_alerts = {
+          passed:
+            a_collection_including(
+              a_hash_including(side: :front, region: 'Flag Pattern'),
+              a_hash_including(side: :front, region: 'Lower Data Labels Right'),
+            ),
+        }
+
+        expect(response_hash).to match(expected_hash)
+        expect(processed_alerts).to include(expected_alerts)
+        expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::PASSED)
+        expect(response.result_code.billed?).to eq(true)
+        expect(response.id_type_supported?).to eq(false)
+      end
     end
   end
 end

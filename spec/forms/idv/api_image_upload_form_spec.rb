@@ -140,6 +140,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          doc_type_supported: boolean,
         )
       end
 

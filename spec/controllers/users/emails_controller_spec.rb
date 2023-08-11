@@ -10,6 +10,18 @@ RSpec.describe Users::EmailsController do
     end
   end
 
+  context 'user visits add an email address page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :show
+      expect(@analytics).to have_logged_event('Add Email Address Page Visited')
+    end
+  end
+
   describe '#limit' do
     context 'user exceeds email limit' do
       let(:user) { create(:user) }

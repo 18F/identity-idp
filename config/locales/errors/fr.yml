@@ -27,6 +27,8 @@ fr:
     doc_auth:
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou
+        les cartes d’identité délivrées par l’État
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des

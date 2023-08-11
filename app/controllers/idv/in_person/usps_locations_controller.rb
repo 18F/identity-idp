@@ -63,12 +63,12 @@ module Idv
 
       def handle_error(err)
         remapped_error = case err
-        when ActionController::InvalidAuthenticityToken,
-             Faraday::Error
-          :unprocessable_entity
-        else
-          :internal_server_error
-        end
+                         when ActionController::InvalidAuthenticityToken,
+                              Faraday::Error
+                           :unprocessable_entity
+                         else
+                           :internal_server_error
+                         end
 
         analytics.idv_in_person_locations_request_failure(
           api_status_code: Rack::Utils.status_code(remapped_error),
