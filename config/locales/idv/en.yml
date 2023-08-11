@@ -175,21 +175,21 @@ en:
       alert_info: 'We sent a letter with your one-time code to:'
       clear_and_start_over: Clear your information and start over
       did_not_receive_letter:
-        instructions: If you have your letter, enter the 10-character code from the
-          letter you received.
-        intro_html: '<p>%{request_new_letter_prompt}Please note that <strong>letters
-          typically take 3 to 7 business days to arrive</strong>. Thank you for
-          your patience.</p>'
-        request_new_letter_link: request a new letter
-        request_new_letter_prompt_html: If you haven’t received your letter, you may
-          %{request_new_letter_link}.
+        form:
+          instructions: If you have your letter, enter the 10-character code from the
+            letter you received.
+        intro:
+          be_patient_html: Please note that <strong>letters typically take 3 to 7 business
+            days to arrive</strong>. Thank you for your patience.
+          request_new_letter_link: request a new letter
+          request_new_letter_prompt_html: If you haven’t received your letter, you may
+            <span>%{request_new_letter_link}</span>.
         title: Didn’t get your letter?
       form:
         instructions: Enter the 10-character code from the letter you received.
         otp_label: One-time code
         submit: Confirm account
         title: Confirm your account
-      instructions: Enter the 10-character code from the letter you received.
       intro_html: '<p>If you have received your letter, please enter your one-time
         code below. </p><p>If your letter hasn’t arrived yet, please be patient
         as <strong>letters typically take 3 to 7 business days to

@@ -49,30 +49,30 @@ RSpec.describe 'idv/gpo_verify/index.html.erb' do
     end
 
     it 'has a special intro paragraph' do
-      expect(rendered).to have_css(
-        'p',
-        text: strip_tags(
+      expect(rendered).to have_content(
+        strip_tags(
           t(
-            'idv.gpo.did_not_receive_letter.intro_html',
-            request_new_letter_prompt: t(
-              'idv.gpo.did_not_receive_letter.request_new_letter_prompt_html',
-              request_new_letter_link: t('idv.gpo.did_not_receive_letter.request_new_letter_link'),
-            ),
+            'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
+            request_new_letter_link:
+              t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
           ),
         ),
+      )
+      expect(rendered).to have_content(
+        strip_tags(t('idv.gpo.did_not_receive_letter.intro.be_patient_html')),
       )
     end
 
     it 'links to requesting a new letter' do
       expect(rendered).to have_link(
-        t('idv.gpo.did_not_receive_letter.request_new_letter_link'),
+        t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
         href: idv_gpo_path,
       )
     end
 
     it 'has a special prompt to enter the otp' do
       expect(rendered).to have_content(
-        t('idv.gpo.did_not_receive_letter.instructions'),
+        t('idv.gpo.did_not_receive_letter.form.instructions'),
       )
     end
 
@@ -86,21 +86,15 @@ RSpec.describe 'idv/gpo_verify/index.html.erb' do
     context 'user is NOT allowed to request another GPO letter' do
       let(:should_prompt_user_to_request_another_letter) { false }
 
-      it 'has special intro but does not prompt to request new letter' do
-        expect(rendered).to have_css(
-          'p',
-          text: strip_tags(
-            t(
-              'idv.gpo.did_not_receive_letter.intro_html',
-              request_new_letter_prompt: '',
-            ),
-          ),
+      it 'still has a special intro' do
+        expect(rendered).to have_content(
+          strip_tags(t('idv.gpo.did_not_receive_letter.intro.be_patient_html')),
         )
       end
 
       it 'does not link to requesting a new letter' do
         expect(rendered).not_to have_link(
-          t('idv.gpo.did_not_receive_letter.request_new_letter_link'),
+          t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
           href: idv_gpo_path,
         )
       end

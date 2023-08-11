@@ -34,19 +34,16 @@
     ) %>
 
 <% if @user_did_not_receive_letter %>
-  <%= t(
-        'idv.gpo.did_not_receive_letter.intro_html',
-        request_new_letter_prompt: (
-          if @should_prompt_user_to_request_another_letter
-            t(
-              'idv.gpo.did_not_receive_letter.request_new_letter_prompt_html',
-              request_new_letter_link: link_to(t('idv.gpo.did_not_receive_letter.request_new_letter_link'), idv_gpo_path),
-            )
-          else
-            ''
-          end
-        ),
-      ) %>
+  <% if @should_prompt_user_to_request_another_letter %>
+    <%= t(
+          'idv.gpo.did_not_receive_letter.intro.request_new_letter_prompt_html',
+          request_new_letter_link: link_to(
+            t('idv.gpo.did_not_receive_letter.intro.request_new_letter_link'),
+            idv_gpo_path,
+          ),
+        ) %>
+  <% end %>
+    <%= t('idv.gpo.did_not_receive_letter.intro.be_patient_html') %>
 <% else %>
   <%= t('idv.gpo.intro_html') %>
 <% end %>
@@ -55,10 +52,10 @@
 
 <p class="margin-bottom-1">
   <%= if @user_did_not_receive_letter
-        t('idv.gpo.did_not_receive_letter.instructions')
+        t('idv.gpo.did_not_receive_letter.form.instructions')
       else
-        t('idv.gpo.instructions')
-      end %>%
+        t('idv.gpo.form.instructions')
+      end %>
 </p>
 
 <%= simple_form_for(

@@ -190,14 +190,16 @@ fr:
       alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
       clear_and_start_over: Supprimez vos données et recommencez
       did_not_receive_letter:
-        instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
-          caractères figurant sur la lettre que vous avez reçue.
-        intro_html: '<p>%{request_new_letter_prompt} Veuillez noter que les lettres
-          prennent <strong>généralement entre trois à sept jours ouvrables pour
-          arriver</strong>. Nous vous remercions de votre patience.</p>'
-        request_new_letter_link: demander une nouvelle
-        request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
-          pouvez en %{request_new_letter_link}.
+        form:
+          instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
+            caractères figurant sur la lettre que vous avez reçue.
+        intro:
+          be_patient_html: 'Veuillez noter que les lettres prennent <strong>généralement
+            entre trois à sept jours ouvrables pour arriver</strong>. Nous vous
+            remercions de votre patience.'
+          request_new_letter_link: demander une nouvelle
+          request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
+            pouvez en <span>%{request_new_letter_link}</span>.
         title: N’avez-vous pas reçu votre lettre?
       form:
         instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
