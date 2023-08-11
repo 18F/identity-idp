@@ -1,5 +1,9 @@
 module Idv::Engine::Events
-  # extend Dsl
+  extend Dsl
+
+  # event :auth_user_changed_password do
+  #   description 'The user has changed their password'
+  # end
 
   # namespace :auth do
   #   event :user_changed_password do
