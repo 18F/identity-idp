@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'axe-rspec'
 
 RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
@@ -12,40 +13,50 @@ RSpec.describe 'Identity verification', :js do
     user = sign_up_and_2fa_ial1_user
 
     validate_welcome_page
+    expect_page_to_have_no_accessibility_violations(page)
     try_to_skip_ahead_from_welcome
     complete_welcome_step
+    expect_page_to_have_no_accessibility_violations(page)
 
     validate_agreement_page
     try_to_skip_ahead_from_agreement
     complete_agreement_step
+    expect_page_to_have_no_accessibility_violations(page)
 
     validate_hybrid_handoff_page
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
+    expect_page_to_have_no_accessibility_violations(page)
 
     try_to_go_back_from_document_capture
     validate_document_capture_page
     complete_document_capture_step
+    expect_page_to_have_no_accessibility_violations(page)
     validate_document_capture_submit(user)
 
     validate_ssn_page
     complete_ssn_step
+    expect_page_to_have_no_accessibility_violations(page)
 
     try_to_go_back_from_verify_info
     validate_verify_info_page
     complete_verify_step
+    expect_page_to_have_no_accessibility_violations(page)
     validate_verify_info_submit(user)
 
     validate_phone_page
     try_to_skip_ahead_from_phone
     complete_otp_verification_page(user)
+    expect_page_to_have_no_accessibility_violations(page)
 
     validate_review_page
     complete_review_step(user)
+    expect_page_to_have_no_accessibility_violations(page)
     validate_review_submit(user)
 
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
+    expect_page_to_have_no_accessibility_violations(page)
 
     validate_idv_completed_page(user)
     click_agree_and_continue
