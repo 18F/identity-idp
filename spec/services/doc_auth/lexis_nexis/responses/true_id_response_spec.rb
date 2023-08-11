@@ -492,7 +492,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#doc_type_supported?' do
-    let(:doc_class_name) {'Drivers License'}
+    let(:doc_class_name) { 'Drivers License' }
     let(:success_response) do
       response = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
         doc_class_node = json['Products'].first['ParameterDetails'].
@@ -505,21 +505,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     subject(:doc_type_supported?) do
       described_class.new(success_response, config).doc_type_supported?
     end
-    it { is_expected.to eq(true)}
+    it { is_expected.to eq(true) }
 
     context 'when doc class is unknown' do
-      let(:doc_class_name) { 'Unknown'}
+      let(:doc_class_name) { 'Unknown' }
       it 'identified as supported doc type ' do
         is_expected.to eq(true)
       end
     end
 
     context 'when doc class is identified but not supported' do
-      let(:doc_class_name) { 'Passport'}
+      let(:doc_class_name) { 'Passport' }
       it 'identified as un supported doc type ' do
         is_expected.to eq(false)
       end
     end
   end
-
 end
