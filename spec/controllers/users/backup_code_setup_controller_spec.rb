@@ -151,7 +151,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(request_came_from: anything),
+        hash_including(referer: { request_came_from: 'no referer' }),
       )
     end
   end
