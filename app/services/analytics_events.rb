@@ -2260,6 +2260,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending
   # @param [Boolean] fraud_rejection
   # @param [Boolean] gpo_verification_pending
+  # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   def idv_review_complete(
