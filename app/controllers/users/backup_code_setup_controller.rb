@@ -31,7 +31,7 @@ module Users
     end
 
     def edit
-      analytics.backup_code_regenerate_visit(**properties)
+      analytics.backup_code_regenerate_visit(**analytics_properties)
     end
 
     def continue
@@ -63,10 +63,6 @@ module Users
     def confirm_backup_codes; end
 
     private
-
-    def properties
-      ParseControllerFromReferer.new(request.referer).call
-    end
 
     def track_backup_codes_created
       analytics.backup_code_created(
@@ -129,6 +125,7 @@ module Users
         multi_factor_auth_method: 'backup_codes',
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        referer: ParseControllerFromReferer.new(request.referer).call,
       }
     end
   end
