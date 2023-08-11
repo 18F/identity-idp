@@ -182,6 +182,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Send reminder letters for old, outstanding GPO verification codes
+      send_gpo_code_reminders: {
+        class: 'GpoReminderJob',
+        cron: cron_24h,
+        args: -> { [Time.zone.now - 14.days] },
+      },
     }.compact
   end
   # rubocop:enable Metrics/BlockLength
