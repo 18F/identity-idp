@@ -374,6 +374,98 @@ RSpec.describe User do
     end
   end
 
+  describe '#password=' do
+    it 'digests and saves the digested password' do
+      user = build(:user, password: nil)
+
+      user.password = 'test password'
+
+      expect(user.encrypted_password_digest).to_not be_blank
+      expect(user.encrypted_password_digest).to_not match(/test password/)
+
+      expect(user.encrypted_password_digest_multi_region).to be_nil
+    end
+
+    context 'with aws_kms_multi_region_write_enabled set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
+      end
+
+      it 'digests and saves a single region and multi region password digests' do
+        user = build(:user, password: nil)
+
+        user.password = 'test password'
+
+        expect(user.encrypted_password_digest).to_not be_blank
+        expect(user.encrypted_password_digest).to_not match(/test password/)
+
+        expect(user.encrypted_password_digest_multi_region).to_not be_blank
+        expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
+
+        expect(
+          user.encrypted_password_digest,
+        ).to_not eq(
+          user.encrypted_password_digest_multi_region,
+        )
+      end
+    end
+  end
+
+  describe '#valid_password?' do
+    it 'returns true if the password matches the stored digest' do
+      user = build(:user, password: 'test password')
+
+      expect(user.valid_password?('test password')).to eq(true)
+      expect(user.valid_password?('wrong password')).to eq(false)
+    end
+  end
+
+  describe '#personal_key=' do
+    it 'digests and saves the digested personal key' do
+      user = build(:user, personal_key: nil)
+
+      user.personal_key = 'test personal key'
+
+      expect(user.encrypted_recovery_code_digest).to_not be_blank
+      expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+
+      expect(user.encrypted_recovery_code_digest_multi_region).to be_nil
+    end
+
+    context 'with aws_kms_multi_region_write_enabled set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
+      end
+
+      it 'digests and saves a single region and multi region personal key digests' do
+        user = build(:user, personal_key: nil)
+
+        user.personal_key = 'test personal key'
+
+        expect(user.encrypted_recovery_code_digest).to_not be_blank
+        expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
+
+        expect(
+          user.encrypted_recovery_code_digest,
+        ).to_not eq(
+          user.encrypted_recovery_code_digest_multi_region,
+        )
+      end
+    end
+  end
+
+  describe '#valid_personal_key?' do
+    it 'returns true if the personal key matches the stored digest' do
+      user = build(:user, personal_key: 'test personal key')
+
+      expect(user.valid_personal_key?('test personal key')).to eq(true)
+      expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+    end
+  end
+
   describe '#authenticatable_salt' do
     it 'returns the password salt' do
       user = create(:user)

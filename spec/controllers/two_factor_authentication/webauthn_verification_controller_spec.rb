@@ -128,7 +128,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           multi_factor_auth_method: 'webauthn',
           success: true,
           webauthn_configuration_id: webauthn_configuration.id,
-          multi_factor_auth_method_created_at: webauthn_configuration.created_at,
+          multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -164,7 +164,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           multi_factor_auth_method: 'webauthn_platform',
           success: true,
           webauthn_configuration_id: webauthn_configuration.id,
-          multi_factor_auth_method_created_at: webauthn_configuration.created_at,
+          multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
@@ -197,7 +197,8 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
                    success: false,
                    error_details: { authenticator_data: [:invalid_authenticator_data] },
                    webauthn_configuration_id: webauthn_configuration.id,
-                   multi_factor_auth_method_created_at: webauthn_configuration.created_at }
+                   multi_factor_auth_method_created_at: webauthn_configuration.created_at.
+                     strftime('%s%L') }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 

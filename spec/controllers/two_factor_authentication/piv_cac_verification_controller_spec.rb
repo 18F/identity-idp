@@ -112,7 +112,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          multi_factor_auth_method_created_at: cfg.created_at,
+          multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
