@@ -24,6 +24,16 @@ class WebauthnVisitForm
     @platform_authenticator
   end
 
+  def current_mfa_setup_path
+    if mfa_user.two_factor_enabled? && in_mfa_selection_flow
+      second_mfa_setup_path
+    elsif mfa_user.two_factor_enabled?
+      account_path
+    else
+      authentication_methods_setup_path
+    end
+  end
+
   private
 
   def check_params(params)
@@ -45,17 +55,7 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_platform_setup.not_supported')
     else
-      if in_mfa_selection_flow
-        I18n.t(
-          'errors.webauthn_platform_setup.account_setup_error',
-          link: link_to(
-            I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-            authentication_methods_setup_path,
-          ),
-        )
-      else
-        I18n.t('errors.webauthn_platform_setup.general_error')
-      end
+      webauthn_platform_general_error
     end
   end
 
@@ -66,14 +66,28 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_setup.not_supported')
     else
-      I18n.t(
-        'errors.webauthn_setup.general_error_html',
-        link_html: link_to(
-          I18n.t('errors.webauthn_setup.additional_methods_link'),
-          authentication_methods_setup_path,
-        ),
-      )
+      webauthn_general_error
     end
+  end
+
+  def webauthn_platform_general_error
+    I18n.t(
+      'errors.webauthn_platform_setup.account_setup_error',
+      link: link_to(
+        I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+        current_mfa_setup_path,
+      ),
+    )
+  end
+
+  def webauthn_general_error
+    I18n.t(
+      'errors.webauthn_setup.general_error_html',
+      link_html: link_to(
+        I18n.t('errors.webauthn_setup.additional_methods_link'),
+        current_mfa_setup_path,
+      ),
+    )
   end
 
   def mfa_user
