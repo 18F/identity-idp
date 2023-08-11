@@ -48,21 +48,21 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
           expect(presenter.disabled?).to eq(false)
         end
       end
-    end
 
-    context 'with no configured mfas' do
-      let(:mfa_configuration_count) { 0 }
+      context 'with no configured mfas' do
+        let(:mfa_configuration_count) { 0 }
 
-      it 'is configured with no mfa' do
-        expect(presenter.disabled?).to eq(nil)
+        it 'is configured with no mfa' do
+          expect(presenter.disabled?).to eq(false)
+        end
       end
-    end
 
-    context 'with at least one configured mfa' do
-      let(:mfa_configuration_count) { 1 }
+      context 'with at least one configured mfa' do
+        let(:mfa_configuration_count) { 1 }
 
-      it 'is mfa with at least one configured' do
-        expect(presenter.disabled?).to eq(nil)
+        it 'is mfa with at least one configured' do
+          expect(presenter.disabled?).to eq(false)
+        end
       end
     end
   end
