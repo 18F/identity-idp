@@ -52,7 +52,10 @@ RSpec.describe Idv::GpoVerifyController do
     context 'user has pending profile' do
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
-        expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: GPO verification visited',
+          source: nil,
+        )
 
         action
 
@@ -90,6 +93,13 @@ RSpec.describe Idv::GpoVerifyController do
           action
           expect(assigns(:user_did_not_receive_letter)).to eql(true)
         end
+        it 'augments analytics event' do
+          action
+          expect(@analytics).to have_logged_event(
+            'IdV: GPO verification visited',
+            source: 'gpo_reminder_email',
+          )
+        end
       end
     end
 
@@ -111,6 +121,7 @@ RSpec.describe Idv::GpoVerifyController do
       it 'renders rate limited page' do
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification visited',
+          source: nil,
         ).once
         expect(@analytics).to receive(:track_event).with(
           'Rate Limit Reached',

@@ -1029,8 +1029,16 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account verification visited
   # GPO verification visited
-  def idv_gpo_verification_visited
-    track_event('IdV: GPO verification visited')
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_gpo_verification_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification visited',
+      source: source,
+      **extra,
+    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob

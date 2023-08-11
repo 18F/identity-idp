@@ -9,7 +9,13 @@ module Idv
     before_action :confirm_verification_needed
 
     def index
-      analytics.idv_gpo_verification_visited
+      # GPO reminder emails include an "I did not receive my letter!" link that results in
+      # slightly different copy on this screen.
+      @user_did_not_receive_letter = !!params[:did_not_receive_letter]
+
+      analytics.idv_gpo_verification_visited(
+        source: if @user_did_not_receive_letter then 'gpo_reminder_email' end,
+      )
 
       if rate_limiter.limited?
         render_rate_limited
@@ -24,10 +30,6 @@ module Idv
         FeatureManagement.gpo_verification_enabled? &&
         !gpo_mail.mail_spammed? &&
         !gpo_mail.profile_too_old?
-
-      # GPO reminder emails include an "I did not receive my letter!" link that results in
-      # slightly different copy on this screen.
-      @user_did_not_receive_letter = !!params[:did_not_receive_letter]
 
       if pii_locked?
         redirect_to capture_password_url
