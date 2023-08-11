@@ -215,6 +215,7 @@ RSpec.describe Idv::PersonalKeyController do
           fraud_review_pending: false,
           fraud_rejection: false,
           in_person_verification_pending: false,
+          in_person_verification_pending: false,
           deactivation_reason: nil,
           proofing_components: nil,
         )
@@ -259,6 +260,7 @@ RSpec.describe Idv::PersonalKeyController do
           fraud_review_pending: false,
           fraud_rejection: false,
           deactivation_reason: nil,
+          in_person_verification_pending: false,
           proofing_components: nil,
         )
       end
@@ -285,6 +287,7 @@ RSpec.describe Idv::PersonalKeyController do
             address_verification_method: nil,
             fraud_review_pending: false,
             fraud_rejection: false,
+            in_person_verification_pending: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )
@@ -311,6 +314,7 @@ RSpec.describe Idv::PersonalKeyController do
             fraud_review_pending: true,
             fraud_rejection: false,
             address_verification_method: nil,
+            in_person_verification_pending: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )
