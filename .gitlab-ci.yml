@@ -415,22 +415,18 @@ include:
 # Enable DAST Scan
 dast:
   stage: dast
+  tags:
+    - review-app-dast
   image:
     name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" 
-    DAST_ZAP_LOG_CONFIGURATION: "log4j.logger.org.parosproxy.paros=DEBUG;log4j.logger.org.zaproxy.zap=DEBUG"
-    DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion(0).name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion(0).regex=false  -config connection.proxyChain.exclusions.exclusion(0).enabled=true  -config connection.proxyChain.exclusions.exclusion(1).name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion(1).regex=false -config connection.proxyChain.exclusions.exclusion(1).enabled=true -config connection.proxyChain.exclusions.exclusion(2).name=localhost -config connection.proxyChain.exclusions.exclusion(2).regex=false -config connection.proxyChain.exclusions.exclusion(2).enabled=true"
+    #DAST_ZAP_LOG_CONFIGURATION: "log4j.logger.org.parosproxy.paros=DEBUG;log4j.logger.org.zaproxy.zap=DEBUG"
+    #DAST_ZAP_CLI_OPTIONS: "-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion(0).name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion(0).regex=false  -config connection.proxyChain.exclusions.exclusion(0).enabled=true  -config connection.proxyChain.exclusions.exclusion(1).name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion(1).regex=false -config connection.proxyChain.exclusions.exclusion(1).enabled=true -config connection.proxyChain.exclusions.exclusion(2).name=localhost -config connection.proxyChain.exclusions.exclusion(2).regex=false -config connection.proxyChain.exclusions.exclusion(2).enabled=true"
   allow_failure: true
   script:
-    - export http_proxy="http://obproxy.login.gov.internal:3128"
-    - export http_proxy="http://obproxy.login.gov.internal:3128"
-    - export HTTP_PROXY="http://obproxy.login.gov.internal:3128"
-    - export HTTPS_PROXY="http://obproxy.login.gov.internal:3128"
-    - export no_proxy="localhost,127.0.0.1,169.254.169.254,169.254.169.123"
-    - export NO_PROXY="localhost,127.0.0.1,169.254.169.254,169.254.169.123"
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
     - /analyze
