@@ -226,8 +226,8 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  def backup_code_regenerate_visit(referer:, **extra)
-    track_event('Backup Code Regenerate Visited', referer:, **extra)
+  def backup_code_regenerate_visit(**analytics_properties_for_visit)
+    track_event('Backup Code Regenerate Visited', **analytics_properties_for_visit)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
