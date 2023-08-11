@@ -126,7 +126,8 @@ module DocAuth
         end
 
         def doc_type_supported?
-          !doc_class_name.present? || ID_TYPE_SLUGS.key?(doc_class_name) || doc_class_name == 'Unknown'
+          !doc_class_name.present? || ID_TYPE_SLUGS.key?(doc_class_name) ||
+            doc_class_name == 'Unknown'
         end
 
         private
