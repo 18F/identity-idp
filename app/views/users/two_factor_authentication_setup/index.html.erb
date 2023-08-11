@@ -36,4 +36,4 @@
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: logout_path, link_method: :delete %>

@@ -126,7 +126,7 @@ RSpec.feature 'idv gpo step' do
       click_continue
       visit root_path
       click_on t('idv.gpo.return_to_profile')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
     end
 
     def complete_idv_and_return_to_gpo_step
