@@ -64,7 +64,7 @@ module Idv
 
       irs_attempts_api_tracker.idv_personal_key_generated
 
-      flash[:allow_confirmations_continue] = true
+      # flash[:allow_confirmations_continue] = true
     end
 
     def personal_key

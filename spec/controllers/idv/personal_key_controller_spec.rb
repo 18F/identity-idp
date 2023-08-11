@@ -149,11 +149,11 @@ RSpec.describe Idv::PersonalKeyController do
       )
     end
 
-    it 'sets flash[:allow_confirmations_continue] to true' do
-      get :show
+    # it 'sets flash[:allow_confirmations_continue] to true' do
+    #   get :show
 
-      expect(flash[:allow_confirmations_continue]).to eq true
-    end
+    #   expect(flash[:allow_confirmations_continue]).to eq true
+    # end
 
     it 'logs when user generates personal key' do
       expect(@irs_attempts_api_tracker).to receive(:idv_personal_key_generated)
