@@ -192,7 +192,10 @@ module Users
       elsif form.platform_authenticator?
         flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
-        flash[:error] = 'todo remove'
+        flash[:error] = t(
+          'errors.webauthn_setup.general_error_html',
+          link_html: t('errors.webauthn_setup.additional_methods_link'),
+        )
       end
       render :new
     end
