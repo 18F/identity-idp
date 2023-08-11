@@ -1943,11 +1943,13 @@ module AnalyticsEvents
     fraud_review_pending:,
     fraud_rejection:,
     proofing_components: nil,
+    in_person_verification_pending:,
     deactivation_reason: nil,
     **extra
   )
     track_event(
       'IdV: personal key submitted',
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
