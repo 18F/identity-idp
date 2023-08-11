@@ -1957,8 +1957,8 @@ module AnalyticsEvents
   def idv_personal_key_submitted(
     fraud_review_pending:,
     fraud_rejection:,
-    proofing_components: nil,
     in_person_verification_pending:,
+    proofing_components: nil,
     deactivation_reason: nil,
     **extra
   )
