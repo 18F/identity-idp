@@ -25,7 +25,7 @@ module Idv
 
       if success
         # Don't allow the user to go back to document capture after verifying
-        if flow_session['redo_document_capture'] || idv_session.redo_document_capture
+        if idv_session.redo_document_capture
           flow_session.delete('redo_document_capture')
           idv_session.redo_document_capture = nil
           idv_session.flow_path ||= 'standard'

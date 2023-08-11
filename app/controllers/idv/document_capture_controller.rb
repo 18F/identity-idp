@@ -76,8 +76,7 @@ module Idv
         step: 'document_capture',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-        redo_document_capture:
-          idv_session.redo_document_capture || flow_session[:redo_document_capture],
+        redo_document_capture: idv_session.redo_document_capture,
       }.compact.merge(ab_test_analytics_buckets)
     end
 
