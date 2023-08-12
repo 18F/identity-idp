@@ -24,6 +24,7 @@ module Idv
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
+        in_person_verification_pending: false,
         **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
