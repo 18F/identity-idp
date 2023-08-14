@@ -226,6 +226,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
+  # @param [String] request_came_from the controller/action the request came from
   def backup_code_regenerate_visit(**analytics_properties_for_visit)
     track_event('Backup Code Regenerate Visited', **analytics_properties_for_visit)
   end
