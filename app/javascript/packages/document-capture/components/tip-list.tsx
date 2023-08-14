@@ -1,18 +1,14 @@
-import { useI18n } from '@18f/identity-react-i18n';
-
 interface TipListProps {
   title: string;
   items: string[];
-  translationNeeded?: boolean;
 }
-function TipList({ translationNeeded = false, title, items = [] }: TipListProps) {
-  const { t } = useI18n();
+function TipList({ title, items = [] }: TipListProps) {
   return (
     <>
-      <p className="margin-bottom-0">{translationNeeded ? t(title) : title}</p>
+      <p className="margin-bottom-0">{title}</p>
       <ul>
-        {items.map((item, idx) => (
-          <li key={`tip-item-${idx}`}>{translationNeeded ? t(item) : item}</li>
+        {items.map((item) => (
+          <li key={item}>{item}</li>
         ))}
       </ul>
     </>
