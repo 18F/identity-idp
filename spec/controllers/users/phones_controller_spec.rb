@@ -10,17 +10,37 @@ RSpec.describe Users::PhonesController do
   end
 
   context 'user adds phone' do
-    it 'gives the user a form to enter a new phone number' do
-      get :add
+    context 'when phone controller is not consolidated' do
+      before do
+        allow(IdentityConfig.store).to receive(:consolidate_phone_controllers).
+          and_return(false)
+      end
 
-      expect(response).to render_template(:add)
-      expect(response.request.flash[:alert]).to be_nil
+      it 'gives the user a form to enter a new phone number' do
+        get :add
+
+        expect(response).to render_template(:add)
+        expect(response.request.flash[:alert]).to be_nil
+      end
+
+      it 'tracks analytics' do
+        expect(@analytics).to receive(:track_event).
+          with('Phone Setup Visited')
+        get :add
+      end
     end
 
-    it 'tracks analytics' do
-      expect(@analytics).to receive(:track_event).
-        with('Phone Setup Visited')
-      get :add
+    context 'when phone controller is conolidated' do
+      before do
+        allow(IdentityConfig.store).to receive(:consolidate_phone_controllers).
+          and_return(true)
+      end
+
+      it 'redirects to phone_setup controller' do
+        get :add
+
+        expect(response).to redirect_to(phone_setup_url)
+      end
     end
   end
 

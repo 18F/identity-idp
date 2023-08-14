@@ -17,11 +17,14 @@ RSpec.describe Users::PhoneSetupController do
     end
 
     context 'when signed in' do
-      it 'renders the index view' do
+      let(:user) { build(:user, otp_delivery_preference: 'voice') }
+      before do
         stub_analytics
-        user = build(:user, otp_delivery_preference: 'voice')
         stub_sign_in_before_2fa(user)
+        subject.user_session[:mfa_selections] = ['voice']
+      end
 
+      it 'renders the index view' do
         expect(@analytics).to receive(:track_event).
           with('User Registration: phone setup visited',
                { enabled_mfa_methods_count: 0 })
@@ -34,18 +37,6 @@ RSpec.describe Users::PhoneSetupController do
         get :index
 
         expect(response).to render_template(:index)
-      end
-    end
-
-    context 'when fully registered and signed in' do
-      it 'redirects to account page' do
-        stub_analytics
-        user = build(:user, :with_phone)
-        stub_sign_in(user)
-
-        get :index
-
-        expect(response).to redirect_to(account_path)
       end
     end
 
