@@ -7,4 +7,4 @@
 <%= button_to t('forms.buttons.continue'), login_add_piv_cac_success_path,
               class: 'usa-button usa-button--big usa-button--wide', method: :post %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: logout_path, link_method: :delete %>
