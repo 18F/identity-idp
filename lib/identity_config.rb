@@ -398,7 +398,7 @@ class IdentityConfig
     config.add(:reg_unconfirmed_email_window_in_minutes, type: :integer)
     config.add(:reject_id_token_hint_in_logout, type: :boolean)
     config.add(:remember_device_expiration_hours_aal_1, type: :integer)
-    config.add(:remember_device_expiration_hours_aal_2, type: :integer)
+    config.add(:remember_device_expiration_minutes_aal_2, type: :integer)
     config.add(:report_timeout, type: :integer)
     config.add(:requests_per_ip_cidr_allowlist, type: :comma_separated_string_list)
     config.add(:requests_per_ip_limit, type: :integer)
