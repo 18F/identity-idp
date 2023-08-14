@@ -415,8 +415,6 @@ include:
 # Enable DAST Scan
 dast:
   stage: dast
-  tags:
-    - build-pool
   variables:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
