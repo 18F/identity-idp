@@ -332,8 +332,8 @@ review-app:
         {"name": "LOGIN_ENV", "value": "$CI_ENVIRONMENT_SLUG" },
         {"name": "LOGIN_HOST_ROLE", "value": "idp" },
         {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" },
-        {"name": "PIV_CAC_SERVICE_URL", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac.review-apps"},
-        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac.review-apps"}
+        {"name": "PIV_CAC_SERVICE_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
+        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"}
       ]
       EOF
       )
@@ -361,8 +361,8 @@ review-app:
         {"name": "LOGIN_ENV", "value": "$CI_ENVIRONMENT_SLUG" },
         {"name": "LOGIN_HOST_ROLE", "value": "worker" },
         {"name": "LOGIN_SKIP_REMOTE_CONFIG", "value": "true" },
-        {"name": "PIV_CAC_SERVICE_URL", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac.review-apps"},
-        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac.review-apps"}
+        {"name": "PIV_CAC_SERVICE_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"},
+        {"name": "PIV_CAC_VERIFY_TOKEN_URL", "value": "https://$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov/"}
       ]
       EOF
       )
