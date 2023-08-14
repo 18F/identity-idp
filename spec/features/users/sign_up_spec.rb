@@ -382,10 +382,13 @@ RSpec.feature 'Sign Up' do
 
   it 'redirects back with an error if the user does not select 2FA option' do
     sign_in_user
-    visit authentication_methods_setup_path
-    click_on 'Continue'
+    click_continue
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+
+    select_2fa_option('phone')
+    expect(page).to have_current_path(phone_setup_path)
+    expect(page).not_to have_content(t('errors.two_factor_auth_setup.must_select_option'))
   end
 
   it 'does not show the remember device option as the default when the SP is AAL2' do

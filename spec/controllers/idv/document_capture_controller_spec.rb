@@ -89,6 +89,15 @@ RSpec.describe Idv::DocumentCaptureController do
         analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
+
+      it 'adds redo_document_capture to analytics using idv_session' do
+        subject.idv_session.redo_document_capture = true
+
+        get :show
+
+        analytics_args[:redo_document_capture] = true
+        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
     end
 
     it 'updates DocAuthLog document_capture_view_count' do

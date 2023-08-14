@@ -72,8 +72,8 @@ RSpec.feature 'Email confirmation during sign up' do
     it 'redirects to sign in page with message that user is already confirmed' do
       allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       sign_up_and_set_password
+      logout(:user)
 
-      visit destroy_user_session_url
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
       expect(page.html).to include(t('notices.dap_participation'))

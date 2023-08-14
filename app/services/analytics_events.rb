@@ -226,8 +226,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  def backup_code_regenerate_visit(**properties)
-    track_event('Backup Code Regenerate Visited', **properties)
+  # @param [String] request_came_from the controller/action the request came from
+  def backup_code_regenerate_visit(request_came_from:, **extra)
+    track_event('Backup Code Regenerate Visited', request_came_from:, **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -1029,8 +1030,16 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account verification visited
   # GPO verification visited
-  def idv_gpo_verification_visited
-    track_event('IdV: GPO verification visited')
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_gpo_verification_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification visited',
+      source: source,
+      **extra,
+    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob

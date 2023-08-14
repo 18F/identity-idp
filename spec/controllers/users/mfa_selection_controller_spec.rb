@@ -27,7 +27,7 @@ RSpec.describe Users::MfaSelectionController do
 
       voice_params = {
         two_factor_options_form: {
-          selection: 'voice',
+          selection: ['voice'],
         },
       }
 
@@ -51,7 +51,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'phone',
+            selection: ['phone'],
           },
         }
 
@@ -91,7 +91,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'auth_app',
+            selection: ['auth_app'],
           },
         }
 
@@ -105,7 +105,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'webauthn',
+            selection: ['webauthn'],
           },
         }
 
@@ -119,7 +119,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'webauthn_platform',
+            selection: ['webauthn_platform'],
           },
         }
 
@@ -133,7 +133,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'piv_cac',
+            selection: ['piv_cac'],
           },
         }
 
@@ -149,15 +149,15 @@ RSpec.describe Users::MfaSelectionController do
       end
 
       context 'with no active MFA' do
+        let(:user) { build(:user) }
+
         it 'redirects to the index page with a flash error' do
           patch :update, params: {
             two_factor_options_form: {},
           }
 
-          expect(response).to redirect_to two_factor_options_path
-          expect(flash[:error]).to eq(
-            t('errors.two_factor_auth_setup.must_select_option'),
-          )
+          expect(response).to redirect_to second_mfa_setup_path
+          expect(flash[:error]).to eq(t('errors.two_factor_auth_setup.must_select_option'))
         end
       end
 
@@ -166,9 +166,7 @@ RSpec.describe Users::MfaSelectionController do
           create(:phone_configuration, user: user)
 
           patch :update, params: {
-            two_factor_options_form: {
-              selection: [''],
-            },
+            two_factor_options_form: {},
           }
 
           expect(response).to redirect_to account_path
@@ -182,7 +180,7 @@ RSpec.describe Users::MfaSelectionController do
 
         patch :update, params: {
           two_factor_options_form: {
-            selection: 'foo',
+            selection: ['foo'],
           },
         }
 

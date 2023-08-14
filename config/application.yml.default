@@ -78,6 +78,7 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_csp_unsafe_inline: true
 disable_email_sending: true
+disable_logout_get_request: true
 disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
@@ -273,7 +274,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
-remember_device_expiration_hours_aal_2: 0
+remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
@@ -438,6 +439,7 @@ production:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   disable_email_sending: false
+  disable_logout_get_request: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false

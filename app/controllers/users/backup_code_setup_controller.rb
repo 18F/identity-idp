@@ -31,7 +31,7 @@ module Users
     end
 
     def edit
-      analytics.backup_code_regenerate_visit(**properties)
+      analytics.backup_code_regenerate_visit(**analytics_properties_for_visit)
     end
 
     def continue
@@ -64,7 +64,7 @@ module Users
 
     private
 
-    def properties
+    def analytics_properties_for_visit
       ParseControllerFromReferer.new(request.referer).call
     end
 
