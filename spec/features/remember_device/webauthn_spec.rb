@@ -130,7 +130,7 @@ RSpec.describe 'Remembering a webauthn device' do
         click_continue
 
         expect(page).
-          to have_content t('titles.phone_setup')
+          to have_content t('headings.add_info.phone')
 
         expect(current_path).to eq phone_setup_path
 
