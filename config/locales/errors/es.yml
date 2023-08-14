@@ -140,6 +140,7 @@ es:
       unique_name: Ese nombre de dispositivo ha sido utilizado. Por favor, seleccione
         un nombre de dispositivo diferente.
     webauthn_setup:
+      additional_methods_link: elija otro método de autenticación
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.
       attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
@@ -148,8 +149,8 @@ es:
         https://fidoalliance.org/certification/fido-certified-products/. Si
         considera que se trata de un error nuestro, póngase en contacto con
         %{link}.
-      general_error: Hubo un error al agregar su clave de seguridad de hardware.
-        Inténtalo de nuevo.
+      general_error_html: No hemos podido añadir la clave de seguridad. Inténtelo de
+        nuevo o %{link_html}.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
         Las últimas versiones de Chrome, Firefox, Edge y Safari son compatibles
         con las claves de seguridad FIDO.

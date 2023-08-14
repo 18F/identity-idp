@@ -192,6 +192,8 @@ es:
     webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
+      connect_html: No hemos podido conectar la clave de seguridad. Por favor,
+        inténtelo de nuevo o %{link_html}.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad

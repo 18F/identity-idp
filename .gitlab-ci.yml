@@ -450,7 +450,7 @@ ecr-scan:
     - echo $SCAN_FINDINGS
     - >
       echo $SCAN_FINDINGS |
-      jq -r 'if (.imageScanFindings.findings | length > 0) then
+      jq -r 'if (.imageScanFindings.enhancedFindings | length > 0) then
       {
         "version": "15.0.4",
         "scan": {
