@@ -102,14 +102,15 @@ module Idv
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
+      gpo_mail = GpoMail.new(current_user)
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
-          phone_step_attempts: phone_step_attempts,
+          phone_step_attempts: gpo_mail.phone_step_attempts,
           first_letter_requested_at: first_letter_requested_at,
-          days_since_first_letter: days_since_first_letter,
+          days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
           **ab_test_analytics_buckets,
         )
       end
@@ -124,19 +125,8 @@ module Idv
       end
     end
 
-    # Same as in GpoController
-    def phone_step_attempts
-      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
-    end
-
-    # Same as in GpoController
     def first_letter_requested_at
       idv_session.profile.gpo_verification_pending_at
-    end
-
-    # Same as in GpoController
-    def days_since_first_letter
-      first_letter_requested_at ? (Time.zone.today - first_letter_requested_at.to_date).to_i : 0
     end
 
     def valid_password?

@@ -56,11 +56,13 @@ module Idv
     def update_tracking
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_letter_sent, :update, true)
+
+      gpo_mail = GpoMail.new(current_user)
       analytics.idv_gpo_address_letter_requested(
         resend: resend_requested?,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter: days_since_first_letter,
-        phone_step_attempts: phone_step_attempts,
+        days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail.phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
@@ -73,19 +75,8 @@ module Idv
       current_user.gpo_verification_pending_profile?
     end
 
-    # Caveat: If the user succeeds on their final phone attempt, the :proof_address
-    # RateLimiter is reset to 0. But they probably wouldn't be doing verify by mail
-    # if they succeeded on the phone step.
-    def phone_step_attempts
-      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
-    end
-
     def first_letter_requested_at
       current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
-    end
-
-    def days_since_first_letter
-      first_letter_requested_at ? (Time.zone.today - first_letter_requested_at.to_date).to_i : 0
     end
 
     def confirm_mail_not_spammed
@@ -103,12 +94,13 @@ module Idv
     end
 
     def resend_letter
+      gpo_mail = GpoMail.new(current_user)
       analytics.idv_gpo_address_letter_enqueued(
         enqueued_at: Time.zone.now,
         resend: true,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter: days_since_first_letter,
-        phone_step_attempts: phone_step_attempts,
+        days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail.phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       confirmation_maker = confirmation_maker_perform
