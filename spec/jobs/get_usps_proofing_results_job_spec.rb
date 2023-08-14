@@ -231,9 +231,9 @@ RSpec.describe GetUspsProofingResultsJob do
         let(:pending_enrollment) { pending_enrollments.first }
 
         before do
-          enrollment_record = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
+          enrollment_records = InPersonEnrollment.where(id: pending_enrollments.map(&:id))
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(enrollment_record)
+            and_return(enrollment_records)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -1128,8 +1128,6 @@ RSpec.describe GetUspsProofingResultsJob do
           )
         end
         before do
-          # allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-          #  and_return([pending_enrollment])
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 

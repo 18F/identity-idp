@@ -28,19 +28,19 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.needs_usps_status_check(
+    pending_enrollments = InPersonEnrollment.needs_usps_status_check(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
     started_at = Time.zone.now
-    enrollments.update(last_batch_claim_at: started_at)
-    enrollments = InPersonEnrollment.needs_usps_status_check_batch(started_at)
+    pending_enrollments.update(last_batch_claimed_at: started_at)
+    enrollments_to_check = InPersonEnrollment.needs_usps_status_check_batch(started_at)
     analytics.idv_in_person_usps_proofing_results_job_started(
-      enrollments_count: enrollments.count,
+      enrollments_count: enrollments_to_check.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
-    check_enrollments(enrollments)
+    check_enrollments(enrollments_to_check)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
