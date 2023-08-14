@@ -1206,5 +1206,13 @@ RSpec.describe Profile do
         expect(user.profiles.verified.count).to eq 1
       end
     end
+
+    describe '.in_person_verification_pending' do
+      it 'returns only in_person_verification_pending Profiles' do
+        user.profiles.create(in_person_verification_pending_at: Time.zone.now)
+        user.profiles.create(in_person_verification_pending_at: nil)
+        expect(user.profiles.in_person_verification_pending.count).to eq 1
+      end
+    end
   end
 end
