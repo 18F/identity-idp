@@ -416,7 +416,7 @@ include:
 dast:
   stage: dast
   tags:
-    - review-app-dast
+    - build-pool
   image:
     name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
