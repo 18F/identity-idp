@@ -10,9 +10,16 @@ module Proofing
       INVALID_STATE_ID_NUMBER = '00000000'
       TRANSACTION_ID = 'state-id-mock-transaction-id-456'
       TRIGGER_MVA_TIMEOUT = 'mvatimeout'
+      AAMVA_TIMEOUT = 'aamvatimeout'
 
       def proof(applicant)
         return mva_timeout_result if mva_timeout?(applicant[:state_id_number])
+
+        if applicant[:state_id_number] == AAMVA_TIMEOUT
+          # Simulate the connection to AAMVA itself timing out
+          sleep(60.seconds)
+          raise Faraday::TimeoutError
+        end
 
         errors = {}
         if state_not_supported?(applicant[:state_id_jurisdiction])
