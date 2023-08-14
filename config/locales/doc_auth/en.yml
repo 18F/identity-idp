@@ -15,6 +15,7 @@ en:
       upload_picture: Upload photo
     errors:
       alerts:
+        address_check: We couldn’t read the address on your ID. Try taking new pictures.
         barcode_content_check: We couldn’t read the barcode on the back of your ID. It
           could be because of a problem with the barcode, or the barcode is a
           new type that we don’t recognize yet. Use another state‑issued ID if
