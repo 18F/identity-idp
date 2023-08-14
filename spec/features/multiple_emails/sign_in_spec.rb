@@ -13,7 +13,7 @@ RSpec.feature 'sign in with any email address' do
 
     expect(page).to have_current_path(account_path)
 
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     signin(email2, user.password)
     fill_in_code_with_last_phone_otp

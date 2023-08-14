@@ -148,7 +148,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
     let!(:checked_pending_enrollment) do
-      create(:in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now)
+      create(:in_person_enrollment, :pending, last_batch_claimed_at: Time.zone.now)
     end
     let!(:needy_enrollments) do
       [
@@ -193,7 +193,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
     let!(:checked_pending_enrollment) do
       create(
-        :in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now,
+        :in_person_enrollment, :pending, last_batch_claimed_at: Time.zone.now,
                                          ready_for_status_check: true
       )
     end

@@ -570,6 +570,7 @@ RSpec.describe SamlIdpController do
             requested_ial: authn_context,
             service_provider: sp1_issuer,
             force_authn: false,
+            user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', {
@@ -712,6 +713,7 @@ RSpec.describe SamlIdpController do
             requested_ial: 'ialmax',
             service_provider: sp1_issuer,
             force_authn: false,
+            user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', {
@@ -936,6 +938,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: true,
+            user_fully_authenticated: false,
           })
 
         saml_get_auth(saml_settings(overrides: { force_authn: true }))
@@ -1566,6 +1569,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            user_fully_authenticated: false,
           })
 
         saml_get_auth(saml_settings)
@@ -2011,6 +2015,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).
           with('SAML Auth', analytics_hash)
@@ -2058,6 +2063,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
@@ -2096,6 +2102,7 @@ RSpec.describe SamlIdpController do
             service_provider: 'http://localhost:3000',
             requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
             force_authn: false,
+            user_fully_authenticated: true,
           })
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
