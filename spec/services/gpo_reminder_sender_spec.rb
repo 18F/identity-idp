@@ -7,16 +7,21 @@ RSpec.describe GpoReminderSender do
     TIME_NOT_YET_DUE = TIME_DUE_FOR_REMINDER + 1.day
     TIME_YESTERDAY = Time.zone.now - 1.day
 
+    subject(:sender) { GpoReminderSender.new(fake_analytics) }
+
     let(:user) { create(:user, :with_pending_gpo_profile) }
+    let(:fake_analytics) { FakeAnalytics.new }
 
     def set_gpo_verification_pending_at(to_time)
       user.gpo_verification_pending_profile.update(gpo_verification_pending_at: to_time)
     end
 
     def set_reminder_sent_at(to_time)
-      gpo_confirmation_code = user.gpo_verification_pending_profile.gpo_confirmation_codes.first
-      gpo_confirmation_code.reminder_sent_at = to_time
-      gpo_confirmation_code.save
+      user.
+        gpo_verification_pending_profile.
+        gpo_confirmation_codes.
+        first.
+        update(reminder_sent_at: to_time)
     end
 
     context 'when no users need a reminder' do
@@ -26,6 +31,11 @@ RSpec.describe GpoReminderSender do
         expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
           to change { ActionMailer::Base.deliveries.size }.by(0)
       end
+
+      it 'logs no events' do
+        expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          not_to change { fake_analytics.events.count }
+      end
     end
 
     context 'when a user is due for a reminder' do
@@ -34,6 +44,12 @@ RSpec.describe GpoReminderSender do
       it 'sends that user an email' do
         expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
           to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+
+      it 'logs an event' do
+        subject.send_emails(TIME_DUE_FOR_REMINDER)
+
+        expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
       end
 
       context 'and the user has multiple emails' do
@@ -51,6 +67,11 @@ RSpec.describe GpoReminderSender do
         it 'does not send that user an email' do
           expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
             to change { ActionMailer::Base.deliveries.size }.by(0)
+        end
+
+        it 'logs no events' do
+          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+            not_to change { fake_analytics.events.count }
         end
       end
     end

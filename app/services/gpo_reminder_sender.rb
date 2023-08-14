@@ -1,4 +1,8 @@
 class GpoReminderSender
+  def initialize(analytics)
+    @analytics = analytics
+  end
+
   def send_emails(for_letters_sent_before)
     profiles_due_for_reminder = Profile.joins(:gpo_confirmation_codes).
       where(
@@ -8,6 +12,7 @@ class GpoReminderSender
 
     profiles_due_for_reminder.each do |profile|
       profile.user.send_email_to_all_addresses(:gpo_reminder)
+      @analytics.idv_gpo_reminder_email_sent(to_user: profile.user.uuid)
     end
   end
 end
