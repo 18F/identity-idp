@@ -189,7 +189,7 @@ describe('document-capture/components/review-issues-step', () => {
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_tab' }).href,
     ).to.equal(
-      'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
+      'https://example.com/?step=document_capture&location=document_capture_review_issues',
     );
   });
 

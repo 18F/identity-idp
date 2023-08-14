@@ -58,7 +58,6 @@ function DocumentsStep({
           t('doc_auth.tips.document_capture_id_text2'),
           t('doc_auth.tips.document_capture_id_text3'),
         ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
-        translationNeeded={false}
       />
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
