@@ -224,7 +224,7 @@ class DataPull
       table << %w[login_uuid agency issuer external_uuid]
 
       User.includes(:agency_identities, identities: { service_provider_record: :agency }).
-        where(uuid: login_uuids).
+        where(uuid: login_uuids).order(:uuid).
         then do |scope|
           if config.requesting_issuers.present?
             scope.where(service_provider_record: { issuer: config.requesting_issuers })
