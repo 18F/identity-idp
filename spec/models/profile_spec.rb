@@ -1191,7 +1191,7 @@ RSpec.describe Profile do
   end
 
   describe 'scopes' do
-    describe '#active' do
+    describe '.active' do
       it 'returns only active Profiles' do
         user.profiles.create(active: false)
         user.profiles.create(active: true)
@@ -1199,7 +1199,7 @@ RSpec.describe Profile do
       end
     end
 
-    describe '#verified' do
+    describe '.verified' do
       it 'returns only verified Profiles' do
         user.profiles.create(verified_at: Time.zone.now)
         user.profiles.create(verified_at: nil)
