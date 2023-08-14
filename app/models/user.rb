@@ -143,7 +143,7 @@ class User < ApplicationRecord
     return @pending_profile if defined?(@pending_profile)
 
     @pending_profile = begin
-      pending = profiles.where.not(in_person_verification_pending_at: nil).or(
+      pending = profiles.in_person_verification_pending.or(
         profiles.where.not(gpo_verification_pending_at: nil),
       ).or(
         profiles.where.not(fraud_review_pending_at: nil),

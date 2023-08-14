@@ -14,6 +14,11 @@ class Profile < ApplicationRecord
 
   scope(:active, -> { where(active: true) })
   scope(:verified, -> { where.not(verified_at: nil) })
+  scope(
+    :in_person_verification_pending, -> {
+      where.not(in_person_verification_pending_at: nil)
+    }
+  )
 
   has_one :establishing_in_person_enrollment,
           -> { where(status: :establishing).order(created_at: :desc) },
