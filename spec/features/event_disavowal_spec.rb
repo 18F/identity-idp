@@ -49,7 +49,7 @@ RSpec.feature 'disavowing an action' do
 
     choose 'new_phone_form_otp_delivery_preference_sms'
     check 'new_phone_form_otp_make_default_number'
-    click_button t('forms.buttons.continue')
+    click_button t('forms.buttons.send_one_time_code')
 
     submit_prefilled_otp_code(user, 'sms')
 
