@@ -178,6 +178,7 @@ class IdentityConfig
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_csp_unsafe_inline, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
+    config.add(:disable_logout_get_request, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
