@@ -375,7 +375,7 @@ review-app:
         {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac-postgres.review-apps"},
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "pivcac"},
-        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-idp.review-apps"},
+        {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG-review-app.pivcac.identitysandbox.gov"}
       ]
       EOF
