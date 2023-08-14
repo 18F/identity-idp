@@ -142,16 +142,17 @@ function FullAddressSearch({
   } = useUspsLocations(locationsURL);
 
   const inputChangeHandler =
-    <T extends HTMLElement & { value: string }>(input) =>
+    <T extends HTMLElement & { value: string }>(input, ref) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
-      input(target.value);
+      if (ref === 'zip_code') input((target.value).trim());
+      else input((target.value).trim());
     };
 
-  const onAddressChange = inputChangeHandler(setAddressValue);
-  const onCityChange = inputChangeHandler(setCityValue);
-  const onStateChange = inputChangeHandler(setStateValue);
-  const onZipCodeChange = inputChangeHandler(setZipCodeValue);
+  const onAddressChange = inputChangeHandler(setAddressValue, 'address');
+  const onCityChange = inputChangeHandler(setCityValue, 'city');
+  const onStateChange = inputChangeHandler(setStateValue, 'state');
+  const onZipCodeChange = inputChangeHandler(setZipCodeValue, 'zip_code');
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
