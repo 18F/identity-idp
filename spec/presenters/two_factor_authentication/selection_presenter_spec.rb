@@ -39,7 +39,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
     end
 
     context 'with single configuration only' do
-      let(:single_configuration_only) { false }
+      let(:single_configuration_only) { true }
 
       context 'with unimplemented mfa count (nil)' do
         let(:mfa_configuration_count) { nil }
@@ -61,7 +61,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
         let(:mfa_configuration_count) { 1 }
 
         it 'is mfa with at least one configured' do
-          expect(presenter.disabled?).to eq(false)
+          expect(presenter.disabled?).to eq(true)
         end
       end
     end
