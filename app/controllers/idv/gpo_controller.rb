@@ -59,6 +59,7 @@ module Idv
       analytics.idv_gpo_address_letter_requested(
         resend: resend_requested?,
         first_letter_requested_at: first_letter_requested_at,
+        days_since_first_letter: days_since_first_letter,
         phone_step_attempts: phone_step_attempts,
         **ab_test_analytics_buckets,
       )
@@ -83,6 +84,10 @@ module Idv
       current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
     end
 
+    def days_since_first_letter
+      first_letter_requested_at ? (Time.zone.today - first_letter_requested_at.to_date).to_i : 0
+    end
+
     def confirm_mail_not_spammed
       redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
                                     gpo_mail_service.mail_spammed?
@@ -102,6 +107,7 @@ module Idv
         enqueued_at: Time.zone.now,
         resend: true,
         first_letter_requested_at: first_letter_requested_at,
+        days_since_first_letter: days_since_first_letter,
         phone_step_attempts: phone_step_attempts,
         **ab_test_analytics_buckets,
       )

@@ -109,6 +109,7 @@ module Idv
           resend: false,
           phone_step_attempts: phone_step_attempts,
           first_letter_requested_at: first_letter_requested_at,
+          days_since_first_letter: days_since_first_letter,
           **ab_test_analytics_buckets,
         )
       end
@@ -131,6 +132,11 @@ module Idv
     # Same as in GpoController
     def first_letter_requested_at
       idv_session.profile.gpo_verification_pending_at
+    end
+
+    # Same as in GpoController
+    def days_since_first_letter
+      first_letter_requested_at ? (Time.zone.today - first_letter_requested_at.to_date).to_i : 0
     end
 
     def valid_password?
