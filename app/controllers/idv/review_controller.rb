@@ -40,7 +40,6 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
-      gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
@@ -95,6 +94,10 @@ module Idv
 
     private
 
+    def gpo_mail_service
+      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+    end
+
     def address_verification_method
       user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
@@ -102,15 +105,15 @@ module Idv
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
 
-      gpo_mail = GpoMail.new(current_user)
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
-          phone_step_attempts: gpo_mail.phone_step_attempts,
+          phone_step_attempts: gpo_mail_service.phone_step_attempts,
           first_letter_requested_at: first_letter_requested_at,
-          days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
+          days_since_first_letter:
+            gpo_mail_service.days_since_first_letter(first_letter_requested_at),
           **ab_test_analytics_buckets,
         )
       end

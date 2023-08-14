@@ -57,12 +57,12 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_letter_sent, :update, true)
 
-      gpo_mail = GpoMail.new(current_user)
       analytics.idv_gpo_address_letter_requested(
         resend: resend_requested?,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
-        phone_step_attempts: gpo_mail.phone_step_attempts,
+        days_since_first_letter:
+          gpo_mail_service.days_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail_service.phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
@@ -94,13 +94,13 @@ module Idv
     end
 
     def resend_letter
-      gpo_mail = GpoMail.new(current_user)
       analytics.idv_gpo_address_letter_enqueued(
         enqueued_at: Time.zone.now,
         resend: true,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter: gpo_mail.days_since_first_letter(first_letter_requested_at),
-        phone_step_attempts: gpo_mail.phone_step_attempts,
+        days_since_first_letter:
+          gpo_mail_service.days_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail_service.phone_step_attempts,
         **ab_test_analytics_buckets,
       )
       confirmation_maker = confirmation_maker_perform
