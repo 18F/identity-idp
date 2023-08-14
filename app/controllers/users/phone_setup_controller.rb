@@ -11,6 +11,8 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+    before_action :confirm_recently_authenticated_2fa
+
 
     helper_method :in_multi_mfa_selection_flow?
 
