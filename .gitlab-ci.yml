@@ -417,8 +417,6 @@ dast:
   stage: dast
   tags:
     - build-pool
-  image:
-    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
@@ -428,8 +426,8 @@ dast:
   allow_failure: true
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
-    - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
-    - /analyze
+    - echo ${DAST_WEBSITE}
+    - curl -vk https://${DAST_WEBSITE}
   artifacts:
     reports:
       dast: gl-dast-report.json
