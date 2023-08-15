@@ -970,8 +970,8 @@ module AnalyticsEvents
   # @param [DateTime] enqueued_at When letter was enqueued
   # @param [Boolean] resend User requested a second (or more) letter
   # @param [DateTime] first_letter_requested_at When the profile became gpo_pending
-  # @param [Integer] hours_since_first_letter Diff between first_letter_requested_at and now in hours
-  # @param [Integer] phone_step_attempts Number of attempts at phone verification before requesting letter
+  # @param [Integer] hours_since_first_letter Diff btw first_letter_requested_at and now in hours
+  # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was enqueued and the time at which it was enqueued
   def idv_gpo_address_letter_enqueued(
@@ -997,8 +997,8 @@ module AnalyticsEvents
 
   # @param [Boolean] resend
   # @param [DateTime] first_letter_requested_at When the profile became gpo_pending
-  # @param [Integer] hours_since_first_letter Diff between first_letter_requested_at and now in hours
-  # @param [Integer] phone_step_attempts Number of attempts at phone verification before requesting letter
+  # @param [Integer] hours_since_first_letter Diff btw first_letter_requested_at and now in hours
+  # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was requested
   def idv_gpo_address_letter_requested(
