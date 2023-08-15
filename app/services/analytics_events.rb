@@ -921,6 +921,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
+  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
@@ -928,6 +929,7 @@ module AnalyticsEvents
     fraud_review_pending:,
     fraud_rejection:,
     gpo_verification_pending:,
+    in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -938,6 +940,7 @@ module AnalyticsEvents
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
       gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
