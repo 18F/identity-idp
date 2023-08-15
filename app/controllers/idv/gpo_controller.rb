@@ -60,8 +60,8 @@ module Idv
       analytics.idv_gpo_address_letter_requested(
         resend: resend_requested?,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter:
-          gpo_mail_service.days_since_first_letter(first_letter_requested_at),
+        hours_since_first_letter:
+          gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
         phone_step_attempts: gpo_mail_service.phone_step_attempts,
         **ab_test_analytics_buckets,
       )
@@ -98,8 +98,8 @@ module Idv
         enqueued_at: Time.zone.now,
         resend: true,
         first_letter_requested_at: first_letter_requested_at,
-        days_since_first_letter:
-          gpo_mail_service.days_since_first_letter(first_letter_requested_at),
+        hours_since_first_letter:
+          gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
         phone_step_attempts: gpo_mail_service.phone_step_attempts,
         **ab_test_analytics_buckets,
       )

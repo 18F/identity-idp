@@ -30,8 +30,9 @@ module Idv
       RateLimiter.new(user: @current_user, rate_limit_type: :proof_address).attempts
     end
 
-    def days_since_first_letter(first_letter_requested_at)
-      first_letter_requested_at ? (Time.zone.today - first_letter_requested_at.to_date).to_i : 0
+    def hours_since_first_letter(first_letter_requested_at)
+      first_letter_requested_at ?
+        (Time.zone.now - first_letter_requested_at).to_i.seconds.in_hours.to_i : 0
     end
 
     private
