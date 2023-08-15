@@ -238,7 +238,8 @@ en:
           <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
           code from the letter to finish verifying your identity. Sign back in
           to %{app_name} to finish verifying your identity.
-        did_not_get_a_letter_html: If you didn’t get this letter, <span class=shut-up-lint></span>%{another_letter_link}
+        did_not_get_a_letter_html: If you didn’t get this letter, <span
+          class=shut-up-lint></span>%{another_letter_link}
         finish: Finish verifying your identity
         sign_in_and_request_another_letter: sign in to request another letter
         subject: Finish verifying your identity

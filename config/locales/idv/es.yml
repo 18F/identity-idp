@@ -247,7 +247,8 @@ es:
           para verificar tu identidad. Deberás ingresar el código que contiene
           esa carta para completar la verificación por correo. Vuelve a iniciar
           sesión en %{app_name} para terminar de verificar tu identidad.
-        did_not_get_a_letter_html: Si no recibiste dicha carta, <span class=shut-up-lint></span>%{another_letter_link}
+        did_not_get_a_letter_html: Si no recibiste dicha carta, <span
+          class=shut-up-lint></span>%{another_letter_link}
         finish: Termina de verificar tu identidad
         sign_in_and_request_another_letter: inicia sesión para solicitar otra
         subject: Termina de verificar tu identidad
