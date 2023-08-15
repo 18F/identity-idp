@@ -12,6 +12,7 @@ module Users
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
     before_action :confirm_recently_authenticated_2fa
+    before_action :check_max_phone_numbers_per_account, only: %i[index create]
 
     helper_method :in_multi_mfa_selection_flow?
 
@@ -80,6 +81,16 @@ module Users
         flash[:error] = t('errors.messages.phone_duplicate')
         redirect_to phone_setup_url
       end
+    end
+
+    def check_max_phone_numbers_per_account
+      max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
+      return if current_user.phone_configurations.count < max_phones_count
+      flash[:phone_error] = t('users.phones.error_message')
+      redirect_path = request.referer.match(account_two_factor_authentication_url) ?
+                        account_two_factor_authentication_url(anchor: 'phones') :
+                        account_url(anchor: 'phones')
+      redirect_to redirect_path
     end
 
     def new_phone_form_params
