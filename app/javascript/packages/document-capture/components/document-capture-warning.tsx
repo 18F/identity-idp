@@ -34,7 +34,7 @@ function DocumentCaptureWarning({
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
-  const subHeading = nonIppOrFailedResult && !isFailedDocType && (
+  const subHeading = !nonIppOrFailedResult && !isFailedDocType && (
     <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
   );
   return (
