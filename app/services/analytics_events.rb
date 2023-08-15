@@ -669,11 +669,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth agreement visited', **extra)
   end
 
-  # @identity.idp.previous_event_name IdV: in person proofing cancel_update_ssn submitted
-  def idv_doc_auth_cancel_update_ssn_submitted(**extra)
-    track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
-  end
-
   def idv_doc_auth_capture_complete_visited(**extra)
     track_event('IdV: doc auth capture_complete visited', **extra)
   end
