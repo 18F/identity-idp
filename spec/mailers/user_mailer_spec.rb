@@ -922,5 +922,17 @@ RSpec.describe UserMailer, type: :mailer do
         href: idv_gpo_verify_url(did_not_receive_letter: 1),
       )
     end
+
+    it 'renders the help link' do
+      expect(mail.html_part.body).to have_link(
+        t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+        href: help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-address-by-mail',
+          flow: :idv,
+          step: :gpo_send_letter,
+        ),
+      )
+    end
   end
 end

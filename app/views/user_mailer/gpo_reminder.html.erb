@@ -6,7 +6,12 @@
       ) %>
   <%= link_to(
         t('idv.troubleshooting.options.learn_more_verify_by_mail'),
-        'https://www.google.com',
+          help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'verify-your-address-by-mail',
+            flow: :idv,
+            step: :gpo_send_letter,
+          ),
         { style: "text-decoration: 'underline'" },
       ) %>
 </p>
