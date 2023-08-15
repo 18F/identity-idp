@@ -25,7 +25,8 @@ RSpec.describe 'layouts/application.html.erb' do
 
       expect(rendered).to have_css('.page-header--basic')
       expect(rendered).to_not have_content(t('account.welcome'))
-      expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+      expect(rendered).to_not have_button(t('links.sign_out'))
+      expect(rendered).to_not have_selector('form')
     end
   end
 

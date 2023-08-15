@@ -39,7 +39,7 @@ RSpec.describe 'throttling requests' do
 
     context 'when the request is for an asset' do
       let(:asset_url) { '/assets/application.css' }
-      let(:asset_path) { Rails.root.join('public', asset_url.sub(/^\//, '')) }
+      let(:asset_path) { Rails.public_path.join(asset_url.sub(/^\//, '')) }
 
       before do
         asset_dirname = File.dirname(asset_path)
@@ -58,7 +58,7 @@ RSpec.describe 'throttling requests' do
 
     context 'when the request is for a pack' do
       let(:pack_url) { '/packs/js/application.js' }
-      let(:pack_path) { Rails.root.join('public', pack_url.sub(/^\//, '')) }
+      let(:pack_path) { Rails.public_path.join(pack_url.sub(/^\//, '')) }
 
       before do
         pack_dirname = File.dirname(pack_path)

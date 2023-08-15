@@ -41,10 +41,6 @@ module IdvStepConcern
   private
 
   def confirm_ssn_step_complete
-    if IdentityConfig.store.in_person_ssn_info_controller_enabled
-      # mark ssn step as complete for FSM
-      flow_session['Idv::Steps::InPerson::SsnStep'] = true if flow_session.dig(:pii_from_user, :ssn)
-    end
     return if pii.present? && pii[:ssn].present?
     redirect_to prev_url
   end
@@ -64,7 +60,7 @@ module IdvStepConcern
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
 
-    if idv_session.in_person_enrollment?
+    if idv_session.pending_in_person_enrollment?
       redirect_to idv_in_person_verify_info_url
     else
       redirect_to idv_verify_info_url

@@ -18,7 +18,7 @@ RSpec.feature 'SAML logout' do
 
         # Sign out of the IDP
         visit account_path
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         expect(current_path).to eq root_path
 
         # SAML logout request

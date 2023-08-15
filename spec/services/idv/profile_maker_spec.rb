@@ -6,7 +6,6 @@ RSpec.describe Idv::ProfileMaker do
     let(:user) { create(:user, :fully_registered) }
     let(:user_password) { user.password }
     let(:initiating_service_provider) { nil }
-    let(:in_person_verification_pending) { false }
 
     subject do
       described_class.new(
@@ -14,7 +13,6 @@ RSpec.describe Idv::ProfileMaker do
         user: user,
         user_password: user_password,
         initiating_service_provider: initiating_service_provider,
-        in_person_verification_pending: in_person_verification_pending,
       )
     end
 
@@ -23,6 +21,7 @@ RSpec.describe Idv::ProfileMaker do
       profile = subject.save_profile(
         fraud_pending_reason: nil,
         gpo_verification_needed: false,
+        in_person_verification_needed: false,
       )
       pii = subject.pii_attributes
 
@@ -44,6 +43,7 @@ RSpec.describe Idv::ProfileMaker do
           fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: :encryption_error,
+          in_person_verification_needed: false,
         )
 
         expect(profile.activated_at).to be_nil
@@ -62,6 +62,7 @@ RSpec.describe Idv::ProfileMaker do
           fraud_pending_reason: 'threatmetrix_review',
           gpo_verification_needed: false,
           deactivation_reason: nil,
+          in_person_verification_needed: false,
         )
 
         expect(profile.activated_at).to be_nil
@@ -80,6 +81,7 @@ RSpec.describe Idv::ProfileMaker do
           fraud_pending_reason: nil,
           gpo_verification_needed: true,
           deactivation_reason: nil,
+          in_person_verification_needed: false,
         )
 
         expect(profile.activated_at).to be_nil
@@ -92,12 +94,33 @@ RSpec.describe Idv::ProfileMaker do
       end
     end
 
+    context 'with in_person_verification_needed' do
+      it 'deactivates a profile for in person verification' do
+        profile = subject.save_profile(
+          fraud_pending_reason: nil,
+          gpo_verification_needed: false,
+          deactivation_reason: nil,
+          in_person_verification_needed: true,
+        )
+
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+        expect(profile.in_person_verification_pending_at).to_not be_nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq(false)
+        expect(profile.initiating_service_provider).to eq(nil)
+        expect(profile.verified_at).to be_nil
+      end
+    end
+
     context 'as active' do
       it 'creates an active profile' do
         profile = subject.save_profile(
           fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: nil,
+          in_person_verification_needed: false,
         )
 
         expect(profile.activated_at).to be_nil
@@ -118,6 +141,7 @@ RSpec.describe Idv::ProfileMaker do
           fraud_pending_reason: nil,
           gpo_verification_needed: false,
           deactivation_reason: nil,
+          in_person_verification_needed: false,
         )
 
         expect(profile.activated_at).to be_nil

@@ -67,7 +67,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
 database_sslmode: 'verify-full'
@@ -79,6 +78,7 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_csp_unsafe_inline: true
 disable_email_sending: true
+disable_logout_get_request: true
 disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
@@ -213,7 +213,6 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
-new_sign_up_cancellation_url_enabled: true
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -239,7 +238,6 @@ phone_setups_per_ip_track_only_mode: false
 pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
-pinpoint_sms_pool_size: 5
 pinpoint_voice_configs: '[]'
 pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
@@ -269,7 +267,6 @@ recovery_code_length: 4
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
-redis_session_pool_size: 10
 redis_throttle_pool_size: 5
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
@@ -277,7 +274,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
-remember_device_expiration_hours_aal_2: 0
+remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
@@ -399,7 +396,6 @@ development:
   platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
-  recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
@@ -443,6 +439,7 @@ production:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   disable_email_sending: false
+  disable_logout_get_request: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
@@ -464,7 +461,6 @@ production:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
-  new_sign_up_cancellation_url_enabled: false
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
@@ -472,7 +468,6 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -552,7 +547,6 @@ test:
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
-  recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
@@ -576,6 +570,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass

@@ -14,7 +14,11 @@ import type { FullScreenRefHandle } from '@18f/identity-components';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
-import type { AcuantCaptureFailureError, AcuantSuccessResponse } from './acuant-camera';
+import type {
+  AcuantCaptureFailureError,
+  AcuantSuccessResponse,
+  LegacyAcuantSuccessResponse,
+} from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
 import AnalyticsContext from '../context/analytics';
@@ -426,11 +430,15 @@ function AcuantCapture(
     }
   }
 
-  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
+  function onAcuantImageCaptureSuccess(
+    nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
+  ) {
+    const { image, dpi, moire, glare, sharpness } = nextCapture;
+    const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
+
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.ID;
+    const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
@@ -453,7 +461,7 @@ function AcuantCapture(
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
       isAssessedAsUnsupported,
-      documentType: getDocumentTypeLabel(cardtype),
+      documentType: getDocumentTypeLabel(cardType),
       dpi,
       moire,
       glare,

@@ -21,9 +21,9 @@ class GpoVerifyForm
 
     if result
       pending_profile&.remove_gpo_deactivation_reason
-      if pending_profile&.pending_in_person_enrollment?
-        # note: pending_profile is not active here
-        pending_profile&.deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+
+      if profile_has_pending_in_person_enrollment?
+        schedule_in_person_enrollment_and_deactivate_profile
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
@@ -59,6 +59,15 @@ class GpoVerifyForm
     return if otp.blank? || pending_profile.blank?
 
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
+  end
+
+  def profile_has_pending_in_person_enrollment?
+    pending_profile&.pending_in_person_enrollment?
+  end
+
+  def schedule_in_person_enrollment_and_deactivate_profile
+    UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
+    pending_profile&.deactivate_for_in_person_verification
   end
 
   def which_letter

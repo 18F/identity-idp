@@ -37,6 +37,9 @@ module DocAuth
     GLARE_LOW_FIELD = 'glare_low_field'
     GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
     GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
+    # Doc type
+    DOC_TYPE_CHECK = 'doc_type_check'
+    CARD_TYPE = 'card_type'
     # Other
     FALLBACK_FIELD_LEVEL = 'fallback_field_level'
 
@@ -48,6 +51,7 @@ module DocAuth
       CONTROL_NUMBER_CHECK,
       DOC_CROSSCHECK,
       DOC_NUMBER_CHECKS,
+      DOC_TYPE_CHECK,
       EXPIRATION_CHECKS,
       FULL_NAME_CHECK,
       GENERAL_ERROR,
@@ -88,6 +92,7 @@ module DocAuth
       DOC_CROSSCHECK => { long_msg: DOC_CROSSCHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       DOCUMENT_EXPIRED_CHECK => { long_msg: DOCUMENT_EXPIRED_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       DOC_NUMBER_CHECKS => { long_msg: DOC_NUMBER_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      DOC_TYPE_CHECK => { long_msg: DOC_TYPE_CHECK, field_msg: CARD_TYPE, hints: true },
       EXPIRATION_CHECKS => { long_msg: EXPIRATION_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       FULL_NAME_CHECK => { long_msg: FULL_NAME_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       ISSUE_DATE_CHECKS => { long_msg: ISSUE_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
