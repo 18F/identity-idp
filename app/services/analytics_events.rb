@@ -962,27 +962,56 @@ module AnalyticsEvents
     )
   end
 
-  # @param [DateTime] enqueued_at
-  # @param [Boolean] resend
+  # @param [DateTime] enqueued_at When letter was enqueued
+  # @param [Boolean] resend User requested a second (or more) letter
+  # @param [DateTime] first_letter_requested_at When the profile became gpo_pending
+  # @param [Integer] hours_since_first_letter Difference between first_letter_requested_at
+  #                  and now in hours
+  # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was enqueued and the time at which it was enqueued
-  def idv_gpo_address_letter_enqueued(enqueued_at:, resend:, proofing_components: nil, **extra)
+  def idv_gpo_address_letter_enqueued(
+    enqueued_at:,
+    resend:,
+    first_letter_requested_at:,
+    hours_since_first_letter:,
+    phone_step_attempts:,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: USPS address letter enqueued',
       enqueued_at: enqueued_at,
       resend: resend,
+      first_letter_requested_at: first_letter_requested_at,
+      hours_since_first_letter: hours_since_first_letter,
+      phone_step_attempts: phone_step_attempts,
       proofing_components: proofing_components,
       **extra,
     )
   end
 
   # @param [Boolean] resend
+  # @param [DateTime] first_letter_requested_at When the profile became gpo_pending
+  # @param [Integer] hours_since_first_letter Difference between first_letter_requested_at
+  #                  and now in hours
+  # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # GPO letter was requested
-  def idv_gpo_address_letter_requested(resend:, proofing_components: nil, **extra)
+  def idv_gpo_address_letter_requested(
+    resend:,
+    first_letter_requested_at:,
+    hours_since_first_letter:,
+    phone_step_attempts:,
+    proofing_components: nil,
+    **extra
+  )
     track_event(
       'IdV: USPS address letter requested',
       resend: resend,
+      first_letter_requested_at:,
+      hours_since_first_letter:,
+      phone_step_attempts:,
       proofing_components: proofing_components,
       **extra,
     )
@@ -1010,11 +1039,23 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Hash] pii_like_keypaths
+  # @param [DateTime] enqueued_at When was this letter enqueued
+  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
+  # @param [Integer] letter_count How many letters did the user enqueue for this profile
+  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Boolean] pending_in_person_enrollment
+  # @param [Boolean] fraud_check_failed
   # GPO verification submitted
   def idv_gpo_verification_submitted(
     success:,
     errors:,
     pii_like_keypaths:,
+    enqueued_at:,
+    which_letter:,
+    letter_count:,
+    attempts:,
+    pending_in_person_enrollment:,
+    fraud_check_failed:,
     **extra
   )
     track_event(
@@ -1022,6 +1063,12 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       pii_like_keypaths: pii_like_keypaths,
+      enqueued_at: enqueued_at,
+      which_letter: which_letter,
+      letter_count: letter_count,
+      attempts: attempts,
+      pending_in_person_enrollment: pending_in_person_enrollment,
+      fraud_check_failed: fraud_check_failed,
       **extra,
     )
   end
