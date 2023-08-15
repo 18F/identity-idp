@@ -1037,8 +1037,8 @@ module AnalyticsEvents
 
   # A GPO reminder email was sent to the user
   # @param [String] user_id UUID of user who we sent a reminder to
-  def idv_gpo_reminder_email_sent(user_id:, **_extra)
-    track_event('IdV: gpo reminder email sent', user_id: user_id)
+  def idv_gpo_reminder_email_sent(user_id:, **extra)
+    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
   end
 
   # @identity.idp.previous_event_name Account verification submitted
