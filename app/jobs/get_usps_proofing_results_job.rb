@@ -61,13 +61,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
   def proofer
-    @proofer ||= begin
-      if IdentityConfig.store.usps_mock_fallback
-        UspsInPersonProofing::Mock::Proofer.new
-      else
-        UspsInPersonProofing::Proofer.new
-      end
-    end
+    @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def ipp_enabled?
