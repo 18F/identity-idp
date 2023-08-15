@@ -115,7 +115,7 @@ RSpec.describe Idv::PersonalKeyController do
             get :index
 
             expect(profile.user.pending_profile?).to eq true
-            expect(profile.in_person_verification_pending_at).to be_present
+            expect(profile.in_person_verification_pending?).to eq(true)
             expect(response).to_not be_redirect
           end
         end

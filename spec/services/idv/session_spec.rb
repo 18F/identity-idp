@@ -163,7 +163,7 @@ RSpec.describe Idv::Session do
           expect(subject).not_to have_received(:move_pii_to_user_session)
           expect(profile.activated_at).to eq nil
           expect(profile.active).to eq false
-          expect(profile.in_person_verification_pending_at).to be_present
+          expect(profile.in_person_verification_pending?).to eq(true)
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq nil
@@ -181,7 +181,7 @@ RSpec.describe Idv::Session do
           expect(profile).to eq(user.profiles.last)
           expect(profile.activated_at).to eq nil
           expect(profile.active).to eq false
-          expect(profile.in_person_verification_pending_at).to be_present
+          expect(profile.in_person_verification_pending?).to eq(true)
           expect(profile.fraud_review_pending?).to eq(false)
           expect(profile.gpo_verification_pending_at.present?).to eq false
           expect(profile.initiating_service_provider).to eq nil
