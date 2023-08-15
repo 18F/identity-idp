@@ -160,7 +160,7 @@ function FullAddressSearch({
     <T extends HTMLElement & { value: string }>(input) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
-      input((target.value).trim());
+      input((target.value));
     };
 
   const onAddressChange = inputChangeHandler(setAddressValue);
@@ -184,7 +184,7 @@ function FullAddressSearch({
   const handleSearch = useCallback(
     (event) => {
       onError(null);
-      onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
+      onSearch(event, addressValue.trim(), cityValue.trim(), stateValue, zipCodeValue);
     },
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
