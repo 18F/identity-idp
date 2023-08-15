@@ -22,6 +22,7 @@ class FrontendLogController < ApplicationController
     'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
+    'Sign In: You will also need accordion clicked' => :sign_in_idv_accordion_clicked,
     'IdV: personal key acknowledgment toggled' => :idv_personal_key_acknowledgment_toggled,
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
     'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
