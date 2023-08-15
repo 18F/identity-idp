@@ -3,11 +3,8 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import AddressSearch, {
-  transformKeys,
-  snakeCase,
-  LocationQuery,
-} from '@18f/identity-address-search';
+import AddressSearch, { transformKeys, snakeCase } from '@18f/identity-address-search';
+import type { LocationQuery } from '@18f/identity-address-search/types';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import InPersonLocations, { FormattedLocation } from './in-person-locations';

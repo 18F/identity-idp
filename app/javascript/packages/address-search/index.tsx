@@ -6,6 +6,9 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import useUspsLocations from './hooks/use-usps-locations';
 import type { AddressSearchProps } from './types';
+import { snakeCase, formatLocations, transformKeys } from './utils';
+
+export { snakeCase, formatLocations, transformKeys };
 
 function AddressSearch({
   registerField = () => undefined,

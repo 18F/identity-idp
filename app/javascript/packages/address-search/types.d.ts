@@ -1,5 +1,4 @@
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
-import type { ReactNode } from 'react';
 
 interface FormattedLocation {
   formattedCityStateZip: string;
@@ -43,7 +42,7 @@ interface Location {
   address: string;
 }
 
-interface AddressSearchInputProps {
+interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
@@ -54,43 +53,8 @@ interface AddressSearchInputProps {
   locationsURL: string;
 }
 
-interface AddressSearchProps extends AddressSearchInputProps {
-  handleLocationSelect;
-  handleFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
-}
-
-interface FormattedLocation {
-  formattedCityStateZip: string;
-  distance: string;
-  id: number;
-  name: string;
-  saturdayHours: string;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-  isPilot: boolean;
-}
-
 interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
-}
-
-interface LocationCollectionProps {
-  className?: string;
-
-  children?: ReactNode;
-}
-
-interface LocationCollectionItemProps {
-  distance?: string;
-  formattedCityStateZip: string;
-  handleSelect: (event: React.MouseEvent, selection: number) => void;
-  name?: string;
-  saturdayHours: string;
-  selectId: number;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
 }
