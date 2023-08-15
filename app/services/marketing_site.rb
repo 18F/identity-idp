@@ -2,6 +2,7 @@
 
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
+  ANCHOR_REGEX = %r{^[a-zA-Z0-9\-._~]+\Z}
 
   HELP_CENTER_ARTICLES = %w[
     get-started/authentication-options
@@ -68,7 +69,9 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}").to_s
   end
 
-  def self.valid_help_center_article?(category:, article:, **_article_anchor)
-    HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
+  def self.valid_help_center_article?(category:, article:, **params)
+    anchor = params[:article_anchor]
+    HELP_CENTER_ARTICLES.include?("#{category}/#{article}") &&
+      (anchor.blank? || ANCHOR_REGEX.match?(anchor))
   end
 end

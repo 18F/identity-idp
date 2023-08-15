@@ -162,21 +162,29 @@ RSpec.describe MarketingSite do
         )
       end
     end
+  end
 
-    context 'with anchor' do
-      let(:category) { 'verify-your-identity' }
-      let(:article) { 'accepted-state-issued-identification' }
-      let(:article_anchor) { 'test-anchor-url' }
-      let(:url) do
-        MarketingSite.help_center_article_url(category:, article:, article_anchor:)
-      end
+  context 'with anchor' do
+    let(:category) { 'verify-your-identity' }
+    let(:article) { 'accepted-state-issued-identification' }
+    let(:article_anchor) { 'test-anchor-url' }
+    let(:url) do
+      MarketingSite.help_center_article_url(category:, article:, article_anchor:)
+    end
 
-      it_behaves_like 'a marketing site URL'
+    it_behaves_like 'a marketing site URL'
 
-      it 'returns article URL' do
-        expect(url).to eq(
-          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/#test-anchor-url',
-        )
+    it 'returns article URL' do
+      expect(url).to eq(
+        'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/#test-anchor-url',
+      )
+    end
+
+    context 'with invalid anchor' do
+      let(:article_anchor) { '<' }
+
+      it 'raises ArgumentError' do
+        expect { url }.to raise_error ArgumentError
       end
     end
   end
