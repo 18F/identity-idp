@@ -1,6 +1,8 @@
 module DocAuth
   module Mock
     class ResultResponse < DocAuth::Response
+      include DocAuth::Acuant::ClassificationConcern
+
       attr_reader :uploaded_file, :config
 
       def initialize(uploaded_file, config)
@@ -10,6 +12,7 @@ module DocAuth
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
+          doc_type_supported: id_type_supported?,
           extra: {
             doc_auth_result: doc_auth_result,
             billed: true,
@@ -29,14 +32,17 @@ module DocAuth
             failed = file_data.dig('failed_alerts')
             passed = file_data.dig('passed_alerts')
             liveness_result = file_data.dig('liveness_result')
+            classification_info = file_data.dig('classification_info')
 
-            if [doc_auth_result, image_metrics, failed, passed, liveness_result].any?(&:present?)
+            if [doc_auth_result, image_metrics, failed, passed, liveness_result,
+                classification_info].any?(&:present?)
               mock_args = {}
               mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
               mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
               mock_args[:failed] = failed.map!(&:symbolize_keys) if failed.present?
               mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
               mock_args[:liveness_result] = liveness_result if liveness_result.present?
+              mock_args[:classification_info] = classification_info if classification_info.present?
 
               fake_response_info = create_response_info(**mock_args)
 
@@ -83,6 +89,10 @@ module DocAuth
 
       def doc_auth_result_from_uploaded_file
         parsed_data_from_uploaded_file&.[]('doc_auth_result')
+      end
+
+      def classification_info
+        parsed_data_from_uploaded_file&.[]('classification_info')
       end
 
       def doc_auth_result_from_success
@@ -150,7 +160,8 @@ module DocAuth
         passed: [],
         failed: DEFAULT_FAILED_ALERTS,
         liveness_result: nil,
-        image_metrics: DEFAULT_IMAGE_METRICS
+        image_metrics: DEFAULT_IMAGE_METRICS,
+        classification_info: nil
       )
         merged_image_metrics = DEFAULT_IMAGE_METRICS.deep_merge(image_metrics)
         {
@@ -163,6 +174,7 @@ module DocAuth
           alert_failure_count: failed&.count.to_i,
           image_metrics: merged_image_metrics,
           portrait_match_results: { FaceMatchResult: liveness_result },
+          classification_info: classification_info,
         }
       end
     end

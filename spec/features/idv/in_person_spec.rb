@@ -396,7 +396,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
-      click_button t('idv.gpo.submit')
+      click_button t('idv.gpo.form.submit')
 
       # personal key
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))

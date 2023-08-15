@@ -10,7 +10,7 @@ es:
       continue: Continuar
       take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
-      take_picture: Tomar una foto
+      take_picture: Toma una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
     errors:
@@ -64,6 +64,10 @@ es:
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
+      doc:
+        doc_type_check: No se aceptan otras formas de identificación.
+        wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
+          identidad estatal. No se aceptan otras formas de identificación.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.

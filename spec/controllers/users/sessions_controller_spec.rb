@@ -5,25 +5,11 @@ RSpec.describe Users::SessionsController, devise: true do
   let(:mock_valid_site) { 'http://example.com' }
 
   describe 'GET /logout' do
-    it 'tracks a logout event' do
-      stub_analytics
-      stub_attempts_tracker
-      expect(@analytics).to receive(:track_event).with(
-        'Logout Initiated',
-        hash_including(
-          sp_initiated: false,
-          oidc: false,
-        ),
-      )
-
+    it 'does not log user out and redirects to root' do
       sign_in_as_user
-
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
-
       get :destroy
-      expect(controller.current_user).to be nil
+      expect(controller.current_user).to_not be nil
+      expect(response).to redirect_to root_url
     end
   end
 
