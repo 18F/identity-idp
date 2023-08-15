@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user&.backup_code_configurations&.unused&.count || 0
+      user.backup_code_configurations.unused.count
     end
   end
 end
