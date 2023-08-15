@@ -140,4 +140,19 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(response).to redirect_to(backup_code_setup_url)
     end
   end
+
+  context 'user visits the Backup codes regenerate page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :edit
+      expect(@analytics).to have_logged_event(
+        'Backup Code Regenerate Visited',
+        hash_including(request_came_from: 'no referer'),
+      )
+    end
+  end
 end

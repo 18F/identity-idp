@@ -16,7 +16,9 @@
       <span class="display-none tablet:display-inline padding-right-1 margin-right-1 border-right border-base-darker">
         <%= t('account.welcome') %> <strong><%= greeting %></strong>
       </span>
-      <%= link_to t('links.sign_out'), destroy_user_session_path %>
+
+      <%= button_to t('links.sign_out'), logout_path, method: :delete, class: 'usa-button usa-button--unstyled' %>
+
       <% if enable_mobile_nav %>
         <button class="usa-menu-btn margin-left-2"><%= t('account.navigation.menu') %></button>
       <% end %>

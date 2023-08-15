@@ -13,6 +13,7 @@ import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import { InPersonContext } from '../context';
+import UnknownError from './unknown-error';
 
 function formatWithStrongNoWrap(text: string): ReactNode {
   return formatHTML(text, {
@@ -49,6 +50,8 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
 
   isFailedResult?: boolean;
 
+  isFailedDocType?: boolean;
+
   captureHints?: boolean;
 
   pii?: PII;
@@ -70,6 +73,7 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   remainingAttempts = Infinity,
   isFailedResult = false,
+  isFailedDocType = false,
   pii,
   captureHints = false,
 }: ReviewIssuesStepProps) {
@@ -98,12 +102,16 @@ function ReviewIssuesStep({
     if (pii) {
       return <BarcodeAttentionWarning onDismiss={onWarningPageDismissed} pii={pii} />;
     }
-
+    // ipp disabled
     if (!inPersonURL || isFailedResult) {
       return (
         <>
           <Warning
-            heading={t('errors.doc_auth.rate_limited_heading')}
+            heading={
+              isFailedDocType
+                ? t('errors.doc_auth.doc_type_not_supported_heading')
+                : t('errors.doc_auth.rate_limited_heading')
+            }
             actionText={t('idv.failure.button.warning')}
             actionOnClick={onWarningPageDismissed}
             location="doc_auth_review_issues"
@@ -117,12 +125,13 @@ function ReviewIssuesStep({
               />
             }
           >
-            {!!unknownFieldErrors &&
-              unknownFieldErrors
-                .filter((error) => !['front', 'back'].includes(error.field!))
-                .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+            <UnknownError
+              unknownFieldErrors={unknownFieldErrors}
+              remainingAttempts={remainingAttempts}
+              isFailedDocType={isFailedDocType}
+            />
 
-            {remainingAttempts <= DISPLAY_ATTEMPTS && (
+            {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
               <p>
                 {formatWithStrongNoWrap(
                   t('idv.failure.attempts_html', { count: remainingAttempts }),
@@ -134,10 +143,14 @@ function ReviewIssuesStep({
         </>
       );
     }
-
+    // ipp enabled
     return (
       <Warning
-        heading={t('errors.doc_auth.rate_limited_heading')}
+        heading={
+          isFailedDocType
+            ? t('errors.doc_auth.doc_type_not_supported_heading')
+            : t('errors.doc_auth.rate_limited_heading')
+        }
         actionText={t('idv.failure.button.try_online')}
         actionOnClick={onWarningPageDismissed}
         location="doc_auth_review_issues"
@@ -150,13 +163,14 @@ function ReviewIssuesStep({
           />
         }
       >
-        <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>
-        {!!unknownFieldErrors &&
-          unknownFieldErrors
-            .filter((error) => !['front', 'back'].includes(error.field!))
-            .map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        {!isFailedDocType && <h2>{t('errors.doc_auth.rate_limited_subheading')}</h2>}
+        <UnknownError
+          unknownFieldErrors={unknownFieldErrors}
+          remainingAttempts={remainingAttempts}
+          isFailedDocType={isFailedDocType}
+        />
 
-        {remainingAttempts <= DISPLAY_ATTEMPTS && (
+        {!isFailedDocType && remainingAttempts <= DISPLAY_ATTEMPTS && (
           <p>
             {formatWithStrongNoWrap(t('idv.failure.attempts_html', { count: remainingAttempts }))}
           </p>
@@ -164,13 +178,18 @@ function ReviewIssuesStep({
       </Warning>
     );
   }
-
+  // hasDismissed = true
   return (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
-      {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
-      {captureHints && (
+      <UnknownError
+        unknownFieldErrors={unknownFieldErrors}
+        remainingAttempts={remainingAttempts}
+        isFailedDocType={isFailedDocType}
+        altFailedDocTypeMsg={isFailedDocType ? t('doc_auth.errors.doc.wrong_id_type') : null}
+      />
+
+      {!isFailedDocType && captureHints && (
         <>
           <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
           <ul>

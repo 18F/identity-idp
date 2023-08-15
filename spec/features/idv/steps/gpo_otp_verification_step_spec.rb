@@ -75,6 +75,22 @@ RSpec.feature 'idv gpo otp verification step' do
     end
   end
 
+  context 'coming from an "I did not receive my letter" link in a reminder email' do
+    it 'renders an alternate ui', :js do
+      visit idv_gpo_verify_url(did_not_receive_letter: 1)
+      expect(current_path).to eql(new_user_session_path)
+
+      fill_in_credentials_and_submit(user.email, user.password)
+      continue_as(user.email, user.password)
+      uncheck(t('forms.messages.remember_device'))
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq idv_gpo_verify_path
+      expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
+    end
+  end
+
   context 'with gpo personal key after verification' do
     it 'shows the user a personal key after verification' do
       sign_in_live_with_2fa(user)
@@ -83,8 +99,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('idv.gpo.name'), with: otp
-      click_button t('idv.gpo.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
 
       profile.reload
 
@@ -111,8 +127,8 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(page).to have_content t('idv.messages.gpo.resend')
 
       gpo_confirmation_code
-      fill_in t('idv.gpo.name'), with: otp
-      click_button t('idv.gpo.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
 
       expect(user.events.account_verified.size).to eq 1
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))

@@ -16,7 +16,7 @@ RSpec.describe TotpVerificationForm do
           errors: {},
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: cfg.id,
-          multi_factor_auth_method_created_at: cfg.created_at,
+          multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
         )
       end
     end

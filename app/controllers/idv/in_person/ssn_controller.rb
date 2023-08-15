@@ -9,10 +9,12 @@ module Idv
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
+      before_action :override_csp_for_threat_metrix_no_fsm
 
       attr_accessor :error_message
 
       def show
+        flow_session['Idv::Steps::InPerson::SsnStep'] = true
         @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
 
         analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?

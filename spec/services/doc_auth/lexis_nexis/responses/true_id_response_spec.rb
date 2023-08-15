@@ -92,6 +92,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         errors: {},
         attention_with_barcode: false,
         conversation_id: a_kind_of(String),
+        doc_type_supported: true,
         reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
@@ -120,12 +121,24 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIssueType' => "Driver's License - STAR",
         'OrientationChanged' => 'true',
         'PresentationChanged' => 'false',
+        classification_info: {
+          Front: {
+            ClassName: 'Drivers License',
+          },
+          Back: {
+            ClassName: 'Drivers License',
+          },
+        },
       )
     end
 
     it 'notes that address line 2 was present' do
       expect(response.pii_from_doc).to include(address2: 'APT 3E')
       expect(response.to_h).to include(address_line2_present: true)
+    end
+
+    it 'mark doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
     end
   end
 
@@ -277,6 +290,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           hints: true,
         },
         attention_with_barcode: false,
+        doc_type_supported: true,
         conversation_id: a_kind_of(String),
         reference: a_kind_of(String),
         vendor: 'TrueID',
@@ -310,6 +324,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         'DocIsGeneric' => 'false',
         'OrientationChanged' => 'false',
         'PresentationChanged' => 'false',
+        classification_info: {
+          Front: {
+            ClassName: 'Drivers License',
+          },
+          Back: {
+            ClassName: 'Drivers License',
+          },
+        },
       )
     end
   end
@@ -466,6 +488,37 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     context 'with doc auth result of Unknown' do
       let(:doc_auth_result) { 'Unknown' }
       it { is_expected.to eq(true) }
+    end
+  end
+
+  describe '#doc_type_supported?' do
+    let(:doc_class_name) { 'Drivers License' }
+    let(:success_response) do
+      response = JSON.parse(LexisNexisFixtures.true_id_response_success_2).tap do |json|
+        doc_class_node = json['Products'].first['ParameterDetails'].
+          select { |f| f['Name'] == 'DocClassName' }
+        doc_class_node.first['Values'].first['Value'] = doc_class_name
+      end.to_json
+      instance_double(Faraday::Response, status: 200, body: response)
+    end
+
+    subject(:doc_type_supported?) do
+      described_class.new(success_response, config).doc_type_supported?
+    end
+    it { is_expected.to eq(true) }
+
+    context 'when doc class is unknown' do
+      let(:doc_class_name) { 'Unknown' }
+      it 'identified as supported doc type ' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when doc class is identified but not supported' do
+      let(:doc_class_name) { 'Passport' }
+      it 'identified as un supported doc type ' do
+        is_expected.to eq(false)
+      end
     end
   end
 end
