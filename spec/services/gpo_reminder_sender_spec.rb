@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe GpoReminderSender do
   describe '#send_emails' do
-    WAIT_BEFORE_SENDING_REMINDER = 14.days
-    TIME_DUE_FOR_REMINDER = Time.zone.now - WAIT_BEFORE_SENDING_REMINDER
+    WAIT = 14.days
+    TIME_DUE_FOR_REMINDER = Time.zone.now - WAIT
     TIME_NOT_YET_DUE = TIME_DUE_FOR_REMINDER + 1.day
     TIME_YESTERDAY = Time.zone.now - 1.day
 
@@ -58,6 +58,22 @@ RSpec.describe GpoReminderSender do
         it 'sends an email to all of them' do
           expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
             to change { ActionMailer::Base.deliveries.size }.by(2)
+        end
+      end
+
+      context 'but the user has cancelled gpo verification' do
+        before do
+          Idv::CancelVerificationAttempt.new(user: user).call
+        end
+
+        it 'does not send that user an email' do
+          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+            to change { ActionMailer::Base.deliveries.size }.by(0)
+        end
+
+        it 'logs no events' do
+          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+            not_to change { fake_analytics.events.count }
         end
       end
 
