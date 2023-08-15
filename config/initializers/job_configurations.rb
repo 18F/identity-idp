@@ -186,7 +186,7 @@ else
       send_gpo_code_reminders: {
         class: 'GpoReminderJob',
         cron: cron_24h,
-        args: -> { [Time.zone.now - 14.days] },
+        args: -> { [14.days.ago] },
       },
     }.compact
   end

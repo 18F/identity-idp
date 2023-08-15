@@ -12,7 +12,7 @@ class GpoReminderSender
 
     profiles_due_for_reminder.each do |profile|
       profile.user.send_email_to_all_addresses(:gpo_reminder)
-      @analytics.idv_gpo_reminder_email_sent(to_user: profile.user.uuid)
+      @analytics.idv_gpo_reminder_email_sent(user_id: profile.user.uuid)
     end
   end
 end

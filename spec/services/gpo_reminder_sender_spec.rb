@@ -2,15 +2,14 @@ require 'rails_helper'
 
 RSpec.describe GpoReminderSender do
   describe '#send_emails' do
-    WAIT = 14.days
-    TIME_DUE_FOR_REMINDER = Time.zone.now - WAIT
-    TIME_NOT_YET_DUE = TIME_DUE_FOR_REMINDER + 1.day
-    TIME_YESTERDAY = Time.zone.now - 1.day
-
     subject(:sender) { GpoReminderSender.new(fake_analytics) }
 
     let(:user) { create(:user, :with_pending_gpo_profile) }
     let(:fake_analytics) { FakeAnalytics.new }
+    let(:wait_for_reminder) { 14.days }
+    let(:time_due_for_reminder) { Time.zone.now - wait_for_reminder }
+    let(:time_not_yet_due) { time_due_for_reminder + 1.day }
+    let(:time_yesterday) { Time.zone.now - 1.day }
 
     def set_gpo_verification_pending_at(to_time)
       user.gpo_verification_pending_profile.update(gpo_verification_pending_at: to_time)
@@ -25,29 +24,29 @@ RSpec.describe GpoReminderSender do
     end
 
     context 'when no users need a reminder' do
-      before { set_gpo_verification_pending_at(TIME_NOT_YET_DUE) }
+      before { set_gpo_verification_pending_at(time_not_yet_due) }
 
       it 'sends no emails' do
-        expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+        expect { subject.send_emails(time_due_for_reminder) }.
           to change { ActionMailer::Base.deliveries.size }.by(0)
       end
 
       it 'logs no events' do
-        expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+        expect { subject.send_emails(time_due_for_reminder) }.
           not_to change { fake_analytics.events.count }
       end
     end
 
     context 'when a user is due for a reminder' do
-      before { set_gpo_verification_pending_at(TIME_DUE_FOR_REMINDER) }
+      before { set_gpo_verification_pending_at(time_due_for_reminder) }
 
       it 'sends that user an email' do
-        expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+        expect { subject.send_emails(time_due_for_reminder) }.
           to change { ActionMailer::Base.deliveries.size }.by(1)
       end
 
       it 'logs an event' do
-        subject.send_emails(TIME_DUE_FOR_REMINDER)
+        subject.send_emails(time_due_for_reminder)
 
         expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
       end
@@ -56,7 +55,7 @@ RSpec.describe GpoReminderSender do
         let(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails) }
 
         it 'sends an email to all of them' do
-          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          expect { subject.send_emails(time_due_for_reminder) }.
             to change { ActionMailer::Base.deliveries.size }.by(2)
         end
       end
@@ -67,26 +66,26 @@ RSpec.describe GpoReminderSender do
         end
 
         it 'does not send that user an email' do
-          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          expect { subject.send_emails(time_due_for_reminder) }.
             to change { ActionMailer::Base.deliveries.size }.by(0)
         end
 
         it 'logs no events' do
-          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          expect { subject.send_emails(time_due_for_reminder) }.
             not_to change { fake_analytics.events.count }
         end
       end
 
       context 'but a reminder has already been sent' do
-        before { set_reminder_sent_at(TIME_YESTERDAY) }
+        before { set_reminder_sent_at(time_yesterday) }
 
         it 'does not send that user an email' do
-          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          expect { subject.send_emails(time_due_for_reminder) }.
             to change { ActionMailer::Base.deliveries.size }.by(0)
         end
 
         it 'logs no events' do
-          expect { subject.send_emails(TIME_DUE_FOR_REMINDER) }.
+          expect { subject.send_emails(time_due_for_reminder) }.
             not_to change { fake_analytics.events.count }
         end
       end
