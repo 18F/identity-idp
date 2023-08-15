@@ -3550,6 +3550,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if a user clicks the "You will also need" accordion on the homepage
+  def sign_in_idv_requirements_accordion_clicked
+    track_event('IdV requirements accordion clicked')
+  end
+
   # @param [Boolean] success
   # @param [Boolean] new_user
   # @param [Boolean] has_other_auth_methods

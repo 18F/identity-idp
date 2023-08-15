@@ -26,7 +26,7 @@ class FrontendLogController < ApplicationController
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
-    'Sign In: You will also need accordion clicked' => :sign_in_idv_accordion_clicked,
+    'Sign In: IdV requirements accordion clicked' => :sign_in_idv_requirements_accordion_clicked,
     'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
     'User prompted before navigation' => :user_prompted_before_navigation,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
