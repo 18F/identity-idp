@@ -141,18 +141,32 @@ function FullAddressSearch({
     validatedZipCodeFieldRef,
   } = useUspsLocations(locationsURL);
 
-  const inputChangeHandler =
-    <T extends HTMLElement & { value: string }>(input, ref) =>
+  const inputChangeHandlerForZipCode =
+    <T extends HTMLElement & { value: string }>(input) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
-      if (ref === 'zip_code') input((target.value).trim());
-      else input((target.value).trim());
+      const scrubbedZip = (target.value).replace(/[^0-9]/g, '');
+      if (scrubbedZip.length > 5) {
+        let zipcodePieces : string[] = [];
+        zipcodePieces.push(scrubbedZip.substring(0,5));
+        zipcodePieces.push(scrubbedZip.substring(5));
+        input(zipcodePieces.join('-'));
+      } else {
+        input(scrubbedZip);
+      }
     };
 
-  const onAddressChange = inputChangeHandler(setAddressValue, 'address');
-  const onCityChange = inputChangeHandler(setCityValue, 'city');
-  const onStateChange = inputChangeHandler(setStateValue, 'state');
-  const onZipCodeChange = inputChangeHandler(setZipCodeValue, 'zip_code');
+  const inputChangeHandler =
+    <T extends HTMLElement & { value: string }>(input) =>
+    (event: React.ChangeEvent<T>) => {
+      const { target } = event;
+      input((target.value).trim());
+    };
+
+  const onAddressChange = inputChangeHandler(setAddressValue);
+  const onCityChange = inputChangeHandler(setCityValue);
+  const onStateChange = inputChangeHandler(setStateValue);
+  const onZipCodeChange = inputChangeHandlerForZipCode(setZipCodeValue);
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
@@ -227,6 +241,8 @@ function FullAddressSearch({
           onChange={onZipCodeChange}
           label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
+          pattern="(\d{5}([\-]\d{4})?)"
+          maxLength={10}
         />
       </ValidatedField>
       <div className="margin-y-5">
