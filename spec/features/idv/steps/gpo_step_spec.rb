@@ -186,7 +186,7 @@ RSpec.feature 'idv gpo step' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('idv.gpo.instructions'))
+      expect(page).to have_content(t('idv.gpo.form.instructions'))
     end
   end
 end
