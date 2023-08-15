@@ -77,6 +77,7 @@ module Users
           phone: @new_phone_form.phone,
           selected_delivery_method: @new_phone_form.otp_delivery_preference,
           phone_type: @new_phone_form.phone_info&.type,
+          selected_default_number: @new_phone_form.otp_make_default_number,
         )
       else
         flash[:error] = t('errors.messages.phone_duplicate')
