@@ -61,7 +61,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
   def proofer
-    @proofer ||= UspsInPersonProofing::Proofer.new
+    @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def ipp_enabled?

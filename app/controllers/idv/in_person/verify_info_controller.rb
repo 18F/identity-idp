@@ -48,11 +48,7 @@ module Idv
       end
 
       def prev_url
-        if IdentityConfig.store.in_person_ssn_info_controller_enabled
-          idv_in_person_proofing_ssn_url
-        else
-          idv_in_person_step_url(step: :ssn)
-        end
+        idv_in_person_proofing_ssn_url
       end
 
       def pii
