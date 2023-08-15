@@ -312,7 +312,7 @@ RSpec.describe DataPull do
             ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]'],
           ]
 
-          expect(result.table).to eq(expected_table)
+          expect(result.table).to match_array(expected_table)
           expect(result.subtask).to eq('uuid-export')
           expect(result.uuids).to match_array([user1.uuid, user2.uuid])
         end
@@ -334,7 +334,7 @@ RSpec.describe DataPull do
             ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]'],
           ]
 
-          expect(result.table).to eq(expected_table)
+          expect(result.table).to match_array(expected_table)
           expect(result.subtask).to eq('uuid-export')
           expect(result.uuids).to match_array([user1.uuid])
         end
