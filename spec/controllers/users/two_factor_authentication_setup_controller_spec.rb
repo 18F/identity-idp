@@ -61,7 +61,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
       voice_params = {
         two_factor_options_form: {
-          selection: 'voice',
+          selection: ['voice'],
         },
       }
 
@@ -149,7 +149,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'auth_app',
+            selection: ['auth_app'],
           },
         }
 
@@ -163,7 +163,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'webauthn',
+            selection: ['webauthn'],
           },
         }
 
@@ -177,7 +177,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'webauthn_platform',
+            selection: ['webauthn_platform'],
           },
         }
 
@@ -191,7 +191,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'piv_cac',
+            selection: ['piv_cac'],
           },
         }
 
@@ -205,7 +205,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
         patch :create, params: {
           two_factor_options_form: {
-            selection: 'foo',
+            selection: ['foo'],
           },
         }
 

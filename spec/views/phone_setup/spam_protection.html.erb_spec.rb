@@ -34,13 +34,13 @@ RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
   end
 
   context 'with two factor options path' do
-    let(:two_factor_options_path) { root_path }
-    let(:locals) { { two_factor_options_path: } }
+    let(:authentication_methods_setup_path) { root_path }
+    let(:locals) { { authentication_methods_setup_path: } }
 
     it 'renders additional troubleshooting option to two factor options' do
       expect(rendered).to have_link(
         t('two_factor_authentication.login_options_link_text'),
-        href: two_factor_options_path,
+        href: authentication_methods_setup_path,
       )
     end
 
@@ -58,7 +58,7 @@ RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
     it 'does not render additional troubleshooting option to two factor options' do
       expect(rendered).to_not have_link(
         t('two_factor_authentication.login_options_link_text'),
-        href: two_factor_options_path,
+        href: authentication_methods_setup_path,
       )
     end
 

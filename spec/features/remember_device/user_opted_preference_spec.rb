@@ -17,7 +17,7 @@ RSpec.describe 'Unchecking remember device' do
         click_button 'Submit'
         skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -44,7 +44,7 @@ RSpec.describe 'Unchecking remember device' do
         click_continue
         skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Unchecking remember device' do
         click_submit_default
         skip_second_mfa_prompt
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -92,7 +92,7 @@ RSpec.describe 'Unchecking remember device' do
         fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
         uncheck t('forms.messages.remember_device')
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -119,7 +119,7 @@ RSpec.describe 'Unchecking remember device' do
         sign_in_user(user)
         uncheck(:remember_device)
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end
@@ -138,7 +138,7 @@ RSpec.describe 'Unchecking remember device' do
         uncheck t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end

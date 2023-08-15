@@ -226,8 +226,9 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  def backup_code_regenerate_visit(**properties)
-    track_event('Backup Code Regenerate Visited', **properties)
+  # @param [String] request_came_from the controller/action the request came from
+  def backup_code_regenerate_visit(request_came_from:, **extra)
+    track_event('Backup Code Regenerate Visited', request_came_from:, **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
@@ -920,6 +921,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
+  # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
@@ -927,6 +929,7 @@ module AnalyticsEvents
     fraud_review_pending:,
     fraud_rejection:,
     gpo_verification_pending:,
+    in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -937,6 +940,7 @@ module AnalyticsEvents
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,
       gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       proofing_components: proofing_components,
       **extra,
@@ -1029,8 +1033,16 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account verification visited
   # GPO verification visited
-  def idv_gpo_verification_visited
-    track_event('IdV: GPO verification visited')
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_gpo_verification_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification visited',
+      source: source,
+      **extra,
+    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -2275,6 +2287,7 @@ module AnalyticsEvents
   # @param [Boolean] fraud_review_pending
   # @param [Boolean] fraud_rejection
   # @param [Boolean] gpo_verification_pending
+  # @param [Boolean] in_person_verification_pending
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   def idv_review_complete(
@@ -2282,6 +2295,7 @@ module AnalyticsEvents
     fraud_review_pending:,
     fraud_rejection:,
     gpo_verification_pending:,
+    in_person_verification_pending:,
     deactivation_reason: nil,
     proofing_components: nil,
     **extra
@@ -2292,6 +2306,7 @@ module AnalyticsEvents
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       gpo_verification_pending: gpo_verification_pending,
+      in_person_verification_pending: in_person_verification_pending,
       fraud_rejection: fraud_rejection,
       proofing_components: proofing_components,
       **extra,

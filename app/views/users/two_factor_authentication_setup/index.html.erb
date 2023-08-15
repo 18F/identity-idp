@@ -23,7 +23,6 @@
       <legend class="margin-bottom-2 usa-sr-only">
         <%= t('two_factor_authentication.form_legend') %>
       </legend>
-      <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
@@ -36,4 +35,4 @@
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: logout_path, link_method: :delete %>
