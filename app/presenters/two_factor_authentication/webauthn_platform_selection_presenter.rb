@@ -22,7 +22,7 @@ module TwoFactorAuthentication
     end
 
     def mfa_configuration_count
-      user.webauthn_configurations.where(platform_authenticator: true).count || 0
+      user&.webauthn_configurations&.where(platform_authenticator: true).count || 0
     end
   end
 end
