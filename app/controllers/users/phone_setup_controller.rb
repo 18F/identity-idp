@@ -13,7 +13,6 @@ module Users
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
     before_action :confirm_recently_authenticated_2fa
 
-
     helper_method :in_multi_mfa_selection_flow?
 
     def index
