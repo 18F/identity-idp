@@ -62,7 +62,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      single_configuration_only? && mfa_configuration_count > 0
+      configuration.blank? && single_configuration_only? && mfa_configuration_count > 0
     end
 
     private
