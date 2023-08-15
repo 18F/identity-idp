@@ -17,6 +17,7 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def index
+      user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(
         user: current_user,
         analytics: analytics,
