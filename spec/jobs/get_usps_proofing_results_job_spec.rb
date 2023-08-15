@@ -197,6 +197,8 @@ RSpec.describe GetUspsProofingResultsJob do
   before do
     allow(IdentityConfig.store).
       to(receive(:in_person_results_delay_in_hours).and_return(nil))
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).
+      and_return(false)
     allow(Rails).to receive(:cache).and_return(
       ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
     )
