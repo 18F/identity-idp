@@ -40,7 +40,7 @@
         'idv.messages.gpo_reminder.did_not_get_a_letter_html',
         another_letter_link: link_to(
           t('idv.messages.gpo_reminder.sign_in_and_request_another_letter'),
-          idv_gpo_verify_url,
+          idv_gpo_verify_url(did_not_receive_letter: 1),
           { style: "text-decoration: 'underline'" },
         ),
       ) %>

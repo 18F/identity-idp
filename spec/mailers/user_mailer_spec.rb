@@ -908,5 +908,19 @@ RSpec.describe UserMailer, type: :mailer do
 
       expect(mail.html_part.body).to have_content(expected_body)
     end
+
+    it 'renders the finish link' do
+      expect(mail.html_part.body).to have_link(
+        t('idv.messages.gpo_reminder.finish'),
+        href: idv_gpo_verify_url,
+      )
+    end
+
+    it 'renders the did not get it link' do
+      expect(mail.html_part.body).to have_link(
+        t('idv.messages.gpo_reminder.sign_in_and_request_another_letter'),
+        href: idv_gpo_verify_url(did_not_receive_letter: 1),
+      )
+    end
   end
 end
