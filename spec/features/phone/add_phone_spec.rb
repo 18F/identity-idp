@@ -220,7 +220,7 @@ RSpec.describe 'Add a new phone number' do
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
     expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    click_send_one_time_code
+    click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     visit account_path
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
