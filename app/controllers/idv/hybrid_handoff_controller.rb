@@ -216,11 +216,10 @@ module Idv
     end
 
     def setup_for_redo
-      flow_session[:redo_document_capture] = true
+      idv_session.redo_document_capture = true
 
       # If we previously skipped hybrid handoff for the user (because they're on a mobile
       # device with a camera), skip it _again_ here.
-
       if idv_session.skip_hybrid_handoff?
         idv_session.flow_path = 'standard'
       else

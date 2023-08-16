@@ -165,8 +165,8 @@ es:
       address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
-      first_name: Nombre de pila
-      id_number: Número de cédula
+      first_name: Nombre
+      id_number: Número de identidad
       issuing_state: Estado emisor
       last_name: Apellido
       password: Contraseña
@@ -181,16 +181,28 @@ es:
     gpo:
       alert_info: 'Enviamos una carta con su código único a:'
       clear_and_start_over: Borrar su información y empezar de nuevo
-      instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
-      name: Código único
+      did_not_receive_letter:
+        form:
+          instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la
+            carta que recibió.
+        intro:
+          be_patient_html: Tenga en cuenta que las cartas <strong>suelen tardar entre 3 y
+            7 días laborables en llegar</strong>. Gracias por su paciencia.
+          request_new_letter_link: solicitar una nueva
+          request_new_letter_prompt_html: Si no ha recibido su carta, puede
+            <span>%{request_new_letter_link}</span>.
+        title: ¿No recibió su carta?
+      form:
+        instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
+        otp_label: Código único
+        submit: Confirmar cuenta
+        title: Confirme su cuenta
+      intro_html: '<p>Si ha recibido su carta, introduzca su código único a
+        continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
+        que las <strong>cartas suelen tardar de 3 a 7 días hábiles en
+        llegar</strong>. Gracias por su paciencia.</p>'
       return_to_profile: Regrese a su perfil
-      submit: Confirmar cuenta
-      title: Confirme su cuenta
-      welcome_back: Bienvenido de nuevo
-      welcome_back_description_html: '<p>Si ha recibido su carta, introduzca su código
-        único a continuación.</p> <p>Si su carta aún no ha llegado, tenga
-        paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
-        en llegar</strong>. Gracias por su paciencia.</p>'
+      title: Bienvenido de nuevo
       wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación

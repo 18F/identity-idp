@@ -31,7 +31,7 @@ module Users
       if result.success?
         handle_create_success(@new_phone_form.phone)
       elsif recoverable_recaptcha_error?(result)
-        render :spam_protection, locals: { two_factor_options_path: two_factor_options_path }
+        render :spam_protection, locals: { authentication_methods_setup_path: }
       else
         render :index
       end

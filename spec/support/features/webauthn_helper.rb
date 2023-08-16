@@ -34,7 +34,6 @@ module WebAuthnHelper
 
     # simulate javascript that is triggered when the hardware key button is pressed
     set_hidden_field('webauthn_id', webauthn_id)
-    set_hidden_field('webauthn_public_key', webauthn_public_key)
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', setup_client_data_json)
 
@@ -47,6 +46,11 @@ module WebAuthnHelper
   end
 
   def mock_cancelled_webauthn_authentication
+    webauthn_general_error = t(
+      'two_factor_authentication.webauthn_error.connect_html',
+      link_html: t('two_factor_authentication.webauthn_error.additional_methods_link'),
+    )
+
     if javascript_enabled?
       page.evaluate_script(<<~JS)
         navigator.credentials.get = () => Promise.reject(new DOMException('', 'NotAllowedError'));
@@ -68,7 +72,7 @@ module WebAuthnHelper
           wait: 5,
         )
       else
-        expect(page).to have_content(t('errors.general'), wait: 5)
+        expect(page).to have_content(webauthn_general_error, wait: 5)
       end
     else
       yield
@@ -134,10 +138,6 @@ module WebAuthnHelper
 
   def webauthn_id
     'ufhgW+5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg+hbXRHztVh4eiDXoLg=='
-  end
-
-  def webauthn_public_key
-    'ufhgW-5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg-hbXRHztVh4eiDXoLg'
   end
 
   def credential_public_key

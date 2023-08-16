@@ -12,11 +12,7 @@ class UspsAuthTokenRefreshJob < ApplicationJob
   private
 
   def usps_proofer
-    if IdentityConfig.store.usps_mock_fallback
-      UspsInPersonProofing::Mock::Proofer.new
-    else
-      UspsInPersonProofing::Proofer.new
-    end
+    UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def analytics

@@ -59,7 +59,6 @@ aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
-aws_kms_multi_region_write_enabled: false
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
@@ -78,6 +77,7 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_csp_unsafe_inline: true
 disable_email_sending: true
+disable_logout_get_request: true
 disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
@@ -148,7 +148,6 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
-in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_full_address_entry_enabled: false
 in_person_outage_message_enabled: false
@@ -273,7 +272,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
-remember_device_expiration_hours_aal_2: 0
+remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
@@ -438,6 +437,7 @@ production:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   disable_email_sending: false
+  disable_logout_get_request: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
