@@ -127,7 +127,7 @@ module Encryption
       UakPasswordVerifier.verify(password: password, digest: digest)
     end
 
-    add_method_tracer :digest, "Custom/#{name}/digest"
+    add_method_tracer :create_digest_pair, "Custom/#{name}/create_digest_pair"
     add_method_tracer :verify, "Custom/#{name}/verify"
   end
 end
