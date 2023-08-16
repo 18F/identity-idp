@@ -5,6 +5,7 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_agreement_step_complete
+    before_action :confirm_verify_info_step_needed
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
@@ -216,8 +217,6 @@ module Idv
     end
 
     def setup_for_redo
-      return redirect_to idv_review_url if idv_session.verify_info_step_complete?
-
       idv_session.redo_document_capture = true
 
       # If we previously skipped hybrid handoff for the user (because they're on a mobile
