@@ -12,7 +12,9 @@ RSpec.describe GpoReminderSender do
     let(:time_yesterday) { Time.zone.now - 1.day }
 
     def set_gpo_verification_pending_at(to_time)
-      user.gpo_verification_pending_profile.update(gpo_verification_pending_at: to_time)
+      user.
+        gpo_verification_pending_profile.
+        update(gpo_verification_pending_at: to_time)
     end
 
     def set_reminder_sent_at(to_time)
@@ -78,6 +80,38 @@ RSpec.describe GpoReminderSender do
 
       context 'but a reminder has already been sent' do
         before { set_reminder_sent_at(time_yesterday) }
+
+        it 'does not send that user an email' do
+          expect { subject.send_emails(time_due_for_reminder) }.
+            to change { ActionMailer::Base.deliveries.size }.by(0)
+        end
+
+        it 'logs no events' do
+          expect { subject.send_emails(time_due_for_reminder) }.
+            not_to change { fake_analytics.events.count }
+        end
+      end
+
+      context 'but the user has completed gpo verification' do
+        before do
+          otp = 'ABC123'
+          pending_profile = user.gpo_verification_pending_profile
+
+          pending_profile.gpo_confirmation_codes = [
+            create(
+              :gpo_confirmation_code,
+              otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+              code_sent_at: Time.zone.now,
+              profile: pending_profile,
+            ),
+          ]
+
+          GpoVerifyForm.new(
+            user: user,
+            pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
+            otp: otp,
+          ).submit
+        end
 
         it 'does not send that user an email' do
           expect { subject.send_emails(time_due_for_reminder) }.
