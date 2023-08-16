@@ -413,6 +413,7 @@ include:
   
 
 # Enable DAST Scan
+
 dast:
   stage: dast
   tags:
