@@ -175,7 +175,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
 
-    it 'shows a failure message after the maximum amount of retries' do
+    it 'shows a failure message after the maximum amount of retries', allow_browser_log: true do
       perform_in_browser(:mobile) do
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(user)
