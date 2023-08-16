@@ -46,7 +46,7 @@ function DocumentsStep({
   const { flowPath } = useContext(UploadContext);
 
   return (
-    <div>
+    <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
@@ -72,7 +72,7 @@ function DocumentsStep({
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <DocumentCaptureTroubleshootingOptions />
       <Cancel />
-    </div>
+    </>
   );
 }
 
