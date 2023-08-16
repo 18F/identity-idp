@@ -7,7 +7,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
     end
   end
 
-  let(:user) { build(:user)}
+  let(:user) { build(:user) }
 
   subject(:presenter) { described_class.new(user: user) }
 
