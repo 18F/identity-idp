@@ -1183,6 +1183,30 @@ RSpec.describe Profile do
       end
     end
 
+    describe '.fraud_rejection' do
+      it 'returns only fraud_rejection Profiles' do
+        user.profiles.create(fraud_rejection_at: Time.zone.now)
+        user.profiles.create(fraud_rejection_at: nil)
+        expect(user.profiles.fraud_rejection.count).to eq 1
+      end
+    end
+
+    describe '.fraud_review_pending' do
+      it 'returns only fraud_review_pending Profiles' do
+        user.profiles.create(fraud_review_pending_at: Time.zone.now)
+        user.profiles.create(fraud_review_pending_at: nil)
+        expect(user.profiles.fraud_review_pending.count).to eq 1
+      end
+    end
+
+    describe '.gpo_verification_pending' do
+      it 'returns only gpo_verification_pending Profiles' do
+        user.profiles.create(gpo_verification_pending_at: Time.zone.now)
+        user.profiles.create(gpo_verification_pending_at: nil)
+        expect(user.profiles.gpo_verification_pending.count).to eq 1
+      end
+    end
+
     describe '.in_person_verification_pending' do
       it 'returns only in_person_verification_pending Profiles' do
         user.profiles.create(in_person_verification_pending_at: Time.zone.now)
