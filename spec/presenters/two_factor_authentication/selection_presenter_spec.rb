@@ -7,7 +7,9 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
     end
   end
 
-  subject(:presenter) { described_class.new }
+  attr_reader :configuration, :user
+  
+  subject(:presenter) { described_class.new(configuration: configuration, user: user) }
 
   describe '#render_in' do
     it 'renders captured block content' do
