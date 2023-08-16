@@ -199,7 +199,7 @@ RSpec.describe MarketingSite do
 
       it { expect(result).to eq(true) }
 
-      context 'with anchor' do
+      context 'with a valid anchor' do
         let(:article_anchor) { 'test-anchor-url' }
         let(:result) do
           MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
@@ -207,15 +207,15 @@ RSpec.describe MarketingSite do
 
         it { expect(result).to eq(true) }
       end
-    end
 
-    context 'with an anchor that makes the URL invalid' do
-      let(:article_anchor) { '<iframe>' }
-      let(:result) do
-        MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
+      context 'with an anchor that makes the URL invalid' do
+        let(:article_anchor) { '<iframe>' }
+        let(:result) do
+          MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
+        end
+
+        it { expect(result).to eq(false) }
       end
-
-      it { expect(result).to eq(false) }
     end
   end
 end
