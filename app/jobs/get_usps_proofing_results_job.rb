@@ -20,7 +20,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     @enrollment_outcomes = {
       enrollments_checked: 0,
       enrollments_errored: 0,
-      enrollments_timed_out: 0,
+      enrollments_network_error: 0,
       enrollments_expired: 0,
       enrollments_failed: 0,
       enrollments_in_progress: 0,
@@ -46,7 +46,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
       percent_enrollments_errored: summary_percent(:enrollments_errored),
-      percent_enrollments_timed_out: summary_percent(:enrollments_timed_out),
+      percent_enrollments_network_error: summary_percent(:enrollments_network_error),
       job_name: self.class.name,
     )
 
@@ -161,8 +161,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       job_name: self.class.name,
     )
 
-    if err.is_a?(Faraday::TimeoutError)
-      enrollment_outcomes[:enrollments_timed_out] += 1
+    if err.is_a?(Faraday::TimeoutError) || err.is_a?(Faraday::ConnectionFailed)
+      enrollment_outcomes[:enrollments_network_error] += 1
     else
       enrollment_outcomes[:enrollments_errored] += 1
     end

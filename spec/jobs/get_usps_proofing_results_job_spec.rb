@@ -329,29 +329,38 @@ RSpec.describe GetUspsProofingResultsJob do
 
         it 'logs a message with counts of various outcomes when the job completes (errored > 0)' do
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-            and_return(pending_enrollments)
+            and_return(pending_enrollments + [
+              create(
+                :in_person_enrollment, :pending,
+                selected_location_details: { name: 'DEANWOOD' }
+              ),
+              create(
+                :in_person_enrollment, :pending,
+                selected_location_details: { name: 'DEANWOOD' }
+              ),
+            ])
           stub_request_proofing_results_with_responses(
             request_passed_proofing_results_args,
             request_in_progress_proofing_results_args,
             { status: 500 },
             request_failed_proofing_results_args,
             request_expired_proofing_results_args,
-          )
+          ).and_raise(Faraday::TimeoutError).and_raise(Faraday::ConnectionFailed)
 
           job.perform(Time.zone.now)
 
           expect(job_analytics).to have_logged_event(
             'GetUspsProofingResultsJob: Job completed',
             duration_seconds: anything,
-            enrollments_checked: 5,
+            enrollments_checked: 7,
             enrollments_errored: 1,
-            enrollments_timed_out: 0,
+            enrollments_network_error: 2,
             enrollments_expired: 1,
             enrollments_failed: 1,
             enrollments_in_progress: 1,
             enrollments_passed: 1,
-            percent_enrollments_errored: 20.00,
-            percent_enrollments_timed_out: 0.00,
+            percent_enrollments_errored: 14.29,
+            percent_enrollments_network_error: 28.57,
             job_name: 'GetUspsProofingResultsJob',
           )
 
@@ -375,13 +384,13 @@ RSpec.describe GetUspsProofingResultsJob do
             duration_seconds: anything,
             enrollments_checked: 5,
             enrollments_errored: 0,
-            enrollments_timed_out: 0,
+            enrollments_network_error: 0,
             enrollments_expired: 0,
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 5,
             percent_enrollments_errored: 0.00,
-            percent_enrollments_timed_out: 0.00,
+            percent_enrollments_network_error: 0.00,
             job_name: 'GetUspsProofingResultsJob',
           )
 
@@ -406,13 +415,13 @@ RSpec.describe GetUspsProofingResultsJob do
             duration_seconds: anything,
             enrollments_checked: 0,
             enrollments_errored: 0,
-            enrollments_timed_out: 0,
+            enrollments_network_error: 0,
             enrollments_expired: 0,
             enrollments_failed: 0,
             enrollments_in_progress: 0,
             enrollments_passed: 0,
             percent_enrollments_errored: 0.00,
-            percent_enrollments_timed_out: 0.00,
+            percent_enrollments_network_error: 0.00,
             job_name: 'GetUspsProofingResultsJob',
           )
 
@@ -1109,6 +1118,17 @@ RSpec.describe GetUspsProofingResultsJob do
           it_behaves_like(
             'enrollment_encountering_an_error_that_has_a_nil_response',
             error_type: Faraday::TimeoutError,
+          )
+        end
+
+        context 'when a connection failed error occurs' do
+          before(:each) do
+            stub_request_proofing_results_with_connection_failed_error
+          end
+
+          it_behaves_like(
+            'enrollment_encountering_an_error_that_has_a_nil_response',
+            error_type: Faraday::ConnectionFailed,
           )
         end
 
