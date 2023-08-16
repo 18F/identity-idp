@@ -36,77 +36,44 @@ RSpec.describe Encryption::PasswordVerifier do
       encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
 
       expect(SCrypt::Engine).to receive(:hash_secret).
-        with(password, scrypt_salt, 32).
+        with(password, instance_of(String), 32).
         and_return('scrypted')
       expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
 
-      kms_client = subject.send(:single_region_kms_client)
-      expect(kms_client).to receive(:encrypt).with(
+      single_region_kms_client = subject.send(:single_region_kms_client)
+      multi_region_kms_client = subject.send(:multi_region_kms_client)
+
+      expect(single_region_kms_client.kms_key_id).to eq(
+        IdentityConfig.store.aws_kms_key_id,
+      )
+      expect(multi_region_kms_client.kms_key_id).to eq(
+        IdentityConfig.store.aws_kms_multi_region_key_id,
+      )
+
+      expect(single_region_kms_client).to receive(:encrypt).with(
         encoded_scrypt_password,
         { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
-      ).and_return('kms_ciphertext')
+      ).and_return('single_region_kms_ciphertext')
+
+      expect(multi_region_kms_client).to receive(:encrypt).with(
+        encoded_scrypt_password,
+        { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
+      ).and_return('multi_region_kms_ciphertext')
 
       digest_pair = subject.create_digest_pair(
         password: password, user_uuid: user_uuid,
       )
 
-      expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to eq(
-        password_salt: salt,
+      expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to match(
+        password_salt: instance_of(String),
         password_cost: IdentityConfig.store.scrypt_cost,
-        encrypted_password: 'kms_ciphertext',
+        encrypted_password: 'single_region_kms_ciphertext',
       )
-      expect(digest_pair.multi_region_ciphertext).to eq(nil)
-    end
-
-    context 'with aws_kms_multi_region_write_enabled set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
-      end
-
-      it 'creates a single region and multi region password digest' do
-        scrypt_password = double(SCrypt::Password, digest: 'scrypted_password')
-        encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
-
-        expect(SCrypt::Engine).to receive(:hash_secret).
-          with(password, instance_of(String), 32).
-          and_return('scrypted')
-        expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
-
-        single_region_kms_client = subject.send(:single_region_kms_client)
-        multi_region_kms_client = subject.send(:multi_region_kms_client)
-
-        expect(single_region_kms_client.kms_key_id).to eq(
-          IdentityConfig.store.aws_kms_key_id,
-        )
-        expect(multi_region_kms_client.kms_key_id).to eq(
-          IdentityConfig.store.aws_kms_multi_region_key_id,
-        )
-
-        expect(single_region_kms_client).to receive(:encrypt).with(
-          encoded_scrypt_password,
-          { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
-        ).and_return('single_region_kms_ciphertext')
-
-        expect(multi_region_kms_client).to receive(:encrypt).with(
-          encoded_scrypt_password,
-          { 'user_uuid' => user_uuid, 'context' => 'password-digest' },
-        ).and_return('multi_region_kms_ciphertext')
-
-        digest_pair = subject.create_digest_pair(
-          password: password, user_uuid: user_uuid,
-        )
-
-        expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to match(
-          password_salt: instance_of(String),
-          password_cost: IdentityConfig.store.scrypt_cost,
-          encrypted_password: 'single_region_kms_ciphertext',
-        )
-        expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
-          password_salt: instance_of(String),
-          password_cost: IdentityConfig.store.scrypt_cost,
-          encrypted_password: 'multi_region_kms_ciphertext',
-        )
-      end
+      expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
+        password_salt: instance_of(String),
+        password_cost: IdentityConfig.store.scrypt_cost,
+        encrypted_password: 'multi_region_kms_ciphertext',
+      )
     end
   end
 
