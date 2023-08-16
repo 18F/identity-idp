@@ -36,7 +36,7 @@ RSpec.describe Encryption::PasswordVerifier do
       encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
 
       expect(SCrypt::Engine).to receive(:hash_secret).
-        with(password, instance_of(String), 32).
+        with(password, scrypt_salt, 32).
         and_return('scrypted')
       expect(SCrypt::Password).to receive(:new).with('scrypted').and_return(scrypt_password)
 
@@ -65,12 +65,12 @@ RSpec.describe Encryption::PasswordVerifier do
       )
 
       expect(JSON.parse(digest_pair.single_region_ciphertext, symbolize_names: true)).to match(
-        password_salt: instance_of(String),
+        password_salt: salt,
         password_cost: IdentityConfig.store.scrypt_cost,
         encrypted_password: 'single_region_kms_ciphertext',
       )
       expect(JSON.parse(digest_pair.multi_region_ciphertext, symbolize_names: true)).to match(
-        password_salt: instance_of(String),
+        password_salt: salt,
         password_cost: IdentityConfig.store.scrypt_cost,
         encrypted_password: 'multi_region_kms_ciphertext',
       )

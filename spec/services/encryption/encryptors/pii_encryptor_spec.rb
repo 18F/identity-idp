@@ -23,7 +23,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       ciphertext, ciphertext_multi_region = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to_not match plaintext
-      expect(ciphertext_multi_region).to eq(nil)
+      expect(ciphertext_multi_region).to_not match plaintext
     end
 
     it 'uses layers KMS and AES to encrypt the plaintext' do
