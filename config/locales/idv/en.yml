@@ -237,8 +237,8 @@ en:
         body_html: You requested a letter to verify your identity on
           <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
           code from the letter to finish verifying your identity. Sign back in
-          to %{app_name} to finish verifying your identity.
-        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}
+          to %{app_name} to finish verifying your identity. %{help_link}.
+        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
         finish: Finish verifying your identity
         sign_in_and_request_another_letter: sign in to request another letter
         subject: Finish verifying your identity

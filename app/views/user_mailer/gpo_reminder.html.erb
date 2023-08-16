@@ -1,10 +1,5 @@
 <p>
-  <%= t(
-        'idv.messages.gpo_reminder.body_html',
-        date_letter_was_sent: @date_letter_was_sent,
-        app_name: APP_NAME,
-      ) %>
-  <%= link_to(
+  <%= help_link = link_to(
         t('idv.troubleshooting.options.learn_more_verify_by_mail'),
         help_center_redirect_url(
           category: 'verify-your-identity',
@@ -13,6 +8,13 @@
           step: :gpo_send_letter,
         ),
         { style: "text-decoration: 'underline'" },
+      )
+
+      t(
+        'idv.messages.gpo_reminder.body_html',
+        date_letter_was_sent: @date_letter_was_sent,
+        app_name: APP_NAME,
+        help_link: help_link,
       ) %>
 </p>
 
