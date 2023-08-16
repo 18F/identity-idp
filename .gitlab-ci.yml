@@ -107,7 +107,7 @@ build-idp-image:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
-  script:
+  scranalyticsipt:
     - mkdir -p /kaniko/.docker
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
@@ -578,7 +578,7 @@ ecr-scan:
     reports:
       container_scanning: gl-container-scanning-report.json
 
-tag-main-image:
+build-main-image:
   stage: main_merge
   rules:
     - if: $CI_COMMIT_BRANCH == "cmccarthy/review-app-main" && $CI_PIPELINE_SOURCE == "push"
@@ -597,7 +597,12 @@ tag-main-image:
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - >-
-      echo "FROM ${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}" |
       /kaniko/executor
-      --dockerfile /dev/stdin
-      --destination ${ECR_REGISTRY}/identity-idp/review:test-main
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
+      --destination "${ECR_REGISTRY}/identity-idp/review:test-main"
+      --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
+      --cache-ttl=168h
+      --cache=true
+      --compressed-caching=false
+      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
