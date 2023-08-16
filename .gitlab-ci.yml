@@ -107,7 +107,7 @@ build-idp-image:
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
-  scranalyticsipt:
+  script:
     - mkdir -p /kaniko/.docker
     - |-
       KANIKOCFG="\"credsStore\":\"ecr-login\""
