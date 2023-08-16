@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MarketingSite
+  class UnknownArticleException < StandardError; end
+
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
@@ -62,7 +64,7 @@ class MarketingSite
 
   def self.help_center_article_url(category:, article:, article_anchor: '')
     if !HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
-      raise ArgumentError, "Unknown help center article category #{category}/#{article}"
+      raise UnknownArticleException, "Unknown help center article category #{category}/#{article}"
     end
     anchor_text = article_anchor.present? ? "##{article_anchor}" : ''
     URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}").to_s
@@ -70,7 +72,7 @@ class MarketingSite
 
   def self.valid_help_center_article?(category:, article:, article_anchor: '')
     !!help_center_article_url(category:, article:, article_anchor:)
-  rescue URI::InvalidURIError, ArgumentError
+  rescue URI::InvalidURIError, UnknownArticleException
     false
   end
 end

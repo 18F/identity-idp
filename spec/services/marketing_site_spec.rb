@@ -146,7 +146,7 @@ RSpec.describe MarketingSite do
       let(:article) { 'bar' }
 
       it 'raises ArgumentError' do
-        expect { url }.to raise_error ArgumentError
+        expect { url }.to raise_error MarketingSite::UnknownArticleException
       end
     end
 
