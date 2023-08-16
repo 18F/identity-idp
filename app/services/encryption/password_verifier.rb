@@ -53,17 +53,14 @@ module Encryption
         password_cost: cost,
       ).to_s
 
-      multi_region_digest = nil
-      if IdentityConfig.store.aws_kms_multi_region_write_enabled
-        multi_region_encrypted_password = multi_region_kms_client.encrypt(
-          scrypted_password, kms_encryption_context(user_uuid: user_uuid)
-        )
-        multi_region_digest = PasswordDigest.new(
-          encrypted_password: multi_region_encrypted_password,
-          password_salt: salt,
-          password_cost: cost,
-        ).to_s
-      end
+      multi_region_encrypted_password = multi_region_kms_client.encrypt(
+        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+      )
+      multi_region_digest = PasswordDigest.new(
+        encrypted_password: multi_region_encrypted_password,
+        password_salt: salt,
+        password_cost: cost,
+      ).to_s
 
       RegionalCiphertextPair.new(
         single_region_ciphertext: single_region_digest,
