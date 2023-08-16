@@ -216,6 +216,8 @@ module Idv
     end
 
     def setup_for_redo
+      return if idv_session.verify_info_step_complete?
+
       idv_session.redo_document_capture = true
 
       # If we previously skipped hybrid handoff for the user (because they're on a mobile
