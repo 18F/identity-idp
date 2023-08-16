@@ -206,7 +206,7 @@ RSpec.describe Idv::DocPiiForm do
   context 'when there is no address1 information' do
     let(:subject) { Idv::DocPiiForm.new(pii: address1_error_pii) }
 
-    it 'returns a single generic pii error' do
+    it 'returns an error for not being able to read the address' do
       result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
