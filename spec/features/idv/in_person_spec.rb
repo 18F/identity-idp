@@ -179,7 +179,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_verify_info_path)
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
@@ -556,7 +556,7 @@ RSpec.describe 'In Person Proofing', js: true do
         click_idv_continue
 
         # ssn page
-        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+        expect(page).to have_current_path(idv_in_person_proofing_ssn_url)
         complete_ssn_step
 
         # verify page
@@ -649,7 +649,7 @@ RSpec.describe 'In Person Proofing', js: true do
         fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
         fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
         click_idv_continue
-        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+        expect(page).to have_current_path(idv_in_person_proofing_ssn_url, wait: 10)
       end
     end
   end
