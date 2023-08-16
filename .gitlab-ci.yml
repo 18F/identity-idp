@@ -62,6 +62,7 @@ stages:
   - after_test
   - review
   - scan
+  - main_merge
 
 workflow:
   rules:
@@ -576,3 +577,27 @@ ecr-scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
+
+tag-main-image:
+  stage: main_merge
+  rules:
+    - if: $CI_COMMIT_BRANCH == "cmccarthy/review-app-main" && $CI_PIPELINE_SOURCE == "push"
+      when: always
+    - when: never
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: ['']
+  script:
+    - mkdir -p /kaniko/.docker
+    - |-
+      KANIKOCFG="\"credsStore\":\"ecr-login\""
+      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
+        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
+      fi
+      KANIKOCFG="{ ${KANIKOCFG} }"
+      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
+    - >-
+      echo "FROM ${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}" |
+      /kaniko/executor
+      --dockerfile /dev/stdin
+      --destination ${ECR_REGISTRY}/identity-idp/review:test-main
