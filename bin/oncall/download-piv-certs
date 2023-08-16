@@ -134,7 +134,7 @@ class DownloadPivCerts
     Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
       cloudwatch_client.fetch(
         query: query,
-        from: 3.weeks.ago, # TODO: 1.week.ago
+        from: 1.week.ago,
         to: Time.now,
       )
     end
