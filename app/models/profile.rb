@@ -15,6 +15,21 @@ class Profile < ApplicationRecord
   scope(:active, -> { where(active: true) })
   scope(:verified, -> { where.not(verified_at: nil) })
   scope(
+    :fraud_rejection, -> {
+      where.not(fraud_rejection_at: nil)
+    }
+  )
+  scope(
+    :fraud_review_pending, -> {
+      where.not(fraud_review_pending_at: nil)
+    }
+  )
+  scope(
+    :gpo_verification_pending, -> {
+      where.not(gpo_verification_pending_at: nil)
+    }
+  )
+  scope(
     :in_person_verification_pending, -> {
       where.not(in_person_verification_pending_at: nil)
     }

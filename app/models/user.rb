@@ -144,11 +144,11 @@ class User < ApplicationRecord
 
     @pending_profile = begin
       pending = profiles.in_person_verification_pending.or(
-        profiles.where.not(gpo_verification_pending_at: nil),
+        profiles.gpo_verification_pending,
       ).or(
-        profiles.where.not(fraud_review_pending_at: nil),
+        profiles.fraud_review_pending,
       ).or(
-        profiles.where.not(fraud_rejection_at: nil),
+        profiles.fraud_rejection,
       ).order(created_at: :desc).first
 
       if pending.blank?
