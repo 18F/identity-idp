@@ -3538,6 +3538,11 @@ module AnalyticsEvents
     track_event('Show Password Button Clicked', path: path, **extra)
   end
 
+  # Tracks if a user clicks the "You will also need" accordion on the homepage
+  def sign_in_idv_requirements_accordion_clicked
+    track_event('IdV requirements accordion clicked')
+  end
+
   # @param [String] flash
   # @param [String] stored_location
   # tracks when a user visits the sign in page
@@ -3548,11 +3553,6 @@ module AnalyticsEvents
       stored_location: stored_location,
       **extra,
     )
-  end
-
-  # Tracks if a user clicks the "You will also need" accordion on the homepage
-  def sign_in_idv_requirements_accordion_clicked
-    track_event('IdV requirements accordion clicked')
   end
 
   # @param [Boolean] success
