@@ -8,6 +8,7 @@ class FrontendLogController < ApplicationController
   # In rare circumstances, these writes can clobber other, more important writes.
   before_action :skip_session_commit
 
+  # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
