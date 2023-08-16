@@ -154,6 +154,124 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     expect(errors).to.have.lengthOf(4);
   });
 
+  it('displays a validation error for an invalid ZIP code length (length = 1)', async () => {
+    const { findByText, findByLabelText, findAllByText } = render(
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+      '9',
+    );
+
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
+    expect(errors).to.have.lengthOf(1); 
+  });
+
+  it('displays a validation error for an invalid ZIP code length (length = 8)', async () => {
+    const { findByText, findByLabelText, findAllByText } = render(
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+      '99999-892',
+    );
+
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
+    expect(errors).to.have.lengthOf(1); 
+  });
+
+  it('does not display a validation error for a valid ZIP code length (length = 5)', async () => {
+    const { findByText, findByLabelText } = render(
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+      '99999',
+    );
+
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    try {
+      const errors = await findByText('idv.errors.pattern_mismatch.zipcode');
+    } catch (err) {
+      expect(err === 'Error: Unable to find an element with the text');
+    }
+  });
+
+  it('does not display a validation error for a valid ZIP code length (length = 9)', async () => {
+    const { findByText, findByLabelText, findAllByText, queryByText } = render(
+      <InPersonContext.Provider
+        value={{
+          inPersonOutageMessageEnabled: false,
+          inPersonOutageExpectedUpdateDate: 'January 1, 2024',
+          inPersonFullAddressEntryEnabled: true,
+          usStatesTerritories: [['Delaware', 'DE']],
+        }}
+      >
+        <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
+      </InPersonContext.Provider>,
+      { wrapper },
+    );
+
+    await userEvent.type(
+      await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
+      '99999-9999',
+    );
+
+    await userEvent.click(
+      await findByText('in_person_proofing.body.location.po_search.search_button'),
+    );
+
+    try {
+      const errors = await findByText('idv.errors.pattern_mismatch.zipcode');
+    } catch (err) {
+      expect(err === 'Error: Unable to find an element with the text');
+    }
+  });
+
   it('displays no post office results if a successful search is followed by an unsuccessful search', async () => {
     const { findByText, findByLabelText, queryByRole } = render(
       <InPersonContext.Provider
