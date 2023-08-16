@@ -216,7 +216,7 @@ module Idv
     end
 
     def setup_for_redo
-      confirm_verify_info_step_needed
+      return redirect_to idv_review_url if idv_session.verify_info_step_complete?
 
       idv_session.redo_document_capture = true
 
