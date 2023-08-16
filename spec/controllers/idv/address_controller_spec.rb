@@ -5,6 +5,8 @@ RSpec.describe Idv::AddressController do
 
   let(:user) { create(:user) }
 
+  let(:idv_session) { subject.idv_session }
+
   let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.stringify_keys }
 
   let(:flow_session) do
@@ -53,6 +55,12 @@ RSpec.describe Idv::AddressController do
       expect do
         put :update, params: params
       end.to change { flow_session['address_edited'] }.from(nil).to eql(true)
+    end
+
+    it 'sets address_edited in idv_session' do
+      expect do
+        put :update, params: params
+      end.to change { idv_session.address_edited }.from(nil).to eql(true)
     end
 
     it 'updates pii_from_doc' do
