@@ -1166,7 +1166,7 @@ RSpec.describe Profile do
     end
   end
 
-  describe 'scopes' do
+  describe 'query class methods' do
     describe '.active' do
       it 'returns only active Profiles' do
         user.profiles.create(active: false)
