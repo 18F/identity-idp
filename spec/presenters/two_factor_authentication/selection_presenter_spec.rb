@@ -98,13 +98,13 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#label' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new.label }.to raise_error(RuntimeError)
+        expect { PlaceholderPresenter.new(user: user).label }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(configuration: 1).label }.to raise_error(RuntimeError)
+        expect { PlaceholderPresenter.new(configuration: 1, user: user).label }.to raise_error(RuntimeError)
       end
     end
   end
@@ -112,13 +112,13 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   describe '#info' do
     context 'with no configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new.info }.to raise_error(RuntimeError)
+        expect { PlaceholderPresenter.new(user: user).info }.to raise_error(RuntimeError)
       end
     end
 
     context 'with configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(configuration: 1).info }.to raise_error(RuntimeError)
+        expect { PlaceholderPresenter.new(configuration: 1, user: user).info }.to raise_error(RuntimeError)
       end
     end
   end
