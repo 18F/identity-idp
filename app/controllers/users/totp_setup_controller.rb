@@ -70,6 +70,7 @@ module Users
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
     end
 

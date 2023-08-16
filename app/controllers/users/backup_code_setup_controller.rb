@@ -65,7 +65,7 @@ module Users
     private
 
     def analytics_properties_for_visit
-      ParseControllerFromReferer.new(request.referer).call
+      { in_multi_mfa_selection_flow: in_multi_mfa_selection_flow? }
     end
 
     def track_backup_codes_created
@@ -82,6 +82,7 @@ module Users
     def track_backup_codes_confirmation_setup_visit
       analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
     end
 
