@@ -145,10 +145,10 @@ function FullAddressSearch({
     <T extends HTMLElement & { value: string }>(input) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
-      const scrubbedZip = (target.value).replace(/[^0-9]/g, '');
+      const scrubbedZip = target.value.replace(/[^0-9]/g, '');
       if (scrubbedZip.length > 5) {
-        let zipcodePieces : string[] = [];
-        zipcodePieces.push(scrubbedZip.substring(0,5));
+        const zipcodePieces: string[] = [];
+        zipcodePieces.push(scrubbedZip.substring(0, 5));
         zipcodePieces.push(scrubbedZip.substring(5));
         input(zipcodePieces.join('-'));
       } else {
@@ -160,7 +160,7 @@ function FullAddressSearch({
     <T extends HTMLElement & { value: string }>(input) =>
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
-      input((target.value).trimStart());
+      input(target.value.trimStart());
     };
 
   const onAddressChange = inputChangeHandler(setAddressValue);
@@ -235,7 +235,7 @@ function FullAddressSearch({
       <ValidatedField
         ref={validatedZipCodeFieldRef}
         messages={{
-          patternMismatch: t('idv.errors.pattern_mismatch.zipcode')
+          patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
         }}
       >
         <TextInput
