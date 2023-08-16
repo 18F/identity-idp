@@ -98,10 +98,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-
-      # can be deleted when column is removed
       expect(profile.deactivation_reason).to be_nil
-
       expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.in_person_verification_pending?).to eq(true)
       expect(profile.fraud_review_pending?).to eq(false)
