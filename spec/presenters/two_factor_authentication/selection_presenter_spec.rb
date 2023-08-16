@@ -8,7 +8,7 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
   end
 
   attr_reader :configuration, :user
-  
+
   subject(:presenter) { described_class.new(configuration: configuration, user: user) }
 
   describe '#render_in' do
@@ -104,7 +104,9 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
 
     context 'with configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(configuration: 1, user: user).label }.to raise_error(RuntimeError)
+        expect do
+          PlaceholderPresenter.new(configuration: 1, user: user).label
+        end.to raise_error(RuntimeError)
       end
     end
   end
@@ -118,7 +120,9 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
 
     context 'with configuration' do
       it 'raises with missing translation' do
-        expect { PlaceholderPresenter.new(configuration: 1, user: user).info }.to raise_error(RuntimeError)
+        expect do
+          PlaceholderPresenter.new(configuration: 1, user: user).info
+        end.to raise_error(RuntimeError)
       end
     end
   end
