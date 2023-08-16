@@ -99,7 +99,7 @@ RSpec.describe OtpDeliveries do
             'properties.event_properties.telephony_response.message_id' => 'ccc',
             'properties.event_properties.otp_delivery_preference' => 'sms',
             'properties.event_properties.country_code' => 'US',
-          }
+          },
         ],
       )
     end
@@ -115,7 +115,7 @@ RSpec.describe OtpDeliveries do
             message_id: 'ccc',
             delivery_preference: 'sms',
             country_code: 'US',
-          }
+          },
         ],
       )
     end
