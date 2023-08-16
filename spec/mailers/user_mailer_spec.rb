@@ -898,11 +898,23 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
+      expected_help_link = ActionController::Base.helpers.link_to(
+        t('idv.troubleshooting.options.learn_more_verify_by_mail'),
+        help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-address-by-mail',
+          flow: :idv,
+          step: :gpo_send_letter,
+        ),
+        { style: "text-decoration: 'underline'" },
+      )
+
       expected_body = strip_tags(
         t(
           'idv.messages.gpo_reminder.body_html',
           date_letter_was_sent: date_letter_was_sent.strftime(t('time.formats.event_date')),
           app_name: APP_NAME,
+          help_link: expected_help_link,
         ),
       )
 
