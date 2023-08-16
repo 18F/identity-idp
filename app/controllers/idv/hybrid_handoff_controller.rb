@@ -4,8 +4,8 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
-    before_action :confirm_agreement_step_complete
     before_action :confirm_verify_info_step_needed
+    before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
