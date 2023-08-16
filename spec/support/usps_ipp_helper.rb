@@ -272,6 +272,13 @@ module UspsIppHelper
     ).to_raise(Faraday::TimeoutError)
   end
 
+  def stub_request_proofing_results_with_connection_failed_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::ConnectionFailed)
+  end
+
   def stub_request_proofing_results_with_nil_status_error
     stub_request(
       :post,

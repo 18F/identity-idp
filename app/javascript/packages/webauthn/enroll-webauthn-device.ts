@@ -28,8 +28,6 @@ interface EnrollOptions {
 interface EnrollResult {
   webauthnId: string;
 
-  webauthnPublicKey: string;
-
   attestationObject: string;
 
   clientDataJSON: string;
@@ -99,7 +97,6 @@ async function enrollWebauthnDevice({
 
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),
-    webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
     authenticatorDataFlagsValue,

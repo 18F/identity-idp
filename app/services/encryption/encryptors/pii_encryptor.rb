@@ -56,15 +56,12 @@ module Encryption
           single_region_kms_encrypted_ciphertext, salt, cost
         ).to_s
 
-        multi_region_ciphertext = nil
-        if IdentityConfig.store.aws_kms_multi_region_write_enabled
-          multi_region_kms_encrypted_ciphertext = multi_region_kms_client.encrypt(
-            aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
-          )
-          multi_region_ciphertext = Ciphertext.new(
-            multi_region_kms_encrypted_ciphertext, salt, cost
-          ).to_s
-        end
+        multi_region_kms_encrypted_ciphertext = multi_region_kms_client.encrypt(
+          aes_encrypted_ciphertext, kms_encryption_context(user_uuid: user_uuid)
+        )
+        multi_region_ciphertext = Ciphertext.new(
+          multi_region_kms_encrypted_ciphertext, salt, cost
+        ).to_s
 
         RegionalCiphertextPair.new(
           single_region_ciphertext: single_region_ciphertext,
