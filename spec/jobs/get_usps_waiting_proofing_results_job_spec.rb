@@ -44,9 +44,10 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
         end
       end
 
-      it 'logs the correct job name and enrollment count when the job starts' do
+      it 'processes the correct enrollments and logs the correct job name and enrollment count' do
         # 6 "waiting" enrollments
         create_list(:in_person_enrollment, 6, :pending, ready_for_status_check: false)
+        waiting_ids = InPersonEnrollment.last(6).pluck(:id)
         # 6 not "waiting" enrollments
         create_list(:in_person_enrollment, 2, :establishing, ready_for_status_check: false)
         create_list(:in_person_enrollment, 2, :pending, ready_for_status_check: true)
@@ -60,6 +61,8 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
 
         job.perform(Time.zone.now)
 
+        expect(InPersonEnrollment.where.not(status_check_attempted_at: nil).pluck(:id)).
+          to(match_array(waiting_ids))
         expect(job_analytics).to have_logged_event(
           'GetUspsProofingResultsJob: Job started',
           enrollments_count: 6,
