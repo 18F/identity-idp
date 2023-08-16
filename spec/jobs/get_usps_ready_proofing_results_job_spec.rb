@@ -29,6 +29,8 @@ RSpec.describe GetUspsReadyProofingResultsJob do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).
+      and_return(false)
     stub_const(
       'GetUspsProofingResultsJob::REQUEST_DELAY_IN_SECONDS',
       request_delay_ms / GetUspsProofingResultsJob::MILLISECONDS_PER_SECOND,

@@ -72,7 +72,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
     end
 
     it 'does not require verification and hands off successfully' do
@@ -107,7 +107,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       acknowledge_and_confirm_personal_key
       click_agree_and_continue
       visit account_path
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
     end
 
     it 'does not require idv or requested attribute verification and hands off successfully' do

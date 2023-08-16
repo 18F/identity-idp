@@ -14,7 +14,6 @@ module Idv
       attr_accessor :error_message
 
       def show
-        flow_session['Idv::Steps::InPerson::SsnStep'] = true
         @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
 
         analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?

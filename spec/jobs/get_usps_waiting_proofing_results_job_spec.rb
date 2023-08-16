@@ -25,6 +25,8 @@ RSpec.describe GetUspsWaitingProofingResultsJob do
     allow(Rails).to receive(:cache).and_return(
       ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
     )
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).
+      and_return(false)
     ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).

@@ -82,7 +82,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'redo_document_capture' do
       it 'adds redo_document_capture to analytics' do
-        flow_session[:redo_document_capture] = true
+        subject.idv_session.redo_document_capture = true
 
         get :show
 

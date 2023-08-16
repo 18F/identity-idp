@@ -11,7 +11,6 @@
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
-      <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',

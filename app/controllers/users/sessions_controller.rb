@@ -40,11 +40,15 @@ module Users
     end
 
     def destroy
-      analytics.logout_initiated(sp_initiated: false, oidc: false)
-      irs_attempts_api_tracker.logout_initiated(
-        success: true,
-      )
-      super
+      if request.method == 'GET' && IdentityConfig.store.disable_logout_get_request
+        redirect_to root_path
+      else
+        analytics.logout_initiated(sp_initiated: false, oidc: false)
+        irs_attempts_api_tracker.logout_initiated(
+          success: true,
+        )
+        super
+      end
     end
 
     private

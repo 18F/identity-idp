@@ -59,8 +59,6 @@ function webauthn() {
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;
-        (document.getElementById('webauthn_public_key') as HTMLInputElement).value =
-          result.webauthnPublicKey;
         (document.getElementById('attestation_object') as HTMLInputElement).value =
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
