@@ -1,6 +1,7 @@
 class GetUspsWaitingProofingResultsJob < GetUspsProofingResultsJob
   private
 
+
   def job_can_run?
     ipp_enabled? && ipp_ready_job_enabled?
   end
