@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe GpoReminderJob do
-  WAIT_BEFORE_SENDING_REMINDER = 14.days
+  let(:wait_before_sending_reminder) { 14.days }
 
   describe '#perform' do
-    subject(:perform) { job.perform(Time.zone.now - WAIT_BEFORE_SENDING_REMINDER) }
+    subject(:perform) { job.perform(wait_before_sending_reminder.ago) }
 
     let(:job) { GpoReminderJob.new }
     let(:user) { create(:user, :with_pending_gpo_profile) }
