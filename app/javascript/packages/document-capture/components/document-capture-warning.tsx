@@ -12,7 +12,7 @@ interface DocumentCaptureWarningProps {
   isFailedResult: boolean;
   remainingAttempts: number;
   actionOnClick?: () => void;
-  unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
+  unknownFieldErrors: FormStepError<{ front: string; back: string; general?: string }>[];
 }
 
 const DISPLAY_ATTEMPTS = 3;
