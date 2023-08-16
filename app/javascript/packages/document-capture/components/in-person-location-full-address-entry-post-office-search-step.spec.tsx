@@ -179,7 +179,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
 
     const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
-    expect(errors).to.have.lengthOf(1); 
+    expect(errors).to.have.lengthOf(1);
   });
 
   it('displays a validation error for an invalid ZIP code length (length = 8)', async () => {
@@ -207,7 +207,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
 
     const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
-    expect(errors).to.have.lengthOf(1); 
+    expect(errors).to.have.lengthOf(1);
   });
 
   it('does not display a validation error for a valid ZIP code length (length = 5)', async () => {
@@ -235,14 +235,14 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
 
     try {
-      const errors = await findByText('idv.errors.pattern_mismatch.zipcode');
+      await findByText('idv.errors.pattern_mismatch.zipcode');
     } catch (err) {
       expect(err === 'Error: Unable to find an element with the text');
     }
   });
 
   it('does not display a validation error for a valid ZIP code length (length = 9)', async () => {
-    const { findByText, findByLabelText, findAllByText, queryByText } = render(
+    const { findByText, findByLabelText } = render(
       <InPersonContext.Provider
         value={{
           inPersonOutageMessageEnabled: false,
@@ -266,7 +266,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
     );
 
     try {
-      const errors = await findByText('idv.errors.pattern_mismatch.zipcode');
+      await findByText('idv.errors.pattern_mismatch.zipcode');
     } catch (err) {
       expect(err === 'Error: Unable to find an element with the text');
     }
