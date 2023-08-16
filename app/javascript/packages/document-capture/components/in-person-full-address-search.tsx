@@ -232,7 +232,12 @@ function FullAddressSearch({
           ))}
         </SelectInput>
       </ValidatedField>
-      <ValidatedField ref={validatedZipCodeFieldRef}>
+      <ValidatedField
+        ref={validatedZipCodeFieldRef}
+        messages={{
+          patternMismatch: t('idv.errors.pattern_mismatch.zipcode')
+        }}
+      >
         <TextInput
           required
           className="tablet:grid-col-5"
