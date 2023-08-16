@@ -13,7 +13,7 @@ RSpec.describe GpoReminderJob do
 
     before do
       pending_profile.update(
-        gpo_verification_pending_at: Time.zone.now - WAIT_BEFORE_SENDING_REMINDER,
+        gpo_verification_pending_at: wait_before_sending_reminder.ago,
       )
       allow(job).to receive(:analytics).and_return(job_analytics)
     end
