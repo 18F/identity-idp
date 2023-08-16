@@ -88,7 +88,7 @@ RSpec.feature 'remember device sp expiration' do
   AAL1_REMEMBER_DEVICE_EXPIRATION =
     IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   AAL2_REMEMBER_DEVICE_EXPIRATION =
-    IdentityConfig.store.remember_device_expiration_hours_aal_2.hours
+    IdentityConfig.store.remember_device_expiration_minutes_aal_2.minutes
 
   let(:user) do
     user_record = sign_up_and_set_password
