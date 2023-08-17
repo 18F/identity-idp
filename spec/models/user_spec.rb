@@ -314,6 +314,15 @@ RSpec.describe User do
         expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
     end
+
+    describe '#establishing_in_person_enrollment_with_address?' do
+      it 'returns the establishing IPP enrollment that has an address' do
+        ProofingComponent.find_or_create_by(user: user).
+          update!(document_check: Idp::Constants::Vendors::USPS)
+
+        expect(user.establishing_in_person_enrollment_with_address?).to eq(true)
+      end
+    end
   end
 
   describe 'deleting identities' do

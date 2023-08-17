@@ -198,6 +198,11 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.in_person_verification_pending?
   end
 
+  def establishing_in_person_enrollment_with_address?
+    establishing_in_person_enrollment &&
+      proofing_component&.document_check == Idp::Constants::Vendors::USPS
+  end
+
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
       active_profile&.verified_at ||
