@@ -103,7 +103,6 @@ describe('enrollWebauthnDevice', () => {
 
       expect(result).to.deep.equal({
         webauthnId: btoa('123'),
-        webauthnPublicKey: '123',
         attestationObject: btoa('attest'),
         clientDataJSON: btoa('json'),
         authenticatorDataFlagsValue: 65,

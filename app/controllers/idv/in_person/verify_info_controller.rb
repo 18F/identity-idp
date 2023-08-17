@@ -25,9 +25,6 @@ module Idv
         success = shared_update
 
         if success
-          # Mark the FSM verify step completed. This is for the 50/50 state
-          flow_session['Idv::Steps::InPerson::VerifyStep'] = true
-
           redirect_to idv_in_person_verify_info_url
         end
       end
@@ -51,11 +48,7 @@ module Idv
       end
 
       def prev_url
-        if IdentityConfig.store.in_person_ssn_info_controller_enabled
-          idv_in_person_proofing_ssn_url
-        else
-          idv_in_person_step_url(step: :ssn)
-        end
+        idv_in_person_proofing_ssn_url
       end
 
       def pii

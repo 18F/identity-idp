@@ -125,6 +125,10 @@ namespace :dev do
               city: 'GREAT FALLS',
               state: 'VA',
               zipcode: '22066',
+              identity_doc_address1: '1200 FORESTVILLE DR',
+              identity_doc_city: 'GREAT FALLS',
+              identity_doc_address_state: 'VA',
+              identity_doc_zipcode: '22066',
             )
             personal_key = profile.encrypt_pii(pii, pw)
 
