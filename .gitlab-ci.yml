@@ -428,8 +428,6 @@ dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - echo ${DAST_WEBSITE}
-    - curl -vk https://${DAST_WEBSITE}
-    - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
     - /analyze
   artifacts:
     reports:
