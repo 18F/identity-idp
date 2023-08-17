@@ -4030,7 +4030,7 @@ module AnalyticsEvents
 
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
-    track_event('Piv cac disabled')
+    track_event('Piv Cac disabled')
   end
 
   # Tracks when user's piv cac setup
