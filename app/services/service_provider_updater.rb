@@ -11,25 +11,26 @@ class ServiceProviderUpdater
     cert
   ]
 
-  def run
-    dashboard_service_providers.each do |service_provider|
+  def run(service_provider = nil)
+    if service_provider.present?
       update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(service_provider))
+    else
+      dashboard_service_providers.each do |dashboard_service_provider|
+        update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider))
+      end
     end
-  end
-
-  def run_for_one(id)
-    update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider(id)))
   end
 
   private
 
   def update_local_caches(service_provider)
-    issuer = service_provider['issuer']
-    update_cache(issuer, service_provider)
+    update_cache(service_provider)
   end
 
-  def update_cache(issuer, service_provider)
-    if service_provider['active'] == true
+  def update_cache(service_provider)
+    issuer = service_provider['issuer']
+    # when a service provider is passed in via params, true becomes 'true'
+    if [true, 'true'].include?(service_provider['active'])
       create_or_update_service_provider(issuer, service_provider)
     else
       ServiceProvider.where(issuer: issuer, native: false).destroy_all
@@ -65,18 +66,6 @@ class ServiceProviderUpdater
     []
   rescue StandardError
     log_error "Failed to contact #{url}"
-    []
-  end
-
-  def dashboard_service_provider(id)
-    show_url = url + "/#{id}"
-    resp = Faraday.get(show_url)
-
-    return parse_service_providers(resp.body) if resp.status == 200
-    log_error "Failed to parse response from #{show_url}: #{resp.body}"
-    []
-  rescue StandardError
-    log_error "Failed to contact #{show_url}"
     []
   end
 
