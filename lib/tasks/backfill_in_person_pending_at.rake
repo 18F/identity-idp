@@ -15,13 +15,21 @@ namespace :profiles do
 
     update_profiles = ENV['UPDATE_PROFILES'] == 'true'
 
-    profiles = Profile.where(deactivation_reason: 'in_person_verification_pending')
+    profiles = Profile.where(
+      deactivation_reason: 'in_person_verification_pending',
+      in_person_verification_pending_at: nil,
+    )
 
     profiles.each do |profile|
       timestamp = profile.in_person_enrollment.updated_at
 
       warn "#{profile.id},#{profile.deactivation_reason},#{timestamp}"
-      profile.update!(in_person_verification_pending_at: timestamp) if update_profiles
+      if update_profiles
+        profile.update!(
+          in_person_verification_pending_at: timestamp,
+          deactivation_reason: nil,
+        )
+      end
     end
   end
 
