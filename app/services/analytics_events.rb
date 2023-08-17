@@ -3540,7 +3540,7 @@ module AnalyticsEvents
 
   # Tracks if a user clicks the "You will also need" accordion on the homepage
   def sign_in_idv_requirements_accordion_clicked
-    track_event('IdV requirements accordion clicked')
+    track_event('Sign In: IdV requirements accordion clicked')
   end
 
   # @param [String] flash
