@@ -428,6 +428,7 @@ dast:
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - echo ${DAST_WEBSITE}
+    - export DAST_ZAP_CLI_OPTIONS="-z -config connection.proxyChain.enabled=true -config connection.proxyChain.hostName=obproxy.login.gov.internal -config connection.proxyChain.port=3128 -config connection.proxyChain.exclusions.exclusion(0).name=127.0.0.1 -config connection.proxyChain.exclusions.exclusion(0).regex=false  -config connection.proxyChain.exclusions.exclusion(0).enabled=true  -config connection.proxyChain.exclusions.exclusion(1).name=0.0.0.0  -config connection.proxyChain.exclusions.exclusion(1).regex=false -config connection.proxyChain.exclusions.exclusion(1).enabled=true -config connection.proxyChain.exclusions.exclusion(2).name=localhost -config connection.proxyChain.exclusions.exclusion(2).regex=false -config connection.proxyChain.exclusions.exclusion(2).enabled=true"
     - /analyze
   artifacts:
     reports:
