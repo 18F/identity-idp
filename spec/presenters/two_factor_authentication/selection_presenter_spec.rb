@@ -69,6 +69,15 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
         end
       end
     end
+    context 'with configuration' do
+      let(:single_configuration_only) { true }
+      let(:mfa_configuration_count) { 1 }
+      let(:configuration) { create(:phone_configuration, user: user) }
+      before do
+        allow(presenter).to receive(:configuration).and_return(configuration)
+      end
+      it { expect(presenter.disabled?).to eq(false) }
+    end
   end
 
   describe '#single_configuration_only?' do
