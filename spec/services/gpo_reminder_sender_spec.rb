@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GpoReminderSender do
   describe '#send_emails' do
-    subject(:sender) { GpoReminderSender.new(fake_analytics) }
+    subject(:sender) { GpoReminderSender.new }
 
     let(:user) { create(:user, :with_pending_gpo_profile) }
     let(:gpo_confirmation_code) do
@@ -29,6 +29,8 @@ RSpec.describe GpoReminderSender do
         reminder_sent_at: to_time,
       )
     end
+
+    before { allow(Analytics).to receive(:new).and_return(fake_analytics) }
 
     context 'when no users need a reminder' do
       before { set_gpo_verification_pending_at(time_not_yet_due) }

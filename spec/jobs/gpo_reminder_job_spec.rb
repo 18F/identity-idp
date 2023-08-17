@@ -15,7 +15,7 @@ RSpec.describe GpoReminderJob do
       pending_profile.update(
         gpo_verification_pending_at: wait_before_sending_reminder.ago,
       )
-      allow(job).to receive(:analytics).and_return(job_analytics)
+      allow(Analytics).to receive(:new).and_return(job_analytics)
     end
 
     it 'sends reminder emails' do
