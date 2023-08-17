@@ -419,7 +419,7 @@ dast:
   tags:
     - build-pool
   image:
-    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
+    name: "217680906704.dkr.ecr.us-west-2.amazonaws.com/temp/gitlab/security-products/dast:latest"
   variables:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
