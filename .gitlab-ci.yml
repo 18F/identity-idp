@@ -62,7 +62,6 @@ stages:
   - after_test
   - review
   - scan
-  - main_merge
 
 workflow:
   rules:
@@ -97,8 +96,12 @@ build-idp-image:
   stage: review
   needs: []
   interruptible: true
+  variables:
+    DEFAULT_BRANCH_TAGGING_STRING: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        DEFAULT_BRANCH_TAGGING_STRING: "--destination \"${ECR_REGISTRY}/identity-idp/review:${CI_DEFAULT_BRANCH}\""
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -121,6 +124,7 @@ build-idp-image:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
+      ${DEFAULT_BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
       --cache-ttl=168h
       --cache=true
@@ -577,30 +581,3 @@ ecr-scan:
       - gl-container-scanning-report.json
     reports:
       container_scanning: gl-container-scanning-report.json
-
-build-main-image:
-  stage: main_merge
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "cmccarthy/review-app-main"'
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: ['']
-  script:
-    - mkdir -p /kaniko/.docker
-    - |-
-      KANIKOCFG="\"credsStore\":\"ecr-login\""
-      if [ "x${http_proxy}" != "x" -o "x${https_proxy}" != "x" ]; then
-        KANIKOCFG="${KANIKOCFG}, \"proxies\": { \"default\": { \"httpProxy\": \"${http_proxy}\", \"httpsProxy\": \"${https_proxy}\", \"noProxy\": \"${no_proxy}\"}}"
-      fi
-      KANIKOCFG="{ ${KANIKOCFG} }"
-      echo "${KANIKOCFG}" > /kaniko/.docker/config.json
-    - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/review:test-main"
-      --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
-      --cache-ttl=168h
-      --cache=true
-      --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
