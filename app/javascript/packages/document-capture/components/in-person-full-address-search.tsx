@@ -63,11 +63,14 @@ function useUspsLocations(locationsURL: string) {
       validatedZipCodeFieldRef.current?.setCustomValidity('');
       validatedZipCodeFieldRef.current?.reportValidity();
 
+      const validZipCodeLength = zipCodeValue.length === 5 || zipCodeValue.length === 10;
+
       if (
-        addressValue.trim().length === 0 ||
-        cityValue.trim().length === 0 ||
-        stateValue.trim().length === 0 ||
-        zipCodeValue.trim().length === 0
+        addressValue.length === 0 ||
+        cityValue.length === 0 ||
+        stateValue.length === 0 ||
+        zipCodeValue.length === 0 ||
+        !validZipCodeLength
       ) {
         return;
       }
