@@ -86,9 +86,10 @@ module Idv
       analytics.idv_review_complete(
         success: false,
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
+        # note: this always returns false as of 8/23
+        in_person_verification_pending: current_user.in_person_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
-        in_person_verification_pending: false,
         **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
