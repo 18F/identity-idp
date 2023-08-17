@@ -69,4 +69,19 @@ RSpec.feature 'idv review step', :js do
       end
     end
   end
+
+  context 'user has attempted to redo document capture after completing verify info' do
+    let(:user) { user_with_2fa }
+
+    before do
+      start_idv_from_sp
+      complete_idv_steps_with_phone_before_review_step(user)
+    end
+
+    it 'allows the user to submit password and proceed to obtain a personal key' do
+      visit(idv_hybrid_handoff_url(redo: true))
+      complete_review_step(user)
+      expect(current_path).to eq idv_personal_key_path
+    end
+  end
 end
