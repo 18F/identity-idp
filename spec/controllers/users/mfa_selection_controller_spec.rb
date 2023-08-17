@@ -162,7 +162,7 @@ RSpec.describe Users::MfaSelectionController do
       end
 
       context 'with an active MFA' do
-        it 'redirects to after_mfa_setup_path' do
+        it 'redirects to account page' do
           create(:phone_configuration, user: user)
 
           patch :update, params: {

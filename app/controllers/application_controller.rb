@@ -239,16 +239,6 @@ class ApplicationController < ActionController::Base
     rules_of_use_path unless current_user.accepted_rules_of_use_still_valid?
   end
 
-  def after_mfa_setup_path
-    if needs_completion_screen_reason
-      sign_up_completed_url
-    elsif user_needs_to_reactivate_account?
-      reactivate_account_url
-    else
-      session[:account_redirect_path] || after_sign_in_path_for(current_user)
-    end
-  end
-
   def user_needs_to_reactivate_account?
     return false if current_user.password_reset_profile.blank?
     return false if pending_profile_newer_than_password_reset_profile?

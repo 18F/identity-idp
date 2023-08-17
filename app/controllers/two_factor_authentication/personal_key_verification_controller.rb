@@ -103,7 +103,7 @@ module TwoFactorAuthentication
       if current_user.identity_verified? || current_user.password_reset_profile.present?
         redirect_to manage_personal_key_url
       elsif MfaPolicy.new(current_user).two_factor_enabled?
-        redirect_to after_mfa_setup_path
+        redirect_to after_sign_in_path_for(current_user)
       else
         redirect_to authentication_methods_setup_url
       end

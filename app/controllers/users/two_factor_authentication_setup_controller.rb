@@ -63,7 +63,7 @@ module Users
     def confirm_user_needs_2fa_setup
       return unless mfa_policy.two_factor_enabled?
       return if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
-      redirect_to after_mfa_setup_path
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def two_factor_options_form_params

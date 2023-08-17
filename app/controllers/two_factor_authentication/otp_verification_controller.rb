@@ -47,7 +47,7 @@ module TwoFactorAuthentication
         auth_method: params[:otp_delivery_preference],
       )
       flash[:success] = t('notices.phone_confirmed')
-      redirect_to next_setup_path || after_mfa_setup_path
+      redirect_to next_setup_path || after_sign_in_path_for(current_user)
     end
 
     def otp_verification_form

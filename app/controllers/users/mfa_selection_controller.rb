@@ -9,7 +9,6 @@ module Users
 
     def index
       two_factor_options_form
-      @after_setup_path = after_mfa_setup_path
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_additional_setup_visit
     end
@@ -58,7 +57,7 @@ module Users
       if user_session[:mfa_selections].first.present?
         redirect_to confirmation_path(user_session[:mfa_selections].first)
       else
-        redirect_to after_mfa_setup_path
+        redirect_to after_sign_in_path_for(current_user)
       end
     end
 
