@@ -1,6 +1,12 @@
 ---
 en:
   two_factor_authentication:
+    aal2_request:
+      phishing_resistant_html: '<strong>%{sp_name}</strong> requires a high-security
+        authentication method, such as face or touch unlock, a security key or a
+        government employee ID.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> requires your government
+        employee ID, a high-security authentication method.'
     account_reset:
       cancel_link: Cancel your request
       link: deleting your account
@@ -14,8 +20,6 @@ en:
     attempt_remaining_warning_html:
       one: You have <strong>%{count} attempt</strong> remaining.
       other: You have <strong>%{count} attempts</strong> remaining.
-    backup_code_fallback:
-      question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
@@ -30,6 +34,7 @@ en:
         </strong>If you have access to another device, such as a phone, protect
         your account with another authentication method.
     choose_another_option: '‹ Choose another authentication method'
+    form_legend: Choose your authentication methods
     header_text: Enter your one-time code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
@@ -58,9 +63,8 @@ en:
       webauthn: Security key
       webauthn_info: Use your security key to access your account.
       webauthn_platform: Face or touch unlock
-      webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+      webauthn_platform_info: Use your face or fingerprint to access your account
+        without a one-time code.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -111,8 +115,6 @@ en:
         a default phone number.
       one_number_title: This is your default number
       title: Make this your default phone number?
-    personal_key_fallback:
-      question: Don’t have your personal key?
     personal_key_header_text: Enter your personal key
     personal_key_prompt: You can use this personal key once. After you enter it,
       you’ll be provided a new key.
@@ -120,8 +122,6 @@ en:
       delete:
         failure: Unable to remove your phone.
         success: Your phone has been removed.
-    phone_fallback:
-      question: Can’t use your phone?
     phone_fee_disclosure: Message and data rates may apply.
     phone_info: We’ll send you a one-time code each time you sign in.
     phone_label: Phone number
@@ -129,10 +129,7 @@ en:
       troubleshooting:
         change_number: Use another phone number
         code_not_received: I didn’t receive my one-time code
-    piv_cac_fallback:
-      question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
-    piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication
     recaptcha:
@@ -142,8 +139,6 @@ en:
       google_policy_link: Privacy Policy
       google_tos_link: Terms of Service
       login_tos_link: Mobile Terms of Use
-    totp_fallback:
-      question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You
@@ -159,8 +154,9 @@ en:
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
       configurations_added:
-        one: '(%{count} added)'
-        other: '(%{count} added)'
+        one: '%{count} added'
+        other: '%{count} added'
+      no_count_configuration_added: Added
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
@@ -168,17 +164,13 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       sms: Text message / SMS
-      unused_backup_code:
-        one: '(%{count} unused code)'
-        other: '(%{count} unused codes)'
       voice: Phone call
       webauthn: Security key
       webauthn_info: A physical device, often shaped like a USB drive, that you plug
         in to your device.
       webauthn_platform: Face or touch unlock
-      webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+      webauthn_platform_info: Use your face or fingerprint to access your account
+        without a one-time code.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
@@ -186,9 +178,10 @@ en:
     webauthn_authenticating: Authenticating your credentials…
     webauthn_error:
       additional_methods_link: choose another authentication method
+      connect_html: We were unable to connect the security key. Please try again or
+        %{link_html}.
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
     webauthn_header_text: Connect your security key
-    webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_header_text: Use face or touch unlock
     webauthn_platform_use_key: Use face or touch unlock
     webauthn_use_key: Use security key

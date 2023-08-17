@@ -24,7 +24,13 @@ describe('enrollWebauthnDevice', () => {
     225, 190, 13, 223, 243, 75, 174, 252, 212, 215, 183, 9,
   ]).buffer;
 
-  beforeEach(() => {
+  function defineNavigatorCredentials({
+    getAuthenticatorData,
+    getTransports,
+  }: {
+    getAuthenticatorData?: AuthenticatorAttestationResponse['getAuthenticatorData'];
+    getTransports?: AuthenticatorAttestationResponse['getTransports'];
+  }) {
     defineProperty(navigator, 'credentials', {
       configurable: true,
       value: {
@@ -34,100 +40,148 @@ describe('enrollWebauthnDevice', () => {
           response: {
             attestationObject: Buffer.from('attest', 'utf-8'),
             clientDataJSON: Buffer.from('json', 'utf-8'),
-            getAuthenticatorData: () => authenticatorData,
-            getTransports: () => ['usb'],
+            getAuthenticatorData,
+            getTransports,
           },
         }),
       },
     });
-  });
+  }
 
-  it('enrolls a device using the proper create options', async () => {
-    const result = await enrollWebauthnDevice({
-      user,
-      challenge,
-      excludeCredentials,
-      authenticatorAttachment: 'cross-platform',
+  context('fully supported AuthenticatorAttestationResponse', () => {
+    beforeEach(() => {
+      defineNavigatorCredentials({
+        getAuthenticatorData: () => authenticatorData,
+        getTransports: () => ['usb'],
+      });
     });
 
-    expect(navigator.credentials.create).to.have.been.calledWith({
-      publicKey: {
-        challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
-        rp: { name: 'example.test' },
-        user: {
-          id: new Uint8Array([123, 0, 0, 0, 0, 0, 0, 0]),
-          name: 'test@test.com',
-          displayName: 'test@test.com',
-        },
-        pubKeyCredParams: [
-          { type: 'public-key', alg: -7 },
-          { type: 'public-key', alg: -35 },
-          { type: 'public-key', alg: -36 },
-          { type: 'public-key', alg: -37 },
-          { type: 'public-key', alg: -38 },
-          { type: 'public-key', alg: -39 },
-          { type: 'public-key', alg: -257 },
-        ],
-        timeout: 800000,
-        attestation: 'none',
-        authenticatorSelection: {
-          authenticatorAttachment: 'cross-platform',
-          userVerification: 'discouraged',
-        },
-        excludeCredentials: [
-          {
-            id: new TextEncoder().encode('credential123').buffer,
-            type: 'public-key',
-          },
-          {
-            id: new TextEncoder().encode('credential456').buffer,
-            type: 'public-key',
-          },
-        ],
-      },
-    });
-
-    expect(result).to.deep.equal({
-      webauthnId: btoa('123'),
-      webauthnPublicKey: '123',
-      attestationObject: btoa('attest'),
-      clientDataJSON: btoa('json'),
-      authenticatorDataValue: 65,
-      transports: ['usb'],
-    });
-  });
-
-  it('forwards errors from the webauthn api', async () => {
-    const dummyError = new Error('dummy error');
-    navigator.credentials.create = () => Promise.reject(dummyError);
-
-    let didCatch;
-    try {
-      await enrollWebauthnDevice({ user, challenge, excludeCredentials });
-    } catch (error) {
-      expect(error).to.equal(dummyError);
-      didCatch = true;
-    }
-
-    expect(didCatch).to.be.true();
-  });
-
-  context('platform authenticator', () => {
-    it('enrolls a device with correct authenticatorAttachment', async () => {
-      await enrollWebauthnDevice({
+    it('enrolls a device using the proper create options', async () => {
+      const result = await enrollWebauthnDevice({
         user,
         challenge,
         excludeCredentials,
-        authenticatorAttachment: 'platform',
+        authenticatorAttachment: 'cross-platform',
       });
 
-      expect(navigator.credentials.create).to.have.been.calledWithMatch({
+      expect(navigator.credentials.create).to.have.been.calledWith({
         publicKey: {
-          authenticatorSelection: {
-            authenticatorAttachment: 'platform',
+          challenge: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]),
+          rp: { name: 'example.test' },
+          user: {
+            id: new Uint8Array([123, 0, 0, 0, 0, 0, 0, 0]),
+            name: 'test@test.com',
+            displayName: 'test@test.com',
           },
+          pubKeyCredParams: [
+            { type: 'public-key', alg: -7 },
+            { type: 'public-key', alg: -35 },
+            { type: 'public-key', alg: -36 },
+            { type: 'public-key', alg: -37 },
+            { type: 'public-key', alg: -38 },
+            { type: 'public-key', alg: -39 },
+            { type: 'public-key', alg: -257 },
+          ],
+          timeout: 800000,
+          attestation: 'none',
+          authenticatorSelection: {
+            authenticatorAttachment: 'cross-platform',
+            userVerification: 'discouraged',
+          },
+          excludeCredentials: [
+            {
+              id: new TextEncoder().encode('credential123').buffer,
+              type: 'public-key',
+            },
+            {
+              id: new TextEncoder().encode('credential456').buffer,
+              type: 'public-key',
+            },
+          ],
         },
       });
+
+      expect(result).to.deep.equal({
+        webauthnId: btoa('123'),
+        attestationObject: btoa('attest'),
+        clientDataJSON: btoa('json'),
+        authenticatorDataFlagsValue: 65,
+        transports: ['usb'],
+      });
+    });
+
+    it('forwards errors from the webauthn api', async () => {
+      const dummyError = new Error('dummy error');
+      navigator.credentials.create = () => Promise.reject(dummyError);
+
+      let didCatch;
+      try {
+        await enrollWebauthnDevice({ user, challenge, excludeCredentials });
+      } catch (error) {
+        expect(error).to.equal(dummyError);
+        didCatch = true;
+      }
+
+      expect(didCatch).to.be.true();
+    });
+
+    context('platform authenticator', () => {
+      it('enrolls a device with correct authenticatorAttachment', async () => {
+        await enrollWebauthnDevice({
+          user,
+          challenge,
+          excludeCredentials,
+          authenticatorAttachment: 'platform',
+        });
+
+        expect(navigator.credentials.create).to.have.been.calledWithMatch({
+          publicKey: {
+            authenticatorSelection: {
+              authenticatorAttachment: 'platform',
+            },
+          },
+        });
+      });
+    });
+  });
+
+  context('AuthenticatorAttestationResponse#getTransports unsupported', () => {
+    beforeEach(() => {
+      defineNavigatorCredentials({
+        getAuthenticatorData: () => authenticatorData,
+        getTransports: undefined,
+      });
+    });
+
+    it('enrolls a device with a blank transports result', async () => {
+      const result = await enrollWebauthnDevice({
+        user,
+        challenge,
+        excludeCredentials,
+        authenticatorAttachment: 'cross-platform',
+      });
+
+      expect(result.transports).to.equal(undefined);
+    });
+  });
+
+  context('AuthenticatorAttestationResponse#getAuthenticatorData unsupported', () => {
+    beforeEach(() => {
+      defineNavigatorCredentials({
+        getAuthenticatorData: undefined,
+        getTransports: () => ['usb'],
+      });
+    });
+
+    it('enrolls a device with a blank authenticatorDataFlagsValue result', async () => {
+      const result = await enrollWebauthnDevice({
+        user,
+        challenge,
+        excludeCredentials,
+        authenticatorAttachment: 'cross-platform',
+      });
+
+      expect(result.authenticatorDataFlagsValue).to.equal(undefined);
     });
   });
 });

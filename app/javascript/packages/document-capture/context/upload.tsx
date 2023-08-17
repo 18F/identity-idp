@@ -91,6 +91,11 @@ export interface UploadErrorResponse {
    * Whether the unsuccessful result was the failure type.
    */
   result_failed: boolean;
+
+  /**
+   * Whether the doc type is clearly not supported type.
+   */
+  doc_type_supported: boolean;
 }
 
 export type UploadImplementation = (

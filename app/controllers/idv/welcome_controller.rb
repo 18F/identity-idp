@@ -17,8 +17,6 @@ module Idv
     end
 
     def update
-      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
-
       analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
 
       create_document_capture_session
@@ -44,7 +42,7 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
-      flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 
     def cancel_previous_in_person_enrollments

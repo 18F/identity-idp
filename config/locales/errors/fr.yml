@@ -27,6 +27,8 @@ fr:
     doc_auth:
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      doc_type_not_supported_heading: Nous n’acceptons que les permis de conduire ou
+        les cartes d’identité délivrées par l’État
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d’identité sur votre téléphone.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
@@ -149,6 +151,7 @@ fr:
       unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
         d’appareil.
     webauthn_setup:
+      additional_methods_link: choisir une autre méthode d’authentification
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
       attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
@@ -156,8 +159,8 @@ fr:
         https://fidoalliance.org/certification/fido-certified-products/. Si vous
         pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
         %{link}.
-      general_error: Une erreur s’est produite lors de l’ajout de votre clé de
-        sécurité physique. Veuillez réessayer.
+      general_error_html: Nous n’avons pas pu ajouter la clé de sécurité. Veuillez
+        réessayer ou %{link_html}.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité
         FIDO. Les dernières versions de Chrome, Firefox, Edge et Safari prennent
         en charge les clés de sécurité FIDO.

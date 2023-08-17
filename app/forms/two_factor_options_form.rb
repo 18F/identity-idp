@@ -1,5 +1,6 @@
 class TwoFactorOptionsForm
   include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
 
   attr_accessor :selection, :user, :phishing_resistant_required, :piv_cac_required
 
@@ -7,7 +8,7 @@ class TwoFactorOptionsForm
                                             webauthn webauthn_platform
                                             backup_code] }
 
-  validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
+  validate :validate_selection_present
 
   def initialize(user:, phishing_resistant_required:, piv_cac_required:)
     self.user = user
@@ -16,7 +17,7 @@ class TwoFactorOptionsForm
   end
 
   def submit(params)
-    self.selection = Array(params[:selection]).filter(&:present?)
+    self.selection = params[:selection]
 
     success = valid?
     update_otp_delivery_preference_for_user if success && user_needs_updating?
@@ -24,6 +25,11 @@ class TwoFactorOptionsForm
   end
 
   private
+
+  def validate_selection_present
+    return if !has_no_mfa_or_in_required_flow? || selection.present?
+    errors.add(:selection, missing_selection_error_message, type: :missing_selection)
+  end
 
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
@@ -60,7 +66,22 @@ class TwoFactorOptionsForm
     mfa_user.enabled_mfa_methods_count == 0
   end
 
+  def platform_auth_only_option?
+    mfa_user.enabled_mfa_methods_count == 1 &&
+      mfa_user.webauthn_platform_configurations.count == 1
+  end
+
   def has_no_mfa_or_in_required_flow?
-    has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
+    has_no_configured_mfa? ||
+      in_phishing_resistant_or_piv_cac_required_flow? ||
+      platform_auth_only_option?
+  end
+
+  def missing_selection_error_message
+    if has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
+      t('errors.two_factor_auth_setup.must_select_option')
+    elsif platform_auth_only_option?
+      t('errors.two_factor_auth_setup.must_select_additional_option')
+    end
   end
 end

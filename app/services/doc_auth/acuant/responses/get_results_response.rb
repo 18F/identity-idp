@@ -2,6 +2,7 @@ module DocAuth
   module Acuant
     module Responses
       class GetResultsResponse < DocAuth::Response
+        include ClassificationConcern
         attr_reader :config
 
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
@@ -125,7 +126,7 @@ module DocAuth
         end
 
         def successful_result?
-          passed_result? || attention_with_barcode?
+          (passed_result? || attention_with_barcode?) && id_type_supported?
         end
 
         def passed_result?

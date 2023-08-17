@@ -36,8 +36,7 @@ function webauthn() {
   const form = document.getElementById('webauthn_form') as HTMLFormElement;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    document.getElementById('spinner')!.classList.remove('display-none');
-    document.getElementById('continue-button')!.className = 'display-none';
+    document.getElementById('spinner')!.hidden = false;
 
     const platformAuthenticator =
       (document.getElementById('platform_authenticator') as HTMLInputElement).value === 'true';
@@ -60,17 +59,19 @@ function webauthn() {
     })
       .then((result) => {
         (document.getElementById('webauthn_id') as HTMLInputElement).value = result.webauthnId;
-        (document.getElementById('webauthn_public_key') as HTMLInputElement).value =
-          result.webauthnPublicKey;
         (document.getElementById('attestation_object') as HTMLInputElement).value =
           result.attestationObject;
         (document.getElementById('client_data_json') as HTMLInputElement).value =
           result.clientDataJSON;
-        (
-          document.getElementById('authenticator_data_value') as HTMLInputElement
-        ).value = `${result.authenticatorDataValue}`;
-        (document.getElementById('transports') as HTMLInputElement).value =
-          result.transports.join();
+        if (result.authenticatorDataFlagsValue) {
+          (
+            document.getElementById('authenticator_data_value') as HTMLInputElement
+          ).value = `${result.authenticatorDataFlagsValue}`;
+        }
+        if (result.transports) {
+          (document.getElementById('transports') as HTMLInputElement).value =
+            result.transports.join();
+        }
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       })
       .catch((error: Error) => {

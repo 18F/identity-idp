@@ -374,6 +374,64 @@ RSpec.describe User do
     end
   end
 
+  describe '#password=' do
+    it 'digests and saves a single region and multi region password digests' do
+      user = build(:user, password: nil)
+
+      user.password = 'test password'
+
+      expect(user.encrypted_password_digest).to_not be_blank
+      expect(user.encrypted_password_digest).to_not match(/test password/)
+
+      expect(user.encrypted_password_digest_multi_region).to_not be_blank
+      expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
+
+      expect(
+        user.encrypted_password_digest,
+      ).to_not eq(
+        user.encrypted_password_digest_multi_region,
+      )
+    end
+  end
+
+  describe '#valid_password?' do
+    it 'returns true if the password matches the stored digest' do
+      user = build(:user, password: 'test password')
+
+      expect(user.valid_password?('test password')).to eq(true)
+      expect(user.valid_password?('wrong password')).to eq(false)
+    end
+  end
+
+  describe '#personal_key=' do
+    it 'digests and saves a single region and multi region personal key digests' do
+      user = build(:user, personal_key: nil)
+
+      user.personal_key = 'test personal key'
+
+      expect(user.encrypted_recovery_code_digest).to_not be_blank
+      expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
+
+      expect(
+        user.encrypted_recovery_code_digest,
+      ).to_not eq(
+        user.encrypted_recovery_code_digest_multi_region,
+      )
+    end
+  end
+
+  describe '#valid_personal_key?' do
+    it 'returns true if the personal key matches the stored digest' do
+      user = build(:user, personal_key: 'test personal key')
+
+      expect(user.valid_personal_key?('test personal key')).to eq(true)
+      expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+    end
+  end
+
   describe '#authenticatable_salt' do
     it 'returns the password salt' do
       user = create(:user)
@@ -1059,13 +1117,18 @@ RSpec.describe User do
       let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
 
       before do
+        encrypted_pii_recovery, encrypted_pii_recovery_multi_region =
+          Encryption::Encryptors::PiiEncryptor.new(
+            personal_key,
+          ).encrypt('null', user_uuid: user.uuid).single_region_ciphertext
+
         create(
           :profile,
           user: user,
           active: true,
           verified_at: Time.zone.now,
-          encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
-            encrypt('null', user_uuid: user.uuid),
+          encrypted_pii_recovery: encrypted_pii_recovery,
+          encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
         )
       end
 

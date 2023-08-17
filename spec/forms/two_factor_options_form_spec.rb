@@ -13,13 +13,13 @@ RSpec.describe TwoFactorOptionsForm do
   end
 
   describe '#submit' do
-    let(:submit_phone) { subject.submit(selection: 'phone') }
+    let(:submit_phone) { subject.submit(selection: ['phone']) }
     let(:enabled_mfa_methods_count) { 0 }
     let(:mfa_selection) { ['sms'] }
 
     it 'is successful if the selection is valid' do
       %w[auth_app piv_cac webauthn webauthn_platform].each do |selection|
-        result = subject.submit(selection: selection)
+        result = subject.submit(selection: [selection])
 
         expect(result.success?).to eq true
       end
@@ -27,7 +27,7 @@ RSpec.describe TwoFactorOptionsForm do
 
     it 'is unsuccessful if the selection is invalid' do
       %w[!!!!].each do |selection|
-        result = subject.submit(selection: selection)
+        result = subject.submit(selection: [selection])
 
         expect(result.success?).to eq false
         expect(result.errors).to include :selection
@@ -48,8 +48,15 @@ RSpec.describe TwoFactorOptionsForm do
       expect(result.success?).to eq true
     end
 
+    it 'is unsuccessful if user has 1 method and its platform auth and no option' do
+      create(:webauthn_configuration, :platform_authenticator, user: user)
+
+      result = subject.submit(selection: [])
+      expect(result.success?).to eq false
+    end
+
     it 'includes analytics hash with a methods count of zero' do
-      result = subject.submit(selection: 'piv_cac')
+      result = subject.submit(selection: ['piv_cac'])
 
       expect(result.success?).to eq(true)
       expect(result.to_h).to include(enabled_mfa_methods_count: 0)
@@ -75,7 +82,7 @@ RSpec.describe TwoFactorOptionsForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        subject.submit(selection: 'sms')
+        subject.submit(selection: ['sms'])
       end
     end
 
@@ -83,7 +90,7 @@ RSpec.describe TwoFactorOptionsForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        subject.submit(selection: 'auth_app')
+        subject.submit(selection: ['auth_app'])
       end
     end
 
@@ -110,19 +117,19 @@ RSpec.describe TwoFactorOptionsForm do
       let(:phishing_resistant_required) { true }
       let(:piv_cac_required) { false }
 
-      context 'when user is didnt select an mfa' do
-        let(:mfa_selection) { nil }
+      context 'when user did not select an mfa' do
+        let(:mfa_selection) { [] }
 
-        it 'does not submits the form' do
+        it 'is unsuccessful' do
           submission = subject.submit(selection: mfa_selection)
-          expect(submission.success?).to be_falsey
+          expect(submission.success?).to eq(false)
         end
       end
 
       context 'when user selects an mfa' do
-        it 'submits the form' do
+        it 'is successful' do
           submission = subject.submit(selection: mfa_selection)
-          expect(submission.success?).to be_truthy
+          expect(submission.success?).to eq(true)
         end
       end
     end

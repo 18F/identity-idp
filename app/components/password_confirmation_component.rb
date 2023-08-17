@@ -3,12 +3,24 @@ class PasswordConfirmationComponent < BaseComponent
 
   def initialize(
     form:,
+    password_label: nil,
+    confirmation_label: nil,
     field_options: {},
     **tag_options
   )
     @form = form
+    @password_label = password_label
+    @confirmation_label = confirmation_label
     @field_options = field_options
     @tag_options = tag_options
+  end
+
+  def password_label
+    @password_label || t('forms.password')
+  end
+
+  def confirmation_label
+    @confirmation_label || t('components.password_confirmation.confirm_label')
   end
 
   def toggle_id

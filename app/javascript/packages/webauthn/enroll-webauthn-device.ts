@@ -1,5 +1,20 @@
 import { arrayBufferToBase64 } from './converters';
 
+/**
+ * Response object with properties as possibly undefined where browser support varies.
+ *
+ * As of writing, Firefox does not implement getTransports or getAuthenticatorData. Remove this if
+ * and when support changes.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAttestationResponse/getTransports#browser_compatibility
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/AuthenticatorAttestationResponse/getAuthenticatorData#browser_compatibility
+ */
+interface AuthenticatorAttestationResponseBrowserSupport
+  extends Omit<AuthenticatorAttestationResponse, 'getAuthenticatorData' | 'getTransports'> {
+  getTransports: AuthenticatorAttestationResponse['getTransports'] | undefined;
+  getAuthenticatorData: AuthenticatorAttestationResponse['getAuthenticatorData'] | undefined;
+}
+
 interface EnrollOptions {
   user: PublicKeyCredentialUserEntity;
 
@@ -13,15 +28,13 @@ interface EnrollOptions {
 interface EnrollResult {
   webauthnId: string;
 
-  webauthnPublicKey: string;
-
   attestationObject: string;
 
   clientDataJSON: string;
 
-  authenticatorDataValue: number;
+  authenticatorDataFlagsValue?: number;
 
-  transports: string[];
+  transports?: string[];
 }
 
 async function enrollWebauthnDevice({
@@ -76,15 +89,18 @@ async function enrollWebauthnDevice({
     },
   })) as PublicKeyCredential;
 
-  const response = credential.response as AuthenticatorAttestationResponse;
-  const authenticatorDataValue = new Uint8Array(response.getAuthenticatorData())[32];
+  const response = credential.response as AuthenticatorAttestationResponseBrowserSupport;
+  const authenticatorData = response.getAuthenticatorData?.();
+  const authenticatorDataFlagsValue = authenticatorData
+    ? new Uint8Array(authenticatorData)[32]
+    : undefined;
+
   return {
     webauthnId: arrayBufferToBase64(credential.rawId),
-    webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
-    authenticatorDataValue,
-    transports: response.getTransports(),
+    authenticatorDataFlagsValue,
+    transports: response.getTransports?.(),
   };
 }
 

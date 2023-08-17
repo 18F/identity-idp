@@ -6,10 +6,10 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
-      before_action :renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
       before_action :confirm_verify_info_step_needed
       before_action :confirm_in_person_address_step_complete
       before_action :confirm_repeat_ssn, only: :show
+      before_action :override_csp_for_threat_metrix_no_fsm
 
       attr_accessor :error_message
 
@@ -41,7 +41,7 @@ module Idv
         )
 
         if form_response.success?
-          flow_session['pii_from_user'][:ssn] = params[:doc_auth][:ssn]
+          flow_session[:pii_from_user][:ssn] = params[:doc_auth][:ssn]
           idv_session.invalidate_steps_after_ssn!
           redirect_to idv_in_person_verify_info_url
         else
@@ -79,15 +79,12 @@ module Idv
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(ab_test_analytics_buckets)
+        }.merge(ab_test_analytics_buckets).
+          merge(**extra_analytics_properties)
       end
 
       def updating_ssn?
         flow_session.dig(:pii_from_user, :ssn).present?
-      end
-
-      def renders_404_if_in_person_ssn_info_controller_enabled_flag_not_set
-        render_not_found unless IdentityConfig.store.in_person_ssn_info_controller_enabled
       end
 
       def confirm_in_person_address_step_complete

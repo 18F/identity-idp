@@ -26,25 +26,6 @@ module Idv
         ProofingComponent.create_or_find_by(user: current_user).update(component_attributes)
       end
 
-      # @param [DocAuth::Response,
-      #   DocumentCaptureSessionAsyncResult,
-      #   DocumentCaptureSessionResult] response
-      def extract_pii_from_doc(response, store_in_session: false)
-        pii_from_doc = response.pii_from_doc.merge(
-          uuid: effective_user.uuid,
-          phone: effective_user.phone_configurations.take&.phone,
-          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
-        )
-
-        flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-        if store_in_session
-          flow_session[:pii_from_doc] ||= {}
-          flow_session[:pii_from_doc].merge!(pii_from_doc)
-          idv_session.delete('applicant')
-        end
-        track_document_state(pii_from_doc[:state])
-      end
-
       def user_id_from_token
         flow_session[:doc_capture_user_id]
       end
@@ -66,7 +47,7 @@ module Idv
       end
 
       def rate_limited_url
-        idv_session_errors_throttled_url
+        idv_session_errors_rate_limited_url
       end
 
       # Ideally we would not have to re-implement the EffectiveUser mixin
@@ -116,14 +97,6 @@ module Idv
 
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
-      end
-
-      def track_document_state(state)
-        return unless IdentityConfig.store.state_tracking_enabled && state
-        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
-        return unless doc_auth_log
-        doc_auth_log.state = state
-        doc_auth_log.save!
       end
 
       delegate :idv_session, :session, :flow_path, to: :@flow

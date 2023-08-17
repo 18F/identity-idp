@@ -1,29 +1,33 @@
+import { Button, FullScreen } from '@18f/identity-components';
+import type { MouseEvent, ReactNode, Ref } from 'react';
 import {
   forwardRef,
   useContext,
-  useRef,
-  useState,
-  useMemo,
   useEffect,
   useImperativeHandle,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
-import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { Button, FullScreen } from '@18f/identity-components';
-import type { FullScreenRefHandle } from '@18f/identity-components';
 import type { FocusTrap } from 'focus-trap';
-import type { ReactNode, MouseEvent, Ref } from 'react';
-import AnalyticsContext from '../context/analytics';
-import AcuantContext from '../context/acuant';
-import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import type { FullScreenRefHandle } from '@18f/identity-components';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { useI18n } from '@18f/identity-react-i18n';
 import AcuantCamera, { AcuantDocumentType } from './acuant-camera';
+import type {
+  AcuantCaptureFailureError,
+  AcuantSuccessResponse,
+  LegacyAcuantSuccessResponse,
+} from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
-import FileInput from './file-input';
+import AcuantContext, { AcuantCaptureMode } from '../context/acuant';
+import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import FileInput from './file-input';
 import UploadContext from '../context/upload';
-import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type { AcuantSuccessResponse, AcuantCaptureFailureError } from './acuant-camera';
+import useCounter from '../hooks/use-counter';
 
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry' | 'unsupported';
 type ImageSource = 'acuant' | 'upload';
@@ -53,6 +57,11 @@ interface ImageAnalyticsPayload {
    * Size of the image in bytes
    */
   size: number;
+  /**
+   * Whether the Acuant SDK captured the image automatically, or using the tap to
+   * capture functionality
+   */
+  acuantCaptureMode?: AcuantCaptureMode;
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
@@ -252,6 +261,7 @@ function AcuantCapture(
   const {
     isReady,
     isActive: isAcuantInstanceActive,
+    acuantCaptureMode,
     isError,
     isCameraSupported,
     glareThreshold,
@@ -310,7 +320,7 @@ function AcuantCapture(
   function getAddAttemptAnalyticsPayload<
     P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
   >(payload: P): P {
-    const enhancedPayload = { ...payload, attempt };
+    const enhancedPayload = { ...payload, attempt, acuantCaptureMode };
     incrementAttempt();
     return enhancedPayload;
   }
@@ -420,11 +430,15 @@ function AcuantCapture(
     }
   }
 
-  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
+  function onAcuantImageCaptureSuccess(
+    nextCapture: AcuantSuccessResponse | LegacyAcuantSuccessResponse,
+  ) {
+    const { image, dpi, moire, glare, sharpness } = nextCapture;
+    const cardType = 'cardType' in nextCapture ? nextCapture.cardType : nextCapture.cardtype;
+
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = cardtype !== AcuantDocumentType.ID;
+    const isAssessedAsUnsupported = cardType !== AcuantDocumentType.ID;
     const { width, height, data } = image;
 
     let assessment: AcuantImageAssessment;
@@ -447,7 +461,7 @@ function AcuantCapture(
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
       isAssessedAsUnsupported,
-      documentType: getDocumentTypeLabel(cardtype),
+      documentType: getDocumentTypeLabel(cardType),
       dpi,
       moire,
       glare,

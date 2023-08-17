@@ -7,6 +7,7 @@ module Users
     before_action :confirm_recently_authenticated_2fa
 
     def edit
+      analytics.edit_password_visit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
       @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
         ForbiddenPasswords.new(email_address.email).call
@@ -41,7 +42,7 @@ module Users
     end
 
     def user_params
-      params.require(:update_user_password_form).permit(:password)
+      params.require(:update_user_password_form).permit(:password, :password_confirmation)
     end
 
     def handle_valid_password

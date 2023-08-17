@@ -135,6 +135,7 @@ RSpec.describe GpoVerifyForm do
 
           expect(pending_profile).not_to be_active
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(pending_profile.in_person_verification_pending_at).to be_present
           expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
@@ -207,6 +208,61 @@ RSpec.describe GpoVerifyForm do
         subject.submit
 
         expect(subject.otp).to be_nil
+      end
+    end
+
+    describe '#which_letter with three letters sent' do
+      let(:first_otp) { 'F' + otp }
+      let(:second_otp) { 'S' + otp }
+      let(:third_otp) { otp }
+
+      before do
+        create(
+          :gpo_confirmation_code,
+          otp_fingerprint: Pii::Fingerprinter.fingerprint(first_otp),
+          code_sent_at: code_sent_at - 5.days,
+          profile: pending_profile,
+        )
+
+        create(
+          :gpo_confirmation_code,
+          otp_fingerprint: Pii::Fingerprinter.fingerprint(second_otp),
+          code_sent_at: code_sent_at - 3.days,
+          profile: pending_profile,
+        )
+      end
+
+      context 'entered first code' do
+        let(:entered_otp) { first_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(1)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
+      end
+
+      context 'entered second code' do
+        let(:entered_otp) { second_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(2)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
+      end
+
+      context 'entered third code' do
+        let(:entered_code) { third_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(3)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
       end
     end
   end

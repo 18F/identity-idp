@@ -135,28 +135,6 @@ RSpec.describe MarketingSite do
     end
   end
 
-  describe '.help_authentication_app_url' do
-    subject(:url) { MarketingSite.help_authentication_app_url }
-
-    it_behaves_like 'a marketing site URL'
-
-    it 'points to the authentication app section of the help page' do
-      expect(url).to eq(
-        'https://www.login.gov/help/creating-an-account/authentication-application/',
-      )
-    end
-
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
-
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(url).to eq(
-          'https://www.login.gov/es/help/creating-an-account/authentication-application/',
-        )
-      end
-    end
-  end
-
   describe '.help_center_article_url' do
     let(:category) {}
     let(:article) {}
@@ -168,7 +146,7 @@ RSpec.describe MarketingSite do
       let(:article) { 'bar' }
 
       it 'raises ArgumentError' do
-        expect { url }.to raise_error ArgumentError
+        expect { url }.to raise_error MarketingSite::UnknownArticleException
       end
     end
 
@@ -221,13 +199,22 @@ RSpec.describe MarketingSite do
 
       it { expect(result).to eq(true) }
 
-      context 'with anchor' do
+      context 'with a valid anchor' do
         let(:article_anchor) { 'test-anchor-url' }
         let(:result) do
           MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
         end
 
         it { expect(result).to eq(true) }
+      end
+
+      context 'with an anchor that makes the URL invalid' do
+        let(:article_anchor) { '<iframe>' }
+        let(:result) do
+          MarketingSite.valid_help_center_article?(category:, article:, article_anchor:)
+        end
+
+        it { expect(result).to eq(false) }
       end
     end
   end

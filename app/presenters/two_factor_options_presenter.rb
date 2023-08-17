@@ -16,7 +16,7 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    totp_option + phone_options + webauthn_platform_option +
+    webauthn_platform_option + totp_option + phone_options +
       backup_code_option + webauthn_option + piv_cac_option
   end
 

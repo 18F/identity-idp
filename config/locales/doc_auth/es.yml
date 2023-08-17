@@ -10,7 +10,7 @@ es:
       continue: Continuar
       take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
-      take_picture: Tomar una foto
+      take_picture: Toma una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
     errors:
@@ -64,6 +64,10 @@ es:
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       card_type: Solo se aceptan licencias de conducir o documentos de identidad
         estatales.
+      doc:
+        doc_type_check: No se aceptan otras formas de identificación.
+        wrong_id_type: Solo aceptamos una licencia de conducir o un documento de
+          identidad estatal. No se aceptan otras formas de identificación.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
@@ -161,7 +165,7 @@ es:
       lets_go: Cómo funciona la verificación de su identidad
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
-      ssn: Ingresa tu número de Seguro Social
+      ssn: Ingrese su número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       text_message: Enviamos un mensaje a su teléfono
       upload_from_computer: Continuar en esta computadora
@@ -218,7 +222,7 @@ es:
       secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
         significa que sus datos están protegidos y solo usted podrá acceder o
         modificar su información.
-      ssn: Necesitamos tu número de Seguro Social para validar tu nombre, fecha de
+      ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y dirección.
       tag: Recomendado
       upload_from_computer: ¿No tiene teléfono? Suba fotos de su documento de

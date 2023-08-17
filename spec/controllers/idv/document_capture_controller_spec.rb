@@ -3,9 +3,12 @@ require 'rails_helper'
 RSpec.describe Idv::DocumentCaptureController do
   include IdvHelper
 
+  let(:document_capture_session_uuid) { 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e' }
+
+  let(:threatmetrix_session_id) { 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+
   let(:flow_session) do
-    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { threatmetrix_session_id: threatmetrix_session_id }
   end
 
   let(:user) { create(:user) }
@@ -18,6 +21,7 @@ RSpec.describe Idv::DocumentCaptureController do
     stub_sign_in(user)
     stub_analytics
     subject.idv_session.flow_path = 'standard'
+    subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
     subject.user_session['idv/doc_auth'] = flow_session
 
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
@@ -61,7 +65,7 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(subject).to receive(:render).with(
         :show,
         locals: hash_including(
-          document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+          document_capture_session_uuid: document_capture_session_uuid,
         ),
       ).and_call_original
 
@@ -78,7 +82,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'redo_document_capture' do
       it 'adds redo_document_capture to analytics' do
-        flow_session[:redo_document_capture] = true
+        subject.idv_session.redo_document_capture = true
 
         get :show
 
@@ -130,7 +134,7 @@ RSpec.describe Idv::DocumentCaptureController do
 
         get :show
 
-        expect(response).to redirect_to(idv_session_errors_throttled_url)
+        expect(response).to redirect_to(idv_session_errors_rate_limited_url)
       end
     end
   end

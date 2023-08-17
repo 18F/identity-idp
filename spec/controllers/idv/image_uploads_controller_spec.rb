@@ -200,12 +200,13 @@ RSpec.describe Idv::ImageUploadsController do
             remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
+            doc_type_supported: true,
           },
         )
       end
 
       context 'when rate limited' do
-        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:redirect_url) { idv_session_errors_rate_limited_url }
         let(:error_json) do
           {
             success: false,
@@ -214,6 +215,7 @@ RSpec.describe Idv::ImageUploadsController do
             remaining_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
+            doc_type_supported: true,
           }
         end
 
@@ -346,6 +348,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          doc_type_supported: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -502,6 +505,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -588,6 +592,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -674,6 +679,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -785,6 +791,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          doc_type_supported: boolean,
         )
 
         action
@@ -854,6 +861,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          doc_type_supported: boolean,
         )
 
         action

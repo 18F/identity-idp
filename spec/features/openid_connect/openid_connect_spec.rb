@@ -10,7 +10,7 @@ RSpec.describe 'OpenID Connect' do
     visit_idp_from_ial1_oidc_sp
 
     cookie = cookies.find { |c| c.name == 'sp_issuer' }.value
-    expect(cookie).to eq(OidcAuthHelper::OIDC_ISSUER)
+    expect(cookie).to eq(OidcAuthHelper::OIDC_IAL1_ISSUER)
   end
 
   it 'receives an ID token with a kid that matches the certs endpooint' do
@@ -797,7 +797,9 @@ RSpec.describe 'OpenID Connect' do
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
-      visit destroy_user_session_url
+
+      visit account_path
+      click_button t('links.sign_out')
 
       visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       fill_in_credentials_and_submit(user.email, user.password)

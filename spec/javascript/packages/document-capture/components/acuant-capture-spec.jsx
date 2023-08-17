@@ -21,7 +21,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardtype: AcuantDocumentType.ID,
+  cardType: AcuantDocumentType.ID,
   dpi: 519,
   moire: 99,
   moireraw: 99,
@@ -259,7 +259,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
-    it('shows error if capture fails', async () => {
+    it('shows error if capture fails: legacy version of Acuant SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -288,7 +288,40 @@ describe('document-capture/components/acuant-capture', () => {
       expect(document.activeElement).to.equal(button);
     });
 
-    it('shows sequence break error', async () => {
+    it('shows error if capture fails: latest version of Acuant SDK', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      const start = async ({ onFailure }) => {
+        await onFailure('Camera not supported.', 'start-fail-code');
+      };
+
+      initialize({
+        start,
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await findByText('doc_auth.errors.camera.failed');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Camera not supported',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('shows sequence break error: legacy version of SDK', async () => {
       const trackEvent = sinon.spy();
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ trackEvent }}>
@@ -306,6 +339,48 @@ describe('document-capture/components/acuant-capture', () => {
             const code = 'sequence-break-code';
             document.cookie = `AcuantCameraHasFailed=${code}`;
             onError('iOS 15 sequence break', code);
+          });
+        }),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await findByText('doc_auth.errors.upload_error errors.messages.try_again');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
+      });
+      await waitFor(() => document.activeElement === button);
+
+      const defaultPrevented = !fireEvent.click(button);
+
+      window.AcuantCameraUI.start.resetHistory();
+      expect(defaultPrevented).to.be.false();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+    });
+
+    it('shows sequence break error: latest version of SDK', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake((callbacks) => {
+          const { onFailure } = callbacks;
+          setTimeout(() => {
+            const code = 'sequence-break-code';
+            document.cookie = `AcuantCameraHasFailed=${code}`;
+            onFailure('iOS 15 sequence break', code);
           }, 0);
         }),
       });
@@ -329,7 +404,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
-    it('calls onCameraAccessDeclined if camera access is declined', async () => {
+    it('calls onCameraAccessDeclined if camera access is declined: legacy version of SDK', async () => {
       const trackEvent = sinon.spy();
       const onCameraAccessDeclined = sinon.stub();
       const { container, getByLabelText } = render(
@@ -348,6 +423,46 @@ describe('document-capture/components/acuant-capture', () => {
 
       initialize({
         start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+
+      await Promise.all([
+        expect(onCameraAccessDeclined).to.eventually.be.called(),
+        expect(window.AcuantCameraUI.end).to.eventually.be.called(),
+      ]);
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'User or system denied camera access',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('calls onCameraAccessDeclined if camera access is declined: latest version of SDK', async () => {
+      const trackEvent = sinon.spy();
+      const onCameraAccessDeclined = sinon.stub();
+      const { container, getByLabelText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture
+                label="Image"
+                name="test"
+                onCameraAccessDeclined={onCameraAccessDeclined}
+              />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      const start = async ({ onFailure }) => {
+        await onFailure(new Error());
+      };
+
+      initialize({
+        start,
       });
 
       const button = getByLabelText('Image');
@@ -384,8 +499,12 @@ describe('document-capture/components/acuant-capture', () => {
       );
       outsideInput = getByTestId('outside-input');
 
+      const start = async ({ onFailure }) => {
+        await onFailure(new Error());
+      };
+
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start,
       });
 
       const button = getByLabelText('Image');
@@ -567,7 +686,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCropped({
             ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            cardtype: AcuantDocumentType.PASSPORT,
+            cardType: AcuantDocumentType.PASSPORT,
           });
         }),
       });
@@ -635,6 +754,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: 'AUTO',
       });
 
       expect(error).to.be.ok();
@@ -690,6 +810,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: sinon.match.string,
       });
 
       expect(error).to.be.ok();
@@ -798,6 +919,7 @@ describe('document-capture/components/acuant-capture', () => {
         width: 1748,
         attempt: sinon.match.number,
         size: sinon.match.number,
+        acuantCaptureMode: sinon.match.string,
       });
     });
 
@@ -819,7 +941,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardtype: incorrectCardType });
+          callbacks.onCropped({ ...ACUANT_CAPTURE_SUCCESS_RESULT, cardType: incorrectCardType });
         }),
       });
 
@@ -1006,6 +1128,7 @@ describe('document-capture/components/acuant-capture', () => {
       width: sinon.match.number,
       attempt: sinon.match.number,
       size: sinon.match.number,
+      acuantCaptureMode: sinon.match.string,
     });
   });
 

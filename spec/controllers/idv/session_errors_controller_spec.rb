@@ -306,9 +306,9 @@ RSpec.describe Idv::SessionErrorsController do
     end
   end
 
-  describe '#throttled' do
-    let(:action) { :throttled }
-    let(:template) { 'idv/session_errors/throttled' }
+  describe '#rate_limited' do
+    let(:action) { :rate_limited }
+    let(:template) { 'idv/session_errors/rate_limited' }
 
     it_behaves_like 'an idv session errors controller action'
 

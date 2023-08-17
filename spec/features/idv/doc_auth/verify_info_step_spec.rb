@@ -159,7 +159,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       # Check that last attempt shows correct warning text
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_warning_path)
-      expect(page).to have_content(t('idv.warning.attempts.one'))
+      expect(page).to have_content(
+        strip_tags(
+          t('idv.warning.attempts_html.one'),
+        ),
+      )
       click_try_again
 
       click_idv_continue
@@ -320,7 +324,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     context 'when the SP is in the AAMVA banlist' do
       it 'does not perform the state ID check' do
         allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
-          and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+          and_return("[\"#{OidcAuthHelper::OIDC_IAL1_ISSUER}\"]")
         user = create(:user, :fully_registered)
         expect_any_instance_of(Idv::Agent).
           to receive(:proof_resolution).

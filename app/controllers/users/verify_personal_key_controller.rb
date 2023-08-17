@@ -60,7 +60,7 @@ module Users
       irs_attempts_api_tracker.personal_key_reactivation_rate_limited
 
       @expires_at = rate_limiter.expires_at
-      render :throttled
+      render :rate_limited
     end
 
     def init_account_reactivation

@@ -114,6 +114,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
                 ? withProps({
                     remainingAttempts: submissionError.remainingAttempts,
                     isFailedResult: submissionError.isFailedResult,
+                    isFailedDocType: submissionError.isFailedDocType,
                     captureHints: submissionError.hints,
                     pii: submissionError.pii,
                   })(ReviewIssuesStep)

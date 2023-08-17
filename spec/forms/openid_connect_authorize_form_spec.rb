@@ -50,6 +50,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
           acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
           scope: 'openid',
           code_digest: nil,
+          code_challenge_present: false,
+          service_provider_pkce: nil,
         )
       end
     end
@@ -72,6 +74,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
             scope: 'openid',
             code_digest: nil,
+            code_challenge_present: false,
+            service_provider_pkce: nil,
           )
         end
       end

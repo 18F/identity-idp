@@ -145,6 +145,16 @@ RSpec.describe Users::PivCacLoginController do
             expect(controller.user_session[:decrypted_x509]).to eq session_info.to_json
           end
 
+          context 'when the user has not accepted the most recent terms of use' do
+            let(:user) do
+              build(:user, accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.year)
+            end
+
+            it 'redirects to rules_of_use_path' do
+              expect(response).to redirect_to rules_of_use_path
+            end
+          end
+
           describe 'it handles the otp_context' do
             it 'tracks the user_marked_authed event' do
               expect(@analytics).to have_received(:track_event).with(
