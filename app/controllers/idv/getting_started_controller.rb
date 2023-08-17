@@ -46,8 +46,9 @@ module Idv
       {
         step: 'getting_started',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         irs_reproofing: irs_reproofing?,
-      }.merge(ab_test_analytics_buckets)
+      }.compact.merge(ab_test_analytics_buckets)
     end
 
     def create_document_capture_session

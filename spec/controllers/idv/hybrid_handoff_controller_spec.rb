@@ -54,6 +54,7 @@ RSpec.describe Idv::HybridHandoffController do
       {
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: false,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -176,6 +177,7 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          skip_hybrid_handoff: false, 
           irs_reproofing: false,
           telephony_response: {
             errors: {},
@@ -226,6 +228,7 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          skip_hybrid_handoff: false,
           irs_reproofing: false,
         }.merge(ab_test_args)
       end

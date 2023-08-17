@@ -39,6 +39,7 @@ RSpec.describe Idv::AgreementController do
       {
         step: 'agreement',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: false,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -93,6 +94,7 @@ RSpec.describe Idv::AgreementController do
         errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: false,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end

@@ -75,6 +75,7 @@ module Idv
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: idv_session.redo_document_capture,
+        skip_hybrid_handoff: !!idv_session.skip_hybrid_handoff,
       }.compact.merge(ab_test_analytics_buckets)
     end
 
