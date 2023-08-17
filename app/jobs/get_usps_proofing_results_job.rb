@@ -14,7 +14,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   def perform(_now)
-    return true unless job_can_run?
+    return unless job_can_run?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
@@ -45,8 +45,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       percent_enrollments_network_error: summary_percent(:enrollments_network_error),
       job_name: self.class.name,
     )
-
-    true
   end
 
   private
