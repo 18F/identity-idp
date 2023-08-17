@@ -578,6 +578,7 @@ ecr-scan:
     reports:
       container_scanning: gl-container-scanning-report.json
 
+#Adding comment to test trigger
 build-main-image:
   stage: main_merge
   rules:
