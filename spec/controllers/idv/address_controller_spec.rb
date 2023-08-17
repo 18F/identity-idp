@@ -78,5 +78,16 @@ RSpec.describe Idv::AddressController do
         ),
       )
     end
+
+    it 'logs an analytics event' do
+      put :update, params: params
+      expect(@analytics).to have_logged_event(
+        'IdV: address submitted',
+        { success: true,
+          errors: {},
+          address_edited: true,
+          error_details: nil },
+      )
+    end
   end
 end
