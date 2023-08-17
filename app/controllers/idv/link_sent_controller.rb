@@ -6,7 +6,7 @@ module Idv
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
-    before_action :extend_timeout_using_meta_refresh
+    # before_action :extend_timeout_using_meta_refresh
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
