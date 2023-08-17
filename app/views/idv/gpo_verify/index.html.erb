@@ -8,9 +8,9 @@
 <% end %>
 
 <% if @user_did_not_receive_letter %>
-  <% title t('idv.gpo.did_not_receive_letter.title') %>
+<% title t('idv.gpo.did_not_receive_letter.title') %>
 <% else %>
-  <% title t('idv.gpo.title') %>
+<% title t('idv.gpo.title') %>
 <% end %>
 
 <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4', text_tag: 'div') do %>
