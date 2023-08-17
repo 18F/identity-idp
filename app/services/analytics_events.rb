@@ -2415,8 +2415,8 @@ module AnalyticsEvents
   end
 
   # Track when USPS auth token refresh job encounters a network error
-  # [String] exception_class
-  # [String] exception_message
+  # @param [String] exception_class
+  # @param [String] exception_message
   def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
     track_event(
       'UspsAuthTokenRefreshJob: Network error',
