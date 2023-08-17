@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   get '/api/saml/complete' => 'saml_completion#index', as: :complete_saml
 
   post '/api/service_provider' => 'service_provider#update'
+  post '/api/service_provider/:id' => 'service_provider#update_one'
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/logger' => 'frontend_log#create'
   post '/api/addresses' => 'idv/in_person/address_search#index'

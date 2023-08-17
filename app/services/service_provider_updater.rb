@@ -17,6 +17,10 @@ class ServiceProviderUpdater
     end
   end
 
+  def run_for_one(id)
+    update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider(id)))
+  end
+
   private
 
   def update_local_caches(service_provider)
@@ -61,6 +65,18 @@ class ServiceProviderUpdater
     []
   rescue StandardError
     log_error "Failed to contact #{url}"
+    []
+  end
+
+  def dashboard_service_provider(id)
+    show_url = url + "/#{id}"
+    resp = Faraday.get(show_url)
+
+    return parse_service_providers(resp.body) if resp.status == 200
+    log_error "Failed to parse response from #{show_url}: #{resp.body}"
+    []
+  rescue StandardError
+    log_error "Failed to contact #{show_url}"
     []
   end
 
