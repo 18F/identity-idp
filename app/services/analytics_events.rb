@@ -2414,6 +2414,18 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job encounters a network error
+  # [String] exception_class
+  # [String] exception_message
+  def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Network error',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Track when USPS auth token refresh job started
   def idv_usps_auth_token_refresh_job_started(**extra)
     track_event(
