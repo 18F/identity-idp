@@ -14,8 +14,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   def perform(_now)
-    return true unless ipp_enabled?
-    return true if ipp_ready_job_enabled?
+    return unless job_can_run?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
@@ -27,20 +26,16 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_passed: 0,
     }
 
-    reprocess_delay_minutes = IdentityConfig.store.
-      get_usps_proofing_results_job_reprocess_delay_minutes
-    pending_enrollments = InPersonEnrollment.needs_usps_status_check(
-      ...reprocess_delay_minutes.minutes.ago,
-    )
-
     started_at = Time.zone.now
     pending_enrollments.update(last_batch_claimed_at: started_at)
     enrollments_to_check = InPersonEnrollment.needs_usps_status_check_batch(started_at)
+
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments_to_check.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
+
     check_enrollments(enrollments_to_check)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
@@ -50,8 +45,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       percent_enrollments_network_error: summary_percent(:enrollments_network_error),
       job_name: self.class.name,
     )
-
-    true
   end
 
   private
@@ -72,6 +65,20 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def ipp_ready_job_enabled?
     IdentityConfig.store.in_person_enrollments_ready_job_enabled == true
+  end
+
+  def job_can_run?
+    ipp_enabled? && !ipp_ready_job_enabled?
+  end
+
+  def reprocess_delay_minutes
+    IdentityConfig.store.get_usps_proofing_results_job_reprocess_delay_minutes
+  end
+
+  def pending_enrollments
+    @pending_enrollments ||= InPersonEnrollment.needs_usps_status_check(
+      ...reprocess_delay_minutes.minutes.ago,
+    )
   end
 
   def check_enrollments(enrollments)
