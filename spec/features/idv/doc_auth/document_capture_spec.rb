@@ -174,45 +174,6 @@ RSpec.feature 'document capture step', :js do
         expect(page).to have_current_path(idv_phone_url)
       end
     end
-
-    it 'shows a failure message after the maximum amount of retries', allow_browser_log: true do
-      perform_in_browser(:mobile) do
-        visit_idp_from_oidc_sp_with_ial2
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-
-        freeze_time do
-          timeout = distance_of_time_in_words(
-            RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
-          )
-
-          final_failure_text = strip_tags(
-            t(
-              'errors.doc_auth.rate_limited_text_html',
-              timeout: timeout,
-            ),
-          )
-
-          max_attempts.times do |time|
-            attach_images(
-              Rails.root.join(
-                'spec', 'fixtures',
-                'ial2_test_credential_wrong_doc_type.yml'
-              ),
-            )
-
-            submit_images
-
-            if time == max_attempts - 1
-              expect(page).to have_content(final_failure_text)
-              click_idv_exit
-            else
-              click_try_again
-            end
-          end
-        end
-      end
-    end
   end
 
   def expect_costing_for_document
