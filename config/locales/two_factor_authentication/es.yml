@@ -163,8 +163,9 @@ es:
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
       configurations_added:
-        one: '(%{count} añadido)'
-        other: '(%{count} añadido)'
+        one: '%{count} añadido'
+        other: '%{count} añadido'
+      no_count_configuration_added: Añadido
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
@@ -174,9 +175,6 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      unused_backup_code:
-        one: '(%{count} código sin usar)'
-        other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
