@@ -30,6 +30,10 @@ module UspsInPersonProofing
       def request_facilities(_location)
         parse_facilities(JSON.parse(Fixtures.request_facilities_response))
       end
+
+      def request_proofing_results(_unique_id, _enrollment_code)
+        JSON.parse(Fixtures.request_passed_proofing_results_response)
+      end
     end
   end
 end

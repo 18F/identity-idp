@@ -267,7 +267,6 @@ class IdentityConfig
     config.add(:in_person_public_address_search_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
-    config.add(:in_person_ssn_info_controller_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:lexisnexis_account_id, type: :string)
