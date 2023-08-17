@@ -581,9 +581,7 @@ ecr-scan:
 build-main-image:
   stage: main_merge
   rules:
-    - if: $CI_COMMIT_BRANCH == "cmccarthy/review-app-main" && $CI_PIPELINE_SOURCE == "push"
-      when: always
-    - when: never
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "cmccarthy/review-app-main"'
   image:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: ['']
