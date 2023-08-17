@@ -18,7 +18,7 @@ RSpec.feature 'idv review step', :js do
       email_count_before_continue = ActionMailer::Base.deliveries.count
 
       expect { click_continue }.
-        to change { GpoConfirmation.count }.from(0).to(1)
+        to change { GpoConfirmation.count }.by(1)
 
       expect_delivered_email_count(email_count_before_continue + 1)
       expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
@@ -29,6 +29,31 @@ RSpec.feature 'idv review step', :js do
       profile = user.profiles.first
 
       expect(profile.active?).to eq false
+    end
+
+    context 'user is rate-limited' do
+      before do
+        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      end
+
+      it 'sends a letter, creates an unverified profile, and sends an email' do
+        fill_in 'Password', with: user_password
+
+        email_count_before_continue = ActionMailer::Base.deliveries.count
+
+        expect { click_continue }.
+          to change { GpoConfirmation.count }.by(1)
+
+        expect_delivered_email_count(email_count_before_continue + 1)
+        expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
+
+        expect(user.events.account_verified.size).to be(0)
+        expect(user.profiles.count).to eq 1
+
+        profile = user.profiles.first
+
+        expect(profile.active?).to eq false
+      end
     end
 
     it 'sends you to the come_back_later page after review step' do
@@ -66,19 +91,6 @@ RSpec.feature 'idv review step', :js do
         gpo_confirmation_entry = GpoConfirmation.last.entry
 
         expect(gpo_confirmation_entry[:issuer]).to eq(nil)
-      end
-    end
-
-    context 'when rate limited' do
-      before do
-        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
-      end
-
-      it 'sends a letter without a reference to the sp' do
-        fill_in 'Password', with: user_password
-        click_continue
-
-        expect(current_path).to eq idv_come_back_later_path
       end
     end
   end
