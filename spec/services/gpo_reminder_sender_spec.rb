@@ -5,6 +5,13 @@ RSpec.describe GpoReminderSender do
     subject(:sender) { GpoReminderSender.new(fake_analytics) }
 
     let(:user) { create(:user, :with_pending_gpo_profile) }
+    let(:gpo_confirmation_code) do
+      user.
+        gpo_verification_pending_profile.
+        gpo_confirmation_codes.
+        first
+    end
+
     let(:fake_analytics) { FakeAnalytics.new }
     let(:wait_for_reminder) { 14.days }
     let(:time_due_for_reminder) { Time.zone.now - wait_for_reminder }
@@ -18,11 +25,9 @@ RSpec.describe GpoReminderSender do
     end
 
     def set_reminder_sent_at(to_time)
-      user.
-        gpo_verification_pending_profile.
-        gpo_confirmation_codes.
-        first.
-        update(reminder_sent_at: to_time)
+      gpo_confirmation_code.update(
+        reminder_sent_at: to_time,
+      )
     end
 
     context 'when no users need a reminder' do
@@ -51,6 +56,12 @@ RSpec.describe GpoReminderSender do
         subject.send_emails(time_due_for_reminder)
 
         expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
+      end
+
+      it 'updates the GPO verification code `reminder_sent_at`' do
+        subject.send_emails(time_due_for_reminder)
+
+        expect(gpo_confirmation_code.reminder_sent_at).to be_within(1).of(Time.zone.now)
       end
 
       context 'and the user has multiple emails' do
