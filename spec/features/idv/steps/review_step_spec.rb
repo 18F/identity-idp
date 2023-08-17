@@ -68,5 +68,18 @@ RSpec.feature 'idv review step', :js do
         expect(gpo_confirmation_entry[:issuer]).to eq(nil)
       end
     end
+
+    context 'when rate limited' do
+      before do
+        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      end
+
+      it 'sends a letter without a reference to the sp' do
+        fill_in 'Password', with: user_password
+        click_continue
+
+        expect(current_path).to eq idv_come_back_later_path
+      end
+    end
   end
 end
