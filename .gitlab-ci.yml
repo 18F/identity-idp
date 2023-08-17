@@ -100,6 +100,7 @@ build-idp-image:
     DEFAULT_BRANCH_TAGGING_STRING: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == "cmccarthy/review-app-main"
       variables:
         DEFAULT_BRANCH_TAGGING_STRING: "--destination \"${ECR_REGISTRY}/identity-idp/review:${CI_DEFAULT_BRANCH}\""
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
