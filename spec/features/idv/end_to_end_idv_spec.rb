@@ -106,38 +106,6 @@ RSpec.describe 'Identity verification', :js do
 
       validate_return_to_sp
     end
-
-    scenario 'In person proofing cancel barcode', allow_browser_log: true do
-      visit_idp_from_sp_with_ial2(sp)
-      user = sign_up_and_2fa_ial1_user
-
-      begin_in_person_proofing
-      complete_all_in_person_proofing_steps(user)
-
-      complete_otp_verification_page(user)
-      complete_review_step(user)
-
-      expect(user.identity_verified?).to be(false)
-
-      acknowledge_and_confirm_personal_key
-
-      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      visit_sp_from_in_person_ready_to_verify
-
-      visit sign_out_url
-      user.reload
-
-      mark_in_person_enrollment_passed(user)
-
-      # sign in
-      visit_idp_from_sp_with_ial2(sp)
-      sign_in_live_with_2fa(user)
-
-      validate_idv_completed_page(user)
-      click_agree_and_continue
-
-      validate_return_to_sp
-    end
   end
 
   def validate_welcome_page
