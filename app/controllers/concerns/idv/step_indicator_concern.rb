@@ -39,7 +39,7 @@ module Idv
     private
 
     def in_person_proofing?
-      proofing_components_as_hash['document_check'] == Idp::Constants::Vendors::USPS
+      current_user&.establishing_in_person_enrollment_with_address?
     end
 
     def gpo_address_verification?
