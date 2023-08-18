@@ -154,8 +154,9 @@ en:
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
       configurations_added:
-        one: '(%{count} added)'
-        other: '(%{count} added)'
+        one: '%{count} added'
+        other: '%{count} added'
+      no_count_configuration_added: Added
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
@@ -163,9 +164,6 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       sms: Text message / SMS
-      unused_backup_code:
-        one: '(%{count} unused code)'
-        other: '(%{count} unused codes)'
       voice: Phone call
       webauthn: Security key
       webauthn_info: A physical device, often shaped like a USB drive, that you plug
