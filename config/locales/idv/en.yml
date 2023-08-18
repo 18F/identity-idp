@@ -280,7 +280,6 @@ en:
       headings:
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
-        still_having_trouble: Still having trouble?
       options:
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
