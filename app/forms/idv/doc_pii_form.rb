@@ -3,6 +3,7 @@ module Idv
     include ActiveModel::Model
 
     validate :validate_pii
+    validates :address1, presence: { message: proc { I18n.t('doc_auth.errors.alerts.address_check') } }
 
     attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
                 :jurisdiction
@@ -46,8 +47,6 @@ module Idv
         errors.add(:pii, dob_error, type: :dob_error)
       elsif !dob_meets_min_age?
         errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
-      elsif address1.blank?
-        errors.add(:pii, address_error, type: :address_error)
       elsif !state_valid?
         errors.add(:pii, generic_error, type: :generic_error)
       elsif !zipcode_valid?
@@ -103,10 +102,6 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
-    end
-
-    def address_error 
-      I18n.t('doc_auth.errors.alerts.address_check')
     end
   end
 end
