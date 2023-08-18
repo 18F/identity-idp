@@ -411,7 +411,7 @@ RSpec.describe Idv::ImageUploadsController do
       context 'but doc_pii validation fails' do
         let(:first_name) { 'FAKEY' }
         let(:last_name) { 'MCFAKERSON' }
-        let(:address1) {'123 Houston Ave'}
+        let(:address1) { '123 Houston Ave' }
         let(:state) { 'ND' }
         let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }

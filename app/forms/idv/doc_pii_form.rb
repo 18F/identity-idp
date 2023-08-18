@@ -105,7 +105,7 @@ module Idv
       I18n.t('doc_auth.errors.pii.birth_date_min_age')
     end
 
-    def address_error 
+    def address_error
       I18n.t('doc_auth.errors.alerts.address_check')
     end
   end

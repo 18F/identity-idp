@@ -202,12 +202,11 @@ RSpec.describe Idv::DocPiiForm do
       end
     end
 
+    context 'when there is no address1 information' do
+      let(:subject) { Idv::DocPiiForm.new(pii: address1_error_pii) }
 
-  context 'when there is no address1 information' do
-    let(:subject) { Idv::DocPiiForm.new(pii: address1_error_pii) }
-
-    it 'returns an error for not being able to read the address' do
-      result = subject.submit
+      it 'returns an error for not being able to read the address' do
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
