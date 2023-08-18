@@ -51,34 +51,62 @@ function useUspsLocations(locationsURL: string) {
   const validatedStateFieldRef = useRef<HTMLFormElement>(null);
   const validatedZipCodeFieldRef = useRef<HTMLFormElement>(null);
 
+  const checkValidityAndDisplayErrors = ((address, city, state, zipCode) => {
+    let formIsValid = true;
+    const validZipCodeLength = zipCode.length === 5 || zipCode.length === 10;
+    
+    if (address.length === 0) {
+      validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+      formIsValid = false
+    } else {
+      validatedAddressFieldRef.current?.setCustomValidity('');
+    }
+
+    if (city.length === 0) {
+      formIsValid = false
+      validatedCityFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedCityFieldRef.current?.setCustomValidity('');
+    }
+
+    if (state.length === 0) {
+      formIsValid = false
+      validatedStateFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedStateFieldRef.current?.setCustomValidity('');
+    }
+
+    if (zipCode.length === 0) {
+      formIsValid = false
+      validatedZipCodeFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedZipCodeFieldRef.current?.setCustomValidity('');
+    }
+
+    validatedAddressFieldRef.current?.reportValidity();
+    validatedCityFieldRef.current?.reportValidity();
+    validatedStateFieldRef.current?.reportValidity();
+    validatedZipCodeFieldRef.current?.reportValidity();
+
+    return formIsValid && validZipCodeLength
+  })
+
   const handleLocationSearch = useCallback(
     (event, addressValue, cityValue, stateValue, zipCodeValue) => {
       event.preventDefault();
-      validatedAddressFieldRef.current?.setCustomValidity('');
-      validatedAddressFieldRef.current?.reportValidity();
-      validatedCityFieldRef.current?.setCustomValidity('');
-      validatedCityFieldRef.current?.reportValidity();
-      validatedStateFieldRef.current?.setCustomValidity('');
-      validatedStateFieldRef.current?.reportValidity();
-      validatedZipCodeFieldRef.current?.setCustomValidity('');
-      validatedZipCodeFieldRef.current?.reportValidity();
+      const address = addressValue.trim();
+      const city = cityValue.trim();
 
-      const validZipCodeLength = zipCodeValue.length === 5 || zipCodeValue.length === 10;
+      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCodeValue)
 
-      if (
-        addressValue.length === 0 ||
-        cityValue.length === 0 ||
-        stateValue.length === 0 ||
-        zipCodeValue.length === 0 ||
-        !validZipCodeLength
-      ) {
+      if (!formIsValid) {
         return;
       }
 
       setLocationQuery({
-        address: `${addressValue}, ${cityValue}, ${stateValue} ${zipCodeValue}`,
-        streetAddress: addressValue,
-        city: cityValue,
+        address: `${address}, ${city}, ${stateValue} ${zipCodeValue}`,
+        streetAddress: address,
+        city: city,
         state: stateValue,
         zipCode: zipCodeValue,
       });
@@ -160,11 +188,13 @@ function FullAddressSearch({
     };
 
   type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;
+  type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;
+
   const onAddressChange = (e: InputChangeEvent) =>
-    setAddressValue(e.target.value.replace(/[^a-zA-Z0-9_ ]/gi, '').trimStart());
+    setAddressValue(e.target.value.replace(/[^a-zA-Z0-9_ ]/gi, ''));
   const onCityChange = (e: InputChangeEvent) =>
-    setCityValue(e.target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, '').trimStart());
-  const onStateChange = (e: InputChangeEvent) => setStateValue(e.target.value.trimStart());
+    setCityValue(e.target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, ''));
+  const onStateChange = (e: SelectChangeEvent) => setStateValue(e.target.value.trimStart());
   const onZipCodeChange = inputChangeHandlerForZipCode(setZipCodeValue);
 
   useEffect(() => {
@@ -183,7 +213,7 @@ function FullAddressSearch({
   const handleSearch = useCallback(
     (event) => {
       onError(null);
-      onSearch(event, addressValue.trim(), cityValue.trim(), stateValue, zipCodeValue);
+      onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
     [addressValue, cityValue, stateValue, zipCodeValue],
   );
@@ -200,6 +230,7 @@ function FullAddressSearch({
           onChange={onAddressChange}
           label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
+          maxLength={255}
         />
       </ValidatedField>
       <ValidatedField ref={validatedCityFieldRef}>
@@ -210,6 +241,7 @@ function FullAddressSearch({
           onChange={onCityChange}
           label={t('in_person_proofing.body.location.po_search.city_label')}
           disabled={disabled}
+          maxLength={50}
         />
       </ValidatedField>
       <ValidatedField ref={validatedStateFieldRef}>
