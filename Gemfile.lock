@@ -472,7 +472,7 @@ GEM
       pry (>= 0.10.4)
     psych (4.0.2)
     public_suffix (5.0.3)
-    puma (5.6.4)
+    puma (5.6.7)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.7.1)
@@ -781,7 +781,7 @@ DEPENDENCIES
   pry-doc
   pry-rails
   psych
-  puma
+  puma (~> 5.6.7)
   rack (>= 2.2.3.1)
   rack-attack (>= 6.2.1)
   rack-cors (>= 1.0.5)
