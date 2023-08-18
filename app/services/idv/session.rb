@@ -103,7 +103,8 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
+      return unless current_user.establishing_in_person_enrollment_with_address?
+
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
@@ -140,7 +141,7 @@ module Idv
     end
 
     def pending_in_person_enrollment?
-      current_user.proofing_component&.document_check == Idp::Constants::Vendors::USPS
+      current_user.establishing_in_person_enrollment_with_address?
     end
 
     def verify_info_step_complete?
