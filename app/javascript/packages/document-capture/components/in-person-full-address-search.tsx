@@ -159,19 +159,6 @@ function FullAddressSearch({
       }
     };
 
-  const inputChangeHandler =
-    <T extends HTMLElement & { value: string }>(input, ref) =>
-    (event: React.ChangeEvent<T>) => {
-      const { target } = event;
-      if (ref === 'address') {
-        input(target.value.replace(/[^a-zA-Z0-9_ ]/gi, '').trimStart());
-      } else if (ref === 'city') {
-        input(target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, '').trimStart());
-      } else {
-        input(target.value.trimStart());
-      }
-    };
-
   type InputChangeEvent = React.ChangeEvent<HTMLInputElement>
   const onAddressChange = (event: InputChangeEvent) => setAddressValue(event.target.value.replace(/[^a-zA-Z0-9_ ]/gi, '').trimStart());
   const onCityChange = (event: InputChangeEvent) => setCityValue(event.target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, '').trimStart());
