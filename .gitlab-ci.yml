@@ -2,7 +2,7 @@
 # other available images:
 #   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
 # Images are built via the identity-devops GitLab pipeline.
-
+#Test comment
 variables:
   GITLAB_CI: 'true'
   FF_SCRIPT_SECTIONS: 'true'
