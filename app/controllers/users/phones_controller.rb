@@ -12,13 +12,9 @@ module Users
     before_action :confirm_recently_authenticated_2fa
 
     def add
-      if IdentityConfig.store.consolidate_phone_controllers
-        redirect_to phone_setup_url
-      else
-        user_session[:phone_id] = nil
-        @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
-        analytics.add_phone_setup_visit
-      end
+      user_session[:phone_id] = nil
+      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      analytics.add_phone_setup_visit
     end
 
     def create

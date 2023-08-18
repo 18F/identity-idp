@@ -11,6 +11,7 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+    before_action :redirect_if_phone_vendor_outage
     before_action :confirm_recently_authenticated_2fa
     before_action :check_max_phone_numbers_per_account, only: %i[index create]
 
@@ -93,6 +94,11 @@ module Users
                         account_two_factor_authentication_url(anchor: 'phones') :
                         account_url(anchor: 'phones')
       redirect_to redirect_path
+    end
+
+    def redirect_if_phone_vendor_outage
+      return unless OutageStatus.new.all_phone_vendor_outage?
+      redirect_to vendor_outage_path(from: :users_phones)
     end
 
     def new_phone_form_params
