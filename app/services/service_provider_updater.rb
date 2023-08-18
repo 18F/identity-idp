@@ -29,8 +29,7 @@ class ServiceProviderUpdater
 
   def update_cache(service_provider)
     issuer = service_provider['issuer']
-    # when a service provider is passed in via params, true becomes 'true'
-    if [true, 'true'].include?(service_provider['active'])
+    if service_provider['active'] == true
       create_or_update_service_provider(issuer, service_provider)
     else
       ServiceProvider.where(issuer: issuer, native: false).destroy_all
