@@ -222,7 +222,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if FeatureManagement.idv_gpo_only?
+      return idv_gpo_url if FeatureManagement.idv_by_mail_only?
       idv_phone_url
     end
 

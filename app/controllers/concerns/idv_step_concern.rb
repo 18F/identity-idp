@@ -28,10 +28,10 @@ module IdvStepConcern
   def check_for_mail_only_outage
     return if idv_session.mail_only_warning_shown
 
-    return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
+    return redirect_for_mail_only if FeatureManagement.idv_by_mail_only?
   end
 
-  def redirect_for_gpo_only
+  def redirect_for_mail_only
     return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
 
     redirect_to idv_mail_only_warning_url
