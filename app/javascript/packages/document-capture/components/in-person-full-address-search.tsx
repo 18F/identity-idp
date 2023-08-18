@@ -159,10 +159,12 @@ function FullAddressSearch({
       }
     };
 
-  type InputChangeEvent = React.ChangeEvent<HTMLInputElement>
-  const onAddressChange = (event: InputChangeEvent) => setAddressValue(event.target.value.replace(/[^a-zA-Z0-9_ ]/gi, '').trimStart());
-  const onCityChange = (event: InputChangeEvent) => setCityValue(event.target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, '').trimStart());
-  const onStateChange = (event: InputChangeEvent) => setStateValue(event.target.value.trimStart());
+  type InputChangeEvent = React.ChangeEvent<HTMLInputElement>;
+  const onAddressChange = (e: InputChangeEvent) =>
+    setAddressValue(e.target.value.replace(/[^a-zA-Z0-9_ ]/gi, '').trimStart());
+  const onCityChange = (e: InputChangeEvent) =>
+    setCityValue(e.target.value.replace(/[^a-zA-Z0-9-'_ ]/gi, '').trimStart());
+  const onStateChange = (e: InputChangeEvent) => setStateValue(e.target.value.trimStart());
   const onZipCodeChange = inputChangeHandlerForZipCode(setZipCodeValue);
 
   useEffect(() => {
