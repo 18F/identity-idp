@@ -67,10 +67,15 @@ RSpec.describe ServiceProviderController do
       end
 
       context 'with a service provider passed via params' do
-        let(:params) { { service_provider: attributes } }
         let(:friendly_name) { 'A new friendly name' }
+        let(:params) do
+          {
+            service_provider: attributes.merge(friendly_name:),
+          }
+        end
+
         before do
-          params[:service_provider][:friendly_name] = friendly_name
+          request.content_type = 'application/json'
           post :update, params:
         end
 
