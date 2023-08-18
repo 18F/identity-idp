@@ -149,7 +149,6 @@ describe('DocumentCaptureWarning', () => {
       });
     });
 
-    //
     context('failed result', () => {
       const isFailedResult = true;
       it('renders not failed doc type', () => {
