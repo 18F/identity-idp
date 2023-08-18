@@ -26,7 +26,7 @@ module IdvStepConcern
   end
 
   def check_for_mail_only_outage
-    return if flow_session[:skip_vendor_outage]
+    return if idv_session.mail_only_warning_shown
 
     return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
   end

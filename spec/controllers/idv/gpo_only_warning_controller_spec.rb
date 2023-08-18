@@ -38,15 +38,10 @@ RSpec.describe Idv::GpoOnlyWarningController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    context 'flow_session is nil' do
-      it 'renders the show template and initializes flow session' do
-        subject.user_session.delete('idv/doc_auth')
+    it 'sets idv_session.mail_only_warning_shown' do
+      get :show
 
-        get :show
-
-        expect(response).to render_template :show
-        expect(subject.user_session['idv/doc_auth'][:skip_vendor_outage]).to eq(true)
-      end
+      expect(subject.idv_session.mail_only_warning_shown).to eq(true)
     end
   end
 
