@@ -375,7 +375,7 @@ RSpec.describe User do
   end
 
   describe '#password=' do
-    it 'digests and saves the digested password' do
+    it 'digests and saves a single region and multi region password digests' do
       user = build(:user, password: nil)
 
       user.password = 'test password'
@@ -383,31 +383,14 @@ RSpec.describe User do
       expect(user.encrypted_password_digest).to_not be_blank
       expect(user.encrypted_password_digest).to_not match(/test password/)
 
-      expect(user.encrypted_password_digest_multi_region).to be_nil
-    end
+      expect(user.encrypted_password_digest_multi_region).to_not be_blank
+      expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
 
-    context 'with aws_kms_multi_region_write_enabled set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
-      end
-
-      it 'digests and saves a single region and multi region password digests' do
-        user = build(:user, password: nil)
-
-        user.password = 'test password'
-
-        expect(user.encrypted_password_digest).to_not be_blank
-        expect(user.encrypted_password_digest).to_not match(/test password/)
-
-        expect(user.encrypted_password_digest_multi_region).to_not be_blank
-        expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
-
-        expect(
-          user.encrypted_password_digest,
-        ).to_not eq(
-          user.encrypted_password_digest_multi_region,
-        )
-      end
+      expect(
+        user.encrypted_password_digest,
+      ).to_not eq(
+        user.encrypted_password_digest_multi_region,
+      )
     end
   end
 
@@ -421,7 +404,7 @@ RSpec.describe User do
   end
 
   describe '#personal_key=' do
-    it 'digests and saves the digested personal key' do
+    it 'digests and saves a single region and multi region personal key digests' do
       user = build(:user, personal_key: nil)
 
       user.personal_key = 'test personal key'
@@ -429,31 +412,14 @@ RSpec.describe User do
       expect(user.encrypted_recovery_code_digest).to_not be_blank
       expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
 
-      expect(user.encrypted_recovery_code_digest_multi_region).to be_nil
-    end
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
 
-    context 'with aws_kms_multi_region_write_enabled set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
-      end
-
-      it 'digests and saves a single region and multi region personal key digests' do
-        user = build(:user, personal_key: nil)
-
-        user.personal_key = 'test personal key'
-
-        expect(user.encrypted_recovery_code_digest).to_not be_blank
-        expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
-
-        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
-        expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
-
-        expect(
-          user.encrypted_recovery_code_digest,
-        ).to_not eq(
-          user.encrypted_recovery_code_digest_multi_region,
-        )
-      end
+      expect(
+        user.encrypted_recovery_code_digest,
+      ).to_not eq(
+        user.encrypted_recovery_code_digest_multi_region,
+      )
     end
   end
 

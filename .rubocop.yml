@@ -789,7 +789,7 @@ Performance/UriDefaultParser:
   Enabled: true
 
 Rails/ActionControllerFlashBeforeRender:
-  Enabled: false
+  Enabled: true
 
 Rails/ActionControllerTestCase:
   Enabled: true
