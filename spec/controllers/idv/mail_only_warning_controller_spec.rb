@@ -8,7 +8,6 @@ RSpec.describe Idv::MailOnlyWarningController do
   before do
     stub_sign_in(user)
     stub_analytics
-    subject.user_session['idv/doc_auth'] = {}
   end
 
   describe 'before_actions' do

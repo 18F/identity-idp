@@ -7,8 +7,9 @@ module Idv
 
     def show
       analytics.idv_mail_only_warning_visited(analytics_id: 'Doc Auth')
-
-      idv_session.mail_only_warning_shown = true
+      if defined?(idv_session)
+        idv_session.mail_only_warning_shown = true
+      end
       render :show, locals: { current_sp:, exit_url: }
     end
 
