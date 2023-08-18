@@ -51,33 +51,33 @@ function useUspsLocations(locationsURL: string) {
   const validatedStateFieldRef = useRef<HTMLFormElement>(null);
   const validatedZipCodeFieldRef = useRef<HTMLFormElement>(null);
 
-  const checkValidityAndDisplayErrors = ((address, city, state, zipCode) => {
+  const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
     let formIsValid = true;
     const validZipCodeLength = zipCode.length === 5 || zipCode.length === 10;
-    
+
     if (address.length === 0) {
       validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
-      formIsValid = false
+      formIsValid = false;
     } else {
       validatedAddressFieldRef.current?.setCustomValidity('');
     }
 
     if (city.length === 0) {
-      formIsValid = false
+      formIsValid = false;
       validatedCityFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
     } else {
       validatedCityFieldRef.current?.setCustomValidity('');
     }
 
     if (state.length === 0) {
-      formIsValid = false
+      formIsValid = false;
       validatedStateFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
     } else {
       validatedStateFieldRef.current?.setCustomValidity('');
     }
 
     if (zipCode.length === 0) {
-      formIsValid = false
+      formIsValid = false;
       validatedZipCodeFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
     } else {
       validatedZipCodeFieldRef.current?.setCustomValidity('');
@@ -88,8 +88,8 @@ function useUspsLocations(locationsURL: string) {
     validatedStateFieldRef.current?.reportValidity();
     validatedZipCodeFieldRef.current?.reportValidity();
 
-    return formIsValid && validZipCodeLength
-  })
+    return formIsValid && validZipCodeLength;
+  };
 
   const handleLocationSearch = useCallback(
     (event, addressValue, cityValue, stateValue, zipCodeValue) => {
@@ -97,7 +97,7 @@ function useUspsLocations(locationsURL: string) {
       const address = addressValue.trim();
       const city = cityValue.trim();
 
-      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCodeValue)
+      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCodeValue);
 
       if (!formIsValid) {
         return;
@@ -106,7 +106,7 @@ function useUspsLocations(locationsURL: string) {
       setLocationQuery({
         address: `${address}, ${city}, ${stateValue} ${zipCodeValue}`,
         streetAddress: address,
-        city: city,
+        city,
         state: stateValue,
         zipCode: zipCodeValue,
       });
