@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoOnlyWarningController do
+RSpec.describe Idv::MailOnlyWarningController do
   include IdvHelper
 
   let(:user) { create(:user) }

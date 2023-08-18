@@ -1,5 +1,5 @@
 module Idv
-  class GpoOnlyWarningController < ApplicationController
+  class MailOnlyWarningController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
 
