@@ -25,7 +25,7 @@ RSpec.describe Idv::PhoneController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
   end

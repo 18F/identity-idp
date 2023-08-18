@@ -13,7 +13,7 @@ module IdvStepConcern
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
-    before_action :check_for_outage
+    before_action :check_for_mail_only_outage
   end
 
   def confirm_no_pending_gpo_profile
@@ -25,7 +25,7 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
-  def check_for_outage
+  def check_for_mail_only_outage
     return if flow_session[:skip_vendor_outage]
 
     return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
