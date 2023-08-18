@@ -16,7 +16,9 @@ class ServiceProviderUpdater
       update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(service_provider))
     else
       dashboard_service_providers.each do |dashboard_service_provider|
-        update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider))
+        update_local_caches(
+          ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider)
+        )
       end
     end
   end

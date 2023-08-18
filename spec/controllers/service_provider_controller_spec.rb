@@ -67,8 +67,8 @@ RSpec.describe ServiceProviderController do
       end
 
       context 'with a service provider passed via params' do
-        let(:params) {{ service_provider: attributes }}
-        let(:friendly_name) { "A new friendly name" }
+        let(:params) { { service_provider: attributes } }
+        let(:friendly_name) { 'A new friendly name' }
         before do
           params[:service_provider][:friendly_name] = friendly_name
           post :update, params:
