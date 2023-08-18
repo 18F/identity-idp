@@ -41,7 +41,7 @@ module Idv
       {
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: !!idv_session.skip_hybrid_handoff,
+        skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end

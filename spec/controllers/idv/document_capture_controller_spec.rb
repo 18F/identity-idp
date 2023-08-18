@@ -56,7 +56,8 @@ RSpec.describe Idv::DocumentCaptureController do
       {
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        skip_hybrid_handoff: false,
+        redo_document_capture: nil,
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
         step: 'document_capture',
       }.merge(ab_test_args)
@@ -148,7 +149,8 @@ RSpec.describe Idv::DocumentCaptureController do
         errors: {},
         analytics_id: 'Doc Auth',
         flow_path: 'standard',
-        skip_hybrid_handoff: false,
+        redo_document_capture: nil,
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
         step: 'document_capture',
       }.merge(ab_test_args)

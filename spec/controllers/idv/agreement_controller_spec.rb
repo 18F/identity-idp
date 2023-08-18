@@ -39,7 +39,7 @@ RSpec.describe Idv::AgreementController do
       {
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: false,
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -94,7 +94,7 @@ RSpec.describe Idv::AgreementController do
         errors: {},
         step: 'agreement',
         analytics_id: 'Doc Auth',
-        skip_hybrid_handoff: false,
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -136,7 +136,9 @@ RSpec.describe Idv::AgreementController do
           put :update, params: params
         end.to change {
           subject.idv_session.flow_path
-        }.from(nil).to('standard')
+        }.from(nil).to('standard').and change {
+          subject.idv_session.skip_hybrid_handoff
+        }.from(nil).to(true)
       end
 
       it 'redirects to hybrid handoff' do

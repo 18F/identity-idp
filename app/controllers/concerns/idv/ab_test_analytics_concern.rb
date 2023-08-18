@@ -4,7 +4,8 @@ module Idv
     include Idv::GettingStartedAbTestConcern
 
     def ab_test_analytics_buckets
-      acuant_sdk_ab_test_analytics_args.
+      { skip_hybrid_handoff: idv_session&.skip_hybrid_handoff }.
+        merge(acuant_sdk_ab_test_analytics_args).
         merge(getting_started_ab_test_analytics_bucket)
     end
   end
