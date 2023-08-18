@@ -25,9 +25,7 @@ class WebauthnVisitForm
   end
 
   def current_mfa_setup_path
-    if mfa_user.two_factor_enabled? && in_mfa_selection_flow
-      second_mfa_setup_path
-    elsif mfa_user.two_factor_enabled?
+    if mfa_user.two_factor_enabled? && !in_mfa_selection_flow
       account_path
     else
       authentication_methods_setup_path
