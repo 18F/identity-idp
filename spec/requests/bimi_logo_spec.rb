@@ -1,26 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe 'BIMI logo' do
+  let(:image_response) do
+    get '/images/login-icon-bimi.svg'
+    response
+  end
+  subject(:image) { Nokogiri::XML(image_response.body) }
+
   it 'is available' do
     # If you're troubleshooting this spec, there's a good chance you're trying to remove a file that
     # appears to be unused. This comment is here to assure you that it is in-fact used, referenced
     # as part of the BIMI DMARC records associated with the Login.gov domain. The image should not
     # be removed as long as it's referenced by those records.
-    get '/images/login-icon-bimi.svg'
-
-    expect(response.status).to eq(200)
+    expect(image_response.status).to eq(200)
   end
 
   describe 'validity' do
     # Test cases in this block reference best practices documentation from BIMI group:
     # See: https://bimigroup.org/creating-bimi-svg-logo-files/
 
-    let(:path) { Rails.public_path.join('images/login-icon-bimi.svg') }
-    subject(:image) { Nokogiri::XML(File.read(path)) }
-
     it 'is no larger than 32kb' do
       # "The SVG document should be as small as possible and should not exceed 32 kilobytes."
-      size_in_kilobytes = File.size(path).to_f / 1024
+      size_in_kilobytes = image_response.content_length.to_f / 1024
 
       expect(size_in_kilobytes).to be <= 32
     end
