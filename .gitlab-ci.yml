@@ -420,14 +420,14 @@ dast:
   tags:
     - review-app-dast
   image:
-    name: "217680906704.dkr.ecr.us-west-2.amazonaws.com/temp/gitlab/security-products/dast:latest"
+    name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
     DAST_FULL_SCAN_ENABLED: "true" # do a full scan
     DAST_BROWSER_SCAN: "true" 
   allow_failure: true
   script:
-    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - export DAST_WEBSITE="https://review-sudheer-lg-79lxfi.review-app.identitysandbox.gov/"
     - echo ${DAST_WEBSITE}
     - /analyze
   artifacts:
