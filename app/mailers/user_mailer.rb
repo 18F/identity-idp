@@ -393,7 +393,7 @@ class UserMailer < ActionMailer::Base
 
   def gpo_reminder
     with_user_locale(user) do
-      @date_letter_was_sent = I18n.l(
+      @gpo_verification_pending_at = I18n.l(
         user.gpo_verification_pending_profile.gpo_verification_pending_at,
         format: :event_date,
       )
