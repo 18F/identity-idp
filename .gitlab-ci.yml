@@ -427,7 +427,7 @@ dast:
     DAST_BROWSER_SCAN: "true" 
   allow_failure: true
   script:
-    - export DAST_WEBSITE="https://review-sudheer-lg-79lxfi.review-app.identitysandbox.gov/"
+    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
     - echo ${DAST_WEBSITE}
     - /analyze
   artifacts:
