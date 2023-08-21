@@ -32,7 +32,7 @@ RSpec.feature 'document capture step', :js do
         expect(fake_analytics).to have_logged_event(
           'Return to SP: Failed to proof',
           flow: nil,
-          location: 'document_capture_troubleshooting_options',
+          location: 'document_capture',
           redirect_url: instance_of(String),
           step: 'document_capture',
         )
