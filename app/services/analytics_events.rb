@@ -226,8 +226,8 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  def backup_code_regenerate_visit(**extra)
-    track_event('Backup Code Regenerate Visited', **extra)
+  def backup_code_regenerate_visit(in_multi_mfa_selection_flow:, **extra)
+    track_event('Backup Code Regenerate Visited', in_multi_mfa_selection_flow:,  **extra)
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
