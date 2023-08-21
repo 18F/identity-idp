@@ -26,10 +26,6 @@ interface FailedCaptureAttemptsContextInterface {
   onFailedSubmissionAttempt: () => void;
 
   /**
-   * Number of failed attempts before showing tips
-   */
-  maxFailedAttemptsBeforeTips: number;
-  /**
    * The maximum number of failed Acuant capture attempts
    * before use of the native camera option is triggered
    */
@@ -78,7 +74,6 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   onResetFailedCaptureAttempts: () => {},
   maxCaptureAttemptsBeforeNativeCamera: Infinity,
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
-  maxFailedAttemptsBeforeTips: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
 });
@@ -87,14 +82,12 @@ FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
 
 interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
-  maxFailedAttemptsBeforeTips: number;
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
-  maxFailedAttemptsBeforeTips,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
 }: FailedCaptureAttemptsContextProviderProps) {
@@ -128,7 +121,6 @@ function FailedCaptureAttemptsContextProvider({
         onFailedSubmissionAttempt,
         maxCaptureAttemptsBeforeNativeCamera,
         maxSubmissionAttemptsBeforeNativeCamera,
-        maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
         forceNativeCamera,
       }}
