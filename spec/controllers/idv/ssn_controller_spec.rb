@@ -88,6 +88,10 @@ RSpec.describe Idv::SsnController do
       )
     end
 
+    it 'adds a threatmetrix session id to idv_session' do
+      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
+    end
+
     context 'with an ssn in session' do
       let(:referer) { idv_document_capture_url }
       before do
@@ -214,12 +218,6 @@ RSpec.describe Idv::SsnController do
 
           expect(subject.idv_session.applicant).to be_blank
         end
-      end
-
-      it 'adds a threatmetrix session id to idv_session' do
-        put :update, params: params
-        subject.threatmetrix_view_variables
-        expect(subject.idv_session.threatmetrix_session_id).to_not eq(nil)
       end
 
       it 'does not change threatmetrix_session_id when updating ssn' do

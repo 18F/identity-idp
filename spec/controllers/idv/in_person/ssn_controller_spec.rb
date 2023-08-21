@@ -80,8 +80,7 @@ RSpec.describe Idv::InPerson::SsnController do
     end
 
     it 'adds a threatmetrix session id to idv_session' do
-      get :show
-      expect(subject.idv_session.threatmetrix_session_id).to_not eq(nil)
+      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
     context 'with an ssn in session' do
