@@ -222,12 +222,26 @@ RSpec.describe Idv::SsnController do
         expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
       end
 
-      it 'does not change threatmetrix_session_id when updating ssn' do
+      it 'does not change flow_session threatmetrix_session_id when updating ssn' do
         flow_session['pii_from_doc'][:ssn] = ssn
         put :update, params: params
         session_id = flow_session[:threatmetrix_session_id]
         subject.threatmetrix_view_variables
         expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
+      end
+
+      it 'adds a threatmetrix session id to idv_session' do
+        put :update, params: params
+        subject.threatmetrix_view_variables
+        expect(subject.idv_session.threatmetrix_session_id).to_not eq(nil)
+      end
+
+      it 'does not change idv_session threatmetrix_session_id when updating ssn' do
+        flow_session['pii_from_doc'][:ssn] = ssn
+        put :update, params: params
+        session_id = subject.idv_session.threatmetrix_session_id
+        subject.threatmetrix_view_variables
+        expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
       end
     end
 
