@@ -10,6 +10,8 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.birth_date_checks')
     DocAuth::Errors::BIRTH_DATE_CHECKS =>
       'doc_auth.errors.alerts.birth_date_checks',
+    DocAuth::Errors::CARD_TYPE =>
+      'doc_auth.errors.card_type',
     # i18n-tasks-use t('doc_auth.errors.alerts.control_number_check')
     DocAuth::Errors::CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.control_number_check',
@@ -19,6 +21,9 @@ module DocAuthRouter
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_number_checks')
     DocAuth::Errors::DOC_NUMBER_CHECKS =>
       'doc_auth.errors.alerts.doc_number_checks',
+    # i18n-tasks-use t('doc_auth.errors.doc.doc_type_check')
+    DocAuth::Errors::DOC_TYPE_CHECK =>
+      'doc_auth.errors.doc.doc_type_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
     DocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
       'doc_auth.errors.alerts.expiration_checks',

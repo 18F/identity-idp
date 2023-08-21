@@ -171,6 +171,32 @@ en:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
         JavaScript to continue this process.'
+    gpo:
+      alert_info: 'We sent a letter with your one-time code to:'
+      clear_and_start_over: Clear your information and start over
+      did_not_receive_letter:
+        form:
+          instructions: If you have your letter, enter the 10-character code from the
+            letter you received.
+        intro:
+          be_patient_html: Please note that <strong>letters typically take 3 to 7 business
+            days to arrive</strong>. Thank you for your patience.
+          request_new_letter_link: request a new letter
+          request_new_letter_prompt_html: If you haven’t received your letter, you may
+            <span>%{request_new_letter_link}</span>.
+        title: Didn’t get your letter?
+      form:
+        instructions: Enter the 10-character code from the letter you received.
+        otp_label: One-time code
+        submit: Confirm account
+        title: Confirm your account
+      intro_html: '<p>If you have received your letter, please enter your one-time
+        code below. </p><p>If your letter hasn’t arrived yet, please be patient
+        as <strong>letters typically take 3 to 7 business days to
+        arrive</strong>. Thank you for your patience.</p>'
+      return_to_profile: Return to your profile
+      title: Welcome back
+      wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
     index:
@@ -254,7 +280,6 @@ en:
       headings:
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
-        still_having_trouble: Still having trouble?
       options:
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID

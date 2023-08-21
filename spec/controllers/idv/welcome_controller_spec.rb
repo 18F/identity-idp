@@ -88,6 +88,24 @@ RSpec.describe Idv::WelcomeController do
 
       expect(response).to redirect_to(idv_please_call_url)
     end
+
+    context 'getting_started_ab_test_bucket values' do
+      render_views
+
+      it 'renders the welcome_new template for :welcome_new' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_new)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_new')
+      end
+
+      it 'it renders the welcome_default template for :welcome_default' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_default)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_default')
+      end
+    end
   end
 
   describe '#update' do
@@ -107,21 +125,9 @@ RSpec.describe Idv::WelcomeController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
-    it 'creates a document capture session and stores it in flow_session' do
-      expect { put :update }.
-        to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
-    end
-
-    it 'creates a document capture session and stores it in idv_session' do
+    it 'creates a document capture session' do
       expect { put :update }.
         to change { subject.idv_session.document_capture_session_uuid }.from(nil)
-    end
-
-    it 'sets flow_session and idv_session document_capture_session_uuid to same value' do
-      put :update
-      expect(subject.user_session['idv/doc_auth'][:document_capture_session_uuid]).to eql(
-        subject.idv_session.document_capture_session_uuid,
-      )
     end
 
     context 'with previous establishing in-person enrollments' do

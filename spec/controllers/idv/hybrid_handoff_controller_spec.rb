@@ -143,6 +143,30 @@ RSpec.describe Idv::HybridHandoffController do
         analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
+
+      context 'user has already completed verify info' do
+        before do
+          subject.idv_session.mark_verify_info_step_complete!
+        end
+
+        it 'does not set redo_document_capture to true in idv_session' do
+          get :show, params: { redo: true }
+
+          expect(subject.idv_session.redo_document_capture).not_to be_truthy
+        end
+
+        it 'does not add redo_document_capture to analytics' do
+          get :show, params: { redo: true }
+
+          expect(@analytics).not_to have_logged_event(analytics_name)
+        end
+
+        it 'redirects to review' do
+          get :show, params: { redo: true }
+
+          expect(response).to redirect_to(idv_review_url)
+        end
+      end
     end
 
     context 'hybrid flow is not available' do
@@ -193,6 +217,8 @@ RSpec.describe Idv::HybridHandoffController do
         }
       end
 
+      let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+
       it 'sends analytics_submitted event for hybrid' do
         put :update, params: params
 
@@ -200,40 +226,18 @@ RSpec.describe Idv::HybridHandoffController do
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
-      context 'document_capture_session_uuid in flow_session' do
-        let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
-
-        before do
-          subject.flow_session[:document_capture_session_uuid] = document_capture_session_uuid
-        end
-
-        it 'sends a doc auth link' do
-          expect(Telephony).to receive(:send_doc_auth_link).with(
-            hash_including(
-              link: a_string_including(document_capture_session_uuid),
-            ),
-          ).and_call_original
-
-          put :update, params: params
-        end
+      before do
+        subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
       end
 
-      context 'document_capture_session_uuid in idv_session' do
-        let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
+      it 'sends a doc auth link' do
+        expect(Telephony).to receive(:send_doc_auth_link).with(
+          hash_including(
+            link: a_string_including(document_capture_session_uuid),
+          ),
+        ).and_call_original
 
-        before do
-          subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-        end
-
-        it 'sends a doc auth link' do
-          expect(Telephony).to receive(:send_doc_auth_link).with(
-            hash_including(
-              link: a_string_including(document_capture_session_uuid),
-            ),
-          ).and_call_original
-
-          put :update, params: params
-        end
+        put :update, params: params
       end
     end
 

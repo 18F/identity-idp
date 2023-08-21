@@ -7,9 +7,9 @@ import { rest } from 'msw';
 import { SWRConfig } from 'swr';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
-import { LOCATIONS_URL } from '@18f/identity-address-search';
 import { InPersonContext } from '../context';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
+import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
 const USPS_RESPONSE = [
   {

@@ -68,10 +68,8 @@ es:
       webauthn: Llave de seguridad
       webauthn_info: Use su llave de seguridad para acceder a su cuenta.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
+        sin un código de un solo uso.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
@@ -165,8 +163,9 @@ es:
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
       configurations_added:
-        one: '(%{count} añadido)'
-        other: '(%{count} añadido)'
+        one: '%{count} añadido'
+        other: '%{count} añadido'
+      no_count_configuration_added: Añadido
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
@@ -176,18 +175,13 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      unused_backup_code:
-        one: '(%{count} código sin usar)'
-        other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
+        sin un código de un solo uso.
     two_factor_hspd12_choice: Se requiere autenticación adicional
     two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de
       seguridad. Para poder acceder a su información, deberá verificar su
@@ -196,6 +190,8 @@ es:
     webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
+      connect_html: No hemos podido conectar la clave de seguridad. Por favor,
+        inténtelo de nuevo o %{link_html}.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad

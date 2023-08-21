@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 class MarketingSite
+  class UnknownArticleException < StandardError; end
+
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
-    authentication-methods/which-authentication-method-should-i-use
-    creating-an-account/authentication-application
     get-started/authentication-options
     manage-your-account/personal-key
-    signing-in/what-is-a-hardware-security-key
     trouble-signing-in/face-or-touch-unlock
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
@@ -59,40 +58,21 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/').to_s
   end
 
-  def self.help_authentication_app_url
-    help_center_article_url(
-      category: 'creating-an-account',
-      article: 'authentication-application',
-    )
-  end
-
-  def self.help_which_authentication_method_url
-    help_center_article_url(
-      category: 'authentication-methods',
-      article: 'which-authentication-method-should-i-use',
-    )
-  end
-
-  def self.help_hardware_security_key_url
-    help_center_article_url(
-      category: 'signing-in',
-      article: 'what-is-a-hardware-security-key',
-    )
-  end
-
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end
 
   def self.help_center_article_url(category:, article:, article_anchor: '')
-    if !valid_help_center_article?(category:, article:, article_anchor:)
-      raise ArgumentError.new("Unknown help center article category #{category}/#{article}")
+    if !HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
+      raise UnknownArticleException, "Unknown help center article category #{category}/#{article}"
     end
     anchor_text = article_anchor.present? ? "##{article_anchor}" : ''
     URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/#{anchor_text}").to_s
   end
 
-  def self.valid_help_center_article?(category:, article:, **_article_anchor)
-    HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
+  def self.valid_help_center_article?(category:, article:, article_anchor: '')
+    !!help_center_article_url(category:, article:, article_anchor:)
+  rescue URI::InvalidURIError, UnknownArticleException
+    false
   end
 end

@@ -22,12 +22,9 @@ module Users
       if result.success?
         process_valid_form
       else
-        flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
-        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
+        flash[:error] = result.first_error_message
+        redirect_to second_mfa_setup_path
       end
-    rescue ActionController::ParameterMissing
-      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
-      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end
 
     # @api private
@@ -67,6 +64,8 @@ module Users
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection, selection: [])
+    rescue ActionController::ParameterMissing
+      ActionController::Parameters.new(selection: [])
     end
   end
 end

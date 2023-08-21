@@ -63,9 +63,8 @@ en:
       webauthn: Security key
       webauthn_info: Use your security key to access your account.
       webauthn_platform: Face or touch unlock
-      webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+      webauthn_platform_info: Use your face or fingerprint to access your account
+        without a one-time code.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -155,8 +154,9 @@ en:
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
       configurations_added:
-        one: '(%{count} added)'
-        other: '(%{count} added)'
+        one: '%{count} added'
+        other: '%{count} added'
+      no_count_configuration_added: Added
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
@@ -164,17 +164,13 @@ en:
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       sms: Text message / SMS
-      unused_backup_code:
-        one: '(%{count} unused code)'
-        other: '(%{count} unused codes)'
       voice: Phone call
       webauthn: Security key
       webauthn_info: A physical device, often shaped like a USB drive, that you plug
         in to your device.
       webauthn_platform: Face or touch unlock
-      webauthn_platform_info: Your device scans your face or fingerprint and confirms
-        the information is a match to the images you already have stored on your
-        device. We do not copy or store these images.
+      webauthn_platform_info: Use your face or fingerprint to access your account
+        without a one-time code.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
@@ -182,6 +178,8 @@ en:
     webauthn_authenticating: Authenticating your credentials…
     webauthn_error:
       additional_methods_link: choose another authentication method
+      connect_html: We were unable to connect the security key. Please try again or
+        %{link_html}.
       try_again: Face or touch unlock was unsuccessful. Please try again or %{link}.
     webauthn_header_text: Connect your security key
     webauthn_platform_header_text: Use face or touch unlock

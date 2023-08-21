@@ -4,6 +4,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
 
+    before_action :confirm_verify_info_step_needed
     before_action :confirm_agreement_step_complete
     before_action :confirm_hybrid_handoff_needed, only: :show
 
@@ -62,8 +63,7 @@ module Idv
     end
 
     def send_link
-      session_uuid =
-        idv_session.document_capture_session_uuid || flow_session[:document_capture_session_uuid]
+      session_uuid = idv_session.document_capture_session_uuid
       update_document_capture_session_requested_at(session_uuid)
       Telephony.send_doc_auth_link(
         to: formatted_destination_phone,
@@ -217,11 +217,10 @@ module Idv
     end
 
     def setup_for_redo
-      flow_session[:redo_document_capture] = true
+      idv_session.redo_document_capture = true
 
       # If we previously skipped hybrid handoff for the user (because they're on a mobile
       # device with a camera), skip it _again_ here.
-
       if idv_session.skip_hybrid_handoff?
         idv_session.flow_path = 'standard'
       else

@@ -186,6 +186,35 @@ fr:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
         devez activer JavaScript pour poursuivre ce processus.'
+    gpo:
+      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      clear_and_start_over: Supprimez vos données et recommencez
+      did_not_receive_letter:
+        form:
+          instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
+            caractères figurant sur la lettre que vous avez reçue.
+        intro:
+          be_patient_html: 'Veuillez noter que les lettres prennent <strong>généralement
+            entre trois à sept jours ouvrables pour arriver</strong>. Nous vous
+            remercions de votre patience.'
+          request_new_letter_link: demander une nouvelle
+          request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
+            pouvez en <span>%{request_new_letter_link}</span>.
+        title: N’avez-vous pas reçu votre lettre?
+      form:
+        instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+          avez reçue.
+        otp_label: Code à usage unique
+        submit: Confirmer le compte
+        title: Confirmez votre compte
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
+        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+        arrivée, veuillez être patient car les <strong>lettres prennent
+        généralement entre trois à sept jours ouvrables pour arriver</strong>.
+        Nous vous remercions de votre patience.</p>'
+      return_to_profile: Retourner à votre profil
+      title: Content de vous revoir
+      wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
     index:
@@ -282,7 +311,6 @@ fr:
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
-        still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité

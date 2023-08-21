@@ -13,10 +13,11 @@ declare let AcuantCamera: AcuantCameraInterface;
 declare global {
   interface AcuantJavascriptWebSdkInterface {
     initialize: AcuantInitialize;
-    startWorkers: AcuantWorkersInitialize;
     START_FAIL_CODE: string;
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
+    start?: AcuantWorkersInitialize;
+    startWorkers?: AcuantWorkersInitialize;
   }
 }
 
@@ -161,14 +162,23 @@ AcuantContext.displayName = 'AcuantContext';
 /**
  * Returns a found AcuantJavascriptWebSdk
  * object, if one is available.
- * This function normalizes differences between
- * the 11.5.0 and 11.7.0 SDKs. The former attached
- * the object to the global window, while the latter
- * sets the object in the global (but non-window)
- * scope.
+ * Depending on the SDK version,
+ * will use either startWorkers (11.8.2) or start (11.9.1)
  */
 const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
-  if (window.AcuantJavascriptWebSdk) {
+  if (
+    window.AcuantJavascriptWebSdk &&
+    typeof window.AcuantJavascriptWebSdk.startWorkers === 'function' &&
+    typeof window.AcuantJavascriptWebSdk.start !== 'function'
+  ) {
+    return {
+      ...window.AcuantJavascriptWebSdk,
+      start(...args) {
+        window.AcuantJavascriptWebSdk.startWorkers?.(...args);
+      },
+    };
+  }
+  if (window.AcuantJavascriptWebSdk && typeof window.AcuantJavascriptWebSdk.start === 'function') {
     return window.AcuantJavascriptWebSdk;
   }
   if (typeof AcuantJavascriptWebSdk === 'undefined') {
@@ -257,7 +267,7 @@ function AcuantContextProvider({
       window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
-          window.AcuantJavascriptWebSdk.startWorkers(() => {
+          window.AcuantJavascriptWebSdk.start?.(() => {
             window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             trackEvent('IdV: Acuant SDK loaded', {

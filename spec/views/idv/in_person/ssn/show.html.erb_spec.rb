@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/in_person/ssn.html.erb' do
+RSpec.describe 'idv/in_person/ssn/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:threatmetrix_enabled) { nil }
@@ -25,7 +25,7 @@ RSpec.describe 'idv/in_person/ssn.html.erb' do
     allow(IdentityConfig.store).
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
-    render template: 'idv/in_person/ssn', locals: {
+    render template: 'idv/in_person/ssn/show', locals: {
       flow_session: {},
       threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,

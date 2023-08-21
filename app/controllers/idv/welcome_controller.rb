@@ -13,6 +13,11 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('welcome', :view, true)
 
+      @sp_name = decorated_session.sp_name || APP_NAME
+      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+
+      @ab_test_bucket = getting_started_ab_test_bucket
+
       render :show
     end
 
@@ -42,7 +47,6 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
-      flow_session[:document_capture_session_uuid] = document_capture_session.uuid
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 

@@ -1,6 +1,4 @@
 class Profile < ApplicationRecord
-  self.ignored_columns += %w[reproof_at]
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -123,6 +121,7 @@ class Profile < ApplicationRecord
         fraud_rejection_at: nil,
         fraud_pending_reason: nil,
         deactivation_reason: nil,
+        in_person_verification_pending_at: nil,
       )
       activate
     end
@@ -149,13 +148,14 @@ class Profile < ApplicationRecord
 
   def in_person_verification_pending?
     # note: deactivation reason will be replaced by timestamp column
-    deactivation_reason == 'in_person_verification_pending'
+    deactivation_reason == 'in_person_verification_pending' ||
+      in_person_verification_pending_at.present?
   end
 
-  def deactivate_for_in_person_verification_and_schedule_enrollment(pii)
+  def deactivate_for_in_person_verification
     transaction do
-      UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
-      deactivate(:in_person_verification_pending)
+      deactivate(:in_person_verification_pending) # to be deprecated
+      update!(active: false, in_person_verification_pending_at: Time.zone.now)
     end
   end
 
@@ -192,14 +192,28 @@ class Profile < ApplicationRecord
 
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    decrypted_json = encryptor.decrypt(encrypted_pii, user_uuid: user.uuid)
+
+    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii,
+      multi_region_ciphertext: encrypted_pii_multi_region,
+    )
+
+    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
   # @return [Pii::Attributes]
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
-    decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
+
+    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_pii_recovery,
+      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
+    )
+
+    decrypted_recovery_json = encryptor.decrypt(
+      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+    )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
@@ -209,7 +223,9 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     encrypt_recovery_pii(pii)
   end
 
@@ -219,7 +235,9 @@ class Profile < ApplicationRecord
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
+    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+      pii.to_json, user_uuid: user.uuid
+    )
     @personal_key = personal_key
   end
 

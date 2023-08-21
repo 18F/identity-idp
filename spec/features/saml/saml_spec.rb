@@ -340,6 +340,7 @@ RSpec.feature 'saml api' do
 
           # log in for second time
           fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
           click_submit_default_twice
 
           xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
@@ -408,8 +409,9 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
-           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-           force_authn: false }],
+           requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -442,7 +444,8 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
            service_provider: 'saml_sp_ial2',
-           force_authn: false }],
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -467,8 +470,9 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
-           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-           force_authn: false }],
+           requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 

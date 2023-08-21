@@ -1,7 +1,9 @@
 require 'capybara/rspec'
 require 'rack_session_access/capybara'
-require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
+
+# temporary fix for local development feature tests
+# remove when we get a new working version of Chromedriver
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
@@ -14,10 +16,9 @@ Capybara.register_driver :headless_chrome do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 capabilities: [options]
+                                 options: options
 end
 Capybara.javascript_driver = :headless_chrome
-Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
   user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) ' \
@@ -36,7 +37,7 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 capabilities: [options]
+                                 options: options
 end
 
 Capybara.server = :puma, { Silent: true }

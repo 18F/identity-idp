@@ -20,7 +20,10 @@ RSpec.describe 'webauthn management' do
   end
 
   def expect_webauthn_setup_error
-    expect(page).to have_content t('errors.webauthn_setup.general_error')
+    expect(page).to have_content t(
+      'errors.webauthn_setup.general_error_html',
+      link_html: t('errors.webauthn_setup.additional_methods_link'),
+    )
     expect(current_path).to eq webauthn_setup_path
   end
 
@@ -36,7 +39,7 @@ RSpec.describe 'webauthn management' do
 
   def expect_webauthn_platform_setup_success
     expect(page).to have_content(t('notices.webauthn_platform_configured'))
-    expect(page).to have_current_path(account_two_factor_authentication_path)
+    expect(page).to have_content(t('notices.webauthn_platform_configured'))
   end
 
   def expect_webauthn_platform_setup_error

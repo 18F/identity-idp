@@ -21,7 +21,6 @@ describe('document-capture/context/failed-capture-attempts', () => {
       'onFailedCaptureAttempt',
       'onFailedSubmissionAttempt',
       'onResetFailedCaptureAttempts',
-      'maxFailedAttemptsBeforeTips',
       'maxCaptureAttemptsBeforeNativeCamera',
       'maxSubmissionAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
@@ -31,7 +30,6 @@ describe('document-capture/context/failed-capture-attempts', () => {
     expect(result.current.onFailedSubmissionAttempt).to.be.a('function');
     expect(result.current.onFailedCaptureAttempt).to.be.a('function');
     expect(result.current.onResetFailedCaptureAttempts).to.be.a('function');
-    expect(result.current.maxFailedAttemptsBeforeTips).to.be.a('number');
     expect(result.current.maxCaptureAttemptsBeforeNativeCamera).to.be.a('number');
     expect(result.current.lastAttemptMetadata).to.be.an('object');
   });
@@ -40,9 +38,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
     it('sets increments on onFailedCaptureAttempt', () => {
       const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
         wrapper: ({ children }) => (
-          <Provider maxCaptureAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-            {children}
-          </Provider>
+          <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
         ),
       });
 
@@ -53,7 +49,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
 
     it('sets metadata from onFailedCaptureAttempt', () => {
       const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-        wrapper: ({ children }) => <Provider maxFailedAttemptsBeforeTips={1}>{children}</Provider>,
+        wrapper: ({ children }) => <Provider>{children}</Provider>,
       });
 
       const metadata = { isAssessedAsGlare: true, isAssessedAsBlurry: false };
@@ -69,9 +65,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   it('Updating to a number of failed captures less than maxCaptureAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
-        <Provider maxCaptureAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-          {children}
-        </Provider>
+        <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
       ),
     });
     result.current.onFailedCaptureAttempt({
@@ -86,9 +80,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   it('Updating to a number of failed submissions less than maxSubmissionAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
-        <Provider maxSubmissionAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-          {children}
-        </Provider>
+        <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>
       ),
     });
     result.current.onFailedSubmissionAttempt();
@@ -100,9 +92,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   it('Updating failed captures to a number gte the maxCaptureAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
-        <Provider maxCaptureAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-          {children}
-        </Provider>
+        <Provider maxCaptureAttemptsBeforeNativeCamera={2}>{children}</Provider>
       ),
     });
     result.current.onFailedCaptureAttempt({
@@ -129,9 +119,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   it('Updating failed submissions to a number gte the maxSubmissionAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
     const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
       wrapper: ({ children }) => (
-        <Provider maxSubmissionAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-          {children}
-        </Provider>
+        <Provider maxSubmissionAttemptsBeforeNativeCamera={2}>{children}</Provider>
       ),
     });
     result.current.onFailedSubmissionAttempt();
@@ -152,7 +140,6 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
         <Provider
           maxSubmissionAttemptsBeforeNativeCamera={3}
           maxCaptureAttemptsBeforeNativeCamera={3}
-          maxFailedAttemptsBeforeTips={10}
         >
           {children}
         </Provider>
@@ -189,7 +176,7 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
               <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-                <Provider maxCaptureAttemptsBeforeNativeCamera={0} maxFailedAttemptsBeforeTips={10}>
+                <Provider maxCaptureAttemptsBeforeNativeCamera={0}>
                   {acuantCaptureComponent}
                   {children}
                 </Provider>
@@ -218,7 +205,7 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
               <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-                <Provider maxCaptureAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+                <Provider maxCaptureAttemptsBeforeNativeCamera={2}>
                   {acuantCaptureComponent}
                   {children}
                 </Provider>
@@ -248,7 +235,6 @@ describe('maxCaptureAttemptsBeforeNativeCamera logging tests', () => {
                 <Provider
                   maxCaptureAttemptsBeforeNativeCamera={0}
                   maxFailedSubmissionAttemptsBeforeNativeCamera={0}
-                  maxFailedAttemptsBeforeTips={10}
                 >
                   {acuantCaptureComponent}
                   {children}

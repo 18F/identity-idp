@@ -13,7 +13,7 @@ class ServiceProviderUpdater
 
   def run
     dashboard_service_providers.each do |service_provider|
-      update_local_caches(HashWithIndifferentAccess.new(service_provider))
+      update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(service_provider))
     end
   end
 

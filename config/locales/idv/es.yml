@@ -165,8 +165,8 @@ es:
       address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
-      first_name: Nombre de pila
-      id_number: Número de cédula
+      first_name: Nombre
+      id_number: Número de identidad
       issuing_state: Estado emisor
       last_name: Apellido
       password: Contraseña
@@ -178,6 +178,32 @@ es:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
         habilitar JavaScript para continuar con este proceso.'
+    gpo:
+      alert_info: 'Enviamos una carta con su código único a:'
+      clear_and_start_over: Borrar su información y empezar de nuevo
+      did_not_receive_letter:
+        form:
+          instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la
+            carta que recibió.
+        intro:
+          be_patient_html: Tenga en cuenta que las cartas <strong>suelen tardar entre 3 y
+            7 días laborables en llegar</strong>. Gracias por su paciencia.
+          request_new_letter_link: solicitar una nueva
+          request_new_letter_prompt_html: Si no ha recibido su carta, puede
+            <span>%{request_new_letter_link}</span>.
+        title: ¿No recibió su carta?
+      form:
+        instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
+        otp_label: Código único
+        submit: Confirmar cuenta
+        title: Confirme su cuenta
+      intro_html: '<p>Si ha recibido su carta, introduzca su código único a
+        continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
+        que las <strong>cartas suelen tardar de 3 a 7 días hábiles en
+        llegar</strong>. Gracias por su paciencia.</p>'
+      return_to_profile: Regrese a su perfil
+      title: Bienvenido de nuevo
+      wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
     index:
@@ -265,7 +291,6 @@ es:
       headings:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
-        still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación

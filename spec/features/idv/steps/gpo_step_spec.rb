@@ -113,7 +113,7 @@ RSpec.feature 'idv gpo step' do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
 
-      expect(page).to have_content(t('forms.verify_profile.title'))
+      expect(page).to have_content(t('idv.gpo.title'))
       expect(page).to have_current_path(idv_gpo_verify_path)
       expect_user_to_be_unverified(user)
     end
@@ -125,8 +125,8 @@ RSpec.feature 'idv gpo step' do
       fill_in 'Password', with: user_password
       click_continue
       visit root_path
-      click_on t('forms.verify_profile.return_to_profile')
-      first(:link, t('links.sign_out')).click
+      click_on t('idv.gpo.return_to_profile')
+      first(:button, t('links.sign_out')).click
     end
 
     def complete_idv_and_return_to_gpo_step
@@ -186,7 +186,7 @@ RSpec.feature 'idv gpo step' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('forms.verify_profile.instructions'))
+      expect(page).to have_content(t('idv.gpo.form.instructions'))
     end
   end
 end
