@@ -88,6 +88,24 @@ RSpec.describe Idv::WelcomeController do
 
       expect(response).to redirect_to(idv_please_call_url)
     end
+
+    context 'getting_started_ab_test_bucket values' do
+      render_views
+
+      it 'renders the welcome_new template for :welcome_new' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_new)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_new')
+      end
+
+      it 'it renders the welcome_default template for :welcome_default' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_default)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_default')
+      end
+    end
   end
 
   describe '#update' do

@@ -1,6 +1,7 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      address_edited
       address_verification_mechanism
       applicant
       document_capture_session_uuid
