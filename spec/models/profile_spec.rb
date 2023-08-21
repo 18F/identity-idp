@@ -1042,7 +1042,7 @@ RSpec.describe Profile do
   end
 
   describe '#deactivate_for_verify_by_mail_cancelled' do
-    it 'deactivates a profile for cancelling in_person_verification' do
+    it 'deactivates a profile for cancelling verify by mail' do
       profile = create(:profile, :verify_by_mail_pending, user: user)
 
       expect(profile.activated_at).to be_nil
@@ -1060,8 +1060,8 @@ RSpec.describe Profile do
       expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to eq('verification_cancelled') # to change
       expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil # changed
+      expect(profile.gpo_verification_pending_at).to be_nil # changed
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
