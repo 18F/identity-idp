@@ -23,6 +23,7 @@ module Idv
       resolution_successful
       skip_hybrid_handoff
       threatmetrix_review_status
+      threatmetrix_session_id
       user_phone_confirmation
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid

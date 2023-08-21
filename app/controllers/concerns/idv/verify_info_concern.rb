@@ -30,7 +30,8 @@ module Idv
         should_proof_state_id: should_use_aamva?(pii),
         trace_id: amzn_trace_id,
         user_id: current_user.id,
-        threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+        threatmetrix_session_id:
+          idv_session.threatmetrix_session_id || flow_session[:threatmetrix_session_id],
         request_ip: request.remote_ip,
         double_address_verification: capture_secondary_id_enabled,
       )
