@@ -9,19 +9,11 @@ module Idv
     def call
       user.profiles.each do |profile|
         if profile.gpo_verification_pending?
-          profile.update!(
-            active: false,
-            deactivation_reason: :verification_cancelled,
-            gpo_verification_pending_at: nil,
-          )
+          profile.deactivate_for_verify_by_mail_cancelled
         end
 
         if profile.in_person_verification_pending?
-          profile.update!(
-            active: false,
-            deactivation_reason: :verification_cancelled,
-            in_person_verification_pending_at: nil,
-          )
+          profile.deactivate_for_in_person_verification_cancelled
         end
       end
     end

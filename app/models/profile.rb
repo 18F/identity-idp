@@ -163,6 +163,20 @@ class Profile < ApplicationRecord
     update!(active: false, gpo_verification_pending_at: Time.zone.now)
   end
 
+  def deactivate_for_in_person_verification_cancelled
+    transaction do
+      deactivate(:verification_cancelled)
+      update!(in_person_verification_pending_at: nil)
+    end
+  end
+
+  def deactivate_for_verify_by_mail_cancelled
+    transaction do
+      deactivate(:verification_cancelled)
+      update!(gpo_verification_pending_at: nil)
+    end
+  end
+
   def deactivate_for_fraud_review
     update!(
       active: false,
