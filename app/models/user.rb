@@ -199,8 +199,7 @@ class User < ApplicationRecord
   end
 
   def establishing_in_person_enrollment_with_address?
-    establishing_in_person_enrollment &&
-      proofing_component&.document_check == Idp::Constants::Vendors::USPS
+    in_person_enrollments.order(created_at: :desc).first&.selected_location_details.present?
   end
 
   def personal_key_generated_at
