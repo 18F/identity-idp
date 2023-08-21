@@ -153,7 +153,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
               receive(:send_notification).
               with(
                 to: phone_number,
-                message: 'Login.gov: Vous avez tenté de vérifier votre identité dans un bureau ' +
+                message: "Login.gov: Vous avez tenté de vérifier votre identité dans un bureau " \
                          "de poste le #{proofed_date}. Vérifiez votre e-mail pour votre résultat.",
                 country_code: Phonelib.parse(phone_number).country,
               ),
