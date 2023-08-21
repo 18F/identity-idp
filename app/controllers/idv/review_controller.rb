@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
+    skip_before_action :confirm_not_rate_limited
 
     helper_method :step_indicator_step
 
