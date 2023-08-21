@@ -131,5 +131,60 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
       expect(result).to eq(plaintext)
     end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'uses the multi-region ciphertext if it is available' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: subject.encrypt(
+            'multi-region-text', user_uuid: '123abc'
+          ).multi_region_ciphertext,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('multi-region-text')
+      end
+
+      it 'uses the single region ciphertext if the multi-region ciphertext is nil' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: nil,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('single-region-text')
+      end
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to false' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(false)
+      end
+
+      it 'uses the single-region ciphertext to decrypt' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: subject.encrypt(
+            'multi-region-text', user_uuid: '123abc'
+          ).multi_region_ciphertext,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('single-region-text')
+      end
+    end
   end
 end
