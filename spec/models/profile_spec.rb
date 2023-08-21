@@ -958,7 +958,7 @@ RSpec.describe Profile do
 
   # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
   # TODO: related: should we test against an active profile here?
-  describe 'deactivate_for_in_person_verification' do
+  describe '#deactivate_for_in_person_verification' do
     it 'deactivates a profile for in_person_verification' do
       profile = create(:profile, user: user)
 
