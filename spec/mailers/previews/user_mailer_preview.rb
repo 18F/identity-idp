@@ -179,10 +179,30 @@ class UserMailerPreview < ActionMailer::Preview
     ).suspended_reset_password
   end
 
+  def gpo_reminder
+    UserMailer.with(
+      user: user_with_pending_gpo_letter,
+      email_address: email_address_record,
+    ).gpo_reminder
+  end
+
   private
 
   def user
     unsaveable(User.new(email_addresses: [email_address_record]))
+  end
+
+  def user_with_pending_gpo_letter
+    raw_user = user
+    gpo_pending_profile = unsaveable(
+      Profile.new(
+        user: raw_user,
+        active: false,
+        gpo_verification_pending_at: Time.zone.now,
+      ),
+    )
+    raw_user.send(:instance_variable_set, :@pending_profile, gpo_pending_profile)
+    raw_user
   end
 
   def email_address

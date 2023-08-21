@@ -13,22 +13,17 @@ RSpec.feature 'idv review step', :js do
     end
 
     it 'sends a letter, creates an unverified profile, and sends an email' do
-      fill_in 'Password', with: user_password
+      sends_letter_creates_unverified_profile_sends_email
+    end
 
-      email_count_before_continue = ActionMailer::Base.deliveries.count
+    context 'user is rate-limited' do
+      before do
+        RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
+      end
 
-      expect { click_continue }.
-        to change { GpoConfirmation.count }.from(0).to(1)
-
-      expect_delivered_email_count(email_count_before_continue + 1)
-      expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
-
-      expect(user.events.account_verified.size).to be(0)
-      expect(user.profiles.count).to eq 1
-
-      profile = user.profiles.first
-
-      expect(profile.active?).to eq false
+      it 'sends a letter, creates an unverified profile, and sends an email' do
+        sends_letter_creates_unverified_profile_sends_email
+      end
     end
 
     it 'sends you to the come_back_later page after review step' do
@@ -67,6 +62,25 @@ RSpec.feature 'idv review step', :js do
 
         expect(gpo_confirmation_entry[:issuer]).to eq(nil)
       end
+    end
+
+    def sends_letter_creates_unverified_profile_sends_email
+      fill_in 'Password', with: user_password
+
+      email_count_before_continue = ActionMailer::Base.deliveries.count
+
+      expect { click_continue }.
+        to change { GpoConfirmation.count }.by(1)
+
+      expect_delivered_email_count(email_count_before_continue + 1)
+      expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
+
+      expect(user.events.account_verified.size).to be(0)
+      expect(user.profiles.count).to eq 1
+
+      profile = user.profiles.first
+
+      expect(profile.active?).to eq false
     end
   end
 

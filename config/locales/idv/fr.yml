@@ -258,6 +258,16 @@ fr:
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
+      gpo_reminder:
+        body_html: Vous avez demandé une lettre pour vérifier votre identité le
+          <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
+          figurant dans la lettre pour terminer la vérification par courrier.
+          Reconnectez-vous à %{app_name} pour terminer la vérification de votre
+          identité. %{help_link}.
+        did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
+        finish: Terminer la vérification de votre identité
+        sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
+        subject: Terminer la vérification de votre identité
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
@@ -311,7 +321,6 @@ fr:
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
-        still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
