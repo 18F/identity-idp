@@ -69,7 +69,13 @@ module Encryption
     end
 
     def verify(password:, digest_pair:, user_uuid:)
-      digest = digest_pair.single_region_ciphertext
+      digest = nil
+      if IdentityConfig.store.aws_kms_multi_region_read_enabled
+        digest = digest_pair.multi_region_ciphertext.presence ||
+                 digest_pair.single_region_ciphertext
+      else
+        digest = digest_pair.single_region_ciphertext
+      end
       password_digest = PasswordDigest.parse_from_string(digest)
       return verify_uak_digest(password, digest) if stale_digest?(digest)
 
@@ -101,7 +107,7 @@ module Encryption
     end
 
     def decrypt_digest_with_kms(encrypted_password, user_uuid)
-      single_region_kms_client.decrypt(
+      multi_region_kms_client.decrypt(
         encrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
     end

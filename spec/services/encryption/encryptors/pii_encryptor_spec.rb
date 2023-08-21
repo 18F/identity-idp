@@ -108,7 +108,7 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      kms_client = subject.send(:single_region_kms_client)
+      kms_client = subject.send(:multi_region_kms_client)
       expect(kms_client).to receive(:decrypt).
         with('kms_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
         and_return('aes_ciphertext')

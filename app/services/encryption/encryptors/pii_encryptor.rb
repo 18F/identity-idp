@@ -70,10 +70,15 @@ module Encryption
       end
 
       def decrypt(ciphertext_pair, user_uuid: nil)
-        ciphertext_string = ciphertext_pair.single_region_ciphertext
-
+        ciphertext_string = nil
+        if IdentityConfig.store.aws_kms_multi_region_read_enabled
+          ciphertext_string = ciphertext_pair.multi_region_ciphertext.presence ||
+                              ciphertext_pair.single_region_ciphertext
+        else
+          ciphertext_string = ciphertext_pair.single_region_ciphertext
+        end
         ciphertext = Ciphertext.parse_from_string(ciphertext_string)
-        aes_encrypted_ciphertext = single_region_kms_client.decrypt(
+        aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
         )
         aes_encryption_key = scrypt_password_digest(salt: ciphertext.salt, cost: ciphertext.cost)
