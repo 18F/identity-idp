@@ -313,6 +313,7 @@ review-app:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep -v CURRENT | awk '{print $1}' | head -1)
     - kubectl config use-context "$CONTEXT"
+    - kubectl config view
     - |-
       export IDP_ENV=$(cat <<EOF
       [
@@ -417,7 +418,7 @@ include:
 dast:
   stage: dast
   tags:
-    - build-pool
+    - review-app-dast
   image:
     name: "217680906704.dkr.ecr.us-west-2.amazonaws.com/temp/gitlab/security-products/dast:latest"
   variables:
