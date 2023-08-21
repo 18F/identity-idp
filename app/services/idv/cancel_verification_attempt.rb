@@ -15,6 +15,14 @@ module Idv
             gpo_verification_pending_at: nil,
           )
         end
+
+        if profile.in_person_verification_pending?
+          profile.update!(
+            active: false,
+            deactivation_reason: :verification_cancelled,
+            in_person_verification_pending_at: nil,
+          )
+        end
       end
     end
   end
