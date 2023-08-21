@@ -12,6 +12,7 @@ module Idv
       had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
+      mail_only_warning_shown
       personal_key
       phone_for_mobile_flow
       pii
