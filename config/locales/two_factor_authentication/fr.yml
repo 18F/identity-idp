@@ -172,8 +172,9 @@ fr:
         générerons une nouvelle liste. Gardez à l’esprit que les codes de
         sauvegarde sont faciles à perdre.
       configurations_added:
-        one: '(%{count} ajouté)'
-        other: '(%{count} ajoutés)'
+        one: '%{count} ajouté'
+        other: '%{count} ajoutés'
+      no_count_configuration_added: Ajouté
       phone: Message texte ou vocal
       phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
       phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
@@ -182,9 +183,6 @@ fr:
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
       sms: SMS
-      unused_backup_code:
-        one: '(%{count} code non utilisé)'
-        other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
       webauthn: Clef de sécurité
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous

@@ -34,7 +34,6 @@ module WebAuthnHelper
 
     # simulate javascript that is triggered when the hardware key button is pressed
     set_hidden_field('webauthn_id', webauthn_id)
-    set_hidden_field('webauthn_public_key', webauthn_public_key)
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', setup_client_data_json)
 
@@ -139,10 +138,6 @@ module WebAuthnHelper
 
   def webauthn_id
     'ufhgW+5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg+hbXRHztVh4eiDXoLg=='
-  end
-
-  def webauthn_public_key
-    'ufhgW-5bCVo1N4lGCfTHjBfj1Z0ED8uTj4qys4WJzkgZunHEbx3ixuc1kLG6QTGes6lg-hbXRHztVh4eiDXoLg'
   end
 
   def credential_public_key

@@ -155,6 +155,7 @@ RSpec.describe Idv::GpoController do
           resend: false,
           phone_step_attempts: 1,
           first_letter_requested_at: nil,
+          hours_since_first_letter: 0,
           proofing_components: nil,
           **ab_test_args,
         )
@@ -205,6 +206,7 @@ RSpec.describe Idv::GpoController do
           resend: true,
           phone_step_attempts: 1,
           first_letter_requested_at: pending_profile.gpo_verification_pending_at,
+          hours_since_first_letter: 24,
           proofing_components: nil,
           **ab_test_args,
         )
@@ -213,6 +215,7 @@ RSpec.describe Idv::GpoController do
           'IdV: USPS address letter enqueued',
           resend: true,
           first_letter_requested_at: pending_profile.gpo_verification_pending_at,
+          hours_since_first_letter: 24,
           enqueued_at: Time.zone.now,
           phone_step_attempts: 1,
           proofing_components: nil,
