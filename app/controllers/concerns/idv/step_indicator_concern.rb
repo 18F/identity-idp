@@ -39,7 +39,7 @@ module Idv
     private
 
     def in_person_proofing?
-      current_user&.establishing_in_person_enrollment_with_address?
+      current_user&.has_in_person_enrollment?
     end
 
     def gpo_address_verification?

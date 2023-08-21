@@ -198,7 +198,7 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.in_person_verification_pending?
   end
 
-  def establishing_in_person_enrollment_with_address?
+  def has_in_person_enrollment?
     in_person_enrollments.order(created_at: :desc).first&.selected_location_details.present?
   end
 

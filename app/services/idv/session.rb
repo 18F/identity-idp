@@ -57,7 +57,7 @@ module Idv
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
-        in_person_verification_needed: pending_in_person_enrollment?,
+        in_person_verification_needed: has_in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -103,7 +103,7 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.establishing_in_person_enrollment_with_address?
+      return unless current_user.has_in_person_enrollment?
 
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
@@ -140,8 +140,8 @@ module Idv
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
     end
 
-    def pending_in_person_enrollment?
-      current_user.establishing_in_person_enrollment_with_address?
+    def has_in_person_enrollment?
+      current_user.has_in_person_enrollment?
     end
 
     def verify_info_step_complete?
