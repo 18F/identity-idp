@@ -198,8 +198,8 @@ RSpec.describe FrontendLogController do
 
     context 'with all events' do
       it 'sorts keys alphabetically' do
-        expect(described_class::EVENT_MAP.keys).to
-        eq(described_class::EVENT_MAP.keys.sort_by(&:downcase))
+        expect(described_class::EVENT_MAP.keys).
+          to eq(described_class::EVENT_MAP.keys.sort_by(&:downcase))
       end
     end
   end
