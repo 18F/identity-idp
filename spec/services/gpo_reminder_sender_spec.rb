@@ -137,5 +137,52 @@ RSpec.describe GpoReminderSender do
         end
       end
     end
+
+    context 'when a user is due for a reminder from a long time ago' do
+      let(:max_age_to_send_letter_in_days) { 30 }
+
+      before do
+        set_gpo_verification_pending_at((max_age_to_send_letter_in_days + 1).days.ago)
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
+          and_return(max_age_to_send_letter_in_days)
+      end
+
+      it 'does not send that user an email' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          to change { ActionMailer::Base.deliveries.size }.by(0)
+      end
+
+      it 'logs no events' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          not_to change { fake_analytics.events.count }
+      end
+    end
+
+    xcontext 'when a user has two gpo reminders' do
+      before do
+        set_gpo_verification_pending_at(time_due_for_reminder)
+
+        profile = create(
+          :profile,
+          :with_pii,
+          gpo_verification_pending_at: time_due_for_reminder - 1.day,
+          user: user,
+        )
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+      end
+
+      it 'sends that user only one email' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+
+      it 'logs two events' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          to change { fake_analytics.events.count }.by(2)
+      end
+    end
   end
 end
