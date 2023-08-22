@@ -153,7 +153,8 @@ class InPersonEnrollment < ApplicationRecord
   private
 
   def on_notification_sent_at_updated
-    if notification_sent_at && notification_phone_configuration
+    change_will_be_saved = notification_sent_at_change_to_be_saved&.last.present?
+    if change_will_be_saved && notification_phone_configuration.present?
       notification_phone_configuration.destroy
     end
   end
