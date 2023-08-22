@@ -14,7 +14,7 @@ describe('FullAddressSearch', () => {
   context('validates form', () => {
     it('displays an error for all required fields when input is empty', async () => {
       const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText, findAllByText } = render(
+      const { findByText, findAllByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
         </SWRConfig>,
@@ -94,7 +94,7 @@ describe('FullAddressSearch', () => {
 
     it('does not display an error for a valid ZIP code length (length = 5)', async () => {
       const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText, findAllByText } = render(
+      const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
         </SWRConfig>,
@@ -129,7 +129,7 @@ describe('FullAddressSearch', () => {
 
     it('does not display an error for a valid ZIP code length (length = 9)', async () => {
       const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText, findAllByText } = render(
+      const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
         </SWRConfig>,
