@@ -1058,7 +1058,7 @@ RSpec.describe Profile do
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('verification_cancelled') # to change
+      expect(profile.deactivation_reason).to eq('verification_cancelled') # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil # changed
       expect(profile.in_person_verification_pending_at).to be_nil
