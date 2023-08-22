@@ -174,7 +174,7 @@ function FullAddressSearch({
 
   const inputChangeHandler =
     <T extends HTMLElement & { value: string }>(input) =>
-      (event: React.ChangeEvent<T>) => {
+    (event: React.ChangeEvent<T>) => {
       const { target } = event;
       input(target.value);
     };
