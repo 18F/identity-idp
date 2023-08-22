@@ -16,7 +16,7 @@
           },
           input_html: {
             class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
-            autocomplete: autofill_name,
+            autocomplete: 'off',
             aria: {
               invalid: has_errors?,
               describedby: aria_describedby_idrefs,
