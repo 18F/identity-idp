@@ -97,11 +97,11 @@ build-idp-image:
   needs: []
   interruptible: true
   variables:
-    DEFAULT_BRANCH_TAGGING_STRING: ""
+    BRANCH_TAGGING_STRING: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
-        DEFAULT_BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:${$CI_DEFAULT_BRANCH}"
+        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:${$CI_DEFAULT_BRANCH}"
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -124,7 +124,7 @@ build-idp-image:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
       --destination "${ECR_REGISTRY}/identity-idp/review:${CI_COMMIT_SHA}"
-      ${DEFAULT_BRANCH_TAGGING_STRING}
+      ${BRANCH_TAGGING_STRING}
       --cache-repo="${ECR_REGISTRY}/identity-idp/review/cache"
       --cache-ttl=168h
       --cache=true
