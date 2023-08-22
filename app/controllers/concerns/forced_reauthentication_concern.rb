@@ -3,7 +3,7 @@
 # in the user needing to re-authenticate due to not being authenticated should be excluded.
 
 module ForcedReauthenticationConcern
-  def issuer_forced_reauthentication?(issuer)
+  def issuer_forced_reauthentication?(issuer:)
     session.dig(:forced_reauthentication_sps, issuer) == true
   end
 
