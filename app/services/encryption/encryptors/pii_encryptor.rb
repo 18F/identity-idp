@@ -70,9 +70,8 @@ module Encryption
       end
 
       def decrypt(ciphertext_pair, user_uuid: nil)
-        ciphertext = Ciphertext.parse_from_string(
-          ciphertext_pair.multi_or_single_region_ciphertext,
-        )
+        ciphertext_string = ciphertext_pair.multi_or_single_region_ciphertext,
+        ciphertext = Ciphertext.parse_from_string(ciphertext_string)
         aes_encrypted_ciphertext = multi_region_kms_client.decrypt(
           ciphertext.encrypted_data, kms_encryption_context(user_uuid: user_uuid)
         )
