@@ -28,8 +28,8 @@ class FrontendLogController < ApplicationController
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
     'Show Password button clicked' => :show_password_button_clicked,
     'Sign In: IdV requirements accordion clicked' => :sign_in_idv_requirements_accordion_clicked,
-    'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
     'User prompted before navigation' => :user_prompted_before_navigation,
+    'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 
