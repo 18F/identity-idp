@@ -54,10 +54,12 @@ RSpec.describe GpoReminderSender do
           to change { ActionMailer::Base.deliveries.size }.by(1)
       end
 
-      it 'logs an event' do
-        subject.send_emails(time_due_for_reminder)
+      it 'logs the email events' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          to change { fake_analytics.events.count }.by(2)
 
         expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
+        expect(fake_analytics).to have_logged_event('Email Sent')
       end
 
       it 'updates the GPO verification code `reminder_sent_at`' do
@@ -179,10 +181,12 @@ RSpec.describe GpoReminderSender do
           to change { ActionMailer::Base.deliveries.size }.by(1)
       end
 
-      it 'logs an event' do
-        subject.send_emails(time_due_for_reminder)
+      it 'logs the email events' do
+        expect { subject.send_emails(time_due_for_reminder) }.
+          to change { fake_analytics.events.count }.by(2)
 
         expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
+        expect(fake_analytics).to have_logged_event('Email Sent')
       end
     end
   end
