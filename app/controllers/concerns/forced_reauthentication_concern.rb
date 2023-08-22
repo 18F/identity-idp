@@ -8,7 +8,12 @@ module ForcedReauthenticationConcern
   end
 
   def set_issuer_forced_reauthentication(issuer:, is_forced_reauthentication:)
-    session[:forced_reauthentication_sps] ||= {}
-    session[:forced_reauthentication_sps][issuer] = is_forced_reauthentication
+    if is_forced_reauthentication
+      session[:forced_reauthentication_sps] ||= {}
+      session[:forced_reauthentication_sps][issuer] = true
+    elsif session[:forced_reauthentication_sps]
+      session[:forced_reauthentication_sps].delete(issuer)
+      session.delete(:forced_reauthentication_sps) if session[:forced_reauthentication_sps].blank?
+    end
   end
 end
