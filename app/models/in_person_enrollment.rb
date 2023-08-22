@@ -34,44 +34,64 @@ class InPersonEnrollment < ApplicationRecord
   before_create(:set_unique_id, unless: :unique_id)
   before_create(:set_capture_secondary_id)
 
-  def self.is_pending_and_established_between(early_benchmark, late_benchmark)
-    where(status: :pending).
-      and(
-        where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
-      ).
-      order(enrollment_established_at: :asc)
-  end
+  class << self
+    def needs_early_email_reminder(early_benchmark, late_benchmark)
+      is_pending_and_established_between(
+        early_benchmark,
+        late_benchmark,
+      ).where(early_reminder_sent: false)
+    end
 
-  def self.needs_early_email_reminder(early_benchmark, late_benchmark)
-    self.is_pending_and_established_between(
-      early_benchmark,
-      late_benchmark,
-    ).where(early_reminder_sent: false)
-  end
+    def needs_late_email_reminder(early_benchmark, late_benchmark)
+      is_pending_and_established_between(
+        early_benchmark,
+        late_benchmark,
+      ).where(late_reminder_sent: false)
+    end
 
-  def self.needs_late_email_reminder(early_benchmark, late_benchmark)
-    self.is_pending_and_established_between(
-      early_benchmark,
-      late_benchmark,
-    ).where(late_reminder_sent: false)
-  end
+    # Find enrollments that need a status check via the USPS API
+    def needs_usps_status_check(check_interval)
+      where(status: :pending).
+        and(
+          where(last_batch_claimed_at: check_interval).
+          or(where(last_batch_claimed_at: nil)),
+        )
+    end
 
-  # Find enrollments that need a status check via the USPS API
-  def self.needs_usps_status_check(check_interval)
-    where(status: :pending).
-      and(
-        where(last_batch_claimed_at: check_interval).
-        or(where(last_batch_claimed_at: nil)),
-      )
-  end
+    def needs_usps_status_check_batch(batch_at)
+      where(status: :pending).
+        and(
+          where(last_batch_claimed_at: batch_at),
+        ).
+        order(status_check_attempted_at: :asc)
+    end
 
-  def self.needs_usps_status_check_batch(batch_at)
-    where(status: :pending).
-      and(
-        where(last_batch_claimed_at: batch_at),
-      ).
-      order(status_check_attempted_at: :asc)
+    # Find enrollments that are ready for a status check via the USPS API
+    def needs_status_check_on_ready_enrollments(check_interval)
+      needs_usps_status_check(check_interval).where(ready_for_status_check: true)
+    end
+
+    # Find waiting enrollments that need a status check via the USPS API
+    def needs_status_check_on_waiting_enrollments(check_interval)
+      needs_usps_status_check(check_interval).where(ready_for_status_check: false)
+    end
+
+    # Generates a random 18-digit string, the hex returns a string of length n*2
+    def generate_unique_id
+      SecureRandom.hex(9)
+    end
+
+    private
+
+    def is_pending_and_established_between(early_benchmark, late_benchmark)
+      where(status: :pending).
+        and(
+          where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+        ).
+        order(enrollment_established_at: :asc)
+    end
   end
+  # end class methods
 
   # Does this enrollment need a status check via the USPS API?
   def needs_usps_status_check?(check_interval)
@@ -81,19 +101,9 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
-  # Find enrollments that are ready for a status check via the USPS API
-  def self.needs_status_check_on_ready_enrollments(check_interval)
-    needs_usps_status_check(check_interval).where(ready_for_status_check: true)
-  end
-
   # Does this ready enrollment need a status check via the USPS API?
   def needs_status_check_on_ready_enrollment?(check_interval)
     needs_usps_status_check?(check_interval) && ready_for_status_check?
-  end
-
-  # Find waiting enrollments that need a status check via the USPS API
-  def self.needs_status_check_on_waiting_enrollments(check_interval)
-    needs_usps_status_check(check_interval).where(ready_for_status_check: false)
   end
 
   # Does this waiting enrollment need a status check via the USPS API?
@@ -121,16 +131,6 @@ class InPersonEnrollment < ApplicationRecord
     (Time.zone.now - status_updated_at).seconds.in_minutes.round(2)
   end
 
-  # (deprecated) Returns the value to use for the USPS enrollment ID
-  def usps_unique_id
-    user.uuid.delete('-').slice(0, 18)
-  end
-
-  # Generates a random 18-digit string, the hex returns a string of length n*2
-  def self.generate_unique_id
-    SecureRandom.hex(9)
-  end
-
   def due_date
     start_date = enrollment_established_at.presence || created_at
     start_date + IdentityConfig.store.in_person_enrollment_validity_in_days.days
@@ -141,17 +141,22 @@ class InPersonEnrollment < ApplicationRecord
     (today...due_date).count
   end
 
-  def on_notification_sent_at_updated
-    if self.notification_sent_at && self.notification_phone_configuration
-      self.notification_phone_configuration.destroy
-    end
+  def eligible_for_notification?
+    notification_phone_configuration.present? && (passed? || failed?)
   end
 
-  def eligible_for_notification?
-    self.notification_phone_configuration.present? && (self.passed? || self.failed?)
+  # (deprecated) Returns the value to use for the USPS enrollment ID
+  def usps_unique_id
+    user.uuid.delete('-').slice(0, 18)
   end
 
   private
+
+  def on_notification_sent_at_updated
+    if notification_sent_at && notification_phone_configuration
+      notification_phone_configuration.destroy
+    end
+  end
 
   def on_status_updated
     if enrollment_will_be_cancelled_or_expired? && notification_phone_configuration.present?
@@ -165,7 +170,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def set_unique_id
-    self.unique_id = self.class.generate_unique_id
+    self.unique_id = InPersonEnrollment.generate_unique_id
   end
 
   def profile_belongs_to_user
