@@ -23,6 +23,10 @@ module UspsIppHelper
     )
   end
 
+  def stub_network_error_request_token(error)
+    stub_request(:post, %r{/oauth/authenticate}).to_raise(error)
+  end
+
   def stub_request_facilities
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,
@@ -270,6 +274,13 @@ module UspsIppHelper
       :post,
       %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
     ).to_raise(Faraday::TimeoutError)
+  end
+
+  def stub_request_proofing_results_with_connection_failed_error
+    stub_request(
+      :post,
+      %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults},
+    ).to_raise(Faraday::ConnectionFailed)
   end
 
   def stub_request_proofing_results_with_nil_status_error

@@ -30,7 +30,8 @@ module Idv
         should_proof_state_id: should_use_aamva?(pii),
         trace_id: amzn_trace_id,
         user_id: current_user.id,
-        threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+        threatmetrix_session_id:
+          idv_session.threatmetrix_session_id || flow_session[:threatmetrix_session_id],
         request_ip: request.remote_ip,
         double_address_verification: capture_secondary_id_enabled,
       )
@@ -191,7 +192,7 @@ module Idv
         state_id_number: pii[:state_id_number],
         # todo: add other edited fields?
         extra: {
-          address_edited: !!flow_session['address_edited'],
+          address_edited: !!(idv_session.address_edited || flow_session['address_edited']),
           address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
                               [:state_id, :state_id_jurisdiction]],
@@ -222,7 +223,7 @@ module Idv
     end
 
     def next_step_url
-      return idv_gpo_url if FeatureManagement.idv_gpo_only?
+      return idv_gpo_url if FeatureManagement.idv_by_mail_only?
       idv_phone_url
     end
 

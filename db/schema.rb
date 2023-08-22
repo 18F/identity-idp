@@ -619,8 +619,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_14_130423) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "bounced_at", precision: nil
+    t.datetime "reminder_sent_at", precision: nil
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
+    t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"
   end
 
   create_table "usps_confirmations", id: :serial, force: :cascade do |t|

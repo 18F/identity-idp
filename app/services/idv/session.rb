@@ -1,6 +1,7 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      address_edited
       address_verification_mechanism
       applicant
       document_capture_session_uuid
@@ -11,6 +12,7 @@ module Idv
       had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
+      mail_only_warning_shown
       personal_key
       phone_for_mobile_flow
       pii
@@ -22,6 +24,7 @@ module Idv
       resolution_successful
       skip_hybrid_handoff
       threatmetrix_review_status
+      threatmetrix_session_id
       user_phone_confirmation
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid

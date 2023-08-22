@@ -1035,6 +1035,12 @@ module AnalyticsEvents
     track_event('IdV: gpo confirm start over visited')
   end
 
+  # A GPO reminder email was sent to the user
+  # @param [String] user_id UUID of user who we sent a reminder to
+  def idv_gpo_reminder_email_sent(user_id:, **extra)
+    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
+  end
+
   # @identity.idp.previous_event_name Account verification submitted
   # @param [Boolean] success
   # @param [Hash] errors
@@ -2414,6 +2420,18 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job encounters a network error
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Network error',
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
   # Track when USPS auth token refresh job started
   def idv_usps_auth_token_refresh_job_started(**extra)
     track_event(
@@ -3578,6 +3596,11 @@ module AnalyticsEvents
   # @param [String] path URL path where the click occurred
   def show_password_button_clicked(path:, **extra)
     track_event('Show Password Button Clicked', path: path, **extra)
+  end
+
+  # Tracks if a user clicks the "You will also need" accordion on the homepage
+  def sign_in_idv_requirements_accordion_clicked
+    track_event('Sign In: IdV requirements accordion clicked')
   end
 
   # @param [String] flash

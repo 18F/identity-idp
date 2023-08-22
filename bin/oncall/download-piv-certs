@@ -1,0 +1,176 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'active_support'
+require 'active_support/core_ext/enumerable' # index_by
+require 'active_support/core_ext/integer/time'
+require 'aws-sdk-s3'
+require 'optparse'
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
+require 'reporting/unknown_progress_bar'
+
+# Script that downloads client PIV certs from the last 2 weeks by 
+class DownloadPivCerts
+  include Reporting::CloudwatchQueryQuoting
+
+  # @return [DownloadPivCerts]
+  def self.parse!(argv: ARGV, stdout: STDOUT)
+    show_help = false
+    out_dir = '/tmp/certs'
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~EOM
+        Usage: #{$PROGRAM_NAME} uuid1 [uuid2...]
+
+        Downloads client PIV certs by user UUID logged within the last 2 weeks,
+        writes them to a given output directory in PEM format
+
+        Options:
+      EOM
+
+      opts.on('--help', 'Show this help message') do
+        show_help = true
+      end
+
+      opts.on('--out=DIR', 'output directory (default is /tmp/certs)') do |out_dir_v|
+        out_dir = out_dir_v
+      end
+    end
+
+    uuids = parser.parse!(argv)
+
+    if uuids.empty? || show_help
+      stdout.puts parser
+      exit 1
+    end
+
+    new(uuids:, out_dir:, stdout:)
+  end
+
+
+  Result = Struct.new(
+    :uuid,    # user uuid
+    :key_id,  # key_id from IDP logs
+    :s3_key,  # full s3 key for a cert
+    :cert,    # string contents of cert (PEM format)
+    keyword_init: true,
+  )
+
+  attr_reader :uuids, :out_dir, :stdout
+
+  def initialize(uuids:, out_dir:, progress_bar: true, stdout: STDOUT)
+    @uuids = uuids
+    @out_dir = out_dir
+    @progress_bar = progress_bar
+    @stdout = stdout
+  end
+
+  def progress_bar?
+    !!@progress_bar
+  end
+
+  def run
+    download_certs(s3_cert_keys(load_key_ids)).each do |result|
+      result_path = File.join(out_dir, result.uuid, "#{result.key_id}.pem")
+
+      stdout.puts "Writing cert to: #{result_path}"
+
+      FileUtils.mkdir_p(File.dirname(result_path))
+
+      File.open(result_path, 'wb') { |f| f.write(result.cert) }
+    end
+  end
+
+  # @param [Array<Result>] results
+  # @return [Array<Result>]
+  def download_certs(results)
+    results.map do |result|
+      Result.new(
+        cert: s3_client.get_object(
+          key: result.s3_key,
+          bucket: bucket,
+        ).body.read,
+        **result.to_h.compact,
+      )
+    end
+  end
+
+  # @param [Array<Result>] results
+  # @return [Array<Result>]
+  def s3_cert_keys(results)
+    results.flat_map do |result|
+      s3_client.list_objects_v2(
+        bucket: bucket,
+        prefix: result.key_id,
+      ).contents.map do |s3_object|
+        Result.new(
+          s3_key: s3_object.key,
+          **result.to_h.compact,
+        )
+      end
+    end
+  end
+
+  # @return [Array<Result>]
+  def load_key_ids
+    results = query_cloudwatch(<<-QUERY)
+      fields
+          @timestamp
+        , properties.user_id AS user_id
+        , properties.event_properties.key_id AS key_id
+       | sort @timestamp desc
+       | filter ispresent(properties.event_properties.key_id)
+       | filter properties.uuid IN #{quote(uuids)}
+       | filter properties.event_properties.success = 0
+    QUERY
+
+    results.map { |row| Result.new(uuid: row['user_id'], key_id: row['key_id']) }.uniq
+  end
+
+  def query_cloudwatch(query)
+    Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
+      cloudwatch_client.fetch(
+        query: query,
+        from: 1.week.ago,
+        to: Time.now,
+      )
+    end
+  end
+
+  def bucket
+    @bucket ||= begin
+      account_id = begin
+        Aws::STS::Client.new.get_caller_identity.account
+      rescue
+        nil
+      end
+
+      if account_id && !account_id.empty?
+        "login-gov-pivcac-public-cert-prod.#{account_id}-us-west-2"
+      end
+    end
+  end
+
+  def cloudwatch_client
+    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+      ensure_complete_logs: false,
+      slice_interval: nil,
+      progress: false,
+    )
+  end
+
+  def s3_client
+    @s3_client ||= Aws::S3::Client.new(
+      http_open_timeout: 5,
+      http_read_timeout: 5,
+      compute_checksums: false,
+    )
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  DownloadPivCerts.parse!.run
+end
