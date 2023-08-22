@@ -7,18 +7,23 @@ RSpec.describe InPerson::SendProofingNotificationJob do
 
   let(:passed_enrollment_without_notification) { create(:in_person_enrollment, :passed) }
   let(:passed_enrollment) do
-    enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
-    enrollment.proofed_at = Time.zone.now - 3.days
-    enrollment
+    create(
+      :in_person_enrollment,
+      :passed,
+      :with_notification_phone_configuration,
+      proofed_at: Time.zone.now - 3.days,
+    )
   end
   let(:failing_enrollment) do
-    enrollment = create(:in_person_enrollment, :failed, :with_notification_phone_configuration)
-    enrollment.proofed_at = Time.zone.now - 3.days
-    enrollment
+    create(
+      :in_person_enrollment,
+      :failed,
+      :with_notification_phone_configuration,
+      proofed_at: Time.zone.now - 3.days,
+    )
   end
   let(:expired_enrollment) do
-    enrollment = create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
-    enrollment
+    create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
   end
   let(:sms_success_response) do
     Telephony::Response.new(

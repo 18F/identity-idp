@@ -75,7 +75,7 @@ module InPerson
 
     def notification_message(enrollment:)
       with_user_locale(enrollment.user) do
-        proof_date = enrollment.proofed_at ? I18n.l(enrollment.proofed_at, format: :sms_date) : 'NA'
+        proof_date = I18n.l(enrollment.proofed_at, format: :sms_date)
         I18n.t(
           'telephony.confirmation_ipp_enrollment_result.sms',
           app_name: APP_NAME,
