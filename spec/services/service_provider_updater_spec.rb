@@ -27,7 +27,6 @@ RSpec.describe ServiceProviderUpdater do
       block_encryption: 'aes256-cbc',
       certs: [saml_test_sp_cert],
       active: true,
-      native: false,
       approved: true,
       help_text: {
         sign_in: { en: '<b>A new different sign-in help text</b>' },
@@ -105,7 +104,6 @@ RSpec.describe ServiceProviderUpdater do
         expect(sp.id).to_not eq 0
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
-        expect(sp.native).to eq false
         expect(sp.approved).to eq true
         expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
           stringify_keys
@@ -129,7 +127,6 @@ RSpec.describe ServiceProviderUpdater do
         expect(sp.id).to eq old_id
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
         expect(sp.created_at).to_not eq friendly_sp[:created_at]
-        expect(sp.native).to eq false
         expect(sp.approved).to eq true
         expect(sp.help_text['sign_in']).to eq friendly_sp[:help_text][:sign_in].
           stringify_keys
@@ -184,7 +181,7 @@ RSpec.describe ServiceProviderUpdater do
       end
     end
 
-    context 'a non-native service provider is invalid' do
+    context 'a service provider is invalid' do
       let(:dashboard_service_providers) do
         [
           {
@@ -200,7 +197,6 @@ RSpec.describe ServiceProviderUpdater do
             block_encryption: 'aes256-cbc',
             certs: [saml_test_sp_cert],
             active: true,
-            native: false,
             approved: true,
             redirect_uris: [''],
           },
@@ -294,25 +290,12 @@ RSpec.describe ServiceProviderUpdater do
         let(:sp) { create(:service_provider, issuer: attributes[:issuer]) }
         before { attributes[:active] = false }
 
-        context 'it is not a native service provider' do
-          it 'destroys the service_provider' do
-            subject.run(attributes)
+        it 'destroys the service_provider' do
+          subject.run(attributes)
 
-            destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+          destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
 
-            expect(destroyed_sp).to be nil
-          end
-        end
-
-        context 'it is a native service provider' do
-          before { sp.update!(native: true) }
-          it 'is not destroyed' do
-            subject.run(attributes)
-
-            destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
-
-            expect(destroyed_sp).to eq sp
-          end
+          expect(destroyed_sp).to be nil
         end
       end
     end

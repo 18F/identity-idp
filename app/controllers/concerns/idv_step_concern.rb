@@ -4,7 +4,6 @@ module IdvStepConcern
   include IdvSession
   include RateLimitConcern
   include FraudReviewConcern
-  include Idv::OutageConcern
   include Idv::AbTestAnalyticsConcern
 
   included do
@@ -14,7 +13,7 @@ module IdvStepConcern
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
-    before_action :check_for_outage
+    before_action :check_for_mail_only_outage
   end
 
   def confirm_no_pending_gpo_profile
@@ -24,6 +23,18 @@ module IdvStepConcern
   def confirm_no_pending_in_person_enrollment
     return if !IdentityConfig.store.in_person_proofing_enabled
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
+  end
+
+  def check_for_mail_only_outage
+    return if idv_session.mail_only_warning_shown
+
+    return redirect_for_mail_only if FeatureManagement.idv_by_mail_only?
+  end
+
+  def redirect_for_mail_only
+    return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
+
+    redirect_to idv_mail_only_warning_url
   end
 
   def pii_from_doc
