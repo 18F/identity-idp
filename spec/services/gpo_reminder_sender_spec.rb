@@ -158,7 +158,7 @@ RSpec.describe GpoReminderSender do
       end
     end
 
-    xcontext 'when a user has two gpo reminders' do
+    context 'when a user has two gpo reminders' do
       before do
         set_gpo_verification_pending_at(time_due_for_reminder)
 
@@ -179,9 +179,10 @@ RSpec.describe GpoReminderSender do
           to change { ActionMailer::Base.deliveries.size }.by(1)
       end
 
-      it 'logs two events' do
-        expect { subject.send_emails(time_due_for_reminder) }.
-          to change { fake_analytics.events.count }.by(2)
+      it 'logs an event' do
+        subject.send_emails(time_due_for_reminder)
+
+        expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
       end
     end
   end
