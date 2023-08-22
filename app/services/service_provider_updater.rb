@@ -11,20 +11,26 @@ class ServiceProviderUpdater
     cert
   ]
 
-  def run
-    dashboard_service_providers.each do |service_provider|
+  def run(service_provider = nil)
+    if service_provider.present?
       update_local_caches(ActiveSupport::HashWithIndifferentAccess.new(service_provider))
+    else
+      dashboard_service_providers.each do |dashboard_service_provider|
+        update_local_caches(
+          ActiveSupport::HashWithIndifferentAccess.new(dashboard_service_provider),
+        )
+      end
     end
   end
 
   private
 
   def update_local_caches(service_provider)
-    issuer = service_provider['issuer']
-    update_cache(issuer, service_provider)
+    update_cache(service_provider)
   end
 
-  def update_cache(issuer, service_provider)
+  def update_cache(service_provider)
+    issuer = service_provider['issuer']
     if service_provider['active'] == true
       create_or_update_service_provider(issuer, service_provider)
     else

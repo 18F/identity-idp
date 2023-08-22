@@ -76,7 +76,7 @@ function DocumentCaptureReviewIssues({
       ))}
       <FormStepsButton.Submit />
 
-      <DocumentCaptureTroubleshootingOptions />
+      <DocumentCaptureTroubleshootingOptions location="post_submission_review" />
       <Cancel />
     </>
   );

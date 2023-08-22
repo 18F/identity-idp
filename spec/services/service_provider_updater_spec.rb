@@ -27,7 +27,7 @@ RSpec.describe ServiceProviderUpdater do
       block_encryption: 'aes256-cbc',
       certs: [saml_test_sp_cert],
       active: true,
-      native: true,
+      native: false,
       approved: true,
       help_text: {
         sign_in: { en: '<b>A new different sign-in help text</b>' },
@@ -250,6 +250,70 @@ RSpec.describe ServiceProviderUpdater do
         expect(Rails.logger).to have_received(:error).
           with("Failed to contact #{fake_dashboard_url}")
         expect(ServiceProvider.count).to eq before_count
+      end
+    end
+
+    context 'run is called with service_provider attributes' do
+      let(:attributes) { friendly_sp.except(:id) }
+      let(:friendly_name) { 'A different name' }
+
+      before { attributes[:friendly_name] = friendly_name }
+
+      it 'does not try to send a GET to the dashboard' do
+        expect(Faraday).not_to receive(:get)
+
+        subject.run(attributes)
+      end
+
+      context 'service provider attributes has active: true' do
+        context 'service provider exists' do
+          let(:sp) { create(:service_provider, issuer: attributes[:issuer]) }
+          it 'updates the single service provider' do
+            subject.run(attributes)
+
+            sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(sp.friendly_name).to eq friendly_name
+          end
+        end
+
+        context 'service provider does not yet exist' do
+          it 'creates the service provider' do
+            expect(ServiceProvider.find_by(issuer: attributes[:issuer])).to be nil
+
+            subject.run(attributes)
+
+            sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(sp.friendly_name).to eq friendly_name
+          end
+        end
+      end
+
+      context 'service provider attributes has active: false' do
+        let(:sp) { create(:service_provider, issuer: attributes[:issuer]) }
+        before { attributes[:active] = false }
+
+        context 'it is not a native service provider' do
+          it 'destroys the service_provider' do
+            subject.run(attributes)
+
+            destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(destroyed_sp).to be nil
+          end
+        end
+
+        context 'it is a native service provider' do
+          before { sp.update!(native: true) }
+          it 'is not destroyed' do
+            subject.run(attributes)
+
+            destroyed_sp = ServiceProvider.find_by(issuer: attributes[:issuer])
+
+            expect(destroyed_sp).to eq sp
+          end
+        end
       end
     end
   end

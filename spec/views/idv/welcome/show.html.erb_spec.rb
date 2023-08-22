@@ -70,4 +70,56 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
     )
   end
+
+  context 'A/B test specifies welcome_new template' do
+    before do
+      @ab_test_bucket = :welcome_new
+      @sp_name = 'Login.gov'
+      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+    end
+
+    it 'renders the welcome_new template' do
+      render
+
+      expect(rendered).to have_content(@title)
+      expect(rendered).to have_content(t('doc_auth.getting_started.instructions.getting_started'))
+      expect(rendered).not_to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
+  end
+
+  context 'A/B test specifies welcome_default template' do
+    before do
+      @ab_test_bucket = :welcome_default
+    end
+
+    it 'renders the welcome_default template' do
+      render
+
+      expect(rendered).to have_content(t('doc_auth.headings.welcome'))
+      expect(rendered).to have_content(t('doc_auth.instructions.welcome'))
+      expect(rendered).to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
+  end
+
+  context 'A/B test unspecified' do
+    before do
+      @ab_test_bucket = nil
+    end
+    it 'renders the welcome_default template' do
+      render
+
+      expect(rendered).to have_content(t('doc_auth.headings.welcome'))
+      expect(rendered).to have_content(t('doc_auth.instructions.welcome'))
+      expect(rendered).to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
+  end
 end

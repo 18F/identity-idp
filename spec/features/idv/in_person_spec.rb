@@ -250,9 +250,12 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
-    sign_in_and_2fa_user
+    user = sign_in_and_2fa_user
     begin_in_person_proofing
     complete_all_in_person_proofing_steps
+    complete_phone_step(user)
+    complete_review_step(user)
+    acknowledge_and_confirm_personal_key
 
     click_link t('links.cancel')
     click_on t('idv.cancel.actions.start_over')
