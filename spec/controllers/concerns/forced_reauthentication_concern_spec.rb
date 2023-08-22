@@ -1,15 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe ForcedReauthenticationConcern do
-  class TestClass
-    include ForcedReauthenticationConcern
+  let(:test_class) do
+    Class.new do
+      include ForcedReauthenticationConcern
 
-    attr_reader :session
+      attr_reader :session
 
-    def initialize(session = {})
-      @session = session
+      def initialize(session = {})
+        @session = session
+      end
     end
   end
+  let(:instance) { test_class.new }
 
   describe '#issuer_forced_reauthentication?' do
     it 'returns true if issuer has forced reauthentication' do
