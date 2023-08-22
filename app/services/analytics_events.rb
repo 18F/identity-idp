@@ -2579,12 +2579,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow in MFA selection flow
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                                      **extra)
     track_event(
       'Multi-Factor Authentication: Added PIV_CAC',
       {
         method_name: :piv_cac,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        enabled_mfa_methods_count:,
+        in_multi_mfa_selection_flow:,
         **extra,
       }.compact,
     )
@@ -2592,12 +2595,15 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow in MFA selection flow
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                                   **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
       {
         method_name: :totp,
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow:,
+        enabled_mfa_methods_count:,
         **extra,
       }.compact,
     )
@@ -2628,13 +2634,17 @@ module AnalyticsEvents
 
   # Tracks when the user visits the backup code confirmation setup page
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  # @param [Boolean] in_multi_mfa_selection_flow tell whether its in MFA selection flow or not
   def multi_factor_auth_enter_backup_code_confirmation_visit(
-    enabled_mfa_methods_count:, **extra
+    enabled_mfa_methods_count:,
+    in_multi_mfa_selection_flow:,
+    **extra
   )
     track_event(
       'Multi-Factor Authentication: enter backup code confirmation visited',
       {
-        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        enabled_mfa_methods_count:,
+        in_multi_mfa_selection_flow:,
         **extra,
       }.compact,
     )
@@ -3728,17 +3738,20 @@ module AnalyticsEvents
   # @param [Boolean] user_signed_up
   # @param [Boolean] totp_secret_present
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] in_multi_mfa_selection_flow
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
     enabled_mfa_methods_count:,
+    in_multi_mfa_selection_flow:,
     **extra
   )
     track_event(
       'TOTP Setup Visited',
-      user_signed_up: user_signed_up,
-      totp_secret_present: totp_secret_present,
-      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      user_signed_up:,
+      totp_secret_present:,
+      enabled_mfa_methods_count:,
+      in_multi_mfa_selection_flow:,
       **extra,
     )
   end
@@ -4039,9 +4052,11 @@ module AnalyticsEvents
   end
 
   # Tracks when user's piv cac setup
-  def piv_cac_setup_visit(**extra)
+  # @param [Boolean] in_multi_mfa_selection_flow
+  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
     track_event(
       'Piv Cac setup visited',
+      in_multi_mfa_selection_flow:,
       **extra,
     )
   end

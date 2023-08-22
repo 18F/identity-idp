@@ -22,7 +22,7 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics_properties = result.to_h
+      analytics_properties = result.to_h.merge(visit_properties)
       analytics.backup_code_setup_visit(**analytics_properties)
       irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
 
@@ -122,6 +122,12 @@ module Users
     def authorize_backup_code_disable
       return if MfaPolicy.new(current_user).multiple_factors_enabled?
       redirect_to account_two_factor_authentication_path
+    end
+
+    def visit_properties
+      {
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      }
     end
 
     def analytics_properties
