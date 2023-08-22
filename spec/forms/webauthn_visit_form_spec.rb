@@ -168,7 +168,7 @@ RSpec.describe WebauthnVisitForm do
     context 'with two_factor_enabled and in_mfa_selection_flow' do
       let(:user) { create(:user, :with_phone) }
 
-      it { is_expected.to eq(second_mfa_setup_path) }
+      it { is_expected.to eq(authentication_methods_setup_path) }
     end
 
     context 'with two_factor_enabled' do
