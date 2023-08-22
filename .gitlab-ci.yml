@@ -9,7 +9,7 @@ variables:
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   IDP_CI_SHA: 'sha256:6915b54a913ebcb9066fdfaa88c3d42bda1f4505cfb59b9d5848576705954621'
-  TEMP_PKI_IMAGE_TAG: '26c986535d845125afb3939324160a137eff7cec'
+  PKI_IMAGE_TAG: 'main'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -100,9 +100,9 @@ build-idp-image:
     DEFAULT_BRANCH_TAGGING_STRING: ""
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
       variables:
-        DEFAULT_BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:testTag${CI_COMMIT_SHA}"
+        DEFAULT_BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:${$CI_DEFAULT_BRANCH}"
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
   tags:
@@ -394,7 +394,7 @@ review-app:
       --set worker.image.repository="${ECR_REGISTRY}/identity-idp/review"
       --set worker.image.tag="${CI_COMMIT_SHA}"
       --set pivcac.image.repository="${ECR_REGISTRY}/identity-pivcac/review"
-      --set pivcac.image.tag="${TEMP_PKI_IMAGE_TAG}"
+      --set pivcac.image.tag="${PKI_IMAGE_TAG}"
       --set-json idp.env="$IDP_ENV"
       --set-json worker.env="$WORKER_ENV"
       --set-json pivcac.env="$PIVCAC_ENV"
