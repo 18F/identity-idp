@@ -86,7 +86,13 @@ RSpec.describe GpoVerifyForm do
     end
 
     context 'when OTP is expired' do
-      let(:code_sent_at) { 11.days.ago }
+      let(:expiration_days) { 10 }
+      let(:code_sent_at) { (expiration_days + 1).days.ago }
+
+      before do
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
+          and_return(expiration_days)
+      end
 
       it 'is invalid' do
         result = subject.submit
