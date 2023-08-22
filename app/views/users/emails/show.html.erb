@@ -13,6 +13,7 @@
           name: :email,
           autocomplete_value: 'add_new_email',
           label: t('forms.registration.labels.email'),
+          input_html: { autocomplete: 'off'},
           required: true,
         ) %>
     <%= f.submit t('forms.buttons.submit.default') %>
