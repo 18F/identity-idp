@@ -7,7 +7,7 @@ module ForcedReauthenticationConcern
     session.dig(:forced_reauthentication_sps, issuer) == true
   end
 
-  def set_issuer_forced_reauthentication(issuer, is_forced_reauthentication)
+  def set_issuer_forced_reauthentication(issuer:, is_forced_reauthentication:)
     session[:forced_reauthentication_sps] ||= {}
     session[:forced_reauthentication_sps][issuer] = is_forced_reauthentication
   end
