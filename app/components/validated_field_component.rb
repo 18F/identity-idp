@@ -42,6 +42,10 @@ class ValidatedFieldComponent < BaseComponent
     "validated-field-hint-#{unique_id}"
   end
 
+  def autofill_name
+    "new-#{name}-field"
+  end
+
   private
 
   def value_missing_error_message

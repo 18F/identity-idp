@@ -11,6 +11,7 @@
     <%= render ValidatedFieldComponent.new(
           form: f,
           name: :email,
+          autocomplete_value: 'add_new_email',
           label: t('forms.registration.labels.email'),
           required: true,
         ) %>
