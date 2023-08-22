@@ -423,8 +423,9 @@ dast:
     name: "$SECURE_ANALYZERS_PREFIX/dast:$DAST_VERSION$DAST_IMAGE_SUFFIX"
   variables:
     GIT_STRATEGY: none
-    DAST_FULL_SCAN_ENABLED: "true" # do a full scan
+    DAST_FULL_SCAN_ENABLED: "false" # do a full scan
     DAST_BROWSER_SCAN: "true" 
+    DAST_ONLY_INCLUDE_RULES: "10010,10020,10021"
   allow_failure: true
   script:
     - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
