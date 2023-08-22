@@ -6,10 +6,12 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       stub_sign_in_before_2fa
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with('User Registration: 2FA Setup visited')
-
       get :index
+
+      expect(@analytics).to have_logged_event(
+        'User Registration: 2FA Setup visited',
+        enabled_mfa_methods_count: 0,
+      )
     end
 
     context 'when signed out' do
@@ -21,13 +23,17 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
     end
 
     context 'when fully authenticated and MFA enabled' do
-      it 'loads the account page' do
-        user = build(:user, :fully_registered)
+      it 'logs the visit event with mfa method count' do
+        user = build(:user, :with_phone)
         stub_sign_in(user)
+        stub_analytics
 
         get :index
 
-        expect(response).to redirect_to(account_url)
+        expect(@analytics).to have_logged_event(
+          'User Registration: 2FA Setup visited',
+          enabled_mfa_methods_count: 1,
+        )
       end
     end
 

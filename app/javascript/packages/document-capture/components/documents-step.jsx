@@ -7,7 +7,6 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
-import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import TipList from './tip-list';
 
@@ -47,7 +46,7 @@ function DocumentsStep({
   const { flowPath } = useContext(UploadContext);
 
   return (
-    <CaptureTroubleshooting>
+    <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
       <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
@@ -71,9 +70,9 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      <DocumentCaptureTroubleshootingOptions />
+      <DocumentCaptureTroubleshootingOptions location="document_capture" />
       <Cancel />
-    </CaptureTroubleshooting>
+    </>
   );
 }
 

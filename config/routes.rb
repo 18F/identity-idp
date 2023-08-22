@@ -316,7 +316,7 @@ Rails.application.routes.draw do
         match '/*path' => 'unavailable#show', via: %i[get post]
       end
 
-      get '/mail_only_warning' => 'gpo_only_warning#show'
+      get '/mail_only_warning' => 'mail_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'

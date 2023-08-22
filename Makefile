@@ -195,9 +195,9 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 		config/country_dialing_codes.yml
 
 optimize_svg: ## Optimizes SVG images
-	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
-	# See: https://github.com/svg/svgo/issues/888
-	find app/assets/images public -name '*.svg' -not -name 'sprite.svg' | xargs ./node_modules/.bin/svgo
+	# Exclusions:
+	# - `login-icon-bimi.svg` is hand-optimized and includes required metadata that would be stripped by SVGO
+	find app/assets/images public -name '*.svg' -not -name 'login-icon-bimi.svg' | xargs ./node_modules/.bin/svgo
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
