@@ -43,7 +43,7 @@ class GpoVerifyForm
         letter_count: letter_count,
         attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
+        pending_in_person_enrollment: user.has_in_person_enrollment?,
         fraud_check_failed: fraud_check_failed,
       },
     )

@@ -73,7 +73,7 @@ module Idv
         move_pii_to_user_session
       elsif address_verification_mechanism == 'gpo'
         create_gpo_entry
-      elsif pending_in_person_enrollment?
+      elsif has_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           pii,
