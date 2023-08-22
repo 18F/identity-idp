@@ -233,7 +233,7 @@ RSpec.describe Profile do
 
     context 'with aws_kms_multi_region_read_enabled enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
       end
 
       it 'decrypts the PII for users with a multi region ciphertext' do
@@ -271,7 +271,7 @@ RSpec.describe Profile do
 
     context 'with aws_kms_multi_region_read_enabled enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
       end
 
       it 'decrypts the PII for users with a multi region ciphertext' do
