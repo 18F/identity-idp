@@ -81,5 +81,30 @@ RSpec.describe UspsAuthTokenRefreshJob, type: :job do
         end.to raise_error
       end
     end
+
+    context 'auth request throws network error' do
+      [Faraday::TimeoutError, Faraday::ConnectionFailed].each do |err_class|
+        it "logs analytics without raising the #{err_class.name}" do
+          stub_network_error_request_token(
+            err_class.new('test error'),
+          )
+
+          expect(analytics).to receive(
+            :idv_usps_auth_token_refresh_job_started,
+          ).once
+          expect(analytics).to receive(
+            :idv_usps_auth_token_refresh_job_network_error,
+          ).with(
+            exception_class: err_class.name,
+            exception_message: 'test error',
+          ).once
+          expect(analytics).to receive(
+            :idv_usps_auth_token_refresh_job_completed,
+          ).once
+
+          subject.perform
+        end
+      end
+    end
   end
 end

@@ -1,5 +1,5 @@
 module Idv
-  class GpoOnlyWarningController < ApplicationController
+  class MailOnlyWarningController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
 
@@ -7,8 +7,9 @@ module Idv
 
     def show
       analytics.idv_mail_only_warning_visited(analytics_id: 'Doc Auth')
-
-      flow_session[:skip_vendor_outage] = true
+      if defined?(idv_session)
+        idv_session.mail_only_warning_shown = true
+      end
       render :show, locals: { current_sp:, exit_url: }
     end
 
