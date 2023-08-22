@@ -20,22 +20,6 @@ describe('FullAddressSearch', () => {
         </SWRConfig>,
       );
 
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
-        '{tab}',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        '{tab}',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        '{tab}',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '{tab}',
-      );
       await userEvent.click(
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
