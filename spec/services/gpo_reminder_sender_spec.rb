@@ -138,7 +138,7 @@ RSpec.describe GpoReminderSender do
       end
     end
 
-    context 'when a user is due for a reminder from a long time ago' do
+    context 'when a user is due for a reminder from too long ago' do
       let(:max_age_to_send_letter_in_days) { 30 }
 
       before do
