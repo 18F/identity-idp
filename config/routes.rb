@@ -255,8 +255,6 @@ Rails.application.routes.draw do
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options', to: redirect('/authentication_methods_setup')
-    patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
@@ -277,10 +275,6 @@ Rails.application.routes.draw do
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
     get '/user_please_call' => 'users/please_call#show'
-
-    get '/profile', to: redirect('/account')
-    get '/profile/reactivate', to: redirect('/account/reactivate')
-    get '/profile/verify', to: redirect('/account/verify')
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
@@ -322,7 +316,7 @@ Rails.application.routes.draw do
         match '/*path' => 'unavailable#show', via: %i[get post]
       end
 
-      get '/mail_only_warning' => 'gpo_only_warning#show'
+      get '/mail_only_warning' => 'mail_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
@@ -368,7 +362,6 @@ Rails.application.routes.draw do
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/rate_limited' => 'session_errors#rate_limited'
-      get '/setup_errors', to: redirect('/please_call')
       get '/not_verified' => 'not_verified#show'
       get '/please_call' => 'please_call#show'
       delete '/session' => 'sessions#destroy'
@@ -405,18 +398,7 @@ Rails.application.routes.draw do
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
       end
-
-      # deprecated routes
-      get '/confirmations' => 'personal_key#show'
-      post '/confirmations' => 'personal_key#update'
-      get '/doc_auth/:step', to: redirect('/verify/welcome')
-      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
-      get '/session/errors/throttled', to: redirect('/verify/session/errors/rate_limited')
     end
-
-    # Old paths to GPO outside of IdV.
-    get '/account/verify', to: redirect('/verify/by_mail')
-    get '/account/verify/confirm_start_over', to: redirect('/verify/by_mail/confirm_start_over')
 
     root to: 'users/sessions#new'
   end

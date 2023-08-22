@@ -89,50 +89,29 @@ RSpec.describe Profile do
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
-    it 'encrypts PII' do
+    it 'encrypts pii and stores the multi region ciphertext' do
       expect(profile.encrypted_pii).to be_nil
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_multi_region).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      encrypt_pii
+      profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii).to be_present
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match(ssn)
-      expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
 
       expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_multi_region).to be_nil
-      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
-    end
+      expect(profile.encrypted_pii_recovery).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery).to_not match(ssn)
 
-    context 'with aws_kms_multi_region_write_enabled set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
-      end
+      expect(profile.encrypted_pii_multi_region).to be_present
+      expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_multi_region).to_not match(ssn)
 
-      it 'encrypts pii and stores the multi region ciphertext' do
-        expect(profile.encrypted_pii).to be_nil
-        expect(profile.encrypted_pii_recovery).to be_nil
-        expect(profile.encrypted_pii_multi_region).to be_nil
-        expect(profile.encrypted_pii_recovery_multi_region).to be_nil
-
-        profile.encrypt_pii(pii, user.password)
-
-        expect(profile.encrypted_pii).to be_present
-        expect(profile.encrypted_pii).to_not match 'Jane'
-        expect(profile.encrypted_pii).to_not match(ssn)
-
-        expect(profile.encrypted_pii_recovery).to be_present
-        expect(profile.encrypted_pii_recovery).to_not match 'Jane'
-        expect(profile.encrypted_pii_recovery).to_not match(ssn)
-
-        expect(profile.encrypted_pii_multi_region).to be_present
-        expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
-        expect(profile.encrypted_pii_multi_region).to_not match(ssn)
-
-        expect(profile.encrypted_pii_recovery_multi_region).to be_present
-        expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
-        expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
-      end
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
     end
 
     it 'generates new personal key' do

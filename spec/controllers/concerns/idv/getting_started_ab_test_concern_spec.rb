@@ -20,7 +20,7 @@ RSpec.describe Idv::GettingStartedAbTestConcern do
         case discriminator
         when user.uuid
           :getting_started
-        else :welcome
+        else :welcome_default
         end
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe Idv::GettingStartedAbTestConcern do
         allow(controller).to receive(:current_user).and_return(user2)
       end
       it 'returns the bucket based on user id' do
-        expect(controller.getting_started_ab_test_bucket).to eq(:welcome)
+        expect(controller.getting_started_ab_test_bucket).to eq(:welcome_default)
       end
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe Idv::GettingStartedAbTestConcern do
     context 'A/B test specifies welcome page' do
       before do
         allow(controller).to receive(:getting_started_ab_test_bucket).
-          and_return(:welcome)
+          and_return(:welcome_default)
       end
 
       it 'does not redirect users away from welcome page' do

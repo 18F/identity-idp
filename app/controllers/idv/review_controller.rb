@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
+    skip_before_action :confirm_not_rate_limited
 
     helper_method :step_indicator_step
 
@@ -41,7 +42,6 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
-      gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
@@ -98,6 +98,10 @@ module Idv
 
     private
 
+    def gpo_mail_service
+      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+    end
+
     def address_verification_method
       user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
@@ -110,8 +114,10 @@ module Idv
         analytics.idv_gpo_address_letter_enqueued(
           enqueued_at: Time.zone.now,
           resend: false,
-          phone_step_attempts: phone_step_attempts,
+          phone_step_attempts: gpo_mail_service.phone_step_attempts,
           first_letter_requested_at: first_letter_requested_at,
+          hours_since_first_letter:
+            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
           **ab_test_analytics_buckets,
         )
       end
@@ -126,12 +132,6 @@ module Idv
       end
     end
 
-    # Same as in GpoController
-    def phone_step_attempts
-      RateLimiter.new(user: current_user, rate_limit_type: :proof_address).attempts
-    end
-
-    # Same as in GpoController
     def first_letter_requested_at
       idv_session.profile.gpo_verification_pending_at
     end

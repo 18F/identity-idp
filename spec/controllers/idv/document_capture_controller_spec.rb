@@ -38,7 +38,7 @@ RSpec.describe Idv::DocumentCaptureController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -81,16 +81,7 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'redo_document_capture' do
-      it 'adds redo_document_capture to analytics using flow_session' do
-        flow_session[:redo_document_capture] = true
-
-        get :show
-
-        analytics_args[:redo_document_capture] = true
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
-      end
-
-      it 'adds redo_document_capture to analytics using idv_session' do
+      it 'adds redo_document_capture to analytics' do
         subject.idv_session.redo_document_capture = true
 
         get :show
