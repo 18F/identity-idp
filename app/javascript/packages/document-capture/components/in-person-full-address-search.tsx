@@ -198,7 +198,7 @@ function FullAddressSearch({
 
   const onAddressChange = inputChangeHandler(setAddressValue);
   const onCityChange = inputChangeHandler(setCityValue);
-  const onStateChange = (e: SelectChangeEvent) => setStateValue(e.target.value.trimStart());
+  const onStateChange = (e: SelectChangeEvent) => setStateValue(e.target.value);
   const onZipCodeChange = inputChangeHandlerForZipCode(setZipCodeValue);
 
   useEffect(() => {
@@ -226,7 +226,12 @@ function FullAddressSearch({
 
   return (
     <>
-      <ValidatedField ref={validatedAddressFieldRef}>
+      <ValidatedField
+        ref={validatedAddressFieldRef}
+        messages={{
+          patternMismatch: t('simple_form.required.text'),
+        }}
+      >
         <TextInput
           required
           ref={registerField('address')}
@@ -235,9 +240,15 @@ function FullAddressSearch({
           label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
           maxLength={255}
+          pattern=".*\S.*$"
         />
       </ValidatedField>
-      <ValidatedField ref={validatedCityFieldRef}>
+      <ValidatedField
+        ref={validatedCityFieldRef}
+        messages={{
+          patternMismatch: t('simple_form.required.text'),
+        }}
+      >
         <TextInput
           required
           ref={registerField('city')}
@@ -246,6 +257,7 @@ function FullAddressSearch({
           label={t('in_person_proofing.body.location.po_search.city_label')}
           disabled={disabled}
           maxLength={50}
+          pattern=".*\S.*$"
         />
       </ValidatedField>
       <ValidatedField ref={validatedStateFieldRef}>
