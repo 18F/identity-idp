@@ -52,7 +52,6 @@ fr:
       change: Changez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe
     personal_key: Juste au cas
-    phone_setup: Obtenez votre code à usage unique
     piv_cac_login:
       add: Ajoutez votre PIV ou CAC
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
