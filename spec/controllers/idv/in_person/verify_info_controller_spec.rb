@@ -83,6 +83,15 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
     end
+
+    it 'logs proofing results with analytics_id' do
+      get :show
+
+      expect(@analytics).to have_logged_event(
+        'IdV: doc auth verify proofing results',
+        hash_including(**analytics_args, success: true, analytics_id: 'In Person Proofing'),
+      )
+    end
   end
 
   describe '#update' do

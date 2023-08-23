@@ -219,7 +219,7 @@ module Idv
         idv_session.invalidate_verify_info_step!
       end
 
-      analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
     def next_step_url
