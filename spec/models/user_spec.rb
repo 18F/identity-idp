@@ -401,6 +401,38 @@ RSpec.describe User do
       expect(user.valid_password?('test password')).to eq(true)
       expect(user.valid_password?('wrong password')).to eq(false)
     end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'validates the password for a user with a multi-region digest' do
+        user = build(:user, password: 'test password')
+
+        expect(user.encrypted_password_digest_multi_region).to_not be_nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+
+      it 'validates the password for a user with a only a single-region digest' do
+        user = build(:user, password: 'test password')
+        user.encrypted_password_digest_multi_region = nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+
+      it 'validates the password for a user with a only a single-region UAK digest' do
+        user = build(:user)
+        user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
+        user.encrypted_password_digest_multi_region = nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+    end
   end
 
   describe '#personal_key=' do
@@ -429,6 +461,39 @@ RSpec.describe User do
 
       expect(user.valid_personal_key?('test personal key')).to eq(true)
       expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'validates the personal key for a user with a multi-region digest' do
+        user = build(:user, personal_key: 'test personal key')
+
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
+
+      it 'validates the personal key for a user with a only a single-region digest' do
+        user = build(:user, personal_key: 'test personal key')
+        user.encrypted_recovery_code_digest_multi_region = nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
+
+      it 'validates the personal key for a user with a only a single-region UAK digest' do
+        user = build(:user)
+        user.encrypted_recovery_code_digest =
+          Encryption::UakPasswordVerifier.digest('test personal key')
+        user.encrypted_recovery_code_digest_multi_region = nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
     end
   end
 
