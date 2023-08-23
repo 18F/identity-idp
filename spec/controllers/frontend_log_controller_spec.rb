@@ -195,5 +195,12 @@ RSpec.describe FrontendLogController do
         expect(request.session_options[:skip]).to eql(true)
       end
     end
+
+    context 'with all events' do
+      it 'sorts keys alphabetically' do
+        expect(described_class::EVENT_MAP.keys).
+          to eq(described_class::EVENT_MAP.keys.sort_by(&:downcase))
+      end
+    end
   end
 end

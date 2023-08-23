@@ -123,14 +123,14 @@ RSpec.describe 'Remembering a webauthn device' do
 
         click_link t('mfa.add')
 
-        expect(page).to have_current_path(second_mfa_setup_path)
+        expect(page).to have_current_path(authentication_methods_setup_path)
 
         click_2fa_option('phone')
 
         click_continue
 
         expect(page).
-          to have_content t('titles.phone_setup')
+          to have_content t('headings.add_info.phone')
 
         expect(current_path).to eq phone_setup_path
 

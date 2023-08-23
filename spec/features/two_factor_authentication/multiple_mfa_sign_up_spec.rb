@@ -15,7 +15,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup')
+        to have_content t('headings.add_info.phone')
 
       expect(current_path).to eq phone_setup_path
 
@@ -48,7 +48,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup')
+        to have_content t('headings.add_info.phone')
 
       expect(current_path).to eq phone_setup_path
 
@@ -62,7 +62,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       click_link t('two_factor_authentication.choose_another_option')
 
-      expect(page).to have_current_path(second_mfa_setup_path)
+      expect(page).to have_current_path(authentication_methods_setup_path)
 
       select_2fa_option('auth_app')
       fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
@@ -132,7 +132,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup')
+        to have_content t('headings.add_info.phone')
 
       click_continue
 
@@ -168,7 +168,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
           expect(page).to have_current_path(auth_method_confirmation_path)
 
           click_link t('mfa.add')
-          expect(page).to have_current_path(second_mfa_setup_path)
+          expect(page).to have_current_path(authentication_methods_setup_path)
 
           click_link t('mfa.skip')
           expect(page).to have_current_path(account_path)
@@ -189,7 +189,7 @@ RSpec.feature 'Multi Two Factor Authentication' do
           expect(page).to have_current_path(auth_method_confirmation_path)
 
           click_link t('mfa.add')
-          expect(page).to have_current_path(second_mfa_setup_path)
+          expect(page).to have_current_path(authentication_methods_setup_path)
 
           click_continue
           expect(page).to have_current_path(account_path)
@@ -218,10 +218,10 @@ RSpec.feature 'Multi Two Factor Authentication' do
           expect(page).to_not have_button(t('mfa.skip'))
 
           click_link t('mfa.add')
-          expect(page).to have_current_path(second_mfa_setup_path)
+          expect(page).to have_current_path(authentication_methods_setup_path)
 
           click_continue
-          expect(page).to have_current_path(second_mfa_setup_path)
+          expect(page).to have_current_path(authentication_methods_setup_path)
           expect(page).to have_content(
             t('errors.two_factor_auth_setup.must_select_additional_option'),
           )

@@ -242,6 +242,16 @@ es:
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
+      gpo_reminder:
+        body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
+          para verificar tu identidad. Deberás ingresar el código que contiene
+          esa carta para completar la verificación por correo. Vuelve a iniciar
+          sesión en %{app_name} para terminar de verificar tu identidad.
+          %{help_link}.
+        did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
+        finish: Termina de verificar tu identidad
+        sign_in_and_request_another_letter: inicia sesión para solicitar otra
+        subject: Termina de verificar tu identidad
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
@@ -291,7 +301,6 @@ es:
       headings:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
-        still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
