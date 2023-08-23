@@ -4,7 +4,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 interface LocationCollectionItemProps {
   distance?: string;
   formattedCityStateZip: string;
-  handleSelect: (event: React.MouseEvent, selection: number) => void;
+  handleSelect?: (event: React.MouseEvent, selection: number) => void;
   name?: string;
   saturdayHours: string;
   selectId: number;
@@ -69,15 +69,17 @@ function LocationCollectionItem({
             </SpinnerButton>
           </div>
           <div className="grid-col-auto">
-            <SpinnerButton
-              className="display-none tablet:display-inline-block"
-              onClick={(event) => {
-                handleSelect(event, selectId);
-              }}
-              type="submit"
-            >
-              {t('in_person_proofing.body.location.location_button')}
-            </SpinnerButton>
+            {handleSelect && (
+              <SpinnerButton
+                className="display-none tablet:display-inline-block"
+                onClick={(event) => {
+                  handleSelect(event, selectId);
+                }}
+                type="submit"
+              >
+                {t('in_person_proofing.body.location.location_button')}
+              </SpinnerButton>
+            )}
           </div>
         </div>
       </div>
