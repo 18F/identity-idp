@@ -59,7 +59,7 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuer]
+        csv << ['Issuer', issuer] if issuer.present?
         csv << []
         csv << ['Metric', '# of Users']
         csv << ['Started IdV Verification', idv_doc_auth_image_vendor_submitted]
@@ -140,7 +140,7 @@ module Reporting
 
     def query
       params = {
-        issuer: quote(issuer),
+        issuer: issuer && quote(issuer),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
@@ -151,13 +151,13 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
-        | filter properties.service_provider = %{issuer}
+        #{issuer.present? ? '| filter properties.service_provider = %{issuer}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
-        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1)
+        | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name != %{gpo_verification_submitted})
-        | filter (name = %{idv_final_resolution} and isblank(properties.event_properties.deactivation_reason))
+        | filter (name = %{idv_final_resolution} and !properties.event_properties.fraud_review_pending and !properties.event_properties.gpo_verification_pending and !properties.event_properties.in_person_verification_pending)
                  or (name != %{idv_final_resolution})
         | limit 10000
       QUERY
@@ -177,7 +177,7 @@ end
 
 # rubocop:disable Rails/Output
 if __FILE__ == $PROGRAM_NAME
-  options = Reporting::CommandLineOptions.new.parse!(ARGV)
+  options = Reporting::CommandLineOptions.new.parse!(ARGV, require_issuer: false)
 
   puts Reporting::IdentityVerificationReport.new(**options).to_csv
 end
