@@ -497,6 +497,7 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={(error, code) => {
+            console.log('acErrTest', error, code)
             const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
             if (isAcuantCameraAccessFailure(error)) {
               if (fullScreenRef.current?.focusTrap) {
