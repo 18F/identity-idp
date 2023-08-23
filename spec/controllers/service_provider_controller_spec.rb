@@ -75,7 +75,7 @@ RSpec.describe ServiceProviderController do
         end
 
         before do
-          request.content_type = 'application/json'
+          request.content_type = 'gzip/json'
           post :update, params:
         end
 
