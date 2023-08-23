@@ -75,7 +75,7 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       it 'should show an option to change phone number' do
         expect(presenter.troubleshooting_options).to include(
           an_object_satisfying do |c|
-            c.url == add_phone_path &&
+            c.url == phone_setup_path &&
               c.content == t(
                 'two_factor_authentication.phone_verification.troubleshooting.change_number',
               )
