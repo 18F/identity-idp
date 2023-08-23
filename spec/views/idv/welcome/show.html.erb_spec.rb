@@ -83,6 +83,16 @@ RSpec.describe 'idv/welcome/show.html.erb' do
 
       expect(rendered).to have_content(@title)
       expect(rendered).to have_content(t('doc_auth.getting_started.instructions.getting_started'))
+      expect(rendered).to have_link(
+        t('doc_auth.info.getting_started_learn_more'),
+        href: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'how-to-verify-your-identity',
+          flow: :idv,
+          step: :welcome_new,
+          location: 'intro_paragraph',
+        ),
+      )
       expect(rendered).not_to have_link(
         t('doc_auth.instructions.learn_more'),
         href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
