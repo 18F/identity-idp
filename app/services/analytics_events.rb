@@ -226,6 +226,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
   def backup_code_regenerate_visit(in_multi_mfa_selection_flow:, **extra)
     track_event('Backup Code Regenerate Visited', in_multi_mfa_selection_flow:, **extra)
   end
@@ -2579,7 +2580,7 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow in MFA selection flow
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
                                       **extra)
     track_event(
@@ -2595,7 +2596,7 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_multi_mfa_selection_flow in MFA selection flow
+  # @param [Boolean] in_multi_mfa_selection_flow whether user is going through MFA selection Flow
   def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
                                    **extra)
     track_event(
@@ -4046,16 +4047,18 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
   # Tracks when user's piv cac is disabled
   def piv_cac_disabled
-    track_event('Piv Cac disabled')
+    track_event('PIV CAC disabled')
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac setup visited
   # Tracks when user's piv cac setup
   # @param [Boolean] in_multi_mfa_selection_flow
   def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
     track_event(
-      'Piv Cac setup visited',
+      'PIV CAC setup visited',
       in_multi_mfa_selection_flow:,
       **extra,
     )
