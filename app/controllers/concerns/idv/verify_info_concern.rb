@@ -196,7 +196,7 @@ module Idv
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
                               [:same_address_as_id],
                               [:state_id, :state_id_jurisdiction]],
-        }.merge(ab_test_analytics_buckets),
+        },
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
