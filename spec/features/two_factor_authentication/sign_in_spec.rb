@@ -14,7 +14,7 @@ RSpec.feature 'Two Factor Authentication' do
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup')
+        to have_content t('headings.add_info.phone')
 
       send_one_time_code_without_entering_phone_number
 

@@ -29,7 +29,8 @@ class DestroyableRecords
 
     stdout.puts '********'
     stdout.puts "This provider has #{in_person_enrollments.size} in person enrollments " \
-                       "that will be destroyed"
+                   "that will be destroyed - Please handle these removals manually. " \
+                   "For more details check https://cm-jira.usa.gov/browse/LG-10679"
     stdout.puts "\n"
 
     stdout.puts '*******'
