@@ -166,7 +166,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       context 'feature flag is not enabled' do
         let(:capture_enabled) { false }
-        it 'sets capture_secondary_id_enabled to true on the enrollment' do
+        it 'does not set capture_secondary_id_enabled to true on the enrollment' do
           enrollment = create(:in_person_enrollment, :pending)
           expect(enrollment.capture_secondary_id_enabled).to eq(false)
         end
