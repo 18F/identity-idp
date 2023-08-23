@@ -43,13 +43,13 @@ RSpec.feature 'disavowing an action' do
 
   scenario 'disavowing a phone being added' do
     sign_in_and_2fa_user(user)
-    visit add_phone_path
+    visit phone_setup_path
 
     fill_in 'new_phone_form[phone]', with: '202-555-3434'
 
     choose 'new_phone_form_otp_delivery_preference_sms'
     check 'new_phone_form_otp_make_default_number'
-    click_button t('forms.buttons.continue')
+    click_button t('forms.buttons.send_one_time_code')
 
     submit_prefilled_otp_code(user, 'sms')
 
