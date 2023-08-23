@@ -195,6 +195,7 @@ module Idv
           address_edited: !!(idv_session.address_edited || flow_session['address_edited']),
           address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                              [:same_address_as_id],
                               [:state_id, :state_id_jurisdiction]],
         }.merge(ab_test_analytics_buckets),
       )
