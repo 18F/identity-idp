@@ -60,13 +60,15 @@ function LocationCollectionItem({
                 {`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}
               </div>
             )}
-            <SpinnerButton
-              className="tablet:display-none margin-top-2 width-full"
-              onClick={(event) => handleSelect(event, selectId)}
-              type="submit"
-            >
-              {t('in_person_proofing.body.location.location_button')}
-            </SpinnerButton>
+            {handleSelect && (
+              <SpinnerButton
+                className="tablet:display-none margin-top-2 width-full"
+                onClick={(event) => handleSelect(event, selectId)}
+                type="submit"
+              >
+                {t('in_person_proofing.body.location.location_button')}
+              </SpinnerButton>
+            )}
           </div>
           <div className="grid-col-auto">
             {handleSelect && (
