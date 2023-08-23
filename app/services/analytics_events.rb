@@ -918,6 +918,8 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
@@ -1035,6 +1037,12 @@ module AnalyticsEvents
     track_event('IdV: gpo confirm start over visited')
   end
 
+  # A GPO reminder email was sent to the user
+  # @param [String] user_id UUID of user who we sent a reminder to
+  def idv_gpo_reminder_email_sent(user_id:, **extra)
+    track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
+  end
+
   # @identity.idp.previous_event_name Account verification submitted
   # @param [Boolean] success
   # @param [Hash] errors
@@ -1045,6 +1053,8 @@ module AnalyticsEvents
   # @param [Integer] attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # GPO verification submitted
   def idv_gpo_verification_submitted(
     success:,
@@ -2410,6 +2420,18 @@ module AnalyticsEvents
   def idv_usps_auth_token_refresh_job_completed(**extra)
     track_event(
       'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job encounters a network error
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_usps_auth_token_refresh_job_network_error(exception_class:, exception_message:, **extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Network error',
+      exception_class: exception_class,
+      exception_message: exception_message,
       **extra,
     )
   end
@@ -3895,9 +3917,12 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits MFA selection page
-  def user_registration_2fa_setup_visit
+  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
+  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
       'User Registration: 2FA Setup visited',
+      enabled_mfa_methods_count:,
+      **extra,
     )
   end
 

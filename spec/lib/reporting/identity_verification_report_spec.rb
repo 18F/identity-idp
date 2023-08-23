@@ -77,6 +77,26 @@ RSpec.describe Reporting::IdentityVerificationReport do
     end
   end
 
+  describe '#query' do
+    context 'with an issuer' do
+      it 'includes an issuer filter' do
+        result = subject.query
+
+        expect(result).to include('| filter properties.service_provider = "my:example:issuer"')
+      end
+    end
+
+    context 'without an issuer' do
+      let(:issuer) { nil }
+
+      it 'does not include an issuer filter' do
+        result = subject.query
+
+        expect(result).to_not include('filter properties.service_provider')
+      end
+    end
+  end
+
   describe '#cloudwatch_client' do
     let(:opts) { {} }
     let(:subject) { described_class.new(issuer:, time_range:, **opts) }

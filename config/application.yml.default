@@ -59,6 +59,7 @@ aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
 aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
+aws_kms_multi_region_read_enabled: false
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
@@ -81,7 +82,6 @@ disable_logout_get_request: true
 disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
-doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
