@@ -3235,6 +3235,12 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name User Registration: piv cac disabled
+  # Tracks when user's piv cac is disabled
+  def piv_cac_disabled
+    track_event('PIV CAC disabled')
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # tracks piv cac login event
@@ -3243,6 +3249,17 @@ module AnalyticsEvents
       'PIV/CAC Login',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name User Registration: piv cac setup visited
+  # Tracks when user's piv cac setup
+  # @param [Boolean] in_multi_mfa_selection_flow
+  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
+    track_event(
+      'PIV CAC setup visited',
+      in_multi_mfa_selection_flow:,
       **extra,
     )
   end
@@ -4043,23 +4060,6 @@ module AnalyticsEvents
     track_event(
       'User Registration: phone setup visited',
       enabled_mfa_methods_count: enabled_mfa_methods_count,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac disabled
-  # Tracks when user's piv cac is disabled
-  def piv_cac_disabled
-    track_event('PIV CAC disabled')
-  end
-
-  # @identity.idp.previous_event_name User Registration: piv cac setup visited
-  # Tracks when user's piv cac setup
-  # @param [Boolean] in_multi_mfa_selection_flow
-  def piv_cac_setup_visit(in_multi_mfa_selection_flow:, **extra)
-    track_event(
-      'PIV CAC setup visited',
-      in_multi_mfa_selection_flow:,
       **extra,
     )
   end
