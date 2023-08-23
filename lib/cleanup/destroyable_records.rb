@@ -30,7 +30,7 @@ class DestroyableRecords
     stdout.puts '********'
     stdout.puts "This provider has #{in_person_enrollments.size} in person enrollments " \
                    "that will be destroyed - Please handle these removals manually. " \
-                   "https://cm-jira.usa.gov/browse/LG-10679?focusedId=1685546&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-1685546"
+                   "For more details check https://cm-jira.usa.gov/browse/LG-10679"
     stdout.puts "\n"
 
     stdout.puts '*******'
