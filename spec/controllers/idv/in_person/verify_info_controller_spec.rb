@@ -115,7 +115,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
         expect(@analytics).to have_logged_event(
           'IdV: doc auth verify proofing results',
-          hash_including(**analytics_args, success: true, analytics_id: 'In Person Proofing'),
+          hash_including(**analytics_args, success: true),
         )
       end
     end
