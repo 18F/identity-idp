@@ -67,34 +67,58 @@ RSpec.describe ServiceProviderController do
         end
       end
 
-      context 'with a service provider passed in via request body' do
-        let(:friendly_name) { 'A new friendly name' }
-        let(:body) do
-          Zlib.gzip({ service_provider: attributes.merge(friendly_name:) }.to_json)
+      context 'with a service provider passed in via a request body' do
+        describe 'with the req Content-Type set to "gzip/json"' do
+          let(:friendly_name) { 'A new friendly name' }
+          let(:body) do
+            Zlib.gzip({ service_provider: attributes.merge(friendly_name:) }.to_json)
+          end
+
+          before do
+            # Rails controller tests will fail unless the Content-Type is registered
+            # Not needed in production
+            Mime::Type.register 'gzip/json', :gzip_json
+            request.headers['Content-Type'] = 'gzip/json'
+            post :update, body:
+          end
+
+          after do
+            Mime::Type.unregister :gzip_json
+          end
+
+          it 'returns 200' do
+            expect(response.status).to eq 200
+          end
+
+          it 'updates the matching ServiceProvider in the DB' do
+            sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
+
+            expect(sp.agency).to eq agency
+            expect(sp.friendly_name).to eq friendly_name
+            expect(sp.active?).to eq true
+          end
         end
 
-        before do
-          # Rails controller tests will fail unless the Content-Type is registered
-          # Not needed in production
-          Mime::Type.register 'gzip/json', :gzip_json
-          request.headers['Content-Type'] = 'gzip/json'
-          post :update, body: body
-        end
+        describe 'with a different Content-Type' do
+          let(:friendly_name) { 'A new friendly name' }
+          let(:params) { { service_provider: attributes.merge(friendly_name:) } }
 
-        after do
-          Mime::Type.unregister :gzip_json
-        end
+          before do
+            request.headers['Content-Type'] = 'application/json'
+            post :update, params:
+          end
 
-        it 'returns 200' do
-          expect(response.status).to eq 200
-        end
+          it 'returns 200' do
+            expect(response.status).to eq 200
+          end
 
-        it 'updates the matching ServiceProvider in the DB' do
-          sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
+          it 'updates the matching ServiceProvider in the DB' do
+            sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
 
-          expect(sp.agency).to eq agency
-          expect(sp.friendly_name).to eq friendly_name
-          expect(sp.active?).to eq true
+            expect(sp.agency).to eq agency
+            expect(sp.friendly_name).to eq friendly_name
+            expect(sp.active?).to eq true
+          end
         end
       end
     end

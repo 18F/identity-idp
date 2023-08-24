@@ -36,12 +36,15 @@ class ServiceProviderController < ApplicationController
   end
 
   def sp_params
-    return {} unless request.headers['Content-Type'] == 'gzip/json'
-
-    body = request.body.read
-
-    return {} unless body.present?
-
-    JSON.parse(Zlib.gunzip(body))
+    if request.headers['Content-Type'] == 'gzip/json'
+      body = request.body.read
+      if body.present?
+        JSON.parse(Zlib.gunzip(body))
+      else
+        {}
+      end
+    else
+      params.permit(service_provider: {})
+    end
   end
 end
