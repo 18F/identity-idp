@@ -73,7 +73,7 @@ module TwoFactorAuthCode
 
     def troubleshoot_change_phone_or_method_option
       if unconfirmed_phone
-        BlockLinkComponent.new(url: add_phone_path).with_content(
+        BlockLinkComponent.new(url: phone_setup_path).with_content(
           t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
         )
       else

@@ -25,7 +25,7 @@
 </div>
 <% if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account %>
   <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) { link_to(add_phone_path, **tag_options, &block) },
+        action: ->(**tag_options, &block) { link_to(phone_setup_path, **tag_options, &block) },
         outline: true,
         icon: :add,
         class: 'margin-top-2',

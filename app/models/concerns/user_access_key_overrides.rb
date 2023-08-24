@@ -14,7 +14,6 @@ module UserAccessKeyOverrides
       user_uuid: uuid,
     )
     @password = password if result
-    log_password_verification_failure unless result
     result
   end
 
@@ -81,16 +80,5 @@ module UserAccessKeyOverrides
     Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
       encrypted_password_digest,
     ).password_salt
-  end
-
-  private
-
-  def log_password_verification_failure
-    metadata = {
-      event: 'Failure to validate password',
-      uuid: uuid,
-      timestamp: Time.zone.now,
-    }
-    Rails.logger.info(metadata.to_json)
   end
 end
