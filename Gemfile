@@ -94,7 +94,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
