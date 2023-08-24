@@ -26,17 +26,9 @@ RSpec.describe ServiceProviderController do
     before do
       headers(token)
       allow(IdentityConfig.store).to receive(:use_dashboard_service_providers) { use_feature }
-      allow_any_instance_of(ActionDispatch::Http::Headers).
-        to receive(:[]).and_call_original
     end
 
     context 'feature on, correct token in headers' do
-      before do
-        # rspec won't allow an unknown Content-Type
-        allow_any_instance_of(ActionDispatch::Http::Headers).
-          to receive(:[]).with('Content-Type') { 'gzip/json' }
-      end
-
       context 'with no body' do
         before do
           allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
@@ -82,7 +74,15 @@ RSpec.describe ServiceProviderController do
         end
 
         before do
-          post :update, body:
+          # Rails controller tests will fail unless the Content-Type is registered
+          # Not needed in production
+          Mime::Type.register 'gzip/json', :gzip_json
+          request.headers['Content-Type'] = 'gzip/json'
+          post :update, body: body
+        end
+
+        after do
+          Mime::Type.unregister :gzip_json
         end
 
         it 'returns 200' do
@@ -125,7 +125,6 @@ RSpec.describe ServiceProviderController do
 
     def headers(token)
       request.headers['X-LOGIN-DASHBOARD-TOKEN'] = token
-      request.headers['Content-Encoding'] = 'gzip'
     end
   end
 end
