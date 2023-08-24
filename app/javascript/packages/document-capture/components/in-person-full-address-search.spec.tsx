@@ -56,39 +56,7 @@ describe('FullAddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
-      expect(errors).to.have.lengthOf(1);
-    });
-
-    it('displays an error for an invalid ZIP code length (length = 8)', async () => {
-      const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText, findAllByText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
-        </SWRConfig>,
-      );
-
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
-        '200 main',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '17201-088',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-
-      const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode');
+      const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode_only');
       expect(errors).to.have.lengthOf(1);
     });
 
@@ -115,41 +83,6 @@ describe('FullAddressSearch', () => {
       await userEvent.type(
         await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
         '17201',
-      );
-      await userEvent.click(
-        await findByText('in_person_proofing.body.location.po_search.search_button'),
-      );
-
-      try {
-        await findByText('idv.errors.pattern_mismatch.zipcode');
-      } catch (err) {
-        expect(err === 'Error: Unable to find an element with the text');
-      }
-    });
-
-    it('does not display an error for a valid ZIP code length (length = 9)', async () => {
-      const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText } = render(
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
-        </SWRConfig>,
-      );
-
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.address_label'),
-        '200 main',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.city_label'),
-        'Endeavor',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.state_label'),
-        'DE',
-      );
-      await userEvent.type(
-        await findByLabelText('in_person_proofing.body.location.po_search.zipcode_label'),
-        '17201-9876',
       );
       await userEvent.click(
         await findByText('in_person_proofing.body.location.po_search.search_button'),

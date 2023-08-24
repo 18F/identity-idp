@@ -184,14 +184,7 @@ function FullAddressSearch({
     (event: React.ChangeEvent<T>) => {
       const { target } = event;
       const scrubbedZip = target.value.replace(/[^0-9]/g, '');
-      if (scrubbedZip.length > 5) {
-        const zipcodePieces: string[] = [];
-        zipcodePieces.push(scrubbedZip.substring(0, 5));
-        zipcodePieces.push(scrubbedZip.substring(5));
-        input(zipcodePieces.join('-'));
-      } else {
-        input(scrubbedZip);
-      }
+      input(scrubbedZip);
     };
 
   type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;
@@ -282,7 +275,7 @@ function FullAddressSearch({
       <ValidatedField
         ref={validatedZipCodeFieldRef}
         messages={{
-          patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
+          patternMismatch: t('idv.errors.pattern_mismatch.zipcode_only'),
         }}
       >
         <TextInput
@@ -293,8 +286,10 @@ function FullAddressSearch({
           onChange={onZipCodeChange}
           label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
-          pattern="(\d{5}([\-]\d{4})?)"
-          maxLength={10}
+          pattern="\d{5}"
+          maxLength={5}
+          minLength={5}
+          type="tel"
         />
       </ValidatedField>
       <div className="margin-y-5">
