@@ -197,8 +197,8 @@ RSpec.feature 'Sign Up' do
       set_up_2fa_with_backup_codes
       skip_second_mfa_prompt
 
-      visit add_phone_path
-      expect(page).to have_current_path add_phone_path
+      visit phone_setup_path
+      expect(page).to have_current_path phone_setup_path
     end
   end
 
@@ -419,8 +419,8 @@ RSpec.feature 'Sign Up' do
     acknowledge_backup_code_confirmation
 
     expect(page).to have_current_path account_path
-    visit add_phone_path
-    expect(page).to have_current_path add_phone_path
+    visit phone_setup_path
+    expect(page).to have_current_path phone_setup_path
   end
 
   describe 'visiting the homepage by clicking the logo image' do

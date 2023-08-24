@@ -321,12 +321,12 @@ RSpec.describe Idv::VerifyInfoController do
           expect(response).to redirect_to idv_phone_url
         end
 
-        it 'logs an event' do
+        it 'logs an event with analytics_id set' do
           put :show
 
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
-            hash_including(success: true),
+            hash_including(**analytics_args, success: true, analytics_id: 'Doc Auth'),
           )
         end
 

@@ -918,6 +918,8 @@ module AnalyticsEvents
   # @param [Boolean] gpo_verification_pending Profile is awaiting gpo verificaiton
   # @param [Boolean] in_person_verification_pending Profile is awaiting in person verificaiton
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
   def idv_final(
     success:,
@@ -1051,6 +1053,8 @@ module AnalyticsEvents
   # @param [Integer] attempts Number of attempts to enter a correct code
   # @param [Boolean] pending_in_person_enrollment
   # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
   # GPO verification submitted
   def idv_gpo_verification_submitted(
     success:,
@@ -3883,9 +3887,12 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits MFA selection page
-  def user_registration_2fa_setup_visit
+  # @param [Integer] enabled_mfa_methods_count Number of MFAs associated with user at time of visit
+  def user_registration_2fa_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
       'User Registration: 2FA Setup visited',
+      enabled_mfa_methods_count:,
+      **extra,
     )
   end
 

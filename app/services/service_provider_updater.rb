@@ -3,7 +3,6 @@ class ServiceProviderUpdater
   SP_PROTECTED_ATTRIBUTES = %i[
     created_at
     id
-    native
     updated_at
   ].to_set.freeze
 
@@ -34,13 +33,12 @@ class ServiceProviderUpdater
     if service_provider['active'] == true
       create_or_update_service_provider(issuer, service_provider)
     else
-      ServiceProvider.where(issuer: issuer, native: false).destroy_all
+      ServiceProvider.where(issuer: issuer).destroy_all
     end
   end
 
   def create_or_update_service_provider(issuer, service_provider)
     sp = ServiceProvider.find_by(issuer: issuer)
-    return if sp&.native?
     sync_model(sp, cleaned_service_provider(service_provider))
   end
 
