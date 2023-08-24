@@ -375,8 +375,14 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/ssn' => 'in_person/ssn#show'
-      put '/in_person_proofing/ssn' => 'in_person/ssn#update'
+      # DEPRECATION NOTICE
+      # Usage of the /in_person_proofing/ssn routes is deprecated.
+      # Use the /in_person/ssn routes instead.
+      #
+      # These have been left in temporarily to prevent any impact to users
+      # during the deprecation process.
+      get '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
+      put '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
@@ -384,6 +390,8 @@ Rails.application.routes.draw do
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
+      get '/in_person/ssn' => 'in_person/ssn#show'
+      put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step

@@ -97,7 +97,7 @@ RSpec.describe Idv::InPersonController do
             it 'finishes the flow' do
               put :update, params: { step: 'state_id' }
 
-              expect(response).to redirect_to idv_in_person_proofing_ssn_url
+              expect(response).to redirect_to idv_in_person_ssn_url
             end
           end
         end
