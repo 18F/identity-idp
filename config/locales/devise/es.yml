@@ -49,10 +49,6 @@ es:
     registrations:
       close_window: Puedes cerrar esta ventana si terminaste.
       destroyed: Su cuenta se ha eliminado exitosamente.
-      phone_update_needs_confirmation: Su solicitud para actualizar su número de
-        teléfono fue procesada, pero necesitamos confirmar primero su número
-        nuevo. Por favor, siga las siguientes instrucciones. Si no confirma su
-        nuevo número, seguiremos usando su número de teléfono antiguo.
       start:
         accordion: También necesitarás
         bullet_1_html: Una <strong>dirección de correo electrónico</strong>.
