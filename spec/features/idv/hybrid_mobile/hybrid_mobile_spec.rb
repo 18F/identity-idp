@@ -215,6 +215,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       # Confirm app disallows jumping back to DocumentCapture page
       visit idv_phone_path
       expect(page.status_code).to eq(200)
+      expect(page).to have_current_path(new_user_session_path)
     end
   end
 end
