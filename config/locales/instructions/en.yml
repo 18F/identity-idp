@@ -37,12 +37,6 @@ en:
           you think this is an error, %{try_again_html}.
         back_to_sign_in: Go back to sign in
         confirm_piv_cac: Present the PIV/CAC that you associated with your account.
-        confirm_piv_cac_only: This app requires a higher level of security. You need to
-          verify your identity using a government employee ID that you
-          previously set up to access your information.
-        confirm_piv_cac_or_aal3: This app requires a higher level of security. You need
-          to verify your identity using a physical device such as a security key
-          or government employee ID (PIV or CAC) to access your information.
         did_not_work_html: Please %{please_try_again_html}. If this problem continues,
           contact your agency administrator.
         http_failure: The server took too long to respond. Please try again.
@@ -72,12 +66,6 @@ en:
           code will expire in %{expiration} minutes.
       webauthn:
         confirm_webauthn: Present the security key that you associated with your account.
-        confirm_webauthn_only: This app requires a higher level of security. You need to
-          verify your identity using a security key that you previously set up
-          to access your information.
-        confirm_webauthn_or_aal3: This app requires a higher level of security. You need
-          to verify your identity using a physical device such as a security key
-          or government employee ID (PIV or CAC) to access your information.
         confirm_webauthn_platform: You have face or touch unlock enabled for your %{app_name} account.
       webauthn_platform:
         learn_more_help: Learn more about face or touch unlock

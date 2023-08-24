@@ -66,6 +66,9 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         state_id_number: '111111111'
         state_id_jurisdiction: ND
         state_id_type: drivers_license
+      classification_info:
+          Front:
+            ClassName: Tribal Identification
     YAML
 
     create_document_response = client.create_document
@@ -99,6 +102,36 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     expect(get_results_response.attention_with_barcode?).to eq(false)
   end
 
+  it 'if the document is a YAML file with unsupported document type it returns error' do
+    yaml = <<~YAML
+      classification_info:
+          Front:
+            ClassName: Tribal Identification
+          Back:
+            ClassName: Tribal Identification
+    YAML
+
+    create_document_response = client.create_document
+    instance_id = create_document_response.instance_id
+    client.post_front_image(
+      instance_id: instance_id,
+      image: yaml,
+    )
+    client.post_back_image(
+      instance_id: instance_id,
+      image: yaml,
+    )
+    get_results_response = client.get_results(
+      instance_id: create_document_response.instance_id,
+    )
+    expect(get_results_response.attention_with_barcode?).to eq(false)
+    errors = get_results_response.errors
+    expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+    expect(errors[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
+    expect(errors[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+    expect(errors[:back]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+    expect(errors[:hints]).to eq(true)
+  end
   it 'allows responses to be mocked' do
     described_class.mock_response!(method: :create_document, response: 'Create doc test')
 

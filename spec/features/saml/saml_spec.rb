@@ -257,6 +257,7 @@ RSpec.feature 'saml api' do
         expect(sp_return_logs.count).to eq(1)
         expect(sp_return_logs.first.ial).to eq(2)
       end
+
       context 'when ForceAuthn = true in SAMLRequest' do
         let(:saml_request_overrides) do
           {
@@ -276,15 +277,24 @@ RSpec.feature 'saml api' do
 
         scenario 'enforces reauthentication if already signed in' do
           # start with an active user session
+          service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
           sign_in_live_with_2fa(user)
 
           # visit from SP with force_authn: true
           visit_saml_authn_request_url(overrides: saml_request_overrides)
           expect(page).to have_content(
-            'is using Login.gov to allow you to sign in to your account safely and securely.',
+            t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
           )
           expect(page).to have_button('Sign in')
-
+          # visit from SP with force_authn: true
+          expect(page).to have_content(
+            strip_tags(
+              t(
+                'account.login.forced_reauthentication_notice_html',
+                sp_name: service_provider.friendly_name,
+              ),
+            ),
+          )
           # sign in again
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
@@ -309,11 +319,21 @@ RSpec.feature 'saml api' do
         end
 
         scenario 'enforces reauthentication if already signed in from the same SP' do
+          service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
           # first visit from Test SP
           visit_saml_authn_request_url(overrides: saml_request_overrides)
           expect(page).to have_content(
             'Test SP is using Login.gov to allow you to sign in' \
             ' to your account safely and securely.',
+          )
+          # does not show reauth notice if user was not logged in
+          expect(page).to_not have_content(
+            strip_tags(
+              t(
+                'account.login.forced_reauthentication_notice_html',
+                sp_name: service_provider.friendly_name,
+              ),
+            ),
           )
           expect(page).to have_button('Sign in')
           # Log in with Test SP as the SP session
@@ -336,10 +356,19 @@ RSpec.feature 'saml api' do
             'Test SP is using Login.gov to allow you to sign in' \
             ' to your account safely and securely.',
           )
+          expect(page).to have_content(
+            strip_tags(
+              t(
+                'account.login.forced_reauthentication_notice_html',
+                sp_name: service_provider.friendly_name,
+              ),
+            ),
+          )
           expect(page).to have_button('Sign in')
 
           # log in for second time
           fill_in_credentials_and_submit(user.email, user.password)
+          fill_in_code_with_last_phone_otp
           click_submit_default_twice
 
           xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
@@ -366,15 +395,24 @@ RSpec.feature 'saml api' do
       end
 
       scenario 'enforces reauthentication when ForceAuthn = true in SAMLRequest' do
+        service_provider = ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER)
         # start with an active user session
         sign_in_live_with_2fa(user)
 
         # visit from SP with force_authn: true
         visit_saml_authn_request_url(overrides: { force_authn: true })
         expect(page).to have_content(
-          'is using Login.gov to allow you to sign in to your account safely and securely.',
+          t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
         expect(page).to have_button('Sign in')
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
 
         # sign in again
         fill_in_credentials_and_submit(user.email, user.password)
@@ -389,6 +427,42 @@ RSpec.feature 'saml api' do
         expect(
           xmldoc.status_code.attribute('Value').value,
         ).to eq 'urn:oasis:names:tc:SAML:2.0:status:Success'
+      end
+
+      scenario 'does not show reauth notice if most recent request in session was not ForceAuthn' do
+        service_provider = ServiceProvider.find_by(issuer: SamlAuthHelper::SP_ISSUER)
+        # start with an active user session
+        sign_in_live_with_2fa(user)
+
+        # visit from SP with force_authn: true
+        visit_saml_authn_request_url(overrides: { force_authn: true })
+        expect(page).to have_content(
+          t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+        )
+        expect(page).to have_button('Sign in')
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+
+        visit_saml_authn_request_url
+
+        expect(page).to have_content(
+          t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+        )
+        expect(page).to have_button('Sign in')
+        expect(page).to_not have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
       end
     end
   end
@@ -408,8 +482,9 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
-           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-           force_authn: false }],
+           requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -442,7 +517,8 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/2',
            service_provider: 'saml_sp_ial2',
-           force_authn: false }],
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
@@ -467,8 +543,9 @@ RSpec.feature 'saml api' do
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000',
-           requested_aal_authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-           force_authn: false }],
+           requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+           force_authn: false,
+           user_fully_authenticated: false }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 

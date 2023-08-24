@@ -1,22 +1,28 @@
 class TwoFactorOptionsPresenter
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :user
+  attr_reader :user, :after_mfa_setup_path
 
-  def initialize(user_agent:,
-                 user: nil,
-                 phishing_resistant_required: false,
-                 piv_cac_required: false,
-                 show_skip_additional_mfa_link: true)
+  delegate :two_factor_enabled?, to: :mfa_policy
+
+  def initialize(
+    user_agent:,
+    user: nil,
+    phishing_resistant_required: false,
+    piv_cac_required: false,
+    show_skip_additional_mfa_link: true,
+    after_mfa_setup_path: nil
+  )
     @user_agent = user_agent
     @user = user
     @phishing_resistant_required = phishing_resistant_required
     @piv_cac_required = piv_cac_required
     @show_skip_additional_mfa_link = show_skip_additional_mfa_link
+    @after_mfa_setup_path = after_mfa_setup_path
   end
 
   def options
-    totp_option + phone_options + webauthn_platform_option +
+    webauthn_platform_option + totp_option + phone_options +
       backup_code_option + webauthn_option + piv_cac_option
   end
 
@@ -52,6 +58,10 @@ class TwoFactorOptionsPresenter
 
   def show_skip_additional_mfa_link?
     @show_skip_additional_mfa_link
+  end
+
+  def skip_path
+    after_mfa_setup_path if two_factor_enabled? && show_skip_additional_mfa_link?
   end
 
   private

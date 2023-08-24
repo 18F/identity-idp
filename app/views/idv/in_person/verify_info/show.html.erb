@@ -18,23 +18,6 @@ locals:
   <!-- Needed by form steps wait javascript -->
 </div>
 
-<% if @had_barcode_read_failure %>
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-        text_tag: 'div',
-      ) do %>
-    <%= t(
-          'doc_auth.headings.capture_scan_warning_html',
-          link_html: link_to(
-            t('doc_auth.headings.capture_scan_warning_link'),
-            idv_hybrid_handoff_url(redo: true),
-            'aria-label': t('doc_auth.headings.capture_scan_warning_link'),
-          ),
-        ) %>
-  <% end %>
-<% end %>
-
 <% title t('titles.idv.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
@@ -160,20 +143,11 @@ locals:
           ) %>
     </div>
     <div class='grid-auto'>
-      <% if IdentityConfig.store.in_person_ssn_info_controller_enabled %>
       <%= link_to(
             t('idv.buttons.change_label'),
-            idv_in_person_proofing_ssn_url,
+            idv_in_person_ssn_url,
             'aria-label': t('idv.buttons.change_ssn_label'),
           ) %>
-      <% else %>
-        <%= button_to(
-              idv_in_person_step_url(step: :redo_ssn),
-              method: :put,
-              class: 'usa-button usa-button--unstyled padding-y-1',
-              'aria-label': t('idv.buttons.change_ssn_label'),
-            ) { t('idv.buttons.change_label') } %>
-      <% end %>
     </div>
   </div>
   <div class="margin-top-5">

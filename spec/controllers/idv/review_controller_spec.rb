@@ -258,6 +258,7 @@ RSpec.describe Idv::ReviewController do
           fraud_review_pending: false,
           fraud_rejection: false,
           gpo_verification_pending: false,
+          in_person_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: nil,
           **ab_test_args,
@@ -281,6 +282,7 @@ RSpec.describe Idv::ReviewController do
           fraud_review_pending: false,
           fraud_rejection: false,
           gpo_verification_pending: false,
+          in_person_verification_pending: false,
           proofing_components: nil,
           deactivation_reason: anything,
           **ab_test_args,
@@ -410,7 +412,7 @@ RSpec.describe Idv::ReviewController do
 
             enrollment.reload
 
-            expect(enrollment.status).to eq('pending')
+            expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
             expect(enrollment.user_id).to eq(user.id)
             expect(enrollment.enrollment_code).to be_a(String)
             expect(enrollment.profile).to eq(user.profiles.last)
@@ -451,7 +453,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -481,7 +483,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -499,7 +501,7 @@ RSpec.describe Idv::ReviewController do
 
               enrollment.reload
 
-              expect(enrollment.status).to eq('pending')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_a(String)
               expect(enrollment.profile).to eq(user.profiles.last)
@@ -551,7 +553,7 @@ RSpec.describe Idv::ReviewController do
 
               expect(InPersonEnrollment.count).to be(1)
               enrollment = InPersonEnrollment.where(user_id: user.id).first
-              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.status).to eq(InPersonEnrollment::STATUS_ESTABLISHING)
               expect(enrollment.user_id).to eq(user.id)
               expect(enrollment.enrollment_code).to be_nil
             end
@@ -618,6 +620,7 @@ RSpec.describe Idv::ReviewController do
                       fraud_review_pending: fraud_review_pending?,
                       fraud_rejection: false,
                       gpo_verification_pending: false,
+                      in_person_verification_pending: false,
                       proofing_components: nil,
                       deactivation_reason: nil,
                       **ab_test_args,
@@ -628,6 +631,7 @@ RSpec.describe Idv::ReviewController do
                       fraud_review_pending: fraud_review_pending?,
                       fraud_rejection: false,
                       gpo_verification_pending: false,
+                      in_person_verification_pending: false,
                       proofing_components: nil,
                       deactivation_reason: nil,
                       **ab_test_args,
@@ -672,6 +676,42 @@ RSpec.describe Idv::ReviewController do
                   user: { password: ControllerHelper::VALID_PASSWORD },
                 }
           end.to(change { ActionMailer::Base.deliveries.count }.by(1))
+        end
+
+        it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
+          RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(@analytics).to have_logged_event(
+            'IdV: USPS address letter enqueued',
+            resend: false,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: 1,
+            first_letter_requested_at: idv_session.profile.gpo_verification_pending_at,
+            hours_since_first_letter: 0,
+            proofing_components: nil,
+            **ab_test_args,
+          )
+        end
+
+        context 'when user is rate limited' do
+          it 'logs USPS address letter enqueued event with phone_step_attempts', :freeze_time do
+            rate_limit_type = :proof_address
+            rate_limiter = RateLimiter.new(user: user, rate_limit_type: rate_limit_type)
+            rate_limiter.increment_to_limited!
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@analytics).to have_logged_event(
+              'IdV: USPS address letter enqueued',
+              resend: false,
+              enqueued_at: Time.zone.now,
+              phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
+              first_letter_requested_at: idv_session.profile.gpo_verification_pending_at,
+              hours_since_first_letter: 0,
+              proofing_components: nil,
+              **ab_test_args,
+            )
+          end
         end
 
         it 'redirects to come back later page' do

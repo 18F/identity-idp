@@ -7,14 +7,12 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import {
-  FormattedLocation,
-  transformKeys,
-  snakeCase,
+import { transformKeys, snakeCase } from '@18f/identity-address-search';
+import type {
   LocationQuery,
-  LOCATIONS_URL,
   PostOffice,
-} from '@18f/identity-address-search';
+  FormattedLocation,
+} from '@18f/identity-address-search/types';
 import { InPersonContext } from '../context';
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
@@ -30,8 +28,14 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
     isPilot: !!po.is_pilot,
   }));
 
-const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(LOCATIONS_URL, {
+const requestUspsLocations = async ({
+  address,
+  locationsURL,
+}: {
+  locationsURL: string;
+  address: LocationQuery;
+}): Promise<FormattedLocation[]> => {
+  const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -39,7 +43,7 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
-function useUspsLocations() {
+function useUspsLocations(locationsURL: string) {
   const [locationQuery, setLocationQuery] = useState<LocationQuery | null>(null);
   const validatedAddressFieldRef = useRef<HTMLFormElement>(null);
   const validatedCityFieldRef = useRef<HTMLFormElement>(null);
@@ -82,7 +86,9 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([locationQuery], ([address]) => (address ? requestUspsLocations(address) : null));
+  } = useSWR([locationQuery], ([address]) =>
+    address ? requestUspsLocations({ address, locationsURL }) : null,
+  );
 
   return {
     locationQuery,
@@ -106,6 +112,7 @@ interface FullAddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
+  locationsURL: string;
 }
 
 function FullAddressSearch({
@@ -114,6 +121,7 @@ function FullAddressSearch({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
+  locationsURL,
 }: FullAddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [addressValue, setAddressValue] = useState('');
@@ -130,7 +138,7 @@ function FullAddressSearch({
     validatedCityFieldRef,
     validatedStateFieldRef,
     validatedZipCodeFieldRef,
-  } = useUspsLocations();
+  } = useUspsLocations(locationsURL);
 
   const inputChangeHandler =
     <T extends HTMLElement & { value: string }>(input) =>

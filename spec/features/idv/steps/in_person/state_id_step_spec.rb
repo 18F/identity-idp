@@ -37,7 +37,7 @@ RSpec.describe 'doc auth IPP state ID step', js: true do
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: '123456789'
       expect(page).to have_field(t('in_person_proofing.form.state_id.zipcode'), with: '12345-6789')
       click_idv_continue
-      expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+      expect(page).to have_current_path(idv_in_person_ssn_url)
     end
   end
 end

@@ -10,6 +10,7 @@ require 'terminal-table'
 $LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
 require 'reporting/cloudwatch_client'
 require 'reporting/cloudwatch_query_quoting'
+require 'reporting/unknown_progress_bar'
 
 class EmailDeliveries
   include Reporting::CloudwatchQueryQuoting
@@ -57,7 +58,7 @@ class EmailDeliveries
     results = query_data(uuids)
 
     table = Terminal::Table.new
-    table << %w[user_id timestamp message_id events]
+    table << %w[user_id timestamp message_id email_action events]
     table << :separator
 
     results.each do |result|
@@ -65,6 +66,7 @@ class EmailDeliveries
         result.user_id,
         result.timestamp,
         result.message_id,
+        result.email_action,
         result.events.join(', '),
       ]
     end
@@ -76,75 +78,61 @@ class EmailDeliveries
     :user_id,
     :timestamp,
     :message_id,
+    :email_action,
     :events,
     keyword_init: true,
   )
 
   # @return [Array<Result>]
   def query_data(uuids)
-    if progress_bar?
-      bar = ProgressBar.create(
-        title: 'Querying logs',
-        total: nil,
-        format: '[ %t ] %B %a',
-        output: STDERR,
+    Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
+      event_log = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
+        query: <<~EOS,
+          fields
+            @timestamp
+          , properties.user_id AS user_id
+          , properties.event_properties.ses_message_id AS ses_message_id
+          , properties.event_properties.action AS email_action
+          | filter name = 'Email Sent'
+          | filter properties.user_id IN #{quote(uuids)}
+          | limit 10000
+        EOS
+        from: 1.week.ago,
+        to: Time.now,
       )
-      thread = Thread.new do
-        loop do
-          sleep 0.1
-          bar.increment
+
+      events_by_message_id = event_log.index_by { |event| event['ses_message_id'] }
+
+      message_id_filters = events_by_message_id.keys.map do |message_id|
+        "@message LIKE /#{message_id}/"
+      end.join(' OR ')
+
+      email_events = cloudwatch_client('/aws/lambda/SESAllEvents_Lambda').fetch(
+        query: <<~EOS,
+          fields
+            eventType AS event_type
+          | filter #{message_id_filters}
+          | parse '"messageId": "*"' as ses_message_id
+          | display @timestamp, event_type, ses_message_id
+          | limit 10000
+        EOS
+        from: 1.week.ago,
+        to: Time.now,
+      )
+
+      email_events.
+        group_by { |event| event['ses_message_id'] }.
+        map do |message_id, events|
+          Result.new(
+            user_id: events_by_message_id[message_id]['user_id'],
+            email_action: events_by_message_id[message_id]['email_action'],
+            timestamp: events_by_message_id[message_id]['@timestamp'],
+            message_id: message_id,
+            events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },
+          )
         end
-      end
     end
-
-    event_log = cloudwatch_client('prod_/srv/idp/shared/log/events.log').fetch(
-      query: <<~EOS,
-        fields
-          @timestamp
-        , properties.user_id AS user_id
-        , properties.event_properties.ses_message_id AS ses_message_id
-        | filter name = 'Email Sent'
-        | filter properties.user_id IN #{quote(uuids)}
-        | limit 10000
-      EOS
-      from: 1.week.ago,
-      to: Time.now,
-    )
-
-    events_by_message_id = event_log.index_by { |event| event['ses_message_id'] }
-
-    message_id_filters = events_by_message_id.keys.map do |message_id|
-      "@message LIKE /#{message_id}/"
-    end.join(' OR ')
-
-    email_events = cloudwatch_client('/aws/lambda/SESAllEvents_Lambda').fetch(
-      query: <<~EOS,
-        fields
-          eventType AS event_type
-        | filter #{message_id_filters}
-        | parse '"messageId": "*"' as ses_message_id
-        | display @timestamp, event_type, ses_message_id
-        | limit 10000
-      EOS
-      from: 1.week.ago,
-      to: Time.now,
-    )
-
-    email_events.
-      group_by { |event| event['ses_message_id'] }.
-      map do |message_id, events|
-        Result.new(
-          user_id: events_by_message_id[message_id]['user_id'],
-          timestamp: events_by_message_id[message_id]['@timestamp'],
-          message_id: message_id,
-          events: events.sort_by { |e| e['@timestamp'] }.map { |e| e['event_type'] },
-        )
-      end
-  ensure
-    thread&.kill
-    bar&.stop
   end
-
 
   def cloudwatch_client(log_group_name)
     Reporting::CloudwatchClient.new(

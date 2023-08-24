@@ -46,6 +46,26 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#pending_in_person_enrollment?' do
+    it 'returns true if the document_check component is usps' do
+      profile = create(:profile, proofing_components: { document_check: 'usps' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(true)
+    end
+
+    it 'returns false if the document_check component is something else' do
+      profile = create(:profile, proofing_components: { document_check: 'something_else' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+
+    it 'returns false if proofing_components is blank' do
+      profile = create(:profile, proofing_components: '')
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+  end
+
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
@@ -66,18 +86,52 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#in_person_verification_pending?' do
+    it 'returns true if the deactivation_reason is in_person_verification_pending' do
+      profile = create(
+        :profile,
+        :in_person_verification_pending,
+        user: user,
+      )
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+    end
+  end
+
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
-    it 'encrypts PII' do
+    it 'encrypts pii and stores the multi region ciphertext' do
       expect(profile.encrypted_pii).to be_nil
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_multi_region).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      encrypt_pii
+      profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii).to be_present
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match(ssn)
-      expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
+
+      expect(profile.encrypted_pii_recovery).to be_present
+      expect(profile.encrypted_pii_recovery).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery).to_not match(ssn)
+
+      expect(profile.encrypted_pii_multi_region).to be_present
+      expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_multi_region).to_not match(ssn)
+
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
     end
 
     it 'generates new personal key' do
@@ -176,6 +230,31 @@ RSpec.describe Profile do
 
       expect { profile.decrypt_pii(user.password) }.to raise_error(Encryption::EncryptionError)
     end
+
+    context 'with aws_kms_multi_region_read_enabled enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'decrypts the PII for users with a multi region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+
+        expect(profile.encrypted_pii_multi_region).to_not be_nil
+
+        decrypted_pii = profile.decrypt_pii(user.password)
+
+        expect(decrypted_pii).to eq pii
+      end
+
+      it 'decrypts the PII for users with only a single region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        profile.update!(encrypted_pii_multi_region: nil)
+
+        decrypted_pii = profile.decrypt_pii(user.password)
+
+        expect(decrypted_pii).to eq pii
+      end
+    end
   end
 
   describe '#recover_pii' do
@@ -189,6 +268,37 @@ RSpec.describe Profile do
 
       expect(profile.recover_pii(normalized_personal_key)).to eq pii
     end
+
+    context 'with aws_kms_multi_region_read_enabled enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'decrypts the PII for users with a multi region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        personal_key = profile.personal_key
+
+        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+
+        expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
+
+        decrypted_pii = profile.recover_pii(normalized_personal_key)
+
+        expect(decrypted_pii).to eq pii
+      end
+
+      it 'decrypts the PII for users with only a single region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        profile.update!(encrypted_pii_recovery_multi_region: nil)
+        personal_key = profile.personal_key
+
+        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+
+        decrypted_pii = profile.recover_pii(normalized_personal_key)
+
+        expect(decrypted_pii).to eq pii
+      end
+    end
   end
 
   describe 'allows only one active Profile per user' do
@@ -198,6 +308,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -208,6 +319,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -222,6 +334,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -232,6 +345,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -239,82 +353,6 @@ RSpec.describe Profile do
         another_profile = user.profiles.new(active: true)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-  end
-
-  # TODO: remove entire describe block
-  describe '#has_proofed_before' do
-    it 'is false when the user has only been activated once' do
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # won't change
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      profile.activate
-
-      expect(profile.activated_at).to be_present
-      expect(profile.active).to eq(true)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # unchanged
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # changed
-    end
-
-    it 'is true when the user is re-activated' do
-      existing_profile = create(:profile, user: user)
-
-      # profile before
-      expect(profile.activated_at).to be_nil # to change
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # to change
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      # existing_profile before
-      expect(existing_profile.activated_at).to be_nil # will change !!!
-      expect(existing_profile.active).to eq(false) # won't change
-      expect(existing_profile.deactivation_reason).to be_nil
-      expect(existing_profile.fraud_review_pending?).to eq(false)
-      expect(existing_profile.gpo_verification_pending_at).to be_nil
-      expect(existing_profile.initiating_service_provider).to be_nil
-      expect(existing_profile.verified_at).to be_nil # to change
-
-      existing_profile.activate
-      profile.activate
-
-      existing_profile.reload
-      profile.reload
-
-      # profile after
-      expect(profile.activated_at).to be_present # changed
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(true) # changed
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # fix pending
-
-      # existing_profile after
-
-      # Now, existing_profile should be deactivated
-      expect(existing_profile.activated_at).to be_present
-      expect(existing_profile.active).to eq(false)
-
-      expect(existing_profile.deactivation_reason).to be_nil
-      expect(existing_profile.fraud_review_pending?).to eq(false)
-      expect(existing_profile.gpo_verification_pending_at).to be_nil
-      expect(existing_profile.initiating_service_provider).to be_nil
-      expect(existing_profile.verified_at).to be_present # fix pending
     end
   end
 
@@ -328,6 +366,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -337,6 +376,7 @@ RSpec.describe Profile do
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
       expect(active_profile.gpo_verification_pending_at).to be_nil
+      expect(active_profile.in_person_verification_pending_at).to be_nil
       expect(active_profile.initiating_service_provider).to be_nil
       expect(active_profile.verified_at).to be_present
 
@@ -349,6 +389,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -358,6 +399,7 @@ RSpec.describe Profile do
       expect(active_profile.deactivation_reason).to be_nil
       expect(active_profile.fraud_review_pending?).to eq(false)
       expect(active_profile.gpo_verification_pending_at).to be_nil
+      expect(active_profile.in_person_verification_pending_at).to be_nil
       expect(active_profile.initiating_service_provider).to be_nil
 
       # !!! a user can have multiple verified profiles
@@ -374,6 +416,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present
 
@@ -384,6 +427,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
     end
@@ -401,6 +445,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -411,6 +456,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
     end
@@ -423,6 +469,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -433,6 +480,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
     end
@@ -452,6 +500,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at).to be_present
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -465,6 +514,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at).to be_present
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -479,6 +529,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -492,6 +543,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -506,6 +558,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -519,6 +572,7 @@ RSpec.describe Profile do
         expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(false)
         expect(profile.gpo_verification_pending_at).to be_nil
+        expect(profile.in_person_verification_pending_at).to be_nil
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
@@ -548,6 +602,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present
 
@@ -558,6 +613,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('password_reset') # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
 
       # !!! does a deactivated verified profile remain verified?
@@ -577,6 +633,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_present # to change
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -587,6 +644,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil # changed
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -611,6 +669,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'password_reset' # will change but shouldn't
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -622,6 +681,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # !!! changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
@@ -640,6 +700,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'password_reset' # to change
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
 
@@ -650,6 +711,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to eq verified_at
     end
@@ -668,6 +730,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('password_reset') # to change
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -681,6 +744,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -699,6 +763,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -709,6 +774,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'encryption_error'
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
@@ -727,6 +793,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -739,6 +806,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('password_reset')
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -761,6 +829,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq 'in_person_verification_pending' # to change
       expect(profile.fraud_review_pending?).to eq(true) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -771,6 +840,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil # changed
       expect(profile.fraud_review_pending?).to eq(false) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -795,6 +865,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('in_person_verification_pending')
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -807,6 +878,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to eq('in_person_verification_pending')
       expect(profile.fraud_review_pending?).to eq(true)
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_present
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -824,6 +896,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
@@ -834,6 +907,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -900,12 +974,13 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
       expect(profile).to_not be_active
-      expect(profile.fraud_review_pending_at).to_not be_nil
-      expect(profile.fraud_pending_reason).to_not be_nil
+      expect(profile.fraud_review_pending_at).to be_present
+      expect(profile.fraud_pending_reason).to be_present
 
       profile.activate_after_fraud_review_unnecessary
 
@@ -914,6 +989,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
 
@@ -938,6 +1014,34 @@ RSpec.describe Profile do
 
   # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
   # TODO: related: should we test against an active profile here?
+  describe 'deactivate_for_in_person_verification' do
+    it 'deactivates a profile for in_person_verification' do
+      profile = create(:profile, user: user)
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to be_nil # to change
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+
+      profile.deactivate_for_in_person_verification
+
+      expect(profile.activated_at).to be_nil
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('in_person_verification_pending') # changed
+      expect(profile.fraud_review_pending?).to eq(false)
+      expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_present # changed
+      expect(profile.initiating_service_provider).to be_nil
+      expect(profile.verified_at).to be_nil
+    end
+  end
+
+  # TODO: does deactivating make sense for a non-active profile? Should we prevent it?
+  # TODO: related: should we test against an active profile here?
   describe '#deactivate_for_gpo_verification' do
     it 'sets a timestamp for gpo_verification_pending_at' do
       profile = create(:profile, user: user)
@@ -947,6 +1051,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_nil # to change
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -957,6 +1062,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false)
       expect(profile.gpo_verification_pending_at).to be_present # changed
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -976,6 +1082,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(false) # to change
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
@@ -987,6 +1094,7 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile.fraud_review_pending?).to eq(true) # changed
       expect(profile.gpo_verification_pending_at).to be_nil
+      expect(profile.in_person_verification_pending_at).to be_nil
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 

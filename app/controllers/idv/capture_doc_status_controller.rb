@@ -12,7 +12,7 @@ module Idv
 
     def status
       @status ||= begin
-        if !flow_session || !document_capture_session
+        if !document_capture_session
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
@@ -31,17 +31,13 @@ module Idv
     end
 
     def redirect_url
-      return unless flow_session && document_capture_session
+      return unless document_capture_session
 
       if rate_limiter.limited?
-        idv_session_errors_throttled_url
+        idv_session_errors_rate_limited_url
       elsif user_has_establishing_in_person_enrollment?
         idv_in_person_url
       end
-    end
-
-    def flow_session
-      user_session['idv/doc_auth']
     end
 
     def session_result
@@ -56,7 +52,7 @@ module Idv
     end
 
     def document_capture_session_uuid
-      flow_session[:document_capture_session_uuid]
+      idv_session.document_capture_session_uuid
     end
 
     def rate_limiter
@@ -81,10 +77,18 @@ module Idv
 
     def had_barcode_attention_result?
       if session_result
-        flow_session[:had_barcode_attention_error] = session_result.attention_with_barcode?
+        idv_session.had_barcode_attention_error = session_result.attention_with_barcode?
       end
 
-      flow_session[:had_barcode_attention_error]
+      idv_session.had_barcode_attention_error
+    end
+
+    def idv_session
+      @idv_session ||= Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        service_provider: current_sp,
+      )
     end
   end
 end

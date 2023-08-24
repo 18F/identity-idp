@@ -14,41 +14,37 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   def perform(_now)
-    return true unless ipp_enabled?
-    return true if ipp_ready_job_enabled?
+    return unless job_can_run?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
       enrollments_errored: 0,
+      enrollments_network_error: 0,
       enrollments_expired: 0,
       enrollments_failed: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
 
-    reprocess_delay_minutes = IdentityConfig.store.
-      get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.needs_usps_status_check(
-      ...reprocess_delay_minutes.minutes.ago,
-    )
-
     started_at = Time.zone.now
+    pending_enrollments.update(last_batch_claimed_at: started_at)
+    enrollments_to_check = InPersonEnrollment.needs_usps_status_check_batch(started_at)
+
     analytics.idv_in_person_usps_proofing_results_job_started(
-      enrollments_count: enrollments.count,
+      enrollments_count: enrollments_to_check.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
 
-    check_enrollments(enrollments)
+    check_enrollments(enrollments_to_check)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-      percent_enrollments_errored: percent_errored,
+      percent_enrollments_errored: summary_percent(:enrollments_errored),
+      percent_enrollments_network_error: summary_percent(:enrollments_network_error),
       job_name: self.class.name,
     )
-
-    true
   end
 
   private
@@ -60,7 +56,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
   def proofer
-    @proofer ||= UspsInPersonProofing::Proofer.new
+    @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def ipp_enabled?
@@ -69,6 +65,20 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def ipp_ready_job_enabled?
     IdentityConfig.store.in_person_enrollments_ready_job_enabled == true
+  end
+
+  def job_can_run?
+    ipp_enabled? && !ipp_ready_job_enabled?
+  end
+
+  def reprocess_delay_minutes
+    IdentityConfig.store.get_usps_proofing_results_job_reprocess_delay_minutes
+  end
+
+  def pending_enrollments
+    @pending_enrollments ||= InPersonEnrollment.needs_usps_status_check(
+      ...reprocess_delay_minutes.minutes.ago,
+    )
   end
 
   def check_enrollments(enrollments)
@@ -111,11 +121,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
 
-  def percent_errored
+  def summary_percent(outcomes_key)
     error_rate = 0
     if enrollment_outcomes[:enrollments_checked] > 0
       error_rate =
-        (enrollment_outcomes[:enrollments_errored].fdiv(
+        (enrollment_outcomes[outcomes_key].fdiv(
           enrollment_outcomes[:enrollments_checked],
         ) * 100).round(2)
     end
@@ -158,7 +168,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       response_status_code: err.response_status,
       job_name: self.class.name,
     )
-    enrollment_outcomes[:enrollments_errored] += 1
+
+    if err.is_a?(Faraday::TimeoutError) || err.is_a?(Faraday::ConnectionFailed)
+      enrollment_outcomes[:enrollments_network_error] += 1
+    else
+      enrollment_outcomes[:enrollments_errored] += 1
+    end
   end
 
   def handle_standard_error(err, enrollment)
@@ -212,6 +227,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       status_check_completed_at: Time.zone.now,
     )
 
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -244,8 +261,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-    # destroy phone number for expired
-    enrollment.notification_phone_configuration&.destroy
+
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err
@@ -309,6 +325,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     if response['fraudSuspected']
       send_failed_fraud_email(enrollment.user, enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
@@ -342,6 +361,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_verified_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -365,6 +387,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
+    # send SMS and email
+    send_enrollment_status_sms_notification(enrollment: enrollment)
     send_failed_email(enrollment.user, enrollment)
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
       **email_analytics_attributes(enrollment),
@@ -393,9 +417,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       handle_unsupported_status(enrollment, response)
     end
-
-    # invoke job to send sms notification
-    send_enrollment_status_sms_notification(enrollment: enrollment)
   end
 
   def send_verified_email(user, enrollment)
@@ -403,7 +424,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_verified(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
@@ -423,7 +444,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
   end
@@ -433,32 +454,33 @@ class GetUspsProofingResultsJob < ApplicationJob
       # rubocop:disable IdentityIdp/MailLaterLinter
       UserMailer.with(user: user, email_address: email_address).in_person_failed_fraud(
         enrollment: enrollment,
-      ).deliver_later(**mail_delivery_params(enrollment.proofed_at))
+      ).deliver_later(**notification_delivery_params(enrollment))
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
-  end
-
-  def mail_delivery_params(proofed_at)
-    return {} if proofed_at.blank?
-    mail_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
-                       DEFAULT_EMAIL_DELAY_IN_HOURS
-    wait_until = proofed_at + mail_delay_hours.hours
-    return {} if mail_delay_hours == 0 || wait_until < Time.zone.now
-    return { wait_until: wait_until, queue: :intentionally_delayed }
   end
 
   # enqueue sms notification job when it's expired or success
   # @param [InPersonEnrollment] enrollment
   def send_enrollment_status_sms_notification(enrollment:)
-    return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
-    return if enrollment&.proofed_at.blank?
-    sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
-                      DEFAULT_EMAIL_DELAY_IN_HOURS
-    wait_until = enrollment.proofed_at + sms_delay_hours
-    InPerson::SendProofingNotificationJob.set(
-      wait_until: wait_until,
+    if IdentityConfig.store.in_person_send_proofing_notifications_enabled
+      InPerson::SendProofingNotificationJob.set(
+        **notification_delivery_params(enrollment),
+      ).perform_later(enrollment.id)
+    end
+  end
+
+  def notification_delivery_params(enrollment)
+    return {} unless enrollment.passed? || enrollment.failed?
+
+    wait_until = enrollment.status_check_completed_at + (
+      IdentityConfig.store.in_person_results_delay_in_hours || DEFAULT_EMAIL_DELAY_IN_HOURS
+    ).hours
+    return {} unless Time.zone.now < wait_until
+
+    {
+      wait_until:,
       queue: :intentionally_delayed,
-    ).perform_later(enrollment.id)
+    }
   end
 
   def email_analytics_attributes(enrollment)
@@ -466,7 +488,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment_code: enrollment.enrollment_code,
       timestamp: Time.zone.now,
       service_provider: enrollment.issuer,
-      wait_until: mail_delivery_params(enrollment.proofed_at)[:wait_until],
+      wait_until: notification_delivery_params(enrollment)[:wait_until],
     }
   end
 

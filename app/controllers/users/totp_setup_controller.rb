@@ -40,8 +40,11 @@ module Users
     end
 
     def disable
-      process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
-      redirect_to account_two_factor_authentication_path
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
+        process_successful_disable
+      else
+        redirect_to account_two_factor_authentication_path
+      end
     end
 
     private
@@ -103,6 +106,7 @@ module Users
       revoke_remember_device(current_user)
       revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
+      redirect_to account_two_factor_authentication_path
     end
 
     def revoke_otp_secret_key

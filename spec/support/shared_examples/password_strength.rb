@@ -11,7 +11,10 @@ RSpec.shared_examples 'strong password' do |form_class|
         ' Uncommon words are better'],
     }
 
-    result = form.submit(password: password)
+    result = form.submit(
+      password: password,
+      password_confirmation: password,
+    )
 
     expect(result.success?).to eq(false)
     expect(result.errors).to eq(errors)
@@ -29,7 +32,10 @@ RSpec.shared_examples 'strong password' do |form_class|
         ' Uncommon words are better'],
     }
 
-    result = form.submit(password: password)
+    result = form.submit(
+      password: password,
+      password_confirmation: password,
+    )
 
     expect(result.success?).to eq(false)
     expect(result.errors).to eq(errors)
@@ -49,7 +55,10 @@ RSpec.shared_examples 'strong password' do |form_class|
         ' Uncommon words are better'],
     }
 
-    result = form.submit(password: password)
+    result = form.submit(
+      password: password,
+      password_confirmation: password,
+    )
 
     expect(result.success?).to eq(false)
     expect(result.errors).to eq(errors)
@@ -66,7 +75,10 @@ RSpec.shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    result = form.submit(password: password)
+    result = form.submit(
+      password: password,
+      password_confirmation: password,
+    )
 
     expect(result.success?).to eq(false)
     expect(result.errors).to eq(errors)
@@ -81,7 +93,10 @@ RSpec.shared_examples 'strong password' do |form_class|
     errors = {
       password: [t('errors.attributes.password.too_short', count: 12)],
     }
-    result = form.submit(password: password)
+    result = form.submit(
+      password: password,
+      password_confirmation: password,
+    )
 
     expect(result.success?).to eq(false)
     expect(result.errors).to eq(errors)

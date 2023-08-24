@@ -20,8 +20,7 @@ module Idv
     end
 
     def update
-      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
-      skip_to_capture if params[:skip_upload]
+      skip_to_capture if params[:skip_hybrid_handoff]
 
       result = Idv::ConsentForm.new.submit(consent_form_params)
 
@@ -47,6 +46,7 @@ module Idv
       {
         step: 'getting_started',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         irs_reproofing: irs_reproofing?,
       }.merge(ab_test_analytics_buckets)
     end
@@ -56,7 +56,7 @@ module Idv
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
-      flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
 
     def cancel_previous_in_person_enrollments
@@ -66,8 +66,11 @@ module Idv
     end
 
     def skip_to_capture
-      flow_session[:skip_upload_step] = true
       idv_session.flow_path = 'standard'
+
+      # Store that we're skipping hybrid handoff so if the user
+      # tries to redo document capture they can skip it then too.
+      idv_session.skip_hybrid_handoff = true
     end
 
     def consent_form_params

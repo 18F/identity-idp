@@ -38,7 +38,7 @@ RSpec.describe Idv::SsnController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -86,6 +86,10 @@ RSpec.describe Idv::SsnController do
       expect { get :show }.to(
         change { doc_auth_log.reload.ssn_view_count }.from(0).to(1),
       )
+    end
+
+    it 'adds a threatmetrix session id to idv_session' do
+      expect { get :show }.to change { subject.idv_session.threatmetrix_session_id }.from(nil)
     end
 
     context 'with an ssn in session' do
@@ -216,18 +220,12 @@ RSpec.describe Idv::SsnController do
         end
       end
 
-      it 'adds a threatmetrix session id to flow session' do
-        put :update, params: params
-        subject.threatmetrix_view_variables
-        expect(flow_session[:threatmetrix_session_id]).to_not eq(nil)
-      end
-
       it 'does not change threatmetrix_session_id when updating ssn' do
         flow_session['pii_from_doc'][:ssn] = ssn
         put :update, params: params
-        session_id = flow_session[:threatmetrix_session_id]
+        session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables
-        expect(flow_session[:threatmetrix_session_id]).to eq(session_id)
+        expect(subject.idv_session.threatmetrix_session_id).to eq(session_id)
       end
     end
 
@@ -246,7 +244,7 @@ RSpec.describe Idv::SsnController do
             ssn: [t('idv.errors.pattern_mismatch.ssn')],
           },
           error_details: { ssn: [:invalid] },
-          pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
+          pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn], [:error_details, :ssn]],
         }.merge(ab_test_args)
       end
 

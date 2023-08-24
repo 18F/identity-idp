@@ -24,6 +24,14 @@ class WebauthnVisitForm
     @platform_authenticator
   end
 
+  def current_mfa_setup_path
+    if mfa_user.two_factor_enabled? && !in_mfa_selection_flow
+      account_path
+    else
+      authentication_methods_setup_path
+    end
+  end
+
   private
 
   def check_params(params)
@@ -45,17 +53,7 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_platform_setup.not_supported')
     else
-      if in_mfa_selection_flow
-        I18n.t(
-          'errors.webauthn_platform_setup.account_setup_error',
-          link: link_to(
-            I18n.t('errors.webauthn_platform_setup.choose_another_method'),
-            authentication_methods_setup_path,
-          ),
-        )
-      else
-        I18n.t('errors.webauthn_platform_setup.general_error')
-      end
+      webauthn_platform_general_error
     end
   end
 
@@ -66,7 +64,41 @@ class WebauthnVisitForm
     when NOT_SUPPORTED_ERROR
       I18n.t('errors.webauthn_setup.not_supported')
     else
-      I18n.t('errors.webauthn_setup.general_error')
+      webauthn_general_error
+    end
+  end
+
+  def webauthn_platform_general_error
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_platform_setup.account_setup_error',
+        link: link_to(
+          I18n.t('errors.webauthn_platform_setup.choose_another_method'),
+          current_mfa_setup_path,
+        ),
+      )
+    end
+  end
+
+  def webauthn_general_error
+    if current_mfa_setup_path == account_path
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
+      )
+    else
+      I18n.t(
+        'errors.webauthn_setup.general_error_html',
+        link_html: link_to(
+          I18n.t('errors.webauthn_setup.additional_methods_link'),
+          current_mfa_setup_path,
+        ),
+      )
     end
   end
 

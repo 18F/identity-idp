@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
     it 'registers an offense when using static translated string as validation message' do
       expect_offense(<<~RUBY)
         validates :a, presence: { message: I18n.t('error') }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use proc when translating validation message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/LocalizedValidationMessageLinter: Use proc when translating validation message
       RUBY
     end
 
@@ -28,7 +28,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
     it 'registers an offense when using static translated string as validation message' do
       expect_offense(<<~RUBY)
         validates_presence_of :a, message: I18n.t('error')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use proc when translating validation message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/LocalizedValidationMessageLinter: Use proc when translating validation message
       RUBY
     end
 

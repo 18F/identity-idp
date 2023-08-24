@@ -51,7 +51,7 @@ RSpec.describe 'RateLimitConcern' do
 
         get :show
 
-        expect(response).to redirect_to idv_session_errors_throttled_url
+        expect(response).to redirect_to idv_session_errors_rate_limited_url
       end
     end
 

@@ -31,7 +31,7 @@ RSpec.shared_examples 'remember device' do
     click_submit_default
 
     # Sign out second user
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
@@ -40,7 +40,7 @@ RSpec.shared_examples 'remember device' do
 
   it 'redirects to an SP from the sign in page' do
     oidc_url = openid_connect_authorize_url(
-      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      client_id: OidcAuthHelper::OIDC_IAL1_ISSUER,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
@@ -51,7 +51,7 @@ RSpec.shared_examples 'remember device' do
     user = remember_device_and_sign_out_user
 
     IdentityLinker.new(
-      user, build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:server')
+      user, build(:service_provider, issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
     ).link_identity(verified_attributes: %w[email])
 
     visit oidc_url
@@ -75,7 +75,7 @@ RSpec.shared_examples 'remember device' do
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                      login_two_factor_path(otp_delivery_preference: :sms)
                     elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
                       login_two_factor_backup_code_path
                     end

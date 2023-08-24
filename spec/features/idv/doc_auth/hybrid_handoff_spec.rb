@@ -7,7 +7,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
@@ -15,7 +14,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
 
   before do
     sign_in_and_2fa_user
-    allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
@@ -24,11 +22,6 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
   context 'on a desktop device send link' do
     before do
       complete_doc_auth_steps_before_hybrid_handoff_step
-      allow_any_instance_of(
-        Idv::HybridHandoffController,
-      ).to receive(
-        :mobile_device?,
-      ).and_return(false)
     end
 
     it 'proceeds to link sent page when user chooses to use phone' do
@@ -144,7 +137,7 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
       freeze_time do
         idv_send_link_max_attempts.times do
           expect(page).to_not have_content(
-            I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
+            I18n.t('errors.doc_auth.send_link_limited', timeout: timeout),
           )
 
           fill_in :doc_auth_phone, with: '415-555-0199'
@@ -161,14 +154,14 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
         expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
         expect(page).to have_content(
           I18n.t(
-            'errors.doc_auth.send_link_throttle',
+            'errors.doc_auth.send_link_limited',
             timeout: timeout,
           ),
         )
       end
       expect(fake_analytics).to have_logged_event(
-        'Throttler Rate Limit Triggered',
-        throttle_type: :idv_send_link,
+        'Rate Limit Reached',
+        limiter_type: :idv_send_link,
       )
 
       # Manual expiration is needed for now since the RateLimiter uses
@@ -182,19 +175,10 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
     end
 
     it 'includes expected URL parameters' do
-      allow_any_instance_of(
-        Idv::HybridHandoffController,
-      ).to receive(
-        :flow_session,
-      ).and_wrap_original do |method, args|
-        session = method.call(*args)
-        session['document_capture_session_uuid'] = document_capture_session.uuid
-        session
-      end
-
       expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         params = Rack::Utils.parse_nested_query URI(config[:link]).query
-        expect(params).to eq('document-capture-session' => document_capture_session.uuid)
+
+        expect(params['document-capture-session']).to be_a_kind_of(String)
 
         impl.call(**config)
       end
@@ -204,20 +188,19 @@ RSpec.feature 'hybrid_handoff step send link and errors' do
     end
 
     it 'sets requested_at on the capture session' do
-      allow_any_instance_of(
-        Idv::HybridHandoffController,
-      ).to receive(
-        :flow_session,
-      ).and_wrap_original do |method, args|
-        session = method.call(*args)
-        session['document_capture_session_uuid'] = document_capture_session.uuid
-        session
+      document_capture_session_uuid = nil
+
+      expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        params = Rack::Utils.parse_nested_query URI(config[:link]).query
+        document_capture_session_uuid = params['document-capture-session']
+        impl.call(**config)
       end
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_send_link
 
-      document_capture_session.reload
+      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+      expect(document_capture_session).to be
       expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
     end
   end

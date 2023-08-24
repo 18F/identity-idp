@@ -4,6 +4,17 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<h2 class="margin-top-2 margin-bottom-1">
+  <%= t('headings.account.two_factor') %>
+</h2>
+
+<ul class="usa-icon-list">
+  <% @presenter.options.each do |option| %>
+    <% if option.mfa_configuration_count > 0 %>
+      <%= render partial: 'partials/multi_factor_authentication/selected_mfa_option', locals: { option: option } %>
+    <% end %>
+  <% end %>
+</ul>
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off' },
                     method: :patch,
@@ -11,7 +22,6 @@
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
-      <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',

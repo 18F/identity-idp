@@ -35,6 +35,12 @@ FactoryBot.define do
 
     trait :in_person_verification_pending do
       deactivation_reason { :in_person_verification_pending }
+      in_person_verification_pending_at { 15.days.ago }
+    end
+
+    trait :fraud_pending_reason do
+      fraud_pending_reason { 'threatmetrix_review' }
+      proofing_components { { threatmetrix_review_status: 'review' } }
     end
 
     trait :fraud_review_pending do

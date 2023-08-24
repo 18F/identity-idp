@@ -78,6 +78,61 @@ RSpec.feature 'Sign in' do
     expect(current_path).to eq sign_up_completed_path
   end
 
+  scenario 'user with old terms of use can accept and continue to IAL1 SP' do
+    user = create(
+      :user,
+      :fully_registered,
+      :with_piv_or_cac,
+      accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.minute,
+    )
+    service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+    IdentityLinker.new(user, service_provider).link_identity(
+      verified_attributes: %w[openid email],
+    )
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    click_on t('account.login.piv_cac')
+    fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
+
+    expect(current_url).to eq rules_of_use_url
+    accept_rules_of_use_and_continue_if_displayed
+    expect(current_url).to start_with service_provider.redirect_uris.first
+  end
+
+  scenario 'user with old terms of use can accept and continue to IAL2 SP' do
+    user = create(
+      :user,
+      :fully_registered,
+      :with_piv_or_cac,
+      accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.minute,
+    )
+    create(
+      :profile,
+      :active,
+      :verified,
+      user: user,
+      pii: { first_name: 'John', ssn: '111223333' },
+    )
+    service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_ISSUER)
+    IdentityLinker.new(user, service_provider).link_identity(
+      verified_attributes: %w[email given_name family_name social_security_number address phone],
+      ial: 2,
+    )
+
+    visit_idp_from_sp_with_ial2(:oidc)
+    click_on t('account.login.piv_cac')
+    fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
+
+    expect(current_url).to eq capture_password_url
+
+    fill_in 'Password', with: user.password
+    click_submit_default
+
+    expect(current_url).to eq rules_of_use_url
+    accept_rules_of_use_and_continue_if_displayed
+    expect(current_url).to start_with service_provider.redirect_uris.first
+  end
+
   scenario 'user opts to add piv/cac card but gets an error' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     nonce = piv_cac_nonce_from_form_action
@@ -142,7 +197,7 @@ RSpec.feature 'Sign in' do
     email = 'foo@bar.com'
     submit_form_with_valid_email(email)
     click_confirmation_link_in_email(email)
-    submit_form_with_valid_password_confirmation
+    submit_form_with_valid_password
     expect(page).to have_current_path(authentication_methods_setup_path)
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
@@ -281,7 +336,7 @@ RSpec.feature 'Sign in' do
     end
 
     scenario 'user can continue browsing with refreshed CSRF token' do
-      token = find('[name=authenticity_token]', visible: false).value
+      token = first('[name=authenticity_token]', visible: false).value
       click_button t('notices.timeout_warning.signed_in.continue')
       expect(page).not_to have_css('.usa-js-modal--active')
       expect(page).to have_css(
@@ -292,7 +347,7 @@ RSpec.feature 'Sign in' do
     end
 
     scenario 'user has option to sign out' do
-      click_link(t('notices.timeout_warning.signed_in.sign_out'))
+      click_button(t('notices.timeout_warning.signed_in.sign_out'))
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
@@ -339,7 +394,7 @@ RSpec.feature 'Sign in' do
 
     it 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
-      click_link(t('links.sign_out'), match: :first)
+      click_button(t('links.sign_out'), match: :first)
 
       travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
@@ -569,7 +624,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Australia',
@@ -587,7 +642,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(0)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Algeria',
@@ -607,12 +662,12 @@ RSpec.feature 'Sign in' do
         otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
-      visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
+      visit login_two_factor_path(otp_delivery_preference: 'voice')
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -658,7 +713,7 @@ RSpec.feature 'Sign in' do
       expect(Telephony::Test::Call.calls.length).to eq(0)
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(page).
-        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
@@ -760,11 +815,6 @@ RSpec.feature 'Sign in' do
       visit login_two_factor_path(otp_delivery_preference: 'voice')
 
       expect(page).to have_current_path login_two_factor_authenticator_path
-    end
-
-    it 'does not display OTP Fallback text and links' do
-      expect(page).
-        to_not have_content t('two_factor_authentication.phone_fallback.question')
     end
   end
 

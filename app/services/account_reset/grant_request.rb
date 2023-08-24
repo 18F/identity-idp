@@ -7,14 +7,16 @@ module AccountReset
     def call
       token = SecureRandom.uuid
       arr = AccountResetRequest.find_by(user_id: @user_id)
-      arr.with_lock do
-        return false if arr.granted_token_valid?
-        account_reset_request.update(
-          granted_at: Time.zone.now,
-          granted_token: token,
-        )
+      result = arr.with_lock do
+        if !arr.granted_token_valid?
+          account_reset_request.update(
+            granted_at: Time.zone.now,
+            granted_token: token,
+          )
+        end
       end
-      true
+
+      !!result
     end
 
     private

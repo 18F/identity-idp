@@ -37,18 +37,10 @@ module TwoFactorAuthCode
       t('two_factor_authentication.otp_delivery_preference.phone_call')
     end
 
-    def fallback_question
-      t('two_factor_authentication.phone_fallback.question')
-    end
-
-    def troubleshooting_header
-      t('components.troubleshooting_options.default_heading')
-    end
-
     def troubleshooting_options
       [
         troubleshoot_change_phone_or_method_option,
-        {
+        BlockLinkComponent.new(
           url: help_center_redirect_path(
             category: 'get-started',
             article: 'authentication-options',
@@ -56,19 +48,11 @@ module TwoFactorAuthCode
             flow: :two_factor_authentication,
             step: :otp_confirmation,
           ),
-          text: t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
           new_tab: true,
-        },
-        {
-          url: help_center_redirect_path(
-            category: 'get-started',
-            article: 'authentication-options',
-            flow: :two_factor_authentication,
-            step: :otp_confirmation,
-          ),
-          text: t('two_factor_authentication.learn_more'),
-          new_tab: true,
-        },
+        ).with_content(
+          t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
+        ),
+        learn_more_about_authentication_options_troubleshooting_option,
       ]
     end
 
@@ -81,19 +65,21 @@ module TwoFactorAuthCode
       end
     end
 
+    def redirect_location_step
+      :otp_confirmation
+    end
+
     private
 
     def troubleshoot_change_phone_or_method_option
       if unconfirmed_phone
-        {
-          url: add_phone_path,
-          text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
-        }
+        BlockLinkComponent.new(url: phone_setup_path).with_content(
+          t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
+        )
       else
-        {
-          url: login_two_factor_options_path,
-          text: t('two_factor_authentication.login_options_link_text'),
-        }
+        BlockLinkComponent.new(url: login_two_factor_options_path).with_content(
+          t('two_factor_authentication.login_options_link_text'),
+        )
       end
     end
 

@@ -3,6 +3,7 @@ require 'saml_idp_constants'
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
   PATH_YEAR = '2023'
+  SP_ISSUER = 'http://localhost:3000'
 
   def saml_settings(overrides: {})
     settings = OneLogin::RubySaml::Settings.new
@@ -16,7 +17,7 @@ module SamlAuthHelper
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
 
     # SP + IdP Settings
-    settings.issuer = 'http://localhost:3000'
+    settings.issuer = SP_ISSUER
     settings.security[:authn_requests_signed] = true
     settings.security[:logout_requests_signed] = true
     settings.security[:embed_sign] = true
@@ -41,7 +42,7 @@ module SamlAuthHelper
 
   def request_authn_contexts
     [
-      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     ]
   end
@@ -241,7 +242,7 @@ module SamlAuthHelper
       )
     elsif sp == :oidc
       @state = SecureRandom.hex
-      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @client_id = OidcAuthHelper::OIDC_IAL1_ISSUER
       @nonce = SecureRandom.hex
       visit_idp_from_oidc_sp_with_ial1(state: @state, client_id: @client_id, nonce: @nonce)
     end

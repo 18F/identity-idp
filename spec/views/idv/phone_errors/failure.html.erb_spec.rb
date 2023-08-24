@@ -22,12 +22,25 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
 
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
-      t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-      href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
-    )
-    expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       href: MarketingSite.contact_url,
+    )
+  end
+
+  it 'tells them they can try again later' do
+    raw_expected_text = t(
+      'idv.failure.phone.rate_limited.option_try_again_later_html',
+      time_left: distance_of_time_in_words(Time.zone.now, @expires_at, except: :seconds),
+    )
+    expected_text = ActionView::Base.full_sanitizer.sanitize(raw_expected_text)
+
+    expect(rendered).to have_text(expected_text)
+  end
+
+  it 'renders a cancel link' do
+    expect(rendered).to have_link(
+      t('links.cancel'),
+      href: idv_cancel_path,
     )
   end
 
@@ -43,7 +56,9 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
   end
 
   it 'describes GPO as an alternative' do
-    expect(rendered).to have_text(t('idv.failure.phone.rate_limited.gpo.prompt'))
+    raw_expected_text = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
+    expected_text = ActionView::Base.full_sanitizer.sanitize(raw_expected_text)
+    expect(rendered).to have_text(expected_text)
   end
 
   it 'includes a link to GPO flow' do
@@ -57,7 +72,10 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
     let(:gpo_letter_available) { false }
 
     it 'does not describe GPO as an alternative' do
-      expect(rendered).not_to have_text(t('idv.failure.phone.rate_limited.gpo.prompt'))
+      raw_gpo_alternative = t('idv.failure.phone.rate_limited.option_verify_by_mail_html')
+      gpo_alternative = ActionView::Base.full_sanitizer.sanitize(raw_gpo_alternative)
+
+      expect(rendered).not_to have_text(gpo_alternative)
     end
 
     it 'does not include a link to GPO flow' do

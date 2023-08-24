@@ -36,7 +36,7 @@ module Identity
     )
     IdentityConfig.build_store(configuration)
 
-    AssetSources.manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
+    AssetSources.manifest_path = Rails.public_path.join('packs', 'manifest.json')
     AssetSources.cache_manifest = Rails.env.production? || Rails.env.test?
 
     console do
@@ -129,6 +129,10 @@ module Identity
         origins IdentityCors.allowed_origins_static_sites
         resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
+        if IdentityConfig.store.in_person_public_address_search_enabled
+          resource '/api/address_search', headers: :any, methods: %i[post options]
+          resource '/api/usps_locations', headers: :any, methods: %i[post options]
+        end
       end
     end
 

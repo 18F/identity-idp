@@ -68,7 +68,7 @@ RSpec.describe IdvController do
       it 'logs appropriate attempts event' do
         stub_attempts_tracker
         expect(@irs_attempts_api_tracker).to receive(:idv_verification_rate_limited).
-          with({ throttle_context: 'single-session' })
+          with({ limiter_context: 'single-session' })
 
         get :index
       end
@@ -89,7 +89,7 @@ RSpec.describe IdvController do
       it 'redirects to rate limited page' do
         get :index
 
-        expect(response).to redirect_to idv_session_errors_throttled_url
+        expect(response).to redirect_to idv_session_errors_rate_limited_url
       end
     end
 

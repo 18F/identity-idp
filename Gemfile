@@ -43,7 +43,7 @@ gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 8.0'
-gem 'puma'
+gem 'puma', '~> 5.6.7'
 gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.12.0'
@@ -84,14 +84,11 @@ gem 'zxcvbn', '0.1.9'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
-  gem 'binding_of_caller'
-  gem 'derailed_benchmarks', '~> 1.8'
+  gem 'derailed_benchmarks'
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'letter_opener', '~> 1.8'
-  gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
-  gem 'rails-erd', '>= 1.6.0'
 end
 
 group :development, :test do
@@ -99,7 +96,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'bullet', '~> 7.0'
   gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: 'd3f3b7c'
-  gem 'erb_lint', '~> 0.3.0', require: false
+  gem 'erb_lint', '~> 0.4.0', require: false
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
@@ -110,15 +107,15 @@ group :development, :test do
   gem 'pry-rails'
   gem 'psych'
   gem 'rspec-rails', '~> 6.0'
-  gem 'rubocop', '~> 1.43.0', require: false
-  gem 'rubocop-performance', '~> 1.15.0', require: false
+  gem 'rubocop', '~> 1.55.1', require: false
+  gem 'rubocop-performance', '~> 1.18.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'simplecov', '~> 0.21.0', require: false
+  gem 'simplecov', '~> 0.22.0', require: false
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
   gem 'email_spec'
@@ -130,7 +127,6 @@ group :test do
   gem 'rspec_junit_formatter'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'tableparser', require: false
-  gem 'webdrivers', '~> 5.2.0'
   gem 'webmock'
   gem 'zonebie'
 end

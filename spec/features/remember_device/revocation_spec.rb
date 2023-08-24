@@ -17,7 +17,7 @@ RSpec.feature 'taking an action that revokes remember device' do
       find_sidenav_forget_browsers_link.click
       click_on(t('forms.buttons.confirm'))
 
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -34,7 +34,7 @@ RSpec.feature 'taking an action that revokes remember device' do
         find_sidenav_forget_browsers_link.click
         click_on(t('forms.buttons.confirm'))
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         expect_mfa_to_be_required_for_user(user)
       end
@@ -51,7 +51,7 @@ RSpec.feature 'taking an action that revokes remember device' do
     check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
   end
 
   def expect_mfa_to_be_required_for_user(user)
@@ -66,7 +66,7 @@ RSpec.feature 'taking an action that revokes remember device' do
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
-                      login_two_factor_path(otp_delivery_preference: :sms, reauthn: false)
+                      login_two_factor_path(otp_delivery_preference: :sms)
                     elsif TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
                       login_two_factor_backup_code_path
                     end

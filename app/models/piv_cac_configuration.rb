@@ -9,7 +9,7 @@ class PivCacConfiguration < ApplicationRecord
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::PivCacSelectionPresenter.new(configuration: self)]
+      [TwoFactorAuthentication::PivCacSelectionPresenter.new(user:, configuration: self)]
     else
       []
     end

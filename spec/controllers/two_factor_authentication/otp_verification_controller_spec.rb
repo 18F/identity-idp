@@ -128,7 +128,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          multi_factor_auth_method_created_at: phone_configuration_created_at,
+          multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -199,7 +199,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          multi_factor_auth_method_created_at: phone_configuration_created_at,
+          multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -265,7 +265,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          multi_factor_auth_method_created_at: phone_configuration_created_at,
+          multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
           phone_configuration_id: controller.current_user.default_phone_configuration.id,
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
@@ -292,20 +292,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         expect(subject.user_session[:auth_method]).to eq TwoFactorAuthenticatable::AuthMethod::SMS
         expect(subject.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq false
-      end
-
-      it 'tracks the attempt event with reauthentication parameter true' do
-        stub_attempts_tracker
-
-        subject.user_session[:context] = 'reauthentication'
-
-        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
-          with(reauthentication: true, success: true)
-
-        post :create, params: {
-          code: subject.current_user.reload.direct_otp,
-          otp_delivery_preference: 'sms',
-        }
       end
 
       context "with a leading '#' sign" do
@@ -456,7 +442,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              multi_factor_auth_method_created_at: phone_configuration_created_at,
+              multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
               phone_configuration_id: phone_id,
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
@@ -546,7 +532,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: controller.current_user.default_phone_configuration.id,
-              multi_factor_auth_method_created_at: phone_configuration_created_at,
+              multi_factor_auth_method_created_at: phone_configuration_created_at.strftime('%s%L'),
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),

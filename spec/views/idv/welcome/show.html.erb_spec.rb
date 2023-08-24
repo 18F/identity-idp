@@ -31,28 +31,6 @@ RSpec.describe 'idv/welcome/show.html.erb' do
     end
   end
 
-  context 'during the acuant maintenance window' do
-    let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
-    let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
-    let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
-
-    before do
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
-    end
-
-    around do |ex|
-      travel_to(now) { ex.run }
-    end
-
-    it 'renders the warning banner but no other content' do
-      render
-
-      expect(rendered).to have_content('We are currently under maintenance')
-      expect(rendered).to_not have_content(t('doc_auth.headings.welcome'))
-    end
-  end
-
   context 'without service provider' do
     it 'renders troubleshooting options' do
       render
@@ -91,5 +69,67 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       t('doc_auth.instructions.learn_more'),
       href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
     )
+  end
+
+  context 'A/B test specifies welcome_new template' do
+    before do
+      @ab_test_bucket = :welcome_new
+      @sp_name = 'Login.gov'
+      @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+    end
+
+    it 'renders the welcome_new template' do
+      render
+
+      expect(rendered).to have_content(@title)
+      expect(rendered).to have_content(t('doc_auth.getting_started.instructions.getting_started'))
+      expect(rendered).to have_link(
+        t('doc_auth.info.getting_started_learn_more'),
+        href: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'how-to-verify-your-identity',
+          flow: :idv,
+          step: :welcome_new,
+          location: 'intro_paragraph',
+        ),
+      )
+      expect(rendered).not_to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
+  end
+
+  context 'A/B test specifies welcome_default template' do
+    before do
+      @ab_test_bucket = :welcome_default
+    end
+
+    it 'renders the welcome_default template' do
+      render
+
+      expect(rendered).to have_content(t('doc_auth.headings.welcome'))
+      expect(rendered).to have_content(t('doc_auth.instructions.welcome'))
+      expect(rendered).to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
+  end
+
+  context 'A/B test unspecified' do
+    before do
+      @ab_test_bucket = nil
+    end
+    it 'renders the welcome_default template' do
+      render
+
+      expect(rendered).to have_content(t('doc_auth.headings.welcome'))
+      expect(rendered).to have_content(t('doc_auth.instructions.welcome'))
+      expect(rendered).to have_link(
+        t('doc_auth.instructions.learn_more'),
+        href: policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
+      )
+    end
   end
 end
