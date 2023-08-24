@@ -54,18 +54,6 @@ interface AddressSearchProps {
   locationsURL: string;
 }
 
-interface FormattedLocation {
-  formattedCityStateZip: string;
-  distance: string;
-  id: number;
-  name: string;
-  saturdayHours: string;
-  streetAddress: string;
-  sundayHours: string;
-  weekdayHours: string;
-  isPilot: boolean;
-}
-
 interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
