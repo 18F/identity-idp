@@ -24,21 +24,16 @@ module Reporting
       GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
       USPS_ENROLLMENT_STATUS_UPDATED = 'GetUspsProofingResultsJob: Enrollment status updated'
 
+      def self.all_events
+        constants.map { |c| const_get(c) }
+      end
+    end
+
+    module Results
       IDV_FINAL_RESOLUTION_VERIFIED = 'IdV: final resolution - Verified'
       IDV_FINAL_RESOLUTION_FRAUD_REVIEW = 'IdV: final resolution - Fraud Review Pending'
       IDV_FINAL_RESOLUTION_GPO = 'IdV: final resolution - GPO Pending'
       IDV_FINAL_RESOLUTION_IN_PERSON = 'IdV: final resolution - In Person Proofing'
-
-      def self.queryable_events
-        [
-          IDV_DOC_AUTH_WELCOME,
-          IDV_DOC_AUTH_GETTING_STARTED,
-          IDV_DOC_AUTH_IMAGE_UPLOAD,
-          IDV_FINAL_RESOLUTION,
-          GPO_VERIFICATION_SUBMITTED,
-          USPS_ENROLLMENT_STATUS_UPDATED,
-        ]
-      end
     end
 
     # @param [String] isssuer
@@ -97,19 +92,19 @@ module Reporting
     end
 
     def idv_final_resolution_verified
-      data[Events::IDV_FINAL_RESOLUTION_VERIFIED].to_i
+      data[Results::IDV_FINAL_RESOLUTION_VERIFIED].to_i
     end
 
     def idv_final_resolution_gpo
-      data[Events::IDV_FINAL_RESOLUTION_GPO].to_i
+      data[Results::IDV_FINAL_RESOLUTION_GPO].to_i
     end
 
     def idv_final_resolution_in_person
-      data[Events::IDV_FINAL_RESOLUTION_IN_PERSON].to_i
+      data[Results::IDV_FINAL_RESOLUTION_IN_PERSON].to_i
     end
 
     def idv_final_resolution_fraud_review
-      data[Events::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].to_i
+      data[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW].to_i
     end
 
     def idv_final_resolution_total_pending
@@ -155,16 +150,16 @@ module Reporting
 
           if row['name'] == Events::IDV_FINAL_RESOLUTION
             if row['identity_verified'] == '1'
-              event_users[Events::IDV_FINAL_RESOLUTION_VERIFIED] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << row['user_id']
             end
             if row['gpo_verification_pending'] == '1'
-              event_users[Events::IDV_FINAL_RESOLUTION_GPO] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << row['user_id']
             end
             if row['in_person_verification_pending'] == '1'
-              event_users[Events::IDV_FINAL_RESOLUTION_IN_PERSON] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << row['user_id']
             end
             if row['fraud_review_pending'] == '1'
-              event_users[Events::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << row['user_id']
+              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << row['user_id']
             end
           end
         end
@@ -180,7 +175,7 @@ module Reporting
     def query
       params = {
         issuer: issuer && quote(issuer),
-        event_names: quote(Events.queryable_events),
+        event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
