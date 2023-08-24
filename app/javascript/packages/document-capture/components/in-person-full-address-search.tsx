@@ -52,7 +52,7 @@ function useUspsLocations(locationsURL: string) {
 
   const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
     let formIsValid = true;
-    const validZipCodeLength = zipCode.length === 5 || zipCode.length === 10;
+    const validZipCodeLength = zipCode.length === 5;
 
     if (address.length === 0) {
       validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
