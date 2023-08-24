@@ -13,7 +13,7 @@ RSpec.shared_examples 'sends no emails' do
 end
 
 RSpec.shared_examples 'sends emails' do |expected_number_of_emails:,
-                                         expected_number_of_number_of_idv_events:
+                                         expected_number_of_analytics_events:
                                            expected_number_of_emails|
   it "sends that user #{expected_number_of_emails} email(s)" do
     expect { subject.send_emails(time_due_for_reminder) }.
@@ -56,7 +56,7 @@ RSpec.describe GpoReminderSender do
     let(:time_not_yet_due) { time_due_for_reminder + 1.day }
     let(:time_yesterday) { Time.zone.now - 1.day }
 
-    def set_gpo_verification_pending_at(to_time)
+    def set_gpo_verification_pending_at(user, to_time)
       user.
         gpo_verification_pending_profile.
         update(gpo_verification_pending_at: to_time)
@@ -71,22 +71,23 @@ RSpec.describe GpoReminderSender do
     before { allow(Analytics).to receive(:new).and_return(fake_analytics) }
 
     context 'when no users need a reminder' do
-      before { set_gpo_verification_pending_at(time_not_yet_due) }
+      before { set_gpo_verification_pending_at(user, time_not_yet_due) }
 
       include_examples 'sends no emails'
     end
 
     context 'when a user has requested two letters' do
       before do
-        set_gpo_verification_pending_at(time_due_for_reminder - 2.days)
-        user.gpo_verification_pending_profile.gpo_confirmation_codes << create(:gpo_confirmation_code)
+        set_gpo_verification_pending_at(user, time_due_for_reminder - 2.days)
+        new_confirmation_code = create(:gpo_confirmation_code)
+        user.gpo_verification_pending_profile.gpo_confirmation_codes << new_confirmation_code
       end
 
       include_examples 'sends emails', expected_number_of_emails: 2
     end
 
     context 'when a user is due for a reminder' do
-      before { set_gpo_verification_pending_at(time_due_for_reminder) }
+      before { set_gpo_verification_pending_at(user, time_due_for_reminder) }
 
       include_examples 'sends emails', expected_number_of_emails: 1
 
@@ -95,7 +96,7 @@ RSpec.describe GpoReminderSender do
 
         include_examples 'sends emails',
                          expected_number_of_emails: 2,
-                         expected_number_of_number_of_idv_events: 1
+                         expected_number_of_analytics_events: 1
       end
 
       context 'but the user has cancelled gpo verification' do
@@ -139,7 +140,7 @@ RSpec.describe GpoReminderSender do
       let(:max_age_to_send_letter_in_days) { 42 }
 
       before do
-        set_gpo_verification_pending_at((max_age_to_send_letter_in_days + 1).days.ago)
+        set_gpo_verification_pending_at(user, (max_age_to_send_letter_in_days + 1).days.ago)
         allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
           and_return(max_age_to_send_letter_in_days)
       end
