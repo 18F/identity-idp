@@ -52,7 +52,6 @@ es:
       change: Cambie la contraseña de su cuenta
       forgot: Restablecer la contraseña
     personal_key: Por si acaso
-    phone_setup: Obtenga su código único
     piv_cac_login:
       add: Agregue su PIV o CAC
       new: Use su PIV / CAC para iniciar sesión en su cuenta

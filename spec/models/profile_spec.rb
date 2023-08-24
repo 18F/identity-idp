@@ -109,50 +109,29 @@ RSpec.describe Profile do
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
-    it 'encrypts PII' do
+    it 'encrypts pii and stores the multi region ciphertext' do
       expect(profile.encrypted_pii).to be_nil
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_multi_region).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      encrypt_pii
+      profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii).to be_present
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match(ssn)
-      expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
 
       expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_multi_region).to be_nil
-      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
-    end
+      expect(profile.encrypted_pii_recovery).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery).to_not match(ssn)
 
-    context 'with aws_kms_multi_region_write_enabled set to true' do
-      before do
-        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_write_enabled).and_return(true)
-      end
+      expect(profile.encrypted_pii_multi_region).to be_present
+      expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_multi_region).to_not match(ssn)
 
-      it 'encrypts pii and stores the multi region ciphertext' do
-        expect(profile.encrypted_pii).to be_nil
-        expect(profile.encrypted_pii_recovery).to be_nil
-        expect(profile.encrypted_pii_multi_region).to be_nil
-        expect(profile.encrypted_pii_recovery_multi_region).to be_nil
-
-        profile.encrypt_pii(pii, user.password)
-
-        expect(profile.encrypted_pii).to be_present
-        expect(profile.encrypted_pii).to_not match 'Jane'
-        expect(profile.encrypted_pii).to_not match(ssn)
-
-        expect(profile.encrypted_pii_recovery).to be_present
-        expect(profile.encrypted_pii_recovery).to_not match 'Jane'
-        expect(profile.encrypted_pii_recovery).to_not match(ssn)
-
-        expect(profile.encrypted_pii_multi_region).to be_present
-        expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
-        expect(profile.encrypted_pii_multi_region).to_not match(ssn)
-
-        expect(profile.encrypted_pii_recovery_multi_region).to be_present
-        expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
-        expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
-      end
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match 'Jane'
+      expect(profile.encrypted_pii_recovery_multi_region).to_not match(ssn)
     end
 
     it 'generates new personal key' do
@@ -251,6 +230,31 @@ RSpec.describe Profile do
 
       expect { profile.decrypt_pii(user.password) }.to raise_error(Encryption::EncryptionError)
     end
+
+    context 'with aws_kms_multi_region_read_enabled enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'decrypts the PII for users with a multi region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+
+        expect(profile.encrypted_pii_multi_region).to_not be_nil
+
+        decrypted_pii = profile.decrypt_pii(user.password)
+
+        expect(decrypted_pii).to eq pii
+      end
+
+      it 'decrypts the PII for users with only a single region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        profile.update!(encrypted_pii_multi_region: nil)
+
+        decrypted_pii = profile.decrypt_pii(user.password)
+
+        expect(decrypted_pii).to eq pii
+      end
+    end
   end
 
   describe '#recover_pii' do
@@ -263,6 +267,37 @@ RSpec.describe Profile do
       normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
       expect(profile.recover_pii(normalized_personal_key)).to eq pii
+    end
+
+    context 'with aws_kms_multi_region_read_enabled enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'decrypts the PII for users with a multi region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        personal_key = profile.personal_key
+
+        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+
+        expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
+
+        decrypted_pii = profile.recover_pii(normalized_personal_key)
+
+        expect(decrypted_pii).to eq pii
+      end
+
+      it 'decrypts the PII for users with only a single region ciphertext' do
+        profile.encrypt_pii(pii, user.password)
+        profile.update!(encrypted_pii_recovery_multi_region: nil)
+        personal_key = profile.personal_key
+
+        normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+
+        decrypted_pii = profile.recover_pii(normalized_personal_key)
+
+        expect(decrypted_pii).to eq pii
+      end
     end
   end
 

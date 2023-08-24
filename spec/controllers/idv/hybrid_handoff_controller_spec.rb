@@ -29,7 +29,7 @@ RSpec.describe Idv::HybridHandoffController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -54,6 +54,8 @@ RSpec.describe Idv::HybridHandoffController do
       {
         step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
+        redo_document_capture: nil,
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -143,6 +145,30 @@ RSpec.describe Idv::HybridHandoffController do
         analytics_args[:redo_document_capture] = true
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
+
+      context 'user has already completed verify info' do
+        before do
+          subject.idv_session.mark_verify_info_step_complete!
+        end
+
+        it 'does not set redo_document_capture to true in idv_session' do
+          get :show, params: { redo: true }
+
+          expect(subject.idv_session.redo_document_capture).not_to be_truthy
+        end
+
+        it 'does not add redo_document_capture to analytics' do
+          get :show, params: { redo: true }
+
+          expect(@analytics).not_to have_logged_event(analytics_name)
+        end
+
+        it 'redirects to review' do
+          get :show, params: { redo: true }
+
+          expect(response).to redirect_to(idv_review_url)
+        end
+      end
     end
 
     context 'hybrid flow is not available' do
@@ -176,6 +202,8 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'hybrid',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          redo_document_capture: nil,
+          skip_hybrid_handoff: nil,
           irs_reproofing: false,
           telephony_response: {
             errors: {},
@@ -226,6 +254,8 @@ RSpec.describe Idv::HybridHandoffController do
           flow_path: 'standard',
           step: 'hybrid_handoff',
           analytics_id: 'Doc Auth',
+          redo_document_capture: nil,
+          skip_hybrid_handoff: nil,
           irs_reproofing: false,
         }.merge(ab_test_args)
       end

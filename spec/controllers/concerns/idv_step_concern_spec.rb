@@ -31,10 +31,10 @@ RSpec.describe 'IdvStepConcern' do
       )
     end
 
-    it 'includes check_for_outage before_action' do
+    it 'includes check_for_mail_only_outage before_action' do
       expect(Idv::StepController).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
   end

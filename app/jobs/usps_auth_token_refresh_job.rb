@@ -5,6 +5,11 @@ class UspsAuthTokenRefreshJob < ApplicationJob
     analytics.idv_usps_auth_token_refresh_job_started
 
     usps_proofer.retrieve_token!
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
+    analytics.idv_usps_auth_token_refresh_job_network_error(
+      exception_class: err.class.name,
+      exception_message: err.message,
+    )
   ensure
     analytics.idv_usps_auth_token_refresh_job_completed
   end
@@ -12,11 +17,7 @@ class UspsAuthTokenRefreshJob < ApplicationJob
   private
 
   def usps_proofer
-    if IdentityConfig.store.usps_mock_fallback
-      UspsInPersonProofing::Mock::Proofer.new
-    else
-      UspsInPersonProofing::Proofer.new
-    end
+    UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def analytics

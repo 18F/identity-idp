@@ -25,7 +25,7 @@ class NavigationPresenter
       NavItem.new(
         I18n.t('account.navigation.two_factor_authentication'),
         account_two_factor_authentication_path, [
-          NavItem.new(I18n.t('account.navigation.add_phone_number'), add_phone_path),
+          NavItem.new(I18n.t('account.navigation.add_phone_number'), phone_setup_path),
           NavItem.new(
             I18n.t('account.navigation.add_authentication_apps'),
             authenticator_setup_url,

@@ -53,17 +53,14 @@ module Encryption
         password_cost: cost,
       ).to_s
 
-      multi_region_digest = nil
-      if IdentityConfig.store.aws_kms_multi_region_write_enabled
-        multi_region_encrypted_password = multi_region_kms_client.encrypt(
-          scrypted_password, kms_encryption_context(user_uuid: user_uuid)
-        )
-        multi_region_digest = PasswordDigest.new(
-          encrypted_password: multi_region_encrypted_password,
-          password_salt: salt,
-          password_cost: cost,
-        ).to_s
-      end
+      multi_region_encrypted_password = multi_region_kms_client.encrypt(
+        scrypted_password, kms_encryption_context(user_uuid: user_uuid)
+      )
+      multi_region_digest = PasswordDigest.new(
+        encrypted_password: multi_region_encrypted_password,
+        password_salt: salt,
+        password_cost: cost,
+      ).to_s
 
       RegionalCiphertextPair.new(
         single_region_ciphertext: single_region_digest,
@@ -72,7 +69,7 @@ module Encryption
     end
 
     def verify(password:, digest_pair:, user_uuid:)
-      digest = digest_pair.single_region_ciphertext
+      digest = digest_pair.multi_or_single_region_ciphertext
       password_digest = PasswordDigest.parse_from_string(digest)
       return verify_uak_digest(password, digest) if stale_digest?(digest)
 
@@ -104,7 +101,7 @@ module Encryption
     end
 
     def decrypt_digest_with_kms(encrypted_password, user_uuid)
-      single_region_kms_client.decrypt(
+      multi_region_kms_client.decrypt(
         encrypted_password, kms_encryption_context(user_uuid: user_uuid)
       )
     end
@@ -127,7 +124,7 @@ module Encryption
       UakPasswordVerifier.verify(password: password, digest: digest)
     end
 
-    add_method_tracer :digest, "Custom/#{name}/digest"
+    add_method_tracer :create_digest_pair, "Custom/#{name}/create_digest_pair"
     add_method_tracer :verify, "Custom/#{name}/verify"
   end
 end

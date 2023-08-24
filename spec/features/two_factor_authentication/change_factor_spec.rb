@@ -84,17 +84,17 @@ RSpec.feature 'Changing authentication factor' do
       visit webauthn_setup_path
       expect(current_path).to eq login_two_factor_options_path
 
-      visit add_phone_path
+      visit phone_setup_path
       expect(current_path).to eq login_two_factor_options_path
 
       find("label[for='two_factor_options_form_selection_sms']").click
       click_on t('forms.buttons.continue')
       fill_in_code_with_last_phone_otp
       click_submit_default
-      expect(current_path).to eq add_phone_path
+      expect(current_path).to eq phone_setup_path
 
-      visit add_phone_path
-      expect(current_path).to eq add_phone_path
+      visit phone_setup_path
+      expect(current_path).to eq phone_setup_path
     end
   end
 
