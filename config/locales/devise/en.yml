@@ -44,9 +44,9 @@ en:
       updated_not_active: Your password has been changed. Please sign in with your new password.
     registrations:
       close_window: You can close this window if you’re done.
-      destroyed: Your account has been successfully deleted.
-        was processed, but we need to confirm your new number before you can use
-        it. Please follow the instructions below.
+      destroyed: Your account has been successfully deleted. was processed, but we
+        need to confirm your new number before you can use it. Please follow the
+        instructions below.
       start:
         accordion: You will also need
         bullet_1_html: An <strong>email address</strong>.
