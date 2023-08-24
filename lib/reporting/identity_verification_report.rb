@@ -136,11 +136,11 @@ module Reporting
 
     # Turns query results into a hash keyed by event name, values are a count of unique users
     # for that event
-    # @return [Hash<String,Integer>]
+    # @return [Hash<Set<String>>]
     def data
       @data ||= begin
-        event_users = Hash.new do |h, uuid|
-          h[uuid] = Set.new
+        event_users = Hash.new do |h, event_name|
+          h[event_name] = Set.new
         end
 
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
@@ -191,8 +191,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name != %{gpo_verification_submitted})
-        | fields !properties.event_properties.fraud_review_pending and !properties.event_properties.gpo_verification_pending and !properties.event_properties.in_person_verification_pending as identity_verified
         | fields properties.event_properties.fraud_review_pending as fraud_review_pending, properties.event_properties.gpo_verification_pending as gpo_verification_pending, properties.event_properties.in_person_verification_pending as in_person_verification_pending
+        | fields !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending as identity_verified
         | limit 10000
       QUERY
     end
