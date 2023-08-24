@@ -12,6 +12,26 @@ RSpec.shared_examples 'sends no emails' do
   end
 end
 
+RSpec.shared_examples 'sends emails' do |number_of_emails|
+  it "sends that user #{number_of_emails} email(s)" do
+    expect { subject.send_emails(time_due_for_reminder) }.
+      to change { ActionMailer::Base.deliveries.size }.by(number_of_emails)
+  end
+
+  it 'logs the email events' do
+    subject.send_emails(time_due_for_reminder)
+
+    expect(fake_analytics.events['IdV: gpo reminder email sent'].size).to eq(1)
+    expect(fake_analytics.events['Email Sent'].size).to eq(number_of_emails)
+  end
+
+  it 'updates the GPO verification code `reminder_sent_at`' do
+    subject.send_emails(time_due_for_reminder)
+
+    expect(gpo_confirmation_code.reminder_sent_at).to be_within(1).of(Time.zone.now)
+  end
+end
+
 RSpec.describe GpoReminderSender do
   describe '#send_emails' do
     subject(:sender) { GpoReminderSender.new }
@@ -53,32 +73,12 @@ RSpec.describe GpoReminderSender do
     context 'when a user is due for a reminder' do
       before { set_gpo_verification_pending_at(time_due_for_reminder) }
 
-      it 'sends that user an email' do
-        expect { subject.send_emails(time_due_for_reminder) }.
-          to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
-
-      it 'logs the email events' do
-        expect { subject.send_emails(time_due_for_reminder) }.
-          to change { fake_analytics.events.count }.by(2)
-
-        expect(fake_analytics).to have_logged_event('IdV: gpo reminder email sent')
-        expect(fake_analytics).to have_logged_event('Email Sent')
-      end
-
-      it 'updates the GPO verification code `reminder_sent_at`' do
-        subject.send_emails(time_due_for_reminder)
-
-        expect(gpo_confirmation_code.reminder_sent_at).to be_within(1).of(Time.zone.now)
-      end
+      include_examples 'sends emails', 1
 
       context 'and the user has multiple emails' do
         let(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails) }
 
-        it 'sends an email to all of them' do
-          expect { subject.send_emails(time_due_for_reminder) }.
-            to change { ActionMailer::Base.deliveries.size }.by(2)
-        end
+        include_examples 'sends emails', 2
       end
 
       context 'but the user has cancelled gpo verification' do
@@ -92,7 +92,6 @@ RSpec.describe GpoReminderSender do
 
         include_examples 'sends no emails'
       end
-
 
       context 'but the user has completed gpo verification' do
         before do
