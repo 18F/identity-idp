@@ -22,7 +22,7 @@ class GpoVerifyForm
     if result
       pending_profile&.remove_gpo_deactivation_reason
 
-      if user.has_in_person_enrollment?
+      if has_in_person_enrollment?
         schedule_in_person_enrollment_and_deactivate_profile
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
@@ -43,7 +43,7 @@ class GpoVerifyForm
         letter_count: letter_count,
         attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: user.has_in_person_enrollment?,
+        pending_in_person_enrollment: has_in_person_enrollment?,
         fraud_check_failed: fraud_check_failed,
       },
     )
@@ -64,6 +64,10 @@ class GpoVerifyForm
   def schedule_in_person_enrollment_and_deactivate_profile
     UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
     pending_profile&.deactivate_for_in_person_verification
+  end
+
+  def has_in_person_enrollment?
+    pending_profile&.in_person_enrollment&.establishing?
   end
 
   def which_letter

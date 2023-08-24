@@ -106,7 +106,7 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless current_user.has_in_person_enrollment?
+      return unless has_in_person_enrollment?
 
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end

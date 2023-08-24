@@ -199,8 +199,7 @@ class User < ApplicationRecord
   end
 
   def has_in_person_enrollment?
-    in_person_enrollments.where(status: [:establishing, :pending]).
-      order(created_at: :desc).first&.selected_location_details.present?
+    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
   end
 
   def personal_key_generated_at
