@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.shared_examples 'sends no emails' do
   it 'sends no emails' do
     expect { subject.send_emails(time_due_for_reminder) }.
-      to change { ActionMailer::Base.deliveries.size }.by(0)
+      not_to change { ActionMailer::Base.deliveries.size }
   end
 
   it 'logs no events' do
@@ -12,7 +12,7 @@ RSpec.shared_examples 'sends no emails' do
   end
 end
 
-RSpec.shared_examples 'sends emails' do |number_of_emails|
+RSpec.shared_examples 'sends emails' do |number_of_emails, number_of_profiles = 1|
   it "sends that user #{number_of_emails} email(s)" do
     expect { subject.send_emails(time_due_for_reminder) }.
       to change { ActionMailer::Base.deliveries.size }.by(number_of_emails)
@@ -21,14 +21,14 @@ RSpec.shared_examples 'sends emails' do |number_of_emails|
   it 'logs the email events' do
     subject.send_emails(time_due_for_reminder)
 
-    expect(fake_analytics.events['IdV: gpo reminder email sent'].size).to eq(1)
+    expect(fake_analytics.events['IdV: gpo reminder email sent'].size).to eq(number_of_profiles)
     expect(fake_analytics.events['Email Sent'].size).to eq(number_of_emails)
   end
 
   it 'updates the GPO verification code `reminder_sent_at`' do
     subject.send_emails(time_due_for_reminder)
 
-    expect(gpo_confirmation_code.reminder_sent_at).to be_within(1).of(Time.zone.now)
+    expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
   end
 end
 
@@ -68,6 +68,25 @@ RSpec.describe GpoReminderSender do
       before { set_gpo_verification_pending_at(time_not_yet_due) }
 
       include_examples 'sends no emails'
+    end
+
+    context 'when a user has requested two GPO letters' do
+      before do
+        set_gpo_verification_pending_at(time_due_for_reminder - 2.days)
+
+        profile = create(
+          :profile,
+          :with_pii,
+          gpo_verification_pending_at: time_due_for_reminder,
+          user: user,
+        )
+        gpo_code = create(:gpo_confirmation_code)
+        profile.gpo_confirmation_codes << gpo_code
+        device = create(:device, user: user)
+        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
+      end
+
+      include_examples 'sends emails', 2, 2
     end
 
     context 'when a user is due for a reminder' do
@@ -129,5 +148,7 @@ RSpec.describe GpoReminderSender do
 
       include_examples 'sends no emails'
     end
+
+
   end
 end
