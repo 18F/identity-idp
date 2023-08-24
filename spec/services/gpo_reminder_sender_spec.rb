@@ -24,7 +24,7 @@ RSpec.shared_examples 'sends emails' do |expected_number_of_emails:,
     subject.send_emails(time_due_for_reminder)
 
     expect(fake_analytics.events['IdV: gpo reminder email sent'].size).to(
-      eq(expected_number_of_number_of_idv_events),
+      eq(expected_number_of_analytics_events),
     )
     expect(fake_analytics.events['Email Sent'].size).to(
       eq(expected_number_of_emails),
