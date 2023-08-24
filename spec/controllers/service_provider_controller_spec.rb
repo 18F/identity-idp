@@ -20,15 +20,24 @@ RSpec.describe ServiceProviderController do
       }
     end
     let(:dashboard_service_providers) { [attributes] }
+    let(:token) { '123ABC' }
+    let(:use_feature) { true }
+
+    before do
+      headers(token)
+      allow(IdentityConfig.store).to receive(:use_dashboard_service_providers) { use_feature }
+      allow_any_instance_of(ActionDispatch::Http::Headers).
+        to receive(:[]).and_call_original
+    end
 
     context 'feature on, correct token in headers' do
       before do
-        correct_token = '123ABC'
-        headers(correct_token)
-        allow(IdentityConfig.store).to receive(:use_dashboard_service_providers).and_return(true)
+        # rspec won't allow an unknown Content-Type
+        allow_any_instance_of(ActionDispatch::Http::Headers).
+          to receive(:[]).with('Content-Type') { 'gzip/json' }
       end
 
-      context 'with no params' do
+      context 'with no body' do
         before do
           allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
             and_return(dashboard_service_providers)
@@ -66,17 +75,14 @@ RSpec.describe ServiceProviderController do
         end
       end
 
-      context 'with a service provider passed via params' do
+      context 'with a service provider passed in via request body' do
         let(:friendly_name) { 'A new friendly name' }
-        let(:params) do
-          {
-            service_provider: attributes.merge(friendly_name:),
-          }
+        let(:body) do
+          Zlib.gzip({ service_provider: attributes.merge(friendly_name:) }.to_json)
         end
 
         before do
-          request.content_type = 'gzip/json'
-          post :update, params:
+          post :update, body:
         end
 
         it 'returns 200' do
@@ -94,10 +100,7 @@ RSpec.describe ServiceProviderController do
     end
 
     context 'incorrect token in header' do
-      before do
-        incorrect_token = 'BAD'
-        headers(incorrect_token)
-      end
+      let(:token) { 'BAD' }
 
       it 'returns a 401' do
         post :update
@@ -106,8 +109,23 @@ RSpec.describe ServiceProviderController do
       end
     end
 
+    context 'feature off' do
+      let(:use_feature) { false }
+      before { post :update }
+
+      it 'returns 200' do
+        expect(response.status).to eq 200
+      end
+
+      it 'returns the body' do
+        body = { status: 'Service providers updater has not been enabled.' }.to_json
+        expect(response.body).to eq body
+      end
+    end
+
     def headers(token)
       request.headers['X-LOGIN-DASHBOARD-TOKEN'] = token
+      request.headers['Content-Encoding'] = 'gzip'
     end
   end
 end

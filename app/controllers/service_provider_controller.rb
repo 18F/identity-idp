@@ -4,15 +4,8 @@ class ServiceProviderController < ApplicationController
   def update
     authorize do
       if !FeatureManagement.use_dashboard_service_providers?
-        render json: { status: 'If the feature is enabled, service providers have been updated.' }
+        render json: { status: 'Service providers updater has not been enabled.' }
         return
-      end
-
-      if request.headers['content-type'] == 'gzip/json'
-        body = request.body.read
-        sp_params = JSON.parse(Zlib.gunzip(body))
-      else
-        sp_params = {}
       end
 
       ServiceProviderUpdater.new.run(sp_params['service_provider'])
@@ -40,5 +33,15 @@ class ServiceProviderController < ApplicationController
 
   def authorization_token
     request.headers['X-LOGIN-DASHBOARD-TOKEN']
+  end
+
+  def sp_params
+    return {} unless request.headers['Content-Type'] == 'gzip/json'
+
+    body = request.body.read
+
+    return {} unless body.present?
+
+    JSON.parse(Zlib.gunzip(body))
   end
 end
