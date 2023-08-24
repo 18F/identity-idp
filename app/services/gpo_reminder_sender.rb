@@ -10,7 +10,6 @@ class GpoReminderSender
       )
 
     profiles_due_for_reminder.each do |profile|
-      next unless profile.user.pending_profile == profile
       profile.user.send_email_to_all_addresses(:gpo_reminder)
       profile.gpo_confirmation_codes.first.update(reminder_sent_at: Time.zone.now)
       analytics.idv_gpo_reminder_email_sent(user_id: profile.user.uuid)
