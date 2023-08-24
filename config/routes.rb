@@ -381,8 +381,8 @@ Rails.application.routes.draw do
       #
       # These have been left in temporarily to prevent any impact to users
       # during the deprecation process.
-      get '/in_person_proofing/ssn' => 'in_person/ssn#show'
-      put '/in_person_proofing/ssn' => 'in_person/ssn#update'
+      get '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
+      put '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
