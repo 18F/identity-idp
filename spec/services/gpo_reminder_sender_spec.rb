@@ -70,7 +70,7 @@ RSpec.describe GpoReminderSender do
       include_examples 'sends no emails'
     end
 
-    context 'when a user has requested two GPO letters' do
+    context 'when a user has requested two letters' do
       before do
         set_gpo_verification_pending_at(time_due_for_reminder - 2.days)
 
@@ -82,8 +82,6 @@ RSpec.describe GpoReminderSender do
         )
         gpo_code = create(:gpo_confirmation_code)
         profile.gpo_confirmation_codes << gpo_code
-        device = create(:device, user: user)
-        create(:event, user: user, device: device, event_type: :gpo_mail_sent)
       end
 
       include_examples 'sends emails', 2, 2
