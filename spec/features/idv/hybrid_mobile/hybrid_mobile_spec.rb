@@ -169,4 +169,52 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       end
     end
   end
+
+  it 'does not allow hybrid doc capture user to access phone step', js: true do
+    user = nil
+
+    perform_in_browser(:desktop) do
+      visit_idp_from_sp_with_ial2(sp)
+      user = sign_up_and_2fa_ial1_user
+
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      clear_and_fill_in(:doc_auth_phone, phone_number)
+      click_send_link
+
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
+      expect(page).to have_content(t('doc_auth.info.you_entered'))
+      expect(page).to have_content('+1 415-555-0199')
+
+      # Confirm that Continue button is not shown when polling is enabled
+      expect(page).not_to have_content(t('doc_auth.buttons.continue'))
+    end
+
+    expect(@sms_link).to be_present
+
+    perform_in_browser(:desktop) do
+      visit @sms_link
+
+      # Confirm that jumping to LinkSent page does not cause errors
+      visit idv_link_sent_url
+      expect(page).to have_current_path(root_url)
+      visit idv_hybrid_mobile_document_capture_url
+
+      # Confirm that jumping to Welcome page does not cause errors
+      # This was added for the GettingStarted A/B Test
+      visit idv_welcome_url
+      expect(page).to have_current_path(root_url)
+      visit idv_hybrid_mobile_document_capture_url
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      expect(page).to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+      expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+      # Confirm app disallows jumping back to DocumentCapture page
+      visit idv_phone_path
+      expect(page.status_code).to eq(200)
+    end
+  end
 end
