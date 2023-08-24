@@ -191,11 +191,12 @@ module Idv
         state_id_number: pii[:state_id_number],
         # todo: add other edited fields?
         extra: {
-          address_edited: !!(idv_session.address_edited || flow_session['address_edited']),
+          address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                              [:same_address_as_id],
                               [:state_id, :state_id_jurisdiction]],
-        }.merge(ab_test_analytics_buckets),
+        },
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
@@ -218,7 +219,7 @@ module Idv
         idv_session.invalidate_verify_info_step!
       end
 
-      analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
     def next_step_url

@@ -7,13 +7,12 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import {
-  FormattedLocation,
-  transformKeys,
-  snakeCase,
+import { transformKeys, snakeCase } from '@18f/identity-address-search';
+import type {
   LocationQuery,
   PostOffice,
-} from '@18f/identity-address-search';
+  FormattedLocation,
+} from '@18f/identity-address-search/types';
 import { InPersonContext } from '../context';
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
