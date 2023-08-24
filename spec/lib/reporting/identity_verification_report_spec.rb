@@ -7,33 +7,44 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   subject(:report) { Reporting::IdentityVerificationReport.new(issuer:, time_range:) }
 
+  # rubocop:disable Layout/LineLength
   before do
     cloudwatch_client = double(
       'Reporting::CloudwatchClient',
       fetch: [
         # Online verification user
+        { 'user_id' => 'user1', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user1', 'name' => 'IdV: doc auth image upload vendor submitted' },
-        { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
+        { 'user_id' => 'user1', 'name' => 'IdV: final resolution', 'identity_verified' => '1' },
 
         # Letter requested user (incomplete)
+        { 'user_id' => 'user2', 'name' => 'IdV: doc auth welcome visited' },
         { 'user_id' => 'user2', 'name' => 'IdV: doc auth image upload vendor submitted' },
-        { 'user_id' => 'user2', 'name' => 'IdV: USPS address letter requested' },
+        { 'user_id' => 'user2', 'name' => 'IdV: final resolution', 'gpo_verification_pending' => '1' },
+
+        # Fraud review user (incomplet)
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user3', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user3', 'name' => 'IdV: final resolution', 'fraud_review_pending' => '1' },
 
         # Success through address confirmation user
-        { 'user_id' => 'user3', 'name' => 'IdV: GPO verification submitted' },
+        { 'user_id' => 'user4', 'name' => 'IdV: GPO verification submitted' },
 
         # Success through in-person verification
-        { 'user_id' => 'user4', 'name' => 'IdV: doc auth image upload vendor submitted' },
-        { 'user_id' => 'user4', 'name' => 'USPS IPPaaS enrollment created' },
-        { 'user_id' => 'user4', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
+        { 'user_id' => 'user5', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user5', 'name' => 'IdV: final resolution', 'in_person_verification_pending' => '1' },
+        { 'user_id' => 'user5', 'name' => 'GetUspsProofingResultsJob: Enrollment status updated' },
 
         # Incomplete user
-        { 'user_id' => 'user5', 'name' => 'IdV: doc auth image upload vendor submitted' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth welcome visited' },
+        { 'user_id' => 'user6', 'name' => 'IdV: doc auth image upload vendor submitted' },
       ],
     )
 
     allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
   end
+  # rubocop:enable Layout/LineLength
 
   describe '#to_csv' do
     it 'generates a csv' do
@@ -45,15 +56,21 @@ RSpec.describe Reporting::IdentityVerificationReport do
         ['Issuer', issuer],
         [],
         ['Metric', '# of Users'],
-        ['Started IdV Verification', '4'],
-        ['Incomplete Users', '1'],
-        ['Address Confirmation Letters Requested', '1'],
-        ['Started In-Person Verification', '1'],
-        ['Alternative Process Users', '0'],
-        ['Success through Online Verification', '1'],
-        ['Success through Address Confirmation Letters', '1'],
-        ['Success through In-Person Verification', '1'],
-        ['Successfully Verified Users', '3'],
+        [],
+        ['Started IdV Verification', '5'],
+        ['Images uploaded', '5'],
+        [],
+        ['Workflow completed', '4'],
+        ['Workflow completed - Verified', '1'],
+        ['Workflow completed - Total Pending', '3'],
+        ['Workflow completed - GPO Pending', '1'],
+        ['Workflow completed - In-Person Pending', '1'],
+        ['Workflow completed - Fraud Review Pending', '1'],
+        [],
+        ['Succesfully verified', '3'],
+        ['Succesfully verified - Inline', '1'],
+        ['Succesfully verified - GPO Code Entry', '1'],
+        ['Succesfully verified - In Person', '1'],
       ]
 
       aggregate_failures do
@@ -67,12 +84,15 @@ RSpec.describe Reporting::IdentityVerificationReport do
   describe '#data' do
     it 'counts unique users per event as a hash' do
       expect(report.data).to eq(
-        'GetUspsProofingResultsJob: Enrollment status updated' => 1,
-        'IdV: doc auth image upload vendor submitted' => 4,
-        'IdV: final resolution' => 1,
+        'IdV: doc auth image upload vendor submitted' => 5,
+        'IdV: doc auth welcome visited' => 5,
+        'IdV: final resolution' => 4,
+        'IdV: final resolution - GPO Pending' => 1,
+        'IdV: final resolution - In Person Proofing' => 1,
+        'IdV: final resolution - Fraud Review Pending' => 1,
+        'IdV: final resolution - Verified' => 1,
         'IdV: GPO verification submitted' => 1,
-        'IdV: USPS address letter requested' => 1,
-        'USPS IPPaaS enrollment created' => 1,
+        'GetUspsProofingResultsJob: Enrollment status updated' => 1,
       )
     end
   end
