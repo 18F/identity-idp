@@ -134,6 +134,12 @@ RSpec.describe GpoReminderSender do
 
         include_examples 'sends no emails'
       end
+
+      context 'but the user has changed their password' do
+        before { user.gpo_verification_pending_profile.deactivate(:password_reset) }
+
+        include_examples 'sends no emails'
+      end
     end
 
     context 'when a user is due for a reminder from too long ago' do
