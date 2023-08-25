@@ -28,45 +28,30 @@ RSpec.feature 'doc auth test credentials', :js do
     expect(page).to have_content('Jane')
   end
 
-  it 'triggers an error if the test credentials have a friendly error', allow_browser_log: true do
-    complete_doc_auth_steps_before_document_capture_step
+  context 'displays credential errors' do
+    it 'triggers an error if the test credentials have a friendly error', allow_browser_log: true do
+      triggers_error_test_credentials_missing('spec/fixtures/ial2_test_credential_forces_error.yml', I18n.t('doc_auth.errors.alerts.barcode_content_check').tr(' ', ' '))
+    end
 
-    attach_file(
-      'Front of your ID',
-      File.expand_path('spec/fixtures/ial2_test_credential_forces_error.yml'),
-    )
-    attach_file(
-      'Back of your ID',
-      File.expand_path('spec/fixtures/ial2_test_credential_forces_error.yml'),
-    )
-    click_on I18n.t('forms.buttons.submit.default')
+    it 'triggers an error if the test credentials missing required address', allow_browser_log: true do
+      triggers_error_test_credentials_missing('spec/fixtures/ial2_test_credential_no_address.yml', I18n.t('doc_auth.errors.alerts.address_check').tr(' ', ' '))
+    end
 
-    expect(page).to have_content(
-      I18n.t(
-        'doc_auth.errors.alerts.barcode_content_check',
-      ).tr(' ', ' '),
-    )
-    expect(page).to have_current_path(idv_document_capture_url)
-  end
+    def triggers_error_test_credentials_missing(credential_file, alert_message)
+      complete_doc_auth_steps_before_document_capture_step
 
-  it 'triggers an error if the test credentials missing required address', allow_browser_log: true do
-    complete_doc_auth_steps_before_document_capture_step
+      attach_file(
+        'Front of your ID',
+        File.expand_path(credential_file),
+      )
+      attach_file(
+        'Back of your ID',
+        File.expand_path(credential_file),
+      )
+      click_on I18n.t('forms.buttons.submit.default')
 
-    attach_file(
-      'Front of your ID',
-      File.expand_path('spec/fixtures/ial2_test_credential_no_address.yml'),
-    )
-    attach_file(
-      'Back of your ID',
-      File.expand_path('spec/fixtures/ial2_test_credential_no_address.yml'),
-    )
-    click_on I18n.t('forms.buttons.submit.default')
-
-    expect(page).to have_content(
-      I18n.t(
-        'doc_auth.errors.alerts.address_check',
-      ).tr(' ', ' '),
-    )
-    expect(page).to have_current_path(idv_document_capture_url)
+      expect(page).to have_content(alert_message)
+      expect(page).to have_current_path(idv_document_capture_url)
+    end
   end
 end
