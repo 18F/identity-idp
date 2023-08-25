@@ -284,6 +284,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
       });
       expect(document.activeElement).to.equal(button);
@@ -315,6 +316,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'Cropping failure',
       });
       expect(document.activeElement).to.equal(button);
@@ -348,6 +350,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'Camera not supported',
       });
       expect(document.activeElement).to.equal(button);
@@ -383,6 +386,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
       await waitFor(() => document.activeElement === button);
@@ -425,6 +429,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
       await waitFor(() => document.activeElement === button);
@@ -467,6 +472,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
       });
       expect(document.activeElement).to.equal(button);
@@ -507,6 +513,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
         field: 'test',
+        acuantCaptureMode: 'AUTO',
         error: 'User or system denied camera access',
       });
       expect(document.activeElement).to.equal(button);
