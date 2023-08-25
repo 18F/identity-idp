@@ -216,7 +216,9 @@ module Idv
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
         vendor_discriminator: document_capture_session_uuid,
-        warn_notifier: proc { |attrs| analytics&.doc_auth_warning(**attrs) },
+        warn_notifier: proc do |attrs|
+          analytics&.doc_auth_warning(**attrs.merge(getting_started_ab_test_analytics_bucket))
+        end,
       )
     end
 
@@ -284,7 +286,6 @@ module Idv
       {
         getting_started_ab_test_bucket:
           AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
-
       }
     end
 
