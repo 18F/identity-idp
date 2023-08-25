@@ -1,5 +1,5 @@
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface FormattedLocation {
   formattedCityStateZip: string;
