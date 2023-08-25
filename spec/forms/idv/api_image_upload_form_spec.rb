@@ -106,6 +106,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -204,6 +205,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           flow_path: anything,
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
       end
 

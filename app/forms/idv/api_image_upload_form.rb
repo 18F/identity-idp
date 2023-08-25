@@ -139,7 +139,7 @@ module Idv
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
 
-      @extra_attributes
+      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
     end
 
     def remaining_attempts
