@@ -248,7 +248,8 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
           vendor_request_time_in_ms: vendor_request_time_in_ms,
-        ).merge(acuant_sdk_upgrade_ab_test_data),
+        ).merge(acuant_sdk_upgrade_ab_test_data).
+        merge(getting_started_ab_test_analytics_bucket),
       )
     end
 
@@ -276,6 +277,14 @@ module Idv
       {
         acuant_sdk_upgrade_ab_test_bucket:
           AbTests::ACUANT_SDK.bucket(document_capture_session.uuid),
+      }
+    end
+
+    def getting_started_ab_test_analytics_bucket
+      {
+        getting_started_ab_test_bucket:
+          AbTests::IDV_GETTING_STARTED.bucket(user_uuid),
+
       }
     end
 
