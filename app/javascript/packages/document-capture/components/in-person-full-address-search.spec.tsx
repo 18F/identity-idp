@@ -56,7 +56,7 @@ describe('FullAddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode_only');
+      const errors = await findAllByText('idv.errors.pattern_mismatch.zipcode_five');
       expect(errors).to.have.lengthOf(1);
     });
 
