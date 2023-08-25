@@ -12,6 +12,7 @@ RSpec.describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'AL',
@@ -21,12 +22,14 @@ RSpec.describe Idv::DocPiiForm do
     { first_name: nil,
       last_name: nil,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr }
   end
   let(:name_and_dob_errors_pii) do
     { first_name: nil,
       last_name: nil,
       dob: nil,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr }
   end
   let(:dob_min_age_error_pii) do
@@ -34,6 +37,7 @@ RSpec.describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: too_young_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
     }
   end
@@ -42,6 +46,7 @@ RSpec.describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: 12345,
       state_id_jurisdiction: 'AL',
@@ -52,6 +57,7 @@ RSpec.describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       state: Faker::Address.state_abbr,
       zipcode: nil,
       state_id_jurisdiction: 'AL',
@@ -62,9 +68,21 @@ RSpec.describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      address1: Faker::Address.street_address,
       zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
       state_id_jurisdiction: 'XX',
+    }
+  end
+  let(:address1_error_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      address1: nil,
+      zipcode: Faker::Address.zip_code,
+      state: Faker::Address.state_abbr,
+      state_id_jurisdiction: 'AL',
     }
   end
   let(:pii) { nil }
@@ -181,6 +199,22 @@ RSpec.describe Idv::DocPiiForm do
         result = subject.submit
 
         expect(result.extra[:attention_with_barcode]).to eq(true)
+      end
+    end
+
+    context 'when there is no address1 information' do
+      let(:subject) { Idv::DocPiiForm.new(pii: address1_error_pii) }
+
+      it 'returns an error for not being able to read the address' do
+        result = subject.submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.address_check')]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
       end
     end
   end

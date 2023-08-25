@@ -16,7 +16,7 @@
               category: 'verify-your-identity',
               article: 'how-to-verify-your-identity',
               flow: :idv,
-              step: :getting_started,
+              step: :welcome_new,
               location: 'intro_paragraph',
             ),
           ),
@@ -59,7 +59,7 @@
   </div>
 <% end %>
 
-  <%= render 'shared/cancel', link: idv_cancel_path(step: 'getting_started') %>
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome_new') %>
 <% end %>
 
 <%= javascript_packs_tag_once('document-capture-welcome') %>

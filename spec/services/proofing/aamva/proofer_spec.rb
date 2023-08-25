@@ -151,13 +151,16 @@ RSpec.describe Proofing::Aamva::Proofer do
       context 'the exception is a timeout error' do
         let(:exception) { Proofing::TimeoutError.new }
 
-        it 'does not log to NewRelic' do
-          expect(NewRelic::Agent).not_to receive(:notice_error)
+        it 'logs to NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error)
 
           result = subject.proof(state_id_data)
 
           expect(result.success?).to eq(false)
           expect(result.exception).to eq(exception)
+          expect(result.mva_unavailable?).to eq(false)
+          expect(result.mva_system_error?).to eq(false)
+          expect(result.mva_timeout?).to eq(false)
           expect(result.mva_exception?).to eq(false)
         end
       end

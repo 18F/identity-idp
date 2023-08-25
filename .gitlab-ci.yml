@@ -318,18 +318,18 @@ review-app:
       [
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "idp"},
-        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
+        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "postgres"},
         {"name": "POSTGRES_WORKER_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_WORKER_NAME", "value": "idp-worker-jobs"},
-        {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
+        {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
         {"name": "POSTGRES_WORKER_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_WORKER_PASSWORD", "value": "postgres"},
         {"name": "RAILS_OFFLINE", "value": "true"},
-        {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2"},
-        {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1"},
-        {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379"},
+        {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2"},
+        {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"},
+        {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"},
         {"name": "ASSET_HOST", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "LOGIN_DATACENTER", "value": "true" },
@@ -347,18 +347,18 @@ review-app:
       [
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "idp"},
-        {"name": "POSTGRES_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
+        {"name": "POSTGRES_HOST", "value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "postgres"},
         {"name": "POSTGRES_WORKER_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_WORKER_NAME", "value": "idp-worker-jobs"},
-        {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-postgres.review-apps"},
+        {"name": "POSTGRES_WORKER_HOST", "value": "$CI_ENVIRONMENT_SLUG-login-chart-pg.review-apps"},
         {"name": "POSTGRES_WORKER_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_WORKER_PASSWORD", "value": "postgres"},
         {"name": "RAILS_OFFLINE", "value": "true"},
-        {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/2"},
-        {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379/1"},
-        {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-identity-idp-chart-redis.review-apps:6379"},
+        {"name": "REDIS_IRS_ATTEMPTS_API_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/2"},
+        {"name": "REDIS_THROTTLE_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379/1"},
+        {"name": "REDIS_URL", "value": "redis://$CI_ENVIRONMENT_SLUG-login-chart-redis.review-apps:6379"},
         {"name": "ASSET_HOST", "value": "https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "DOMAIN_NAME", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
         {"name": "LOGIN_DATACENTER", "value": "true" },
@@ -377,7 +377,7 @@ review-app:
         {"name": "CLIENT_CERT_S3_BUCKET", "value": "login-gov-pivcac-public-cert-reviewapp.894947205914-us-west-2"},
         {"name": "POSTGRES_SSLMODE", "value": "prefer"},
         {"name": "POSTGRES_NAME", "value": "identity_pki_production"},
-        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-identity-idp-chart-pivcac-postgres.review-apps"},
+        {"name": "POSTGRES_HOST","value": "$CI_ENVIRONMENT_SLUG-login-chart-pivcac-pg.review-apps"},
         {"name": "POSTGRES_USERNAME", "value": "postgres"},
         {"name": "POSTGRES_PASSWORD", "value": "pivcac"},
         {"name": "IDP_HOST", "value": "$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov"},
@@ -385,7 +385,7 @@ review-app:
       ]
       EOF
       )
-    - git clone -b cmccarthy/pivcac-db-name --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
+    - git clone -b main --single-branch https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.login.gov/lg-public/identity-idp-helm-chart.git
     - >-
       helm upgrade --install --namespace review-apps
       --debug
@@ -403,7 +403,7 @@ review-app:
       $CI_ENVIRONMENT_SLUG ./identity-idp-helm-chart
     - echo "DNS may take a while to propagate, so be patient if it doesn't show up right away"
     - echo "To access the rails console, first run 'aws-vault exec sandbox-power -- aws eks update-kubeconfig --name review_app'"
-    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-identity-idp-chart-idp -n review-apps -- /app/bin/rails console"
+    - echo "Then run aws-vault exec sandbox-power -- kubectl exec -it service/$CI_ENVIRONMENT_SLUG-login-chart-idp -n review-apps -- /app/bin/rails console"
     - echo "Address of IDP review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.review-app.identitysandbox.gov
     - echo "Address of PIVCAC review app:"

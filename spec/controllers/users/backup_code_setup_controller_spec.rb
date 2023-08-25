@@ -32,6 +32,7 @@ RSpec.describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
+        in_multi_mfa_selection_flow: false,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {
@@ -151,7 +152,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(request_came_from: 'no referer'),
+        hash_including(in_multi_mfa_selection_flow: false),
       )
     end
   end

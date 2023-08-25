@@ -20,15 +20,16 @@ RSpec.describe ServiceProviderController do
       }
     end
     let(:dashboard_service_providers) { [attributes] }
+    let(:token) { '123ABC' }
+    let(:use_feature) { true }
+
+    before do
+      headers(token)
+      allow(IdentityConfig.store).to receive(:use_dashboard_service_providers) { use_feature }
+    end
 
     context 'feature on, correct token in headers' do
-      before do
-        correct_token = '123ABC'
-        headers(correct_token)
-        allow(IdentityConfig.store).to receive(:use_dashboard_service_providers).and_return(true)
-      end
-
-      context 'with no params' do
+      context 'with no body' do
         before do
           allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
             and_return(dashboard_service_providers)
@@ -66,43 +67,83 @@ RSpec.describe ServiceProviderController do
         end
       end
 
-      context 'with a service provider passed via params' do
-        let(:friendly_name) { 'A new friendly name' }
-        let(:params) do
-          {
-            service_provider: attributes.merge(friendly_name:),
-          }
+      context 'with a service provider passed in via a request body' do
+        describe 'with the req Content-Type set to "gzip/json"' do
+          let(:friendly_name) { 'A new friendly name' }
+          let(:body) do
+            Zlib.gzip({ service_provider: attributes.merge(friendly_name:) }.to_json)
+          end
+
+          before do
+            # Rails controller tests will fail unless the Content-Type is registered
+            # Not needed in production
+            Mime::Type.register 'gzip/json', :gzip_json
+            request.headers['Content-Type'] = 'gzip/json'
+            post :update, body:
+          end
+
+          after do
+            Mime::Type.unregister :gzip_json
+          end
+
+          it 'returns 200' do
+            expect(response.status).to eq 200
+          end
+
+          it 'updates the matching ServiceProvider in the DB' do
+            sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
+
+            expect(sp.agency).to eq agency
+            expect(sp.friendly_name).to eq friendly_name
+            expect(sp.active?).to eq true
+          end
         end
 
-        before do
-          request.content_type = 'application/json'
-          post :update, params:
-        end
+        describe 'with a different Content-Type' do
+          let(:friendly_name) { 'A new friendly name' }
+          let(:params) { { service_provider: attributes.merge(friendly_name:) } }
 
-        it 'returns 200' do
-          expect(response.status).to eq 200
-        end
+          before do
+            request.headers['Content-Type'] = 'application/json'
+            post :update, params:
+          end
 
-        it 'updates the matching ServiceProvider in the DB' do
-          sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
+          it 'returns 200' do
+            expect(response.status).to eq 200
+          end
 
-          expect(sp.agency).to eq agency
-          expect(sp.friendly_name).to eq friendly_name
-          expect(sp.active?).to eq true
+          it 'updates the matching ServiceProvider in the DB' do
+            sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
+
+            expect(sp.agency).to eq agency
+            expect(sp.friendly_name).to eq friendly_name
+            expect(sp.active?).to eq true
+          end
         end
       end
     end
 
     context 'incorrect token in header' do
-      before do
-        incorrect_token = 'BAD'
-        headers(incorrect_token)
-      end
+      let(:token) { 'BAD' }
 
       it 'returns a 401' do
         post :update
 
         expect(response.status).to eq 401
+      end
+    end
+
+    context 'feature off' do
+      let(:use_feature) { false }
+      before { post :update }
+
+      it 'returns 200' do
+        expect(response.status).to eq 200
+      end
+
+      it 'returns the body' do
+        body = { status: 'Service providers updater has not been enabled.' }.to_json
+        expect(response.body).to eq body
       end
     end
 

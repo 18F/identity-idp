@@ -12,7 +12,8 @@ RSpec.describe Users::PivCacLoginController do
 
       it 'tracks the piv_cac setup' do
         expect(@analytics).to have_received(:track_event).with(
-          'User Registration: piv cac setup visited',
+          'PIV CAC setup visited',
+          in_multi_mfa_selection_flow: false,
         )
       end
 

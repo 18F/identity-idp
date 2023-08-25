@@ -58,8 +58,8 @@ RSpec.describe EmailDeliveries do
     # rubocop:disable Layout/LineLength
     let(:events_log) do
       [
-        { '@timestamp' => '2023-01-01 00:00:01', 'user_id' => 'abc123', 'ses_message_id' => 'message-1' },
-        { '@timestamp' => '2023-01-01 00:00:02', 'user_id' => 'def456', 'ses_message_id' => 'message-2' },
+        { '@timestamp' => '2023-01-01 00:00:01', 'user_id' => 'abc123', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-1' },
+        { '@timestamp' => '2023-01-01 00:00:02', 'user_id' => 'def456', 'email_action' => 'forgot_password', 'ses_message_id' => 'message-2' },
       ]
     end
 
@@ -80,9 +80,9 @@ RSpec.describe EmailDeliveries do
 
       expect(table).to eq(
         [
-          ['user_id', 'timestamp', 'message_id', 'events'],
-          ['abc123', '2023-01-01 00:00:01', 'message-1', 'Send, Delivery'],
-          ['def456', '2023-01-01 00:00:02', 'message-2', 'Send, Bounce'],
+          ['user_id', 'timestamp', 'message_id', 'email_action', 'events'],
+          ['abc123', '2023-01-01 00:00:01', 'message-1', 'forgot_password', 'Send, Delivery'],
+          ['def456', '2023-01-01 00:00:02', 'message-2', 'forgot_password', 'Send, Bounce'],
         ],
       )
     end
