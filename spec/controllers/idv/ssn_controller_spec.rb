@@ -137,29 +137,6 @@ RSpec.describe Idv::SsnController do
         expect(csp.directives['img-src']).to include('*.online-metrix.net')
       end
     end
-
-    it 'does not override the Content Security for CSP disabled test users' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-      allow(IdentityConfig.store).to receive(:idv_tmx_test_csp_disabled_emails).
-        and_return([user.email_addresses.first.email])
-
-      get :show
-
-      csp = response.request.content_security_policy
-
-      aggregate_failures do
-        expect(csp.directives['script-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['style-src']).to_not include("'unsafe-inline'")
-
-        expect(csp.directives['child-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['connect-src']).to_not include('h.online-metrix.net')
-
-        expect(csp.directives['img-src']).to_not include('*.online-metrix.net')
-      end
-    end
   end
 
   describe '#update' do
@@ -284,31 +261,6 @@ RSpec.describe Idv::SsnController do
         expect(response.status).to eq 302
         expect(response).to redirect_to idv_hybrid_handoff_url
       end
-    end
-  end
-
-  describe '#should_render_threatmetrix_js?' do
-    it 'returns true if the JS should be disabled for the user' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-      allow(IdentityConfig.store).to receive(:idv_tmx_test_js_disabled_emails).
-        and_return([user.email_addresses.first.email])
-
-      expect(controller.should_render_threatmetrix_js?).to eq(false)
-    end
-
-    it 'returns true if the JS should not be disabled for the user' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:enabled)
-
-      expect(controller.should_render_threatmetrix_js?).to eq(true)
-    end
-
-    it 'returns false if TMx profiling is disabled' do
-      allow(IdentityConfig.store).to receive(:proofing_device_profiling).
-        and_return(:disabled)
-
-      expect(controller.should_render_threatmetrix_js?).to eq(false)
     end
   end
 end

@@ -18,17 +18,6 @@ module Idv
     def override_csp_for_threat_metrix_no_fsm
       return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
-      ##
-      # In order to test the behavior without the CSP changes, we do not perform the CSP override
-      # if the user's email is on a list of CSP disabled emails.
-      #
-      current_user.email_addresses.each do |email_address|
-        no_csp_email = IdentityConfig.store.idv_tmx_test_csp_disabled_emails.include?(
-          email_address.email,
-        )
-        return nil if no_csp_email
-      end
-
       threat_metrix_csp_overrides
     end
 
