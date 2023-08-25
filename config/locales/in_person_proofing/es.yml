@@ -51,7 +51,7 @@ es:
           city_label: Ciudad
           is_searching_message: Buscando oficinas de correos…
           none_found: Lo sentimos, no hay Oficinas de Correos participantes en un radio de
-            50 millas de la %{address}.
+            50 millas de la %{address}
           none_found_tip: Puede buscar utilizando una dirección diferente, o añadir fotos
             de su documento de identidad para intentar verificar su identidad en
             línea de nuevo.
