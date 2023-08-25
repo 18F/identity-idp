@@ -301,6 +301,37 @@ describe('document-capture/components/acuant-capture', () => {
         </AnalyticsContext.Provider>,
       );
 
+      initialize({
+        // Call `onCropped` with a response of 'undefined'
+        start: sinon.stub().callsArgWithAsync(1, undefined),
+      });
+
+      const button = getByLabelText('Image');
+      await userEvent.click(button);
+      // "Oops, something went wrong. Please try again."
+      await findByText('errors.general');
+
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(trackEvent).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Cropping failure',
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('shows error if capture fails: latest version of Acuant SDK', async () => {
+      const trackEvent = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
       const start = async ({ onFailure }) => {
         await onFailure('Camera not supported.', 'start-fail-code');
       };
