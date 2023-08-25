@@ -3,7 +3,6 @@ module Idv
     extend ActiveSupport::Concern
 
     included do
-      before_action :confirm_two_factor_authenticated
       before_action :handle_locked_out_user
     end
 

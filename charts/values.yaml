@@ -9,7 +9,7 @@ idp:
   - name: POSTGRES_NAME
     value: "idp"
   - name: POSTGRES_HOST
-    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+    value: "rails-app-test-login-chart-pg.review-apps"
   - name: POSTGRES_USERNAME
     value: "postgres"
   - name: POSTGRES_PASSWORD
@@ -19,7 +19,7 @@ idp:
   - name: POSTGRES_WORKER_NAME
     value: "idp-worker-jobs"
   - name: POSTGRES_WORKER_HOST
-    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+    value: "rails-app-test-login-chart-pg.review-apps"
   - name: POSTGRES_WORKER_USERNAME
     value: "postgres"
   - name: POSTGRES_WORKER_PASSWORD
@@ -29,11 +29,11 @@ idp:
   - name: RAILS_OFFLINE
     value: "true"
   - name: REDIS_IRS_ATTEMPTS_API_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/2
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379/2
   - name: REDIS_THROTTLE_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/1
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379/1
   - name: REDIS_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379
   - name: ASSET_HOST
     value: https://test.review-app.identitysandbox.gov
   - name: DOMAIN_NAME
@@ -129,7 +129,7 @@ worker:
   - name: POSTGRES_NAME
     value: "idp"
   - name: POSTGRES_HOST
-    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+    value: "rails-app-test-login-chart-pg.review-apps"
   - name: POSTGRES_USERNAME
     value: "postgres"
   - name: POSTGRES_PASSWORD
@@ -139,7 +139,7 @@ worker:
   - name: POSTGRES_WORKER_NAME
     value: "idp-worker-jobs"
   - name: POSTGRES_WORKER_HOST
-    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+    value: "rails-app-test-login-chart-pg.review-apps"
   - name: POSTGRES_WORKER_USERNAME
     value: "postgres"
   - name: POSTGRES_WORKER_PASSWORD
@@ -149,11 +149,11 @@ worker:
   - name: RAILS_OFFLINE
     value: "true"
   - name: REDIS_IRS_ATTEMPTS_API_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/2
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379/2
   - name: REDIS_THROTTLE_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/1
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379/1
   - name: REDIS_URL 
-    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379
+    value: redis://rails-app-test-login-chart-redis.review-apps:6379
   replicaCount: 1
   image:
     #repository: stephenshelton/identity-idp

@@ -7,8 +7,9 @@ import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import useUspsLocations from './hooks/use-usps-locations';
 import type { AddressSearchProps } from './types';
 import { snakeCase, formatLocations, transformKeys } from './utils';
+import InPersonLocations from './components/in-person-locations';
 
-export { snakeCase, formatLocations, transformKeys };
+export { snakeCase, formatLocations, transformKeys, InPersonLocations };
 
 function AddressSearch({
   registerField = () => undefined,

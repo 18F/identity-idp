@@ -42,6 +42,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user_signed_up: true,
           totp_secret_present: true,
           enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
 
         expect(@analytics).
@@ -77,6 +78,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           user_signed_up: false,
           totp_secret_present: true,
           enabled_mfa_methods_count: 0,
+          in_multi_mfa_selection_flow: false,
         }
 
         expect(@analytics).
