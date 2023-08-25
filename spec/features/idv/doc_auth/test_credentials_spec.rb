@@ -18,7 +18,6 @@ RSpec.feature 'doc auth test credentials', :js do
   end
 
   it 'allows proofing with test credentials' do
-    
     complete_document_capture_step_with_yml('spec/fixtures/ial2_test_credential.yml')
 
     expect(page).to have_current_path(idv_ssn_path)
@@ -39,7 +38,7 @@ RSpec.feature 'doc auth test credentials', :js do
     end
 
     def triggers_error_test_credentials_missing(credential_file, alert_message)
-      attach_and_submit_test_credential_file(credential_file)
+      complete_document_capture_step_with_yml(credential_file, expected_path: idv_document_capture_url)
 
       expect(page).to have_content(alert_message)
       expect(page).to have_current_path(idv_document_capture_url)
@@ -49,24 +48,12 @@ RSpec.feature 'doc auth test credentials', :js do
   it 'rate limits the user if invalid credentials submitted for max allowed attempts', allow_browser_log: true do
     max_attempts = IdentityConfig.store.doc_auth_max_attempts
     (max_attempts - 1).times do
-      attach_and_submit_test_credential_file('spec/fixtures/ial2_test_credential_no_address.yml')
+      complete_document_capture_step_with_yml('spec/fixtures/ial2_test_credential_no_address.yml', expected_path: idv_document_capture_url)
       click_on t('idv.failure.button.warning')
     end
 
-    attach_and_submit_test_credential_file('spec/fixtures/ial2_test_credential_no_address.yml')
+    complete_document_capture_step_with_yml('spec/fixtures/ial2_test_credential_no_address.yml', expected_path: idv_document_capture_url)
+
     expect(page).to have_current_path(idv_session_errors_rate_limited_path)
-  end
-
-  def attach_and_submit_test_credential_file(credential_file)
-    attach_file(
-      'Front of your ID',
-      File.expand_path(credential_file),
-    )
-    attach_file(
-      'Back of your ID',
-      File.expand_path(credential_file),
-    )
-
-    click_on I18n.t('forms.buttons.submit.default')
   end
 end
