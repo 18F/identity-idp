@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { Alert, PageHeading } from '@18f/identity-components';
-import AddressSearchInput from '@18f/identity-address-search';
-import type { LocationQuery } from '@18f/identity-address-search/types';
+import AddressSearchInput, { InPersonLocations } from '@18f/identity-address-search';
+import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import { useI18n } from '@18f/identity-react-i18n';
-import InPersonLocations, { FormattedLocation } from './in-person-locations';
 
 function AddressSearch({
   registerField,
