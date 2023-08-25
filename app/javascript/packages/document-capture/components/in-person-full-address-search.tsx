@@ -52,7 +52,7 @@ function useUspsLocations(locationsURL: string) {
 
   const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
     let formIsValid = true;
-    const zipCodeIsValid = zipCode.length === 5 && (zipCode.match(/\d{5}/) ? true: false);
+    const zipCodeIsValid = zipCode.length === 5 && !!zipCode.match(/\d{5}/);
 
     if (address.length === 0) {
       validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
@@ -108,7 +108,7 @@ function useUspsLocations(locationsURL: string) {
         streetAddress: address,
         city,
         state: stateValue,
-        zipCode: zipCode,
+        zipCode,
       });
     },
     [],
