@@ -4,7 +4,7 @@ module Idv
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 
-    # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_user_phone_confirmation_needed
     before_action :confirm_user_phone_confirmation_session_started
 

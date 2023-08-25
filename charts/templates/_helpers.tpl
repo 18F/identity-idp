@@ -99,7 +99,7 @@ app.kubernetes.io/name: redis
 Postgres fullname
 */}}
 {{- define "identity-idp-chart.postgres.fullname" -}}
-{{- printf "%s-postgres" (include "identity-idp-chart.fullname" .) -}}
+{{- printf "%s-pg" (include "identity-idp-chart.fullname" .) -}}
 {{- end -}}
 
 {{/*
