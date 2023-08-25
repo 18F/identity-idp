@@ -29,10 +29,10 @@ class DestroyableRecords
 
     stdout.puts '********'
     if in_person_enrollments.size == 0
-    stdout.puts "This provider has #{in_person_enrollments.size} in person enrollments " \
+      stdout.puts "This provider has #{in_person_enrollments.size} in person enrollments " \
                    "that will be destroyed"
     else
-    stdout.puts "\e[31mThis provider has #{in_person_enrollments.size} in person enrollments " \
+      stdout.puts "\e[31mThis provider has #{in_person_enrollments.size} in person enrollments " \
                    "that will be destroyed - Please handle these removals manually. " \
                    "For more details check https://cm-jira.usa.gov/browse/LG-10679\e[0m"
     end
