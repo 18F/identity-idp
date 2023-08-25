@@ -52,7 +52,7 @@ function useUspsLocations(locationsURL: string) {
 
   const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
     let formIsValid = true;
-    const validZipCodeLength = zipCode.length === 5;
+    const zipCodeIsValid = zipCode.length === 5 && (zipCode.match(/\d{5}/) ? true: false);
 
     if (address.length === 0) {
       validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
@@ -87,7 +87,7 @@ function useUspsLocations(locationsURL: string) {
     validatedStateFieldRef.current?.reportValidity();
     validatedZipCodeFieldRef.current?.reportValidity();
 
-    return formIsValid && validZipCodeLength;
+    return formIsValid && zipCodeIsValid;
   };
 
   const handleLocationSearch = useCallback(
@@ -95,19 +95,20 @@ function useUspsLocations(locationsURL: string) {
       event.preventDefault();
       const address = addressValue.trim();
       const city = cityValue.trim();
+      const zipCode = zipCodeValue.trim();
 
-      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCodeValue);
+      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCode);
 
       if (!formIsValid) {
         return;
       }
 
       setLocationQuery({
-        address: `${address}, ${city}, ${stateValue} ${zipCodeValue}`,
+        address: `${address}, ${city}, ${stateValue} ${zipCode}`,
         streetAddress: address,
         city,
         state: stateValue,
-        zipCode: zipCodeValue,
+        zipCode: zipCode,
       });
     },
     [],
@@ -178,20 +179,12 @@ function FullAddressSearch({
       input(target.value);
     };
 
-  const inputChangeHandlerForZipCode =
-    <T extends HTMLElement & { value: string }>(input) =>
-    (event: React.ChangeEvent<T>) => {
-      const { target } = event;
-      const scrubbedZip = target.value.replace(/[^0-9]/g, '');
-      input(scrubbedZip);
-    };
-
   type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;
 
   const onAddressChange = inputChangeHandler(setAddressValue);
   const onCityChange = inputChangeHandler(setCityValue);
   const onStateChange = (e: SelectChangeEvent) => setStateValue(e.target.value);
-  const onZipCodeChange = inputChangeHandlerForZipCode(setZipCodeValue);
+  const onZipCodeChange = inputChangeHandler(setZipCodeValue);
 
   useEffect(() => {
     spinnerButtonRef.current?.toggleSpinner(isLoading);
@@ -274,7 +267,7 @@ function FullAddressSearch({
       <ValidatedField
         ref={validatedZipCodeFieldRef}
         messages={{
-          patternMismatch: t('idv.errors.pattern_mismatch.zipcode_only'),
+          patternMismatch: t('idv.errors.pattern_mismatch.zipcode_five'),
         }}
       >
         <TextInput
@@ -285,10 +278,10 @@ function FullAddressSearch({
           onChange={onZipCodeChange}
           label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
-          pattern="\d{5}"
+          pattern="^\d{5}$"
           maxLength={5}
           minLength={5}
-          type="tel"
+          type="text"
         />
       </ValidatedField>
       <div className="margin-y-5">
