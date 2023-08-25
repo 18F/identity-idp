@@ -48,4 +48,25 @@ RSpec.feature 'doc auth test credentials', :js do
     )
     expect(page).to have_current_path(idv_document_capture_url)
   end
+
+  it 'triggers an error if the test credentials missing required address', allow_browser_log: true do
+    complete_doc_auth_steps_before_document_capture_step
+
+    attach_file(
+      'Front of your ID',
+      File.expand_path('spec/fixtures/ial2_test_credential_no_address.yml'),
+    )
+    attach_file(
+      'Back of your ID',
+      File.expand_path('spec/fixtures/ial2_test_credential_no_address.yml'),
+    )
+    click_on I18n.t('forms.buttons.submit.default')
+
+    expect(page).to have_content(
+      I18n.t(
+        'doc_auth.errors.alerts.address_check',
+      ).tr(' ', ' '),
+    )
+    expect(page).to have_current_path(idv_document_capture_url)
+  end
 end
