@@ -28,6 +28,8 @@ class DestroyUnusedProviders
 
       records.print_data
 
+      break if records.service_provider.in_person_enrollments.size > 0
+
       stdout.puts "Type 'yes' and hit enter to continue and " \
                     "destroy this service provider and associated records:\n"
 
