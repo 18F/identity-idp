@@ -62,7 +62,7 @@ describe('FullAddressSearch', () => {
 
     it('does not display an error for a valid ZIP code length (length = 5)', async () => {
       const handleLocationsFound = sandbox.stub();
-      const { findByText, findByLabelText } = render(
+      const { findByText, findByLabelText, queryByText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
           <FullAddressSearch onFoundLocations={handleLocationsFound} locationsURL={LOCATIONS_URL} />
         </SWRConfig>,
@@ -88,11 +88,7 @@ describe('FullAddressSearch', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      try {
-        await findByText('idv.errors.pattern_mismatch.zipcode');
-      } catch (err) {
-        expect(err === 'Error: Unable to find an element with the text');
-      }
+      expect(queryByText('idv.errors.pattern_mismatch.zipcode')).to.be.null;
     });
   });
 
