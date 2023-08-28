@@ -1,4 +1,5 @@
 require 'aws-sdk-cloudwatchlogs'
+require 'ruby-progressbar'
 
 module Reporting
   class CloudwatchClient
