@@ -35,7 +35,7 @@ function AddressSearch({
         onFoundAddress={setFoundAddress}
         onFoundLocations={(locations) => {
           setLocationResults(locations);
-          onFoundLocations(locations);
+          onFoundLocations && onFoundLocations(locations);
         }}
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
