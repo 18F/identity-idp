@@ -3868,29 +3868,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # Tracks when the the user has selected and submitted additional MFA methods on user registration
-  def user_registration_2fa_additional_setup(success:,
-                                             errors: nil,
-                                             **extra)
-    track_event(
-      'User Registration: Additional 2FA Setup',
-      {
-        success: success,
-        errors: errors,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # Tracks when user visits additional MFA selection page
-  def user_registration_2fa_additional_setup_visit
-    track_event(
-      'User Registration: Additional 2FA Setup visited',
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
