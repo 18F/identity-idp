@@ -5,7 +5,7 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
-import AddressSearch from '.';
+import AddressSearch from './address-input';
 
 const DEFAULT_RESPONSE = [
   {
