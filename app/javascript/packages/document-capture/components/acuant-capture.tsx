@@ -523,6 +523,7 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
     trackEvent('IdV: Image capture failed', {
       field: name,
+      acuantCaptureMode,
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
     });
   }
