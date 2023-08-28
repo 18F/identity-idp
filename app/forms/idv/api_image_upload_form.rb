@@ -32,7 +32,6 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-          rate_limiter.reset!
         end
       end
 
@@ -114,7 +113,10 @@ module Idv
 
       analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
 
-      store_pii(client_response) if client_response.success? && response.success?
+      if client_response.success? && response.success?
+        store_pii(client_response)
+        rate_limiter.reset!
+      end
 
       response
     end
