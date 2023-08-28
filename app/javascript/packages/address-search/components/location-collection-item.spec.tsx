@@ -147,4 +147,44 @@ describe('LocationCollectionItem', () => {
       expect(sunHours).not.to.exist();
     });
   });
+
+  context('when handleSelect callback is not provided', () => {
+    it('renders the component without the button', () => {
+      const onClick = sinon.stub();
+      const { container } = render(
+        <LocationCollectionItem
+          name=""
+          streetAddress=""
+          formattedCityStateZip=""
+          handleSelect={onClick}
+          weekdayHours=""
+          saturdayHours=""
+          selectId={0}
+          sundayHours=""
+        />,
+      );
+
+      expect(container.textContent).to.contain('in_person_proofing.body.location.location_button');
+    });
+  });
+
+  context('when handleSelect callback is provided', () => {
+    it('renders the component with the button', () => {
+      const { container } = render(
+        <LocationCollectionItem
+          name=""
+          streetAddress=""
+          formattedCityStateZip=""
+          weekdayHours=""
+          saturdayHours=""
+          selectId={0}
+          sundayHours=""
+        />,
+      );
+
+      expect(container.textContent).to.not.contain(
+        'in_person_proofing.body.location.location_button',
+      );
+    });
+  });
 });

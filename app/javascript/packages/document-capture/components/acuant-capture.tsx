@@ -490,44 +490,51 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
+  function onAcuantImageCaptureFailure(error: AcuantCaptureFailureError, code: string | undefined) {
+    const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
+    if (isAcuantCameraAccessFailure(error)) {
+      if (fullScreenRef.current?.focusTrap) {
+        suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+      }
+
+      // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+      // previously failed for any reason, including declined permission. Since the cookie
+      // never expires, and since we want to re-prompt even if the user had previously
+      // declined, unset the cookie value when failure occurs for permissions.
+      setAcuantFailureCookie(null);
+
+      onCameraAccessDeclined();
+    } else if (code === SEQUENCE_BREAK_CODE) {
+      setOwnErrorMessage(
+        `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
+          .split(' ')
+          .join(NBSP_UNICODE)}`,
+      );
+
+      refreshAcuantFailureCookie();
+    } else if (error === undefined) {
+      // Show a more generic error message when there's a cropping error.
+      // Errors with a value of `undefined` are cropping errors.
+      setOwnErrorMessage(t('errors.general'));
+    } else {
+      setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+    }
+
+    setIsCapturingEnvironment(false);
+    trackEvent('IdV: Image capture failed', {
+      field: name,
+      acuantCaptureMode,
+      error: getNormalizedAcuantCaptureFailureMessage(error, code),
+    });
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <AcuantCamera
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-          onImageCaptureFailure={(error, code) => {
-            const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
-            if (isAcuantCameraAccessFailure(error)) {
-              if (fullScreenRef.current?.focusTrap) {
-                suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
-              }
-
-              // Internally, Acuant sets a cookie to bail on guided capture if initialization had
-              // previously failed for any reason, including declined permission. Since the cookie
-              // never expires, and since we want to re-prompt even if the user had previously
-              // declined, unset the cookie value when failure occurs for permissions.
-              setAcuantFailureCookie(null);
-
-              onCameraAccessDeclined();
-            } else if (code === SEQUENCE_BREAK_CODE) {
-              setOwnErrorMessage(
-                `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
-                  .split(' ')
-                  .join(NBSP_UNICODE)}`,
-              );
-
-              refreshAcuantFailureCookie();
-            } else {
-              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
-            }
-
-            setIsCapturingEnvironment(false);
-            trackEvent('IdV: Image capture failed', {
-              field: name,
-              error: getNormalizedAcuantCaptureFailureMessage(error, code),
-            });
-          }}
+          onImageCaptureFailure={onAcuantImageCaptureFailure}
         >
           {!hasStartedCropping && (
             <FullScreen

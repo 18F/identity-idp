@@ -104,6 +104,17 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
             get :new
             expect(response).to render_template(:new)
           end
+
+          it 'tracks the analytic event of visited' do
+            stub_analytics
+            expect(@analytics).to receive(:track_event).
+              with('PIV CAC setup visited', {
+                in_multi_mfa_selection_flow: false,
+                enabled_mfa_methods_count: 1,
+              })
+
+            get :new
+          end
         end
 
         context 'when redirected with a good token' do

@@ -44,7 +44,6 @@ module Idv
 
     def capture_address_edited(result)
       address_edited = result.to_h[:address_edited]
-      flow_session['address_edited'] = address_edited if address_edited
       idv_session.address_edited = true if address_edited
     end
   end

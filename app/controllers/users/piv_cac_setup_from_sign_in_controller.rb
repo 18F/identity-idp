@@ -32,7 +32,7 @@ module Users
     private
 
     def render_prompt
-      analytics.user_registration_piv_cac_setup_visit
+      analytics.piv_cac_setup_visit(in_multi_mfa_selection_flow: false)
       render :prompt
     end
 

@@ -7,6 +7,7 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
+    include ForcedReauthenticationConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -20,6 +21,9 @@ module Users
       override_csp_for_google_analytics
 
       @ial = sp_session_ial
+      @issuer_forced_reauthentication = issuer_forced_reauthentication?(
+        issuer: decorated_session.sp_issuer,
+      )
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],

@@ -167,6 +167,78 @@ RSpec.describe 'OpenID Connect' do
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       expect(page.get_rack_session.keys).to include('sp')
     end
+
+    context 'when using prompt=login' do
+      it 'does not show reauthentication notice if user was not actively authenticated' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+        expect(page).to_not have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
+
+      it 'does show reauthentication notice if user was actively authenticated' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        user = user_with_2fa
+        sign_in_user(user)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
+
+      it 'does not show reauth notice if most recent request in session was not prompt=login' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        user = user_with_2fa
+        sign_in_user(user)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
+
+        expect(page).to_not have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
+    end
   end
 
   context 'when accepting id_token_hint in logout' do

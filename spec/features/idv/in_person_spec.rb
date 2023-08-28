@@ -559,7 +559,7 @@ RSpec.describe 'In Person Proofing', js: true do
         click_idv_continue
 
         # ssn page
-        expect(page).to have_current_path(idv_in_person_proofing_ssn_url)
+        expect(page).to have_current_path(idv_in_person_ssn_url)
         complete_ssn_step
 
         # verify page
@@ -652,7 +652,7 @@ RSpec.describe 'In Person Proofing', js: true do
         fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
         fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
         click_idv_continue
-        expect(page).to have_current_path(idv_in_person_proofing_ssn_url, wait: 10)
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
       end
     end
   end

@@ -5,7 +5,7 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
-import AddressSearch from '.';
+import AddressInput from './address-input';
 
 const DEFAULT_RESPONSE = [
   {
@@ -24,7 +24,7 @@ const DEFAULT_RESPONSE = [
 const LOCATIONS_URL = 'https://login.gov/api/locations';
 const ADDRESSES_URL = 'https://login.gov/api/addresses';
 
-describe('AddressSearch', () => {
+describe('AddressInput', () => {
   const sandbox = useSandbox();
   context('when an address is found', () => {
     let server: SetupServer;
@@ -45,7 +45,7 @@ describe('AddressSearch', () => {
       const handleLocationsFound = sandbox.stub();
       const { findByText, findByLabelText } = render(
         <SWRConfig value={{ provider: () => new Map() }}>
-          <AddressSearch
+          <AddressInput
             onFoundAddress={handleAddressFound}
             onFoundLocations={handleLocationsFound}
             locationsURL={LOCATIONS_URL}
