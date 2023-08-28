@@ -33,8 +33,8 @@ RSpec.feature 'doc auth test credentials', :js do
       triggers_error_test_credentials_missing(
         'spec/fixtures/ial2_test_credential_forces_error.yml',
         I18n.t('doc_auth.errors.alerts.barcode_content_check').tr(
-          ' ', ' ',
-        )
+          ' ', ' '
+        ),
       )
     end
 
