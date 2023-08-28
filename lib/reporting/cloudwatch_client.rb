@@ -1,5 +1,4 @@
 require 'aws-sdk-cloudwatchlogs'
-require 'identity/hostdata'
 
 module Reporting
   class CloudwatchClient
