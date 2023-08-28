@@ -216,7 +216,7 @@ RSpec.describe 'Add a new phone number' do
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing international should display spam protection screen
-    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
+    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
     expect(page).to have_content(t('titles.spam_protection'), wait: 5)
