@@ -5,13 +5,9 @@ import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import useUspsLocations from '../hooks/use-usps-locations';
-import type { AddressSearchProps } from '../types';
-import { snakeCase, formatLocations, transformKeys } from '../utils';
-import InPersonLocations from './in-person-locations';
+import type { AddressInputProps } from '../types';
 
-export { snakeCase, formatLocations, transformKeys, InPersonLocations };
-
-function AddressSearch({
+function AddressInput({
   registerField = () => undefined,
   onFoundAddress = () => undefined,
   onFoundLocations = () => undefined,
@@ -20,7 +16,7 @@ function AddressSearch({
   disabled = false,
   addressSearchURL,
   locationsURL,
-}: AddressSearchProps) {
+}: AddressInputProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {
@@ -98,4 +94,4 @@ function AddressSearch({
   );
 }
 
-export default AddressSearch;
+export default AddressInput;
