@@ -56,6 +56,7 @@ en:
       pattern_mismatch:
         ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code
+        zipcode_five: Enter a 5 digit ZIP Code
     failure:
       attempts_html:
         one: For security reasons, you have <strong>one attempt</strong> remaining to

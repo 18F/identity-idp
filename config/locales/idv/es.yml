@@ -57,6 +57,7 @@ es:
       pattern_mismatch:
         ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
+        zipcode_five: Ingresa un código postal de 5 dígitos
     failure:
       attempts_html:
         one: Por motivos de seguridad, le quedan <strong>un intento</strong> para añadir
