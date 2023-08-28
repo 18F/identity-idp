@@ -171,7 +171,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to redirect_to(idv_hybrid_handoff_url)
-          expect(flow_session[:error_message]).to eq(error_message)
+          expect(flash[:error]).to eq(error_message)
         end
       end
 
@@ -182,7 +182,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flow_session[:error_message]).to eq(t('errors.doc_auth.phone_step_incomplete'))
+          expect(flash[:error]).to eq(t('errors.doc_auth.phone_step_incomplete'))
         end
       end
     end

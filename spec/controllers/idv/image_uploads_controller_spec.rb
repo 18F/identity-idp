@@ -130,6 +130,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -263,6 +264,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -323,6 +325,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -348,6 +351,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
           doc_type_supported: boolean,
         )
 
@@ -363,6 +367,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -482,6 +487,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -507,6 +513,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
               doc_type_supported: boolean,
             )
 
@@ -527,6 +534,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -569,6 +577,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -594,6 +603,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
               doc_type_supported: boolean,
             )
 
@@ -614,6 +624,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -656,6 +667,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -681,6 +693,7 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
               doc_type_supported: boolean,
             )
 
@@ -701,6 +714,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -766,6 +780,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -793,6 +808,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
           doc_type_supported: boolean,
         )
 
@@ -834,6 +850,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -863,6 +880,7 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
           doc_type_supported: boolean,
         )
 
