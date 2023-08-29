@@ -8,6 +8,9 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
   let(:s3_public_reports_enabled) { true }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
   let(:s3_report_public_bucket_prefix) { 'public-reports-bucket' }
+  let(:s3_report_path) do
+    'int/monthly-account-reuse-report/2021/2021-03-01.monthly-account-reuse-report.json'
+  end
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -31,7 +34,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
     it 'uploads a file to S3 based on the report date' do
       ['reports-bucket.1234-us-west-1', 'public-reports-bucket-int.1234-us-west-1'].each do |bucket|
         expect(report).to receive(:upload_file_to_s3_bucket).with(
-          path: 'int/monthly-account-reuse-report/2021/2021-03-01.monthly-account-reuse-report.json',
+          path: s3_report_path,
           body: kind_of(String),
           content_type: 'application/json',
           bucket: bucket,
@@ -49,7 +52,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
       it 'only uploads to one bucket' do
         expect(report).to receive(:upload_file_to_s3_bucket).with(
           hash_including(
-            path: 'int/monthly-account-reuse-report/2021/2021-03-01.monthly-account-reuse-report.json',
+            path: s3_report_path,
             bucket: 'reports-bucket.1234-us-west-1',
           ),
         ).exactly(1).time.and_call_original
@@ -88,7 +91,8 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
           friendly_name: 'The Other Other App',
           agency: agency3,
         )
-        # Seed the database with data to be queried - anything with `timestamp2` should be filtered out
+
+        # Seed the database with data to be queried - anything with `timestamp2` should be filtered
         ServiceProviderIdentity.create(
           user_id: 1, service_provider: 'a',
           last_ial2_authenticated_at: timestamp, verified_at: timestamp
@@ -150,11 +154,10 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
           last_ial2_authenticated_at: timestamp, verified_at: timestamp
         )
 
-
-        for i in 1..10 do
+        (1..10).each do |_|
           create(:profile, :active, activated_at: timestamp)
         end
-        for i in 1..3 do
+        (1..3).each do |_|
           create(:profile, :active, activated_at: timestamp2)
         end
       end
@@ -167,8 +170,16 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
             expect(parsed[:report_date]).to eq(report_date.strftime('%Y-%m-01'))
             expect(parsed[:month]).to eq(report_date.prev_month(1).strftime('%b-%Y'))
             actual_csv = parsed[:results]
-            expected_csv = [['IDV app reuse rate Feb-2021'],
-                            ['Num. SPs', 'Num. users', 'Percentage'], [2, 3, 30.0], [3, 2, 20.0], ["Total (all >1)", 5, 50.0], [], ['Total proofed identities'], ['Total proofed identities (Feb-2021)', 10]]
+            expected_csv = [
+              ['IDV app reuse rate Feb-2021'],
+              ['Num. SPs', 'Num. users', 'Percentage'],
+              [2, 3, 30.0],
+              [3, 2, 20.0],
+              ['Total (all >1)', 5, 50.0],
+              [],
+              ['Total proofed identities'],
+              ['Total proofed identities (Feb-2021)', 10],
+            ]
             expect(actual_csv.first).to eq(expected_csv)
           end
 

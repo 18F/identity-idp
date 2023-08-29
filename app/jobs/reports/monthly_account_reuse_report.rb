@@ -96,21 +96,7 @@ module Reports
         percentage: 0,
       }
 
-
       if !reuse_report.empty?
-
-      reuse_report.each_with_index do |result_entry, index|
-        reuse_report[index].percentage = result_entry.num_users / total_proofed * 100
-        total_reuse_stats.percentage += reuse_report[index].percentage
-      end
-
-      report_csv = CSV.generate do |csv|
-        csv << [
-          "#{stats_month} Num. SPs",
-          "#{stats_month} Num. users",
-          "#{stats_month} Reuse Rate Percentage",
-        ]
-
         reuse_report.each do |result_entry|
           total_reuse_stats[:num_users] = total_reuse_stats[:num_users] + result_entry['num_users']
         end
@@ -134,14 +120,14 @@ module Reports
       ]
 
       reuse_report.each do |result_entry|
-
         report_csv << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      report_csv << [total_reuse_stats[:label], total_reuse_stats[:num_users], total_reuse_stats[:percentage]]
+      report_csv << [total_reuse_stats[:label], total_reuse_stats[:num_users],
+                     total_reuse_stats[:percentage]]
 
       report_csv << []
       report_csv << ['Total proofed identities']
