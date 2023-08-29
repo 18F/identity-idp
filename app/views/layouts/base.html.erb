@@ -56,12 +56,9 @@
   <meta content="#ffffff" name="theme-color" />
 
   <%# Prelude script for error tracking (see `track-errors`) %>
-  <%= content_tag(
-        :script,
-        '_e=[],addEventListener("error",(e)=>_e.push(e));',
-        { nonce: content_security_policy_nonce },
-        false,
-      ) %>
+  <%= javascript_tag(nonce: true) do %>
+    _e=[],addEventListener("error",(e)=>_e.push(e));
+  <% end %>
 
   <%= yield(:head) if content_for?(:head) %>
 </head>
