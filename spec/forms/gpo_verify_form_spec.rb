@@ -118,13 +118,20 @@ RSpec.describe GpoVerifyForm do
         expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
       end
 
-      context 'pending in person enrollment' do
+      context 'establishing in person enrollment' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
+          create(
+            :in_person_enrollment,
+            :establishing,
+            profile: pending_profile,
+            user: user,
+          )
         end
+
         let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
+
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
