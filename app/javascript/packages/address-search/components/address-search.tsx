@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Alert, PageHeading } from '@18f/identity-components';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import InPersonLocations from './in-person-locations';
 import AddressInput from './address-input';
 import type { LocationQuery, FormattedLocation } from '../types';
@@ -19,7 +19,6 @@ function AddressSearch({
     null,
   );
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
-  const { t } = useI18n();
 
   return (
     <>
