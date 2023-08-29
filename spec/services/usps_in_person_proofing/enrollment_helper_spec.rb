@@ -214,7 +214,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             expect(applicant.city).to eq("transliterated_#{city}")
             expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
             expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
-            expect(applicant.email).to eq('no-reply@login.gov')
+            expect(applicant.email).to eq(usps_ipp_enrollment_email_address)
             expect(applicant.unique_id).to eq(enrollment.unique_id)
 
             UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
