@@ -141,6 +141,7 @@ module Reports
           result_entry['percentage'],
         ]
       end
+      report_csv << [total_reuse_stats[:label], total_reuse_stats[:num_users], total_reuse_stats[:percentage]]
 
       report_csv << []
       report_csv << ['Total proofed identities']

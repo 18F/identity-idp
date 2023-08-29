@@ -129,8 +129,29 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
           user_id: 4, service_provider: 'c',
           last_ial2_authenticated_at: timestamp, verified_at: timestamp
         )
+        ServiceProviderIdentity.create(
+          user_id: 5, service_provider: 'a',
+          last_ial2_authenticated_at: timestamp, verified_at: timestamp
+        )
+        ServiceProviderIdentity.create(
+          user_id: 5, service_provider: 'b',
+          last_ial2_authenticated_at: timestamp, verified_at: timestamp
+        )
+        ServiceProviderIdentity.create(
+          user_id: 5, service_provider: 'c',
+          last_ial2_authenticated_at: timestamp, verified_at: timestamp
+        )
+        ServiceProviderIdentity.create(
+          user_id: 6, service_provider: 'a',
+          last_ial2_authenticated_at: timestamp, verified_at: timestamp
+        )
+        ServiceProviderIdentity.create(
+          user_id: 6, service_provider: 'b',
+          last_ial2_authenticated_at: timestamp, verified_at: timestamp
+        )
 
-        for i in 1..5 do
+
+        for i in 1..10 do
           create(:profile, :active, activated_at: timestamp)
         end
         for i in 1..3 do
@@ -147,7 +168,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
             expect(parsed[:month]).to eq(report_date.prev_month(1).strftime('%b-%Y'))
             actual_csv = parsed[:results]
             expected_csv = [['IDV app reuse rate Feb-2021'],
-                            ['Num. SPs', 'Num. users', 'Percentage'], [2, 2, 40.0], [3, 1, 20.0], [], ['Total proofed identities'], ['Total proofed identities (Feb-2021)', 5]]
+                            ['Num. SPs', 'Num. users', 'Percentage'], [2, 3, 30.0], [3, 2, 20.0], ["Total (all >1)", 5, 50.0], [], ['Total proofed identities'], ['Total proofed identities (Feb-2021)', 10]]
             expect(actual_csv.first).to eq(expected_csv)
           end
 
