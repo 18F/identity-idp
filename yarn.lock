@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@18f/identity-design-system@^7.0.1":
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-7.0.1.tgz#5303dbf27aff48b5ed14cffd6e21cc39d44595e5"
-  integrity sha512-5KblBGmHLrsLGsF0cCThnkBWG0ZK+sP9NQln4FyEYXs0dzzGr0duhtqnMfGUZr6dj6ziZZjFCTmP8WNlkkpclA==
+"@18f/identity-design-system@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/@18f/identity-design-system/-/identity-design-system-7.1.0.tgz#ddde006a4ee1371fed75dda6cd97ef0cc929331c"
+  integrity sha512-/DChj/p9hju15HMQCtukId2POIhHo25SjZzKh11bklkTICLOBEpPc1GRIkWUIDv5WU/N5DtX1saFafqs+HKnEA==
   dependencies:
     "@uswds/uswds" "^3.4.1"
 
@@ -4457,10 +4457,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libphonenumber-js@^1.10.41:
-  version "1.10.41"
-  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.41.tgz#14b6be5894bed3385808a6a088031b5b8a27c105"
-  integrity sha512-4rmmF4u4vD3eGNuuCGjCPwRwO+fIuu1WWcS7VwbPTiMFkJd8F02v8o5pY5tlYuMR+xOvJ88mtOHpkm0Tnu2LcQ==
+libphonenumber-js@^1.10.43:
+  version "1.10.43"
+  resolved "https://registry.yarnpkg.com/libphonenumber-js/-/libphonenumber-js-1.10.43.tgz#ef8b697c70a160142a653fc92931852c403a656f"
+  integrity sha512-M/iPACJGsTvEy8QmUY4K0SoIFB71X2j7y2JvUMYzUXUxCNmiU+NTfHdz7gt+dC48BVfBzZi2oO6s9TDGllCfxA==
 
 lightningcss-darwin-arm64@1.16.1:
   version "1.16.1"

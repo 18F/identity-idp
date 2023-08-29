@@ -226,7 +226,7 @@ phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
 phone_recaptcha_mock_validator: true
 phone_recaptcha_score_threshold: 0.0
-phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0}'
+phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false

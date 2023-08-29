@@ -297,11 +297,17 @@ module AnalyticsEvents
     track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
   end
 
-  # @param [String] message the warining
+  # @param [String] message the warning
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
-  def doc_auth_warning(message: nil, **extra)
-    track_event('Doc Auth Warning', message: message, **extra)
+  def doc_auth_warning(message: nil, getting_started_ab_test_bucket: nil, **extra)
+    track_event(
+      'Doc Auth Warning',
+      message: message,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
+      **extra,
+    )
   end
 
   # When a user views the edit password page
@@ -759,6 +765,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
@@ -769,6 +776,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -781,6 +789,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -800,6 +809,7 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -816,6 +826,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -835,6 +846,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms: vendor_request_time_in_ms,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -847,6 +859,7 @@ module AnalyticsEvents
   # @param [String] flow_path
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] getting_started_ab_test_bucket Which initial IdV screen the user saw
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
@@ -857,6 +870,7 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    getting_started_ab_test_bucket: nil,
     **extra
   )
     track_event(
@@ -869,6 +883,7 @@ module AnalyticsEvents
       flow_path: flow_path,
       front_image_fingerprint: front_image_fingerprint,
       back_image_fingerprint: back_image_fingerprint,
+      getting_started_ab_test_bucket: getting_started_ab_test_bucket,
       **extra,
     )
   end
@@ -3863,29 +3878,6 @@ module AnalyticsEvents
       path: path,
       seconds: seconds,
       **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # Tracks when the the user has selected and submitted additional MFA methods on user registration
-  def user_registration_2fa_additional_setup(success:,
-                                             errors: nil,
-                                             **extra)
-    track_event(
-      'User Registration: Additional 2FA Setup',
-      {
-        success: success,
-        errors: errors,
-        **extra,
-      }.compact,
-    )
-  end
-
-  # Tracks when user visits additional MFA selection page
-  def user_registration_2fa_additional_setup_visit
-    track_event(
-      'User Registration: Additional 2FA Setup visited',
     )
   end
 

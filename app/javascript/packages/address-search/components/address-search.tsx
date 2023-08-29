@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Alert, PageHeading } from '@18f/identity-components';
-import AddressSearchInput, { InPersonLocations } from '@18f/identity-address-search';
-import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
+import InPersonLocations from './in-person-locations';
+import AddressInput from './address-input';
+import type { LocationQuery, FormattedLocation } from '../types';
 
 function AddressSearch({
   registerField,
@@ -18,7 +19,6 @@ function AddressSearch({
     null,
   );
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
-  const { t } = useI18n();
 
   return (
     <>
@@ -29,7 +29,7 @@ function AddressSearch({
       )}
       <PageHeading>{t('in_person_proofing.headings.po_search.location')}</PageHeading>
       <p>{t('in_person_proofing.body.location.po_search.po_search_about')}</p>
-      <AddressSearchInput
+      <AddressInput
         registerField={registerField}
         onFoundAddress={setFoundAddress}
         onFoundLocations={(locations) => {
