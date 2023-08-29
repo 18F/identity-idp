@@ -23,18 +23,12 @@ RSpec.shared_examples 'sends emails' do |expected_number_of_emails:,
   it 'logs the email events' do
     subject.send_emails(time_due_for_reminder)
 
-    expect(fake_analytics.events['IdV: gpo reminder email sent'].size).to(
+    expect(fake_analytics.events['IdV: gpo reminder email sent']&.size).to(
       eq(expected_number_of_analytics_events),
     )
-    expect(fake_analytics.events['Email Sent'].size).to(
+    expect(fake_analytics.events['Email Sent']&.size).to(
       eq(expected_number_of_emails),
     )
-  end
-
-  it 'updates the GPO verification code `reminder_sent_at`' do
-    subject.send_emails(time_due_for_reminder)
-
-    expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
   end
 end
 
@@ -84,6 +78,12 @@ RSpec.describe GpoReminderSender do
       end
 
       include_examples 'sends emails', expected_number_of_emails: 2
+
+      it 'updates the GPO verification code `reminder_sent_at`' do
+        subject.send_emails(time_due_for_reminder)
+
+        expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+      end
     end
 
     context 'when a user is due for a reminder' do
@@ -91,12 +91,24 @@ RSpec.describe GpoReminderSender do
 
       include_examples 'sends emails', expected_number_of_emails: 1
 
+      it 'updates the GPO verification code `reminder_sent_at`' do
+        subject.send_emails(time_due_for_reminder)
+
+        expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+      end
+
       context 'and the user has multiple emails' do
         let(:user) { create(:user, :with_pending_gpo_profile, :with_multiple_emails) }
 
         include_examples 'sends emails',
                          expected_number_of_emails: 2,
                          expected_number_of_analytics_events: 1
+
+        it 'updates the GPO verification code `reminder_sent_at`' do
+          subject.send_emails(time_due_for_reminder)
+
+          expect(gpo_confirmation_code.reminder_sent_at).to be_within(1.second).of(Time.zone.now)
+        end
       end
 
       context 'but the user has cancelled gpo verification' do
@@ -152,6 +164,19 @@ RSpec.describe GpoReminderSender do
       end
 
       include_examples 'sends no emails'
+    end
+
+    context 'a user in the in-person flow who also requested a GPO letter' do
+      let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        gpo_code = create(:gpo_confirmation_code)
+        user.pending_profile.gpo_confirmation_codes << gpo_code
+        user.pending_profile.gpo_verification_pending_at = time_due_for_reminder
+        user.pending_profile.save
+      end
+
+      include_examples 'sends emails', expected_number_of_emails: 1
     end
   end
 end

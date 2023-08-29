@@ -7,7 +7,7 @@ class GpoReminderSender
       where(
         gpo_verification_pending_at: letter_eligible_range,
         gpo_confirmation_codes: { reminder_sent_at: nil },
-        deactivation_reason: nil,
+        deactivation_reason: [nil, :in_person_verification_pending],
       )
 
     profiles_due_for_reminder.each do |profile|
