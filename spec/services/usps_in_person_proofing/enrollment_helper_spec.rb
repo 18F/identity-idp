@@ -20,6 +20,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:usps_ipp_transliteration_enabled) { true }
   let(:in_person_capture_secondary_id_enabled) { false }
   let(:usps_ipp_enrollment_email_address) { 'registration@usps.local.identitysandbox.gov' }
+  let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
 
   before(:each) do
     stub_request_token
@@ -50,38 +51,29 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       )
     end
 
-    context 'checking email address' do
-      let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
+    it 'uses configured email address in enrollment request' do
+      allow(subject).to receive(:usps_proofer).and_return(proofer)
+      expect(proofer).to receive(:request_enroll) do |applicant|
+        expect(applicant.email).to eq(usps_ipp_enrollment_email_address)
 
-      before do
-        allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
-        )
-        allow(subject).to receive(:usps_proofer).and_return(proofer)
+        UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
       end
 
-      it 'provides the configured email address in the USPS request' do
-        expect(proofer).to receive(:request_enroll) do |applicant|
-          expect(applicant.email).to eq(usps_ipp_enrollment_email_address)
+      subject.schedule_in_person_enrollment(user, pii)
+    end
 
-          UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-        end
+    it 'uses default email address in enrollment request if no email address is configured' do
+      allow(subject).to receive(:usps_proofer).and_return(proofer)
+      allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_email_address).
+        and_return('')
 
-        subject.schedule_in_person_enrollment(user, pii)
+      expect(proofer).to receive(:request_enroll) do |applicant|
+        expect(applicant.email).to eq('no-reply@login.gov')
+
+        UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
       end
 
-      it 'provides the no-reply email address in the USPS request if no email address is configured' do
-        allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_email_address).
-          and_return('')
-
-        expect(proofer).to receive(:request_enroll) do |applicant|
-          expect(applicant.email).to eq('no-reply@login.gov')
-
-          UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-        end
-
-        subject.schedule_in_person_enrollment(user, pii)
-      end
+      subject.schedule_in_person_enrollment(user, pii)
     end
 
     context 'when in-person mocking is enabled' do
