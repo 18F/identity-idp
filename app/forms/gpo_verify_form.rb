@@ -43,7 +43,7 @@ class GpoVerifyForm
         letter_count: letter_count,
         attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: has_pending_in_person_enrollment?,
+        pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
         fraud_check_failed: fraud_check_failed,
       },
     )
@@ -64,10 +64,6 @@ class GpoVerifyForm
   def schedule_in_person_enrollment_and_deactivate_profile
     UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
     pending_profile&.deactivate_for_in_person_verification
-  end
-
-  def has_pending_in_person_enrollment?
-    !!pending_profile&.in_person_enrollment&.pending?
   end
 
   def which_letter
