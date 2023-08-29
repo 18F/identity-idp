@@ -339,6 +339,7 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
+usps_ipp_enrollment_email_address: 'no-reply@login.gov'
 get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
 get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_cron: '0/30 * * * *'

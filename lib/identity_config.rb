@@ -455,6 +455,7 @@ class IdentityConfig
     config.add(:usps_ipp_sponsor_id, type: :string)
     config.add(:usps_ipp_transliteration_enabled, type: :boolean)
     config.add(:usps_ipp_username, type: :string)
+    config.add(:usps_ipp_enrollment_email_address, type: :string)
     config.add(:usps_mock_fallback, type: :boolean)
     config.add(:usps_upload_enabled, type: :boolean)
     config.add(:usps_upload_sftp_directory, type: :string)
