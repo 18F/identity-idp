@@ -27,5 +27,3 @@ export function trackEvent(event: string, payload?: object) {
  */
 export const trackError = ({ name, message, stack }: Error) =>
   trackEvent('Frontend Error', { name, message, stack });
-
-setTimeout(() => (window as any).foo(), 1);
