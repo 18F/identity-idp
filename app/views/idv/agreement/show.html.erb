@@ -9,16 +9,6 @@
       ) %>
 <% end %>
 
-<%= render AlertComponent.new(
-      type: :error,
-      class: [
-        'js-consent-form-alert',
-        'margin-bottom-4',
-        'display-none',
-      ].select(&:present?),
-      message: t('errors.doc_auth.consent_form'),
-    ) %>
-
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.lets_go')) %>
 <p><%= t('doc_auth.info.lets_go') %></p>
 <h2><%= t('doc_auth.headings.verify_identity') %></h2>
