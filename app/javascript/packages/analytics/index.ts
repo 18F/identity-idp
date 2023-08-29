@@ -1,5 +1,7 @@
 import { getConfigValue } from '@18f/identity-config';
 
+export { default as isTrackableErrorEvent } from './is-trackable-error-event';
+
 /**
  * Logs an event.
  *
