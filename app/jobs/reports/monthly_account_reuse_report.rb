@@ -27,7 +27,7 @@ module Reports
     end
 
     def first_day_of_report_month
-      report_date.strftime('%Y-%m-01')
+      report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
 
     def stats_month
@@ -140,4 +140,4 @@ module Reports
       }
     end
   end
-  end
+end
