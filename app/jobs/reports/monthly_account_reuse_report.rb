@@ -37,7 +37,6 @@ module Reports
     def report_body
       params = {
         query_date: first_day_of_report_month,
-        report_month: stats_month,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
 
       agency_sql = format(<<-SQL, params)
@@ -89,7 +88,7 @@ module Reports
 
       reuse_report = agency_results.as_json
 
-      total_proofed = proofed_results[0]['num_proofed']
+      total_proofed = proofed_results.first['num_proofed']
 
       total_reuse_stats = {
         label: 'Total (all >1)',
@@ -97,9 +96,8 @@ module Reports
         percentage: 0,
       }
 
-      reuse_report.each do |result_entry|
-        total_reuse_stats.num_users += result_entry.num_users
-      end
+
+      if !reuse_report.empty?
 
       reuse_report.each_with_index do |result_entry, index|
         reuse_report[index].percentage = result_entry.num_users / total_proofed * 100
@@ -114,18 +112,44 @@ module Reports
         ]
 
         reuse_report.each do |result_entry|
-          csv << [
-            result_entry.num_agencies,
-            result_entry.num_users,
-            result_entry.percentage,
-          ]
+          total_reuse_stats[:num_users] = total_reuse_stats[:num_users] + result_entry['num_users']
+        end
+
+        if total_proofed > 0
+          reuse_report.each_with_index do |result_entry, index|
+            reuse_report[index]['percentage'] =
+              result_entry['num_users'] / total_proofed.to_f * 100
+
+            total_reuse_stats[:percentage] += reuse_report[index]['percentage']
+          end
         end
       end
+
+      report_csv = []
+      report_csv << ["IDV app reuse rate #{stats_month}"]
+      report_csv << [
+        'Num. SPs',
+        'Num. users',
+        'Percentage',
+      ]
+
+      reuse_report.each do |result_entry|
+
+        report_csv << [
+          result_entry['num_agencies'],
+          result_entry['num_users'],
+          result_entry['percentage'],
+        ]
+      end
+
+      report_csv << []
+      report_csv << ['Total proofed identities']
+      report_csv << ["Total proofed identities (#{stats_month})", total_proofed]
 
       {
         report_date: first_day_of_report_month,
         month: stats_month,
-        results: report_csv,
+        results: [report_csv],
       }
     end
   end
