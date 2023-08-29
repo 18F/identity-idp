@@ -1,4 +1,6 @@
 class FrontendLogController < ApplicationController
+  class FrontendError < StandardError; end
+
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -8,10 +10,11 @@ class FrontendLogController < ApplicationController
   # In rare circumstances, these writes can clobber other, more important writes.
   before_action :skip_session_commit
 
+  FRONTEND_ERROR_EVENT = 'Frontend Error'.freeze
+
   # Please try to keep this list alphabetical as well!
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
-    'Frontend Error' => :frontend_error,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'IdV: location submitted' => :idv_in_person_location_submitted,
@@ -35,7 +38,11 @@ class FrontendLogController < ApplicationController
   # rubocop:enable Layout/LineLength
 
   def create
-    frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+    if error_event?
+      NewRelic::Agent.notice_error(FrontendError.new, custom_params: log_params[:payload].to_h)
+    else
+      frontend_logger.track_event(log_params[:event], log_params[:payload].to_h)
+    end
 
     render json: { success: true }, status: :ok
   end
@@ -60,6 +67,10 @@ class FrontendLogController < ApplicationController
   def valid_event?
     log_params[:event].is_a?(String) &&
       log_params[:event].present?
+  end
+
+  def error_event?
+    log_params[:event] == FRONTEND_ERROR_EVENT
   end
 
   def valid_payload?
