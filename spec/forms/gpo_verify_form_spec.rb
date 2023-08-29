@@ -157,6 +157,35 @@ RSpec.describe GpoVerifyForm do
         end
       end
 
+      context 'pending in person enrollment' do
+        let!(:pending_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            profile: pending_profile,
+            user: user,
+          )
+        end
+
+        let(:proofing_components) do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'sets profile to pending in person verification' do
+          subject.submit
+          pending_profile.reload
+
+          expect(pending_profile).not_to be_active
+          expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(pending_profile.in_person_verification_pending_at).to be_present
+          expect(pending_profile.gpo_verification_pending?).to eq(false)
+        end
+      end
+
       context 'ThreatMetrix rejection' do
         let(:pending_profile) do
           create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user: user)
