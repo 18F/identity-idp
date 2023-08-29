@@ -22,7 +22,7 @@ class GpoVerifyForm
     if result
       pending_profile&.remove_gpo_deactivation_reason
 
-      if pending_profile&.in_person_enrollment&.establishing?
+      if user.has_in_person_enrollment?
         schedule_in_person_enrollment_and_deactivate_profile
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
