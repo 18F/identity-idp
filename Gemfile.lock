@@ -734,6 +734,7 @@ DEPENDENCIES
   bullet (~> 7.0)
   bundler-audit
   capybara-webmock!
+  concurrent-ruby
   connection_pool
   cssbundling-rails
   derailed_benchmarks

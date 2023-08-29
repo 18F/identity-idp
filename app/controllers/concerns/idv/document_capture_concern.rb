@@ -23,7 +23,7 @@ module Idv
 
     # copied from Flow::Failure module
     def failure(message, extra = nil)
-      flow_session[:error_message] = message if defined?(flow_session)
+      flash[:error] = message
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)

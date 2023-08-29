@@ -15,6 +15,8 @@ es:
       upload_picture: Subir foto
     errors:
       alerts:
+        address_check: No pudimos leer la dirección en su documento de identidad.
+          Intente de tomar nuevas fotos.
         barcode_content_check: No pudimos leer el código de barras en el reverso de su
           documento de identidad. Puede ser debido a un problema con el código
           de barras, o bien el código de barras es un nuevo tipo que aún no

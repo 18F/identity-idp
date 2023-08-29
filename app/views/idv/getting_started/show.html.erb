@@ -10,9 +10,9 @@
       class: [
         'js-consent-form-alert',
         'margin-bottom-4',
-        flow_session[:error_message].blank? && 'display-none',
+        'display-none',
       ].select(&:present?),
-      message: flow_session[:error_message].presence || t('errors.doc_auth.consent_form'),
+      message: t('errors.doc_auth.consent_form'),
     ) %>
 
 <%= render PageHeadingComponent.new.with_content(@title) %>

@@ -191,7 +191,7 @@ module Idv
         state_id_number: pii[:state_id_number],
         # todo: add other edited fields?
         extra: {
-          address_edited: !!(idv_session.address_edited || flow_session['address_edited']),
+          address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
                               [:same_address_as_id],

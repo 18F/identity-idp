@@ -51,12 +51,6 @@ RSpec.describe Idv::AddressController do
       expect(response).to redirect_to(idv_verify_info_url)
     end
 
-    it 'sets address_edited in flow_session' do
-      expect do
-        put :update, params: params
-      end.to change { flow_session['address_edited'] }.from(nil).to eql(true)
-    end
-
     it 'sets address_edited in idv_session' do
       expect do
         put :update, params: params
