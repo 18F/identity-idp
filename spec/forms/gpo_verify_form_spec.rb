@@ -119,7 +119,7 @@ RSpec.describe GpoVerifyForm do
       end
 
       context 'establishing in person enrollment' do
-        let!(:enrollment) do
+        let!(:establishing_enrollment) do
           create(
             :in_person_enrollment,
             :establishing,
@@ -149,11 +149,11 @@ RSpec.describe GpoVerifyForm do
         it 'updates establishing in-person enrollment to pending' do
           subject.submit
 
-          enrollment.reload
+          establishing_enrollment.reload
 
-          expect(enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
-          expect(enrollment.user_id).to eq(user.id)
-          expect(enrollment.enrollment_code).to be_a(String)
+          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+          expect(establishing_enrollment.user_id).to eq(user.id)
+          expect(establishing_enrollment.enrollment_code).to be_a(String)
         end
       end
 
