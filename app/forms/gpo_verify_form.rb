@@ -66,10 +66,6 @@ class GpoVerifyForm
     pending_profile&.deactivate_for_in_person_verification
   end
 
-  def has_in_person_enrollment?
-    pending_profile&.in_person_enrollment&.establishing?
-  end
-
   def has_pending_in_person_enrollment?
     !!pending_profile&.in_person_enrollment&.pending?
   end
