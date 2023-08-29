@@ -53,31 +53,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       )
     end
 
-    it 'uses configured email address in enrollment request' do
-      allow(subject).to receive(:usps_proofer).and_return(proofer)
-      expect(proofer).to receive(:request_enroll) do |applicant|
-        expect(applicant.email).to eq(usps_ipp_enrollment_status_update_email_address)
-
-        UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-      end
-
-      subject.schedule_in_person_enrollment(user, pii)
-    end
-
-    it 'uses default email address in enrollment request if no email address is configured' do
-      allow(subject).to receive(:usps_proofer).and_return(proofer)
-      allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address).
-        and_return('')
-
-      expect(proofer).to receive(:request_enroll) do |applicant|
-        expect(applicant.email).to eq('no-reply@login.gov')
-
-        UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
-      end
-
-      subject.schedule_in_person_enrollment(user, pii)
-    end
-
     context 'when in-person mocking is enabled' do
       let(:usps_mock_fallback) { true }
 

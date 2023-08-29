@@ -63,8 +63,7 @@ module UspsInPersonProofing
             city: transliterate(pii[:city]),
             state: pii[:state],
             zip_code: pii[:zipcode],
-            email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence ||
-              'no-reply@login.gov',
+            email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
           },
         )
 
