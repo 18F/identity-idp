@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
@@ -18,7 +18,6 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   registerField,
 }) {
   const { inPersonURL } = useContext(InPersonContext);
-  const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
