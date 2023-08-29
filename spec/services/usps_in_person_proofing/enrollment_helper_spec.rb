@@ -87,8 +87,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     end
 
     context 'an establishing enrollment record exists for the user' do
-      let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
-
       before do
         allow(Rails).to receive(:cache).and_return(
           ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
@@ -238,7 +236,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       end
 
       context 'event logging' do
-        let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
         context 'with no service provider' do
           it 'logs event' do
             subject.schedule_in_person_enrollment(user, pii)
