@@ -19,15 +19,17 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   let(:service_provider) { nil }
   let(:usps_ipp_transliteration_enabled) { true }
   let(:in_person_capture_secondary_id_enabled) { false }
-  let(:usps_ipp_enrollment_email_address) { 'registration@usps.local.identitysandbox.gov' }
+  let(:usps_ipp_enrollment_status_update_email_address) do
+    'registration@usps.local.identitysandbox.gov'
+  end
   let(:proofer) { UspsInPersonProofing::Mock::Proofer.new }
 
   before(:each) do
     stub_request_token
     stub_request_enroll
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
-    allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_email_address).
-      and_return(usps_ipp_enrollment_email_address)
+    allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address).
+      and_return(usps_ipp_enrollment_status_update_email_address)
     allow(subject).to receive(:transliterator).and_return(transliterator)
     allow(transliterator).to receive(:transliterate).
       with(anything) do |val|
@@ -54,7 +56,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
     it 'uses configured email address in enrollment request' do
       allow(subject).to receive(:usps_proofer).and_return(proofer)
       expect(proofer).to receive(:request_enroll) do |applicant|
-        expect(applicant.email).to eq(usps_ipp_enrollment_email_address)
+        expect(applicant.email).to eq(usps_ipp_enrollment_status_update_email_address)
 
         UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
       end
@@ -64,7 +66,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
     it 'uses default email address in enrollment request if no email address is configured' do
       allow(subject).to receive(:usps_proofer).and_return(proofer)
-      allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_email_address).
+      allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address).
         and_return('')
 
       expect(proofer).to receive(:request_enroll) do |applicant|
@@ -204,7 +206,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
             expect(applicant.city).to eq("transliterated_#{city}")
             expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
             expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
-            expect(applicant.email).to eq(usps_ipp_enrollment_email_address)
+            expect(applicant.email).to eq(usps_ipp_enrollment_status_update_email_address)
             expect(applicant.unique_id).to eq(enrollment.unique_id)
 
             UspsInPersonProofing::Mock::Proofer.new.request_enroll(applicant)
