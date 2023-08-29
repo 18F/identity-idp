@@ -11,7 +11,7 @@ module Encryption
 
       def migrate!
         if profile.encrypted_pii.blank? || profile.encrypted_pii_recovery.blank?
-          raise "Profile##{profile.id} is missing encrypted_pii or or encrypted_pii_recovery"
+          raise "Profile##{profile.id} is missing encrypted_pii or encrypted_pii_recovery"
         end
 
         return if profile.encrypted_pii_multi_region.present? ||

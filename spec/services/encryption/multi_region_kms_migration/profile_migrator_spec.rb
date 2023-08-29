@@ -86,7 +86,7 @@ RSpec.describe Encryption::MultiRegionKmsMigration::ProfileMigrator do
       it 'does not modify the profile record' do
         expect { subject.migrate! }.to raise_error(
           RuntimeError,
-          "Profile##{profile.id} is missing encrypted_pii or or encrypted_pii_recovery"
+          "Profile##{profile.id} is missing encrypted_pii or encrypted_pii_recovery",
         )
       end
     end
