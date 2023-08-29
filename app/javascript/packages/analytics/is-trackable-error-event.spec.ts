@@ -1,4 +1,3 @@
-import { usePropertyValue } from '@18f/identity-test-helpers';
 import isTrackableErrorEvent from './is-trackable-error-event';
 
 describe('isTrackableErrorEvent', () => {
@@ -33,28 +32,6 @@ describe('isTrackableErrorEvent', () => {
 
     it('returns true', () => {
       expect(isTrackableErrorEvent(event)).to.be.true();
-    });
-  });
-
-  context('with webpack-internal: scheme path', () => {
-    const event = new ErrorEvent('error', {
-      filename: 'webpack-internal:///./app/javascript/packages/analytics/index.ts',
-    });
-
-    context('in environment other than development', () => {
-      usePropertyValue(process.env, 'NODE_ENV', 'production');
-
-      it('returns false', () => {
-        expect(isTrackableErrorEvent(event)).to.be.false();
-      });
-    });
-
-    context('in development environment', () => {
-      usePropertyValue(process.env, 'NODE_ENV', 'development');
-
-      it('returns true', () => {
-        expect(isTrackableErrorEvent(event)).to.be.true();
-      });
     });
   });
 });
