@@ -4,9 +4,7 @@ RSpec.describe Idv::SsnController do
   include IdvHelper
 
   let(:flow_session) do
-    { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      'pii_from_doc' => Idp::Constants::MOCK_IDV_APPLICANT.dup,
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
+    { pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT.dup }
   end
 
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
@@ -95,7 +93,7 @@ RSpec.describe Idv::SsnController do
     context 'with an ssn in session' do
       let(:referer) { idv_document_capture_url }
       before do
-        flow_session['pii_from_doc'][:ssn] = ssn
+        flow_session[:pii_from_doc][:ssn] = ssn
         request.env['HTTP_REFERER'] = referer
       end
 
@@ -158,12 +156,12 @@ RSpec.describe Idv::SsnController do
       it 'merges ssn into pii session value' do
         put :update, params: params
 
-        expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
+        expect(flow_session[:pii_from_doc][:ssn]).to eq(ssn)
       end
 
       context 'with a Puerto Rico address' do
         it 'redirects to address controller after user enters their SSN' do
-          flow_session['pii_from_doc'][:state] = 'PR'
+          flow_session[:pii_from_doc][:state] = 'PR'
 
           put :update, params: params
 
@@ -171,8 +169,8 @@ RSpec.describe Idv::SsnController do
         end
 
         it 'redirects to the verify info controller if a user is updating their SSN' do
-          flow_session['pii_from_doc'][:ssn] = ssn
-          flow_session['pii_from_doc'][:state] = 'PR'
+          flow_session[:pii_from_doc][:ssn] = ssn
+          flow_session[:pii_from_doc][:state] = 'PR'
 
           put :update, params: params
 
@@ -198,7 +196,7 @@ RSpec.describe Idv::SsnController do
       end
 
       it 'does not change threatmetrix_session_id when updating ssn' do
-        flow_session['pii_from_doc'][:ssn] = ssn
+        flow_session[:pii_from_doc][:ssn] = ssn
         put :update, params: params
         session_id = subject.idv_session.threatmetrix_session_id
         subject.threatmetrix_view_variables
@@ -239,7 +237,7 @@ RSpec.describe Idv::SsnController do
     context 'when pii_from_doc is not present' do
       before do
         subject.idv_session.flow_path = 'standard'
-        flow_session.delete('pii_from_doc')
+        flow_session.delete(:pii_from_doc)
       end
 
       it 'redirects to DocumentCaptureController on standard flow' do

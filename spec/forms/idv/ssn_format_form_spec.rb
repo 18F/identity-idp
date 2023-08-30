@@ -48,7 +48,7 @@ RSpec.describe Idv::SsnFormatForm do
     end
 
     context 'when there is an SSN in the pii_from_doc hash' do
-      let(:flow_session) { { 'pii_from_doc' => { ssn: '900-12-3456' } } }
+      let(:flow_session) { { pii_from_doc: { ssn: '900-12-3456' } } }
 
       it { expect(subject.updating_ssn?).to eq(true) }
     end
