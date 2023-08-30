@@ -268,10 +268,6 @@ class Profile < ApplicationRecord
     values.join(':')
   end
 
-  def pending_in_person_enrollment?
-    proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
-  end
-
   def includes_phone_check?
     return false if proofing_components.blank?
     proofing_components['address_check'] == 'lexis_nexis_address'
