@@ -2863,6 +2863,44 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
+  # @param [String] exception
+  # @param [Integer] user_id
+  # A user was migrated from a single-region key to a multi-region key
+  def multi_region_kms_migration_user_migrated(
+    success:,
+    exception:,
+    user_id:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: User migrated',
+      success: success,
+      exception: exception,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # @param [Integer] user_count
+  # @param [Integer] success_count
+  # @param [Integer] error_count
+  # The user migration job finished running
+  def multi_region_kms_migration_user_migration_summary(
+    user_count:,
+    success_count:,
+    error_count:,
+    **extra
+  )
+    track_event(
+      'Multi-region KMS migration: User migration summary',
+      user_count: user_count,
+      success_count: success_count,
+      error_count: error_count,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
   # @param [String] client_id
   # @param [Boolean] client_id_parameter_present
   # @param [Boolean] id_token_hint_parameter_present
