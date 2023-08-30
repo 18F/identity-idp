@@ -15,7 +15,10 @@ class FrontendLogger
     when Proc
       analytics_method.call(analytics, attributes)
     when UnboundMethod
-      analytics_method.bind_call(analytics, **hash_from_method_kwargs(attributes, analytics_method))
+      analytics.public_send(
+        analytics_method.name,
+        **hash_from_method_kwargs(attributes, analytics_method),
+      )
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end
