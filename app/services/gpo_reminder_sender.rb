@@ -7,7 +7,7 @@ class GpoReminderSender
 
     ActiveRecord::Base.transaction do
       quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
-      ActiveRecord.base.connection.execute("SET_LOCAL statement_timeout = #{quoted_timeout}")
+      ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
 
       profiles_due_for_reminder = Profile.joins(:gpo_confirmation_codes).
         where(
