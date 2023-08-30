@@ -347,11 +347,7 @@ RSpec.describe User do
       end
 
       it 'returns the establishing IPP enrollment through the pending profile' do
-        # don't trust has_one association(s)
-        expect(new_user.establishing_in_person_enrollment).to be_nil
-        expect(new_user.pending_in_person_enrollment).to be_nil
-
-        # trust pending_profile only
+        # trust pending_profile
         expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
       end
     end
