@@ -122,7 +122,9 @@ module Reports
       [reuse_report, reuse_total_users, reuse_total_percentage, total_proofed]
     end
 
-    def report_csv(reuse_stats, total_users, total_percentage, total_proofed)
+    def report_csv
+      reuse_stats, total_users, total_percentage, total_proofed = total_reuse_report
+      
       csv_array = []
       csv_array << ["IDV app reuse rate #{stats_month}"]
       csv_array << ['Num. SPs', 'Num. users', 'Percentage']
@@ -146,7 +148,7 @@ module Reports
       {
         report_date: first_day_of_report_month,
         month: stats_month,
-        results: [report_csv(*total_reuse_report)],
+        results: [report_csv],
       }
     end
   end
