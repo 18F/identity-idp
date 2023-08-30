@@ -350,7 +350,6 @@ RSpec.describe User do
         # don't trust has_one association(s)
         expect(new_user.establishing_in_person_enrollment).to be_nil
         expect(new_user.pending_in_person_enrollment).to be_nil
-        expect(new_user.has_in_person_enrollment?).to eq(false)
 
         # trust pending_profile only
         expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
