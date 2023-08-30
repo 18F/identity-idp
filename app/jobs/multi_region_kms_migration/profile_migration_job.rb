@@ -6,12 +6,14 @@ module MultiRegionKmsMigration
 
     def perform(statement_timeout: 120, profile_count: 1000)
       error_count = 0
+      success_count = 0
 
       profiles = find_profiles_to_migrate(statement_timeout:, profile_count:)
       profiles.each do |profile|
         return if error_count >= MAXIMUM_ERROR_TOLERANCE # rubocop:disable Lint/NonLocalExitFromIterator
 
         Encryption::MultiRegionKmsMigration::ProfileMigrator.new(profile).migrate!
+        success_count += 1
         analytics.multi_region_kms_migration_profile_migrated(
           success: true,
           profile_id: profile.id,
@@ -27,6 +29,7 @@ module MultiRegionKmsMigration
       end
       analytics.multi_region_kms_migration_profile_migration_summary(
         profile_count: profiles.size,
+        success_count: success_count,
         error_count: error_count,
       )
     end

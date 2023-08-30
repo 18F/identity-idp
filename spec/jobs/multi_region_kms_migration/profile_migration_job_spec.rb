@@ -64,6 +64,7 @@ RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
         expect(analytics).to receive(:track_event).with(
           'Multi-region KMS migration: Profile migration summary',
           profile_count: 2,
+          success_count: 0,
           error_count: 2,
         )
 
