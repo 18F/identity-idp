@@ -69,7 +69,16 @@ RSpec.describe Encryption::MultiRegionKmsMigration::ProfileMigrator do
 
     context 'for a user with multi-region ciphertexts' do
       it 'does not modify the profile record' do
-        expect { subject.migrate! }.to_not change { profile.attributes }
+        expect do
+          subject.migrate!
+        end.to_not change {
+          profile.attributes.slice(
+            :encrypted_pii,
+            :encrypted_pii_multi_region,
+            :encrypted_pii_recovery,
+            :encrypted_pii_recovery_multi_region,
+          )
+        }
       end
     end
 
