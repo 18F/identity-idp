@@ -11,17 +11,17 @@ class FrontendLogger
 
   # Logs an event and converts the payload to the correct keyword args
   # @param [String] name
-  # @param [Hash] attributes
+  # @param [Hash<String,Object>] attributes payload with string keys
   def track_event(name, attributes)
     analytics_method = event_map[name]
 
     if analytics_method.kind_of?(Symbol)
       analytics.send(
         analytics_method,
-        **hash_from_method_kwargs(attributes, analytics.method(analytics_method)),
+        **hash_from_kwargs(attributes, analytics.method(analytics_method)),
       )
     elsif analytics_method.respond_to?(:call)
-      analytics_method.call(**hash_from_method_kwargs(attributes, analytics_method))
+      analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end
@@ -29,12 +29,17 @@ class FrontendLogger
 
   private
 
-  def hash_from_method_kwargs(hash, method)
-    method_kwargs(method).index_with { |key| hash[key.to_s] }
+  # @param [Hash<String,Object>] hash
+  # @param [Proc,Method] callable
+  # @return [Hash<Symbol,Object>]
+  def hash_from_kwargs(hash, callable)
+    kwargs(callable).index_with { |key| hash[key.to_s] }
   end
 
-  def method_kwargs(method)
-    method.
+  # @param [Proc,Method] callable
+  # @return [Array<Symbol>] the names of the kwargs for the callable (both optional and required)
+  def kwargs(callable)
+    callable.
       parameters.
       map { |type, name| name if [:key, :keyreq].include?(type) }.
       compact
