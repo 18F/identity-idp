@@ -41,6 +41,29 @@ RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
         end
       end
     end
+
+    it 'logs an error if an error occurs' do
+      profile_migrator = double(Encryption::MultiRegionKmsMigration::ProfileMigrator)
+      expect(profile_migrator).to receive(:migrate!).twice.and_raise(RuntimeError, 'test error')
+      allow(
+        Encryption::MultiRegionKmsMigration::ProfileMigrator,
+      ).to receive(:new).and_return(profile_migrator)
+
+      analytics = subject.analyitcs
+
+      expect(analytics).to receive(:track_event).twice.with(
+        'Multi-region KMS migration: Profile migrated',
+        success: false,
+        profile_id: instance_of(Integer),
+        exception: instance_of(String),
+      )
+      expect(analytics).to receive(:track_event).with(
+        'Multi-region KMS migration: Profile migration summary',
+        profile_count: 2,
+      )
+
+      subject.perform_now
+    end
   end
 
   describe '#find_profiles_to_migrate' do
