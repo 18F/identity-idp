@@ -5,7 +5,6 @@ class GpoConfirmationExporter
   LINE_ENDING = "\r\n".freeze
   HEADER_ROW_ID = '01'.freeze
   CONTENT_ROW_ID = '02'.freeze
-  OTP_MAX_VALID_DAYS = IdentityConfig.store.usps_confirmation_max_days
 
   def initialize(confirmations)
     @confirmations = confirmations
@@ -32,7 +31,7 @@ class GpoConfirmationExporter
 
   def make_entry_row(confirmation)
     now = current_date
-    due = confirmation.created_at + OTP_MAX_VALID_DAYS.days
+    due = confirmation.created_at + IdentityConfig.store.usps_confirmation_max_days.days
 
     entry = confirmation.entry
     service_provider = ServiceProvider.find_by(issuer: entry[:issuer])
