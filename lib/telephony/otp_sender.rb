@@ -98,7 +98,7 @@ module Telephony
 
       break_time = " <break time='#{Telephony.config.voice_pause_time}' /> "
       transformed_otp = otp.chars.join(break_time)
-      transformed_otp += break_time
+      transformed_otp + break_time
     end
 
     def wrap_in_ssml_if_needed(message)
