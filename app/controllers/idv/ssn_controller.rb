@@ -38,7 +38,7 @@ module Idv
       )
 
       if form_response.success?
-        flow_session['pii_from_doc'][:ssn] = params[:doc_auth][:ssn]
+        flow_session[:pii_from_doc][:ssn] = params[:doc_auth][:ssn]
         idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
