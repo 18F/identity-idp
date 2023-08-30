@@ -65,13 +65,6 @@ const UNSUPPORTED_USER_AGENTS = [
 describe('isWebauthnPasskeySupported', () => {
   const defineProperty = useDefineProperty();
 
-  beforeEach(() => {
-    defineProperty(window, 'PublicKeyCredential', {
-      configurable: true,
-      value: { isUserVerifyingPlatformAuthenticatorAvailable: () => Promise.resolve(true) },
-    });
-  });
-
   UNSUPPORTED_USER_AGENTS.forEach((userAgent) => {
     context(userAgent, () => {
       beforeEach(() => {
