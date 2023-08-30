@@ -11,14 +11,15 @@ class FrontendLogger
   # @param [String] name
   # @param [Hash] attributes
   def track_event(name, attributes)
-    case (analytics_method = event_map[name])
-    when Proc
-      analytics_method.call(analytics, attributes)
-    when UnboundMethod
-      analytics.public_send(
-        analytics_method.name,
-        **hash_from_method_kwargs(attributes, analytics_method),
+    analytics_method = event_map[name]
+    case analytics_method
+    when Symbol
+      analytics.send(
+        analytics_method,
+        **hash_from_method_kwargs(attributes, analytics.method(analytics_method)),
       )
+    when Method
+      analytics_method.call(**hash_from_method_kwargs(attributes, analytics_method))
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end
