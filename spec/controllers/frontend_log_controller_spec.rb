@@ -174,7 +174,7 @@ RSpec.describe FrontendLogController do
       context 'for an error event' do
         let(:params) do
           {
-            'event' => described_class::FRONTEND_ERROR_EVENT,
+            'event' => 'Frontend Error',
             'payload' => {
               'name' => 'name',
               'message' => 'message',

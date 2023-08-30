@@ -1,14 +1,21 @@
 class FrontendLogger
   attr_reader :analytics, :event_map
 
+  # @param [Analytics]
+  # @param [Hash{String=>UnboundMethod,Proc}]
   def initialize(analytics:, event_map:)
     @analytics = analytics
     @event_map = event_map
   end
 
+  # @param [String] name
+  # @param [Hash] attributes
   def track_event(name, attributes)
-    if (analytics_method = event_map[name])
-      analytics.send(analytics_method.name, **hash_from_method_kwargs(attributes, analytics_method))
+    case analytics_method = event_map[name]
+    when Proc
+      analytics_method.call(analytics, attributes)
+    when UnboundMethod
+      analytics_method.bind_call(analytics, **hash_from_method_kwargs(attributes, analytics_method))
     else
       analytics.track_event("Frontend: #{name}", attributes)
     end
