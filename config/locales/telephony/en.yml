@@ -15,7 +15,7 @@ en:
         code expires in %{expiration} minutes.
     confirmation_ipp_enrollment_result:
       sms: |-
-        %{app_name}: You attempted to verify your identity at a Post Office on %{proof_date}. Check your email for your result.
+        %{app_name}: You visited the Post Office on %{proof_date}. Check your email for your result. Not you? Report this right away: %{contact_number}
     confirmation_otp:
       sms: |-
         %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
