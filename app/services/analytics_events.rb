@@ -2865,7 +2865,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [String] exception
   # @param [Integer] profile_id
-  # A profile was migration from a single-region key to a multi-region key
+  # A profile was migrated from a single-region key to a multi-region key
   def multi_region_kms_migration_profile_migrated(
     success:,
     exception:,
