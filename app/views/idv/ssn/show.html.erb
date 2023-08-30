@@ -30,7 +30,7 @@ locals:
   <% end %>
 </p>
 
-<% if should_render_threatmetrix_js? %>
+<% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
   <% if threatmetrix_session_id.present? %>
     <% threatmetrix_javascript_urls.each do |threatmetrix_javascript_url| %>
       <%= javascript_include_tag threatmetrix_javascript_url, nonce: true %>

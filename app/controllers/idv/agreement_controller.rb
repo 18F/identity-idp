@@ -13,8 +13,6 @@ module Idv
         'agreement', :view,
         true
       )
-
-      render :show, locals: { flow_session: flow_session }
     end
 
     def update
