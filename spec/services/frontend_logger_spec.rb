@@ -16,9 +16,9 @@ RSpec.describe FrontendLogger do
 
   let(:event_map) do
     {
-      'method' => ExampleAnalyticsEvents.instance_method(:example_method_handler),
-      'proc' => proc do |analytics, payload|
-        analytics.track_event('some customized event', payload.merge('custom' => true))
+      'method' => analytics.method(:example_method_handler),
+      'proc' => lambda do |ok:, other:|
+        analytics.track_event('some customized event', 'ok' => ok, 'other' => other, 'custom' => 1)
       end,
     }
   end
@@ -57,7 +57,7 @@ RSpec.describe FrontendLogger do
         call
 
         expect(analytics).to have_logged_event(
-          'some customized event', 'ok' => true, 'other' => true, 'custom' => true
+          'some customized event', 'ok' => true, 'other' => true, 'custom' => 1
         )
       end
     end
