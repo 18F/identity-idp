@@ -1196,6 +1196,21 @@ RSpec.describe GetUspsProofingResultsJob do
               ),
             )
           end
+
+          context 'when the secondary ID is supported' do
+            before do
+              stub_request_passed_proofing_supported_secondary_id_type_results
+            end
+
+            it_behaves_like(
+              'enrollment_with_a_status_update',
+              passed: true,
+              email_type: 'Success',
+              enrollment_status: InPersonEnrollment::STATUS_PASSED,
+              response_json: UspsInPersonProofing::Mock::Fixtures.
+                request_passed_proofing_supported_secondary_id_type_results_response,
+            )
+          end
         end
 
         context 'sms notifications enabled' do
