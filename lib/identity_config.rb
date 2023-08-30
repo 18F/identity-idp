@@ -315,6 +315,7 @@ class IdentityConfig
     config.add(:max_phone_numbers_per_account, type: :integer)
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:min_password_score, type: :integer)
+    config.add(:multi_region_kms_migration_jobs_enabled, type: :boolean)
     config.add(:mx_timeout, type: :integer)
     config.add(:newrelic_browser_app_id, type: :string)
     config.add(:newrelic_browser_key, type: :string)

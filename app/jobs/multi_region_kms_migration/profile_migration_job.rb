@@ -5,6 +5,8 @@ module MultiRegionKmsMigration
     include ::NewRelic::Agent::MethodTracer
 
     def perform(statement_timeout: 120, profile_count: 1000)
+      return unless IdentityConfig.store.multi_region_kms_migration_jobs_enabled
+
       error_count = 0
       success_count = 0
 
