@@ -60,7 +60,7 @@ module Idv
     private
 
     def ssn_from_doc
-      user_session&.dig('idv/doc_auth', :pii_from_doc, 'ssn')
+      user_session&.dig('idv/doc_auth', :pii_from_doc, :ssn)
     end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
