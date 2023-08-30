@@ -175,7 +175,7 @@ RSpec.describe GpoVerifyForm do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        it 'sets profile to pending in person verification' do
+        it 'changes profile from pending to active' do
           subject.submit
           pending_profile.reload
 
