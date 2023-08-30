@@ -3,12 +3,19 @@ class GpoReminderSender
     letter_eligible_range =
       IdentityConfig.store.usps_confirmation_max_days.days.ago..for_letters_sent_before
 
-    profiles_due_for_reminder = Profile.joins(:gpo_confirmation_codes).
-      where(
-        gpo_verification_pending_at: letter_eligible_range,
-        gpo_confirmation_codes: { reminder_sent_at: nil },
-        deactivation_reason: [nil, :in_person_verification_pending],
-      )
+    profiles_due_for_reminder = []
+
+    ActiveRecord::Base.transaction do
+      quoted_timeout = ActiveRecord::Base.connection.quote(IdentityConfig.store.report_timeout)
+      ActiveRecord.base.connection.execute("SET_LOCAL statement_timeout = #{quoted_timeout}")
+
+      profiles_due_for_reminder = Profile.joins(:gpo_confirmation_codes).
+        where(
+          gpo_verification_pending_at: letter_eligible_range,
+          gpo_confirmation_codes: { reminder_sent_at: nil },
+          deactivation_reason: [nil, :in_person_verification_pending],
+        )
+    end
 
     profiles_due_for_reminder.each do |profile|
       profile.user.send_email_to_all_addresses(:gpo_reminder)
