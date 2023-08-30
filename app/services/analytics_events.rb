@@ -2882,14 +2882,17 @@ module AnalyticsEvents
   end
 
   # @param [Integer] profile_count
+  # @param [Integer] error_count
   # The profile migration job finished running
   def multi_region_kms_migration_profile_migration_summary(
     profile_count:,
+    error_count:,
     **extra
   )
     track_event(
       'Multi-region KMS migration: Profile migration summary',
       profile_count: profile_count,
+      error_count: error_count,
       **extra,
     )
   end

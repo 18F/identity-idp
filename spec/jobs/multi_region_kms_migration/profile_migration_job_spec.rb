@@ -42,27 +42,47 @@ RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
       end
     end
 
-    it 'logs an error if an error occurs' do
-      profile_migrator = double(Encryption::MultiRegionKmsMigration::ProfileMigrator)
-      expect(profile_migrator).to receive(:migrate!).twice.and_raise(RuntimeError, 'test error')
-      allow(
-        Encryption::MultiRegionKmsMigration::ProfileMigrator,
-      ).to receive(:new).and_return(profile_migrator)
+    context 'when errors occur' do
+      let(:profile_migrator) { double(Encryption::MultiRegionKmsMigration::ProfileMigrator) }
 
-      analytics = subject.analytics
+      before do
+        allow(profile_migrator).to receive(:migrate!).and_raise(RuntimeError, 'test error')
+        allow(
+          Encryption::MultiRegionKmsMigration::ProfileMigrator,
+        ).to receive(:new).and_return(profile_migrator)
+      end
 
-      expect(analytics).to receive(:track_event).twice.with(
-        'Multi-region KMS migration: Profile migrated',
-        success: false,
-        profile_id: instance_of(Integer),
-        exception: instance_of(String),
-      )
-      expect(analytics).to receive(:track_event).with(
-        'Multi-region KMS migration: Profile migration summary',
-        profile_count: 2,
-      )
+      it 'logs the error' do
+        analytics = subject.analytics
 
-      subject.perform_now
+        expect(analytics).to receive(:track_event).twice.with(
+          'Multi-region KMS migration: Profile migrated',
+          success: false,
+          profile_id: instance_of(Integer),
+          exception: instance_of(String),
+        )
+        expect(analytics).to receive(:track_event).with(
+          'Multi-region KMS migration: Profile migration summary',
+          profile_count: 2,
+          error_count: 2,
+        )
+
+        subject.perform_now
+      end
+
+      it 'aborts after it encounters too many errors' do
+        # rubocop:disable Rails/SkipsModelValidations
+        create_list(:profile, 11, :with_pii)
+        Profile.update_all(
+          encrypted_pii_multi_region: nil,
+          encrypted_pii_recovery_multi_region: nil,
+        )
+        # rubocop:enable Rails/SkipsModelValidations
+
+        subject.perform_now
+
+        expect(profile_migrator).to have_received(:migrate!).exactly(10).times
+      end
     end
   end
 
@@ -71,6 +91,16 @@ RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
       results = subject.find_profiles_to_migrate(statement_timeout: 120, profile_count: 2)
 
       expect(results).to match_array(single_region_ciphertext_profiles)
+    end
+
+    context 'when a profile does not include PII' do
+      let(:profiles) { create_list(:profile, 4) }
+
+      it 'does not return the profile' do
+        results = subject.find_profiles_to_migrate(statement_timeout: 120, profile_count: 2)
+
+        expect(results).to be_empty
+      end
     end
   end
 end

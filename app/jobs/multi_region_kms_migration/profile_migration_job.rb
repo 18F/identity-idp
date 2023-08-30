@@ -1,10 +1,16 @@
 module MultiRegionKmsMigration
   class ProfileMigrationJob < ApplicationJob
+    MAXIMUM_ERROR_TOLERANCE = 10
+
     include ::NewRelic::Agent::MethodTracer
 
     def perform(statement_timeout: 120, profile_count: 1000)
+      error_count = 0
+
       profiles = find_profiles_to_migrate(statement_timeout:, profile_count:)
       profiles.each do |profile|
+        return if error_count >= MAXIMUM_ERROR_TOLERANCE # rubocop:disable Lint/NonLocalExitFromIterator
+
         Encryption::MultiRegionKmsMigration::ProfileMigrator.new(profile).migrate!
         analytics.multi_region_kms_migration_profile_migrated(
           success: true,
@@ -12,6 +18,7 @@ module MultiRegionKmsMigration
           exception: nil,
         )
       rescue => err
+        error_count += 1
         analytics.multi_region_kms_migration_profile_migrated(
           success: false,
           profile_id: profile.id,
@@ -20,6 +27,7 @@ module MultiRegionKmsMigration
       end
       analytics.multi_region_kms_migration_profile_migration_summary(
         profile_count: profiles.size,
+        error_count: error_count,
       )
     end
 
@@ -31,6 +39,9 @@ module MultiRegionKmsMigration
         Profile.where(
           encrypted_pii_multi_region: nil,
           encrypted_pii_recovery_multi_region: nil,
+        ).where(
+          'encrypted_pii IS NOT NULL',
+          'encrypted_pii_recovery IS NOT NULL',
         ).limit(profile_count)
       end
     end
