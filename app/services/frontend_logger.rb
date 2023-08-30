@@ -11,7 +11,7 @@ class FrontendLogger
   # @param [String] name
   # @param [Hash] attributes
   def track_event(name, attributes)
-    case analytics_method = event_map[name]
+    case (analytics_method = event_map[name])
     when Proc
       analytics_method.call(analytics, attributes)
     when UnboundMethod
