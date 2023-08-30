@@ -160,8 +160,8 @@ RSpec.describe InPerson::SendProofingNotificationJob do
               with(
                 to: phone_number,
                 message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
-                         " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous? Signalez-le"\
-                          " immédiatement: #{country_code}",
+                         " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
+                          " Signalez-le immédiatement: #{country_code}",
                 country_code: Phonelib.parse(phone_number).country,
               ),
             )
