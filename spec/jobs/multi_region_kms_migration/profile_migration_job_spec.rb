@@ -49,7 +49,7 @@ RSpec.describe MultiRegionKmsMigration::ProfileMigrationJob do
         Encryption::MultiRegionKmsMigration::ProfileMigrator,
       ).to receive(:new).and_return(profile_migrator)
 
-      analytics = subject.analyitcs
+      analytics = subject.analytics
 
       expect(analytics).to receive(:track_event).twice.with(
         'Multi-region KMS migration: Profile migrated',

@@ -6,19 +6,19 @@ module MultiRegionKmsMigration
       profiles = find_profiles_to_migrate(statement_timeout:, profile_count:)
       profiles.each do |profile|
         Encryption::MultiRegionKmsMigration::ProfileMigrator.new(profile).migrate!
-        analyitcs.multi_region_kms_migration_profile_migrated(
+        analytics.multi_region_kms_migration_profile_migrated(
           success: true,
           profile_id: profile.id,
           exception: nil,
         )
       rescue => err
-        analyitcs.multi_region_kms_migration_profile_migrated(
+        analytics.multi_region_kms_migration_profile_migrated(
           success: false,
           profile_id: profile.id,
           exception: err.inspect,
         )
       end
-      analyitcs.multi_region_kms_migration_profile_migration_summary(
+      analytics.multi_region_kms_migration_profile_migration_summary(
         profile_count: profiles.size,
       )
     end
@@ -35,7 +35,7 @@ module MultiRegionKmsMigration
       end
     end
 
-    def analyitcs
+    def analytics
       @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
     end
 
