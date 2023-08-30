@@ -29,6 +29,11 @@ class RegisterUserEmailForm
     email_address&.email
   end
 
+  # Note: This may perform a lot of DNS requests...
+  def normalized_email(email)
+    EmailNormalizer.new(email).normalized_email
+  end
+
   def validate_terms_accepted
     return if @terms_accepted || email_address_record&.user&.accepted_terms_at.present?
 
