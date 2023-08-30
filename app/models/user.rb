@@ -202,6 +202,17 @@ class User < ApplicationRecord
     pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
   end
 
+  # Trust `pending_profile` rather than enrollment assocations
+  # `Profile#in_person_enrollment` could be either `pending` or `establishing`, but
+  # `Profile#establishing_in_person_enrollment` can only be `establishing`,
+  # so both these implementations are logically equivalent.
+  # This method can be replaced with `User#establishing_in_person_enrollment.present?`
+  # once enrollment status data is consistent
+  def has_establishing_in_person_enrollment_safe?
+    !!pending_profile&.in_person_enrollment&.establishing?
+    # !!pending_profile&.establishing_in_person_enrollment.present?
+  end
+
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
       active_profile&.verified_at ||

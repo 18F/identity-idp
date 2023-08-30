@@ -323,6 +323,39 @@ RSpec.describe User do
         expect(user.has_in_person_enrollment?).to eq(true)
       end
     end
+
+    # We don't know yet if #establishing_in_person_enrollment is, in fact, `establishing`
+    # so we trust the pending profile in the meantime
+    describe '#has_establishing_in_person_enrollment_safe?' do
+      let(:new_user) { create(:user, :fully_registered) }
+      let(:proofing_components) { nil }
+      let(:new_pending_profile) do
+        create(
+          :profile,
+          :verify_by_mail_pending,
+          user: new_user,
+          proofing_components: proofing_components,
+        )
+      end
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          profile: new_pending_profile,
+          user: new_user,
+        )
+      end
+
+      it 'returns the establishing IPP enrollment through the pending profile' do
+        # don't trust has_one association(s)
+        expect(new_user.establishing_in_person_enrollment).to be_nil
+        expect(new_user.pending_in_person_enrollment).to be_nil
+        expect(new_user.has_in_person_enrollment?).to eq(false)
+
+        # trust pending_profile only
+        expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
+      end
+    end
   end
 
   describe 'deleting identities' do
