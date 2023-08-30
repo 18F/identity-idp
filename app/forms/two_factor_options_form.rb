@@ -27,7 +27,7 @@ class TwoFactorOptionsForm
   private
 
   def validate_selection_present
-    return if !has_no_mfa_or_in_required_flow? || selection.present?
+    return if !has_no_mfa_or_in_required_flow? || selection.present? || phishing_resistant_and_mfa?
     errors.add(:selection, missing_selection_error_message, type: :missing_selection)
   end
 
@@ -75,6 +75,10 @@ class TwoFactorOptionsForm
     has_no_configured_mfa? ||
       in_phishing_resistant_or_piv_cac_required_flow? ||
       platform_auth_only_option?
+  end
+
+  def phishing_resistant_and_mfa?
+    mfa_user.enabled_mfa_methods_count >= 1 && in_phishing_resistant_or_piv_cac_required_flow?
   end
 
   def missing_selection_error_message

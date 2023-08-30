@@ -111,7 +111,7 @@ RSpec.describe TwoFactorOptionsForm do
     end
 
     context 'when a user wants to is required to add piv_cac on sign in' do
-      let(:user) { build(:user, :with_authentication_app) }
+      let(:user) { build(:user) }
       let(:enabled_mfa_methods_count) { 1 }
       let(:mfa_selection) { ['phone'] }
       let(:phishing_resistant_required) { true }
@@ -127,6 +127,29 @@ RSpec.describe TwoFactorOptionsForm do
       end
 
       context 'when user selects an mfa' do
+        it 'is successful' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to eq(true)
+        end
+      end
+    end
+
+    context 'when a user signs up with phishing resistant requirement' do
+      let(:user) { build(:user) }
+      let(:enabled_mfa_methods_count) { 1 }
+      let(:phishing_resistant_required) { true }
+
+      context 'when user did not select an mfa' do
+        let(:mfa_selection) { [] }
+
+        it 'is unsuccessful' do
+          submission = subject.submit(selection: mfa_selection)
+          expect(submission.success?).to eq(false)
+        end
+      end
+
+      context 'when user selects an mfa' do
+        let(:mfa_selection) { ['piv_cac'] }
         it 'is successful' do
           submission = subject.submit(selection: mfa_selection)
           expect(submission.success?).to eq(true)
