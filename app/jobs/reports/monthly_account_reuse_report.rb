@@ -30,15 +30,13 @@ module Reports
       report_date.beginning_of_month.strftime('%Y-%m-%d')
     end
 
-    def stats_month
-      report_date.prev_month(1).strftime('%b-%Y')
-    end
-
-    def report_body
-      params = {
+    def params
+      {
         query_date: first_day_of_report_month,
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
+    end
 
+    def agency_reuse_results_json
       agency_sql = format(<<-SQL, params)
           SELECT
               COUNT(*) AS num_users
@@ -67,6 +65,14 @@ module Reports
               num_agencies ASC
       SQL
 
+      agency_results = transaction_with_timeout do
+        ActiveRecord::Base.connection.execute(agency_sql)
+      end
+
+      agency_results.as_json
+    end
+
+    def total_proofed_results
       proofed_sql = format(<<-SQL, params)
           SELECT
             COUNT(*) AS num_proofed
@@ -78,27 +84,28 @@ module Reports
             profiles.activated_at < %{query_date}
       SQL
 
-      agency_results = transaction_with_timeout do
-        ActiveRecord::Base.connection.execute(agency_sql)
-      end
-
       proofed_results = transaction_with_timeout do
         ActiveRecord::Base.connection.execute(proofed_sql)
       end
 
-      reuse_report = agency_results.as_json
+      proofed_results.first['num_proofed']
+    end
 
-      total_proofed = proofed_results.first['num_proofed']
+    def stats_month
+      report_date.prev_month(1).strftime('%b-%Y')
+    end
 
-      total_reuse_stats = {
-        label: 'Total (all >1)',
-        num_users: 0,
-        percentage: 0,
-      }
+    def total_reuse_report
+      reuse_report = agency_reuse_results_json
+
+      reuse_total_users = 0
+      reuse_total_percentage = 0
+
+      total_proofed = total_proofed_results
 
       if !reuse_report.empty?
         reuse_report.each do |result_entry|
-          total_reuse_stats[:num_users] = total_reuse_stats[:num_users] + result_entry['num_users']
+          reuse_total_users += result_entry['num_users']
         end
 
         if total_proofed > 0
@@ -106,37 +113,40 @@ module Reports
             reuse_report[index]['percentage'] =
               result_entry['num_users'] / total_proofed.to_f * 100
 
-            total_reuse_stats[:percentage] += reuse_report[index]['percentage']
+            reuse_total_percentage += reuse_report[index]['percentage']
           end
         end
       end
 
-      report_csv = []
-      report_csv << ["IDV app reuse rate #{stats_month}"]
-      report_csv << [
-        'Num. SPs',
-        'Num. users',
-        'Percentage',
-      ]
+      # reuse_stats and total_stats
+      [reuse_report, reuse_total_users, reuse_total_percentage, total_proofed]
+    end
 
-      reuse_report.each do |result_entry|
-        report_csv << [
+    def report_csv(reuse_stats, total_users, total_percentage, total_proofed)
+      csv_array = []
+      csv_array << ["IDV app reuse rate #{stats_month}"]
+      csv_array << ['Num. SPs', 'Num. users', 'Percentage']
+
+      reuse_stats.each do |result_entry|
+        csv_array << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      report_csv << [total_reuse_stats[:label], total_reuse_stats[:num_users],
-                     total_reuse_stats[:percentage]]
+      csv_array << ['Total (all >1)', total_users, total_percentage]
 
-      report_csv << []
-      report_csv << ['Total proofed identities']
-      report_csv << ["Total proofed identities (#{stats_month})", total_proofed]
+      csv_array << []
+      csv_array << ['Total proofed identities']
+      csv_array << ["Total proofed identities (#{stats_month})", total_proofed]
+      return csv_array
+    end
 
+    def report_body
       {
         report_date: first_day_of_report_month,
         month: stats_month,
-        results: [report_csv],
+        results: [report_csv(*total_reuse_report)],
       }
     end
   end

@@ -62,8 +62,8 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
     end
 
     context 'with data' do
-      let(:timestamp) { report_date - 12.hours }
-      let(:timestamp2) { report_date + 12.hours }
+      let(:timestamp) { report_date - 12.days }
+      let(:timestamp2) { report_date + 12.days }
 
       let(:agency) { create(:agency, name: 'The Agency') }
       let(:agency2) { create(:agency, name: 'The Other Agency') }
