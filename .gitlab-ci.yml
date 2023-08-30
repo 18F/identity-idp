@@ -101,7 +101,7 @@ build-idp-image:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       variables:
-        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:${$CI_DEFAULT_BRANCH}"
+        BRANCH_TAGGING_STRING: "--destination ${ECR_REGISTRY}/identity-idp/review:main"
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never

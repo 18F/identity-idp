@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@18f/identity-design-system": "^7.0.1"
+    "@18f/identity-design-system": "^7.1.0"
   }
 }

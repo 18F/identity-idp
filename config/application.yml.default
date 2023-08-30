@@ -128,8 +128,6 @@ idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-idv_tmx_test_csp_disabled_emails: '[]'
-idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
 in_person_public_address_search_enabled: false
@@ -209,6 +207,7 @@ max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
+multi_region_kms_migration_jobs_enabled: true
 mx_timeout: 3
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
@@ -330,7 +329,7 @@ version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
 usps_auth_token_refresh_job_enabled: false
-usps_confirmation_max_days: 10
+usps_confirmation_max_days: 30
 usps_ipp_password: ''
 usps_ipp_client_id: ''
 usps_ipp_root_url: ''
@@ -339,6 +338,7 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
+usps_ipp_enrollment_status_update_email_address: 'no-reply@login.gov'
 get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
 get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
