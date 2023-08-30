@@ -71,7 +71,7 @@ module IdvStepConcern
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
 
-    if idv_session.pending_in_person_enrollment?
+    if current_user.has_in_person_enrollment?
       redirect_to idv_in_person_verify_info_url
     else
       redirect_to idv_verify_info_url

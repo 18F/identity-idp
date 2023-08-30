@@ -198,6 +198,15 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.in_person_verification_pending?
   end
 
+  def has_in_person_enrollment?
+    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+  end
+
+  # Trust `pending_profile` rather than enrollment associations
+  def has_establishing_in_person_enrollment_safe?
+    !!pending_profile&.in_person_enrollment&.establishing?
+  end
+
   def personal_key_generated_at
     encrypted_recovery_code_digest_generated_at ||
       active_profile&.verified_at ||
