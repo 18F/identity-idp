@@ -10,21 +10,23 @@ module Encryption
       end
 
       def migrate!
-        if profile.encrypted_pii.blank? || profile.encrypted_pii_recovery.blank?
-          raise "Profile##{profile.id} is missing encrypted_pii or encrypted_pii_recovery"
-        end
+        profile.with_lock do
+          if profile.encrypted_pii.blank? || profile.encrypted_pii_recovery.blank?
+            raise "Profile##{profile.id} is missing encrypted_pii or encrypted_pii_recovery"
+          end
 
-        return if profile.encrypted_pii_multi_region.present? ||
+          next if profile.encrypted_pii_multi_region.present? ||
                   profile.encrypted_pii_recovery_multi_region.present?
 
-        encrypted_pii_multi_region = migrate_ciphertext(profile.encrypted_pii)
-        encrypted_pii_recovery_multi_region = migrate_ciphertext(profile.encrypted_pii_recovery)
-        profile.update!(
-          encrypted_pii: profile.encrypted_pii,
-          encrypted_pii_multi_region: encrypted_pii_multi_region,
-          encrypted_pii_recovery: profile.encrypted_pii_recovery,
-          encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
-        )
+          encrypted_pii_multi_region = migrate_ciphertext(profile.encrypted_pii)
+          encrypted_pii_recovery_multi_region = migrate_ciphertext(profile.encrypted_pii_recovery)
+          profile.update!(
+            encrypted_pii: profile.encrypted_pii,
+            encrypted_pii_multi_region: encrypted_pii_multi_region,
+            encrypted_pii_recovery: profile.encrypted_pii_recovery,
+            encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
+          )
+        end
       end
 
       private
