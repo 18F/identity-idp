@@ -285,6 +285,9 @@ rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timesta
 s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
+second_mfa_reminder_account_age_in_days: 30
+second_mfa_reminder_enabled: true
+second_mfa_reminder_sign_in_count: 10
 seed_agreements_data: true
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
@@ -463,6 +466,7 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
+  second_mfa_reminder_enabled: false
   secret_key_base:
   seed_agreements_data: false
   session_encryption_key:
