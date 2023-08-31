@@ -196,5 +196,43 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     end
+
+    it 'does not proceed to the next page if resolution fails',
+       allow_browser_log: true do
+      sign_in_and_2fa_user
+      begin_in_person_proofing(user)
+      complete_prepare_step(user)
+      complete_location_step(user)
+      complete_state_id_step(
+        user, same_address_as_id: same_address_as_id,
+              double_address_verification: double_address_verification
+      )
+      click_idv_continue
+      fill_out_ssn_form_with_ssn_that_fails_resolution
+      click_idv_continue
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
+      click_on t('idv.failure.button.warning')
+
+      expect(page).to have_current_path(idv_in_person_verify_info_path)
+    end
+
+    it 'proceeds to the next page if resolution passes',
+       allow_browser_log: true do
+      sign_in_and_2fa_user
+      begin_in_person_proofing(user)
+      complete_prepare_step(user)
+      complete_location_step(user)
+      complete_state_id_step(
+        user, same_address_as_id: same_address_as_id,
+              double_address_verification: double_address_verification
+      )
+      click_idv_continue
+      complete_ssn_step(user)
+      complete_verify_step(user)
+
+      expect(page).to have_content(t('titles.idv.phone'))
+    end
   end
 end

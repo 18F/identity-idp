@@ -33,6 +33,10 @@ module IdvSession
     )
   end
 
+  def flow_session
+    user_session['idv/doc_auth'] ||= {}
+  end
+
   def redirect_unless_idv_session_user
     redirect_to root_url if !idv_session_user
   end

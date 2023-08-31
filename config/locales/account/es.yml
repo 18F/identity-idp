@@ -56,7 +56,7 @@ es:
       verification:
         instructions: Su cuenta requiere un código único para ser verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
-        success: Su cuenta ha sido verificada.
+        success: Verificamos tu información
       webauthn: Clave de seguridad
       webauthn_add: Añadir clave de seguridad
       webauthn_confirm_delete: Si quitar la llave

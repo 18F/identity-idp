@@ -96,5 +96,6 @@
 
 <% if @presenter.show_pii_partial? %>
   <%= render 'accounts/pii', pii: @presenter.pii,
-                             locked_for_session: @presenter.locked_for_session %>
+                             locked_for_session: @presenter.locked_for_session,
+                             use_reauthentication_route: @use_reauthentication_route %>
 <% end %>

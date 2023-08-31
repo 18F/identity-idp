@@ -183,6 +183,7 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
     get '/account/connected_accounts' => 'accounts/connected_accounts#show'
+    post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'

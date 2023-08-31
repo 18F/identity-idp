@@ -30,7 +30,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnSelectionPresenter do
     end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     it 'returns an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end

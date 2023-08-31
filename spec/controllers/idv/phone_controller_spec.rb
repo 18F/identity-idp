@@ -20,6 +20,13 @@ RSpec.describe Idv::PhoneController do
         :confirm_verify_info_step_complete,
       )
     end
+
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
   end
 
   describe 'before_actions' do

@@ -33,6 +33,13 @@ RSpec.describe Idv::DocumentCaptureController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'checks that hybrid_handoff is complete' do
       expect(subject).to have_actions(
         :before,

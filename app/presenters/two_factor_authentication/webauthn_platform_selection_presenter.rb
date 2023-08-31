@@ -5,7 +5,10 @@ module TwoFactorAuthentication
     end
 
     def render_in(view_context, &block)
-      view_context.render(WebauthnInputComponent.new(platform: true), &block)
+      view_context.render(
+        WebauthnInputComponent.new(platform: true, passkey_supported_only: configuration.blank?),
+        &block
+      )
     end
 
     def disabled?

@@ -236,7 +236,6 @@ RSpec.describe 'Add a new phone number' do
         evaluated_as_valid: false,
         score_threshold: 0.6,
         recaptcha_version: 3,
-        exception_class: nil,
         phone_country_code: 'CA',
       ),
     )

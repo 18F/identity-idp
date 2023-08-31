@@ -23,6 +23,20 @@ RSpec.describe 'IdvStepConcern' do
         :confirm_not_rate_limited,
       )
     end
+
+    it 'includes handle_fraud' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :handle_fraud,
+      )
+    end
+
+    it 'includes check_for_outage before_action' do
+      expect(Idv::StepController).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
   end
 
   describe '#confirm_idv_needed' do

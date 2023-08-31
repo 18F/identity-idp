@@ -59,7 +59,7 @@ fr:
       verification:
         instructions: Votre compte nécessite un code à usage unique pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
-        success: Votre compte a été vérifié.
+        success: Nous avons vérifié vos informations
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé

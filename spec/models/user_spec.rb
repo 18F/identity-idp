@@ -814,6 +814,14 @@ RSpec.describe User do
 
           expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq false
         end
+
+        context 'user has a nil current session id' do
+          let(:mock_session_id) { nil }
+
+          it 'does not error' do
+            expect { user.suspend! }.to_not raise_error
+          end
+        end
       end
 
       it 'raises an error if the user is already suspended' do

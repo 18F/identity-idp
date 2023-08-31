@@ -49,10 +49,6 @@ class FeatureManagement
     IdentityConfig.store.use_kms
   end
 
-  def self.redirect_to_clean_edit_password_url?
-    IdentityConfig.store.use_clean_edit_password_url
-  end
-
   def self.kms_multi_region_enabled?
     IdentityConfig.store.aws_kms_multi_region_enabled
   end
@@ -80,6 +76,10 @@ class FeatureManagement
 
   def self.show_no_pii_banner?
     Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
+  end
+
+  def self.use_reauthentication_route?
+    IdentityConfig.store.use_reauthentication_route
   end
 
   def self.enable_saml_cert_rotation?

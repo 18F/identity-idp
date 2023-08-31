@@ -181,4 +181,57 @@ RSpec.feature 'User profile' do
       expect(current_path).to eq(account_history_path)
     end
   end
+
+  context 'allows verified user to see their information' do
+    context 'time between sign in and remember device' do
+      it 'shows PII when timeout hasnt expired' do
+        profile = create(
+          :profile, :active, :verified,
+          pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+        )
+        sign_in_user(profile.user)
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        visit account_path
+        expect(page).to_not have_button(t('account.re_verify.footer'))
+
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
+        expect(page).to have_content(parsed_date)
+      end
+    end
+
+    context 'when time expired' do
+      it 'has a prompt to authenticate device and pii isnt visible until reauthenticate' do
+        profile = create(
+          :profile, :active, :verified,
+          pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+        )
+        user = profile.user
+        sign_in_user(user)
+        dob = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
+        parsed_date = DateParser.parse_legacy(dob).to_formatted_s(:long)
+
+        check t('forms.messages.remember_device')
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        timeout_in_minutes = IdentityConfig.store.pii_lock_timeout_in_minutes.to_i
+        travel_to((timeout_in_minutes + 1).minutes.from_now) do
+          sign_in_user(user)
+          visit account_path
+          expect(page).to have_button(t('account.re_verify.footer'))
+          expect(page).to_not have_content(parsed_date)
+          click_button t('account.re_verify.footer')
+          expect(page).
+            to have_content t('two_factor_authentication.login_options.sms')
+          click_button t('forms.buttons.continue')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          expect(page).to have_content(parsed_date)
+        end
+      end
+    end
+  end
 end

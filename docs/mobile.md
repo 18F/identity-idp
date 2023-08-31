@@ -1,8 +1,9 @@
 # Mobile local development
 
 Instructions to use an iPhone or Android mobile device for local app development, in two sections:
-* [§ Use the app from a mobile device](#use-the-app-from-a-mobile-device) by running it over your home or office WiFi
-* [§ Debugging with the desktop browser](#debugging-with-the-desktop-browser) by plugging your phone into your computer with a USB cable
+
+- [§ Use the app from a mobile device](#use-the-app-from-a-mobile-device) by running it over your home or office WiFi
+- [§ Debugging with the desktop browser](#debugging-with-the-desktop-browser) by plugging your phone into your computer with a USB cable
 
 ## Use the app from a mobile device
 
@@ -12,22 +13,25 @@ By default, the application binds to `localhost`. These instructions bind to `0.
 
 1. Find your Local Area Network IP address. On a MacBook, this is available at **System Preferences → Network**. The address may start with `192.168`.
 
-2. To your app's `application.yml` file, add the below. Fill in your actual LAN IP address. The final line creates a **confirm now** link in place of email confirmation.
+2. In your app's `application.yml` file, add the below. Be sure to indent these lines and include them in the `development:` section. Also, fill in your actual LAN IP address. The final line creates a **confirm now** link in place of email confirmation.
+
 ```yaml
-domain_name: 192.168.x.x:3000
-mailer_domain_name: 192.168.x.x:3000
-enable_load_testing_mode: true
+development:
+  domain_name: 192.168.x.x:3000
+  mailer_domain_name: 192.168.x.x:3000
+  enable_load_testing_mode: true
 ```
 
 3. In the Chrome web browser of your development computer, visit `chrome://inspect`
 
 4. Click on **Port forwarding**. For port `8234` enter `0.0.0.0:3000`. Check **Enable port forwarding** and click **Done**. These screenshots illustrates enabling port forwarding on a MacBook:
 
-Click on Port forwarding   |  Enter IP and enable
-:-------------------------:|:-------------------------:
-![port-forwarding-button](https://user-images.githubusercontent.com/546123/231608927-5f577e1a-bc82-47c6-b69a-d592c551a99f.png)  |  ![port-forwarding-settings](https://user-images.githubusercontent.com/546123/231608489-f09f281e-305d-4200-9f21-9d772773a113.png)
+|                                                    Click on Port forwarding                                                    |                                                       Enter IP and enable                                                        |
+| :----------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------: |
+| ![port-forwarding-button](https://user-images.githubusercontent.com/546123/231608927-5f577e1a-bc82-47c6-b69a-d592c551a99f.png) | ![port-forwarding-settings](https://user-images.githubusercontent.com/546123/231608489-f09f281e-305d-4200-9f21-9d772773a113.png) |
 
 5. Start your app's local web server with:
+
 ```bash
 HOST=0.0.0.0 make run-https
 ```
@@ -48,24 +52,25 @@ These instructions will allow you to debug your phone browser with Chrome DevToo
 
 1. In your Android phone, turn on USB debugging. This will allow your development computer to connect to your phone.
 
-   **USB debugging** is a setting the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 5 times.
-
+   **USB debugging** is a setting in the **Developer options** menu. This menu may be hidden on your phone. It can be revealed with a ["magic tap"](https://developer.android.com/studio/debug/dev-options) on the phone **Build number** 7 times.
 
 2. Plug your Android phone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Allow USB debugging** click to allow it.
 
-3. Visit `chrome://inspect` in the Chrome browser of your development computer. (It may already be open from the previous set of instructions.) You should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
+3. Visit `chrome://inspect` in the Chrome browser of your development computer. (It may already be open from the previous set of instructions.) Below the "Remote Target" heading, you should see a listing of all the tabs open on your phone. Find the item on the list that represents the sign in screen of the identity-idp app. It should be at the top of the list.
+
+If you don't see any tabs under the "Remote Target" heading, you may need to try a different method of connecting your phone to your computer. In your terminal, you can run the command `ioreg -p IOUSB` to see what is connected to your USB ports. If your phone is connected to a USB hub but is not listed in the output, try connecting your phone directly to the computer. You could also try using a different USB cable.
 
 4. Click to **inspect** this tab. You should see browser DevTools and a representation of your phone's screen on your development computer, as in this illustration:
 
-    <img width="800" alt="inspect-androd-chrome-tab" src="https://user-images.githubusercontent.com/546123/231608143-aff2e115-e672-4411-8670-79f86fcf58ad.png">
+<img width="800" alt="inspect-androd-chrome-tab" src="https://user-images.githubusercontent.com/546123/231608143-aff2e115-e672-4411-8670-79f86fcf58ad.png">
 
 ### iPhone / Safari
 
 These instructions work only if your development computer is an Apple product. You will need a USB cable with the appropriate "lightning" connector to plug into an iPhone.
 
-1. On your development Apple machine, open the Safari web browser. Go to menu items **Safari → Preferences → Advanced** and check **Show Develop menu in menu bar**. A screenshot:
+1. On your development Apple machine, open the Safari web browser. Go to menu items **Safari → Settings → Advanced** and check **Show Develop menu in menu bar**. (For some OS versions, it may be **Safari → Preferences → Advanced**.) A screenshot:
 
-    ![show_develop_menu](https://user-images.githubusercontent.com/546123/232129916-3c68d950-1145-4af6-9a1a-c8e7c3dea7a1.png)
+   ![show_develop_menu](https://user-images.githubusercontent.com/546123/232129916-3c68d950-1145-4af6-9a1a-c8e7c3dea7a1.png)
 
 2. Take a glance at the newly-revealed **Develop** menu item in Safari. Seeing how the menu looks now may help you find your iPhone when it later appears in the menu.
 

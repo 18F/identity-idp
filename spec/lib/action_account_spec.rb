@@ -196,7 +196,7 @@ RSpec.describe ActionAccount do
       let(:config) { ScriptBase::Config.new(include_missing:) }
       subject(:result) { subtask.run(args:, config:) }
 
-      it 'Suspend a user that is not suspended already', aggregate_failures: true do
+      it 'suspend a user that is not suspended already', aggregate_failures: true do
         expect(result.table).to match_array(
           [
             ['uuid', 'status'],

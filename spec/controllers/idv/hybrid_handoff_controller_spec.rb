@@ -21,6 +21,13 @@ RSpec.describe Idv::HybridHandoffController do
       )
     end
 
+    it 'includes outage before_action' do
+      expect(subject).to have_actions(
+        :before,
+        :check_for_outage,
+      )
+    end
+
     it 'checks that agreement step is complete' do
       expect(subject).to have_actions(
         :before,

@@ -25,6 +25,11 @@ class Profile < ApplicationRecord
     in_person_verification_pending: 5,
   }
 
+  enum fraud_pending_reason: {
+    threatmetrix_review: 1,
+    threatmetrix_reject: 2,
+  }
+
   attr_reader :personal_key
 
   # rubocop:disable Metrics/BlockLength
@@ -96,7 +101,7 @@ class Profile < ApplicationRecord
       activated_at: now,
     }
 
-    attrs[:verified_at] = now unless reason_deactivated == :password_reset
+    attrs[:verified_at] = now unless (reason_deactivated == :password_reset || verified_at)
 
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
@@ -122,6 +127,9 @@ class Profile < ApplicationRecord
   def activate_after_passing_review
     transaction do
       fraud_pass
+      update!(
+        fraud_pending_reason: nil,
+      )
       activate
     end
 

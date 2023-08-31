@@ -3,7 +3,7 @@ module Idv
     extend ActiveSupport::Concern
 
     def check_for_outage
-      return if user_session.fetch('idv/doc_auth', {})[:skip_vendor_outage]
+      return if flow_session[:skip_vendor_outage]
 
       return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
     end
@@ -13,9 +13,7 @@ module Idv
 
       # During a phone outage, skip the hybrid handoff
       # step and go straight to document upload
-      unless FeatureManagement.idv_allow_hybrid_flow?
-        user_session.fetch('idv/doc_auth', {})[:skip_upload_step] = true
-      end
+      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
 
       redirect_to idv_mail_only_warning_url
     end

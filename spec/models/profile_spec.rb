@@ -292,6 +292,16 @@ RSpec.describe Profile do
         expect(profile).to_not be_active
       end
     end
+
+    context 'When a profile already has a verified_at timestamp' do
+      it 'does not update the timestamp when #activate is called' do
+        profile = create(:profile, :verified, user: user)
+        original_timestamp = profile.verified_at
+        expect(profile.reason_not_to_activate).to be_nil
+        profile.activate
+        expect(profile.verified_at).to eq(original_timestamp)
+      end
+    end
   end
 
   describe '#deactivate' do
@@ -477,12 +487,18 @@ RSpec.describe Profile do
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
       profile = create(
-        :profile, user: user, active: false,
-                  fraud_state: 'fraud_review_pending'
+        :profile,
+        user: user,
+        active: false,
+        fraud_state: 'fraud_review_pending',
+        fraud_pending_reason: :threatmetrix_review,
+        fraud_review_pending_at: 1.day.ago,
       )
       profile.activate_after_passing_review
 
       expect(profile).to be_active
+      expect(profile.fraud_review_pending_at).to be_present
+      expect(profile.fraud_pending_reason).to be_nil
     end
 
     it 'does not activate a profile if transaction raises an error' do

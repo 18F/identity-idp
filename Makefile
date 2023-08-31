@@ -83,7 +83,7 @@ endif
 	bundle exec bundler-audit check --update
 	# JavaScript
 	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 7
+	make audit_yarn_packages
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -104,6 +104,8 @@ endif
 	@echo "--- lint migrations ---"
 	make lint_migrations
 
+audit_yarn_packages:
+	yarn run audit-ci --config ./audit-ci.jsonc
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components

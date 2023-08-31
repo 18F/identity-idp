@@ -39,7 +39,7 @@ describe('isWebauthnPlatformSupported', () => {
         });
       });
 
-      it('resolves to false', async () => {
+      it('resolves to true', async () => {
         await expect(isWebauthnPlatformSupported()).to.eventually.equal(true);
       });
     });

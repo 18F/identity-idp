@@ -7,15 +7,72 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:success_properties) { { success: true, failure_reason: nil } }
   let(:token_expired_error) { 'token_expired' }
   describe '#edit' do
+    let(:user) { instance_double('User', uuid: '123') }
+    let(:email_address) { instance_double('EmailAddress') }
     before do
       stub_analytics
       stub_attempts_tracker
       allow(@analytics).to receive(:track_event)
     end
 
-    context 'when clean url feature toggle is set to false' do
+    context 'when token isnt stored in session' do
+      it 'redirects to the clean edit password url with token stored in session' do
+        get :edit, params: { reset_password_token: 'foo' }
+        expect(response).to redirect_to(edit_user_password_url)
+        expect(session[:reset_password_token]).to eq('foo')
+      end
+    end
+
+    context 'no user matches token' do
+      let(:user_blank_error) { { user: [:blank] } }
+      let(:token) { 'foo' }
       before do
-        allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(false)
+        session[:reset_password_token] = token
+      end
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: { user: ['invalid_token'] },
+          error_details: user_blank_error,
+          user_id: nil,
+        }
+      end
+
+      it 'redirects to page where user enters email for password reset token' do
+        expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          success: false,
+          failure_reason: user_blank_error,
+        )
+
+        get :edit
+
+        expect(@analytics).to have_received(:track_event).
+          with('Password Reset: Token Submitted', analytics_hash)
+        expect(response).to redirect_to new_user_password_path
+        expect(flash[:error]).to eq t('devise.passwords.invalid_token')
+      end
+    end
+
+    context 'token expired' do
+      let(:user_token_error) { { user: [token_expired_error] } }
+      let(:token) { 'foo' }
+      before do
+        session[:reset_password_token] = token
+      end
+      let(:analytics_hash) do
+        {
+          success: false,
+          errors: user_token_error,
+          error_details: user_token_error,
+          user_id: '123',
+        }
+      end
+      let(:user) { instance_double('User', uuid: '123') }
+
+      before do
+        allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
+        allow(User).to receive(:with_reset_password_token).with('bar').and_return(nil)
+        allow(user).to receive(:reset_password_period_valid?).and_return(false)
       end
 
       context 'no user matches token' do
@@ -29,13 +86,17 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           }
         end
 
+        before do
+          session[:reset_password_token] = 'bar'
+        end
+
         it 'redirects to page where user enters email for password reset token' do
           expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
             failure_reason: user_blank_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -67,7 +128,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             failure_reason: user_token_error,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(@analytics).to have_received(:track_event).
             with('Password Reset: Token Submitted', analytics_hash)
@@ -99,7 +160,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             success_properties,
           )
 
-          get :edit, params: { reset_password_token: 'foo' }
+          get :edit
 
           expect(response).to render_template :edit
           expect(flash.keys).to be_empty
@@ -108,106 +169,24 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
     end
 
-    context 'when clean url feature toggle is set to true' do
-      let(:user) { instance_double('User', uuid: '123') }
-      let(:email_address) { instance_double('EmailAddress') }
+    context 'when token is valid' do
       before do
-        allow(FeatureManagement).to receive(:redirect_to_clean_edit_password_url?).and_return(true)
+        allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
+        allow(user).to receive(:reset_password_period_valid?).and_return(true)
+        allow(user).to receive(:email_addresses).and_return([email_address])
+        session[:reset_password_token] = 'foo'
       end
+      it 'renders the template to the clean edit password url with token stored in session' do
+        expect(email_address).to receive(:email).twice
 
-      context 'when token isnt stored in session' do
-        it 'redirects to the clean edit password url with token stored in session' do
-          get :edit, params: { reset_password_token: 'foo' }
-          expect(response).to redirect_to(edit_user_password_url)
-          expect(session[:reset_password_token]).to eq('foo')
-        end
-      end
+        forbidden = instance_double(ForbiddenPasswords)
+        allow(ForbiddenPasswords).to receive(:new).
+          with(email_address.email).and_return(forbidden)
+        expect(forbidden).to receive(:call)
 
-      context 'no user matches token' do
-        let(:user_blank_error) { { user: [:blank] } }
-        let(:token) { 'foo' }
-        before do
-          session[:reset_password_token] = token
-        end
-        let(:analytics_hash) do
-          {
-            success: false,
-            errors: { user: ['invalid_token'] },
-            error_details: user_blank_error,
-            user_id: nil,
-          }
-        end
-
-        it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_blank_error,
-          )
-
-          get :edit
-
-          expect(@analytics).to have_received(:track_event).
-            with('Password Reset: Token Submitted', analytics_hash)
-          expect(response).to redirect_to new_user_password_path
-          expect(flash[:error]).to eq t('devise.passwords.invalid_token')
-        end
-      end
-
-      context 'token expired' do
-        let(:user_token_error) { { user: [token_expired_error] } }
-        let(:token) { 'foo' }
-        before do
-          session[:reset_password_token] = token
-        end
-        let(:analytics_hash) do
-          {
-            success: false,
-            errors: user_token_error,
-            error_details: user_token_error,
-            user_id: '123',
-          }
-        end
-        let(:user) { instance_double('User', uuid: '123') }
-
-        before do
-          allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
-          allow(user).to receive(:reset_password_period_valid?).and_return(false)
-        end
-
-        it 'redirects to page where user enters email for password reset token' do
-          expect(@irs_attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
-            success: false,
-            failure_reason: user_token_error,
-          )
-
-          get :edit
-
-          expect(@analytics).to have_received(:track_event).
-            with('Password Reset: Token Submitted', analytics_hash)
-          expect(response).to redirect_to new_user_password_path
-          expect(flash[:error]).to eq t('devise.passwords.token_expired')
-        end
-      end
-
-      context 'when token is valid' do
-        before do
-          allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
-          allow(user).to receive(:reset_password_period_valid?).and_return(true)
-          allow(user).to receive(:email_addresses).and_return([email_address])
-          session[:reset_password_token] = 'foo'
-        end
-        it 'renders the template to the clean edit password url with token stored in session' do
-          expect(email_address).to receive(:email).twice
-
-          forbidden = instance_double(ForbiddenPasswords)
-          allow(ForbiddenPasswords).to receive(:new).
-            with(email_address.email).and_return(forbidden)
-          expect(forbidden).to receive(:call)
-
-          get :edit
-          expect(response).to render_template :edit
-          expect(flash.keys).to be_empty
-        end
+        get :edit
+        expect(response).to render_template :edit
+        expect(flash.keys).to be_empty
       end
     end
   end

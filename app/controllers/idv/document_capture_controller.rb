@@ -2,18 +2,14 @@ module Idv
   class DocumentCaptureController < ApplicationController
     include AcuantConcern
     include DocumentCaptureConcern
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
     include RateLimitConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
     before_action :override_csp_to_allow_acuant
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)

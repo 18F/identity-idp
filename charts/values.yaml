@@ -1,0 +1,235 @@
+# Default values for identity-idp-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+idp:
+  enabled: true
+  env:
+  - name: POSTGRES_SSLMODE
+    value: "prefer"
+  - name: POSTGRES_NAME
+    value: "idp"
+  - name: POSTGRES_HOST
+    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+  - name: POSTGRES_USERNAME
+    value: "postgres"
+  - name: POSTGRES_PASSWORD
+    value: "postgres"
+  - name: POSTGRES_WORKER_SSLMODE
+    value: "prefer"
+  - name: POSTGRES_WORKER_NAME
+    value: "idp-worker-jobs"
+  - name: POSTGRES_WORKER_HOST
+    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+  - name: POSTGRES_WORKER_USERNAME
+    value: "postgres"
+  - name: POSTGRES_WORKER_PASSWORD
+    value: "postgres"
+  - name: LOGIN_ENV
+    value: "dev"
+  - name: RAILS_OFFLINE
+    value: "true"
+  - name: REDIS_IRS_ATTEMPTS_API_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/2
+  - name: REDIS_THROTTLE_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/1
+  - name: REDIS_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379
+  - name: ASSET_HOST
+    value: https://test.review-app.identitysandbox.gov
+  - name: DOMAIN_NAME
+    value: test.review-app.identitysandbox.gov
+  hooks:
+    # Enable or disable post install rake tasks
+    create: true # db:create
+    migrate: true # db:migrate
+    seed: false # db:seed
+    backoffLimit: 5
+    annotations: # Annotations to add to the job
+      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook-delete-policy: hook-succeeded,hook-failed
+  replicaCount: 1
+  image:
+    repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: latest
+  imagePullSecrets: []
+  nameOverride: ""
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  fullnameOverride: ""
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::894947205914:role/reviewapp_idp_iam_role"
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+    # fsGroup: 2000
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: true
+    className: "alb"
+    annotations:
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: review-app
+      alb.ingress.kubernetes.io/backend-protocol: HTTPS
+      alb.ingress.kubernetes.io/healthcheck-path: "/api/health"
+      alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:894947205914:certificate/a696b1c7-00cf-4188-8361-bca780b7fc49
+    hosts:
+      - host: test.review-app.identitysandbox.gov
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+worker:
+  enabled: true
+  env:
+  - name: POSTGRES_SSLMODE
+    value: "prefer"
+  - name: POSTGRES_NAME
+    value: "idp"
+  - name: POSTGRES_HOST
+    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+  - name: POSTGRES_USERNAME
+    value: "postgres"
+  - name: POSTGRES_PASSWORD
+    value: "postgres"
+  - name: POSTGRES_WORKER_SSLMODE
+    value: "prefer"
+  - name: POSTGRES_WORKER_NAME
+    value: "idp-worker-jobs"
+  - name: POSTGRES_WORKER_HOST
+    value: "rails-app-test-identity-idp-chart-postgres.review-apps"
+  - name: POSTGRES_WORKER_USERNAME
+    value: "postgres"
+  - name: POSTGRES_WORKER_PASSWORD
+    value: "postgres"
+  - name: LOGIN_ENV
+    value: "dev"
+  - name: RAILS_OFFLINE
+    value: "true"
+  - name: REDIS_IRS_ATTEMPTS_API_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/2
+  - name: REDIS_THROTTLE_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379/1
+  - name: REDIS_URL 
+    value: redis://rails-app-test-identity-idp-chart-redis.review-apps:6379
+  replicaCount: 1
+  image:
+    #repository: stephenshelton/identity-idp
+    repository: 894947205914.dkr.ecr.us-west-2.amazonaws.com/review_app/idp
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: latest
+  imagePullSecrets: []
+  nameOverride: ""
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  fullnameOverride: ""
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: true
+    # Annotations to add to the service account
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::894947205914:role/reviewapp_worker_iam_role"
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: ""
+  podAnnotations: {}
+  podSecurityContext: {}
+    # fsGroup: 2000
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  service:
+    type: ClusterIP
+    port: 7001
+
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+postgresql:
+  image: postgis/postgis
+  tag: "14-3.3"
+  enabled: true
+  username: postgres
+  password: postgres
+  database: idp
+  persistence:
+    enabled: false
+    size: 8Gi
+  service:
+    port: 5432
+
+redis:
+  enabled: true
+  image: redis
+  tag: "7.0"
+  username: redis
+  password: password
+  persistence:
+    enabled: false
+    size: 8Gi
+  service:
+    port: 6379

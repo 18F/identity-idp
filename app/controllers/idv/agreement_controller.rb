@@ -1,15 +1,11 @@
 module Idv
   class AgreementController < ApplicationController
-    include IdvSession
     include IdvStepConcern
-    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
-    before_action :confirm_two_factor_authenticated
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
-    before_action :check_for_outage, only: :show
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)

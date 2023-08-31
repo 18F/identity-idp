@@ -16,5 +16,16 @@ class AccountsController < ApplicationController
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )
+    @use_reauthentication_route = FeatureManagement.use_reauthentication_route?
+  end
+
+  # This action is used to re-authenticate when PII on the account page is locked on `show` action
+  # This allows users to view their PII after reauthenticating their MFA.
+
+  def reauthentication
+    user_session[:stored_location] = account_url
+    user_session[:context] = 'reauthentication'
+
+    redirect_to login_two_factor_options_path(reauthn: true)
   end
 end

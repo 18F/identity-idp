@@ -20,7 +20,7 @@
   </ul>
   <% c.with_action_button(
        action: ->(**tag_options, &block) do
-         link_to(idv_doc_auth_step_path(step: :welcome), **tag_options, &block)
+         link_to(idv_url, **tag_options, &block)
        end,
        big: true,
        wide: true,
