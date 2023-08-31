@@ -78,8 +78,12 @@ module Idv
     end
 
     def render_document_capture_cancelled
-      mark_upload_step_incomplete
-      redirect_to idv_doc_auth_url # was idv_url, why?
+      if IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
+        redirect_to idv_hybrid_handoff_url
+      else
+        mark_upload_step_incomplete
+        redirect_to idv_doc_auth_url # was idv_url, why?
+      end
       failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
     end
 

@@ -495,6 +495,26 @@ describe Idv::ReviewController do
             end
           end
 
+          context 'when the USPS response is not a hash' do
+            let(:stub_usps_response) do
+              stub_request_enroll_non_hash_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected a hash but got a NilClass',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
+            end
+          end
+
           context 'when the USPS response is missing an enrollment code' do
             let(:stub_usps_response) do
               stub_request_enroll_invalid_response

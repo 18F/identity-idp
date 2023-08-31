@@ -84,7 +84,7 @@ module Users
       if ial_context.ial2_requested?
         capture_password_url
       else
-        after_otp_verification_confirmation_url
+        after_sign_in_path_for(current_user)
       end
     end
 

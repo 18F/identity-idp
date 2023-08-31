@@ -36,6 +36,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
   },
 });
 global.window.Response = Response;
+global.navigator.sendBeacon = () => true;
 
 useCleanDOM(dom);
 useConsoleLogSpy();

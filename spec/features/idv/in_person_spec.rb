@@ -107,8 +107,8 @@ RSpec.describe 'In Person Proofing', js: true do
       )
 
       # signing in again before completing in-person proofing at a post office
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_welcome_step
+      Capybara.reset_session!
+      sign_in_live_with_2fa(user)
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     end
   end
@@ -240,8 +240,8 @@ RSpec.describe 'In Person Proofing', js: true do
     )
 
     # signing in again before completing in-person proofing at a post office
-    sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_welcome_step
+    Capybara.reset_session!
+    sign_in_live_with_2fa(user)
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
     # confirm that user cannot visit other IdV pages before completing in-person proofing

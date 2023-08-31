@@ -1,12 +1,5 @@
 @use 'uswds-core' as *;
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  /* stylelint-disable-next-line property-no-vendor-prefix */
-  -webkit-appearance: none;
-  margin: 0;
-}
-
 // ===============================================
 // Pending upstream Login Design System revisions:
 // ===============================================

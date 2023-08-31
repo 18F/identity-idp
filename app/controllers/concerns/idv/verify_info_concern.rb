@@ -90,11 +90,22 @@ module Idv
 
     def idv_failure(result)
       proofing_results_exception = result.extra.dig(:proofing_results, :exception)
+      is_mva_exception = result.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :state_id,
+        :mva_exception,
+      )
 
       resolution_throttle.increment! if proofing_results_exception.blank?
+
       if resolution_throttle.throttled?
         idv_failure_log_throttled(:idv_resolution)
         redirect_to throttled_url
+      elsif proofing_results_exception.present? && is_mva_exception
+        idv_failure_log_warning
+        redirect_to state_id_warning_url
       elsif proofing_results_exception.present?
         idv_failure_log_error
         redirect_to exception_url
@@ -136,6 +147,10 @@ module Idv
 
     def exception_url
       idv_session_errors_exception_url
+    end
+
+    def state_id_warning_url
+      idv_session_errors_state_id_warning_url
     end
 
     def warning_url

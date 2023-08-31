@@ -72,7 +72,8 @@ Rails.application.routes.draw do
       put '/users/password' => 'users/reset_passwords#update', as: nil
       post '/users/password' => 'users/reset_passwords#create', as: nil
 
-      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show', as: :forget_all_browsers
+      get '/account/forget_all_browsers' => 'users/forget_all_browsers#show',
+          as: :forget_all_browsers
       delete '/account/forget_all_browsers' => 'users/forget_all_browsers#destroy'
 
       get '/account/service_providers/:sp_id/revoke' => 'users/service_provider_revoke#show',
@@ -195,7 +196,8 @@ Rails.application.routes.draw do
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
     get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password
-    put '/account/reactivate/verify_password' => 'users/verify_password#update', as: :update_verify_password
+    put '/account/reactivate/verify_password' => 'users/verify_password#update',
+        as: :update_verify_password
     get '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#new',
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
@@ -215,7 +217,8 @@ Rails.application.routes.draw do
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
-    post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
+    post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac',
+         as: :submit_new_piv_cac
 
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
@@ -293,12 +296,14 @@ Rails.application.routes.draw do
     post '/sign_up/completed' => 'sign_up/completions#update'
     get '/user_authorization_confirmation' => 'users/authorization_confirmation#new'
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
-    match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy', as: :reset_user_authorization, via: %i[put delete]
+    match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy',
+          as: :reset_user_authorization, via: %i[put delete]
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
-    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
+    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof',
+        as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
     get '/redirect/contact/' => 'redirect/contact#show', as: :contact_redirect
     get '/redirect/policy/' => 'redirect/policy#show', as: :policy_redirect
@@ -352,6 +357,7 @@ Rails.application.routes.draw do
       get '/review' => 'review#new'
       put '/review' => 'review#create'
       get '/session/errors/warning' => 'session_errors#warning'
+      get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
       get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'

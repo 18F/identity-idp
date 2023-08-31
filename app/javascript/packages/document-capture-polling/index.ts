@@ -82,8 +82,8 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  async onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
-    await this.trackEvent('IdV: Link sent capture doc polling complete', {
+  onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
+    this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isThrottled: result === ResultType.THROTTLED,
     });

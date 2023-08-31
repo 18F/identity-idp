@@ -148,19 +148,32 @@ describe Idv::LinkSentController do
 
       context 'document capture session canceled' do
         let(:session_canceled_at) { Time.zone.now }
+        let(:error_message) { t('errors.doc_auth.document_capture_cancelled') }
 
-        it 'redirects to doc_auth page' do
-          error_message = t('errors.doc_auth.document_capture_cancelled')
+        before do
           expect(FormResponse).to receive(:new).with(
             { success: false,
               errors: { message: error_message } },
           )
+        end
 
+        it 'redirects to doc_auth page' do
           put :update
 
           expect(response).to redirect_to(idv_doc_auth_url)
           expect(flow_session[:error_message]).to eq(error_message)
           expect(flow_session['Idv::Steps::UploadStep']).to be_nil
+        end
+
+        context 'doc_auth_hybrid_handoff_controller_enabled is true' do
+          it 'redirects to hybrid_handoff page' do
+            allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
+              and_return(true)
+
+            put :update
+
+            expect(response).to redirect_to(idv_hybrid_handoff_url)
+          end
         end
       end
 

@@ -50,7 +50,7 @@ module TwoFactorAuthentication
         )
       end
       handle_remember_device
-      redirect_to after_otp_verification_confirmation_url
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def handle_invalid_webauthn

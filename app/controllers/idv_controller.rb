@@ -2,10 +2,12 @@ class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
   include FraudReviewConcern
+  include RateLimitConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
   before_action :handle_fraud
+  before_action :confirm_not_rate_limited
 
   def index
     if decorated_session.requested_more_recent_verification? ||
@@ -13,12 +15,6 @@ class IdvController < ApplicationController
       verify_identity
     elsif active_profile?
       redirect_to idv_activated_url
-    elsif idv_attempter_throttled?
-      irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
-      analytics.throttler_rate_limit_triggered(
-        throttle_type: :idv_resolution,
-      )
-      redirect_to idv_session_errors_failure_url
     else
       verify_identity
     end

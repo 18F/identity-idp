@@ -93,6 +93,14 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_enroll_non_hash_response
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
+      status: 200,
+      body: nil,
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_expired_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       **request_expired_proofing_results_args,

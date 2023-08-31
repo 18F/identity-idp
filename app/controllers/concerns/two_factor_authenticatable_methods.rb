@@ -67,7 +67,7 @@ module TwoFactorAuthenticatableMethods
     return if remember_device_expired_for_sp?
     return if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
 
-    redirect_to after_otp_verification_confirmation_url
+    redirect_to after_sign_in_path_for(current_user)
   end
 
   def check_sp_required_mfa_bypass(auth_method:)
@@ -168,12 +168,6 @@ module TwoFactorAuthenticatableMethods
 
   def reset_second_factor_attempts_count
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def after_otp_verification_confirmation_url
-    return @next_mfa_setup_path if @next_mfa_setup_path
-    return account_url if @updating_existing_number
-    after_sign_in_path_for(current_user)
   end
 
   def mark_user_session_authenticated(authentication_type)

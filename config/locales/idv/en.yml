@@ -277,6 +277,18 @@ en:
         other: For security reasons, you have %{count} attempts remaining.
       sessions:
         heading: We couldn’t find records matching your personal information
+      state_id:
+        cancel_button: Exit %{app_name}
+        explanation: |
+          Unfortunately, we’re experiencing technical difficulties 
+          with IDs from your state and are currently unable to verify your information.
+        heading: We are working to resolve an error
+        next_steps:
+          items_html:
+            - Try again now <strong>or</strong>
+            - Exit %{app_name} and try again later
+          preamble: 'You can:'
+        try_again_button: Try again
     welcome:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable

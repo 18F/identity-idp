@@ -122,6 +122,7 @@ describe Idv::SessionErrorsController do
   before do
     allow(idv_session).to receive(:verify_info_step_complete?).
       and_return(verify_info_step_complete)
+    allow(idv_session).to receive(:address_verification_mechanism).and_return(nil)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
     stub_analytics
@@ -188,6 +189,34 @@ describe Idv::SessionErrorsController do
         it 'assigns URL to try again' do
           response
 
+          expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+        end
+      end
+    end
+  end
+
+  describe '#state_id_warning' do
+    let(:action) { :state_id_warning }
+    let(:template) { 'idv/session_errors/state_id_warning' }
+    let(:params) { {} }
+
+    subject(:response) { get action, params: params }
+
+    it_behaves_like 'an idv session errors controller action'
+
+    describe 'try again URL' do
+      let(:user) { create(:user) }
+
+      it 'assigns URL to try again' do
+        response
+        expect(assigns(:try_again_path)).to eq(idv_verify_info_url)
+      end
+
+      context 'in in-person proofing flow' do
+        let(:params) { { flow: 'in_person' } }
+
+        it 'assigns URL to try again' do
+          response
           expect(assigns(:try_again_path)).to eq(idv_in_person_path)
         end
       end

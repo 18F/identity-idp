@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
+    include RateLimitConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_upload_step_complete

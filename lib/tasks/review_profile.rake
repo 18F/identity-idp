@@ -1,5 +1,6 @@
 require 'io/console'
-
+# Note: This file should be going away soon!.
+# Any modifications made here should be updated accordingly in the lib/action_account.rb file.
 namespace :users do
   namespace :review do
     desc 'Pass a user that has a pending review'

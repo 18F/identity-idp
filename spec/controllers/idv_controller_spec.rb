@@ -55,7 +55,7 @@ describe IdvController do
       expect(response).to redirect_to(idv_not_verified_url)
     end
 
-    context 'if number of attempts has been exceeded' do
+    context 'if number of verify_info attempts has been exceeded' do
       before do
         user = create(:user)
         profile = create(
@@ -79,6 +79,44 @@ describe IdvController do
           with({ throttle_context: 'single-session' })
 
         get :index
+      end
+    end
+
+    context 'if number of document capture attempts has been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          user: user,
+        )
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects to throttled page' do
+        get :index
+
+        expect(response).to redirect_to idv_session_errors_throttled_url
+      end
+    end
+
+    context 'if number of verify phone attempts has been exceeded' do
+      before do
+        user = create(:user)
+        profile = create(
+          :profile,
+          user: user,
+        )
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+
+        stub_sign_in(profile.user)
+      end
+
+      it 'redirects to throttled page' do
+        get :index
+
+        expect(response).to redirect_to idv_phone_errors_failure_url
       end
     end
 

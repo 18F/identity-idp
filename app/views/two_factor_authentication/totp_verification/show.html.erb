@@ -11,7 +11,7 @@
         value: @code,
         autofocus: true,
         transport: nil,
-        maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
+        code_length: TwoFactorAuthenticatable::OTP_LENGTH,
       ) %>
   <%= f.input(
         :remember_device,

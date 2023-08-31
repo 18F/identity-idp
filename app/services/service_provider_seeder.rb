@@ -43,8 +43,7 @@ class ServiceProviderSeeder
   def service_providers
     file = Rails.root.join(@yaml_path, 'service_providers.yml').read
     file.gsub!('%{env}', deploy_env) if deploy_env
-    content = ERB.new(file).result
-    YAML.safe_load(content, permitted_classes: [Date]).fetch(rails_env)
+    YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
     Rails.logger.error { "Syntax error loading service_providers.yml: #{syntax_error.message}" }
     raise syntax_error

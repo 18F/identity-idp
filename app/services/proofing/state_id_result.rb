@@ -58,6 +58,7 @@ module Proofing
         success: success?,
         errors: errors,
         exception: exception,
+        mva_exception: mva_exception?,
         timed_out: timed_out?,
         transaction_id: transaction_id,
         vendor_name: vendor_name,

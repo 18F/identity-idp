@@ -1,0 +1,4 @@
+<%= content_tag('div', **tag_options, class: ['lg-verification-badge', *tag_options[:class]]) do %>
+  <%= image_tag(asset_path("alerts/#{icon}.svg"), size: 16, alt: '') %>
+  <%= content %>
+<% end %>
