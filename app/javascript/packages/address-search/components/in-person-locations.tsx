@@ -20,18 +20,16 @@ interface InPersonLocationsProps {
   address: string;
 }
 
-function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
+function InPersonLocations({
+  locations,
+  onSelect,
+  address,
+  noneFound: NoneFound,
+}: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
-    return (
-      <>
-        <h3 role="status">
-          {t('in_person_proofing.body.location.po_search.none_found', { address })}
-        </h3>
-        <p>{t('in_person_proofing.body.location.po_search.none_found_tip')}</p>
-      </>
-    );
+    return <NoneFound address={address} />;
   }
 
   return (
