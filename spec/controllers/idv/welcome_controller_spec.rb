@@ -27,7 +27,7 @@ RSpec.describe Idv::WelcomeController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -88,6 +88,24 @@ RSpec.describe Idv::WelcomeController do
 
       expect(response).to redirect_to(idv_please_call_url)
     end
+
+    context 'getting_started_ab_test_bucket values' do
+      render_views
+
+      it 'renders the welcome_new template for :welcome_new' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_new)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_new')
+      end
+
+      it 'it renders the welcome_default template for :welcome_default' do
+        allow(controller).to receive(:getting_started_ab_test_bucket).and_return(:welcome_default)
+
+        get :show
+        expect(response).to render_template(partial: '_welcome_default')
+      end
+    end
   end
 
   describe '#update' do
@@ -109,7 +127,7 @@ RSpec.describe Idv::WelcomeController do
 
     it 'creates a document capture session' do
       expect { put :update }.
-        to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
+        to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
     context 'with previous establishing in-person enrollments' do
@@ -122,7 +140,7 @@ RSpec.describe Idv::WelcomeController do
       it 'cancels all previous establishing enrollments' do
         put :update
 
-        expect(enrollment.reload.status).to eq('cancelled')
+        expect(enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(user.establishing_in_person_enrollment).to be_blank
       end
     end

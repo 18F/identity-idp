@@ -13,7 +13,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::UrlOptionsLinter do
     expect_offense(<<~RUBY)
       class MyViewModelClass
         include Rails.application.routes.url_helpers
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please define url_options when including Rails.application.routes.url_helpers
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/UrlOptionsLinter: Please define url_options when including Rails.application.routes.url_helpers
 
         def my_method
           account_path

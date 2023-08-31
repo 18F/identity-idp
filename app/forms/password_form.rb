@@ -2,9 +2,9 @@ class PasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
 
-  def initialize(user, options = {})
+  def initialize(user)
     @user = user
-    @validate_confirmation = options.fetch(:validate_confirmation, false)
+    @validate_confirmation = true
   end
 
   def submit(params)

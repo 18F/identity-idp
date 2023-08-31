@@ -25,7 +25,7 @@
 <p><%= t('notices.use_diff_email.text_html', link_html: link_to(t('notices.use_diff_email.link'), add_email_path)) %></p>
 <p><%= t('devise.registrations.close_window') %></p>
 
-<% if FeatureManagement.enable_load_testing_mode? %>
+<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
   <%= link_to(
         'CONFIRM NOW',
         sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
@@ -33,4 +33,4 @@
       ) %>
 <% end %>
 
-<%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), profile_path %>
+<%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>

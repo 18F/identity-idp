@@ -34,10 +34,13 @@ class ImageUploadResponsePresenter
     if success? && !attention_with_barcode?
       { success: true }
     else
-      json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
+      json = { success: false,
+               errors: errors,
+               remaining_attempts: remaining_attempts,
+               doc_type_supported: doc_type_supported? }
       if remaining_attempts&.zero?
         if @form_response.extra[:flow_path] == 'standard'
-          json[:redirect] = idv_session_errors_throttled_url
+          json[:redirect] = idv_session_errors_rate_limited_url
         else # hybrid flow on mobile
           json[:redirect] = idv_hybrid_mobile_capture_complete_url
         end
@@ -45,6 +48,7 @@ class ImageUploadResponsePresenter
       json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
       json[:result_failed] = doc_auth_result_failed?
+      json[:doc_type_supported] = doc_type_supported?
       json
     end
   end
@@ -70,5 +74,10 @@ class ImageUploadResponsePresenter
   def ocr_pii
     return unless attention_with_barcode? && @form_response.respond_to?(:pii_from_doc)
     @form_response.pii_from_doc&.slice(:first_name, :last_name, :dob)
+  end
+
+  def doc_type_supported?
+    # default to true by assuming using supported doc type unless we clearly detect unsupported type
+    @form_response.respond_to?(:id_type_supported?) ? @form_response.id_type_supported? : true
   end
 end

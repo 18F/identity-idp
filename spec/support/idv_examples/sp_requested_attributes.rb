@@ -55,7 +55,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       acknowledge_and_confirm_personal_key
       click_agree_and_continue
       visit account_path
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
     end
 
     it 'does not require the user to verify attributes' do

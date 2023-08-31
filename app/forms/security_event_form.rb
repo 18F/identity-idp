@@ -301,6 +301,7 @@ class SecurityEventForm
       error_code: error_code,
       jti: jti,
       user_id: user&.uuid,
+      event_type: event_type,
     }
   end
 end

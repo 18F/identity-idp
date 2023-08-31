@@ -31,15 +31,15 @@ module Idv
 
       def report_errors(error)
         remapped_error = case error
-        when Faraday::Error,
-             ActionController::InvalidAuthenticityToken
-          :bad_request
-        else
-          :internal_server_error
-        end
+                         when Faraday::Error,
+                              ActionController::InvalidAuthenticityToken
+                           :unprocessable_entity
+                         else
+                           :internal_server_error
+                         end
 
         errors = if error.respond_to?(:response_body)
-                   error.response_body && error.response_body[:details]
+                   error.response_body.is_a?(Hash) && error.response_body[:details]
                  end
 
         errors ||= 'ArcGIS error performing operation'
@@ -50,7 +50,7 @@ module Idv
           api_status_code: Rack::Utils.status_code(remapped_error),
           exception_class: error.class,
           exception_message: error.message,
-          response_status_code: error.respond_to?(:response_status) && error.response_status,
+          response_status_code: error.try(:response_status),
         )
 
         analytics.idv_arcgis_request_failure(
@@ -59,7 +59,7 @@ module Idv
           exception_message: error.message,
           response_body_present: error.respond_to?(:response_body) && error.response_body.present?,
           response_body: error.respond_to?(:response_body) && error.response_body,
-          response_status_code: error.respond_to?(:response_status) && error.response_status,
+          response_status_code: error.try(:response_status),
         )
         render json: [], status: remapped_error
       end

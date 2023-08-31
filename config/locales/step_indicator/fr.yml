@@ -10,7 +10,7 @@ fr:
         go_to_the_post_office: Se rendre au bureau de poste
         secure_account: Sécurisez votre compte
         verify_id: Vérifier votre identité
-        verify_info: Vérifier votre information
+        verify_info: Vérifier votre informations
         verify_phone_or_address: Vérifier le téléphone ou l’adresse
     status:
       complete: Terminé

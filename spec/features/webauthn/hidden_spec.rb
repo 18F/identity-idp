@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'webauthn hide' do
+  include JavascriptDriverHelper
+
   describe 'security key' do
     let(:option_id) { 'two_factor_options_form_selection_webauthn' }
 
@@ -102,9 +104,11 @@ RSpec.describe 'webauthn hide' do
   end
 
   def webauthn_option_hidden?
-    page.find("label[for=#{option_id}]")
-    false
-  rescue Capybara::ElementNotFound
-    true
+    label = page.find("label[for=#{option_id}]", visible: :all)
+    if javascript_enabled?
+      !label.visible?
+    else
+      label.ancestor('.js,[hidden]', visible: :all).present?
+    end
   end
 end

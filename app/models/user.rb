@@ -122,6 +122,9 @@ class User < ApplicationRecord
     OutOfBandSessionAccessor.new(unique_session_id).destroy if unique_session_id
     update!(suspended_at: Time.zone.now, unique_session_id: nil)
     analytics.user_suspended(success: true)
+    email_addresses.map do |email_address|
+      SuspendedEmail.create_from_email_adddress!(email_address)
+    end
   end
 
   def reinstate!
@@ -131,6 +134,9 @@ class User < ApplicationRecord
     end
     update!(reinstated_at: Time.zone.now)
     analytics.user_reinstated(success: true)
+    email_addresses.map do |email_address|
+      SuspendedEmail.find_with_email(email_address.email)&.destroy
+    end
   end
 
   def pending_profile
@@ -140,7 +146,11 @@ class User < ApplicationRecord
       pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
         profiles.where.not(gpo_verification_pending_at: nil),
       ).or(
-        profiles.where.not(fraud_pending_reason: nil),
+        profiles.where.not(in_person_verification_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_review_pending_at: nil),
+      ).or(
+        profiles.where.not(fraud_rejection_at: nil),
       ).order(created_at: :desc).first
 
       if pending.blank?
@@ -186,6 +196,15 @@ class User < ApplicationRecord
 
   def in_person_pending_profile
     pending_profile if pending_profile&.in_person_verification_pending?
+  end
+
+  def has_in_person_enrollment?
+    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+  end
+
+  # Trust `pending_profile` rather than enrollment associations
+  def has_establishing_in_person_enrollment_safe?
+    !!pending_profile&.in_person_enrollment&.establishing?
   end
 
   def personal_key_generated_at

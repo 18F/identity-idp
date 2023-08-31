@@ -7,6 +7,10 @@ module AcuantFixtures
     load_response_fixture('get_results_response_success.json')
   end
 
+  def self.get_results_response_success_tribal_id
+    load_response_fixture('get_results_response_success_tribal_id.json')
+  end
+
   def self.get_results_response_failure
     load_response_fixture('get_results_response_failure.json')
   end

@@ -27,9 +27,7 @@ module Idv
             if pii_from_user[:same_address_as_id] == 'true'
               copy_state_id_address_to_residential_address(pii_from_user)
               mark_step_complete(:address)
-              if IdentityConfig.store.in_person_ssn_info_controller_enabled
-                redirect_to idv_in_person_proofing_ssn_url
-              end
+              redirect_to idv_in_person_ssn_url
             end
 
             if initial_state_of_same_address_as_id == 'true' &&

@@ -9,13 +9,6 @@ RSpec.describe TwoFactorAuthCode::BackupCodePresenter do
     TwoFactorAuthCode::BackupCodePresenter.new(data: arguments, view: view, service_provider: nil)
   end
 
-  describe '#fallback_question' do
-    it 'returns the fallback question' do
-      expect(presenter.fallback_question).to eq \
-        t('two_factor_authentication.backup_code_fallback.question')
-    end
-  end
-
   describe '#cancel_link' do
     it 'returns the link for cancellation' do
       expect(presenter.cancel_link).to eq \

@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/getting_started/show' do
-  let(:flow_session) { {} }
   let(:user_fully_authenticated) { true }
   let(:sp_name) { nil }
   let(:user) { create(:user) }
@@ -12,7 +11,6 @@ RSpec.describe 'idv/getting_started/show' do
     @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
     allow(@decorated_session).to receive(:sp_name).and_return(sp_name)
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
-    allow(view).to receive(:flow_session).and_return(flow_session)
     allow(view).to receive(:user_fully_authenticated?).and_return(user_fully_authenticated)
     allow(view).to receive(:user_signing_up?).and_return(false)
     allow(view).to receive(:url_for).and_wrap_original do |method, *args, &block|

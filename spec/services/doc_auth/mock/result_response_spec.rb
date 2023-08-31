@@ -399,4 +399,83 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
     end
   end
+  context 'with a yaml file missing classification info' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file containing classification info and known unsupported doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Tribal Identification
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+    end
+  end
+  context 'with a yaml file containing classification info and known supported doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Identification Card
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file containing classification info and unknown doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Unknown
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with supported side and unknown side' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+          Back:
+            ClassName: Unknown
+      YAML
+    end
+    it 'returns doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+  context 'with a yaml file with both supported and and unknown doc type' do
+    let(:input) do
+      <<~YAML
+        doc_auth_result: Failed
+        classification_info:
+          Front:
+            ClassName: Drivers License
+          Back:
+            ClassName: Military Identification
+      YAML
+    end
+    it 'returns doc type as not supported' do
+      expect(response.doc_type_supported?).to eq(false)
+    end
+  end
 end

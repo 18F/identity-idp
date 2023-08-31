@@ -27,11 +27,11 @@
           big: true,
           full_width: true,
           outline: true,
-        ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes_html')) %> 
+        ).with_content(t('two_factor_authentication.backup_codes.new_backup_codes_html')) %>
   </div>
 </div>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), second_mfa_setup_path %>
-<% end %> 
+  <%= link_to t('two_factor_authentication.backup_codes.add_another_authentication_option'), authentication_methods_setup_path %>
+<% end %>
 

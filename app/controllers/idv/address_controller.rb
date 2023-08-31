@@ -29,7 +29,7 @@ module Idv
 
     def success
       profile_params.each do |key, value|
-        flow_session['pii_from_doc'][key] = value
+        flow_session[:pii_from_doc][key] = value
       end
       redirect_to idv_verify_info_url
     end
@@ -44,7 +44,7 @@ module Idv
 
     def capture_address_edited(result)
       address_edited = result.to_h[:address_edited]
-      flow_session['address_edited'] = address_edited if address_edited
+      idv_session.address_edited = true if address_edited
     end
   end
 end

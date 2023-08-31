@@ -125,6 +125,11 @@ module DocAuth
           !!doc_auth_result
         end
 
+        def doc_type_supported?
+          !doc_class_name.present? || ID_TYPE_SLUGS.key?(doc_class_name) ||
+            doc_class_name == 'Unknown'
+        end
+
         private
 
         def response_info
@@ -147,6 +152,7 @@ module DocAuth
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
             address_line2_present: !pii_from_doc[:address2].blank?,
+            classification_info: classification_info,
           }
         end
 
@@ -180,6 +186,23 @@ module DocAuth
 
         def doc_auth_result_unknown?
           doc_auth_result == 'Unknown'
+        end
+
+        def doc_class_name
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :DocClassName)
+        end
+
+        def classification_info
+          # Acuent response has both sides info, here simulate that
+          doc_class = doc_class_name
+          {
+            Front: {
+              ClassName: doc_class,
+            },
+            Back: {
+              ClassName: doc_class,
+            },
+          }
         end
 
         def doc_auth_result

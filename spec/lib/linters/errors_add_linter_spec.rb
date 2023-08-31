@@ -14,7 +14,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
       class MyModel
         def my_method
           errors.add(:number, "is negative")
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please set a unique key for this error
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ErrorsAddLinter: Please set a unique key for this error
         end
       end
     RUBY
@@ -25,7 +25,7 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ErrorsAddLinter do
       class MyModel
         def my_method
           errors.add(:number, "is negative", foo: :bar)
-          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Please set a unique key for this error
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ErrorsAddLinter: Please set a unique key for this error
         end
       end
     RUBY

@@ -85,7 +85,7 @@ RSpec.describe IdTokenBuilder do
         end
 
         context 'verified user' do
-          let(:user) {  create(:user, profiles: [create(:profile, :verified, :active)]) }
+          let(:user) { create(:user, profiles: [create(:profile, :verified, :active)]) }
 
           it 'sets the acr to the ial2 constant' do
             expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)

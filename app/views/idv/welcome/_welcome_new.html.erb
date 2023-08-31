@@ -1,0 +1,65 @@
+<% title @title %>
+
+<%= render JavascriptRequiredComponent.new(
+      header: t('idv.getting_started.no_js_header'),
+      intro: t('idv.getting_started.no_js_intro', sp_name: @sp_name),
+    ) do %>
+
+<%= render PageHeadingComponent.new.with_content(@title) %>
+  <p>
+    <%= t(
+          'doc_auth.info.getting_started_html',
+          sp_name: @sp_name,
+          link_html: new_tab_link_to(
+            t('doc_auth.info.getting_started_learn_more'),
+            help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'how-to-verify-your-identity',
+              flow: :idv,
+              step: :welcome_new,
+              location: 'intro_paragraph',
+            ),
+          ),
+        ) %>
+  </p>
+
+  <h2><%= t('doc_auth.getting_started.instructions.getting_started') %></h2>
+
+  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
+    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet1')) do %>
+      <p><%= t('doc_auth.getting_started.instructions.text1') %></p>
+    <% end %>
+    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet2')) do %>
+      <p><%= t('doc_auth.getting_started.instructions.text2') %></p>
+    <% end %>
+    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet3')) do %>
+      <p><%= t('doc_auth.getting_started.instructions.text3') %></p>
+    <% end %>
+    <%= c.with_item(heading: t('doc_auth.getting_started.instructions.bullet4', app_name: APP_NAME)) do %>
+      <p><%= t('doc_auth.getting_started.instructions.text4') %></p>
+    <% end %>
+  <% end %>
+
+<%= simple_form_for(
+      :doc_auth,
+      url: url_for,
+      method: 'put',
+      html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+    ) do |f| %>
+
+  <div class="margin-top-4">
+    <%= render(
+          SpinnerButtonComponent.new(
+            type: :submit,
+            big: true,
+            wide: true,
+            spin_on_click: false,
+          ).with_content(t('doc_auth.buttons.continue')),
+        ) %>
+  </div>
+<% end %>
+
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome_new') %>
+<% end %>
+
+<%= javascript_packs_tag_once('document-capture-welcome') %>

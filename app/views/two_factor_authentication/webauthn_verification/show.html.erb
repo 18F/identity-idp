@@ -33,31 +33,6 @@
         },
       ) %>
 
-  <%= render TroubleshootingOptionsComponent.new do |c| %>
-    <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-    <% if @presenter.link_path.present? %>
-      <% c.with_option(url: @presenter.link_path).with_content(@presenter.link_text) %>
-    <% end %>
-    <% if @presenter.platform_authenticator? %>
-      <% c.with_option(
-           url: help_center_redirect_path(
-             category: 'trouble-signing-in',
-             article: 'face-or-touch-unlock',
-             flow: :two_factor_authentication,
-             step: :webauthn_verification,
-           ),
-           new_tab: true,
-         ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help')) %>
-    <% end %>
-    <% c.with_option(
-         url: help_center_redirect_path(
-           category: 'get-started',
-           article: 'authentication-options',
-           flow: :two_factor_authentication,
-           step: :webauthn_verification,
-         ),
-         new_tab: true,
-       ).with_content(t('two_factor_authentication.learn_more')) %>
-  <% end %>
+  <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

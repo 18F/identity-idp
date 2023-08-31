@@ -4,6 +4,8 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'Associations' do
     it { is_expected.to belong_to :user }
     it { is_expected.to belong_to :profile }
+    it { is_expected.to belong_to :service_provider }
+    it { is_expected.to have_one(:notification_phone_configuration).dependent(:destroy) }
   end
 
   describe 'Status' do
@@ -66,7 +68,63 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'Triggers' do
+  describe 'Callbacks' do
+    describe 'when status is updated' do
+      it 'sets status_updated_at' do
+        enrollment = create(:in_person_enrollment, :establishing)
+        freeze_time do
+          current_time = Time.zone.now
+          expect(enrollment.status_updated_at).to be_nil
+          enrollment.update(status: InPersonEnrollment::STATUS_CANCELLED)
+          expect(enrollment.status_updated_at).to eq(current_time)
+        end
+      end
+
+      describe 'enrollment expires or is canceled' do
+        it 'deletes the notification phone number' do
+          statuses = [InPersonEnrollment::STATUS_CANCELLED, InPersonEnrollment::STATUS_EXPIRED]
+          statuses.each do |status|
+            enrollment = create(
+              :in_person_enrollment, :pending, :with_notification_phone_configuration
+            )
+            config_id = enrollment.notification_phone_configuration.id
+            expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not be_nil
+
+            enrollment.update(status: status)
+            enrollment.reload
+
+            expect(enrollment.notification_phone_configuration).to be_nil
+            expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to be_nil
+          end
+        end
+      end
+    end
+
+    describe 'when notification_sent_at is updated' do
+      context 'enrollment has a notification phone configuration' do
+        let!(:enrollment) do
+          create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+        end
+
+        it 'destroys the notification phone configuration' do
+          expect(enrollment.notification_phone_configuration).to_not be_nil
+
+          enrollment.update(notification_sent_at: Time.zone.now)
+
+          expect(enrollment.reload.notification_phone_configuration).to be_nil
+        end
+      end
+
+      context 'enrollment does not have a notification phone configuration' do
+        let!(:enrollment) { create(:in_person_enrollment, :passed) }
+
+        it 'does not raise an error' do
+          expect(enrollment.notification_phone_configuration).to be_nil
+          expect { enrollment.update!(notification_sent_at: Time.zone.now) }.to_not raise_error
+        end
+      end
+    end
+
     it 'generates a unique ID if one is not provided' do
       user = create(:user)
       profile = create(:profile, gpo_verification_pending_at: 1.day.ago, user: user)
@@ -86,34 +144,62 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       expect(enrollment.unique_id).to eq('1234')
     end
+
+    describe 'setting capture_secondary_id_enabled on creation' do
+      let(:capture_enabled) { nil }
+
+      before do
+        allow(IdentityConfig.store).
+          to(
+            receive(:in_person_capture_secondary_id_enabled).
+            and_return(capture_enabled),
+          )
+      end
+
+      context 'feature flag is enabled' do
+        let(:capture_enabled) { true }
+        it 'sets capture_secondary_id_enabled to true on the enrollment' do
+          enrollment = create(:in_person_enrollment, :pending)
+          expect(enrollment.capture_secondary_id_enabled).to eq(true)
+        end
+      end
+
+      context 'feature flag is not enabled' do
+        let(:capture_enabled) { false }
+        it 'does not set capture_secondary_id_enabled to true on the enrollment' do
+          enrollment = create(:in_person_enrollment, :pending)
+          expect(enrollment.capture_secondary_id_enabled).to eq(false)
+        end
+      end
+    end
   end
 
-  describe 'email_reminders' do
+  describe 'enrollments that need email reminders' do
     let(:early_benchmark) { Time.zone.now - 19.days }
     let(:late_benchmark) { Time.zone.now - 26.days }
     let(:final_benchmark) { Time.zone.now - 29.days }
-    let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
-    let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
-    let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
 
-    # send on days 11-5
-    let!(:pending_enrollment_needing_early_reminder) do
+    # early reminder is sent on days 11-5
+    let!(:enrollments_needing_early_reminder) do
       [
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
       ]
     end
 
-    # send on days 4 - 2
-    let!(:pending_enrollment_needing_late_reminder) do
+    # late reminder is sent on days 4 - 2
+    let!(:enrollments_needing_late_reminder) do
       [
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
       ]
     end
 
-    let!(:pending_enrollment) do
+    let!(:enrollments_needing_no_reminder) do
       [
+        create(:in_person_enrollment, :passed),
+        create(:in_person_enrollment, :failed),
+        create(:in_person_enrollment, :expired),
         create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now),
         create(:in_person_enrollment, :pending, created_at: Time.zone.now),
       ]
@@ -122,8 +208,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'returns pending enrollments that need early reminder' do
       expect(InPersonEnrollment.count).to eq(9)
       results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
-      expect(results.length).to eq pending_enrollment_needing_early_reminder.length
-      expect(results.pluck(:id)).to match_array pending_enrollment_needing_early_reminder.pluck(:id)
+      expect(results.pluck(:id)).to match_array enrollments_needing_early_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
         expect(result.early_reminder_sent?).to be_falsey
@@ -133,8 +218,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'returns pending enrollments that need late reminder' do
       expect(InPersonEnrollment.count).to eq(9)
       results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
-      expect(results.length).to eq(2)
-      expect(results.pluck(:id)).to match_array pending_enrollment_needing_late_reminder.pluck(:id)
+      expect(results.pluck(:id)).to match_array enrollments_needing_late_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
         expect(result.late_reminder_sent?).to be_falsey
@@ -142,40 +226,41 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'needs_usps_status_check' do
+  describe 'enrollments that need a status check' do
     let(:check_interval) { ...1.hour.ago }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
-    let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
+    let!(:failed_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
     let!(:checked_pending_enrollment) do
-      create(:in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now)
+      create(:in_person_enrollment, :pending, last_batch_claimed_at: Time.zone.now)
     end
-    let!(:needy_enrollments) do
-      [
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
-        create(:in_person_enrollment, :pending),
-      ]
-    end
+    let!(:needy_enrollments) { create_list(:in_person_enrollment, 4, :pending) }
 
-    it 'returns only pending enrollments' do
+    it 'needs_usps_status_check returns only needy enrollments' do
       expect(InPersonEnrollment.count).to eq(8)
       results = InPersonEnrollment.needs_usps_status_check(check_interval)
-      expect(results.length).to eq needy_enrollments.length
       expect(results.pluck(:id)).to match_array needy_enrollments.pluck(:id)
-      results.each do |result|
-        expect(result.pending?).to be_truthy
+      results.each { |result| expect(result.pending?).to eq(true) }
+    end
+
+    it 'needs_usps_status_check_batch returns only matching enrollments' do
+      freeze_time do
+        batch_at = Time.zone.now
+        needy_enrollments.first(2).each do |enrollment|
+          enrollment.update(last_batch_claimed_at: batch_at)
+        end
+        results = InPersonEnrollment.needs_usps_status_check_batch(batch_at)
+        expect(results.pluck(:id)).to match_array needy_enrollments.first(2).pluck(:id)
       end
     end
 
     it 'indicates whether an enrollment needs a status check' do
-      expect(passed_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(failing_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(expired_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
-      expect(checked_pending_enrollment.needs_usps_status_check?(check_interval)).to be_falsey
+      expect(passed_enrollment.needs_usps_status_check?(check_interval)).to eq(false)
+      expect(failed_enrollment.needs_usps_status_check?(check_interval)).to eq(false)
+      expect(expired_enrollment.needs_usps_status_check?(check_interval)).to eq(false)
+      expect(checked_pending_enrollment.needs_usps_status_check?(check_interval)).to eq(false)
       needy_enrollments.each do |enrollment|
-        expect(enrollment.needs_usps_status_check?(check_interval)).to be_truthy
+        expect(enrollment.needs_usps_status_check?(check_interval)).to eq(true)
       end
     end
   end
@@ -185,7 +270,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     let!(:passed_enrollment) do
       create(:in_person_enrollment, :passed, ready_for_status_check: true)
     end
-    let!(:failing_enrollment) do
+    let!(:failed_enrollment) do
       create(:in_person_enrollment, :failed, ready_for_status_check: true)
     end
     let!(:expired_enrollment) do
@@ -193,198 +278,171 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
     let!(:checked_pending_enrollment) do
       create(
-        :in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now,
-                                         ready_for_status_check: true
+        :in_person_enrollment,
+        :pending,
+        last_batch_claimed_at: Time.zone.now,
+        ready_for_status_check: true,
       )
     end
     let!(:ready_enrollments) do
-      [
-        create(:in_person_enrollment, :pending, ready_for_status_check: true),
-        create(:in_person_enrollment, :pending, ready_for_status_check: true),
-        create(:in_person_enrollment, :pending, ready_for_status_check: true),
-        create(:in_person_enrollment, :pending, ready_for_status_check: true),
-      ]
+      create_list(:in_person_enrollment, 4, :pending, ready_for_status_check: true)
     end
     let!(:needy_enrollments) do
-      [
-        create(:in_person_enrollment, :pending, ready_for_status_check: false),
-        create(:in_person_enrollment, :pending, ready_for_status_check: false),
-        create(:in_person_enrollment, :pending, ready_for_status_check: false),
-        create(:in_person_enrollment, :pending, ready_for_status_check: false),
-      ]
+      create_list(:in_person_enrollment, 4, :pending, ready_for_status_check: false)
     end
 
-    it 'returns only pending enrollments that are ready for status check' do
+    it 'needs_status_check_on_ready_enrollments returns only ready pending enrollments' do
       expect(InPersonEnrollment.count).to eq(12)
       ready_results = InPersonEnrollment.needs_status_check_on_ready_enrollments(check_interval)
-      expect(ready_results.length).to eq ready_enrollments.length
       expect(ready_results.pluck(:id)).to match_array ready_enrollments.pluck(:id)
       expect(ready_results.pluck(:id)).not_to match_array needy_enrollments.pluck(:id)
-      ready_results.each do |result|
-        expect(result.pending?).to be_truthy
-      end
+      ready_results.each { |result| expect(result.pending?).to eq(true) }
     end
 
-    it 'indicates whether a ready enrollment needs a status check' do
-      expect(passed_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be(false),
-      )
-      expect(failing_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be(false),
-      )
-      expect(expired_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be(false),
-      )
-      expect(checked_pending_enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-        be(false),
-      )
-      needy_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-          be(false),
-        )
+    it 'needs_status_check_on_ready_enrollment? tells whether an enrollment needs a status check' do
+      other_enrollments = [
+        passed_enrollment,
+        failed_enrollment,
+        expired_enrollment,
+        checked_pending_enrollment,
+      ]
+
+      (other_enrollments + needy_enrollments).each do |enrollment|
+        expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to eq(false)
       end
+
       ready_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to(
-          be(true),
-        )
+        expect(enrollment.needs_status_check_on_ready_enrollment?(check_interval)).to eq(true)
       end
     end
 
-    it 'returns only pending enrollments that are not ready for status check' do
+    it 'needs_status_check_on_waiting_enrollments returns only not ready pending enrollments' do
       expect(InPersonEnrollment.count).to eq(12)
       waiting_results = InPersonEnrollment.needs_status_check_on_waiting_enrollments(check_interval)
-      expect(waiting_results.length).to eq needy_enrollments.length
       expect(waiting_results.pluck(:id)).to match_array needy_enrollments.pluck(:id)
       expect(waiting_results.pluck(:id)).not_to match_array ready_enrollments.pluck(:id)
-      waiting_results.each do |result|
-        expect(result.pending?).to be_truthy
-      end
+      waiting_results.each { |result| expect(result.pending?).to eq(true) }
     end
 
     it 'indicates whether a waiting enrollment needs a status check' do
-      expect(passed_enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to(
-        be(false),
-      )
-      expect(
-        failing_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
-      ).to(
-        be(false),
-      )
-      expect(
-        expired_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
-      ).to(
-        be(false),
-      )
-      expect(
-        checked_pending_enrollment.needs_status_check_on_waiting_enrollment?(check_interval),
-      ).to(
-        be(false),
-      )
-      needy_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be(true)
+      other_enrollments = [
+        passed_enrollment,
+        failed_enrollment,
+        expired_enrollment,
+        checked_pending_enrollment,
+      ]
+
+      (other_enrollments + ready_enrollments).each do |enrollment|
+        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to eq(false)
       end
-      ready_enrollments.each do |enrollment|
-        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to be(false)
+
+      needy_enrollments.each do |enrollment|
+        expect(enrollment.needs_status_check_on_waiting_enrollment?(check_interval)).to eq(true)
       end
     end
   end
 
   describe 'minutes_since_established' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.hours
-      )
-    end
-
     it 'returns number of minutes since enrollment was established' do
       freeze_time do
+        enrollment = create(
+          :in_person_enrollment,
+          :passed,
+          enrollment_established_at: Time.zone.now - 2.hours,
+        )
         expect(enrollment.minutes_since_established).to eq 120
       end
     end
 
     it 'returns nil if enrollment has not been established' do
-      enrollment.status = 'establishing'
-      enrollment.enrollment_established_at = nil
+      enrollment = create(:in_person_enrollment, :establishing, enrollment_established_at: nil)
 
-      expect(enrollment.minutes_since_established).to eq(nil)
+      expect(enrollment.minutes_since_established).to be_nil
     end
   end
 
   describe 'minutes_since_last_status_check' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
-      )
-    end
-
     it 'returns number of minutes since last status check' do
-      expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
+      freeze_time do
+        enrollment = create(
+          :in_person_enrollment,
+          status_check_attempted_at: Time.zone.now - 2.hours,
+        )
+        expect(enrollment.minutes_since_last_status_check).to eq 120
+      end
     end
 
     it 'returns nil if enrollment has not been status-checked' do
-      enrollment.status_check_attempted_at = nil
+      enrollment = create(:in_person_enrollment, status_check_attempted_at: nil)
 
-      expect(enrollment.minutes_since_last_status_check).to eq(nil)
+      expect(enrollment.minutes_since_last_status_check).to be_nil
     end
   end
 
   describe 'minutes_since_last_status_check_completed' do
-    let(:enrollment) do
-      create(
-        :in_person_enrollment, :passed, status_check_completed_at: Time.zone.now - 2.hours
-      )
-    end
-
     it 'returns number of minutes since last status check was completed' do
-      expect(enrollment.minutes_since_last_status_check_completed).to be_within(0.01).of(120)
+      freeze_time do
+        enrollment = create(
+          :in_person_enrollment,
+          status_check_completed_at: Time.zone.now - 2.hours,
+        )
+        expect(enrollment.minutes_since_last_status_check_completed).to eq 120
+      end
     end
 
     it 'returns nil if enrollment has not completed a status check' do
-      enrollment.status_check_completed_at = nil
+      enrollment = create(:in_person_enrollment, status_check_completed_at: nil)
 
-      expect(enrollment.minutes_since_last_status_check_completed).to eq(nil)
+      expect(enrollment.minutes_since_last_status_check_completed).to be_nil
     end
   end
 
-  describe 'minutes_since_status_updated' do
-    let(:enrollment) do
-      enrollment = create(:in_person_enrollment, :passed)
-      enrollment.status_updated_at = (Time.zone.now - 2.hours)
-      enrollment
-    end
-
+  describe 'minutes_since_last_status_update' do
     it 'returns number of minutes since the status was updated' do
-      expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
+      freeze_time do
+        enrollment = create(:in_person_enrollment, status_updated_at: Time.zone.now - 2.hours)
+        expect(enrollment.minutes_since_last_status_update).to eq 120
+      end
     end
 
     it 'returns nil if enrollment status has not been updated' do
-      enrollment.status_updated_at = nil
+      enrollment = create(:in_person_enrollment, status_updated_at: nil)
 
-      expect(enrollment.minutes_since_last_status_update).to eq(nil)
+      expect(enrollment.minutes_since_last_status_update).to be_nil
     end
   end
 
-  describe 'when notification_sent_at is updated' do
-    context 'enrollment has a notification phone configuration' do
-      let!(:enrollment) do
-        create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
-      end
+  describe 'due_date and days_to_due_date' do
+    let(:validity_in_days) { 10 }
+    let(:days_ago_established_at) { 7 }
 
-      it 'destroys the notification phone configuration' do
-        expect(enrollment.notification_phone_configuration).to_not be_nil
+    before do
+      allow(IdentityConfig.store).
+        to(
+          receive(:in_person_enrollment_validity_in_days).
+          and_return(validity_in_days),
+        )
+    end
 
-        enrollment.update(notification_sent_at: Time.zone.now)
-
-        expect(enrollment.reload.notification_phone_configuration).to be_nil
+    it 'due_date returns the enrollment expiration date based on when it was established' do
+      freeze_time do
+        enrollment = create(
+          :in_person_enrollment,
+          enrollment_established_at: days_ago_established_at.days.ago,
+        )
+        expect(enrollment.due_date).to(
+          eq((validity_in_days - days_ago_established_at).days.from_now),
+        )
       end
     end
 
-    context 'enrollment does not have a notification phone configuration' do
-      let!(:enrollment) { create(:in_person_enrollment, :passed) }
-
-      it 'does not raise an error' do
-        expect(enrollment.notification_phone_configuration).to be_nil
-        expect { enrollment.update!(notification_sent_at: Time.zone.now) }.to_not raise_error
+    it 'days_to_due_date returns the number of days left until the due date' do
+      freeze_time do
+        enrollment = create(
+          :in_person_enrollment,
+          enrollment_established_at: days_ago_established_at.days.ago,
+        )
+        expect(enrollment.days_to_due_date).to eq(validity_in_days - days_ago_established_at)
       end
     end
   end
@@ -409,43 +467,16 @@ RSpec.describe InPersonEnrollment, type: :model do
       create(:in_person_enrollment, :failed)
     end
 
-    it 'returns true when status of passed/failed/expired and notification configuration' do
+    it 'returns true when status of passed/failed/expired and with notification configuration' do
       expect(passed_enrollment.eligible_for_notification?).to eq(true)
       expect(failed_enrollment.eligible_for_notification?).to eq(true)
-      expect(expired_enrollment.eligible_for_notification?).to eq(true)
     end
 
-    it 'returns false when status of incomplete or without notification configuration' do
+    it 'returns false when status of incomplete, expired, or without notification configuration' do
       expect(incomplete_enrollment.eligible_for_notification?).to eq(false)
+      expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
-    end
-  end
-
-  describe 'user cancelling their enrollment' do
-    context 'user has a notification phone number stored' do
-      it 'deletes the notification phone number' do
-        enrollment = create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
-        config_id = enrollment.notification_phone_configuration.id
-        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to_not eq(nil)
-
-        enrollment.cancelled!
-        enrollment.reload
-
-        expect(enrollment.notification_phone_configuration).to eq(nil)
-        expect(NotificationPhoneConfiguration.find_by({ id: config_id })).to eq(nil)
-      end
-    end
-
-    context 'user has a "nil" for their notification phone number' do
-      it 'does nothing' do
-        enrollment = create(:in_person_enrollment, :pending, notification_phone_configuration: nil)
-
-        enrollment.cancelled!
-        enrollment.reload
-
-        expect(enrollment.notification_phone_configuration).to eq(nil)
-      end
     end
   end
 end

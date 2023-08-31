@@ -25,6 +25,12 @@ module Encryption
     end
     # rubocop:enable Layout/LineLength
 
+    attr_reader :kms_key_id
+
+    def initialize(kms_key_id: IdentityConfig.store.aws_kms_key_id)
+      @kms_key_id = kms_key_id
+    end
+
     def encrypt(plaintext, encryption_context)
       KmsLogger.log(:encrypt, encryption_context)
       return encrypt_kms(plaintext, encryption_context) if FeatureManagement.use_kms?
@@ -69,7 +75,7 @@ module Encryption
 
       KMS_CLIENT_POOL.with do |client|
         client.encrypt(
-          key_id: IdentityConfig.store.aws_kms_key_id,
+          key_id: kms_key_id,
           plaintext: plaintext,
           encryption_context: encryption_context,
         ).ciphertext_blob

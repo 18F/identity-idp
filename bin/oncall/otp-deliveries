@@ -1,0 +1,147 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'active_support'
+require 'active_support/core_ext/integer/time'
+require 'optparse'
+
+$LOAD_PATH.unshift(File.expand_path(File.join(__dir__, '../../lib')))
+require 'script_base'
+require 'reporting/cloudwatch_client'
+require 'reporting/cloudwatch_query_quoting'
+require 'reporting/unknown_progress_bar'
+
+class OtpDeliveries
+  include Reporting::CloudwatchQueryQuoting
+
+  # @return [OtpDeliveries]
+  def self.parse!(argv: ARGV, out: STDOUT)
+    show_help = false
+    output_format = :table
+    filter = nil
+
+    parser = OptionParser.new do |opts|
+      opts.banner = <<~EOM
+        Usage: #{$PROGRAM_NAME} uuid1 [uuid2...]
+
+        Looks up OTP delivery attempts for SMS/Voice by user UUID, within the last 72 hours
+
+        Options:
+      EOM
+
+      opts.on('--csv') do
+        output_format = :csv
+      end
+
+      opts.on('--table', 'Output format as an ASCII table (default)') do
+        output_format = :table
+      end
+
+      opts.on('--json') do
+        output_format = :json
+      end
+
+      opts.on('--filter=FILTER', 'Filters output to be only SMS or VOICE') do |filter_v|
+        filter = filter_v
+      end
+
+      opts.on('--help', 'Show this help message') do
+        show_help = true
+      end
+    end
+
+    uuids = parser.parse!(argv)
+
+    if uuids.empty? || show_help
+      out.puts parser
+      exit 1
+    end
+
+    new(uuids: uuids, filter: filter, output_format: output_format)
+  end
+
+  attr_reader :uuids, :output_format, :filter
+
+  def initialize(uuids:, output_format:, filter: nil, progress_bar: true)
+    @uuids = uuids
+    @output_format = output_format
+    @filter = filter
+    @progress_bar = progress_bar
+  end
+
+  def progress_bar?
+    @progress_bar
+  end
+
+  def run(out: STDOUT)
+    results = query_data(uuids)
+
+    table = []
+    table << %w[user_id timestamp message_id delivery_preference country_code]
+    results.each do |result|
+      table << [
+        result.user_id,
+        result.timestamp,
+        result.message_id,
+        result.delivery_preference,
+        result.country_code,
+      ]
+    end
+
+    ScriptBase.render_output(table, format: output_format, stdout: out)
+  end
+
+  Result = Struct.new(
+    :user_id,
+    :timestamp,
+    :message_id,
+    :delivery_preference,
+    :country_code,
+    keyword_init: true,
+  )
+
+  # @return [Array<Result>]
+  def query_data(uuids)
+    Reporting::UnknownProgressBar.wrap(show_bar: progress_bar?, title: 'Querying logs') do
+      cloudwatch_client.fetch(
+        query: <<~EOS,
+          fields
+            @timestamp
+          , properties.user_id
+          , properties.event_properties.telephony_response.message_id
+          , properties.event_properties.otp_delivery_preference
+          , properties.event_properties.telephony_response.delivery_status
+          , properties.event_properties.country_code
+          | filter name = 'Telephony: OTP sent'
+          #{filter ?
+            "| filter properties.event_properties.otp_delivery_preference = '#{filter.downcase}'" :
+            nil}
+          | filter properties.user_id IN #{quote(uuids)}
+          | limit 10000
+        EOS
+        from: 72.hours.ago,
+        to: Time.now,
+      ).map do |row|
+        Result.new(
+          user_id: row['properties.user_id'],
+          timestamp: row['@timestamp'],
+          message_id: row['properties.event_properties.telephony_response.message_id'],
+          delivery_preference: row['properties.event_properties.otp_delivery_preference'],
+          country_code: row['properties.event_properties.country_code'],
+        )
+      end
+    end
+  end
+
+  def cloudwatch_client
+    @cloudwatch_client ||= Reporting::CloudwatchClient.new(
+      ensure_complete_logs: false,
+      slice_interval: nil,
+      progress: false,
+    )
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  OtpDeliveries.parse!.run
+end

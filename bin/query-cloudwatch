@@ -28,6 +28,7 @@ class QueryCloudwatch
     :complete,
     :progress,
     :wait_duration,
+    :count_distinct,
     keyword_init: true,
   )
 
@@ -38,12 +39,12 @@ class QueryCloudwatch
   end
 
   def run(stdout: STDOUT)
-    cloudwatch_client.fetch(
-      query: config.query,
-      from: config.from,
-      to: config.to,
-    ) do |row|
-      stdout.puts format_response(row)
+    if config.count_distinct
+      values = {}
+      fetch { |row| values[row[config.count_distinct]] = true }
+      stdout.puts values.size
+    else
+      fetch { |row| stdout.puts format_response(row) }
     end
   rescue Interrupt
     # catch interrupts (ctrl-c) and directly exit, this skips printing the backtrace
@@ -62,6 +63,15 @@ class QueryCloudwatch
     else
       raise "unknown format #{config.format}"
     end
+  end
+
+  def fetch(&block)
+    cloudwatch_client.fetch(
+      query: config.query,
+      from: config.from,
+      to: config.to,
+      &block
+    )
   end
 
   def cloudwatch_client
@@ -84,6 +94,7 @@ class QueryCloudwatch
       to: now,
       complete: false,
       progress: true,
+      count_distinct: nil,
     )
 
     # rubocop:disable Metrics/BlockLength
@@ -204,6 +215,10 @@ class QueryCloudwatch
         config.progress = progress
       end
 
+      opts.on('--count-distinct FIELD', 'get distinct count for given field') do |count_distinct|
+        config.count_distinct = count_distinct
+      end
+
       opts.on('-h', '--help', 'Prints this help') do
         stdout.puts opts
         exit
@@ -230,6 +245,15 @@ class QueryCloudwatch
       else
         config.query = stdin.read
       end
+    end
+
+    if config.count_distinct
+      config.complete = true
+      config.query = [
+        config.query,
+        "| stats count(*) by #{config.count_distinct}",
+        "| limit #{Reporting::CloudwatchClient::MAX_RESULTS_LIMIT}",
+      ].join("\n")
     end
 
     if !errors.empty?

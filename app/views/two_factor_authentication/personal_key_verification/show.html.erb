@@ -14,5 +14,5 @@
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
-<%= render 'shared/fallback_links', presenter: @presenter %>
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
 <%= render 'shared/cancel', link: sign_out_path %>

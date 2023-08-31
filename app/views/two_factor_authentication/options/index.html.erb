@@ -8,6 +8,12 @@
   <%= @presenter.info %>
 </p>
 
+<% if @presenter.restricted_options_warning_text.present? %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-top-4') do %>
+    <%= @presenter.restricted_options_warning_text %>
+  <% end %>
+<% end %>
+
 <%= simple_form_for(
       @two_factor_options_form,
       html: { autocomplete: 'off' },

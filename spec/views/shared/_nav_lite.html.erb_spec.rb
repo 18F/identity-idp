@@ -9,7 +9,7 @@ RSpec.describe 'shared/_nav_lite.html.erb' do
     it 'does not contain sign out link' do
       render
 
-      expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+      expect(rendered).to_not have_button(t('links.sign_out'))
     end
   end
 end

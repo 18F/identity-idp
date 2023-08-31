@@ -60,6 +60,7 @@ fr:
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
+        zipcode_five: Entrez un code postal à 5 chiffres
     failure:
       attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>
@@ -108,20 +109,21 @@ fr:
           pour le moment. Veuillez réessayer.
         rate_limited:
           body: Pour des raisons de sécurité, nous limitons le nombre de tentatives de
-            vérification de votre numéro de téléphone en ligne. Vous devrez
-            attendre %{time_left} et recommencer avant d’essayer à nouveau de
-            vérifier votre identité par téléphone.
+            vérification de votre numéro de téléphone en ligne.
           gpo:
             button: Vérifier par courrier
-            prompt: Continuez maintenant en vérifiant par courrier, ce qui prend
-              généralement de 3 à 7 jours ouvrables.
           heading: Nous n’avons pas pu vérifier votre identité par téléphone
+          option_try_again_later_html: 'Annuler et recommencer après <b>%{time_left}</b>'
+          option_verify_by_mail_html: Vérifier par courrier, ce qui prend généralement de
+            <b>trois à sept jours ouvrables</b>.
+          options_header: 'Vous Pouvez :'
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
           réessayer.
         warning:
-          attempts:
-            one: Pour des raisons de sécurité, il vous reste une tentative.
-            other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+          attempts_html:
+            one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+            other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+              tentatives</strong>.
           gpo:
             button: Vérifier par courrier
             explanation: Si vous n’avez pas d’autre numéro de téléphone à essayer, vérifiez
@@ -167,9 +169,9 @@ fr:
         - Vous devrez ressaisir vos informations personnelles, comme votre nom,
           pièce d’identité officielle, etc.
     form:
-      address1: Adresse Ligne 1
-      address2: Adresse Ligne 2
-      address2_optional: Adresse Ligne 2 (optional)
+      address1: Adresse ligne 1
+      address2: Adresse ligne 2
+      address2_optional: Adresse ligne 2 (optional)
       city: Ville
       dob: Date de naissance
       first_name: Prénom
@@ -185,6 +187,35 @@ fr:
       no_js_header: Vous devez activer JavaScript pour vérifier votre identité.
       no_js_intro: '%{sp_name} a besoin de vous pour vérifier votre identité. Vous
         devez activer JavaScript pour poursuivre ce processus.'
+    gpo:
+      alert_info: 'Nous avons envoyé une lettre avec votre code à usage unique à:'
+      clear_and_start_over: Supprimez vos données et recommencez
+      did_not_receive_letter:
+        form:
+          instructions: Si vous avez reçu votre lettre, veuillez entrer le code à 10
+            caractères figurant sur la lettre que vous avez reçue.
+        intro:
+          be_patient_html: 'Veuillez noter que les lettres prennent <strong>généralement
+            entre trois à sept jours ouvrables pour arriver</strong>. Nous vous
+            remercions de votre patience.'
+          request_new_letter_link: demander une nouvelle
+          request_new_letter_prompt_html: Si votre lettre n’est pas encore arrivée, vous
+            pouvez en <span>%{request_new_letter_link}</span>.
+        title: N’avez-vous pas reçu votre lettre?
+      form:
+        instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+          avez reçue.
+        otp_label: Code à usage unique
+        submit: Confirmer le compte
+        title: Confirmez votre compte
+      intro_html: '<p>Si vous avez reçu votre lettre, veuillez entrer votre code à
+        usage unique ci-dessous. </p> <p>Si votre lettre n’est pas encore
+        arrivée, veuillez être patient car les <strong>lettres prennent
+        généralement entre trois à sept jours ouvrables pour arriver</strong>.
+        Nous vous remercions de votre patience.</p>'
+      return_to_profile: Retourner à votre profil
+      title: Content de vous revoir
+      wrong_address: Pas la bonne adresse?
     images:
       come_back_later: Lettre avec un crochet
     index:
@@ -228,6 +259,16 @@ fr:
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
+      gpo_reminder:
+        body_html: Vous avez demandé une lettre pour vérifier votre identité le
+          <strong>%{date_letter_was_sent}</strong>. Vous devrez saisir le code
+          figurant dans la lettre pour terminer la vérification par courrier.
+          Reconnectez-vous à %{app_name} pour terminer la vérification de votre
+          identité. %{help_link}.
+        did_not_get_a_letter_html: Si vous n’avez pas reçu cette lettre, %{another_letter_link_html}.
+        finish: Terminer la vérification de votre identité
+        sign_in_and_request_another_letter: connectez-vous pour en demander une autre.
+        subject: Terminer la vérification de votre identité
       otp_delivery_method_description: Si vous avez saisi une ligne fixe ci-dessus,
         veuillez sélectionner « Appel téléphonique » ci-dessous.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
@@ -239,9 +280,9 @@ fr:
           code à usage unique. Ceci est pour aider à vérifier votre identité.
         failed_number:
           alert_text: Nous n’avons pas pu vous associer à ce numéro.
-          gpo_alert_html: Si vous n’avez pas <strong>d’autre</strong> numéro de téléphone
-            à essayer, %{link_html}.
-          gpo_verify_link: vérifiez plutôt par courrier
+          gpo_alert_html: Essayez un <strong>autre</strong> numéro ou %{link_html}.
+          gpo_verify_link: vérifiez par courrier
+          try_again_html: Essayez un <strong>autre</strong> numéro.
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
@@ -281,7 +322,6 @@ fr:
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
-        still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
@@ -307,9 +347,10 @@ fr:
       technical_difficulties: Malheureusement, nous rencontrons des difficultés
         techniques et ne pouvons pas vérifier votre identité pour le moment.
     warning:
-      attempts:
-        one: Pour des raisons de sécurité, il vous reste une tentative.
-        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
+      attempts_html:
+        one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>.
+        other: Pour des raisons de sécurité, il vous reste <strong>%{count}
+          tentatives</strong>.
       sessions:
         heading: Nous n’avons pas trouvé de dossiers correspondant à vos informations
           personnelles

@@ -19,10 +19,15 @@
     ) do %>
   <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image') %>
   <div class="usa-checkbox__label--text">
-    <%= option.label %>
-    <span id="two_factor_options_form_selection_description_<%= option.type %>" aria-hidden="true">
+    <span class="margin-right-2"><%= option.label %></span>
+    <%= content_tag(
+          :span,
+          id: "two_factor_options_form_selection_description_#{option.type}",
+          class: option.mfa_configuration_description.presence && 'usa-tag bg-green',
+          aria: { hidden: true },
+        ) do %>
       <%= option.mfa_configuration_description %>
-    </span>
+    <% end %>
     <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">
       <%= option.info %>
     </span>

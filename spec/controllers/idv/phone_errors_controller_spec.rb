@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Idv::PhoneErrorsController do
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
+  before do
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+  end
+
   shared_examples_for 'an idv phone errors controller action' do
     describe 'before_actions' do
       it 'includes before_actions from IdvSession' do
@@ -8,57 +16,74 @@ RSpec.describe Idv::PhoneErrorsController do
       end
     end
 
-    context 'the user is authenticated and has not confirmed their phone' do
+    context 'authenticated user' do
       let(:user) { create(:user) }
 
-      it 'renders the error' do
-        get action
+      context 'the user has not submtted a phone number' do
+        it 'redirects to phone step' do
+          allow(idv_session).to receive(:previous_phone_step_params).
+            and_return(nil)
 
-        expect(response).to render_template(template)
-      end
-
-      it 'logs an event' do
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: phone error visited',
-          hash_including(
-            type: action,
-          ),
-        )
-        get action
-      end
-
-      context 'fetch() request from form-steps-wait JS' do
-        before do
-          request.headers['X-Form-Steps-Wait'] = '1'
-        end
-        it 'returns an empty response' do
           get action
-          expect(response).to have_http_status(204)
-        end
-        it 'does not log an event' do
-          expect(@analytics).not_to receive(:track_event).with('IdV: phone error visited', anything)
-          get action
+
+          expect(response).to redirect_to(idv_phone_url)
         end
       end
-    end
 
-    context 'the user is authenticated and has confirmed their phone' do
-      let(:user) { create(:user) }
-      let(:idv_session_user_phone_confirmation) { true }
+      context 'with already submitted phone number' do
+        context 'the user has not confirmed their phone' do
+          it 'renders the error' do
+            get action
 
-      it 'redirects to the review url' do
-        get action
+            expect(response).to render_template(template)
+          end
 
-        expect(response).to redirect_to(idv_review_url)
-      end
-      it 'does not log an event' do
-        expect(@analytics).not_to receive(:track_event).with(
-          'IdV: phone error visited',
-          hash_including(
-            type: action,
-          ),
-        )
-        get action
+          it 'logs an event' do
+            expect(@analytics).to receive(:track_event).with(
+              'IdV: phone error visited',
+              hash_including(
+                type: action,
+              ),
+            )
+            get action
+          end
+
+          context 'fetch() request from form-steps-wait JS' do
+            before do
+              request.headers['X-Form-Steps-Wait'] = '1'
+            end
+            it 'returns an empty response' do
+              get action
+              expect(response).to have_http_status(204)
+            end
+            it 'does not log an event' do
+              expect(@analytics).not_to receive(:track_event).with(
+                'IdV: phone error visited',
+                anything,
+              )
+              get action
+            end
+          end
+        end
+
+        context 'the user has confirmed their phone' do
+          let(:idv_session_user_phone_confirmation) { true }
+
+          it 'redirects to the review url' do
+            get action
+
+            expect(response).to redirect_to(idv_review_url)
+          end
+          it 'does not log an event' do
+            expect(@analytics).not_to receive(:track_event).with(
+              'IdV: phone error visited',
+              hash_including(
+                type: action,
+              ),
+            )
+            get action
+          end
+        end
       end
     end
 
@@ -114,26 +139,26 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    it 'assigns phone' do
-      get action
-      expect(assigns(:phone)).to eql(phone)
-    end
-
-    it 'assigns country_code' do
-      get action
-      expect(assigns(:country_code)).to eql(country_code)
-    end
-
-    context 'not knowing about a phone just entered' do
-      let(:previous_phone_step_params) { nil }
-      it 'does not crash' do
-        get action
-      end
-    end
-
     context 'with rate limit attempts' do
       before do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
+      end
+
+      it 'assigns phone' do
+        get action
+        expect(assigns(:phone)).to eql(phone)
+      end
+
+      it 'assigns country_code' do
+        get action
+        expect(assigns(:country_code)).to eql(country_code)
+      end
+
+      context 'not knowing about a phone just entered' do
+        let(:previous_phone_step_params) { nil }
+        it 'does not crash' do
+          get action
+        end
       end
 
       it 'assigns remaining count' do
@@ -149,6 +174,7 @@ RSpec.describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
+          **ab_test_args,
         )
       end
     end
@@ -201,6 +227,7 @@ RSpec.describe Idv::PhoneErrorsController do
           'IdV: phone error visited',
           type: action,
           remaining_attempts: 4,
+          **ab_test_args,
         )
       end
     end
@@ -233,7 +260,8 @@ RSpec.describe Idv::PhoneErrorsController do
           expect(@analytics).to have_received(:track_event).with(
             'IdV: phone error visited',
             type: action,
-            throttle_expires_at: attempted_at + rate_limit_window,
+            limiter_expires_at: attempted_at + rate_limit_window,
+            **ab_test_args,
           )
         end
       end

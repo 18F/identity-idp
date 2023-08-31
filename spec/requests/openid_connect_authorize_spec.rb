@@ -7,7 +7,7 @@ RSpec.describe 'user signs in partially and visits openid_connect/authorize' do
     openid_test('select_account')
     follow_redirect!
     expect(response).
-      to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+      to redirect_to login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   it 'prompts the user to 2FA if prompt is login' do
@@ -21,7 +21,7 @@ RSpec.describe 'user signs in partially and visits openid_connect/authorize' do
     openid_test
     follow_redirect!
     expect(response).
-      to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+      to redirect_to login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   def openid_test(prompt = nil)

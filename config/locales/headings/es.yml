@@ -66,7 +66,7 @@ es:
     state_id: Documento de identidad emitido por el estado
     totp_setup:
       new: Agregar una aplicación de autenticación
-    verify: Verifica tus datos
+    verify: Verifique sus datos
     verify_email: Revise su email
     verify_personal_key: Verifica tu clave personal
     webauthn_platform_setup:

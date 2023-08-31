@@ -13,6 +13,7 @@ RSpec.describe WebauthnSetupForm do
       name: 'mykey',
       platform_authenticator: false,
       transports: 'usb',
+      authenticator_data_value: '153',
     }
   end
   let(:subject) { WebauthnSetupForm.new(user, user_session) }
@@ -28,6 +29,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn: 1 },
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
@@ -66,6 +75,43 @@ RSpec.describe WebauthnSetupForm do
             ['internal', 'hybrid'],
           )
         end
+
+        context 'with non backed up option data flags' do
+          let(:params) { super().merge(authenticator_data_value: '65') }
+
+          it 'includes data flags with bs set as false ' do
+            result = subject.submit(protocol, params)
+
+            expect(result.to_h[:authenticator_data_flags]).to eq(
+              up: true,
+              uv: false,
+              be: false,
+              bs: false,
+              at: true,
+              ed: false,
+            )
+          end
+        end
+
+        context 'when authenticator_data_value is not a number' do
+          let(:params) { super().merge(authenticator_data_value: 'bad_error') }
+
+          it 'should not include authenticator data flag' do
+            result = subject.submit(protocol, params)
+
+            expect(result.to_h[:authenticator_data_flags]).to be_nil
+          end
+        end
+
+        context 'when authenticator_data_value is missing' do
+          let(:params) { super().merge(authenticator_data_value: nil) }
+
+          it 'should not include authenticator data flag' do
+            result = subject.submit(protocol, params)
+
+            expect(result.to_h[:authenticator_data_flags]).to be_nil
+          end
+        end
       end
 
       context 'with invalid transports' do
@@ -88,6 +134,14 @@ RSpec.describe WebauthnSetupForm do
             enabled_mfa_methods_count: 1,
             mfa_method_counts: { webauthn: 1 },
             multi_factor_auth_method: 'webauthn',
+            authenticator_data_flags: {
+              up: true,
+              uv: false,
+              be: true,
+              bs: true,
+              at: false,
+              ed: true,
+            },
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
             unknown_transports: ['wrong'],
           )
@@ -103,6 +157,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
@@ -136,6 +198,14 @@ RSpec.describe WebauthnSetupForm do
           enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          authenticator_data_flags: {
+            up: true,
+            uv: false,
+            be: true,
+            bs: true,
+            at: false,
+            ed: true,
+          },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 

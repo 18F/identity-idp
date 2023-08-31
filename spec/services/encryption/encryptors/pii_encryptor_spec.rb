@@ -20,9 +20,10 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
   describe '#encrypt' do
     it 'returns encrypted text' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      ciphertext, ciphertext_multi_region = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
 
       expect(ciphertext).to_not match plaintext
+      expect(ciphertext_multi_region).to_not match plaintext
     end
 
     it 'uses layers KMS and AES to encrypt the plaintext' do
@@ -37,23 +38,42 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      cipher = instance_double(Encryption::AesCipher)
-      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+      cipher = subject.send(:aes_cipher)
       expect(cipher).to receive(:encrypt).
         with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
 
-      expect(subject.send(:kms_client)).to receive(:encrypt).
+      single_region_kms_client = subject.send(:single_region_kms_client)
+      multi_region_kms_client = subject.send(:multi_region_kms_client)
+
+      expect(single_region_kms_client.kms_key_id).to eq(
+        IdentityConfig.store.aws_kms_key_id,
+      )
+      expect(multi_region_kms_client.kms_key_id).to eq(
+        IdentityConfig.store.aws_kms_multi_region_key_id,
+      )
+
+      expect(single_region_kms_client).to receive(:encrypt).
         with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
-        and_return('kms_ciphertext')
+        and_return('single_region_kms_ciphertext')
+      expect(multi_region_kms_client).to receive(:encrypt).
+        with('aes_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
+        and_return('multi_region_kms_ciphertext')
 
-      expected_ciphertext = Base64.strict_encode64('kms_ciphertext')
+      ciphertext_single_region, ciphertext_multi_region = subject.encrypt(
+        plaintext, user_uuid: 'uuid-123-abc'
+      )
 
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
-
-      expect(ciphertext).to eq(
+      expect(ciphertext_single_region).to eq(
         {
-          encrypted_data: expected_ciphertext,
+          encrypted_data: Base64.strict_encode64('single_region_kms_ciphertext'),
+          salt: salt,
+          cost: '800$8$1$',
+        }.to_json,
+      )
+      expect(ciphertext_multi_region).to eq(
+        {
+          encrypted_data: Base64.strict_encode64('multi_region_kms_ciphertext'),
           salt: salt,
           cost: '800$8$1$',
         }.to_json,
@@ -63,17 +83,18 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
 
   describe '#decrypt' do
     it 'returns the original text' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
-      decrypted_ciphertext = subject.decrypt(ciphertext, user_uuid: 'uuid-123-abc')
+      ciphertext_pair = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+
+      decrypted_ciphertext = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
 
       expect(decrypted_ciphertext).to eq(plaintext)
     end
 
     it 'requires the same password used for encrypt' do
-      ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
+      ciphertext_pair = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')
       new_encryptor = described_class.new('This is not the passowrd')
 
-      expect { new_encryptor.decrypt(ciphertext, user_uuid: 'uuid-123-abc') }.
+      expect { new_encryptor.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc') }.
         to raise_error Encryption::EncryptionError
     end
 
@@ -87,27 +108,83 @@ RSpec.describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      kms_client = instance_double(Encryption::KmsClient)
-      expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+      kms_client = subject.send(:multi_region_kms_client)
       expect(kms_client).to receive(:decrypt).
         with('kms_ciphertext', { 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc' }).
         and_return('aes_ciphertext')
 
-      cipher = instance_double(Encryption::AesCipher)
-      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
+      cipher = subject.send(:aes_cipher)
       expect(cipher).to receive(:decrypt).
         with('aes_ciphertext', decoded_scrypt_digest).
         and_return(plaintext)
 
-      result = subject.decrypt(
-        {
+      ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+        single_region_ciphertext: {
           encrypted_data: Base64.strict_encode64('kms_ciphertext'),
           salt: salt,
           cost: '800$8$1$',
-        }.to_json, user_uuid: 'uuid-123-abc'
+        }.to_json,
+        multi_region_ciphertext: nil,
       )
 
+      result = subject.decrypt(ciphertext_pair, user_uuid: 'uuid-123-abc')
+
       expect(result).to eq(plaintext)
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'uses the multi-region ciphertext if it is available' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: subject.encrypt(
+            'multi-region-text', user_uuid: '123abc'
+          ).multi_region_ciphertext,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('multi-region-text')
+      end
+
+      it 'uses the single region ciphertext if the multi-region ciphertext is nil' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: nil,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('single-region-text')
+      end
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to false' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(false)
+      end
+
+      it 'uses the single-region ciphertext to decrypt' do
+        test_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
+          single_region_ciphertext: subject.encrypt(
+            'single-region-text', user_uuid: '123abc'
+          ).single_region_ciphertext,
+          multi_region_ciphertext: subject.encrypt(
+            'multi-region-text', user_uuid: '123abc'
+          ).multi_region_ciphertext,
+        )
+
+        result = subject.decrypt(test_ciphertext_pair, user_uuid: '123abc')
+
+        expect(result).to eq('single-region-text')
+      end
     end
   end
 end

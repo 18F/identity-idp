@@ -2,6 +2,7 @@ module Idv
   class GpoController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
+    include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
@@ -55,7 +56,15 @@ module Idv
     def update_tracking
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_letter_sent, :update, true)
-      analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
+
+      analytics.idv_gpo_address_letter_requested(
+        resend: resend_requested?,
+        first_letter_requested_at: first_letter_requested_at,
+        hours_since_first_letter:
+          gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail_service.phone_step_attempts,
+        **ab_test_analytics_buckets,
+      )
       irs_attempts_api_tracker.idv_gpo_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
@@ -64,6 +73,10 @@ module Idv
 
     def resend_requested?
       current_user.gpo_verification_pending_profile?
+    end
+
+    def first_letter_requested_at
+      current_user.gpo_verification_pending_profile&.gpo_verification_pending_at
     end
 
     def confirm_mail_not_spammed
@@ -81,7 +94,15 @@ module Idv
     end
 
     def resend_letter
-      analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: true)
+      analytics.idv_gpo_address_letter_enqueued(
+        enqueued_at: Time.zone.now,
+        resend: true,
+        first_letter_requested_at: first_letter_requested_at,
+        hours_since_first_letter:
+          gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
+        phone_step_attempts: gpo_mail_service.phone_step_attempts,
+        **ab_test_analytics_buckets,
+      )
       confirmation_maker = confirmation_maker_perform
       send_reminder
       return unless FeatureManagement.reveal_gpo_code?

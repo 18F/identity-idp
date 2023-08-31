@@ -30,7 +30,7 @@ module Idv
         should_proof_state_id: should_use_aamva?(pii),
         trace_id: amzn_trace_id,
         user_id: current_user.id,
-        threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+        threatmetrix_session_id: idv_session.threatmetrix_session_id,
         request_ip: request.remote_ip,
         double_address_verification: capture_secondary_id_enabled,
       )
@@ -107,15 +107,15 @@ module Idv
 
     def idv_failure_log_rate_limited(rate_limit_type)
       if rate_limit_type == :proof_ssn
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'multi-session')
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :proof_ssn,
+        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'multi-session')
+        analytics.rate_limit_reached(
+          limiter_type: :proof_ssn,
           step_name: STEP_NAME,
         )
       elsif rate_limit_type == :idv_resolution
-        irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: 'single-session')
-        analytics.throttler_rate_limit_triggered(
-          throttle_type: :idv_resolution,
+        irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: 'single-session')
+        analytics.rate_limit_reached(
+          limiter_type: :idv_resolution,
           step_name: STEP_NAME,
         )
       end
@@ -191,11 +191,12 @@ module Idv
         state_id_number: pii[:state_id_number],
         # todo: add other edited fields?
         extra: {
-          address_edited: !!flow_session['address_edited'],
+          address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
           pii_like_keypaths: [[:errors, :ssn], [:response_body, :first_name],
+                              [:same_address_as_id],
                               [:state_id, :state_id_jurisdiction]],
-        }.merge(ab_test_analytics_buckets),
+        },
       )
       log_idv_verification_submitted_event(
         success: form_response.success?,
@@ -218,11 +219,11 @@ module Idv
         idv_session.invalidate_verify_info_step!
       end
 
-      analytics.idv_doc_auth_verify_proofing_results(**form_response.to_h)
+      analytics.idv_doc_auth_verify_proofing_results(**analytics_arguments, **form_response.to_h)
     end
 
     def next_step_url
-      return idv_gpo_url if FeatureManagement.idv_gpo_only?
+      return idv_gpo_url if FeatureManagement.idv_by_mail_only?
       idv_phone_url
     end
 

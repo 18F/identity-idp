@@ -788,7 +788,19 @@ Performance/UnfreezeString:
 Performance/UriDefaultParser:
   Enabled: true
 
+Rails/ActionControllerFlashBeforeRender:
+  Enabled: true
+
+Rails/ActionControllerTestCase:
+  Enabled: true
+
+Rails/ActionOrder:
+  Enabled: false
+
 Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+Rails/ActiveSupportOnLoad:
   Enabled: true
 
 Rails/AddColumnIndex:
@@ -806,7 +818,25 @@ Rails/ApplicationMailer:
 Rails/Blank:
   Enabled: false
 
+Rails/CompactBlank:
+  Enabled: false
+
 Rails/Delegate:
+  Enabled: false
+
+Rails/DeprecatedActiveModelErrorsMethods:
+  Enabled: false
+
+Rails/DotSeparatedKeys:
+  Enabled: false
+
+Rails/DuplicateAssociation:
+  Enabled: true
+
+Rails/DurationArithmetic:
+  Enabled: false
+
+Rails/DuplicateScope:
   Enabled: false
 
 Rails/DynamicFindBy:
@@ -825,6 +855,9 @@ Rails/FilePath:
 Rails/FindById:
   Enabled: true
 
+Rails/FreezeTime:
+  Enabled: true
+
 Rails/HttpPositionalArguments:
   Description: Use keyword arguments instead of positional arguments in http method calls.
   Enabled: true
@@ -832,7 +865,16 @@ Rails/HttpPositionalArguments:
     - spec/**/*
     - test/**/*
 
+Rails/I18nLazyLookup:
+  Enabled: false
+
 Rails/I18nLocaleAssignment:
+  Enabled: false
+
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/IgnoredColumnsAssignment:
   Enabled: false
 
 Rails/Inquiry:
@@ -842,6 +884,9 @@ Rails/MailerName:
   Enabled: true
 
 Rails/MatchRoute:
+  Enabled: true
+
+Rails/MigrationClassName:
   Enabled: true
 
 Rails/NegateInclude:
@@ -857,12 +902,15 @@ Rails/Output:
     - spec/**/*.rb # in addition to default
 
 Rails/Pluck:
-  Enabled: true
+  Enabled: false
 
 Rails/PluckInWhere:
   Enabled: true
 
 Rails/Present:
+  Enabled: false
+
+Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
 
 Rails/RedundantTravelBack:
@@ -877,11 +925,29 @@ Rails/RenderInline:
 Rails/RenderPlainText:
   Enabled: true
 
+Rails/ResponseParsedBody:
+  Enabled: false
+
+Rails/RootJoinChain:
+  Enabled: true
+
+Rails/RootPathnameMethods:
+  Enabled: false
+
+Rails/RootPublicPath:
+  Enabled: true
+
 Rails/ShortI18n:
   Enabled: true
 
+Rails/StripHeredoc:
+  Enabled: false
+
 Rails/SquishedSQLHeredocs:
   Enabled: false
+
+Rails/ThreeStateBooleanColumn:
+  Enabled: true
 
 Rails/TimeZone:
   Description: Checks the correct usage of time zone aware methods.
@@ -895,6 +961,18 @@ Rails/TimeZone:
 Rails/TimeZoneAssignment:
   Enabled: true
 
+Rails/ToFormattedS:
+  Enabled: false
+
+Rails/ToSWithArgument:
+  Enabled: false
+
+Rails/TopLevelHashWithIndifferentAccess:
+  Enabled: true
+
+Rails/TransactionExitStatement:
+  Enabled: true
+
 Rails/UnusedIgnoredColumns:
   Enabled: true
 
@@ -904,8 +982,14 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Enabled: true
 
+Rails/WhereMissing:
+  Enabled: true
+
 Rails/WhereNot:
   Enabled: false
+
+Rails/WhereNotWithMultipleConditions:
+  Enabled: true
 
 Security/Eval:
   Enabled: true
@@ -932,6 +1016,7 @@ Style/AndOr:
     - conditionals
 
 Style/ArgumentsForwarding:
+  UseAnonymousForwarding: false
   Enabled: true
 
 Style/ArrayJoin:

@@ -15,6 +15,7 @@ en:
       upload_picture: Upload photo
     errors:
       alerts:
+        address_check: We couldn’t read the address on your ID. Try taking new pictures.
         barcode_content_check: We couldn’t read the barcode on the back of your ID. It
           could be because of a problem with the barcode, or the barcode is a
           new type that we don’t recognize yet. Use another state‑issued ID if
@@ -53,6 +54,10 @@ en:
           instead.
         failed: Camera failed to start, please try again.
       card_type: Try again with your driver’s license or state ID card.
+      doc:
+        doc_type_check: Other forms of ID are not accepted.
+        wrong_id_type: We only accept a driver’s license or a state ID card at this
+          time. Other forms of ID are not accepted.
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
@@ -119,17 +124,16 @@ en:
         text4: Your password saves and encrypts your personal information.
     headings:
       address: Update your mailing address
-      back: Back
+      back: Back of your driver’s license or state ID
       capture_complete: We verified your ID
       capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
         information below is incorrect, please %{link_html} of your
         state‑issued ID.
       capture_scan_warning_link: upload new photos
-      capture_troubleshooting_tips: Having trouble adding your state‑issued ID?
-      document_capture: Add your state‑issued ID
+      document_capture: Add photos of your ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      front: Front
+      front: Front of your driver’s license or state ID
       getting_started: Let’s verify your identity for %{sp_name}
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
@@ -162,8 +166,8 @@ en:
       capture_status_small_document: Move Closer
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
-        reading your state‑issued ID. We use this information to verify your
-        identity.
+        reading your driver’s license or state ID card. We use this information
+        to verify your identity.
       getting_started_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you. %{link_html}'
       getting_started_learn_more: Learn more about what you need to verify your identity
@@ -221,18 +225,6 @@ en:
           address. This takes about 3 to 7 business days.'
       welcome: 'You will need your:'
     tips:
-      capture_troubleshooting_blurry: The photo you added is too blurry.
-      capture_troubleshooting_clean: Make sure that the barcode is not damaged or
-        dirty and all the information on your ID can be read.
-      capture_troubleshooting_clean_image: Back of an ID
-      capture_troubleshooting_glare: The photo you added has glare.
-      capture_troubleshooting_lead: 'Here are some tips for taking a successful photo:'
-      capture_troubleshooting_lighting: Make sure there is plenty of light. Indirect
-        sunlight is best. Avoid glares, shadows and reflections.
-      capture_troubleshooting_lighting_image: Sun with a cloud
-      capture_troubleshooting_surface: Take a photo on a flat surface with a dark
-        background. Make sure the edges of your ID are clear.
-      capture_troubleshooting_surface_image: Front of an ID
       document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background

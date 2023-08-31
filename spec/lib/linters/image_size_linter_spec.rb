@@ -12,14 +12,14 @@ RSpec.describe RuboCop::Cop::IdentityIdp::ImageSizeLinter do
   it 'registers offense when calling image_tag without any size attributes' do
     expect_offense(<<~RUBY)
       image_tag 'example.svg'
-      ^^^^^^^^^^^^^^^^^^^^^^^ Assign width and height to images
+      ^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ImageSizeLinter: Assign width and height to images
     RUBY
   end
 
   it 'registers offense when calling image_tag with only one of width or height' do
     expect_offense(<<~RUBY)
       image_tag 'example.svg', width: 10
-      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Assign width and height to images
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ IdentityIdp/ImageSizeLinter: Assign width and height to images
     RUBY
   end
 

@@ -21,18 +21,18 @@ module RateLimitConcern
   end
 
   def track_rate_limited_event(rate_limit_type)
-    analytics_args = { throttle_type: rate_limit_type }
-    throttle_context = 'single-session'
+    analytics_args = { limiter_type: rate_limit_type }
+    limiter_context = 'single-session'
 
     if rate_limit_type == :proof_address
       analytics_args[:step_name] = :phone
     elsif rate_limit_type == :proof_ssn
       analytics_args[:step_name] = 'verify_info'
-      throttle_context = 'multi-session'
+      limiter_context = 'multi-session'
     end
 
-    irs_attempts_api_tracker.idv_verification_rate_limited(throttle_context: throttle_context)
-    analytics.throttler_rate_limit_triggered(**analytics_args)
+    irs_attempts_api_tracker.idv_verification_rate_limited(limiter_context: limiter_context)
+    analytics.rate_limit_reached(**analytics_args)
   end
 
   def rate_limited_redirect(rate_limit_type)
@@ -40,7 +40,7 @@ module RateLimitConcern
     when :idv_resolution
       redirect_to idv_session_errors_failure_url
     when :idv_doc_auth
-      redirect_to idv_session_errors_throttled_url
+      redirect_to idv_session_errors_rate_limited_url
     when :proof_address
       redirect_to idv_phone_errors_failure_url
     when :proof_ssn

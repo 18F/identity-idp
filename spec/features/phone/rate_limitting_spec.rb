@@ -30,7 +30,7 @@ RSpec.describe 'phone rate limitting' do
       end
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
-      click_continue
+      click_send_one_time_code
     end
   end
 end

@@ -17,6 +17,12 @@
 
 <%= render 'shared/sp_alert', section: 'sign_in' %>
 
+<% if @issuer_forced_reauthentication %>
+  <p>
+    <%= t('account.login.forced_reauthentication_notice_html', sp_name: decorated_session.sp_name) %>
+  </p>
+<% end %>
+
 <%= simple_form_for(
       resource,
       as: resource_name,

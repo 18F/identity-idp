@@ -25,7 +25,7 @@ RSpec.describe Idv::PhoneController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
   end
@@ -165,6 +165,13 @@ RSpec.describe Idv::PhoneController do
   end
 
   describe '#create' do
+    let(:ab_test_args) do
+      { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+    end
+
+    before do
+      allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
+    end
     context 'when form is invalid' do
       let(:improbable_phone_error) do
         {
@@ -232,6 +239,7 @@ RSpec.describe Idv::PhoneController do
           otp_delivery_preference: '🎷',
           types: [],
           proofing_components: nil,
+          **ab_test_args,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -278,6 +286,7 @@ RSpec.describe Idv::PhoneController do
           otp_delivery_preference: 'sms',
           types: [:fixed_or_mobile],
           proofing_components: nil,
+          **ab_test_args,
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -521,9 +530,9 @@ RSpec.describe Idv::PhoneController do
 
         it 'tracks rate limited event' do
           expect(@analytics).to have_logged_event(
-            'Throttler Rate Limit Triggered',
+            'Rate Limit Reached',
             {
-              throttle_type: :proof_address,
+              limiter_type: :proof_address,
               step_name: :phone,
             },
           )

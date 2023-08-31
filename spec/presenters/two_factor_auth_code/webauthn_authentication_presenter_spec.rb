@@ -15,7 +15,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     )
   end
 
-  let(:allow_user_to_switch_method) { false }
   let(:phishing_resistant_required) { false }
   let(:platform_authenticator) { false }
   let(:multiple_factors_enabled) { false }
@@ -23,7 +22,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     instance_double(
       ServiceProviderMfaPolicy,
       phishing_resistant_required?: phishing_resistant_required,
-      allow_user_to_switch_method?: allow_user_to_switch_method,
       multiple_factors_enabled?: multiple_factors_enabled,
     )
   end
@@ -33,38 +31,10 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   describe '#webauthn_help' do
-    context 'with phishing-resistant required' do
-      let(:phishing_resistant_required) { true }
+    let(:phishing_resistant_required) { false }
 
-      context 'the user only has a security key enabled' do
-        let(:allow_user_to_switch_method) { false }
-
-        it 'returns the help text for just the security key' do
-          expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_only'),
-          )
-        end
-      end
-
-      context 'the user has a security key and PIV enabled' do
-        let(:allow_user_to_switch_method) { true }
-
-        it 'returns the help text for the security key or PIV' do
-          expect(presenter.webauthn_help).to eq(
-            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3'),
-          )
-        end
-      end
-    end
-
-    context 'with phishing-resistant not required' do
-      let(:phishing_resistant_required) { false }
-
-      it 'displays the help text' do
-        expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn'),
-        )
-      end
+    it 'returns the help text for security key' do
+      expect(presenter.webauthn_help).to eq(t('instructions.mfa.webauthn.confirm_webauthn'))
     end
 
     context 'with a platform authenticator' do
@@ -137,20 +107,25 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#link_text' do
-    let(:phishing_resistant_required) { true }
+  describe '#troubleshooting_options' do
+    let(:phishing_resistant_required) { false }
 
-    context 'with multiple phishing-resistant methods' do
-      let(:allow_user_to_switch_method) { true }
-
-      it 'supplies link text' do
-        expect(presenter.link_text).to eq(t('two_factor_authentication.webauthn_piv_available'))
+    it 'includes option to choose another authentication method' do
+      expect(presenter.troubleshooting_options.size).to eq(2)
+      expect(presenter.troubleshooting_options.first).to satisfy do |c|
+        c.url == login_two_factor_options_path &&
+          c.content == t('two_factor_authentication.login_options_link_text')
       end
     end
 
-    context 'with only one phishing-resistant method do' do
-      it 'supplies no link text' do
-        expect(presenter.link_text).to eq('')
+    context 'with platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'includes option to learn more about face or touch unlock' do
+        expect(presenter.troubleshooting_options.size).to eq(3)
+        expect(presenter.troubleshooting_options[1]).to satisfy do |c|
+          c.content == t('instructions.mfa.webauthn_platform.learn_more_help')
+        end
       end
     end
   end

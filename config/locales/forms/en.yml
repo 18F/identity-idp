@@ -125,20 +125,6 @@ en:
       try_again: Use another phone number
     validation:
       required_checkbox: Please check this box to continue
-    verify_profile:
-      alert_info: 'We sent a letter with your one-time code to:'
-      clear_and_start_over: Clear your information and start over
-      instructions: Enter the 10-character code from the letter you received.
-      name: One-time code
-      return_to_profile: Return to your profile
-      submit: Confirm account
-      title: Confirm your account
-      welcome_back: Welcome back
-      welcome_back_description_html: '<p>If you have received your letter, please
-        enter your one-time code below. </p><p>If your letter hasn’t arrived
-        yet, please be patient as <strong>letters typically take 3 to 7 business
-        days to arrive</strong>. Thank you for your patience.</p>'
-      wrong_address: Not the right address?
     webauthn_delete:
       caution: If you remove your security key you won’t be able to use it to access
         your %{app_name} account.
@@ -151,8 +137,6 @@ en:
       continue: Continue
       info_text: You’ll need to set up an additional authentication method after you
         set up face or touch unlock.
-      instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
-      instructions_title: Use Touch or Face Unlock to access your account.
       intro_html: '<p>Save your face or fingerprint as a credential on your device, so
         you can access your account with it. %{app_name} does not store your
         face or fingerprint.</p><p>You may need to use the same device to sign
@@ -163,9 +147,8 @@ en:
         which one is which.
     webauthn_setup:
       continue: Continue
-      instructions_text: Press the button on your security key to register it with %{app_name}
-      instructions_title: Connect your security key
       intro_html: '<p>Add a security key that meets the FIDO standard as your
         authentication method. You can add as many security keys as you want. To
         get started, first give your security key a nickname.</p>'
       nickname: Security key nickname
+      saving: Saving your credentials …

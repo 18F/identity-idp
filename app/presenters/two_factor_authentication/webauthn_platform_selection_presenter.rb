@@ -17,8 +17,8 @@ module TwoFactorAuthentication
       )
     end
 
-    def disabled?
-      user&.webauthn_configurations&.where(platform_authenticator: true)&.any?
+    def single_configuration_only?
+      true
     end
 
     def mfa_configuration_count

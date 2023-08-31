@@ -14,7 +14,7 @@ RSpec.feature 'Two Factor Authentication' do
       click_continue
 
       expect(page).
-        to have_content t('titles.phone_setup')
+        to have_content t('headings.add_info.phone')
 
       send_one_time_code_without_entering_phone_number
 
@@ -413,15 +413,6 @@ RSpec.feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'when the user is not piv/cac enabled' do
-    it 'has no link to piv/cac during login' do
-      user = create(:user, :fully_registered)
-      sign_in_before_2fa(user)
-
-      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
-    end
-  end
-
   describe 'when the user is TOTP enabled and phone enabled' do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :with_authentication_app, :with_phone)
@@ -490,11 +481,11 @@ RSpec.feature 'Two Factor Authentication' do
   end
 
   describe 'clicking the logo image during 2fa process' do
-    it 'returns them to the home page' do
+    it 'prompts them to 2FA' do
       user = create(:user, :fully_registered)
       sign_in_user(user)
       click_link 'Login.gov'
-      expect(current_path).to eq root_path
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
     end
   end
 

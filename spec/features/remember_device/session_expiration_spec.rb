@@ -15,10 +15,10 @@ RSpec.describe 'signing in with remember device and idling on the sign in page' 
     check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     IdentityLinker.new(
-      user, build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:server')
+      user, build(:service_provider, issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
     ).link_identity(verified_attributes: %w[email])
 
     visit_idp_from_sp_with_ial1(:oidc)

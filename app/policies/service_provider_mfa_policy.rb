@@ -50,12 +50,6 @@ class ServiceProviderMfaPolicy
     piv_cac_requested?
   end
 
-  def allow_user_to_switch_method?
-    return false if piv_cac_required?
-    return true unless phishing_resistant_required?
-    piv_cac_enabled? && webauthn_enabled?
-  end
-
   def multiple_factors_enabled?
     mfa_context.enabled_mfa_methods_count > 1
   end

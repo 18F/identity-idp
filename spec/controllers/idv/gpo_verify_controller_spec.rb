@@ -8,30 +8,36 @@ RSpec.describe Idv::GpoVerifyController do
   let(:user) { create(:user) }
   let(:profile_created_at) { Time.zone.now }
   let(:pending_profile) do
-    create(
-      :profile,
-      :with_pii,
-      user: user,
-      proofing_components: proofing_components,
-      created_at: profile_created_at,
-    )
+    if user
+      create(
+        :profile,
+        :with_pii,
+        user: user,
+        proofing_components: proofing_components,
+        created_at: profile_created_at,
+      )
+    end
   end
   let(:proofing_components) { nil }
   let(:threatmetrix_enabled) { false }
   let(:gpo_enabled) { true }
+  let(:params) { nil }
 
   before do
     stub_analytics
     stub_attempts_tracker
-    stub_sign_in(user)
-    pending_user = stub_user_with_pending_profile(user)
-    create(
-      :gpo_confirmation_code,
-      profile: pending_profile,
-      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-    )
-    allow(pending_user).to receive(:gpo_verification_pending_profile?).
-      and_return(has_pending_profile)
+
+    if user
+      stub_sign_in(user)
+      pending_user = stub_user_with_pending_profile(user)
+      create(
+        :gpo_confirmation_code,
+        profile: pending_profile,
+        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+      )
+      allow(pending_user).to receive(:gpo_verification_pending_profile?).
+        and_return(has_pending_profile)
+    end
 
     allow(IdentityConfig.store).to receive(:proofing_device_profiling).
       and_return(threatmetrix_enabled ? :enabled : :disabled)
@@ -40,22 +46,25 @@ RSpec.describe Idv::GpoVerifyController do
 
   describe '#index' do
     subject(:action) do
-      get(:index)
+      get(:index, params: params)
     end
 
     context 'user has pending profile' do
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
-        expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
+        expect(@analytics).to receive(:track_event).with(
+          'IdV: GPO verification visited',
+          source: nil,
+        )
 
         action
 
         expect(response).to render_template('idv/gpo_verify/index')
       end
 
-      it 'sets @user_can_request_another_gpo_code to true' do
+      it 'sets @should_prompt_user_to_request_another_letter to true' do
         action
-        expect(assigns(:user_can_request_another_gpo_code)).to eql(true)
+        expect(assigns(:should_prompt_user_to_request_another_letter)).to eql(true)
       end
 
       it 'shows rate limited page if user is rate limited' do
@@ -63,14 +72,33 @@ RSpec.describe Idv::GpoVerifyController do
 
         action
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
       end
 
       context 'but that profile is > 30 days old' do
         let(:profile_created_at) { 31.days.ago }
-        it 'sets @user_can_request_another_gpo_code to false' do
+        it 'sets @should_prompt_user_to_request_another_letter to false' do
           action
-          expect(assigns(:user_can_request_another_gpo_code)).to eql(false)
+          expect(assigns(:should_prompt_user_to_request_another_letter)).to eql(false)
+        end
+      end
+
+      context 'user clicked a "i did not receive my letter" link' do
+        let(:params) do
+          {
+            did_not_receive_letter: 1,
+          }
+        end
+        it 'sets @user_did_not_receive_letter to true' do
+          action
+          expect(assigns(:user_did_not_receive_letter)).to eql(true)
+        end
+        it 'augments analytics event' do
+          action
+          expect(@analytics).to have_logged_event(
+            'IdV: GPO verification visited',
+            source: 'gpo_reminder_email',
+          )
         end
       end
     end
@@ -93,15 +121,43 @@ RSpec.describe Idv::GpoVerifyController do
       it 'renders rate limited page' do
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification visited',
+          source: nil,
         ).once
         expect(@analytics).to receive(:track_event).with(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :verify_gpo_key,
+          'Rate Limit Reached',
+          limiter_type: :verify_gpo_key,
         ).once
 
         action
 
-        expect(response).to render_template(:throttled)
+        expect(response).to render_template(:rate_limited)
+      end
+    end
+
+    context 'session says user did not receive letter' do
+      before do
+        session[:gpo_user_did_not_receive_letter] = true
+        action
+      end
+      it 'redirects user to url with querystring' do
+        expect(response).to redirect_to(idv_gpo_verify_path(did_not_receive_letter: 1))
+      end
+      it 'clears session value' do
+        expect(session).not_to include(gpo_user_did_not_receive_letter: anything)
+      end
+    end
+
+    context 'querystring says user did not receive letter' do
+      let(:params) do
+        { did_not_receive_letter: 1 }
+      end
+
+      context 'not logged in' do
+        let(:user) { nil }
+
+        it 'sets value in session' do
+          expect { action }.to change { session[:gpo_user_did_not_receive_letter ] }.to eql(true)
+        end
       end
     end
   end
@@ -131,8 +187,11 @@ RSpec.describe Idv::GpoVerifyController do
           success: true,
           errors: {},
           pending_in_person_enrollment: false,
-          threatmetrix_check_failed: false,
+          fraud_check_failed: false,
           enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+          which_letter: 1,
+          letter_count: 1,
+          attempts: 1,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
         expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
@@ -178,8 +237,11 @@ RSpec.describe Idv::GpoVerifyController do
             success: true,
             errors: {},
             pending_in_person_enrollment: true,
-            threatmetrix_check_failed: false,
+            fraud_check_failed: false,
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+            which_letter: 1,
+            letter_count: 1,
+            attempts: 1,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
@@ -203,7 +265,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_reject',
               user: user,
             )
@@ -215,8 +276,11 @@ RSpec.describe Idv::GpoVerifyController do
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
-              threatmetrix_check_failed: true,
+              fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              which_letter: 1,
+              letter_count: 1,
+              attempts: 1,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
             expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
@@ -240,7 +304,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_reject',
               user: user,
             )
@@ -252,8 +315,11 @@ RSpec.describe Idv::GpoVerifyController do
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
-              threatmetrix_check_failed: true,
+              fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              which_letter: 1,
+              letter_count: 1,
+              attempts: 1,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
 
@@ -278,7 +344,6 @@ RSpec.describe Idv::GpoVerifyController do
             create(
               :profile,
               :with_pii,
-              :fraud_review_pending,
               fraud_pending_reason: 'threatmetrix_review',
               user: user,
             )
@@ -290,8 +355,11 @@ RSpec.describe Idv::GpoVerifyController do
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
-              threatmetrix_check_failed: true,
+              fraud_check_failed: true,
               enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+              which_letter: 1,
+              letter_count: 1,
+              attempts: 1,
               pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
             )
 
@@ -312,8 +380,11 @@ RSpec.describe Idv::GpoVerifyController do
           success: false,
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
-          threatmetrix_check_failed: false,
+          fraud_check_failed: false,
           enqueued_at: nil,
+          which_letter: nil,
+          letter_count: 1,
+          attempts: 1,
           error_details: otp_code_incorrect,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
@@ -338,20 +409,31 @@ RSpec.describe Idv::GpoVerifyController do
 
       context 'user is rate limited' do
         it 'renders the index page to show errors' do
-          expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+          analytics_args = {
             success: false,
             errors: otp_code_error_message,
             pending_in_person_enrollment: false,
-            threatmetrix_check_failed: false,
+            fraud_check_failed: false,
             enqueued_at: nil,
+            which_letter: nil,
+            letter_count: 1,
+            attempts: 1,
             error_details: otp_code_incorrect,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-          ).exactly(max_attempts).times
+          }
+          expect(@analytics).to receive(:track_event).with(
+            'IdV: GPO verification submitted',
+            **analytics_args,
+          ).once
+          analytics_args[:attempts] = 2
+          expect(@analytics).to receive(:track_event).with(
+            'IdV: GPO verification submitted',
+            **analytics_args,
+          ).once
 
           expect(@analytics).to receive(:track_event).with(
-            'Throttler Rate Limit Triggered',
-            throttle_type: :verify_gpo_key,
+            'Rate Limit Reached',
+            limiter_type: :verify_gpo_key,
           ).once
 
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_rate_limited).once
@@ -376,7 +458,7 @@ RSpec.describe Idv::GpoVerifyController do
             },
           )
 
-          expect(response).to render_template('idv/gpo_verify/throttled')
+          expect(response).to render_template('idv/gpo_verify/rate_limited')
         end
       end
 
@@ -387,8 +469,11 @@ RSpec.describe Idv::GpoVerifyController do
             success: false,
             errors: otp_code_error_message,
             pending_in_person_enrollment: false,
-            threatmetrix_check_failed: false,
+            fraud_check_failed: false,
             enqueued_at: nil,
+            which_letter: nil,
+            letter_count: 1,
+            attempts: 1,
             error_details: otp_code_incorrect,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           ).exactly(max_attempts - 1).times
@@ -397,8 +482,11 @@ RSpec.describe Idv::GpoVerifyController do
             success: true,
             errors: {},
             pending_in_person_enrollment: false,
-            threatmetrix_check_failed: false,
+            fraud_check_failed: false,
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
+            which_letter: 1,
+            letter_count: 1,
+            attempts: 2,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           ).once
           expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).

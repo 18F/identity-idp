@@ -4,7 +4,7 @@ class AnalyticsEventsController < ApplicationController
   prepend_before_action :skip_session_expiration
   skip_before_action :disable_caching
 
-  JSON_FILE = Rails.root.join('public', 'api', '_analytics-events.json')
+  JSON_FILE = Rails.public_path.join('api', '_analytics-events.json')
 
   def index
     if File.exist?(JSON_FILE)

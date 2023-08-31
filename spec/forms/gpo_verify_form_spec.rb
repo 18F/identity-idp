@@ -86,7 +86,13 @@ RSpec.describe GpoVerifyForm do
     end
 
     context 'when OTP is expired' do
-      let(:code_sent_at) { 11.days.ago }
+      let(:expiration_days) { 10 }
+      let(:code_sent_at) { (expiration_days + 1).days.ago }
+
+      before do
+        allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).
+          and_return(expiration_days)
+      end
 
       it 'is invalid' do
         result = subject.submit
@@ -118,13 +124,20 @@ RSpec.describe GpoVerifyForm do
         expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
       end
 
-      context 'pending in person enrollment' do
-        let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
+      context 'establishing in person enrollment' do
+        let!(:establishing_enrollment) do
+          create(
+            :in_person_enrollment,
+            :establishing,
+            profile: pending_profile,
+            user: user,
+          )
         end
+
         let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
+
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
@@ -135,26 +148,54 @@ RSpec.describe GpoVerifyForm do
 
           expect(pending_profile).not_to be_active
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+          expect(pending_profile.in_person_verification_pending_at).to be_present
           expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
         it 'updates establishing in-person enrollment to pending' do
           subject.submit
 
-          enrollment.reload
+          establishing_enrollment.reload
 
-          expect(enrollment.status).to eq('pending')
-          expect(enrollment.user_id).to eq(user.id)
-          expect(enrollment.enrollment_code).to be_a(String)
+          expect(establishing_enrollment.status).to eq(InPersonEnrollment::STATUS_PENDING)
+          expect(establishing_enrollment.user_id).to eq(user.id)
+          expect(establishing_enrollment.enrollment_code).to be_a(String)
+        end
+      end
+
+      context 'pending in person enrollment' do
+        let!(:pending_enrollment) do
+          create(
+            :in_person_enrollment,
+            :pending,
+            profile: pending_profile,
+            user: user,
+          )
+        end
+
+        let(:proofing_components) do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'changes profile from pending to active' do
+          subject.submit
+          pending_profile.reload
+
+          expect(pending_profile).to be_active
+          expect(pending_profile.deactivation_reason).to be_nil
+          expect(pending_profile.in_person_verification_pending_at).to be_nil
+          expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
       end
 
       context 'ThreatMetrix rejection' do
         let(:pending_profile) do
-          create(:profile, :verify_by_mail_pending, :fraud_review_pending, user: user)
+          create(:profile, :verify_by_mail_pending, :fraud_pending_reason, user: user)
         end
-
-        let(:threatmetrix_review_status) { 'reject' }
 
         before do
           allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
@@ -174,7 +215,7 @@ RSpec.describe GpoVerifyForm do
 
         it 'notes that threatmetrix failed' do
           result = subject.submit
-          expect(result.extra).to include(threatmetrix_check_failed: true)
+          expect(result.extra).to include(fraud_check_failed: true)
         end
 
         context 'threatmetrix is not required for verification' do
@@ -196,7 +237,7 @@ RSpec.describe GpoVerifyForm do
 
           it 'notes that threatmetrix failed' do
             result = subject.submit
-            expect(result.extra).to include(threatmetrix_check_failed: true)
+            expect(result.extra).to include(fraud_check_failed: true)
           end
         end
       end
@@ -209,6 +250,61 @@ RSpec.describe GpoVerifyForm do
         subject.submit
 
         expect(subject.otp).to be_nil
+      end
+    end
+
+    describe '#which_letter with three letters sent' do
+      let(:first_otp) { 'F' + otp }
+      let(:second_otp) { 'S' + otp }
+      let(:third_otp) { otp }
+
+      before do
+        create(
+          :gpo_confirmation_code,
+          otp_fingerprint: Pii::Fingerprinter.fingerprint(first_otp),
+          code_sent_at: code_sent_at - 5.days,
+          profile: pending_profile,
+        )
+
+        create(
+          :gpo_confirmation_code,
+          otp_fingerprint: Pii::Fingerprinter.fingerprint(second_otp),
+          code_sent_at: code_sent_at - 3.days,
+          profile: pending_profile,
+        )
+      end
+
+      context 'entered first code' do
+        let(:entered_otp) { first_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(1)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
+      end
+
+      context 'entered second code' do
+        let(:entered_otp) { second_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(2)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
+      end
+
+      context 'entered third code' do
+        let(:entered_code) { third_otp }
+
+        it 'logs which letter and letter count' do
+          result = subject.submit
+
+          expect(result.to_h[:which_letter]).to eq(3)
+          expect(result.to_h[:letter_count]).to eq(3)
+        end
       end
     end
   end

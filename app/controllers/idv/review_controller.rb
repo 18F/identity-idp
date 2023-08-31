@@ -10,6 +10,7 @@ module Idv
     before_action :confirm_verify_info_step_complete
     before_action :confirm_address_step_complete
     before_action :confirm_current_password, only: [:create]
+    skip_before_action :confirm_not_rate_limited
 
     helper_method :step_indicator_step
 
@@ -22,6 +23,7 @@ module Idv
       analytics.idv_review_complete(
         success: false,
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
+        in_person_verification_pending: current_user.in_person_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
         **ab_test_analytics_buckets,
@@ -40,7 +42,6 @@ module Idv
         **ab_test_analytics_buckets,
       )
 
-      gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
       if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
@@ -70,6 +71,7 @@ module Idv
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
+        in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
         **ab_test_analytics_buckets,
       )
@@ -80,6 +82,7 @@ module Idv
         fraud_review_pending: idv_session.profile.fraud_review_pending?,
         fraud_rejection: idv_session.profile.fraud_rejection?,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
+        in_person_verification_pending: idv_session.profile.in_person_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
         **ab_test_analytics_buckets,
       )
@@ -95,6 +98,10 @@ module Idv
 
     private
 
+    def gpo_mail_service
+      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
+    end
+
     def address_verification_method
       user_session.with_indifferent_access.dig('idv', 'address_verification_mechanism')
     end
@@ -104,7 +111,15 @@ module Idv
 
       if idv_session.address_verification_mechanism == 'gpo'
         current_user.send_email_to_all_addresses(:letter_reminder)
-        analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
+        analytics.idv_gpo_address_letter_enqueued(
+          enqueued_at: Time.zone.now,
+          resend: false,
+          phone_step_attempts: gpo_mail_service.phone_step_attempts,
+          first_letter_requested_at: first_letter_requested_at,
+          hours_since_first_letter:
+            gpo_mail_service.hours_since_first_letter(first_letter_requested_at),
+          **ab_test_analytics_buckets,
+        )
       end
 
       if idv_session.profile.active?
@@ -115,6 +130,10 @@ module Idv
           sp_name: decorated_session.sp_name,
         )
       end
+    end
+
+    def first_letter_requested_at
+      idv_session.profile.gpo_verification_pending_at
     end
 
     def valid_password?

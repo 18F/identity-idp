@@ -48,7 +48,7 @@ module DocAuthHelper
     visit idv_welcome_url unless current_path == idv_welcome_url
     click_idv_continue if current_path == idv_mail_only_warning_path
 
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_welcome_step
@@ -58,7 +58,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     complete_welcome_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_agreement_step
@@ -73,7 +73,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_hybrid_handoff_step
@@ -88,7 +88,7 @@ module DocAuthHelper
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
     complete_hybrid_handoff_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_document_capture_step
@@ -96,17 +96,17 @@ module DocAuthHelper
   end
 
   # yml_file example: 'spec/fixtures/puerto_rico_resident.yml'
-  def complete_document_capture_step_with_yml(proofing_yml)
+  def complete_document_capture_step_with_yml(proofing_yml, expected_path: idv_ssn_url)
     attach_file I18n.t('doc_auth.headings.document_capture_front'), File.expand_path(proofing_yml)
     attach_file I18n.t('doc_auth.headings.document_capture_back'), File.expand_path(proofing_yml)
     click_on I18n.t('forms.buttons.submit.default')
-    expect(page).to have_current_path(idv_ssn_url, wait: 10)
+    expect(page).to have_current_path(expected_path, wait: 10)
   end
 
   def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     click_idv_continue
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     click_idv_continue
   end
 
@@ -120,7 +120,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
     complete_document_capture_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_ssn_step
@@ -131,7 +131,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
     complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
     complete_ssn_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_verify_step
@@ -140,7 +140,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
     click_link t('idv.buttons.change_address_label')
   end
 
@@ -149,10 +149,26 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_send_link
   end
 
+  def complete_gpo_verification(user)
+    otp = 'ABC123'
+    create(
+      :gpo_confirmation_code,
+      profile: User.find(user.id).pending_profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
+    )
+    fill_in t('idv.gpo.form.otp_label'), with: otp
+    click_button t('idv.gpo.form.submit')
+  end
+
+  def complete_come_back_later
+    # Exit Login.gov and return to SP
+    click_on t('idv.cancel.actions.exit', app_name: APP_NAME)
+  end
+
   def complete_all_doc_auth_steps(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     complete_verify_step
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
@@ -161,7 +177,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_continue
     verify_phone_otp
     expect(page).to have_current_path(idv_review_path, wait: 10)
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
   def complete_proofing_steps

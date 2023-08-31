@@ -186,6 +186,7 @@ module TwoFactorAuthenticatableMethods
   def generic_data
     {
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+      reauthn: UserSessionContext.reauthentication_context?(user_session[:context]),
     }
   end
 end

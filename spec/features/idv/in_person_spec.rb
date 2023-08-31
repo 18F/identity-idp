@@ -92,7 +92,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect_page_to_have_no_accessibility_violations(page)
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']
@@ -179,7 +179,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_verify_info_path)
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
@@ -224,7 +224,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect_in_person_step_indicator_current_step(
       t('step_indicator.flows.idv.go_to_the_post_office'),
     )
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+    expect_page_to_have_no_accessibility_violations(page)
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
     )['enrollmentCode']
@@ -250,9 +250,12 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
-    sign_in_and_2fa_user
+    user = sign_in_and_2fa_user
     begin_in_person_proofing
     complete_all_in_person_proofing_steps
+    complete_phone_step(user)
+    complete_review_step(user)
+    acknowledge_and_confirm_personal_key
 
     click_link t('links.cancel')
     click_on t('idv.cancel.actions.start_over')
@@ -396,7 +399,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
-      click_button t('forms.verify_profile.submit')
+      click_button t('idv.gpo.form.submit')
 
       # personal key
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
@@ -556,7 +559,7 @@ RSpec.describe 'In Person Proofing', js: true do
         click_idv_continue
 
         # ssn page
-        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn))
+        expect(page).to have_current_path(idv_in_person_ssn_url)
         complete_ssn_step
 
         # verify page
@@ -649,7 +652,7 @@ RSpec.describe 'In Person Proofing', js: true do
         fill_in t('idv.form.address2_optional'), with: InPersonHelper::GOOD_ADDRESS2
         fill_in t('idv.form.city'), with: InPersonHelper::GOOD_CITY
         click_idv_continue
-        expect(page).to have_current_path(idv_in_person_step_path(step: :ssn), wait: 10)
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
       end
     end
   end
@@ -1009,7 +1012,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
-      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
+      expect_page_to_have_no_accessibility_violations(page)
       enrollment_code = JSON.parse(
         UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
       )['enrollmentCode']

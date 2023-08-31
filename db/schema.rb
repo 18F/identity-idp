@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_14_130423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -310,6 +310,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
     t.boolean "ready_for_status_check", default: false
     t.datetime "notification_sent_at", comment: "The time a notification was sent"
+    t.datetime "last_batch_claimed_at"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
@@ -440,20 +441,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.integer "deactivation_reason"
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
-    t.date "reproof_at"
     t.string "initiating_service_provider_issuer"
     t.datetime "fraud_review_pending_at"
     t.datetime "fraud_rejection_at"
     t.string "fraud_state"
     t.datetime "gpo_verification_pending_at"
     t.integer "fraud_pending_reason"
+    t.datetime "in_person_verification_pending_at"
+    t.text "encrypted_pii_multi_region"
+    t.text "encrypted_pii_recovery_multi_region"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
     t.index ["fraud_state"], name: "index_profiles_on_fraud_state"
     t.index ["gpo_verification_pending_at"], name: "index_profiles_on_gpo_verification_pending_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
-    t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -573,6 +575,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
   end
 
+  create_table "suspended_emails", force: :cascade do |t|
+    t.bigint "email_address_id", null: false
+    t.string "digested_base_email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["digested_base_email"], name: "index_suspended_emails_on_digested_base_email"
+    t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at", precision: nil
@@ -596,6 +607,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.datetime "encrypted_recovery_code_digest_generated_at", precision: nil
     t.datetime "suspended_at"
     t.datetime "reinstated_at"
+    t.string "encrypted_password_digest_multi_region"
+    t.string "encrypted_recovery_code_digest_multi_region"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -607,14 +620,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.datetime "bounced_at", precision: nil
+    t.datetime "reminder_sent_at", precision: nil
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
+    t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"
   end
 
   create_table "usps_confirmations", id: :serial, force: :cascade do |t|
     t.text "entry", null: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.text "entry_multi_region"
   end
 
   create_table "webauthn_configurations", force: :cascade do |t|
@@ -626,6 +642,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "platform_authenticator"
     t.string "transports", array: true
+    t.jsonb "authenticator_data_flags"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

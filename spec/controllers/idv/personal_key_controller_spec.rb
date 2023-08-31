@@ -15,6 +15,7 @@ RSpec.describe Idv::PersonalKeyController do
     profile = profile_maker.save_profile(
       fraud_pending_reason: nil,
       gpo_verification_needed: false,
+      in_person_verification_needed: false,
     )
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
@@ -146,12 +147,6 @@ RSpec.describe Idv::PersonalKeyController do
       expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
         subject.idv_session.pii,
       )
-    end
-
-    it 'sets flash[:allow_confirmations_continue] to true' do
-      get :show
-
-      expect(flash[:allow_confirmations_continue]).to eq true
     end
 
     it 'logs when user generates personal key' do

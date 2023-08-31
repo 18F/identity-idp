@@ -6,7 +6,6 @@ module Idv
 
     before_action :confirm_hybrid_handoff_complete
     before_action :confirm_document_capture_needed
-    before_action :extend_timeout_using_meta_refresh
 
     def show
       analytics.idv_doc_auth_link_sent_visited(**analytics_arguments)
@@ -31,8 +30,7 @@ module Idv
     end
 
     def extra_view_variables
-      { phone: idv_session.phone_for_mobile_flow,
-        flow_session: flow_session }
+      { phone: idv_session.phone_for_mobile_flow }
     end
 
     private
@@ -48,10 +46,9 @@ module Idv
     end
 
     def confirm_document_capture_needed
-      return if flow_session['redo_document_capture']
+      return if idv_session.redo_document_capture
 
-      pii = flow_session['pii_from_doc'] # hash with indifferent access
-      return if pii.blank? && !idv_session.verify_info_step_complete?
+      return if pii_from_doc.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
     end
@@ -90,19 +87,6 @@ module Idv
         document_capture_session&.load_result ||
           document_capture_session&.load_doc_auth_async_result
       end
-    end
-
-    def extend_timeout_using_meta_refresh
-      max_10min_refreshes = IdentityConfig.store.doc_auth_extend_timeout_by_minutes / 10
-      return if max_10min_refreshes <= 0
-      meta_refresh_count = flow_session[:meta_refresh_count].to_i
-      return if meta_refresh_count >= max_10min_refreshes
-      do_meta_refresh(meta_refresh_count)
-    end
-
-    def do_meta_refresh(meta_refresh_count)
-      @meta_refresh = 10 * 60
-      flow_session[:meta_refresh_count] = meta_refresh_count + 1
     end
   end
 end

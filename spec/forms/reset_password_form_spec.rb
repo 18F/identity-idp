@@ -3,6 +3,15 @@ require 'rails_helper'
 RSpec.describe ResetPasswordForm, type: :model do
   subject { ResetPasswordForm.new(build_stubbed(:user, uuid: '123')) }
 
+  let(:password) { 'a good and powerful password' }
+  let(:password_confirmation) { password }
+  let(:params) do
+    {
+      password: password,
+      password_confirmation: password,
+    }
+  end
+
   it_behaves_like 'password validation'
 
   describe '#submit' do
@@ -19,7 +28,12 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        expect(form.submit(password: password).to_h).to include(
+        expect(
+          form.submit(
+            password: password,
+            password_confirmation: password,
+          ).to_h,
+        ).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -40,11 +54,20 @@ RSpec.describe ResetPasswordForm, type: :model do
         errors = {
           password:
             ["Password must be at least #{Devise.password_length.first} characters long"],
+          password_confirmation: [I18n.t(
+            'errors.messages.too_short',
+            count: Devise.password_length.first,
+          )],
         }
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        expect(form.submit(password: password).to_h).to include(
+        expect(
+          form.submit(
+            password: password,
+            password_confirmation: password,
+          ).to_h,
+        ).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -65,7 +88,12 @@ RSpec.describe ResetPasswordForm, type: :model do
           with(user: user, attributes: { password: password }).and_return(user_updater)
 
         expect(user_updater).to receive(:call)
-        expect(form.submit(password: password).to_h).to eq(
+        expect(
+          form.submit(
+            password: password,
+            password_confirmation: password,
+          ).to_h,
+        ).to eq(
           success: true,
           errors: {},
           user_id: '123',
@@ -89,12 +117,21 @@ RSpec.describe ResetPasswordForm, type: :model do
           password: [
             t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
           ],
+          password_confirmation: [I18n.t(
+            'errors.messages.too_short',
+            count: Devise.password_length.first,
+          )],
           reset_password_token: ['token_expired'],
         }
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        expect(form.submit(password: password).to_h).to include(
+        expect(
+          form.submit(
+            password: password,
+            password_confirmation: password,
+          ).to_h,
+        ).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -109,12 +146,25 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
         errors = {
+          password: [
+            t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
+          ],
+          password_confirmation: [I18n.t(
+            'errors.messages.too_short',
+            count: Devise.password_length.first,
+          )],
           reset_password_token: ['invalid_token'],
         }
 
         extra = { user_id: nil, profile_deactivated: false }
+        password = 'short'
 
-        expect(form.submit(password: 'a good and powerful password').to_h).to include(
+        expect(
+          form.submit(
+            password: password,
+            password_confirmation: password,
+          ).to_h,
+        ).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -131,7 +181,7 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
 
-        result = form.submit(password: 'a good and powerful password')
+        result = form.submit(params)
 
         expect(result.success?).to eq(true)
         expect(result.extra[:profile_deactivated]).to eq(true)
@@ -146,7 +196,7 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
 
-        result = form.submit(password: 'a good and powerful password')
+        result = form.submit(params)
 
         expect(result.success?).to eq(true)
         expect(result.extra[:profile_deactivated]).to eq(false)
@@ -160,8 +210,7 @@ RSpec.describe ResetPasswordForm, type: :model do
         user.update(reset_password_sent_at: Time.zone.now)
 
         form = ResetPasswordForm.new(user)
-
-        result = form.submit(password: 'a good and powerful password')
+        result = form.submit(params)
 
         expect(result.success?).to eq(true)
         expect(result.extra[:pending_profile_invalidated]).to eq(true)
@@ -178,7 +227,7 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
 
-        result = form.submit(password: 'a good and powerful password')
+        result = form.submit(params)
 
         expect(result.success?).to eq(true)
         expect(result.extra[:pending_profile_invalidated]).to eq(false)
@@ -198,7 +247,7 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
 
-        result = form.submit(password: 'a good and powerful password')
+        result = form.submit(params)
 
         expect(result.success?).to eq(false)
         expect(result.errors).to eq({ reset_password_token: ['token_expired'] })

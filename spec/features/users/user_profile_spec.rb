@@ -119,6 +119,9 @@ RSpec.feature 'User profile' do
       expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
       fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
+      fill_in t('components.password_confirmation.confirm_label'),
+              with: 'this is a great sentence'
+
       expect(page).to have_content(t('instructions.password.strength.intro'))
       expect(page).to have_content t('instructions.password.strength.v')
 
@@ -139,6 +142,8 @@ RSpec.feature 'User profile' do
 
         visit manage_password_path
         fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
+        fill_in t('components.password_confirmation.confirm_label'),
+                with: 'this is a great sentence'
         click_button 'Update'
 
         expect(current_path).to eq account_path

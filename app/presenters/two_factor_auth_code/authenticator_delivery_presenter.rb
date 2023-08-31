@@ -4,16 +4,16 @@ module TwoFactorAuthCode
       t('two_factor_authentication.totp_header_text')
     end
 
-    def fallback_question
-      t('two_factor_authentication.totp_fallback.question')
-    end
-
     def cancel_link
       if reauthn
         account_path
       else
         sign_out_path
       end
+    end
+
+    def redirect_location_step
+      :totp_verification
     end
   end
 end

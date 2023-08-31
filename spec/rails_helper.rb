@@ -97,7 +97,6 @@ RSpec.configure do |config|
     self.default_url_options = default_url_options
     allow(Rails.application.routes).to receive(:default_url_options).and_return(default_url_options)
   end
-
   config.before(:each, type: :controller) do
     @request.host = IdentityConfig.store.domain_name
   end

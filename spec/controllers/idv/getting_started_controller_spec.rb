@@ -27,7 +27,7 @@ RSpec.describe Idv::GettingStartedController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
   end
@@ -38,6 +38,7 @@ RSpec.describe Idv::GettingStartedController do
       {
         step: 'getting_started',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
@@ -100,19 +101,31 @@ RSpec.describe Idv::GettingStartedController do
         errors: {},
         step: 'getting_started',
         analytics_id: 'Doc Auth',
+        skip_hybrid_handoff: nil,
         irs_reproofing: false,
       }.merge(ab_test_args)
     end
 
+    let(:skip_hybrid_handoff) { nil }
+
+    let(:params) do
+      {
+        doc_auth: {
+          ial2_consent_given: 1,
+        },
+        skip_hybrid_handoff: skip_hybrid_handoff,
+      }.compact
+    end
+
     it 'sends analytics_submitted event with consent given' do
-      put :update, params: { doc_auth: { ial2_consent_given: 1 } }
+      put :update, params: params
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'creates a document capture session' do
-      expect { put :update, params: { doc_auth: { ial2_consent_given: 1 } } }.
-        to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
+      expect { put :update, params: params }.
+        to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
     context 'with previous establishing in-person enrollments' do
@@ -123,10 +136,41 @@ RSpec.describe Idv::GettingStartedController do
       end
 
       it 'cancels all previous establishing enrollments' do
-        put :update, params: { doc_auth: { ial2_consent_given: 1 } }
+        put :update, params: params
 
-        expect(enrollment.reload.status).to eq('cancelled')
+        expect(enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
         expect(user.establishing_in_person_enrollment).to be_blank
+      end
+    end
+
+    it 'does not set flow_path' do
+      expect do
+        put :update, params: params
+      end.not_to change {
+        subject.idv_session.flow_path
+      }.from(nil)
+    end
+
+    it 'redirects to hybrid handoff' do
+      put :update, params: params
+      expect(response).to redirect_to(idv_hybrid_handoff_url)
+    end
+
+    context 'skip_hybrid_handoff present in params' do
+      let(:skip_hybrid_handoff) { '' }
+      it 'sets flow_path to standard' do
+        expect do
+          put :update, params: params
+        end.to change {
+          subject.idv_session.flow_path
+        }.from(nil).to('standard').and change {
+          subject.idv_session.skip_hybrid_handoff
+        }.from(nil).to(true)
+      end
+
+      it 'redirects to hybrid handoff' do
+        put :update, params: params
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
   end

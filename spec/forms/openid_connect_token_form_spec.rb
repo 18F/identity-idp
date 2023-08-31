@@ -379,6 +379,8 @@ RSpec.describe OpenidConnectTokenForm do
           client_id: client_id,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
+          code_verifier_present: false,
+          service_provider_pkce: nil,
         )
       end
     end

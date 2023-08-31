@@ -26,19 +26,21 @@ RSpec.feature 'verify profile with OTP' do
 
     scenario 'valid OTP' do
       sign_in_live_with_2fa(user)
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(account_path)
     end
 
     scenario 'OTP has expired' do
-      GpoConfirmationCode.first.update(code_sent_at: 11.days.ago)
+      GpoConfirmationCode.first.update(
+        code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
+      )
 
       sign_in_live_with_2fa(user)
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: otp
+      click_button t('idv.gpo.form.submit')
 
       expect(page).to have_content t('errors.messages.gpo_otp_expired')
       expect(current_path).to eq idv_gpo_verify_path
@@ -46,8 +48,8 @@ RSpec.feature 'verify profile with OTP' do
 
     scenario 'wrong OTP used' do
       sign_in_live_with_2fa(user)
-      fill_in t('forms.verify_profile.name'), with: 'the wrong code'
-      click_button t('forms.verify_profile.submit')
+      fill_in t('idv.gpo.form.otp_label'), with: 'the wrong code'
+      click_button t('idv.gpo.form.submit')
 
       expect(current_path).to eq idv_gpo_verify_path
       expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))

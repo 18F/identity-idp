@@ -69,7 +69,7 @@ fr:
     state_id: Carte d’identité délivrée par l’État
     totp_setup:
       new: Ajouter une application d’authentification
-    verify: Vérifier votre information
+    verify: Vérifier votre informations
     verify_email: Consultez vos courriels
     verify_personal_key: Vérifier votre clé personnelle
     webauthn_platform_setup:

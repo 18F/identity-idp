@@ -16,7 +16,7 @@ RSpec.feature 'Remembering a phone' do
       check t('forms.messages.remember_device')
       fill_in_code_with_last_phone_otp
       click_submit_default
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       user
     end
 
@@ -36,32 +36,10 @@ RSpec.feature 'Remembering a phone' do
       click_submit_default
       skip_second_mfa_prompt
 
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       user
     end
 
     it_behaves_like 'remember device'
-  end
-
-  context 'identity verification', :js do
-    let(:user) { user_with_2fa }
-
-    before do
-      sign_in_user(user)
-      check t('forms.messages.remember_device')
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      visit idv_path
-      complete_all_doc_auth_steps
-      fill_out_phone_form_ok('2022603829')
-      choose_idv_otp_delivery_method_sms
-    end
-
-    it 'requires 2FA and does not offer the option to remember device' do
-      expect(current_path).to eq(idv_otp_verification_path)
-      expect(page).to_not have_content(
-        t('forms.messages.remember_device'),
-      )
-    end
   end
 end

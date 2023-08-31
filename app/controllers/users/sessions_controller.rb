@@ -7,6 +7,7 @@ module Users
     include RememberDeviceConcern
     include Ial2ProfileConcern
     include Api::CsrfTokenConcern
+    include ForcedReauthenticationConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -20,6 +21,9 @@ module Users
       override_csp_for_google_analytics
 
       @ial = sp_session_ial
+      @issuer_forced_reauthentication = issuer_forced_reauthentication?(
+        issuer: decorated_session.sp_issuer,
+      )
       analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
@@ -40,11 +44,15 @@ module Users
     end
 
     def destroy
-      analytics.logout_initiated(sp_initiated: false, oidc: false)
-      irs_attempts_api_tracker.logout_initiated(
-        success: true,
-      )
-      super
+      if request.method == 'GET' && IdentityConfig.store.disable_logout_get_request
+        redirect_to root_path
+      else
+        analytics.logout_initiated(sp_initiated: false, oidc: false)
+        irs_attempts_api_tracker.logout_initiated(
+          success: true,
+        )
+        super
+      end
     end
 
     private
@@ -87,8 +95,7 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
-        analytics.partial_authentication_log_out
-        sign_out
+        redirect_to user_two_factor_authentication_url
       end
     end
 

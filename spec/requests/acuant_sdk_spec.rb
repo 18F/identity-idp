@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'acuant sdk versions' do
   default_version = IdentityConfig.store.idv_acuant_sdk_version_default
   alternate_version = IdentityConfig.store.idv_acuant_sdk_version_alternate
-  acuant_entries = Dir.entries(Rails.root.join('public', 'acuant'))
+  acuant_entries = Dir.entries(Rails.public_path.join('acuant'))
 
   it 'has a public directory for the default version' do
     expect(acuant_entries).to include(default_version)
@@ -15,7 +15,7 @@ RSpec.describe 'acuant sdk versions' do
 end
 
 RSpec.describe 'requesting acuant SDK assets' do
-  version = Pathname.new(Dir[Rails.root.join('public/acuant/*')].first).basename.to_s
+  version = Pathname.new(Dir[Rails.public_path.join('acuant/*')].first).basename.to_s
   base_url = "/acuant/#{version}"
 
   min_js = "#{base_url}/AcuantImageWorker.min.js"

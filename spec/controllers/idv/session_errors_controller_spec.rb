@@ -284,7 +284,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
+        controller.user_session['idv/doc_auth'] = { pii_from_doc: { 'ssn' => ssn } }
       end
 
       it 'assigns expiration time' do
@@ -306,9 +306,9 @@ RSpec.describe Idv::SessionErrorsController do
     end
   end
 
-  describe '#throttled' do
-    let(:action) { :throttled }
-    let(:template) { 'idv/session_errors/throttled' }
+  describe '#rate_limited' do
+    let(:action) { :rate_limited }
+    let(:template) { 'idv/session_errors/rate_limited' }
 
     it_behaves_like 'an idv session errors controller action'
 

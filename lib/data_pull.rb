@@ -40,6 +40,8 @@ class DataPull
 
         * #{basename} profile-summary uuid1 uuid2
 
+        * #{basename} uuid-export uuid1 uuid2 --requesting-issuer ABC:DEF:GHI
+
       Options:
     EOS
   end
@@ -55,6 +57,7 @@ class DataPull
       'email-lookup' => EmailLookup,
       'ig-request' => InspectorGeneralRequest,
       'profile-summary' => ProfileSummary,
+      'uuid-export' => UuidExport,
     }[name]
   end
 
@@ -207,6 +210,51 @@ class DataPull
       ScriptBase::Result.new(
         subtask: 'profile-summary',
         uuids: users.map(&:uuid),
+        table:,
+      )
+    end
+  end
+
+  class UuidExport
+    def run(args:, config:)
+      login_uuids = args
+
+      uuids = []
+      table = []
+      table << %w[login_uuid agency issuer external_uuid]
+
+      User.includes(:agency_identities, identities: { service_provider_record: :agency }).
+        where(uuid: login_uuids).
+        then do |scope|
+          if config.requesting_issuers.present?
+            scope.where(service_provider_record: { issuer: config.requesting_issuers })
+          else
+            scope
+          end
+        end.each do |user|
+          user.identities.each do |identity|
+            uuids << user.uuid
+            external_uuid = user.agency_identities&.find do |a_i|
+                              a_i.agency == identity.service_provider_record.agency
+                            end&.uuid || identity.uuid
+            table << [
+              user.uuid,
+              identity.service_provider_record.agency&.name,
+              identity.service_provider_record.issuer,
+              external_uuid,
+            ]
+          end
+        end
+
+      if config.include_missing?
+        (login_uuids - uuids.uniq).each do |missing_uuid|
+          table << [missing_uuid, '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]']
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'uuid-export',
+        uuids: uuids.uniq,
         table:,
       )
     end

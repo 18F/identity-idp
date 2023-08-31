@@ -5,14 +5,16 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
   include IdvStepHelper
   include InPersonHelper
 
+  let(:user) { user_with_2fa }
+  let(:fake_analytics) { FakeAnalytics.new(user: user) }
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',
      allow_browser_log: true do
-    user = user_with_2fa
-
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
     complete_prepare_step(user)
@@ -25,7 +27,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_current_path(idv_in_person_verify_info_path)
     expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
@@ -57,7 +58,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).not_to have_text('bad address')
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_fail
     click_doc_auth_back_link
@@ -73,8 +74,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   it 'returns the user to the verify info page when updates are made',
      allow_browser_log: true do
-    user = user_with_2fa
-
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
     complete_prepare_step(user)
@@ -120,7 +119,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).not_to have_text('bad address')
 
     # click update ssn button
-    click_button t('idv.buttons.change_ssn_label')
+    click_on t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_in t('idv.form.ssn_label'), with: '900-12-2345'
     click_button t('forms.buttons.submit.update')
@@ -136,7 +135,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   it 'does not proceed to the next page if resolution fails',
      allow_browser_log: true do
-    user = user_with_2fa
     sign_in_and_2fa_user
 
     begin_in_person_proofing(user)
@@ -156,7 +154,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   it 'proceeds to the next page if resolution passes',
      allow_browser_log: true do
-    user = user_with_2fa
     sign_in_and_2fa_user
     begin_in_person_proofing(user)
     complete_prepare_step(user)
@@ -167,5 +164,9 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     click_idv_continue
 
     expect(page).to have_content(t('titles.idv.phone'))
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth verify proofing results',
+      hash_including(analytics_id: 'In Person Proofing'),
+    )
   end
 end

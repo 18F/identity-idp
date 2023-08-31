@@ -314,6 +314,43 @@ RSpec.describe User do
         expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
     end
+
+    describe '#has_in_person_enrollment?' do
+      it 'returns the establishing IPP enrollment that has an address' do
+        ProofingComponent.find_or_create_by(user: user).
+          update!(document_check: Idp::Constants::Vendors::USPS)
+
+        expect(user.has_in_person_enrollment?).to eq(true)
+      end
+    end
+
+    # We don't know yet if #establishing_in_person_enrollment is, in fact, `establishing`
+    # so we trust the pending profile in the meantime
+    describe '#has_establishing_in_person_enrollment_safe?' do
+      let(:new_user) { create(:user, :fully_registered) }
+      let(:proofing_components) { nil }
+      let(:new_pending_profile) do
+        create(
+          :profile,
+          :verify_by_mail_pending,
+          user: new_user,
+          proofing_components: proofing_components,
+        )
+      end
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          profile: new_pending_profile,
+          user: new_user,
+        )
+      end
+
+      it 'returns the establishing IPP enrollment through the pending profile' do
+        # trust pending_profile
+        expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
+      end
+    end
   end
 
   describe 'deleting identities' do
@@ -371,6 +408,129 @@ RSpec.describe User do
 
     it 'does not blow up with malformed input' do
       expect(User.find_with_email(foo: 'bar')).to eq(nil)
+    end
+  end
+
+  describe '#password=' do
+    it 'digests and saves a single region and multi region password digests' do
+      user = build(:user, password: nil)
+
+      user.password = 'test password'
+
+      expect(user.encrypted_password_digest).to_not be_blank
+      expect(user.encrypted_password_digest).to_not match(/test password/)
+
+      expect(user.encrypted_password_digest_multi_region).to_not be_blank
+      expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
+
+      expect(
+        user.encrypted_password_digest,
+      ).to_not eq(
+        user.encrypted_password_digest_multi_region,
+      )
+    end
+  end
+
+  describe '#valid_password?' do
+    it 'returns true if the password matches the stored digest' do
+      user = build(:user, password: 'test password')
+
+      expect(user.valid_password?('test password')).to eq(true)
+      expect(user.valid_password?('wrong password')).to eq(false)
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'validates the password for a user with a multi-region digest' do
+        user = build(:user, password: 'test password')
+
+        expect(user.encrypted_password_digest_multi_region).to_not be_nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+
+      it 'validates the password for a user with a only a single-region digest' do
+        user = build(:user, password: 'test password')
+        user.encrypted_password_digest_multi_region = nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+
+      it 'validates the password for a user with a only a single-region UAK digest' do
+        user = build(:user)
+        user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
+        user.encrypted_password_digest_multi_region = nil
+
+        expect(user.valid_password?('test password')).to eq(true)
+        expect(user.valid_password?('wrong password')).to eq(false)
+      end
+    end
+  end
+
+  describe '#personal_key=' do
+    it 'digests and saves a single region and multi region personal key digests' do
+      user = build(:user, personal_key: nil)
+
+      user.personal_key = 'test personal key'
+
+      expect(user.encrypted_recovery_code_digest).to_not be_blank
+      expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
+
+      expect(
+        user.encrypted_recovery_code_digest,
+      ).to_not eq(
+        user.encrypted_recovery_code_digest_multi_region,
+      )
+    end
+  end
+
+  describe '#valid_personal_key?' do
+    it 'returns true if the personal key matches the stored digest' do
+      user = build(:user, personal_key: 'test personal key')
+
+      expect(user.valid_personal_key?('test personal key')).to eq(true)
+      expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+    end
+
+    context 'aws_kms_multi_region_read_enabled is set to true' do
+      before do
+        allow(IdentityConfig.store).to receive(:aws_kms_multi_region_read_enabled).and_return(true)
+      end
+
+      it 'validates the personal key for a user with a multi-region digest' do
+        user = build(:user, personal_key: 'test personal key')
+
+        expect(user.encrypted_recovery_code_digest_multi_region).to_not be_nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
+
+      it 'validates the personal key for a user with a only a single-region digest' do
+        user = build(:user, personal_key: 'test personal key')
+        user.encrypted_recovery_code_digest_multi_region = nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
+
+      it 'validates the personal key for a user with a only a single-region UAK digest' do
+        user = build(:user)
+        user.encrypted_recovery_code_digest =
+          Encryption::UakPasswordVerifier.digest('test personal key')
+        user.encrypted_recovery_code_digest_multi_region = nil
+
+        expect(user.valid_personal_key?('test personal key')).to eq(true)
+        expect(user.valid_personal_key?('wrong personal key')).to eq(false)
+      end
     end
   end
 
@@ -689,7 +849,7 @@ RSpec.describe User do
   end
 
   describe 'user suspension' do
-    let(:user) { User.new }
+    let(:user) { create(:user) }
     let(:cannot_reinstate_message) { :user_is_not_suspended }
     let(:cannot_suspend_message) { :user_already_suspended }
 
@@ -768,6 +928,10 @@ RSpec.describe User do
           UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
         end
 
+        it 'creates SuspendedEmail records for each email address' do
+          expect { user.suspend! }.to(change { SuspendedEmail.count }.by(1))
+        end
+
         it 'updates the suspended_at attribute with the current time' do
           expect do
             user.suspend!
@@ -822,9 +986,17 @@ RSpec.describe User do
 
     describe '#reinstate!' do
       before do
-        user.suspended_at = Time.zone.now
+        user.suspend!
         user.reinstated_at = nil
       end
+
+      it 'destroys SuspendedEmail records for each email address' do
+        email_address = user.email_addresses.last
+        expect { user.reinstate! }.
+          to(change { SuspendedEmail.find_with_email(email_address.email) }.
+            from(email_address).to(nil))
+      end
+
       it 'updates the reinstated_at attribute with the current time' do
         expect do
           user.reinstate!
@@ -1047,13 +1219,18 @@ RSpec.describe User do
       let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
 
       before do
+        encrypted_pii_recovery, encrypted_pii_recovery_multi_region =
+          Encryption::Encryptors::PiiEncryptor.new(
+            personal_key,
+          ).encrypt('null', user_uuid: user.uuid).single_region_ciphertext
+
         create(
           :profile,
           user: user,
           active: true,
           verified_at: Time.zone.now,
-          encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
-            encrypt('null', user_uuid: user.uuid),
+          encrypted_pii_recovery: encrypted_pii_recovery,
+          encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
         )
       end
 

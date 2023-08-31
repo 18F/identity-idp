@@ -40,8 +40,11 @@ module Users
     end
 
     def disable
-      process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
-      redirect_to account_two_factor_authentication_path
+      if MfaPolicy.new(current_user).multiple_factors_enabled?
+        process_successful_disable
+      else
+        redirect_to account_two_factor_authentication_path
+      end
     end
 
     private
@@ -70,6 +73,7 @@ module Users
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
     end
 
@@ -93,6 +97,7 @@ module Users
       mfa_user = MfaContext.new(current_user)
       analytics.multi_factor_auth_added_totp(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
     end
@@ -103,6 +108,7 @@ module Users
       revoke_remember_device(current_user)
       revoke_otp_secret_key
       flash[:success] = t('notices.totp_disabled')
+      redirect_to account_two_factor_authentication_path
     end
 
     def revoke_otp_secret_key

@@ -22,7 +22,7 @@ RSpec.describe 'clearing IdV and restarting' do
     context 'after signing out' do
       before do
         visit account_path
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         start_idv_from_sp
         sign_in_live_with_2fa(user)
       end

@@ -7,10 +7,12 @@ class UpdateUserPasswordForm
   def initialize(user, user_session = nil)
     @user = user
     @user_session = user_session
+    @validate_confirmation = true
   end
 
   def submit(params)
-    self.password = params[:password]
+    @password = params[:password]
+    @password_confirmation = params[:password_confirmation]
     success = valid?
     process_valid_submission if success
     FormResponse.new(success: success, errors: errors)

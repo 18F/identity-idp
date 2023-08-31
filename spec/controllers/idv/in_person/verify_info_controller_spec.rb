@@ -34,7 +34,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -56,7 +56,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   before do
     stub_analytics
     stub_attempts_tracker
-    allow(@analytics).to receive(:track_event)
   end
 
   describe '#show' do
@@ -67,8 +66,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'verify',
-        same_address_as_id: true,
-        pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
       }.merge(ab_test_args)
     end
 
@@ -81,7 +78,46 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     it 'sends analytics_visited event' do
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(analytics_name, analytics_args)
+      expect(@analytics).to have_logged_event(
+        'IdV: doc auth verify visited',
+        hash_including(**analytics_args, same_address_as_id: true),
+      )
+    end
+
+    context 'when done' do
+      let(:review_status) { 'review' }
+      let(:async_state) { instance_double(ProofingSessionAsyncResult) }
+      let(:adjudicated_result) do
+        {
+          context: {
+            stages: {
+              threatmetrix: {
+                transaction_id: 1,
+                review_status: review_status,
+                response_body: {
+                  tmx_summary_reason_code: ['Identity_Negative_History'],
+                },
+              },
+            },
+          },
+          errors: {},
+          exception: nil,
+          success: true,
+          threatmetrix_review_status: review_status,
+        }
+      end
+      it 'logs proofing results with analytics_id' do
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+        allow(async_state).to receive(:done?).and_return(true)
+        allow(async_state).to receive(:result).and_return(adjudicated_result)
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'IdV: doc auth verify proofing results',
+          hash_including(**analytics_args, success: true),
+        )
+      end
     end
   end
 

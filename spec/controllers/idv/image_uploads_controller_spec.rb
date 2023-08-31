@@ -130,6 +130,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: nil,
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -200,12 +201,13 @@ RSpec.describe Idv::ImageUploadsController do
             remaining_attempts: RateLimiter.max_attempts(:idv_doc_auth) - 2,
             result_failed: false,
             ocr_pii: nil,
+            doc_type_supported: true,
           },
         )
       end
 
       context 'when rate limited' do
-        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:redirect_url) { idv_session_errors_rate_limited_url }
         let(:error_json) do
           {
             success: false,
@@ -214,6 +216,7 @@ RSpec.describe Idv::ImageUploadsController do
             remaining_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
+            doc_type_supported: true,
           }
         end
 
@@ -249,10 +252,10 @@ RSpec.describe Idv::ImageUploadsController do
           'IdV: doc auth image upload form submitted',
           success: false,
           errors: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           error_details: {
-            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+            limit: [I18n.t('errors.doc_auth.rate_limited_heading')],
           },
           user_id: user.uuid,
           attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -261,6 +264,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -321,6 +325,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -346,6 +351,8 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
+          doc_type_supported: boolean,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -360,6 +367,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -408,6 +416,7 @@ RSpec.describe Idv::ImageUploadsController do
       context 'but doc_pii validation fails' do
         let(:first_name) { 'FAKEY' }
         let(:last_name) { 'MCFAKERSON' }
+        let(:address1) { '123 Houston Ave' }
         let(:state) { 'ND' }
         let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
@@ -422,6 +431,7 @@ RSpec.describe Idv::ImageUploadsController do
               pii_from_doc: {
                 first_name: first_name,
                 last_name: last_name,
+                address1: address1,
                 state: state,
                 state_id_type: state_id_type,
                 dob: dob,
@@ -449,7 +459,7 @@ RSpec.describe Idv::ImageUploadsController do
               first_name: nil,
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
-              address: nil,
+              address: address1,
               document_back_image_filename: match(document_filename_regex),
               document_front_image_filename: match(document_filename_regex),
               document_image_encryption_key: match(base64_regex),
@@ -477,6 +487,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -502,6 +513,8 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -521,6 +534,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -535,7 +549,7 @@ RSpec.describe Idv::ImageUploadsController do
               first_name: nil,
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
-              address: nil,
+              address: address1,
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
@@ -563,6 +577,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -588,6 +603,8 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -607,6 +624,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -621,7 +639,7 @@ RSpec.describe Idv::ImageUploadsController do
               first_name: 'FAKEY',
               last_name: 'MCFAKERSON',
               date_of_birth: '10/06/1938',
-              address: nil,
+              address: address1,
               document_back_image_filename: nil,
               document_front_image_filename: nil,
               document_image_encryption_key: nil,
@@ -649,6 +667,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -674,6 +693,8 @@ RSpec.describe Idv::ImageUploadsController do
               vendor_request_time_in_ms: a_kind_of(Float),
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
+              doc_type_supported: boolean,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -693,6 +714,7 @@ RSpec.describe Idv::ImageUploadsController do
               flow_path: 'standard',
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
+              getting_started_ab_test_bucket: :welcome_default,
             )
 
             expect(@irs_attempts_api_tracker).to receive(:track_event).with(
@@ -710,7 +732,7 @@ RSpec.describe Idv::ImageUploadsController do
               first_name: 'FAKEY',
               last_name: 'MCFAKERSON',
               date_of_birth: nil,
-              address: nil,
+              address: address1,
             )
 
             action
@@ -758,6 +780,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -785,6 +808,8 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
+          doc_type_supported: boolean,
         )
 
         action
@@ -825,6 +850,7 @@ RSpec.describe Idv::ImageUploadsController do
           flow_path: 'standard',
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -854,6 +880,8 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
+          doc_type_supported: boolean,
         )
 
         action

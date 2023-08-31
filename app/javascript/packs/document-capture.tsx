@@ -24,7 +24,6 @@ import type { FlowPath, DeviceContextValue } from '@18f/identity-document-captur
  */
 interface AppRootData {
   helpCenterRedirectUrl: string;
-  maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
   acuantSdkUpgradeABTestingEnabled: string;
   useAlternateSdk: string;
@@ -72,7 +71,6 @@ const formData: Record<string, any> = {
 
 const {
   helpCenterRedirectUrl: helpCenterRedirectURL,
-  maxCaptureAttemptsBeforeTips,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
   acuantVersion,
@@ -142,7 +140,6 @@ const App = composeComponents(
   [
     FailedCaptureAttemptsContextProvider,
     {
-      maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
       maxCaptureAttemptsBeforeNativeCamera: Number(maxCaptureAttemptsBeforeNativeCamera),
       maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
     },

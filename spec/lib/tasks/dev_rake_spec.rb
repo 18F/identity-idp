@@ -127,7 +127,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'pending',
+        'status' => InPersonEnrollment::STATUS_PENDING,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
         'enrollment_code' => an_instance_of(String),
@@ -172,7 +172,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'pending',
+        'status' => InPersonEnrollment::STATUS_PENDING,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
         'enrollment_code' => an_instance_of(String),
@@ -182,7 +182,7 @@ RSpec.describe 'dev rake tasks' do
     end
 
     it 'can create establishing enrollments' do
-      ENV['ENROLLMENT_STATUS'] = 'establishing'
+      ENV['ENROLLMENT_STATUS'] = InPersonEnrollment::STATUS_ESTABLISHING
 
       expect(User.count).to eq 0
       expect(InPersonEnrollment.count).to eq 0
@@ -197,13 +197,13 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'establishing',
+        'status' => InPersonEnrollment::STATUS_ESTABLISHING,
       )
       expect(last_record.profile).to be_nil
     end
 
     it 'can create cancelled enrollments' do
-      ENV['ENROLLMENT_STATUS'] = 'cancelled'
+      ENV['ENROLLMENT_STATUS'] = InPersonEnrollment::STATUS_CANCELLED
 
       expect(User.count).to eq 0
       expect(InPersonEnrollment.count).to eq 0
@@ -218,13 +218,13 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'cancelled',
+        'status' => InPersonEnrollment::STATUS_CANCELLED,
       )
       expect(last_record.profile).to be_nil
     end
 
     it 'can create expired enrollments' do
-      ENV['ENROLLMENT_STATUS'] = 'expired'
+      ENV['ENROLLMENT_STATUS'] = InPersonEnrollment::STATUS_EXPIRED
 
       expect(User.count).to eq 0
       expect(InPersonEnrollment.count).to eq 0
@@ -239,7 +239,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'expired',
+        'status' => InPersonEnrollment::STATUS_EXPIRED,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
         'enrollment_code' => an_instance_of(String),
@@ -249,7 +249,7 @@ RSpec.describe 'dev rake tasks' do
     end
 
     it 'can create failed enrollments' do
-      ENV['ENROLLMENT_STATUS'] = 'failed'
+      ENV['ENROLLMENT_STATUS'] = InPersonEnrollment::STATUS_FAILED
 
       expect(User.count).to eq 0
       expect(InPersonEnrollment.count).to eq 0
@@ -264,7 +264,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'failed',
+        'status' => InPersonEnrollment::STATUS_FAILED,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
         'enrollment_code' => an_instance_of(String),
@@ -274,7 +274,7 @@ RSpec.describe 'dev rake tasks' do
     end
 
     it 'can create passed enrollments' do
-      ENV['ENROLLMENT_STATUS'] = 'passed'
+      ENV['ENROLLMENT_STATUS'] = InPersonEnrollment::STATUS_PASSED
 
       expect(User.count).to eq 0
       expect(InPersonEnrollment.count).to eq 0
@@ -289,7 +289,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'passed',
+        'status' => InPersonEnrollment::STATUS_PASSED,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
         'enrollment_code' => an_instance_of(String),
@@ -316,7 +316,7 @@ RSpec.describe 'dev rake tasks' do
       # Spot check attributes on last record
       last_record = InPersonEnrollment.last
       expect(last_record.attributes).to include(
-        'status' => 'pending',
+        'status' => InPersonEnrollment::STATUS_PENDING,
         'enrollment_established_at' => respond_to(:to_date),
         'unique_id' => an_instance_of(String),
 

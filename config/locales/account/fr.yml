@@ -77,6 +77,9 @@ fr:
       delete_account: Effacer
       regenerate_personal_key: Réinitialiser
     login:
+      forced_reauthentication_notice_html: <strong>%{sp_name}</strong> nécessite que
+        vous saisissiez à nouveau votre adresse électronique et votre mot de
+        passe.
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       tab_navigation: Onglets de création de compte
     navigation:

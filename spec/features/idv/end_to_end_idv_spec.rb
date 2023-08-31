@@ -2,16 +2,13 @@ require 'rails_helper'
 
 RSpec.describe 'Identity verification', :js do
   include IdvStepHelper
+  include InPersonHelper
 
-  # Needed specs:
-  # unsupervised proofing happy path mobile only
-  # hybrid mobile end to end (edit hybrid_mobile_spec)
-  # verify by mail
-  # in person proofing
+  let(:sp) { :oidc }
 
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
-    visit_idp_from_sp_with_ial2(:oidc)
+    visit_idp_from_sp_with_ial2(sp)
     user = sign_up_and_2fa_ial1_user
 
     validate_welcome_page
@@ -50,10 +47,65 @@ RSpec.describe 'Identity verification', :js do
     validate_personal_key_page
     acknowledge_and_confirm_personal_key
 
-    validate_idv_completed_page
+    validate_idv_completed_page(user)
     click_agree_and_continue
 
     validate_return_to_sp
+  end
+
+  context 'with an sp that allows in person proofing' do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+
+      ServiceProvider.find_by(issuer: service_provider_issuer(sp)).
+        update(in_person_proofing_enabled: true)
+    end
+
+    scenario 'In person proofing verify by mail', allow_browser_log: true do
+      visit_idp_from_sp_with_ial2(sp)
+      user = sign_up_and_2fa_ial1_user
+
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps(user)
+
+      enter_gpo_flow
+      gpo_step
+
+      complete_review_step(user)
+
+      validate_come_back_later_page
+      complete_come_back_later
+      validate_return_to_sp
+
+      visit sign_out_url
+      user.reload
+
+      visit_idp_from_sp_with_ial2(sp)
+
+      sign_in_live_with_2fa(user)
+
+      complete_gpo_verification(user)
+      expect(user.identity_verified?).to be(false)
+
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      visit_sp_from_in_person_ready_to_verify
+
+      visit sign_out_url
+      user.reload
+
+      mark_in_person_enrollment_passed(user)
+
+      # sign in
+      visit_idp_from_sp_with_ial2(sp)
+      sign_in_live_with_2fa(user)
+
+      validate_idv_completed_page(user)
+      click_agree_and_continue
+
+      validate_return_to_sp
+    end
   end
 
   def validate_welcome_page
@@ -220,21 +272,14 @@ RSpec.describe 'Identity verification', :js do
     expect(GpoConfirmation.count).to eq(0)
   end
 
+  def validate_come_back_later_page
+    expect(page).to have_current_path(idv_come_back_later_path)
+    expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+  end
+
   def validate_personal_key_page
     expect(current_path).to eq idv_personal_key_path
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.header'))
-  end
-
-  def validate_idv_completed_page
-    expect(current_path).to eq sign_up_completed_path
-    expect(page).to have_content t(
-      'titles.sign_up.completion_ial2',
-      sp: 'Test SP',
-    )
-  end
-
-  def validate_return_to_sp
-    expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
   def try_to_skip_ahead_before_signing_in

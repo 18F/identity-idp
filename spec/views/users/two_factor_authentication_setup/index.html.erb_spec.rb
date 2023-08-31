@@ -3,12 +3,62 @@ require 'rails_helper'
 RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   include Devise::Test::ControllerHelpers
 
+  let(:user) { build(:user) }
+  let(:user_agent) { '' }
+  let(:show_skip_additional_mfa_link) { true }
+  let(:after_mfa_setup_path) { account_path }
   subject(:rendered) { render }
 
   before do
-    user = build_stubbed(:user)
-    @presenter = TwoFactorOptionsPresenter.new(user_agent: '', user: user)
+    @presenter = TwoFactorOptionsPresenter.new(
+      user_agent:,
+      user:,
+      show_skip_additional_mfa_link:,
+      after_mfa_setup_path:,
+    )
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
+  end
+
+  it 'has link to cancel account creation' do
+    render
+
+    expect(rendered).to have_css('.page-footer')
+    expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
+  end
+
+  it 'does not list currently configured mfa methods' do
+    render
+
+    expect(rendered).not_to have_content(t('headings.account.two_factor'))
+  end
+
+  context 'with configured mfa methods' do
+    let(:user) { build(:user, :with_phone) }
+
+    it 'lists currently configured mfa methods' do
+      render
+
+      expect(rendered).to have_content(t('headings.account.two_factor'))
+    end
+
+    it 'has link to skip additional mfa setup' do
+      render
+
+      expect(rendered).to have_css('.page-footer')
+      expect(rendered).to have_link(t('mfa.skip'), href: after_mfa_setup_path)
+    end
+
+    context 'with skip link hidden' do
+      let(:show_skip_additional_mfa_link) { false }
+
+      it 'does not have footer link' do
+        render
+
+        expect(rendered).not_to have_css('.page-footer')
+        expect(rendered).not_to have_link(t('links.cancel_account_creation'))
+        expect(rendered).not_to have_link(t('mfa.skip'))
+      end
+    end
   end
 
   context 'all phone vendor outage' do

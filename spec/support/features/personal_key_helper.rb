@@ -7,6 +7,8 @@ module PersonalKeyHelper
 
   def reset_password(_user, password = 'a really long password')
     fill_in t('forms.passwords.edit.labels.password'), with: password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: password
     click_button t('forms.passwords.edit.buttons.submit')
   end
 

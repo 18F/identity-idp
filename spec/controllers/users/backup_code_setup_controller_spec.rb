@@ -32,6 +32,7 @@ RSpec.describe Users::BackupCodeSetupController do
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         error_details: nil,
         enabled_mfa_methods_count: 1,
+        in_multi_mfa_selection_flow: false,
       })
     expect(@analytics).to receive(:track_event).
       with('Backup Code Created', {
@@ -138,6 +139,21 @@ RSpec.describe Users::BackupCodeSetupController do
       get :refreshed
 
       expect(response).to redirect_to(backup_code_setup_url)
+    end
+  end
+
+  context 'user visits the Backup codes regenerate page' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+      stub_analytics
+    end
+    it 'renders the index view' do
+      get :edit
+      expect(@analytics).to have_logged_event(
+        'Backup Code Regenerate Visited',
+        hash_including(in_multi_mfa_selection_flow: false),
+      )
     end
   end
 end

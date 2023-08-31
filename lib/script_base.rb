@@ -62,7 +62,7 @@ class ScriptBase
     if result.json
       stdout.puts result.json.to_json
     else
-      render_output(result.table)
+      self.class.render_output(result.table, format: config.format, stdout: stdout)
     end
   end
 
@@ -101,10 +101,10 @@ class ScriptBase
   end
 
   # @param [Array<Array<String>>] rows
-  def render_output(rows)
+  def self.render_output(rows, format:, stdout: STDOUT)
     return if rows.blank?
 
-    case config.format
+    case format
     when :table
       require 'terminal-table'
       table = Terminal::Table.new
@@ -131,7 +131,7 @@ class ScriptBase
 
       stdout.puts JSON.pretty_generate(objects)
     else
-      raise "Unknown format=#{config.format}"
+      raise "Unknown format=#{format}"
     end
   end
 end

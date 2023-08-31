@@ -9,8 +9,6 @@
       ) %>
 <% end %>
 
-<%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
-
 <%= render PageHeadingComponent.new do %>
   <%= t('doc_auth.headings.hybrid_handoff') %>
 <% end %>
@@ -80,4 +78,4 @@
   </div>
 </div>
 
-<%= render 'idv/doc_auth/cancel', step: 'upload' %>
+<%= render 'idv/doc_auth/cancel', step: 'hybrid_handoff' %>

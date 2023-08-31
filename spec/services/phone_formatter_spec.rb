@@ -27,7 +27,7 @@ RSpec.describe PhoneFormatter do
       phone = '+13065550100'
       formatted_phone = PhoneFormatter.format(phone)
 
-      expect(formatted_phone).to eq('+1 306 555 0100')
+      expect(formatted_phone).to eq('+1 306-555-0100')
     end
 
     it 'uses +1 as the default international code' do

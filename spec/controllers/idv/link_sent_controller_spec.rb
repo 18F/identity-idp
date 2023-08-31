@@ -3,10 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::LinkSentController do
   include IdvHelper
 
-  let(:flow_session) do
-    { document_capture_session_uuid: 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      threatmetrix_session_id: 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
-  end
+  let(:flow_session) { {} }
 
   let(:user) { create(:user) }
 
@@ -35,7 +32,7 @@ RSpec.describe Idv::LinkSentController do
     it 'includes outage before_action' do
       expect(subject).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
 
@@ -102,7 +99,7 @@ RSpec.describe Idv::LinkSentController do
 
     context 'with pii in session' do
       it 'redirects to ssn step' do
-        flow_session['pii_from_doc'] = Idp::Constants::MOCK_IDV_APPLICANT
+        flow_session[:pii_from_doc] = Idp::Constants::MOCK_IDV_APPLICANT
         get :show
 
         expect(response).to redirect_to(idv_ssn_url)
@@ -142,7 +139,6 @@ RSpec.describe Idv::LinkSentController do
           user: user,
           cancelled_at: session_canceled_at,
         )
-        flow_session['document_capture_session_uuid'] = document_capture_session.uuid
         allow(document_capture_session).to receive(:load_result).and_return(load_result)
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
       end
@@ -172,7 +168,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to redirect_to(idv_hybrid_handoff_url)
-          expect(flow_session[:error_message]).to eq(error_message)
+          expect(flash[:error]).to eq(error_message)
         end
       end
 
@@ -183,7 +179,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
-          expect(flow_session[:error_message]).to eq(t('errors.doc_auth.phone_step_incomplete'))
+          expect(flash[:error]).to eq(t('errors.doc_auth.phone_step_incomplete'))
         end
       end
     end

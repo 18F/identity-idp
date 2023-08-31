@@ -56,6 +56,7 @@ en:
       pattern_mismatch:
         ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code
+        zipcode_five: Enter a 5 digit ZIP Code
     failure:
       attempts_html:
         one: For security reasons, you have <strong>one attempt</strong> remaining to
@@ -97,18 +98,19 @@ en:
           Please try again.
         rate_limited:
           body: For security reasons, we limit the number of times you can attempt to
-            verify your phone number online. You will need to wait %{time_left}
-            and start over before trying to verify by phone again.
+            verify your phone number online.
           gpo:
             button: Verify by mail
-            prompt: Continue now by verifying by mail, which typically takes 3 - 7 business
-              days.
           heading: 'We couldn’t verify your identity by phone'
+          option_try_again_later_html: 'Cancel and start over again after <b>%{time_left}</b>'
+          option_verify_by_mail_html: 'Verify by mail, which typically takes <b>3-7 business days</b>'
+          options_header: 'You can:'
         timeout: Our request to verify your information timed out. Please try again.
         warning:
-          attempts:
-            one: For security reasons, you have one attempt remaining.
-            other: For security reasons, you have %{count} attempts remaining.
+          attempts_html:
+            one: For security reasons, you have <strong>one attempt</strong> remaining.
+            other: For security reasons, you have <strong>%{count} attempts</strong>
+              remaining.
           gpo:
             button: Verify by mail
             explanation: If you don’t have another phone number to try, verify by mail
@@ -170,6 +172,32 @@ en:
       no_js_header: You must enable JavaScript to verify your identity.
       no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
         JavaScript to continue this process.'
+    gpo:
+      alert_info: 'We sent a letter with your one-time code to:'
+      clear_and_start_over: Clear your information and start over
+      did_not_receive_letter:
+        form:
+          instructions: If you have your letter, enter the 10-character code from the
+            letter you received.
+        intro:
+          be_patient_html: Please note that <strong>letters typically take 3 to 7 business
+            days to arrive</strong>. Thank you for your patience.
+          request_new_letter_link: request a new letter
+          request_new_letter_prompt_html: If you haven’t received your letter, you may
+            <span>%{request_new_letter_link}</span>.
+        title: Didn’t get your letter?
+      form:
+        instructions: Enter the 10-character code from the letter you received.
+        otp_label: One-time code
+        submit: Confirm account
+        title: Confirm your account
+      intro_html: '<p>If you have received your letter, please enter your one-time
+        code below. </p><p>If your letter hasn’t arrived yet, please be patient
+        as <strong>letters typically take 3 to 7 business days to
+        arrive</strong>. Thank you for your patience.</p>'
+      return_to_profile: Return to your profile
+      title: Welcome back
+      wrong_address: Not the right address?
     images:
       come_back_later: Letter with a check mark
     index:
@@ -206,6 +234,15 @@ en:
         resend_timeframe: Letters typically take 3 to 7 business days to arrive.
         timeframe_html: Letters are sent the next business day via USPS First Class Mail
           and <strong>typically take 3 to 7 business days to arrive</strong>.
+      gpo_reminder:
+        body_html: You requested a letter to verify your identity on
+          <strong>%{date_letter_was_sent}</strong>. You’ll need to enter the
+          code from the letter to finish verifying your identity. Sign back in
+          to %{app_name} to finish verifying your identity. %{help_link}.
+        did_not_get_a_letter_html: If you didn’t get this letter, %{another_letter_link_html}.
+        finish: Finish verifying your identity
+        sign_in_and_request_another_letter: sign in to request another letter
+        subject: Finish verifying your identity
       otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
@@ -215,9 +252,9 @@ en:
           This is to help verify your identity.
         failed_number:
           alert_text: We couldn’t match you to this number.
-          gpo_alert_html: If you don’t have <strong>another</strong> number to try,
-            %{link_html} instead.
+          gpo_alert_html: Try <strong>another</strong> number or %{link_html}.
           gpo_verify_link: verify by mail
+          try_again_html: Try <strong>another</strong> number.
         rules:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
@@ -253,7 +290,6 @@ en:
       headings:
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
-        still_having_trouble: Still having trouble?
       options:
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID
@@ -277,9 +313,10 @@ en:
       technical_difficulties: Unfortunately, we are having technical difficulties and
         cannot verify your identity at this time.
     warning:
-      attempts:
-        one: For security reasons, you have one attempt remaining.
-        other: For security reasons, you have %{count} attempts remaining.
+      attempts_html:
+        one: For security reasons, you have <strong>one attempt</strong> remaining.
+        other: For security reasons, you have <strong>%{count} attempts</strong>
+          remaining.
       sessions:
         heading: We couldn’t find records matching your personal information
       state_id:

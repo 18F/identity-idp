@@ -8,6 +8,12 @@ RSpec.feature 'webauthn sign in' do
   end
 
   let(:user) { create(:user, :with_webauthn, with: { credential_id:, credential_public_key: }) }
+  let(:general_error) do
+    t(
+      'two_factor_authentication.webauthn_error.connect_html',
+      link_html: t('two_factor_authentication.webauthn_error.additional_methods_link'),
+    )
+  end
 
   it 'allows the user to sign in if webauthn is successful' do
     mock_webauthn_verification_challenge
@@ -24,7 +30,7 @@ RSpec.feature 'webauthn sign in' do
     sign_in_user(user)
     mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
-    expect(page).to have_content(t('errors.general'))
+    expect(page).to have_content(general_error)
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
@@ -34,7 +40,7 @@ RSpec.feature 'webauthn sign in' do
     sign_in_user(user)
     mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
-    expect(page).to have_content(t('errors.general'))
+    expect(page).to have_content(general_error)
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
@@ -44,11 +50,11 @@ RSpec.feature 'webauthn sign in' do
     sign_in_user(user)
     mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
-    expect(page).to have_content(t('errors.general'))
+    expect(page).to have_content(general_error)
 
     mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
 
-    expect(page).to_not have_content(t('errors.general'))
+    expect(page).to_not have_content(general_error)
   end
 
   it 'maintains correct platform attachment content if cancelled', :js do

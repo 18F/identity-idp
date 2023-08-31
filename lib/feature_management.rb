@@ -158,7 +158,7 @@ class FeatureManagement
     true
   end
 
-  def self.idv_gpo_only?
+  def self.idv_by_mail_only?
     outage_status = OutageStatus.new
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
       outage_status.any_phone_vendor_outage? ||

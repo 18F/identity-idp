@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
@@ -217,7 +217,8 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(_user)
-    service_provider_mfa_setup_url ||
+    accept_rules_of_use_url ||
+      service_provider_mfa_setup_url ||
       add_piv_cac_setup_url ||
       fix_broken_personal_key_url ||
       user_session.delete(:stored_location) ||
@@ -232,6 +233,10 @@ class ApplicationController < ActionController::Base
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_url
+  end
+
+  def accept_rules_of_use_url
+    rules_of_use_path unless current_user.accepted_rules_of_use_still_valid?
   end
 
   def after_mfa_setup_path
@@ -257,10 +262,6 @@ class ApplicationController < ActionController::Base
       current_user.password_reset_profile.updated_at
   end
 
-  def reauthn_param
-    params[:reauthn]
-  end
-
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
     analytics.invalid_authenticity_token(
@@ -284,16 +285,10 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? &&
-      user_signed_in? &&
+    user_signed_in? &&
       session['warden.user.user.session'] &&
       !session['warden.user.user.session'][TwoFactorAuthenticatable::NEED_AUTHENTICATION] &&
       two_factor_enabled?
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
   end
 
   def confirm_user_is_not_suspended
@@ -360,6 +355,8 @@ class ApplicationController < ActionController::Base
 
     if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
       login_two_factor_piv_cac_url
+    elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_enabled?
+      login_two_factor_webauthn_url(platform: true)
     elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
       login_two_factor_webauthn_url
     else

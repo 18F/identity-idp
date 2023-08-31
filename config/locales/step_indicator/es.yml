@@ -4,14 +4,14 @@ es:
     accessible_label: Progreso por pasos
     flows:
       idv:
-        find_a_post_office: Encontrar una oficina de correos
+        find_a_post_office: Encuentre una oficina de correos
         get_a_letter: Reciba una carta por correo
         getting_started: Inicio
-        go_to_the_post_office: Ir a la oficina de correos
-        secure_account: Proteje tu cuenta
+        go_to_the_post_office: Vaya a la oficina de correos
+        secure_account: Proteja su cuenta
         verify_id: Verifica tu identificación
-        verify_info: Verifica tus datos
-        verify_phone_or_address: Verifica el teléfono o dirección
+        verify_info: Verifique sus datos
+        verify_phone_or_address: Verifique su teléfono o dirección
     status:
       complete: Completo
       current: Siguiente paso

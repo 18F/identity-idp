@@ -4,7 +4,6 @@ module IdvStepConcern
   include IdvSession
   include RateLimitConcern
   include FraudReviewConcern
-  include Idv::OutageConcern
   include Idv::AbTestAnalyticsConcern
 
   included do
@@ -14,7 +13,7 @@ module IdvStepConcern
     before_action :confirm_no_pending_gpo_profile
     before_action :confirm_no_pending_in_person_enrollment
     before_action :handle_fraud
-    before_action :check_for_outage
+    before_action :check_for_mail_only_outage
   end
 
   def confirm_no_pending_gpo_profile
@@ -26,8 +25,20 @@ module IdvStepConcern
     redirect_to idv_in_person_ready_to_verify_url if current_user&.pending_in_person_enrollment
   end
 
+  def check_for_mail_only_outage
+    return if idv_session.mail_only_warning_shown
+
+    return redirect_for_mail_only if FeatureManagement.idv_by_mail_only?
+  end
+
+  def redirect_for_mail_only
+    return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
+
+    redirect_to idv_mail_only_warning_url
+  end
+
   def pii_from_doc
-    flow_session['pii_from_doc']
+    flow_session[:pii_from_doc]
   end
 
   def pii_from_user
@@ -60,7 +71,7 @@ module IdvStepConcern
   def confirm_verify_info_step_complete
     return if idv_session.verify_info_step_complete?
 
-    if idv_session.in_person_enrollment?
+    if current_user.has_in_person_enrollment?
       redirect_to idv_in_person_verify_info_url
     else
       redirect_to idv_verify_info_url
@@ -76,5 +87,17 @@ module IdvStepConcern
     return if idv_session.address_step_complete?
 
     redirect_to idv_otp_verification_url
+  end
+
+  def extra_analytics_properties
+    extra = {
+      pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+    }
+
+    unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
+      extra[:same_address_as_id] =
+        flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
+    end
+    extra
   end
 end

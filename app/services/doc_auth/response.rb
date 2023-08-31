@@ -1,6 +1,6 @@
 module DocAuth
   class Response
-    attr_reader :errors, :exception, :extra, :pii_from_doc
+    attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported
 
     ID_TYPE_SLUGS = {
       'Identification Card' => 'state_id_card',
@@ -13,7 +13,8 @@ module DocAuth
       exception: nil,
       extra: {},
       pii_from_doc: {},
-      attention_with_barcode: false
+      attention_with_barcode: false,
+      doc_type_supported: true
     )
       @success = success
       @errors = errors.to_h
@@ -21,6 +22,7 @@ module DocAuth
       @extra = extra
       @pii_from_doc = pii_from_doc
       @attention_with_barcode = attention_with_barcode
+      @doc_type_supported = doc_type_supported
     end
 
     def merge(other)
@@ -31,12 +33,19 @@ module DocAuth
         extra: extra.merge(other.extra),
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
         attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
+        doc_type_supported: doc_type_supported? || other.doc_type_supported?,
       )
     end
 
     def success?
       @success
     end
+
+    def doc_type_supported?
+      @doc_type_supported
+    end
+
+    alias_method :id_type_supported?, :doc_type_supported?
 
     # We use `#to_h` to serialize this for logging. Make certain not to include
     # the `#pii` value here.
@@ -46,6 +55,7 @@ module DocAuth
         errors: errors,
         exception: exception,
         attention_with_barcode: attention_with_barcode?,
+        doc_type_supported: doc_type_supported?,
       }.merge(extra)
     end
 

@@ -1,6 +1,12 @@
 ---
 es:
   two_factor_authentication:
+    aal2_request:
+      phishing_resistant_html: '<strong>%{sp_name}</strong> requiere un método de
+        autenticación de alta seguridad, como el desbloqueo facial o táctil, una
+        llave de seguridad o una identificación de empleado público.'
+      piv_cac_only_html: '<strong>%{sp_name}</strong> requiere su identificación de
+        empleado público, un método de autenticación de alta seguridad.'
     account_reset:
       cancel_link: Cancelar su solicitud
       link: eliminando su cuenta
@@ -14,8 +20,6 @@ es:
     attempt_remaining_warning_html:
       one: Le quedan <strong>%{count} intento</strong>.
       other: Le quedan <strong>%{count} intentos</strong>.
-    backup_code_fallback:
-      question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
@@ -30,6 +34,7 @@ es:
         </strong>Si tiene acceso a otro dispositivo, como un celular, proteja su
         cuenta mediante otro método de autenticación.
     choose_another_option: '‹ Elige otra opción de seguridad'
+    form_legend: Elija sus métodos de autenticación
     header_text: Introduzca su código único
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
@@ -63,10 +68,8 @@ es:
       webauthn: Llave de seguridad
       webauthn_info: Use su llave de seguridad para acceder a su cuenta.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
+        sin un código de un solo uso.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
@@ -119,8 +122,6 @@ es:
         seleccionar un número de teléfono predeterminado.
       one_number_title: Este es tu número predeterminado
       title: '¿Es este tu número de teléfono predeterminado?'
-    personal_key_fallback:
-      question: '¿No tiene su clave personal?'
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de
       ingresarlo, se le dará una nueva clave.
@@ -128,8 +129,6 @@ es:
       delete:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
-    phone_fallback:
-      question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info: Le enviaremos un código de un solo uso cada vez que ingrese.
     phone_label: Número de teléfono
@@ -137,10 +136,7 @@ es:
       troubleshooting:
         change_number: Utilice otro número de teléfono.
         code_not_received: No recibí mi código de un solo uso.
-    piv_cac_fallback:
-      question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
-    piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     recaptcha:
@@ -150,8 +146,6 @@ es:
       google_policy_link: aplican la política de privacidad
       google_tos_link: las condiciones de servicio
       login_tos_link: las condiciones de uso
-    totp_fallback:
-      question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
     two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de
@@ -169,8 +163,9 @@ es:
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
       configurations_added:
-        one: '(%{count} añadido)'
-        other: '(%{count} añadido)'
+        one: '%{count} añadido'
+        other: '%{count} añadido'
+      no_count_configuration_added: Añadido
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
@@ -180,18 +175,13 @@ es:
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       sms: Mensaje de texto / SMS
-      unused_backup_code:
-        one: '(%{count} código sin usar)'
-        other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
       webauthn: Clave de seguridad
       webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
         y se conecta a su dispositivo.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Su dispositivo escanea su cara o huella dactilar y
-        confirma que la información coincide con las imágenes que ya tiene
-        guardadas en su dispositivo. Nosotros no copiamos ni guardamos dichas
-        imágenes.
+      webauthn_platform_info: Use la cara o la huella digital para acceder a su cuenta
+        sin un código de un solo uso.
     two_factor_hspd12_choice: Se requiere autenticación adicional
     two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de
       seguridad. Para poder acceder a su información, deberá verificar su
@@ -200,10 +190,11 @@ es:
     webauthn_authenticating: Autenticando sus credenciales…
     webauthn_error:
       additional_methods_link: elija otro método de autenticación
+      connect_html: No hemos podido conectar la clave de seguridad. Por favor,
+        inténtelo de nuevo o %{link_html}.
       try_again: El desbloqueo facial o táctil no fue exitoso. Por favor, inténtelo de
         nuevo o %{link}.
     webauthn_header_text: Conecte su llave de seguridad
-    webauthn_piv_available: Utilice su PIV o CAC
     webauthn_platform_header_text: Usar desbloqueo facial o táctil
     webauthn_platform_use_key: Usar desbloqueo facial o táctil
     webauthn_use_key: Usar llave de seguridad

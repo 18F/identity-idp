@@ -1,6 +1,8 @@
 class BlockLinkComponent < BaseComponent
   attr_reader :url, :action, :new_tab, :tag_options
 
+  alias_method :new_tab?, :new_tab
+
   def initialize(url:, action: tag.method(:a), new_tab: false, **tag_options)
     @action = action
     @url = url
@@ -10,12 +12,12 @@ class BlockLinkComponent < BaseComponent
 
   def css_class
     classes = ['usa-link', 'block-link', *tag_options[:class]]
-    classes << 'usa-link--external' if new_tab
+    classes << 'usa-link--external' if new_tab?
     classes
   end
 
   def target
-    '_blank' if new_tab
+    '_blank' if new_tab?
   end
 
   def wrapper(&block)

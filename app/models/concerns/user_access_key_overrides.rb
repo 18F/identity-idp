@@ -10,27 +10,34 @@ module UserAccessKeyOverrides
   def valid_password?(password)
     result = Encryption::PasswordVerifier.new.verify(
       password: password,
-      digest: encrypted_password_digest,
+      digest_pair: password_regional_digest_pair,
       user_uuid: uuid,
     )
     @password = password if result
-    log_password_verification_failure unless result
     result
   end
 
   def password=(new_password)
     @password = new_password
     return if @password.blank?
-    self.encrypted_password_digest = Encryption::PasswordVerifier.new.digest(
-      password: @password,
-      user_uuid: uuid || generate_uuid,
+    self.encrypted_password_digest, self.encrypted_password_digest_multi_region =
+      Encryption::PasswordVerifier.new.create_digest_pair(
+        password: @password,
+        user_uuid: uuid || generate_uuid,
+      )
+  end
+
+  def password_regional_digest_pair
+    Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_password_digest,
+      multi_region_ciphertext: encrypted_password_digest_multi_region,
     )
   end
 
   def valid_personal_key?(normalized_personal_key)
     Encryption::PasswordVerifier.new.verify(
       password: normalized_personal_key,
-      digest: encrypted_recovery_code_digest,
+      digest_pair: recovery_code_regional_digest_pair,
       user_uuid: uuid,
     )
   end
@@ -38,11 +45,19 @@ module UserAccessKeyOverrides
   def personal_key=(new_personal_key)
     @personal_key = new_personal_key
     return if new_personal_key.blank?
-    self.encrypted_recovery_code_digest = Encryption::PasswordVerifier.new.digest(
-      password: new_personal_key,
-      user_uuid: uuid || generate_uuid,
-    )
+    self.encrypted_recovery_code_digest, self.encrypted_recovery_code_digest_multi_region =
+      Encryption::PasswordVerifier.new.create_digest_pair(
+        password: new_personal_key,
+        user_uuid: uuid || generate_uuid,
+      )
     self.encrypted_recovery_code_digest_generated_at = Time.zone.now
+  end
+
+  def recovery_code_regional_digest_pair
+    Encryption::RegionalCiphertextPair.new(
+      single_region_ciphertext: encrypted_recovery_code_digest,
+      multi_region_ciphertext: encrypted_recovery_code_digest_multi_region,
+    )
   end
 
   # This is a callback initiated by Devise after successfully authenticating.
@@ -65,16 +80,5 @@ module UserAccessKeyOverrides
     Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
       encrypted_password_digest,
     ).password_salt
-  end
-
-  private
-
-  def log_password_verification_failure
-    metadata = {
-      event: 'Failure to validate password',
-      uuid: uuid,
-      timestamp: Time.zone.now,
-    }
-    Rails.logger.info(metadata.to_json)
   end
 end

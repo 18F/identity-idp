@@ -4,7 +4,7 @@ RSpec.describe PasswordForm, type: :model do
   subject(:form) { described_class.new(user) }
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
-  let(:password_confirmation) { nil }
+  let(:password_confirmation) { password }
   let(:extra) do
     {
       user_id: user.uuid,
@@ -33,11 +33,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user, validate_confirmation) }
-
-        let(:validate_confirmation) do
-          { validate_confirmation: true }
-        end
+        subject(:form) { described_class.new(user) }
 
         let(:password_confirmation) { password }
 
@@ -67,11 +63,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user, validate_confirmation) }
-
-        let(:validate_confirmation) do
-          { validate_confirmation: true }
-        end
+        subject(:form) { described_class.new(user) }
 
         context 'when the passwords are invalid' do
           let(:password_confirmation) { password }
@@ -114,23 +106,42 @@ RSpec.describe PasswordForm, type: :model do
       let(:params) do
         {
           password: password,
-          request_id: request_id,
+          password_confirmation: password,
+          request_id: 'foo',
         }
       end
-      let(:request_id) { 'foo' }
-      let(:request_id_present) { true }
+      let(:expected_response) do
+        {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          request_id_present: true,
+        }
+      end
 
       it 'tracks that it is present' do
-        expect(result.success?).to eq true
-        expect(result.extra).to eq extra
+        expect(result.to_h).to eq(expected_response)
       end
 
       context 'when the request_id is not properly encoded' do
-        let(:request_id) { "\xFFbar\xF8" }
+        let(:params) do
+          {
+            password: password,
+            password_confirmation: password,
+            request_id: "\xFFbar\xF8",
+          }
+        end
+        let(:expected_response) do
+          {
+            success: true,
+            errors: {},
+            user_id: user.uuid,
+            request_id_present: true,
+          }
+        end
 
         it 'does not throw an exception' do
-          expect(result.success?).to eq true
-          expect(result.extra).to eq extra
+          expect(result.to_h).to eq(expected_response)
         end
       end
     end

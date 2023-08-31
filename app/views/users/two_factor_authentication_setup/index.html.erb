@@ -14,14 +14,29 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<% if @presenter.two_factor_enabled? %>
+  <h2 class="margin-top-2 margin-bottom-1">
+    <%= t('headings.account.two_factor') %>
+  </h2>
+
+  <ul class="usa-icon-list">
+    <% @presenter.options.each do |option| %>
+      <% if option.mfa_configuration_count > 0 %>
+        <%= render partial: 'partials/multi_factor_authentication/selected_mfa_option', locals: { option: option } %>
+      <% end %>
+    <% end %>
+  </ul>
+<% end %>
+
 <%= simple_form_for @two_factor_options_form,
                     html: { autocomplete: 'off' },
                     method: :patch,
                     url: authentication_methods_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
-      <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
+      <legend class="margin-bottom-2 usa-sr-only">
+        <%= t('two_factor_authentication.form_legend') %>
+      </legend>
       <% @presenter.options.each do |option| %>
         <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
@@ -34,4 +49,12 @@
   <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
+  <%= render PageFooterComponent.new do %>
+    <% if @presenter.skip_path %>
+      <%= link_to t('mfa.skip'), @presenter.skip_path %>
+    <% elsif !@presenter.two_factor_enabled? %>
+      <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
+    <% end %>
+  <% end %>
+<% end %>

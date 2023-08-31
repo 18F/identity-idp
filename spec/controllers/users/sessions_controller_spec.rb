@@ -4,43 +4,12 @@ RSpec.describe Users::SessionsController, devise: true do
   include ActionView::Helpers::DateHelper
   let(:mock_valid_site) { 'http://example.com' }
 
-  describe 'GET /users/sign_in' do
-    it 'clears the session when user is not yet 2fa-ed' do
-      stub_analytics
-      expect(@analytics).to receive(:track_event).with(
-        'Sign in page visited',
-        flash: nil,
-        stored_location: nil,
-      )
-      expect(@analytics).to receive(:track_event).with('Partially authenticated user logged out')
-      sign_in_before_2fa
-
-      get :new
-
-      expect(controller.current_user).to be nil
-    end
-  end
-
   describe 'GET /logout' do
-    it 'tracks a logout event' do
-      stub_analytics
-      stub_attempts_tracker
-      expect(@analytics).to receive(:track_event).with(
-        'Logout Initiated',
-        hash_including(
-          sp_initiated: false,
-          oidc: false,
-        ),
-      )
-
+    it 'does not log user out and redirects to root' do
       sign_in_as_user
-
-      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
-        success: true,
-      )
-
       get :destroy
-      expect(controller.current_user).to be nil
+      expect(controller.current_user).to_not be nil
+      expect(response).to redirect_to root_url
     end
   end
 
@@ -464,13 +433,11 @@ RSpec.describe Users::SessionsController, devise: true do
     end
 
     context 'with current user' do
-      it 'logs the user out' do
+      it 'redirects to 2FA' do
         stub_sign_in_before_2fa
-        subject.session[:logged_in] = true
         get :new
 
-        expect(request.path).to eq root_path
-        expect(subject.session[:logged_in]).to be_nil
+        expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
 

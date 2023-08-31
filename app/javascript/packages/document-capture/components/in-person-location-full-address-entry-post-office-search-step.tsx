@@ -1,20 +1,16 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import { Alert, PageHeading } from '@18f/identity-components';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import {
-  transformKeys,
-  snakeCase,
-  LocationQuery,
-  LOCATIONS_URL,
-} from '@18f/identity-address-search';
+import { transformKeys, snakeCase, InPersonLocations } from '@18f/identity-address-search';
+import type { LocationQuery, FormattedLocation } from '@18f/identity-address-search/types';
 import FullAddressSearch from './in-person-full-address-search';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
-import InPersonLocations, { FormattedLocation } from './in-person-locations';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
 
 function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   onChange,
@@ -22,7 +18,6 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   registerField,
 }) {
   const { inPersonURL } = useContext(InPersonContext);
-  const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
@@ -123,6 +118,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         onLoadingLocations={setLoadingLocations}
         onError={setApiError}
         disabled={disabledAddressSearch}
+        locationsURL={LOCATIONS_URL}
       />
       {locationResults && foundAddress && !isLoadingLocations && (
         <InPersonLocations

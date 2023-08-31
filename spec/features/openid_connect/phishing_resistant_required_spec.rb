@@ -18,12 +18,40 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
 
       it 'does not allow an already signed in user to bypass phishing-resistant auth' do
@@ -50,12 +78,40 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_requesting_phishing_resistant(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
 
       it 'does not allow an already signed in user to bypass phishing-resistant auth' do
@@ -97,12 +153,40 @@ RSpec.describe 'Phishing-resistant authentication required in an OIDC context' d
     end
 
     context 'user has phishing-resistant auth configured' do
-      it 'sends user to authenticate with phishing-resistant auth' do
-        sign_in_before_2fa(user_with_phishing_resistant_2fa)
-        visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
-        visit login_two_factor_path(otp_delivery_preference: 'sms')
+      context 'with piv cac configured' do
+        let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
 
-        expect(current_url).to eq(login_two_factor_webauthn_url)
+        it 'sends user to authenticate with piv cac' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_piv_cac_url)
+        end
+      end
+
+      context 'with webauthn configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn) }
+
+        it 'sends user to authenticate with webauthn' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url)
+        end
+      end
+
+      context 'with webauthn platform configured' do
+        let(:user) { create(:user, :fully_registered, :with_webauthn_platform) }
+
+        it 'sends user to authenticate with webauthn platform' do
+          sign_in_before_2fa(user)
+
+          visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
+          visit login_two_factor_path(otp_delivery_preference: 'sms')
+          expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        end
       end
 
       it 'does not allow an already signed in user to bypass phishing-resistant auth' do

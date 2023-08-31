@@ -1,7 +1,5 @@
 <%= render PageFooterComponent.new do %>
-  <% if MfaPolicy.new(current_user).two_factor_enabled? && in_multi_mfa_selection_flow? %>
-    <%= link_to t('two_factor_authentication.choose_another_option'), second_mfa_setup_path %>
-  <% elsif MfaPolicy.new(current_user).two_factor_enabled? %>
+  <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
     <%= link_to t('links.cancel'), account_path %>
   <% else %>
     <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>

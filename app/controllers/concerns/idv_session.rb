@@ -19,7 +19,6 @@ module IdvSession
   end
 
   def confirm_phone_or_address_confirmed
-    return if flash[:allow_confirmations_continue]
     return if idv_session.address_confirmed? || idv_session.phone_confirmed?
 
     redirect_to idv_review_url
@@ -44,7 +43,7 @@ module IdvSession
   end
 
   def document_capture_session_uuid
-    flow_session[:document_capture_session_uuid]
+    idv_session.document_capture_session_uuid
   end
 
   def document_capture_session

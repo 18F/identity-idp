@@ -10,45 +10,44 @@ class GetUspsProofingResultsJob < ApplicationJob
     "State driver's license",
     "State non-driver's identification card",
   ]
+  SUPPORTED_SECONDARY_ID_TYPES = [
+    'Visual Inspection of Name and Address on Primary ID Match',
+  ]
 
   queue_as :long_running
 
   def perform(_now)
-    return true unless ipp_enabled?
-    return true if ipp_ready_job_enabled?
+    return unless job_can_run?
 
     @enrollment_outcomes = {
       enrollments_checked: 0,
       enrollments_errored: 0,
+      enrollments_network_error: 0,
       enrollments_expired: 0,
       enrollments_failed: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
 
-    reprocess_delay_minutes = IdentityConfig.store.
-      get_usps_proofing_results_job_reprocess_delay_minutes
-    enrollments = InPersonEnrollment.needs_usps_status_check(
-      ...reprocess_delay_minutes.minutes.ago,
-    )
-
     started_at = Time.zone.now
+    pending_enrollments.update(last_batch_claimed_at: started_at)
+    enrollments_to_check = InPersonEnrollment.needs_usps_status_check_batch(started_at)
+
     analytics.idv_in_person_usps_proofing_results_job_started(
-      enrollments_count: enrollments.count,
+      enrollments_count: enrollments_to_check.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
       job_name: self.class.name,
     )
 
-    check_enrollments(enrollments)
+    check_enrollments(enrollments_to_check)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
       duration_seconds: (Time.zone.now - started_at).seconds.round(2),
-      percent_enrollments_errored: percent_errored,
+      percent_enrollments_errored: summary_percent(:enrollments_errored),
+      percent_enrollments_network_error: summary_percent(:enrollments_network_error),
       job_name: self.class.name,
     )
-
-    true
   end
 
   private
@@ -60,7 +59,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     get_usps_proofing_results_job_request_delay_milliseconds / MILLISECONDS_PER_SECOND
 
   def proofer
-    @proofer ||= UspsInPersonProofing::Proofer.new
+    @proofer ||= UspsInPersonProofing::EnrollmentHelper.usps_proofer
   end
 
   def ipp_enabled?
@@ -69,6 +68,20 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def ipp_ready_job_enabled?
     IdentityConfig.store.in_person_enrollments_ready_job_enabled == true
+  end
+
+  def job_can_run?
+    ipp_enabled? && !ipp_ready_job_enabled?
+  end
+
+  def reprocess_delay_minutes
+    IdentityConfig.store.get_usps_proofing_results_job_reprocess_delay_minutes
+  end
+
+  def pending_enrollments
+    @pending_enrollments ||= InPersonEnrollment.needs_usps_status_check(
+      ...reprocess_delay_minutes.minutes.ago,
+    )
   end
 
   def check_enrollments(enrollments)
@@ -107,15 +120,21 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
   end
 
+  def passed_with_unsupported_secondary_id_type?(enrollment, response)
+    return enrollment.capture_secondary_id_enabled &&
+           response['secondaryIdType'].present? &&
+           SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
+  end
+
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
 
-  def percent_errored
+  def summary_percent(outcomes_key)
     error_rate = 0
     if enrollment_outcomes[:enrollments_checked] > 0
       error_rate =
-        (enrollment_outcomes[:enrollments_errored].fdiv(
+        (enrollment_outcomes[outcomes_key].fdiv(
           enrollment_outcomes[:enrollments_checked],
         ) * 100).round(2)
     end
@@ -158,7 +177,12 @@ class GetUspsProofingResultsJob < ApplicationJob
       response_status_code: err.response_status,
       job_name: self.class.name,
     )
-    enrollment_outcomes[:enrollments_errored] += 1
+
+    if err.is_a?(Faraday::TimeoutError) || err.is_a?(Faraday::ConnectionFailed)
+      enrollment_outcomes[:enrollments_network_error] += 1
+    else
+      enrollment_outcomes[:enrollments_errored] += 1
+    end
   end
 
   def handle_standard_error(err, enrollment)
@@ -246,9 +270,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-
-    # destroy phone number for expired enrollments
-    enrollment.notification_phone_configuration&.destroy
 
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
@@ -393,7 +414,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if enrollment.capture_secondary_id_enabled && response['secondaryIdType'].present?
+      if passed_with_unsupported_secondary_id_type?(enrollment, response)
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)

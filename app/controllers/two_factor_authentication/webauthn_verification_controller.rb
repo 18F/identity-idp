@@ -62,7 +62,13 @@ module TwoFactorAuthentication
         )
         redirect_to login_two_factor_webauthn_url(platform: 'true')
       else
-        flash[:error] = t('errors.general')
+        flash[:error] = t(
+          'two_factor_authentication.webauthn_error.connect_html',
+          link_html: view_context.link_to(
+            t('two_factor_authentication.webauthn_error.additional_methods_link'),
+            login_two_factor_options_path,
+          ),
+        )
         redirect_to login_two_factor_webauthn_url
       end
     end
@@ -107,7 +113,8 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
-        multi_factor_auth_method_created_at: form&.webauthn_configuration&.created_at,
+        multi_factor_auth_method_created_at: form&.webauthn_configuration&.
+          created_at&.strftime('%s%L'),
       }
     end
 

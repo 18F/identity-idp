@@ -31,10 +31,10 @@ RSpec.describe 'IdvStepConcern' do
       )
     end
 
-    it 'includes check_for_outage before_action' do
+    it 'includes check_for_mail_only_outage before_action' do
       expect(Idv::StepController).to have_actions(
         :before,
-        :check_for_outage,
+        :check_for_mail_only_outage,
       )
     end
   end
@@ -171,13 +171,17 @@ RSpec.describe 'IdvStepConcern' do
     end
 
     context 'the user has not completed the verify info step with an in-person enrollment' do
+      let(:selected_location_details) do
+        JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
+      end
+
       it 'redirects to the in-person verify info step' do
         idv_session.resolution_successful = nil
 
-        ProofingComponent.find_or_create_by(
+        InPersonEnrollment.find_or_create_by(
           user: user,
         ).update!(
-          document_check: Idp::Constants::Vendors::USPS,
+          selected_location_details: selected_location_details,
         )
 
         get :show

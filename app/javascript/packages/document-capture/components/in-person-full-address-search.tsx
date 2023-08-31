@@ -7,14 +7,12 @@ import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-but
 import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import useSWR from 'swr/immutable';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import {
-  FormattedLocation,
-  transformKeys,
-  snakeCase,
+import { transformKeys, snakeCase } from '@18f/identity-address-search';
+import type {
   LocationQuery,
-  LOCATIONS_URL,
   PostOffice,
-} from '@18f/identity-address-search';
+  FormattedLocation,
+} from '@18f/identity-address-search/types';
 import { InPersonContext } from '../context';
 
 const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
@@ -30,8 +28,14 @@ const formatLocations = (postOffices: PostOffice[]): FormattedLocation[] =>
     isPilot: !!po.is_pilot,
   }));
 
-const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLocation[]> => {
-  const response = await request<PostOffice[]>(LOCATIONS_URL, {
+const requestUspsLocations = async ({
+  address,
+  locationsURL,
+}: {
+  locationsURL: string;
+  address: LocationQuery;
+}): Promise<FormattedLocation[]> => {
+  const response = await request<PostOffice[]>(locationsURL, {
     method: 'post',
     json: { address: transformKeys(address, snakeCase) },
   });
@@ -39,40 +43,72 @@ const requestUspsLocations = async (address: LocationQuery): Promise<FormattedLo
   return formatLocations(response);
 };
 
-function useUspsLocations() {
+function useUspsLocations(locationsURL: string) {
   const [locationQuery, setLocationQuery] = useState<LocationQuery | null>(null);
   const validatedAddressFieldRef = useRef<HTMLFormElement>(null);
   const validatedCityFieldRef = useRef<HTMLFormElement>(null);
   const validatedStateFieldRef = useRef<HTMLFormElement>(null);
   const validatedZipCodeFieldRef = useRef<HTMLFormElement>(null);
 
+  const checkValidityAndDisplayErrors = (address, city, state, zipCode) => {
+    let formIsValid = true;
+    const zipCodeIsValid = zipCode.length === 5 && !!zipCode.match(/\d{5}/);
+
+    if (address.length === 0) {
+      validatedAddressFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+      formIsValid = false;
+    } else {
+      validatedAddressFieldRef.current?.setCustomValidity('');
+    }
+
+    if (city.length === 0) {
+      formIsValid = false;
+      validatedCityFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedCityFieldRef.current?.setCustomValidity('');
+    }
+
+    if (state.length === 0) {
+      formIsValid = false;
+      validatedStateFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedStateFieldRef.current?.setCustomValidity('');
+    }
+
+    if (zipCode.length === 0) {
+      formIsValid = false;
+      validatedZipCodeFieldRef.current?.setCustomValidity(t('simple_form.required.text'));
+    } else {
+      validatedZipCodeFieldRef.current?.setCustomValidity('');
+    }
+
+    validatedAddressFieldRef.current?.reportValidity();
+    validatedCityFieldRef.current?.reportValidity();
+    validatedStateFieldRef.current?.reportValidity();
+    validatedZipCodeFieldRef.current?.reportValidity();
+
+    return formIsValid && zipCodeIsValid;
+  };
+
   const handleLocationSearch = useCallback(
     (event, addressValue, cityValue, stateValue, zipCodeValue) => {
       event.preventDefault();
-      validatedAddressFieldRef.current?.setCustomValidity('');
-      validatedAddressFieldRef.current?.reportValidity();
-      validatedCityFieldRef.current?.setCustomValidity('');
-      validatedCityFieldRef.current?.reportValidity();
-      validatedStateFieldRef.current?.setCustomValidity('');
-      validatedStateFieldRef.current?.reportValidity();
-      validatedZipCodeFieldRef.current?.setCustomValidity('');
-      validatedZipCodeFieldRef.current?.reportValidity();
+      const address = addressValue.trim();
+      const city = cityValue.trim();
+      const zipCode = zipCodeValue.trim();
 
-      if (
-        addressValue.trim().length === 0 ||
-        cityValue.trim().length === 0 ||
-        stateValue.trim().length === 0 ||
-        zipCodeValue.trim().length === 0
-      ) {
+      const formIsValid = checkValidityAndDisplayErrors(address, city, stateValue, zipCode);
+
+      if (!formIsValid) {
         return;
       }
 
       setLocationQuery({
-        address: `${addressValue}, ${cityValue}, ${stateValue} ${zipCodeValue}`,
-        streetAddress: addressValue,
-        city: cityValue,
+        address: `${address}, ${city}, ${stateValue} ${zipCode}`,
+        streetAddress: address,
+        city,
         state: stateValue,
-        zipCode: zipCodeValue,
+        zipCode,
       });
     },
     [],
@@ -82,7 +118,9 @@ function useUspsLocations() {
     data: locationResults,
     isLoading: isLoadingLocations,
     error: uspsError,
-  } = useSWR([locationQuery], ([address]) => (address ? requestUspsLocations(address) : null));
+  } = useSWR([locationQuery], ([address]) =>
+    address ? requestUspsLocations({ address, locationsURL }) : null,
+  );
 
   return {
     locationQuery,
@@ -106,6 +144,7 @@ interface FullAddressSearchProps {
   onLoadingLocations?: (isLoading: boolean) => void;
   onError?: (error: Error | null) => void;
   disabled?: boolean;
+  locationsURL: string;
 }
 
 function FullAddressSearch({
@@ -114,6 +153,7 @@ function FullAddressSearch({
   onLoadingLocations = () => undefined,
   onError = () => undefined,
   disabled = false,
+  locationsURL,
 }: FullAddressSearchProps) {
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [addressValue, setAddressValue] = useState('');
@@ -130,7 +170,7 @@ function FullAddressSearch({
     validatedCityFieldRef,
     validatedStateFieldRef,
     validatedZipCodeFieldRef,
-  } = useUspsLocations();
+  } = useUspsLocations(locationsURL);
 
   const inputChangeHandler =
     <T extends HTMLElement & { value: string }>(input) =>
@@ -139,9 +179,11 @@ function FullAddressSearch({
       input(target.value);
     };
 
+  type SelectChangeEvent = React.ChangeEvent<HTMLSelectElement>;
+
   const onAddressChange = inputChangeHandler(setAddressValue);
   const onCityChange = inputChangeHandler(setCityValue);
-  const onStateChange = inputChangeHandler(setStateValue);
+  const onStateChange = (e: SelectChangeEvent) => setStateValue(e.target.value);
   const onZipCodeChange = inputChangeHandler(setZipCodeValue);
 
   useEffect(() => {
@@ -169,7 +211,12 @@ function FullAddressSearch({
 
   return (
     <>
-      <ValidatedField ref={validatedAddressFieldRef}>
+      <ValidatedField
+        ref={validatedAddressFieldRef}
+        messages={{
+          patternMismatch: t('simple_form.required.text'),
+        }}
+      >
         <TextInput
           required
           ref={registerField('address')}
@@ -177,9 +224,16 @@ function FullAddressSearch({
           onChange={onAddressChange}
           label={t('in_person_proofing.body.location.po_search.address_label')}
           disabled={disabled}
+          maxLength={255}
+          pattern=".*\S.*$"
         />
       </ValidatedField>
-      <ValidatedField ref={validatedCityFieldRef}>
+      <ValidatedField
+        ref={validatedCityFieldRef}
+        messages={{
+          patternMismatch: t('simple_form.required.text'),
+        }}
+      >
         <TextInput
           required
           ref={registerField('city')}
@@ -187,6 +241,8 @@ function FullAddressSearch({
           onChange={onCityChange}
           label={t('in_person_proofing.body.location.po_search.city_label')}
           disabled={disabled}
+          maxLength={50}
+          pattern=".*\S.*$"
         />
       </ValidatedField>
       <ValidatedField ref={validatedStateFieldRef}>
@@ -208,7 +264,12 @@ function FullAddressSearch({
           ))}
         </SelectInput>
       </ValidatedField>
-      <ValidatedField ref={validatedZipCodeFieldRef}>
+      <ValidatedField
+        ref={validatedZipCodeFieldRef}
+        messages={{
+          patternMismatch: t('idv.errors.pattern_mismatch.zipcode_five'),
+        }}
+      >
         <TextInput
           required
           className="tablet:grid-col-5"
@@ -217,6 +278,10 @@ function FullAddressSearch({
           onChange={onZipCodeChange}
           label={t('in_person_proofing.body.location.po_search.zipcode_label')}
           disabled={disabled}
+          pattern="^\d{5}$"
+          maxLength={5}
+          minLength={5}
+          type="text"
         />
       </ValidatedField>
       <div className="margin-y-5">

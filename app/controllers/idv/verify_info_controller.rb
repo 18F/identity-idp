@@ -16,7 +16,7 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('verify', :view, true)
 
-      @had_barcode_read_failure = flow_session[:had_barcode_read_failure]
+      @had_barcode_read_failure = idv_session.had_barcode_read_failure
       process_async_state(load_async_state)
     end
 
@@ -25,8 +25,8 @@ module Idv
 
       if success
         # Don't allow the user to go back to document capture after verifying
-        if flow_session['redo_document_capture']
-          flow_session.delete('redo_document_capture')
+        if idv_session.redo_document_capture
+          idv_session.redo_document_capture = nil
           idv_session.flow_path ||= 'standard'
         end
 
@@ -56,7 +56,7 @@ module Idv
 
     # copied from verify_step
     def pii
-      @pii = flow_session[:pii_from_doc]
+      @pii = pii_from_doc
     end
   end
 end

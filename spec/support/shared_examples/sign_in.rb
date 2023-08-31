@@ -109,6 +109,8 @@ RSpec.shared_examples 'signing in as IAL1 with personal key after resetting pass
     visit_idp_from_sp_with_ial1(sp)
     trigger_reset_password_and_click_email_link(user.confirmed_email_addresses.first.email)
     fill_in t('forms.passwords.edit.labels.password'), with: new_password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: new_password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, new_password)
     choose_another_security_option('personal_key')
@@ -212,9 +214,13 @@ RSpec.shared_examples 'signing in as proofed account with broken personal key' d
       user.update(encrypted_recovery_code_digest_generated_at: nil)
     when :encrypted_data_too_short
       personal_key = RandomPhrase.new(num_words: 4).to_s
+      encrypted_pii_recovery, encrypted_pii_recovery_multi_region =
+        Encryption::Encryptors::PiiEncryptor.new(
+          personal_key,
+        ).encrypt('null', user_uuid: user.uuid)
       user.active_profile.update(
-        encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
-          encrypt('null', user_uuid: user.uuid),
+        encrypted_pii_recovery: encrypted_pii_recovery,
+        encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
       )
     else
       raise "unknown scenario #{scenario}"

@@ -184,4 +184,17 @@ module IdvHelper
     end
     visit_saml_authn_request_url(overrides: saml_overrides)
   end
+
+  def validate_idv_completed_page(user)
+    expect(user.identity_verified?).to be(true)
+    expect(current_path).to eq sign_up_completed_path
+    expect(page).to have_content t(
+      'titles.sign_up.completion_ial2',
+      sp: 'Test SP',
+    )
+  end
+
+  def validate_return_to_sp
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
+  end
 end

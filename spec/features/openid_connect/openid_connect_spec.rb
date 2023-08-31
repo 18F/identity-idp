@@ -10,7 +10,7 @@ RSpec.describe 'OpenID Connect' do
     visit_idp_from_ial1_oidc_sp
 
     cookie = cookies.find { |c| c.name == 'sp_issuer' }.value
-    expect(cookie).to eq(OidcAuthHelper::OIDC_ISSUER)
+    expect(cookie).to eq(OidcAuthHelper::OIDC_IAL1_ISSUER)
   end
 
   it 'receives an ID token with a kid that matches the certs endpooint' do
@@ -166,6 +166,78 @@ RSpec.describe 'OpenID Connect' do
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       expect(page.get_rack_session.keys).to include('sp')
+    end
+
+    context 'when using prompt=login' do
+      it 'does not show reauthentication notice if user was not actively authenticated' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+        expect(page).to_not have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
+
+      it 'does show reauthentication notice if user was actively authenticated' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        user = user_with_2fa
+        sign_in_user(user)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
+
+      it 'does not show reauth notice if most recent request in session was not prompt=login' do
+        service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+        user = user_with_2fa
+        sign_in_user(user)
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'login')
+
+        expect(page).to have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+
+        visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
+
+        expect(page).to_not have_content(
+          strip_tags(
+            t(
+              'account.login.forced_reauthentication_notice_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          ),
+        )
+      end
     end
   end
 
@@ -797,7 +869,9 @@ RSpec.describe 'OpenID Connect' do
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
-      visit destroy_user_session_url
+
+      visit account_path
+      click_button t('links.sign_out')
 
       visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       fill_in_credentials_and_submit(user.email, user.password)

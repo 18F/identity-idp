@@ -58,6 +58,8 @@ aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_kms_client_contextless_pool_size: 5
 aws_kms_client_multi_pool_size: 5
+aws_kms_multi_region_key_id: alias/login-dot-gov-keymaker-multi-region
+aws_kms_multi_region_read_enabled: false
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
 backup_code_cost: '2000$8$1$'
@@ -65,7 +67,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
 database_sslmode: 'verify-full'
@@ -77,10 +78,10 @@ deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_csp_unsafe_inline: true
 disable_email_sending: true
+disable_logout_get_request: true
 disallow_all_web_crawlers: true
 disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: 360
-doc_auth_extend_timeout_by_minutes: 40
 doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
@@ -89,7 +90,6 @@ doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
-doc_auth_max_capture_attempts_before_tips: 20
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_capture_request_valid_for_minutes: 15
@@ -125,13 +125,12 @@ idv_acuant_sdk_version_default: '11.8.2'
 idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
-idv_getting_started_a_b_testing: '{"welcome":100,"getting_started":0}'
+idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-idv_tmx_test_csp_disabled_emails: '[]'
-idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
+in_person_public_address_search_enabled: false
 in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
@@ -146,7 +145,6 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
-in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_full_address_entry_enabled: false
 in_person_outage_message_enabled: false
@@ -209,8 +207,8 @@ max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
+multi_region_kms_migration_jobs_enabled: true
 mx_timeout: 3
-new_sign_up_cancellation_url_enabled: true
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otp_expiration_warning_seconds: 150
@@ -229,14 +227,13 @@ phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
 phone_recaptcha_mock_validator: true
 phone_recaptcha_score_threshold: 0.0
-phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0}'
+phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
 pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
-pinpoint_sms_pool_size: 5
 pinpoint_voice_configs: '[]'
 pinpoint_voice_pool_size: 5
 piv_cac_service_url: https://localhost:8443/
@@ -266,7 +263,6 @@ recovery_code_length: 4
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 redis_pool_size: 10
-redis_session_pool_size: 10
 redis_throttle_pool_size: 5
 reg_confirmed_email_max_attempts: 20
 reg_confirmed_email_window_in_minutes: 60
@@ -274,7 +270,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 reject_id_token_hint_in_logout: false
 remember_device_expiration_hours_aal_1: 720
-remember_device_expiration_hours_aal_2: 12
+remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
@@ -333,7 +329,7 @@ version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
 usps_auth_token_refresh_job_enabled: false
-usps_confirmation_max_days: 10
+usps_confirmation_max_days: 30
 usps_ipp_password: ''
 usps_ipp_client_id: ''
 usps_ipp_root_url: ''
@@ -342,6 +338,7 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
+usps_ipp_enrollment_status_update_email_address: 'no-reply@login.gov'
 get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
 get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_cron: '0/30 * * * *'
@@ -396,7 +393,6 @@ development:
   platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
-  recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2023","secret_key_passphrase":"trust-but-verify"}]'
@@ -440,6 +436,7 @@ production:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   disable_email_sending: false
+  disable_logout_get_request: false
   disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
   doc_auth_vendor_randomize: false
@@ -461,7 +458,6 @@ production:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
-  new_sign_up_cancellation_url_enabled: false
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
@@ -469,7 +465,6 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -549,7 +544,6 @@ test:
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 0
-  recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
@@ -573,6 +567,7 @@ test:
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3
   verify_personal_key_max_attempts: 2
+  usps_ipp_root_url: 'http://localhost:1000'
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass

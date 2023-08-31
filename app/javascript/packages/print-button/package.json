@@ -1,13 +1,5 @@
 {
   "name": "@18f/identity-print-button",
   "version": "1.0.0",
-  "private": true,
-  "peerDependencies": {
-    "react": "*"
-  },
-  "peerDependenciesMeta": {
-    "react": {
-      "optional": true
-    }
-  }
+  "private": true
 }

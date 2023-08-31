@@ -18,6 +18,7 @@ class WebauthnSetupForm
     @attestation_response = nil
     @name = nil
     @platform_authenticator = false
+    @authenticator_data_flags = nil
   end
 
   def submit(protocol, params)
@@ -45,13 +46,16 @@ class WebauthnSetupForm
 
   attr_reader :success, :transports, :invalid_transports
   attr_accessor :user, :challenge, :attestation_object, :client_data_json,
-                :name, :platform_authenticator
+                :name, :platform_authenticator, :authenticator_data_flags
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @name = params[:name]
     @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
+    @authenticator_data_flags = process_authenticator_data_value(
+      params[:authenticator_data_value],
+    )
     @transports, @invalid_transports = params[:transports]&.split(',')&.partition do |transport|
       WebauthnConfiguration::VALID_TRANSPORTS.include?(transport)
     end
@@ -92,6 +96,20 @@ class WebauthnSetupForm
     false
   end
 
+  def process_authenticator_data_value(data_value)
+    data_int_value = Integer(data_value, 10)
+    # bits defined using https://w3c.github.io/webauthn/#sctn-authenticator-data
+    {
+      up: (data_int_value & (1 << 0)).positive?,
+      uv: (data_int_value & (1 << 2)).positive?,
+      be: (data_int_value & (1 << 3)).positive?,
+      bs: (data_int_value & (1 << 4)).positive?,
+      at: (data_int_value & (1 << 6)).positive?,
+      ed: (data_int_value & (1 << 7)).positive?,
+    }
+  rescue ArgumentError
+  end
+
   def create_webauthn_configuration
     credential = attestation_response.credential
     public_key = Base64.strict_encode64(credential.public_key)
@@ -102,6 +120,7 @@ class WebauthnSetupForm
       name: name,
       platform_authenticator: platform_authenticator,
       transports: transports.presence,
+      authenticator_data_flags: authenticator_data_flags,
     )
   end
 
@@ -120,6 +139,7 @@ class WebauthnSetupForm
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      authenticator_data_flags: authenticator_data_flags,
       unknown_transports: invalid_transports.presence,
     }.compact
   end

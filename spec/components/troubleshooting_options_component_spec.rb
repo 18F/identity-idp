@@ -10,11 +10,26 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
   context 'with options' do
     it 'renders troubleshooting options' do
       rendered = render_inline(TroubleshootingOptionsComponent.new) do |c|
-        c.with_option(url: '/').with_content('Link Text')
+        c.with_option(url: '/1').with_content('Link Text 1')
+        c.with_option(url: '/2') { 'Link Text 2' }
       end
 
       expect(rendered).to have_css('.troubleshooting-options')
-      expect(rendered).to have_link('Link Text', href: '/')
+      expect(rendered).to have_link('Link Text 1', href: '/1')
+      expect(rendered).to have_link('Link Text 2', href: '/2')
+    end
+
+    context 'with options specified by constructor' do
+      it 'renders troubleshooting options' do
+        rendered = render_inline(
+          TroubleshootingOptionsComponent.new(
+            options: [BlockLinkComponent.new(url: '/').with_content('Link Text')],
+          ),
+        )
+
+        expect(rendered).to have_css('.troubleshooting-options')
+        expect(rendered).to have_link('Link Text', href: '/')
+      end
     end
 
     context 'with tag options' do

@@ -11,15 +11,12 @@
                                   html: { autocomplete: 'off', method: :patch }
     ) do |f| %>
   <%= f.error_notification %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
+        password_label: t('forms.passwords.edit.labels.password'),
         field_options: {
-          name: :password,
-          label: t('forms.passwords.edit.labels.password'),
-          required: true,
           input_html: {
             aria: { describedby: 'password-description' },
-            autocomplete: 'new-password',
           },
         },
       ) %>

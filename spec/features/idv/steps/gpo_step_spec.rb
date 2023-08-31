@@ -27,14 +27,6 @@ RSpec.feature 'idv gpo step' do
 
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
-    let(:otp) { 'ABC123' }
-    let(:gpo_confirmation_code) do
-      create(
-        :gpo_confirmation_code,
-        profile: User.find(user.id).pending_profile,
-        otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      )
-    end
 
     it 'allows the user to resend a letter and redirects to the come back later step', :js do
       complete_idv_and_return_to_gpo_step
@@ -64,9 +56,7 @@ RSpec.feature 'idv gpo step' do
       expect(page).to have_current_path(idv_gpo_verify_path)
 
       # complete verification: end to end gpo test
-      gpo_confirmation_code
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
+      complete_gpo_verification(user)
 
       expect(user.identity_verified?).to be(true)
 
@@ -77,14 +67,12 @@ RSpec.feature 'idv gpo step' do
       it 'does not 500' do
         create(:profile, :with_pii, user: user, gpo_verification_pending_at: 1.day.ago)
         create(:piv_cac_configuration, user: user, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
-        gpo_confirmation_code
 
         signin_with_piv(user)
         fill_in t('account.index.password'), with: user.password
         click_button t('forms.buttons.submit.default')
 
-        fill_in t('forms.verify_profile.name'), with: otp
-        click_button t('forms.verify_profile.submit')
+        complete_gpo_verification(user)
 
         expect(user.identity_verified?).to be(true)
 
@@ -125,7 +113,7 @@ RSpec.feature 'idv gpo step' do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
 
-      expect(page).to have_content(t('forms.verify_profile.title'))
+      expect(page).to have_content(t('idv.gpo.title'))
       expect(page).to have_current_path(idv_gpo_verify_path)
       expect_user_to_be_unverified(user)
     end
@@ -137,8 +125,8 @@ RSpec.feature 'idv gpo step' do
       fill_in 'Password', with: user_password
       click_continue
       visit root_path
-      click_on t('forms.verify_profile.return_to_profile')
-      first(:link, t('links.sign_out')).click
+      click_on t('idv.gpo.return_to_profile')
+      first(:button, t('links.sign_out')).click
     end
 
     def complete_idv_and_return_to_gpo_step
@@ -198,7 +186,7 @@ RSpec.feature 'idv gpo step' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('forms.verify_profile.instructions'))
+      expect(page).to have_content(t('idv.gpo.form.instructions'))
     end
   end
 end

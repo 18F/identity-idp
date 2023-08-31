@@ -218,6 +218,20 @@ test:
     ial: 2
     allow_prompt_login: true
 
+  'urn:gov:gsa:openidconnect:sp:server_ial1':
+    agency_id: 2
+    redirect_uris:
+      - 'http://localhost:7654/auth/result'
+      - 'https://example.com'
+      - 'http://www.example.com/test/oidc'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Test SP'
+    return_to_sp_url: 'https://example.com/'
+    assertion_consumer_logout_service_url: ''
+    ial: 1
+    allow_prompt_login: true
+
   'urn:gov:gsa:openidconnect:sp:server_two':
     agency_id: 2
     redirect_uris:

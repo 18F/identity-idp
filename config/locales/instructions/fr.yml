@@ -45,14 +45,6 @@ fr:
         back_to_sign_in: Retourner à vous connecter
         confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à
           votre compte.
-        confirm_piv_cac_only: Cette application nécessite un niveau de sécurité plus
-          élevé. Vous devez vérifier votre identité à l’aide d’un badge
-          d’employé du gouvernement que vous avez précédemment configuré pour
-          accéder à vos informations.
-        confirm_piv_cac_or_aal3: Cette application nécessite un niveau de sécurité plus
-          élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
-          physique tel qu’une clé de sécurité ou un badge d’employé du
-          gouvernement (PIV ou CAC) pour accéder à vos informations.
         did_not_work_html: Veuillez %{please_try_again_html}. Si ce problème persiste,
           contactez l’administrateur de votre agence.
         http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
@@ -85,14 +77,6 @@ fr:
           %{number_html}. Ce code expirera dans %{expiration} minutes.
       webauthn:
         confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
-        confirm_webauthn_only: Cette application nécessite un niveau de sécurité plus
-          élevé. Vous devez vérifier votre identité à l’aide d’une clé de
-          sécurité que vous avez précédemment configurée pour accéder à vos
-          informations.
-        confirm_webauthn_or_aal3: Cette application nécessite un niveau de sécurité plus
-          élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
-          physique tel qu’une clé de sécurité ou un badge d’employé du
-          gouvernement (PIV ou CAC) pour accéder à vos informations.
         confirm_webauthn_platform: Vous avez activé le déverrouillage facial ou tactile
           pour votre compte %{app_name}.
       webauthn_platform:

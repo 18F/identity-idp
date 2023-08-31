@@ -297,12 +297,12 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] throttle_context - Either single-session or multi-session
+    # @param [String] limiter_context - Either single-session or multi-session
     # Track when idv verification is rate limited during idv flow
-    def idv_verification_rate_limited(throttle_context:)
+    def idv_verification_rate_limited(limiter_context:)
       track_event(
         :idv_verification_rate_limited,
-        throttle_context: throttle_context,
+        limiter_context: limiter_context,
       )
     end
 

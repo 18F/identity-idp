@@ -39,13 +39,6 @@ es:
           día. Si cree que se trata de un error, %{try_again_html}.
         back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac: Presenta la PIV/CAC que asociaste con tu cuenta.
-        confirm_piv_cac_only: Esta aplicación requiere un mayor nivel de seguridad. Debe
-          verificar su identidad con una identificación de empleado del Gobierno
-          que haya configurado previamente para acceder a su información.
-        confirm_piv_cac_or_aal3: Esta aplicación requiere un mayor nivel de seguridad.
-          Debe verificar su identidad con un dispositivo físico, como una llave
-          de seguridad o una identificación de empleado del Gobierno (PIV o CAC)
-          para acceder a su información.
         did_not_work_html: '%{please_try_again_html}. Comuníquese con el encargado de su
           organismo si persiste este problema.'
         http_failure: El servidor tardó demasiado en responder. Inténtalo de nuevo.
@@ -75,13 +68,6 @@ es:
           %{number_html}. Este código expirará en %{expiration} minutos.
       webauthn:
         confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
-        confirm_webauthn_only: Esta aplicación requiere un mayor nivel de seguridad.
-          Debe verificar su identidad con una llave de seguridad que haya
-          configurado previamente para acceder a su información.
-        confirm_webauthn_or_aal3: Esta aplicación requiere un mayor nivel de seguridad.
-          Debe verificar su identidad con un dispositivo físico, como una llave
-          de seguridad o una identificación de empleado del Gobierno (PIV o CAC)
-          para acceder a su información.
         confirm_webauthn_platform: Tiene activado el desbloqueo facial o táctil para su
           cuenta de %{app_name}.
       webauthn_platform:

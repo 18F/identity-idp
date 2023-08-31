@@ -150,4 +150,10 @@ RSpec.describe DocAuth::Response do
       expect(response.attention_with_barcode?).to eq(false)
     end
   end
+
+  describe 'doc_type_supported?' do
+    it 'returns true by default' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
 end

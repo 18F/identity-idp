@@ -15,6 +15,8 @@ fr:
       upload_picture: Télécharger une photo
     errors:
       alerts:
+        address_check: Nous n’avons pas pu lire l’adresse sur votre pièce d’identité.
+          Essayez de prendre de nouvelles photos.
         barcode_content_check: Nous n’avons pas pu lire le code-barres au verso de votre
           carte d’identité. Cela pourrait être dû à un problème avec le
           code-barres, ou le code-barres est d’un type nouveau que nous ne
@@ -69,6 +71,11 @@ fr:
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
         par l’État.
+      doc:
+        doc_type_check: Les autres pièces d’identité ne sont pas acceptées.
+        wrong_id_type: Nous n’acceptons que les permis de conduire ou les cartes
+          d’identité délivrées par l’État. Les autres pièces d’identité ne sont
+          pas acceptées.
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
@@ -150,17 +157,16 @@ fr:
         text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     headings:
       address: Mettre à jour votre adresse postale
-      back: Verso
+      back: Verso de votre permis de conduire ou de votre carte d’identité de l’État
       capture_complete: Nous avons vérifié votre document d’identité
       capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
         pièce d’identité. Si les informations ci-dessous sont incorrectes,
         veuillez %{link_html} de votre carte d’identité délivrée par l’État.
       capture_scan_warning_link: télécharger de nouvelles photos
-      capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
-      document_capture: Ajoutez votre carte d’identité délivrée par l’État
+      document_capture: Ajoutez des photos de votre pièce d’identité
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      front: Recto
+      front: Recto de votre permis de conduire ou de votre carte d’identité de l’État
       getting_started: Vérifions votre identité pour %{sp_name}
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
@@ -195,8 +201,8 @@ fr:
       capture_status_small_document: Approchez-vous
       capture_status_tap_to_capture: Appuyez pour capturer
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
-        vous en lisant votre pièce d’identité délivrée par l’État. Nous
-        utilisons ces informations pour vérifier votre identité.
+        vous en lisant votre permis de conduire ou votre carte d’identité de
+        l’État. Nous utilisons ces informations pour vérifier votre identité.
       getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
         quelqu’un qui se fait passer pour vous. %{link_html}'
       getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
@@ -263,21 +269,6 @@ fr:
           ouvrables.'
       welcome: 'Vous aurez besoin de votre:'
     tips:
-      capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
-      capture_troubleshooting_clean: Assurez-vous que le code-barres ne soit pas
-        endommagé ou sale et que toutes les informations figurant sur votre
-        pièce d’identité soient lisibles.
-      capture_troubleshooting_clean_image: Verso de la carte d’identité
-      capture_troubleshooting_glare: La photo que vous avez ajoutée est éblouissante.
-      capture_troubleshooting_lead: 'Voici quelques conseils pour réussir votre photo:'
-      capture_troubleshooting_lighting: Assurez-vous que la luminosité soit
-        suffisante. La lumière indirecte du soleil est la meilleure. Évitez les
-        éblouissements, les ombres et les reflets.
-      capture_troubleshooting_lighting_image: Soleil avec nuage
-      capture_troubleshooting_surface: Prenez une photo sur une surface plane avec un
-        fond sombre. Assurez-vous que les bords de votre pièce d’identité soient
-        dégagés.
-      capture_troubleshooting_surface_image: Recto de la carte d’identité
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre

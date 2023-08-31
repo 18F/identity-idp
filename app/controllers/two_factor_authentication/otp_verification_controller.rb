@@ -102,7 +102,7 @@ module TwoFactorAuthentication
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: capabilities.unsupported_location,
       )
-      redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)
+      redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
     end
 
     def phone

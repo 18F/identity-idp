@@ -2,6 +2,8 @@
 
 module InPerson
   class SendProofingNotificationJob < ApplicationJob
+    include LocaleHelper
+
     # @param [Number] enrollment_id primary key of the enrollment
     def perform(enrollment_id)
       return unless IdentityConfig.store.in_person_proofing_enabled &&
@@ -26,12 +28,6 @@ module InPerson
           enrollment_code: enrollment.enrollment_code,
           enrollment_id: enrollment.id,
         )
-      if enrollment.expired?
-        # no sending message for expired status
-        enrollment.notification_phone_configuration&.destroy
-        log_job_completed(enrollment: enrollment)
-        return
-      end
 
       # send notification and log result when success or failed
       phone = enrollment.notification_phone_configuration.formatted_phone
@@ -48,7 +44,7 @@ module InPerson
     rescue StandardError => err
       analytics(user: enrollment&.user || AnonymousUser.new).
         idv_in_person_send_proofing_notification_job_exception(
-          enrollment_code: enrollment&.code,
+          enrollment_code: enrollment&.enrollment_code,
           enrollment_id: enrollment_id,
           exception_class: err.class.to_s,
           exception_message: err.message,
@@ -78,12 +74,14 @@ module InPerson
     end
 
     def notification_message(enrollment:)
-      proof_date = enrollment.proofed_at ? I18n.l(enrollment.proofed_at, format: :sms_date) : 'NA'
-      I18n.t(
-        'telephony.confirmation_ipp_enrollment_result.sms',
-        app_name: APP_NAME,
-        proof_date: proof_date,
-      )
+      with_user_locale(enrollment.user) do
+        proof_date = I18n.l(enrollment.proofed_at, format: :sms_date)
+        I18n.t(
+          'telephony.confirmation_ipp_enrollment_result.sms',
+          app_name: APP_NAME,
+          proof_date: proof_date,
+        )
+      end
     end
 
     def analytics(user:)

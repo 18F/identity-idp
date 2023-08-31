@@ -9,11 +9,29 @@ RSpec.describe DocAuth::ErrorGenerator do
     )
   end
 
+  let(:passport_classification_details) do
+    { ClassName: 'Passport',
+      Issue: '2006',
+      IssueType: 'ePassport',
+      Name: 'United States (USA) ePassport',
+      IssuerCode: 'USA',
+      IssuerName: 'United States' }
+  end
+  let(:unknown_classification_details) do
+    { ClassName: 'Unknown',
+      Issue: nil,
+      IssueType: nil,
+      Name: 'Unknown',
+      IssuerCode: nil,
+      IssuerName: nil }
+  end
+
   def build_error_info(
     doc_result: nil,
     passed: [],
     failed: [],
-    image_metrics: {}
+    image_metrics: {},
+    classification_info: []
   )
     {
       conversation_id: 31000406181234,
@@ -29,6 +47,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       alert_failure_count: failed&.count.to_i,
       portrait_match_results: { FaceMatchResult: 'Pass' },
       image_metrics: image_metrics,
+      classification_info: classification_info,
     }
   end
 
@@ -199,6 +218,66 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::BIRTH_DATE_CHECKS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
+    end
+
+    it 'DocAuthResult is failed with unsupported doc type' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        passed: [{ name: 'Not a known alert', result: 'Passed' }],
+        failed: [{ name: 'Birth Date Crosscheck', result: 'Failed' }],
+        classification_info: { Back: unknown_classification_details,
+                               Front: passport_classification_details },
+      )
+
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message, :unknown_alerts)).once
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:hints]).to eq(true)
+    end
+
+    it 'DocAuthResult is success with unsupported doc type' do
+      error_info = build_error_info(
+        doc_result: 'Passed',
+        passed: [{ name: 'Not a known alert', result: 'Passed' }],
+        failed: [],
+        classification_info: { Back: unknown_classification_details,
+                               Front: passport_classification_details },
+      )
+
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message, :unknown_alerts)).once
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::DOC_TYPE_CHECK)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::CARD_TYPE)
+      expect(output[:hints]).to eq(true)
+    end
+    it 'DocAuthResult is failed with unknown doc type' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [
+          { name: 'Not a known alert', result: 'Failed' },
+        ],
+        classification_info: { Front: unknown_classification_details },
+      )
+
+      expect(warn_notifier).to receive(:call).
+        with(hash_including(:response_info, :message)).twice
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
       expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(output[:hints]).to eq(true)

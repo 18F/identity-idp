@@ -61,9 +61,15 @@ RSpec.feature 'Changing authentication factor' do
         visit manage_password_path
         complete_2fa_confirmation_without_entering_otp
 
+        # Canceling from MFA prompt
+        click_on t('links.cancel')
+        expect(current_path).to eq account_path
+
+        # Canceling from MFA selection
+        visit manage_password_path
+        complete_2fa_confirmation_without_entering_otp
         click_on t('two_factor_authentication.login_options_link_text')
         click_on t('links.cancel')
-
         expect(current_path).to eq account_path
       end
     end
@@ -78,17 +84,17 @@ RSpec.feature 'Changing authentication factor' do
       visit webauthn_setup_path
       expect(current_path).to eq login_two_factor_options_path
 
-      visit add_phone_path
+      visit phone_setup_path
       expect(current_path).to eq login_two_factor_options_path
 
       find("label[for='two_factor_options_form_selection_sms']").click
       click_on t('forms.buttons.continue')
       fill_in_code_with_last_phone_otp
       click_submit_default
-      expect(current_path).to eq add_phone_path
+      expect(current_path).to eq phone_setup_path
 
-      visit add_phone_path
-      expect(current_path).to eq add_phone_path
+      visit phone_setup_path
+      expect(current_path).to eq phone_setup_path
     end
   end
 

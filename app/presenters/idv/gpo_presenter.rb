@@ -27,7 +27,7 @@ module Idv
     end
 
     def back_or_cancel_partial
-      if FeatureManagement.idv_gpo_only?
+      if FeatureManagement.idv_by_mail_only?
         'idv/doc_auth/cancel'
       else
         'idv/shared/back'
@@ -35,7 +35,7 @@ module Idv
     end
 
     def back_or_cancel_parameters
-      if FeatureManagement.idv_gpo_only?
+      if FeatureManagement.idv_by_mail_only?
         { step: 'gpo' }
       else
         { fallback_path: fallback_back_path }

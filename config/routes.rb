@@ -12,6 +12,11 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
+  post '/api/address_search' => 'idv/in_person/public/address_search#index'
+  match '/api/address_search' => 'idv/in_person/public/address_search#options', via: :options
+  post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
+  match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+
   namespace :api do
     namespace :internal do
       get '/sessions' => 'sessions#show'
@@ -250,10 +255,6 @@ Rails.application.routes.draw do
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options', to: redirect('/authentication_methods_setup')
-    patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
-    get '/second_mfa_setup' => 'users/mfa_selection#index'
-    patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     post '/phone_setup' => 'users/phone_setup#create'
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
@@ -272,10 +273,6 @@ Rails.application.routes.draw do
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
     get '/user_please_call' => 'users/please_call#show'
-
-    get '/profile', to: redirect('/account')
-    get '/profile/reactivate', to: redirect('/account/reactivate')
-    get '/profile/verify', to: redirect('/account/verify')
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
@@ -317,7 +314,7 @@ Rails.application.routes.draw do
         match '/*path' => 'unavailable#show', via: %i[get post]
       end
 
-      get '/mail_only_warning' => 'gpo_only_warning#show'
+      get '/mail_only_warning' => 'mail_only_warning#show'
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
@@ -362,8 +359,7 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
-      get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/setup_errors', to: redirect('/please_call')
+      get '/session/errors/rate_limited' => 'session_errors#rate_limited'
       get '/not_verified' => 'not_verified#show'
       get '/please_call' => 'please_call#show'
       delete '/session' => 'sessions#destroy'
@@ -377,8 +373,14 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
 
-      get '/in_person_proofing/ssn' => 'in_person/ssn#show'
-      put '/in_person_proofing/ssn' => 'in_person/ssn#update'
+      # DEPRECATION NOTICE
+      # Usage of the /in_person_proofing/ssn routes is deprecated.
+      # Use the /in_person/ssn routes instead.
+      #
+      # These have been left in temporarily to prevent any impact to users
+      # during the deprecation process.
+      get '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
+      put '/in_person_proofing/ssn' => redirect('/verify/in_person/ssn', status: 307)
 
       get '/in_person' => 'in_person#index'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
@@ -386,6 +388,8 @@ Rails.application.routes.draw do
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       post '/in_person/addresses' => 'in_person/address_search#index'
+      get '/in_person/ssn' => 'in_person/ssn#show'
+      put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
@@ -400,17 +404,7 @@ Rails.application.routes.draw do
         get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
       end
-
-      # deprecated routes
-      get '/confirmations' => 'personal_key#show'
-      post '/confirmations' => 'personal_key#update'
-      get '/doc_auth/:step', to: redirect('/verify/welcome')
-      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
     end
-
-    # Old paths to GPO outside of IdV.
-    get '/account/verify', to: redirect('/verify/by_mail')
-    get '/account/verify/confirm_start_over', to: redirect('/verify/by_mail/confirm_start_over')
 
     root to: 'users/sessions#new'
   end

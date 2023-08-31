@@ -25,7 +25,7 @@ module TwoFactorAuthentication
       mfa_created_at = current_user.encrypted_recovery_code_digest_generated_at
       analytics_hash = result.to_h.merge(
         multi_factor_auth_method: 'personal-key',
-        multi_factor_auth_method_created_at: mfa_created_at,
+        multi_factor_auth_method_created_at: mfa_created_at&.strftime('%s%L'),
       )
 
       analytics.track_mfa_submit_event(analytics_hash)

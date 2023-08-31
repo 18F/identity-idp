@@ -69,10 +69,40 @@ RSpec.describe Idv::PhoneForm do
         let(:optional_params) { { delivery_methods: [:sms] } }
 
         it 'uses the user phone number as the initial phone value' do
-          expect(subject.phone).to eq('+1 787 234 5678')
+          expect(subject.phone).to eq('+1 787-234-5678')
         end
         it 'infers the country code from the user phone number' do
           expect(subject.international_code).to eq('PR')
+        end
+      end
+
+      # We use Romania for this test because it is a region where
+      # the default config will not allow sending SMS to unregistered
+      # numbers
+      context 'in country that only supports SMS for registered phones' do
+        let(:phone) { '+400258567233' }
+        let(:optional_params) { { delivery_methods: [:sms] } }
+        let(:allowed_countries) { ['RO'] }
+
+        it 'allows using registered phone number even if it is formatted differently' do
+          differently_formatted_phone = Phonelib.parse(phone).e164
+          expect(subject.submit(phone: differently_formatted_phone).success?).to eq true
+        end
+
+        it 'does not allow using unregistered phone number' do
+          unregistered_phone = '+400258567234'
+          result = subject.submit(phone: unregistered_phone)
+          expect(result.success?).to eq false
+          expect(result.to_h).to include(
+            {
+              error_details: {
+                phone: [t(
+                  'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+                  location: 'Romania',
+                )],
+              },
+            },
+          )
         end
       end
 
@@ -125,7 +155,7 @@ RSpec.describe Idv::PhoneForm do
           }
         end
         it 'uses the previously submitted phone + and infers country' do
-          expect(subject.phone).to eq('+1 787 234 5678')
+          expect(subject.phone).to eq('+1 787-234-5678')
           expect(subject.international_code).to eq('PR')
         end
       end

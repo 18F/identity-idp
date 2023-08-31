@@ -11,7 +11,7 @@ RSpec.describe 'Add a new phone number' do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: phone
-    click_continue
+    click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
 
@@ -30,7 +30,7 @@ RSpec.describe 'Add a new phone number' do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: phone
-    click_continue
+    click_send_one_time_code
     fill_in_code_with_last_phone_otp
     click_submit_default
 
@@ -51,7 +51,7 @@ RSpec.describe 'Add a new phone number' do
     hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
 
     # Required field should prompt as required on submit
-    click_continue
+    click_send_one_time_code
     focused_input = page.find(':focus')
     expect(focused_input).to match_css('.phone-input__number.usa-input--error')
     expect(hidden_select.value).to eq('US')
@@ -66,7 +66,7 @@ RSpec.describe 'Add a new phone number' do
 
     # Invalid number should prompt as invalid on submit
     fill_in :new_phone_form_phone, with: 'abcd1234'
-    click_continue
+    click_send_one_time_code
     focused_input = page.find(':focus')
     expect(focused_input).to match_css('.phone-input__number.usa-input--error')
     expect(hidden_select.value).to eq('US')
@@ -102,7 +102,7 @@ RSpec.describe 'Add a new phone number' do
     expect(page).to_not have_content(t('two_factor_authentication.otp_delivery_preference.title'))
     expect(hidden_select.value).to eq('LK')
     fill_in :new_phone_form_phone, with: '+94 071 234 5678'
-    click_continue
+    click_send_one_time_code
     expect(page.find(':focus')).to match_css('.phone-input__number')
 
     # Switching to supported country should re-show delivery options, but prompt as invalid number
@@ -113,7 +113,7 @@ RSpec.describe 'Add a new phone number' do
     expect(page).to have_content(t('two_factor_authentication.otp_delivery_preference.title'))
     expect(page).to have_css('.usa-error-message', text: '', visible: false)
     expect(hidden_select.value).to eq('US')
-    click_continue
+    click_send_one_time_code
     expect(page.find(':focus')).to match_css('.phone-input__number')
     expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
 
@@ -121,7 +121,7 @@ RSpec.describe 'Add a new phone number' do
     input = fill_in :new_phone_form_phone, with: '+81543543643'
     expect(input.value).to eq('+81 543543643')
     expect(hidden_select.value).to eq('JP')
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('components.one_time_code_input.label'))
   end
 
@@ -157,7 +157,7 @@ RSpec.describe 'Add a new phone number' do
       phone = phone_configuration.phone.sub(/^\+1\s*/, '').gsub(/\D/, '')
 
       fill_in :new_phone_form_phone, with: phone
-      click_continue
+      click_send_one_time_code
 
       expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
 
@@ -179,7 +179,7 @@ RSpec.describe 'Add a new phone number' do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: telephony_gem_voip_number
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('errors.messages.voip_check_error'))
   end
 
@@ -216,10 +216,12 @@ RSpec.describe 'Add a new phone number' do
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing international should display spam protection screen
-    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
+    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('titles.spam_protection'), wait: 5)
+    expect(page).not_to have_link(t('two_factor_authentication.login_options_link_text'))
+    expect(page).to have_link(t('links.cancel'))
     click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     visit account_path
@@ -236,14 +238,14 @@ RSpec.describe 'Add a new phone number' do
         evaluated_as_valid: false,
         score_threshold: 0.6,
         recaptcha_version: 3,
-        phone_country_code: 'CA',
+        phone_country_code: 'AU',
       ),
     )
 
     # Passing international should display OTP confirmation
-    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
+    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 25)
     visit account_path
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
@@ -251,7 +253,7 @@ RSpec.describe 'Add a new phone number' do
     # Failing domestic should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
     visit account_path
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
@@ -259,7 +261,7 @@ RSpec.describe 'Add a new phone number' do
     # Passing domestic should display OTP confirmation
     fill_in t('two_factor_authentication.phone_label'), with: '5135550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
-    click_continue
+    click_send_one_time_code
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 5)
   end
 
@@ -272,7 +274,7 @@ RSpec.describe 'Add a new phone number' do
         click_on t('account.navigation.add_phone_number')
       end
       fill_in :new_phone_form_phone, with: phone
-      click_continue
+      click_send_one_time_code
       click_link t('links.cancel')
 
       expect(page).to have_current_path(account_path)
@@ -290,9 +292,9 @@ RSpec.describe 'Add a new phone number' do
     end
 
     fill_in :new_phone_form_phone, with: phone
-    click_continue
+    click_send_one_time_code
     click_link t('two_factor_authentication.phone_verification.troubleshooting.change_number')
 
-    expect(page).to have_current_path(add_phone_path)
+    expect(page).to have_current_path(phone_setup_path)
   end
 end

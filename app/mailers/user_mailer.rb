@@ -391,6 +391,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def gpo_reminder
+    with_user_locale(user) do
+      @gpo_verification_pending_at = I18n.l(
+        user.gpo_verification_pending_profile.gpo_verification_pending_at,
+        format: :event_date,
+      )
+      mail(to: email_address.email, subject: t('idv.messages.gpo_reminder.subject'))
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)

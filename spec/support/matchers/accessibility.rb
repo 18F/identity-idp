@@ -4,7 +4,9 @@ RSpec::Matchers.define :have_valid_idrefs do
   match do |page|
     ['aria-describedby', 'aria-labelledby'].each do |idref_attribute|
       page.all(:css, "[#{idref_attribute}]").each do |element|
-        page.find_by_id(element[idref_attribute], visible: :all)
+        element[idref_attribute].split(' ').each do |referenced_id|
+          page.find_by_id(referenced_id, visible: :all)
+        end
       rescue Capybara::ElementNotFound
         invalid_idref_messages << "[#{idref_attribute}=\"#{element[idref_attribute]}\"]"
       end

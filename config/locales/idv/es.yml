@@ -57,6 +57,7 @@ es:
       pattern_mismatch:
         ssn: 'Ingrese un número de Seguro Social de nueve dígitos'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
+        zipcode_five: Ingresa un código postal de 5 dígitos
     failure:
       attempts_html:
         one: Por motivos de seguridad, le quedan <strong>un intento</strong> para añadir
@@ -103,20 +104,20 @@ es:
           Vuelve a intentarlo.
         rate_limited:
           body: Por motivos de seguridad, se limita el número de veces que puede intentar
-            verificar su número de teléfono por Internet. Tendrás que esperar
-            %{time_left} y volver a empezar antes de volver a intentar la
-            verificación por teléfono.
+            verificar su número de teléfono por Internet.
           gpo:
             button: Verificar por correo
-            prompt: Continúa ahora con la verificación por correo, que suele tardar entre 3
-              y 7 días laborables.
-          heading: 'No hemos podido verificar su identidad por teléfono'
+          heading: No pudimos asociarlo a este número
+          option_try_again_later_html: 'Cancelar y empezar de nuevo transcurridas <b>%{time_left}</b>'
+          option_verify_by_mail_html: 'Verificar por correo, lo que suele demorar de <b>3
+            a 7 días hábiles</b>'
+          options_header: 'Puede:'
         timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
           intentarlo.
         warning:
-          attempts:
-            one: Por razones de seguridad, dispone de un solo intento.
-            other: Por razones de seguridad, le quedan %{count} intentos.
+          attempts_html:
+            one: Por razones de seguridad, le queda <strong>un solo intento</strong>.
+            other: Por razones de seguridad, le quedan <strong>%{count} intentos</strong>.
           gpo:
             button: Verificar por correo
             explanation: Si no dispones de otro número de teléfono para intentarlo,
@@ -165,8 +166,8 @@ es:
       address2_optional: Línea de dirección 2 (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
-      first_name: Nombre de pila
-      id_number: Número de cédula
+      first_name: Nombre
+      id_number: Número de identidad
       issuing_state: Estado emisor
       last_name: Apellido
       password: Contraseña
@@ -178,6 +179,32 @@ es:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
       no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
         habilitar JavaScript para continuar con este proceso.'
+    gpo:
+      alert_info: 'Enviamos una carta con su código único a:'
+      clear_and_start_over: Borrar su información y empezar de nuevo
+      did_not_receive_letter:
+        form:
+          instructions: Si ya tiene su carta, introduzca el código de 10 caracteres de la
+            carta que recibió.
+        intro:
+          be_patient_html: Tenga en cuenta que las cartas <strong>suelen tardar entre 3 y
+            7 días laborables en llegar</strong>. Gracias por su paciencia.
+          request_new_letter_link: solicitar una nueva
+          request_new_letter_prompt_html: Si no ha recibido su carta, puede
+            <span>%{request_new_letter_link}</span>.
+        title: ¿No recibió su carta?
+      form:
+        instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
+        otp_label: Código único
+        submit: Confirmar cuenta
+        title: Confirme su cuenta
+      intro_html: '<p>Si ha recibido su carta, introduzca su código único a
+        continuación.</p> <p>Si su carta aún no ha llegado, tenga paciencia, ya
+        que las <strong>cartas suelen tardar de 3 a 7 días hábiles en
+        llegar</strong>. Gracias por su paciencia.</p>'
+      return_to_profile: Regrese a su perfil
+      title: Bienvenido de nuevo
+      wrong_address: ¿La dirección no es correcta?
     images:
       come_back_later: Carta con una marca de verificación
     index:
@@ -216,6 +243,16 @@ es:
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
+      gpo_reminder:
+        body_html: El <strong>%{date_letter_was_sent}</strong> solicitaste una carta
+          para verificar tu identidad. Deberás ingresar el código que contiene
+          esa carta para completar la verificación por correo. Vuelve a iniciar
+          sesión en %{app_name} para terminar de verificar tu identidad.
+          %{help_link}.
+        did_not_get_a_letter_html: Si no recibiste dicha carta, %{another_letter_link_html}.
+        finish: Termina de verificar tu identidad
+        sign_in_and_request_another_letter: inicia sesión para solicitar otra
+        subject: Termina de verificar tu identidad
       otp_delivery_method_description: Si ha introducido un teléfono fijo más arriba,
         seleccione “Llamada telefónica” más abajo.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
@@ -226,9 +263,9 @@ es:
           código único. Esto es para ayudar a verificar su identidad.
         failed_number:
           alert_text: No pudimos asociarlo a este número.
-          gpo_alert_html: Si no dispone de <strong>otro</strong> número de teléfono,
-            %{link_html}.
-          gpo_verify_link: realice la verificación por correo
+          gpo_alert_html: Pruebe con <strong>otro</strong> número o %{link_html}.
+          gpo_verify_link: verifique por correo
+          try_again_html: Pruebe con <strong>otro</strong> número.
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
@@ -265,7 +302,6 @@ es:
       headings:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
-        still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación
@@ -292,9 +328,9 @@ es:
       technical_difficulties: Lamentablemente, debido a problemas técnicos por nuestra
         parte, tal vez no podamos verificar su identidad en estos momentos.
     warning:
-      attempts:
-        one: Por motivos de seguridad, le quedan un intento.
-        other: Por motivos de seguridad, le quedan %{count} intentos.
+      attempts_html:
+        one: Por motivos de seguridad, le queda <strong>un intento</strong>.
+        other: Por motivos de seguridad, le quedan <strong>%{count} intentos</strong>.
       sessions:
         heading: No encontramos registros que coincidan con sus datos personales
       state_id:

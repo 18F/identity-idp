@@ -21,7 +21,7 @@
     "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
   },
   "dependencies": {
-    "@18f/identity-design-system": "^7.0.1",
+    "@18f/identity-design-system": "^7.1.0",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",

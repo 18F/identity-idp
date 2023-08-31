@@ -72,6 +72,8 @@ es:
       delete_account: Eliminar
       regenerate_personal_key: Restablecer
     login:
+      forced_reauthentication_notice_html: <strong>%{sp_name}</strong> requiere que
+        vuelvas a ingresar tu correo electrónico y contraseña.
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas de creación de cuenta
     navigation:

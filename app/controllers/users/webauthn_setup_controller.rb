@@ -99,8 +99,7 @@ module Users
       @presenter = SetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie:
-                                                  user_opted_remember_device_cookie,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
       )
     end
@@ -193,7 +192,10 @@ module Users
       elsif form.platform_authenticator?
         flash[:error] = t('errors.webauthn_platform_setup.general_error')
       else
-        flash[:error] = t('errors.webauthn_setup.general_error')
+        flash[:error] = t(
+          'errors.webauthn_setup.general_error_html',
+          link_html: t('errors.webauthn_setup.additional_methods_link'),
+        )
       end
       render :new
     end
@@ -205,10 +207,11 @@ module Users
     def confirm_params
       params.permit(
         :attestation_object,
+        :authenticator_data_value,
         :client_data_json,
-        :transports,
         :name,
         :platform_authenticator,
+        :transports,
       )
     end
 

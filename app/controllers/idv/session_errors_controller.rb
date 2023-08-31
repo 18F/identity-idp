@@ -19,7 +19,7 @@ module Idv
       )
 
       @remaining_attempts = rate_limiter.remaining_count
-      log_event(based_on_throttle: rate_limiter)
+      log_event(based_on_limiter: rate_limiter)
     end
 
     def state_id_warning
@@ -33,7 +33,7 @@ module Idv
       )
       @expires_at = rate_limiter.expires_at
       @sp_name = decorated_session.sp_name
-      log_event(based_on_throttle: rate_limiter)
+      log_event(based_on_limiter: rate_limiter)
     end
 
     def ssn_failure
@@ -47,20 +47,20 @@ module Idv
         @expires_at = rate_limiter.expires_at
       end
 
-      log_event(based_on_throttle: rate_limiter)
+      log_event(based_on_limiter: rate_limiter)
       render 'idv/session_errors/failure'
     end
 
-    def throttled
+    def rate_limited
       rate_limiter = RateLimiter.new(user: idv_session_user, rate_limit_type: :idv_doc_auth)
-      log_event(based_on_throttle: rate_limiter)
+      log_event(based_on_limiter: rate_limiter)
       @expires_at = rate_limiter.expires_at
     end
 
     private
 
     def ssn_from_doc
-      user_session&.dig('idv/doc_auth', 'pii_from_doc', 'ssn')
+      user_session&.dig('idv/doc_auth', :pii_from_doc, 'ssn')
     end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
@@ -90,12 +90,12 @@ module Idv
       params[:flow] == 'in_person'
     end
 
-    def log_event(based_on_throttle: nil)
+    def log_event(based_on_limiter: nil)
       options = {
         type: params[:action],
       }
 
-      options[:attempts_remaining] = based_on_throttle.remaining_count if based_on_throttle
+      options[:attempts_remaining] = based_on_limiter.remaining_count if based_on_limiter
 
       analytics.idv_session_error_visited(**options)
     end

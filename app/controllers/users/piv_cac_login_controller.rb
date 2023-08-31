@@ -37,7 +37,7 @@ module Users
     private
 
     def render_prompt
-      analytics.user_registration_piv_cac_setup_visit
+      analytics.piv_cac_setup_visit(in_multi_mfa_selection_flow: false)
       @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)
       render :new
     end
@@ -83,6 +83,8 @@ module Users
     def next_step
       if ial_context.ial2_requested?
         capture_password_url
+      elsif !current_user.accepted_rules_of_use_still_valid?
+        rules_of_use_path
       else
         after_sign_in_path_for(current_user)
       end

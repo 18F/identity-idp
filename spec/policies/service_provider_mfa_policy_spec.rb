@@ -197,61 +197,6 @@ RSpec.describe ServiceProviderMfaPolicy do
     end
   end
 
-  describe '#allow_user_to_switch_method?' do
-    context 'phishing-resistant required' do
-      let(:aal_level_requested) { 3 }
-
-      context 'the user has more than one phishing-resistant method' do
-        before do
-          setup_user_webauthn_token
-          setup_user_piv
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(true) }
-      end
-
-      context 'the user does not have more than one aal3 method' do
-        before do
-          setup_user_webauthn_token
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-    end
-
-    context 'piv/cac required' do
-      let(:aal_level_requested) { 3 }
-      let(:piv_cac_requested) { true }
-
-      context 'the user has a PIV' do
-        before { setup_user_piv }
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-
-      context 'the user does not have a PIV' do
-        before { setup_user_webauthn_token }
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-
-      context 'the user has a PIV and webauthn token' do
-        before do
-          setup_user_webauthn_token
-          setup_user_piv
-        end
-
-        it { expect(policy.allow_user_to_switch_method?).to eq(false) }
-      end
-    end
-
-    context 'there are no MFA reqirements' do
-      before { setup_user_phone }
-
-      it { expect(policy.allow_user_to_switch_method?).to eq(true) }
-    end
-  end
-
   def setup_user_phone
     user.phone_configurations << build(:phone_configuration)
     user.save!

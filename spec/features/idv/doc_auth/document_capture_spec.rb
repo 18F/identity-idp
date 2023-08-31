@@ -32,10 +32,37 @@ RSpec.feature 'document capture step', :js do
         expect(fake_analytics).to have_logged_event(
           'Return to SP: Failed to proof',
           flow: nil,
-          location: 'document_capture_troubleshooting_options',
+          location: 'document_capture',
           redirect_url: instance_of(String),
           step: 'document_capture',
         )
+      end
+    end
+
+    context 'wrong doc type is uploaded', allow_browser_log: true do
+      it 'try again and page show doc type inline error message' do
+        attach_images(
+          Rails.root.join(
+            'spec', 'fixtures',
+            'ial2_test_credential_wrong_doc_type.yml'
+          ),
+        )
+        submit_images
+        message = strip_tags(t('errors.doc_auth.doc_type_not_supported_heading'))
+        expect(page).to have_content(message)
+        detail_message = strip_tags(t('doc_auth.errors.doc.doc_type_check'))
+        security_message = strip_tags(
+          t(
+            'idv.warning.attempts_html',
+            count: IdentityConfig.store.doc_auth_max_attempts - 1,
+          ),
+        )
+        expect(page).to have_content(detail_message << ' ' << security_message)
+        expect(page).to have_current_path(idv_document_capture_path)
+        click_try_again
+        expect(page).to have_current_path(idv_document_capture_path)
+        inline_error = strip_tags(t('doc_auth.errors.card_type'))
+        expect(page).to have_content(inline_error)
       end
     end
 
@@ -67,17 +94,17 @@ RSpec.feature 'document capture step', :js do
           timeout = distance_of_time_in_words(
             RateLimiter.attempt_window_in_minutes(:idv_doc_auth).minutes,
           )
-          message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+          message = strip_tags(t('errors.doc_auth.rate_limited_text_html', timeout: timeout))
           expect(page).to have_content(message)
-          expect(page).to have_current_path(idv_session_errors_throttled_path)
+          expect(page).to have_current_path(idv_session_errors_rate_limited_path)
         end
       end
 
       it 'logs the rate limited analytics event for doc_auth' do
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
-          'Throttler Rate Limit Triggered',
-          throttle_type: :idv_doc_auth,
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
         )
       end
 

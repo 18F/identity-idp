@@ -33,7 +33,7 @@ RSpec.describe 'default phone selection' do
 
         enter_phone_number('202-555-3434')
         check 'new_phone_form_otp_make_default_number'
-        click_button t('forms.buttons.continue')
+        click_button t('forms.buttons.send_one_time_code')
 
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
@@ -61,7 +61,7 @@ RSpec.describe 'default phone selection' do
         new_phone = '202-555-3111'
         sign_in_visit_add_phone_path(user, phone_config2)
         fill_in :new_phone_form_phone, with: new_phone
-        click_continue
+        click_send_one_time_code
         fill_in_code_with_last_phone_otp
         click_submit_default
 
@@ -104,7 +104,7 @@ RSpec.describe 'default phone selection' do
         enter_phone_number('202-555-3434')
         choose 'new_phone_form_otp_delivery_preference_voice'
         check 'new_phone_form_otp_make_default_number'
-        click_button t('forms.buttons.continue')
+        click_button t('forms.buttons.send_one_time_code')
 
         expect(page).to have_content t(
           'instructions.mfa.voice.number_message_html',
@@ -147,7 +147,7 @@ RSpec.describe 'default phone selection' do
 
   def sign_in_visit_add_phone_path(user, phone_config2)
     sign_in_and_2fa_user(user)
-    visit add_phone_path(id: phone_config2.id)
+    visit phone_setup_path(id: phone_config2.id)
     expect(page).to have_content t('two_factor_authentication.otp_make_default_number.label')
   end
 end

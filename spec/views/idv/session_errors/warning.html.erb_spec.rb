@@ -22,7 +22,11 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
   end
 
   it 'shows remaining attempts' do
-    expect(rendered).to have_text(t('idv.warning.attempts', count: remaining_attempts))
+    expect(rendered).to have_text(
+      strip_tags(
+        t('idv.warning.attempts_html', count: remaining_attempts),
+      ),
+    )
   end
 
   it 'shows a cancel link' do
@@ -34,7 +38,11 @@ RSpec.describe 'idv/session_errors/warning.html.erb' do
 
     it 'does not render troubleshooting option to retake photos' do
       expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
-      expect(rendered).to have_text(t('idv.warning.attempts', count: remaining_attempts))
+      expect(rendered).to have_text(
+        strip_tags(
+          t('idv.warning.attempts_html', count: remaining_attempts),
+        ),
+      )
       expect(rendered).to have_link(t('links.cancel'), href: idv_cancel_path)
     end
   end

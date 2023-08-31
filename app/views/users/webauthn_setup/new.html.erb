@@ -26,9 +26,9 @@
   <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
   <%= hidden_field_tag :exclude_credentials, @exclude_credentials&.join(','), id: 'exclude_credentials' %>
   <%= hidden_field_tag :webauthn_id, '', id: 'webauthn_id' %>
-  <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+  <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
   <%= render ValidatedFieldComponent.new(
@@ -44,11 +44,21 @@
           maxlength: 20,
         },
       ) %>
+  <div class="margin-y-4 text-center" id="spinner" hidden>
+    <%= image_tag(
+          asset_url('loading-badge.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
+    <strong class="display-block margin-top-2">
+      <%= t('forms.webauthn_setup.saving') %>
+    </strong>
+  </div>
   <%= f.input(
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
-        wrapper_html: { class: 'margin-top-4' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
@@ -60,20 +70,6 @@
         class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
       ) %>
 <% end %>
-
-<div class="spinner display-none margin-y-4" id='spinner'>
-  <div class='text-center'>
-    <%= image_tag(
-          asset_url('spinner.gif'),
-          srcset: asset_url('spinner@2x.gif'),
-          height: 144,
-          width: 144,
-          alt: '',
-        ) %>
-  </div>
-  <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
-  <p class='half-center'><%= @presenter.setup_instructions %></p>
-</div>
 
 <%= render 'shared/cancel_or_back_to_options' %>
 

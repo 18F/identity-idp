@@ -11,7 +11,11 @@ RSpec.feature 'disavowing an action' do
   scenario 'disavowing a password update' do
     sign_in_and_2fa_user(user)
     visit manage_password_path
-    fill_in 'New password', with: 'OldVal!dPassw0rd'
+    password = 'OldVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: password
+    fill_in t('components.password_confirmation.confirm_label'),
+            with: password
+
     click_on t('forms.buttons.submit.update')
     Capybara.reset_sessions!
 
@@ -39,13 +43,13 @@ RSpec.feature 'disavowing an action' do
 
   scenario 'disavowing a phone being added' do
     sign_in_and_2fa_user(user)
-    visit add_phone_path
+    visit phone_setup_path
 
     fill_in 'new_phone_form[phone]', with: '202-555-3434'
 
     choose 'new_phone_form_otp_delivery_preference_sms'
     check 'new_phone_form_otp_make_default_number'
-    click_button t('forms.buttons.continue')
+    click_button t('forms.buttons.send_one_time_code')
 
     submit_prefilled_otp_code(user, 'sms')
 
@@ -108,14 +112,14 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('headings.passwords.change'))
 
-    fill_in 'New password', with: 'invalid'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'invalid'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content t(
       'errors.attributes.password.too_short.other', count: Devise.password_length.first
     )
 
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))
@@ -140,7 +144,9 @@ RSpec.feature 'disavowing an action' do
     click_continue
     open_last_email
     click_email_link_matching(/reset_password_token/)
-    fill_in 'New password', with: 'OldVal!dPassw0rd'
+    password = 'OldVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: password
+    fill_in t('components.password_confirmation.confirm_label'), with: password
     click_button t('forms.passwords.edit.buttons.submit')
   end
 
@@ -152,7 +158,7 @@ RSpec.feature 'disavowing an action' do
 
     expect(page).to have_content(t('headings.passwords.change'))
 
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
+    fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
     click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content(t('devise.passwords.updated_not_active'))

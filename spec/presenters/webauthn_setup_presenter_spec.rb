@@ -37,7 +37,7 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#heading' do
     subject { presenter.heading }
 
-    it { is_expected.to  eq(t('headings.webauthn_setup.new')) }
+    it { is_expected.to eq(t('headings.webauthn_setup.new')) }
   end
 
   describe '#intro_html' do
@@ -68,13 +68,7 @@ RSpec.describe WebauthnSetupPresenter do
   describe '#button_text' do
     subject { presenter.button_text }
 
-    it { is_expected.to  eq(t('forms.webauthn_setup.continue')) }
-  end
-
-  describe '#setup_heading' do
-    subject { presenter.setup_heading }
-
-    it { is_expected.to  eq(t('forms.webauthn_setup.instructions_title')) }
+    it { is_expected.to eq(t('forms.webauthn_setup.continue')) }
   end
 
   context 'with platform_authenticator' do
@@ -95,7 +89,7 @@ RSpec.describe WebauthnSetupPresenter do
     describe '#heading' do
       subject { presenter.heading }
 
-      it { is_expected.to  eq(t('headings.webauthn_platform_setup.new')) }
+      it { is_expected.to eq(t('headings.webauthn_platform_setup.new')) }
     end
 
     describe '#nickname_label' do
@@ -113,13 +107,7 @@ RSpec.describe WebauthnSetupPresenter do
     describe '#button_text' do
       subject { presenter.button_text }
 
-      it { is_expected.to  eq(t('forms.webauthn_platform_setup.continue')) }
-    end
-
-    describe '#setup_heading' do
-      subject { presenter.setup_heading }
-
-      it { is_expected.to  eq(t('forms.webauthn_platform_setup.instructions_title')) }
+      it { is_expected.to eq(t('forms.webauthn_platform_setup.continue')) }
     end
   end
 end

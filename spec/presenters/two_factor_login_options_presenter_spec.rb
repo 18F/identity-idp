@@ -7,16 +7,17 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }
-  let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
+  let(:reauthentication_context) { false }
+  let(:service_provider) { nil }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      user_session_context: user_session_context,
-      service_provider: nil,
-      phishing_resistant_required: false,
-      piv_cac_required: false,
+      reauthentication_context: reauthentication_context,
+      service_provider: service_provider,
+      phishing_resistant_required: phishing_resistant_required,
+      piv_cac_required: piv_cac_required,
     )
   end
 
@@ -75,17 +76,92 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     end
   end
 
+  describe '#restricted_options_warning_text' do
+    subject(:restricted_options_warning_text) { presenter.restricted_options_warning_text }
+
+    it { should be_nil }
+
+    context 'phishing resistant required' do
+      let(:phishing_resistant_required) { true }
+
+      it 'returns phishing resistant required warning text for app' do
+        expect(restricted_options_warning_text).to eq(
+          t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name: APP_NAME),
+        )
+      end
+
+      context 'piv cac required' do
+        let(:piv_cac_required) { true }
+
+        it 'returns piv cac required warning text for app' do
+          expect(restricted_options_warning_text).to eq(
+            t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
+          )
+        end
+
+        context 'with sp' do
+          let(:service_provider) { build(:service_provider) }
+
+          it 'returns piv cac required warning text for service provider' do
+            expect(restricted_options_warning_text).to eq(
+              t(
+                'two_factor_authentication.aal2_request.piv_cac_only_html',
+                sp_name: service_provider.friendly_name,
+              ),
+            )
+          end
+        end
+      end
+
+      context 'with sp' do
+        let(:service_provider) { build(:service_provider) }
+
+        it 'returns phishing resistant required warning text for service provider' do
+          expect(restricted_options_warning_text).to eq(
+            t(
+              'two_factor_authentication.aal2_request.phishing_resistant_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          )
+        end
+      end
+    end
+
+    context 'piv cac required' do
+      let(:piv_cac_required) { true }
+
+      it 'returns piv cac required warning text for app' do
+        expect(restricted_options_warning_text).to eq(
+          t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
+        )
+      end
+
+      context 'with sp' do
+        let(:service_provider) { build(:service_provider) }
+
+        it 'returns piv cac required warning text for service provider' do
+          expect(restricted_options_warning_text).to eq(
+            t(
+              'two_factor_authentication.aal2_request.piv_cac_only_html',
+              sp_name: service_provider.friendly_name,
+            ),
+          )
+        end
+      end
+    end
+  end
+
   describe '#cancel_link' do
     subject(:cancel_link) { presenter.cancel_link }
 
     context 'default user session context' do
-      let(:user_session_context) { UserSessionContext::AUTHENTICATION_CONTEXT }
+      let(:reauthentication_context) { false }
 
       it { should eq sign_out_path }
     end
 
     context 'reauthentication user session context' do
-      let(:user_session_context) { UserSessionContext::REAUTHENTICATION_CONTEXT }
+      let(:reauthentication_context) { true }
 
       it { should eq account_path }
     end

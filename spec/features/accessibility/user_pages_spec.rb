@@ -138,7 +138,7 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
   scenario 'add phone page' do
     sign_in_and_2fa_user
 
-    visit add_phone_path
+    visit phone_setup_path
 
     expect_page_to_have_no_accessibility_violations(page)
   end

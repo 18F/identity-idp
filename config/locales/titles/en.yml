@@ -52,7 +52,6 @@ en:
       change: Change the password for your account
       forgot: Reset password
     personal_key: Just in case
-    phone_setup: Get your one-time code
     piv_cac_login:
       add: Add your PIV or CAC
       new: Use your PIV/CAC to sign in to your account

@@ -13,7 +13,7 @@ module Idv
 
     def initialize(user, flow_session = {})
       @user = user
-      @ssn = flow_session.dig('pii_from_doc', :ssn)
+      @ssn = flow_session.dig(:pii_from_doc, :ssn)
       @updating_ssn = ssn.present?
     end
 
@@ -23,7 +23,8 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors,
-        extra: { pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]] },
+        extra: { pii_like_keypaths: [[:same_address_as_id], [:errors, :ssn],
+                                     [:error_details, :ssn]] },
       )
     end
 

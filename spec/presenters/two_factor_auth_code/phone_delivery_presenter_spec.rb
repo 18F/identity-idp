@@ -58,14 +58,28 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   end
 
   describe '#troubleshooting_options' do
+    it { expect(presenter.troubleshooting_options.size).to eq(3) }
+
+    it 'includes a link to troubleshoot a missing one-time code' do
+      expect(presenter.troubleshooting_options).to include(
+        an_object_satisfying do |c|
+          c.content == t(
+            'two_factor_authentication.phone_verification.troubleshooting.code_not_received',
+          )
+        end,
+      )
+    end
+
     context 'when phone is unconfirmed' do
       let(:unconfirmed_phone) { true }
       it 'should show an option to change phone number' do
         expect(presenter.troubleshooting_options).to include(
-          {
-            url: add_phone_path,
-            text: t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
-          },
+          an_object_satisfying do |c|
+            c.url == phone_setup_path &&
+              c.content == t(
+                'two_factor_authentication.phone_verification.troubleshooting.change_number',
+              )
+          end,
         )
       end
     end
@@ -73,10 +87,10 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     context 'when phone is confirmed' do
       it 'shpould show an option to show to mfa options list' do
         expect(presenter.troubleshooting_options).to include(
-          {
-            url: login_two_factor_options_path,
-            text: t('two_factor_authentication.login_options_link_text'),
-          },
+          an_object_satisfying do |c|
+            c.url == login_two_factor_options_path &&
+              c.content == t('two_factor_authentication.login_options_link_text')
+          end,
         )
       end
     end

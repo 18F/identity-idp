@@ -271,4 +271,74 @@ RSpec.describe DataPull do
       end
     end
   end
+
+  describe DataPull::UuidExport do
+    subject(:subtask) { DataPull::UuidExport.new }
+
+    let(:user1) { create(:user, :fully_registered) }
+    let(:user2) { create(:user, :fully_registered) }
+
+    let(:agency) { create(:agency) }
+    let(:service_provider) { create(:service_provider, agency_id: agency.id) }
+    let(:other_sp) { create(:service_provider, active: true, agency_id: agency.id) }
+
+    let(:identity) do
+      create(:service_provider_identity, service_provider: service_provider.issuer, user: user1)
+    end
+    let(:other_identity) do
+      create(:service_provider_identity, service_provider: other_sp.issuer, user: user2)
+    end
+
+    let(:agency_identity) do
+      create(:agency_identity, agency: agency, user: user1, uuid: identity.uuid)
+    end
+    let(:other_agency_identity) do
+      create(:agency_identity, agency: agency, user: user2, uuid: other_identity.uuid)
+    end
+
+    let(:args) { [user1.uuid, user2.uuid, 'does-not-exist'] }
+    let(:include_missing) { true }
+    subject(:result) { subtask.run(args: args, config: config) }
+
+    describe '#run' do
+      context 'without requesting issuers' do
+        let(:config) { ScriptBase::Config.new(include_missing: include_missing) }
+
+        it 'return partner UUIDs for all apps', aggregate_failures: true do
+          expected_table = [
+            ['login_uuid', 'agency', 'issuer', 'external_uuid'],
+            [user1.uuid, agency.name, service_provider.issuer, agency_identity.uuid],
+            [user2.uuid, agency.name, other_sp.issuer, other_agency_identity.uuid],
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]'],
+          ]
+
+          expect(result.table).to match_array(expected_table)
+          expect(result.subtask).to eq('uuid-export')
+          expect(result.uuids).to match_array([user1.uuid, user2.uuid])
+        end
+      end
+
+      context 'with requesting issuers' do
+        let(:config) do
+          ScriptBase::Config.new(
+            include_missing: include_missing,
+            requesting_issuers: [service_provider.issuer],
+          )
+        end
+
+        it 'return partner UUIDs for just provided app', aggregate_failures: true do
+          expected_table = [
+            ['login_uuid', 'agency', 'issuer', 'external_uuid'],
+            [user1.uuid, agency.name, service_provider.issuer, agency_identity.uuid],
+            [user2.uuid, '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]'],
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', '[NOT FOUND]'],
+          ]
+
+          expect(result.table).to match_array(expected_table)
+          expect(result.subtask).to eq('uuid-export')
+          expect(result.uuids).to match_array([user1.uuid])
+        end
+      end
+    end
+  end
 end

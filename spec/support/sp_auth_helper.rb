@@ -5,7 +5,7 @@ module SpAuthHelper
     click_link t('links.create_account')
     submit_form_with_valid_email
     click_confirmation_link_in_email(email)
-    submit_form_with_valid_password_confirmation
+    submit_form_with_valid_password
     set_up_2fa_with_valid_phone
     visit sign_out_url
     User.find_with_email(email)
@@ -54,11 +54,7 @@ module SpAuthHelper
     visit sign_out_url
     user.reload
 
-    # Mark IPP as passed
-    enrollment = user.in_person_enrollments.last
-    expect(enrollment).to_not be_nil
-    enrollment.profile.activate_after_passing_in_person
-    enrollment.update(status: :passed)
+    mark_in_person_enrollment_passed(user)
 
     visit_idp_from_sp_with_ial2(sp)
 

@@ -22,10 +22,16 @@ class WebauthnInputComponent < BaseComponent
       :'lg-webauthn-input',
       content,
       **tag_options,
-      hidden: true,
-      platform: platform?.presence,
-      'passkey-supported-only': passkey_supported_only?.presence,
+      **initial_hidden_tag_options,
       'show-unsupported-passkey': show_unsupported_passkey?.presence,
     )
+  end
+
+  def initial_hidden_tag_options
+    if platform? && passkey_supported_only?
+      { hidden: true }
+    else
+      { class: 'js' }
+    end
   end
 end

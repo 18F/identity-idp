@@ -2,6 +2,10 @@
   <% if user_signing_up? %>
     <%= link_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'usa-button usa-button--unstyled' %>
   <% else %>
-    <%= link_to cancel_link_text, link || return_to_sp_cancel_path %>
+    <% if defined?(link_method) %>
+      <%= button_to cancel_link_text, link, method: link_method, class: 'usa-button usa-button--unstyled' %>
+    <% else %>
+      <%= link_to cancel_link_text, link %>
+    <% end %>
   <% end %>
 <% end %>

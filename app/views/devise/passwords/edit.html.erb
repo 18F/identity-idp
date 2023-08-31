@@ -2,7 +2,9 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
-<p><%= t('instructions.password.password_key') %></p>
+<p id="password-description">
+  <%= t('instructions.password.password_key') %>
+</p>
 
 <%= simple_form_for(
       @reset_password_form,
@@ -12,13 +14,12 @@
     ) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
-  <%= render PasswordToggleComponent.new(
+  <%= render PasswordConfirmationComponent.new(
         form: f,
+        password_label: t('forms.passwords.edit.labels.password'),
         field_options: {
-          label: t('forms.passwords.edit.labels.password'),
-          required: true,
           input_html: {
-            autocomplete: 'new-password',
+            aria: { describedby: 'password-description' },
           },
         },
       ) %>

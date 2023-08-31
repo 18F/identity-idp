@@ -17,12 +17,7 @@ module TwoFactorAuthCode
     end
 
     def webauthn_help
-      if service_provider_mfa_policy.phishing_resistant_required? &&
-         service_provider_mfa_policy.allow_user_to_switch_method?
-        t('instructions.mfa.webauthn.confirm_webauthn_or_aal3')
-      elsif service_provider_mfa_policy.phishing_resistant_required?
-        t('instructions.mfa.webauthn.confirm_webauthn_only')
-      elsif platform_authenticator?
+      if platform_authenticator?
         t('instructions.mfa.webauthn.confirm_webauthn_platform', app_name: APP_NAME)
       else
         t('instructions.mfa.webauthn.confirm_webauthn')
@@ -45,28 +40,21 @@ module TwoFactorAuthCode
       end
     end
 
-    def link_text
-      if service_provider_mfa_policy.phishing_resistant_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          t('two_factor_authentication.webauthn_piv_available')
-        else
-          ''
-        end
-      else
-        super
+    def troubleshooting_options
+      options = [choose_another_method_troubleshooting_option]
+      if platform_authenticator?
+        options << BlockLinkComponent.new(
+          url: help_center_redirect_path(
+            category: 'trouble-signing-in',
+            article: 'face-or-touch-unlock',
+            flow: :two_factor_authentication,
+            step: redirect_location_step,
+          ),
+          new_tab: true,
+        ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help'))
       end
-    end
-
-    def link_path
-      if service_provider_mfa_policy.phishing_resistant_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          login_two_factor_piv_cac_url
-        else
-          ''
-        end
-      else
-        super
-      end
+      options << learn_more_about_authentication_options_troubleshooting_option
+      options
     end
 
     def cancel_link
@@ -75,6 +63,10 @@ module TwoFactorAuthCode
       else
         sign_out_path
       end
+    end
+
+    def redirect_location_step
+      :webauthn_verification
     end
 
     def multiple_factors_enabled?

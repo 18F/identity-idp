@@ -4,7 +4,12 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
   let(:user) { build(:user, password: 'old strong password') }
   let(:user_session) { {} }
   let(:password) { 'salty new password' }
-  let(:params) { { password: password } }
+  let(:params) do
+    {
+      password: password,
+      password_confirmation: password,
+    }
+  end
   let(:subject) do
     UpdateUserPasswordForm.new(user, user_session)
   end
@@ -22,6 +27,10 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
             'errors.attributes.password.too_short.other',
             count: Devise.password_length.first,
           )],
+          password_confirmation: [I18n.t(
+            'errors.messages.too_short',
+            count: Devise.password_length.first,
+          )],
         }
 
         expect(UpdateUser).not_to receive(:new)
@@ -29,7 +38,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
         expect(subject.submit(params).to_h).to include(
           success: false,
           errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: hash_including(:password, :password_confirmation),
         )
       end
     end

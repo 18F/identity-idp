@@ -56,7 +56,7 @@ RSpec.describe UserSessionContext do
 
     it 'returns false when context is confirmation context' do
       expect(
-        UserSessionContext.authentication_context?(
+        UserSessionContext.authentication_or_reauthentication_context?(
           UserSessionContext::CONFIRMATION_CONTEXT,
         ),
       ).to eq false

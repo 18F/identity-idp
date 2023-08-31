@@ -13,7 +13,7 @@ RSpec.describe 'Remembering a TOTP device' do
       fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
       check t('forms.messages.remember_device')
       click_submit_default
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       user
     end
 
@@ -32,7 +32,7 @@ RSpec.describe 'Remembering a TOTP device' do
       click_submit_default
       skip_second_mfa_prompt
 
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       user
     end
 
@@ -52,7 +52,7 @@ RSpec.describe 'Remembering a TOTP device' do
       check t('forms.messages.remember_device')
       click_submit_default
       expect(page).to have_current_path(account_two_factor_authentication_path)
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       user
     end
 

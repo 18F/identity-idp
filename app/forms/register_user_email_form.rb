@@ -85,6 +85,8 @@ class RegisterUserEmailForm
     # already taken and if so, we act as if the user registration was successful.
     if email_address_record&.user&.suspended?
       send_suspended_user_email(email_address_record)
+    elsif blocked_email_address
+      send_suspended_user_email(blocked_email_address)
     elsif email_taken? && user_unconfirmed?
       update_user_language_preference
       send_sign_up_unconfirmed_email(request_id)
@@ -112,7 +114,7 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
-      throttled: @rate_limited,
+      rate_limited: @rate_limited,
     }
   end
 
@@ -122,8 +124,8 @@ class RegisterUserEmailForm
     @rate_limited = rate_limiter.limited?
 
     if @rate_limited
-      @analytics.throttler_rate_limit_triggered(
-        throttle_type: :reg_unconfirmed_email,
+      @analytics.rate_limit_reached(
+        limiter_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: false,
@@ -139,8 +141,8 @@ class RegisterUserEmailForm
     @rate_limited = rate_limiter.limited?
 
     if @rate_limited
-      @analytics.throttler_rate_limit_triggered(
-        throttle_type: :reg_confirmed_email,
+      @analytics.rate_limit_reached(
+        limiter_type: :reg_confirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
         email: email, email_already_registered: true,
@@ -174,5 +176,10 @@ class RegisterUserEmailForm
 
   def email_request_id(request_id)
     request_id if request_id.present? && ServiceProviderRequestProxy.find_by(uuid: request_id)
+  end
+
+  def blocked_email_address
+    return @blocked_email_address if defined?(@blocked_email_address)
+    @blocked_email_address = SuspendedEmail.find_with_email(email)
   end
 end

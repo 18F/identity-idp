@@ -5,16 +5,20 @@ module Users
     include PhoneConfirmation
     include MfaSetupConcern
     include RecaptchaConcern
+    include ReauthenticationRequiredConcern
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :confirm_user_in_account_setup
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?
+    before_action :redirect_if_phone_vendor_outage
+    before_action :confirm_recently_authenticated_2fa
+    before_action :check_max_phone_numbers_per_account, only: %i[index create]
 
     helper_method :in_multi_mfa_selection_flow?
 
     def index
+      user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(
         user: current_user,
         analytics: analytics,
@@ -31,7 +35,7 @@ module Users
       if result.success?
         handle_create_success(@new_phone_form.phone)
       elsif recoverable_recaptcha_error?(result)
-        render :spam_protection, locals: { two_factor_options_path: two_factor_options_path }
+        render :spam_protection
       else
         render :index
       end
@@ -45,9 +49,13 @@ module Users
 
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_phone_setup_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      )
+      if in_multi_mfa_selection_flow?
+        analytics.user_registration_phone_setup_visit(
+          enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        )
+      else
+        analytics.add_phone_setup_visit
+      end
     end
 
     def set_setup_presenter
@@ -70,11 +78,27 @@ module Users
           phone: @new_phone_form.phone,
           selected_delivery_method: @new_phone_form.otp_delivery_preference,
           phone_type: @new_phone_form.phone_info&.type,
+          selected_default_number: @new_phone_form.otp_make_default_number,
         )
       else
         flash[:error] = t('errors.messages.phone_duplicate')
         redirect_to phone_setup_url
       end
+    end
+
+    def check_max_phone_numbers_per_account
+      max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
+      return if current_user.phone_configurations.count < max_phones_count
+      flash[:phone_error] = t('users.phones.error_message')
+      redirect_path = request.referer.match(account_two_factor_authentication_url) ?
+                        account_two_factor_authentication_url(anchor: 'phones') :
+                        account_url(anchor: 'phones')
+      redirect_to redirect_path
+    end
+
+    def redirect_if_phone_vendor_outage
+      return unless OutageStatus.new.all_phone_vendor_outage?
+      redirect_to vendor_outage_path(from: :users_phones)
     end
 
     def new_phone_form_params
@@ -87,12 +111,6 @@ module Users
         :recaptcha_version,
         :recaptcha_mock_score,
       )
-    end
-
-    def confirm_user_in_account_setup
-      return if user_fully_authenticated? && in_multi_mfa_selection_flow?
-      return unless MfaPolicy.new(current_user).two_factor_enabled?
-      redirect_to account_path
     end
   end
 end

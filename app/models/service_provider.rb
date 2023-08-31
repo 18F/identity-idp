@@ -5,6 +5,8 @@ class ServiceProvider < ApplicationRecord
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
+  # In order to preserve unique user UUIDs, we do not want to destroy Identity records
+  # when we destroy a ServiceProvider
   has_many :identities, inverse_of: :service_provider_record,
                         foreign_key: 'service_provider',
                         primary_key: 'issuer',

@@ -1,13 +1,18 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      address_edited
       address_verification_mechanism
       applicant
+      document_capture_session_uuid
       flow_path
       go_back_path
       gpo_code_verified
+      had_barcode_attention_error
+      had_barcode_read_failure
       idv_consent_given
       idv_phone_step_document_capture_session_uuid
+      mail_only_warning_shown
       personal_key
       phone_for_mobile_flow
       pii
@@ -15,8 +20,11 @@ module Idv
       profile_confirmation
       profile_id
       profile_step_params
+      redo_document_capture
       resolution_successful
+      skip_hybrid_handoff
       threatmetrix_review_status
+      threatmetrix_session_id
       user_phone_confirmation
       vendor_phone_confirmation
       verify_info_step_document_capture_session_uuid
@@ -50,9 +58,9 @@ module Idv
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
-        deactivation_reason: deactivation_reason,
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: gpo_verification_needed?,
+        in_person_verification_needed: current_user.has_in_person_enrollment?,
       )
 
       profile.activate unless profile.reason_not_to_activate
@@ -68,16 +76,12 @@ module Idv
         move_pii_to_user_session
       elsif address_verification_mechanism == 'gpo'
         create_gpo_entry
-      elsif in_person_enrollment?
+      elsif current_user.has_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           current_user,
           pii,
         )
       end
-    end
-
-    def deactivation_reason
-      :in_person_verification_pending if in_person_enrollment?
     end
 
     def gpo_verification_needed?
@@ -102,7 +106,8 @@ module Idv
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless in_person_enrollment? && current_user.establishing_in_person_enrollment
+      return unless current_user.has_in_person_enrollment?
+
       current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
@@ -136,10 +141,6 @@ module Idv
       parsed_phone = Phonelib.parse(phone)
       phone_e164 = parsed_phone.e164
       failed_phone_step_numbers << phone_e164 if !failed_phone_step_numbers.include?(phone_e164)
-    end
-
-    def in_person_enrollment?
-      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def verify_info_step_complete?
@@ -204,6 +205,10 @@ module Idv
     def invalidate_phone_step!
       session[:vendor_phone_confirmation] = nil
       session[:user_phone_confirmation] = nil
+    end
+
+    def skip_hybrid_handoff?
+      !!session[:skip_hybrid_handoff]
     end
 
     private

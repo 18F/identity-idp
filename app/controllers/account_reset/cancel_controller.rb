@@ -19,9 +19,11 @@ module AccountReset
       analytics.account_reset_cancel(**result.to_h)
       irs_attempts_api_tracker.account_reset_cancel_request
 
-      handle_success if result.success?
-
-      redirect_to root_url
+      if result.success?
+        handle_success
+      else
+        redirect_to root_url
+      end
     end
 
     private
@@ -42,6 +44,7 @@ module AccountReset
         'two_factor_authentication.account_reset.successful_cancel',
         app_name: APP_NAME,
       )
+      redirect_to root_url
     end
 
     def token
