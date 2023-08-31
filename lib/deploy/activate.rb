@@ -61,7 +61,7 @@ module Deploy
       Dir.entries(idp_logos_dir).each do |name|
         next if name.start_with?('.')
         target = File.join(idp_logos_dir, name)
-        File.rm(target) if File.symlink?(target) && !File.file?(target)
+        FileUtils.rm(target) if File.symlink?(target) && !File.file?(target)
       end
       # Public assets: sp-logos
       # Inject the logo files into the app's asset folder. deploy/activate is
