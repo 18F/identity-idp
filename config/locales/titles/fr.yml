@@ -50,7 +50,6 @@ fr:
       logout: Déconnexion OpenID Connect
     passwords:
       change: Changez le mot de passe de votre compte
-      confirm: Confirmez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe
     personal_key: Juste au cas
     phone_setup: Obtenez votre code à usage unique

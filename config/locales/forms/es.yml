@@ -157,21 +157,21 @@ es:
         seguridad?'
     webauthn_platform_setup:
       continue: Continuar
+      info_text: Tendrá que configurar un método de autenticación adicional después de
+        establecer el desbloqueo con la cara o con la huella digital.
       instructions_text: Use el desbloqueo facial o táctil para acceder a su cuenta
         con %{app_name}.
       instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
-      intro_html: '<p>Cuando quiera acceder a su cuenta de %{app_name}, podrá utilizar
-        su dispositivo para escanear su cara o su huella dactilar. El
-        dispositivo confirma si dichos escaneos coinciden con las imágenes que
-        ya tiene almacenadas en su dispositivo.</p><p>Nosotros no copiamos ni
-        almacenamos estas imágenes. Necesitará el mismo dispositivo para iniciar
-        sesión en el futuro utilizando el desbloqueo facial o táctil.
+      intro_html: '<p>Guarde la cara o la huella digital como credencial en su
+        dispositivo. De esta forma, accederá a su cuenta con una de ellas.
+        %{app_name} no almacena la cara ni la huella digital.</p><p>Es posible
+        que necesite usar el mismo dispositivo para ingresar en cada ocasión
         %{link}</p>'
-      intro_link_text: Conozca más sobre el desbloqueo facial o táctil.
+      intro_link_text: Obtenga más información sobre el desbloqueo con la cara o con
+        la huella digital.
       nickname: Apodo de dispositivo.
-      warning_text: En caso de que pierdas o cambies tu dispositivo, tienes que
-        restablecer tu cuenta. Para evitar el bloqueo de la cuenta, te
-        recomendamos que configures diferentes métodos de autenticación.
+      nickname_hint: Si agrega más dispositivos para desbloquear con la cara o con la
+        huella digital, podrá distinguirlos.
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

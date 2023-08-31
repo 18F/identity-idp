@@ -52,8 +52,7 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_webauthn
-      is_platform_auth = params[:platform].to_s == 'true'
-      if is_platform_auth
+      if platform_authenticator?
         flash[:error] = t(
           'two_factor_authentication.webauthn_error.try_again',
           link: view_context.link_to(
@@ -80,7 +79,7 @@ module TwoFactorAuthentication
         data: { credentials:, user_opted_remember_device_cookie: },
         service_provider: current_sp,
         remember_device_default: remember_device_default,
-        platform_authenticator: params[:platform].to_s == 'true',
+        platform_authenticator: platform_authenticator?,
       )
     end
 
@@ -90,14 +89,16 @@ module TwoFactorAuthentication
     end
 
     def credentials
-      MfaContext.new(current_user).webauthn_configurations.map do |configuration|
-        { id: configuration.credential_id, transports: configuration.transports }
-      end
+      MfaContext.new(current_user).webauthn_configurations.
+        select { |configuration| configuration.platform_authenticator? == platform_authenticator? }.
+        map do |configuration|
+          { id: configuration.credential_id, transports: configuration.transports }
+        end
     end
 
     def analytics_properties
       auth_method = if form&.webauthn_configuration&.platform_authenticator ||
-                       params[:platform].to_s == 'true'
+                       platform_authenticator?
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM
                     else
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
@@ -125,6 +126,10 @@ module TwoFactorAuthentication
 
     def check_sp_required_mfa
       check_sp_required_mfa_bypass(auth_method: 'webauthn')
+    end
+
+    def platform_authenticator?
+      params[:platform].to_s == 'true'
     end
   end
 end

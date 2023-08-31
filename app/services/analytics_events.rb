@@ -682,6 +682,21 @@ module AnalyticsEvents
     )
   end
 
+  # The "hybrid handoff" step: Desktop user has submitted their choice to
+  # either continue via desktop ("document_capture" destination) or switch
+  # to mobile phone ("send_link" destination) to perform document upload.
+  # Mobile users still log this event but with skip_upload_step = true
+  # @identity.idp.previous_event_name IdV: doc auth upload submitted
+  def idv_doc_auth_hybrid_handoff_submitted(**extra)
+    track_event('IdV: doc auth hybrid handoff submitted', **extra)
+  end
+
+  # Desktop user has reached the above "hybrid handoff" view
+  # @identity.idp.previous_event_name IdV: doc auth upload visited
+  def idv_doc_auth_hybrid_handoff_visited(**extra)
+    track_event('IdV: doc auth hybrid handoff visited', **extra)
+  end
+
   # @identity.idp.previous_event_name IdV: doc auth send_link submitted
   def idv_doc_auth_link_sent_submitted(**extra)
     track_event('IdV: doc auth link_sent submitted', **extra)
@@ -837,19 +852,6 @@ module AnalyticsEvents
       back_image_fingerprint: back_image_fingerprint,
       **extra,
     )
-  end
-
-  # The "hybrid handoff" step: Desktop user has submitted their choice to
-  # either continue via desktop ("document_capture" destination) or switch
-  # to mobile phone ("send_link" destination) to perform document upload.
-  # Mobile users still log this event but with skip_upload_step = true
-  def idv_doc_auth_upload_submitted(**extra)
-    track_event('IdV: doc auth upload submitted', **extra)
-  end
-
-  # Desktop user has reached the above "hybrid handoff" view
-  def idv_doc_auth_upload_visited(**extra)
-    track_event('IdV: doc auth upload visited', **extra)
   end
 
   def idv_doc_auth_verify_proofing_results(**extra)
@@ -1709,6 +1711,76 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
+      **extra,
+    )
+  end
+
+  # Track sms notification job completion
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_completed(enrollment_code:,
+                                                                     enrollment_id:,
+                                                                     **extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job skipped
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job started
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_job_started(enrollment_code:,
+                                                                   enrollment_id:,
+                                                                   **extra)
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification attempt
+  # @param [boolean] success sms notification successful or not
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Telephony::Response] telephony_result
+  # @param [Hash] extra extra information
+  def idv_in_person_usps_proofing_results_notification_sent_attempted(
+    success:,
+    enrollment_code:,
+    enrollment_id:,
+    telephony_result:,
+    **extra
+  )
+    track_event(
+      'IdV: in person notification SMS send attempted',
+      success: success,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      telephony_result: telephony_result,
       **extra,
     )
   end
@@ -2756,6 +2828,22 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a sucessful openid authorization request is returned
+  # @param [String] client_id
+  # @param [String] code_digest hash of returned "code" param
+  def openid_connect_authorization_handoff(
+    client_id:,
+    code_digest:,
+    **extra
+  )
+    track_event(
+      'OpenID Connect: authorization request handoff',
+      client_id: client_id,
+      code_digest: code_digest,
+      **extra,
+    )
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Integer] ial
@@ -2778,14 +2866,12 @@ module AnalyticsEvents
   # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
-  # @param [String] code_digest hash of returned "code" param
   def openid_connect_request_authorization(
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
     user_fully_authenticated:,
-    code_digest:,
     **extra
   )
     track_event(
@@ -2795,7 +2881,6 @@ module AnalyticsEvents
       acr_values: acr_values,
       unauthorized_scope: unauthorized_scope,
       user_fully_authenticated: user_fully_authenticated,
-      code_digest: code_digest,
       **extra,
     )
   end

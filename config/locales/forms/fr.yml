@@ -162,23 +162,24 @@ fr:
         déverrouillage par empreinte digitale?
     webauthn_platform_setup:
       continue: Continuer
+      info_text: Vous aurez besoin de configurer une méthode d’authentification
+        supplémentaire après que vous aurez configuré le déverrouillage facial
+        ou le déverrouillage tactile.
       instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte avec %{app_name}.
       instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
-      intro_html: '<p>Lorsque vous voulez accéder à votre compte %{app_name}, vous
-        utilisez votre appareil pour numériser votre visage ou votre empreinte
-        digitale. Votre appareil confirme si ces numérisations correspondent aux
-        images que vous avez déjà stockées sur votre appareil.</p><p>Nous ne
-        copions ni ne stockons ces images. Vous aurez besoin du même appareil
-        pour vous connecter en utilisant le déverrouillage facial ou tactile à
-        l’avenir. %{link}</p>'
-      intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
+      intro_html: '<p>Enregistrez votre visage ou votre empreinte digitale en tant
+        qu’identifiant sur votre appareil, afin de pouvoir les utiliser pour
+        accéder à votre compte. %{app_name} ne stocke pas votre visage ni votre
+        empreinte digitale</p><p>Il se peut que vous ayez besoin d’utiliser le
+        même appareil pour vous connecter chaque fois.%{link}</p>'
+      intro_link_text: En savoir plus sur le déverrouillage facial ou sur le
+        déverrouillage tactile.
       nickname: Pseudo dispositivo
-      warning_text: Si vous perdez ou changez votre appareil, vous devrez
-        réinitialiser votre compte. Nous vous conseillons de mettre en place
-        plusieurs méthodes d’authentification afin d’éviter que votre compte ne
-        se bloque.
+      nickname_hint: Au cas où vous ajouteriez d’autres appareils pour le
+        déverrouillage facial ou pour le déverrouillage tactile, vous saurez les
+        reconnaître.
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour

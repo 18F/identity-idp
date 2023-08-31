@@ -29,6 +29,10 @@ module Idv
           end
 
           redirect_to idv_in_person_verify_info_url if updating_address?
+
+          if IdentityConfig.store.in_person_ssn_info_controller_enabled
+            redirect_to idv_in_person_proofing_ssn_url
+          end
         end
 
         def extra_view_variables

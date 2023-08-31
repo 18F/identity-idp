@@ -59,7 +59,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
         end
 
         it 'assigns presenter instance variable with initialized credentials' do
-          get :show, params: { platform: true }
+          get :show
 
           presenter = assigns(:presenter)
 
@@ -70,6 +70,32 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               transports: webauthn_configuration.transports,
             ],
           )
+        end
+
+        context 'with multiple webauthn configured' do
+          let!(:webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:)
+          end
+
+          it 'filters credentials based on requested authenticator attachment' do
+            get :show
+
+            expect(assigns(:presenter).credentials).to eq(
+              [
+                id: webauthn_configuration.credential_id,
+                transports: webauthn_configuration.transports,
+              ],
+            )
+
+            get :show, params: { platform: true }
+
+            expect(assigns(:presenter).credentials).to eq(
+              [
+                id: webauthn_platform_configuration.credential_id,
+                transports: webauthn_platform_configuration.transports,
+              ],
+            )
+          end
         end
       end
     end

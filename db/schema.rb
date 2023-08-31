@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_27_213457) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_144310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "plpgsql"
@@ -309,6 +309,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_213457) do
     t.boolean "capture_secondary_id_enabled", default: false, comment: "record and proof state ID and residential addresses separately"
     t.datetime "status_check_completed_at", comment: "The last time a status check was successfully completed"
     t.boolean "ready_for_status_check", default: false
+    t.datetime "notification_sent_at", comment: "The time a notification was sent"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"

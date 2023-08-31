@@ -59,6 +59,12 @@ RSpec.describe WebauthnSetupPresenter do
     it { is_expected.to eq(t('forms.webauthn_setup.nickname')) }
   end
 
+  describe '#device_nickname_hint' do
+    subject { presenter.device_nickname_hint }
+
+    it { is_expected.to eq(nil) }
+  end
+
   describe '#button_text' do
     subject { presenter.button_text }
 
@@ -96,6 +102,12 @@ RSpec.describe WebauthnSetupPresenter do
       subject { presenter.nickname_label }
 
       it { is_expected.to eq(t('forms.webauthn_platform_setup.nickname')) }
+    end
+
+    describe '#device_nickname_hint' do
+      subject { presenter.device_nickname_hint }
+
+      it { is_expected.to eq(t('forms.webauthn_platform_setup.nickname_hint')) }
     end
 
     describe '#button_text' do

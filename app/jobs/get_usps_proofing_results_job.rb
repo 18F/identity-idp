@@ -245,7 +245,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       status: :expired,
       status_check_completed_at: Time.zone.now,
     )
-
+    # destroy phone number for expired
+    enrollment.notification_phone_configuration&.destroy
     begin
       send_deadline_passed_email(enrollment.user, enrollment) unless enrollment.deadline_passed_sent
     rescue StandardError => err
@@ -393,6 +394,9 @@ class GetUspsProofingResultsJob < ApplicationJob
     else
       handle_unsupported_status(enrollment, response)
     end
+
+    # invoke job to send sms notification
+    send_enrollment_status_sms_notification(enrollment: enrollment)
   end
 
   def send_verified_email(user, enrollment)
@@ -442,6 +446,21 @@ class GetUspsProofingResultsJob < ApplicationJob
     wait_until = proofed_at + mail_delay_hours.hours
     return {} if mail_delay_hours == 0 || wait_until < Time.zone.now
     return { wait_until: wait_until, queue: :intentionally_delayed }
+  end
+
+  # enqueue sms notification job when it's expired or success
+  # @param [InPersonEnrollment] enrollment
+  def send_enrollment_status_sms_notification(enrollment:)
+    return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
+    return if enrollment&.proofed_at.blank?
+    sms_delay_hours = IdentityConfig.store.in_person_results_delay_in_hours ||
+                      DEFAULT_EMAIL_DELAY_IN_HOURS
+    wait_until = enrollment.proofed_at + sms_delay_hours
+    if wait_until > Time.zone.now
+      InPerson::SendProofingNotificationJob.set(wait_until: wait_until).perform_later(enrollment.id)
+    else
+      InPerson::SendProofingNotificationJob.perform_later(enrollment.id)
+    end
   end
 
   def email_analytics_attributes(enrollment)

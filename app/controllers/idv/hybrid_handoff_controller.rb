@@ -9,7 +9,7 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      analytics.idv_doc_auth_upload_visited(**analytics_arguments)
+      analytics.idv_doc_auth_hybrid_handoff_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -63,7 +63,7 @@ module Idv
         idv_session.flow_path = nil
       end
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(telephony_form_response.to_h),
       )
     end
@@ -116,7 +116,7 @@ module Idv
       idv_session.flow_path = 'standard'
       redirect_to idv_document_capture_url
 
-      analytics.idv_doc_auth_upload_submitted(
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
           form_response(destination: :document_capture).to_h,
         ),
@@ -153,7 +153,7 @@ module Idv
 
     def analytics_arguments
       {
-        step: 'upload',
+        step: 'hybrid_handoff',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
         redo_document_capture: params[:redo] ? true : nil,

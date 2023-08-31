@@ -30,15 +30,12 @@ module OpenidConnect
       link_identity_to_service_provider
 
       result = @authorize_form.submit
-      # track successful forms, see pre_validate_authorize_form for unsuccessful
-      # this needs to be after link_identity_to_service_provider so that "code" is present
 
-      referer = request.referer
       if auth_count == 1 && first_visit_for_sp?
-        track_authorize_analytics(result, user_sp_authorized: false, referer: referer)
+        track_handoff_analytics(result, user_sp_authorized: false)
         return redirect_to(user_authorization_confirmation_url)
       end
-      track_authorize_analytics(result, user_sp_authorized: true, referer: referer)
+      track_handoff_analytics(result, user_sp_authorized: true)
       handle_successful_handoff
     end
 
@@ -79,11 +76,12 @@ module OpenidConnect
       delete_branded_experience
     end
 
-    def track_authorize_analytics(result, extra = {})
-      extra[:user_fully_authenticated] = user_fully_authenticated?
-      analytics_attributes = result.to_h.except(:redirect_uri).merge(extra)
-
-      analytics.openid_connect_request_authorization(**analytics_attributes)
+    def track_handoff_analytics(result, attributes = {})
+      analytics.openid_connect_authorization_handoff(
+        **attributes.merge(result.to_h.slice(:client_id, :code_digest)).merge(
+          success: result.success?,
+        ),
+      )
     end
 
     def identity_needs_verification?
@@ -111,10 +109,13 @@ module OpenidConnect
 
     def pre_validate_authorize_form
       result = @authorize_form.submit
+      analytics.openid_connect_request_authorization(
+        **result.to_h.except(:redirect_uri, :code_digest).merge(
+          user_fully_authenticated: user_fully_authenticated?,
+          referer: request.referer,
+        ),
+      )
       return if result.success?
-
-      # track forms with errors
-      track_authorize_analytics(result, referer: request.referer)
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri, allow_other_host: true

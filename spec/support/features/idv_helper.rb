@@ -39,6 +39,10 @@ module IdvHelper
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
+  def click_idv_update
+    click_on t('forms.buttons.submit.update')
+  end
+
   def click_idv_exit
     click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
   end

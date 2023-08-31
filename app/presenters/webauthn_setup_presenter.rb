@@ -29,7 +29,6 @@ class WebauthnSetupPresenter < SetupPresenter
 
   def page_title
     if @platform_authenticator
-      # Note: The following title is incorrect and awaiting copy
       t('headings.webauthn_platform_setup.new')
     else
       t('titles.webauthn_setup')
@@ -41,6 +40,12 @@ class WebauthnSetupPresenter < SetupPresenter
       t('headings.webauthn_platform_setup.new')
     else
       t('headings.webauthn_setup.new')
+    end
+  end
+
+  def device_nickname_hint
+    if @platform_authenticator
+      t('forms.webauthn_platform_setup.nickname_hint')
     end
   end
 

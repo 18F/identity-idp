@@ -50,7 +50,6 @@ en:
       logout: OpenID Connect Logout
     passwords:
       change: Change the password for your account
-      confirm: Confirm the password for your account
       forgot: Reset password
     personal_key: Just in case
     phone_setup: Get your one-time code
