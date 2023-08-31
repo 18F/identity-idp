@@ -346,6 +346,20 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#skip_session_commit' do
+    controller do
+      before_action :skip_session_commit
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    it 'tells rack not to commit session' do
+      get :index
+      expect(request.session_options[:skip]).to eql(true)
+    end
+  end
+
   describe '#redirect_with_flash_if_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }

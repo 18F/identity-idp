@@ -120,13 +120,26 @@ module Idv
     end
 
     def extra_attributes
-      @extra_attributes ||= {
+      return @extra_attributes if defined?(@extra_attributes)
+      @extra_attributes = {
         attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
         pii_like_keypaths: [[:pii]],
         flow_path: params[:flow_path],
       }
+
+      if readable?(:front)
+        @extra_attributes[:front_image_fingerprint] =
+          Digest::SHA256.urlsafe_base64digest(front_image_bytes)
+      end
+
+      if readable?(:back)
+        @extra_attributes[:back_image_fingerprint] =
+          Digest::SHA256.urlsafe_base64digest(back_image_bytes)
+      end
+
+      @extra_attributes
     end
 
     def remaining_attempts
@@ -207,8 +220,13 @@ module Idv
       )
     end
 
+    def readable?(image_key)
+      value = @readable[image_key]
+      value && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
+    end
+
     def as_readable(image_key)
-      return @readable[image_key] if @readable.key?(image_key)
+      return @readable[image_key] if readable?(image_key)
       value = params[image_key]
       @readable[image_key] = begin
         if value.respond_to?(:read)

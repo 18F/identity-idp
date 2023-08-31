@@ -15,38 +15,12 @@
         id: 'webauthn_form',
       },
     ) do |f| %>
-  <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
-  <%= hidden_field_tag :credentials, @presenter.credentials, id: 'credentials' %>
-  <%= hidden_field_tag :credential_id, '', id: 'credential_id' %>
-  <%= hidden_field_tag :authenticator_data, '', id: 'authenticator_data' %>
-  <%= hidden_field_tag :signature, '', id: 'signature' %>
-  <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
-  <%= hidden_field_tag :webauthn_error, '', id: 'webauthn_error' %>
   <%= hidden_field_tag :platform, @presenter.platform_authenticator? %>
 
-  <%= content_tag(
-        :div,
-        id: 'webauthn-auth-in-progress',
-        data: {
-          webauthn_not_enabled_url: @presenter.webauthn_not_enabled_link,
-        },
-      ) do %>
-    <div class="display-none spinner text-center margin-bottom-5" id="spinner">
-      <%= image_tag(
-            asset_url('spinner.gif'),
-            srcset: asset_url('spinner@2x.gif'),
-            height: 144,
-            width: 144,
-            alt: '',
-          ) %>
-      <p class="text-bold margin-y-5">
-        <%= t('two_factor_authentication.webauthn_authenticating') %>
-      </p>
-    </div>
-    <button id="webauthn-button" class="display-block margin-y-3 usa-button usa-button--big usa-button--wide">
-      <%= @presenter.authenticate_button_text %>
-    </button>
-  <% end %>
+  <%= render WebauthnVerifyButtonComponent.new(
+        credentials: @presenter.credentials,
+        user_challenge: user_session[:webauthn_challenge],
+      ).with_content(@presenter.authenticate_button_text) %>
 
   <%= f.input(
         :remember_device,
@@ -64,6 +38,17 @@
     <% if @presenter.link_path.present? %>
       <% c.with_option(url: @presenter.link_path).with_content(@presenter.link_text) %>
     <% end %>
+    <% if @presenter.platform_authenticator? %>
+      <% c.with_option(
+           url: help_center_redirect_path(
+             category: 'trouble-signing-in',
+             article: 'face-or-touch-unlock',
+             flow: :two_factor_authentication,
+             step: :webauthn_verification,
+           ),
+           new_tab: true,
+         ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help')) %>
+    <% end %>
     <% c.with_option(
          url: help_center_redirect_path(
            category: 'get-started',
@@ -76,5 +61,3 @@
   <% end %>
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
-
-<%== javascript_packs_tag_once 'webauthn-authenticate' %>

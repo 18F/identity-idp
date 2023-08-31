@@ -10,18 +10,17 @@ fr:
           réessayer plus tard ou vérifier votre adresse par la poste.
       pinpoint:
         idv:
-          header: Pour le moment, nous ne pouvons vérifier votre identité que par courrier
-          message_html: Malheureusement, %{app_name} rencontre des difficultés techniques.
-            Nous travaillons à la résolution d’une erreur afin de pouvoir
-            vérifier rapidement votre identité pour <strong>%{sp_name}</strong>.
+          header: Nous travaillons à la résolution d’une erreur
+          message_html: '%{sp_name_html} doit s’assurer que c’est bien vous — et non
+            quelqu’un qui se fait passer pour vous.'
           options_html:
-            - <a href="%{status_page_url}" class="usa-link usa-link--external"
-              target="_blank">Obtenez des mises à jour sur notre page de
-              statut</a> pour savoir quand l’erreur est résolue.
             - Continuer maintenant et effectuer la vérification par courrier, ce
               qui prend de <strong>3 à 7 jours ouvrables</strong>.
-            - Quitter Login.gov
+            - Quitter Login.gov.
           options_prompt: 'Vous pouvez :'
+          status_page_html: Malheureusement, nous avons actuellement des difficultés
+            techniques. %{link_html} pour savoir quand l’erreur est résolue.
+          status_page_link: Obtenez des mises à jour sur notre page de statut
       sms:
         default: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment.
           Vous pouvez obtenir un code par appel téléphonique ou choisir une

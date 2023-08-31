@@ -241,7 +241,7 @@ RSpec.describe Telephony::Pinpoint::VoiceSender do
         end
 
         it 'logs a warning and tries the other configs' do
-          expect(Telephony.config.logger).to receive(:warn)
+          expect(Telephony).to receive(:log_warn)
 
           response = voice_sender.deliver(message: message, to: recipient_phone, country_code: 'US')
           expect(response.success?).to eq(true)

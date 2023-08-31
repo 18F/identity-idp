@@ -3,7 +3,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def show
-    @content = MfaConfirmationPresenter.new(current_user)
+    @content = mfa_confirmation_presenter
     analytics.user_registration_suggest_another_mfa_notice_visited
   end
 
@@ -38,6 +38,12 @@ class MfaConfirmationController < ApplicationController
   end
 
   private
+
+  def mfa_confirmation_presenter
+    MfaConfirmationPresenter.new(
+      show_skip_additional_mfa_link: show_skip_additional_mfa_link?,
+    )
+  end
 
   def password
     params.require(:user)[:password]

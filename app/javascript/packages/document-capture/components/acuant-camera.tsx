@@ -202,7 +202,7 @@ interface AcuantDetectedResult {
 }
 
 /**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.8.1#image-from-acuantcameraui-and-acuantcamera
  */
 export interface AcuantSuccessResponse {
   /**
@@ -212,7 +212,7 @@ export interface AcuantSuccessResponse {
   /**
    * Document type
    */
-  cardType: AcuantDocumentType;
+  cardtype: AcuantDocumentType;
   /**
    * Detected image glare
    */

@@ -1,56 +1,38 @@
 import sinon from 'sinon';
 import quibble from 'quibble';
-import type { IsWebauthnSupported } from './is-webauthn-supported';
 import type { IsWebauthnPasskeySupported } from './is-webauthn-passkey-supported';
 
 describe('WebauthnInputElement', () => {
-  const isWebauthnSupported = sinon.stub<
-    Parameters<IsWebauthnSupported>,
-    ReturnType<IsWebauthnSupported>
-  >();
   const isWebauthnPasskeySupported = sinon.stub<
     Parameters<IsWebauthnPasskeySupported>,
     ReturnType<IsWebauthnPasskeySupported>
   >();
 
   before(async () => {
-    quibble('./is-webauthn-supported', isWebauthnSupported);
     quibble('./is-webauthn-passkey-supported', isWebauthnPasskeySupported);
     await import('./webauthn-input-element');
-  });
-
-  beforeEach(() => {
-    isWebauthnSupported.reset();
-    isWebauthnSupported.returns(false);
-    isWebauthnPasskeySupported.reset();
-    isWebauthnPasskeySupported.returns(false);
   });
 
   after(() => {
     quibble.reset();
   });
 
-  context('browser does not support webauthn', () => {
+  context('input for non-platform authenticator', () => {
     beforeEach(() => {
-      isWebauthnSupported.returns(false);
       document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
     });
 
-    it('stays hidden', () => {
+    it('becomes visible', () => {
       const element = document.querySelector('lg-webauthn-input')!;
 
-      expect(element.hidden).to.be.true();
+      expect(element.hidden).to.be.false();
     });
   });
 
-  context('browser supports webauthn', () => {
-    beforeEach(() => {
-      isWebauthnSupported.returns(true);
-    });
-
-    context('input for non-platform authenticator', () => {
+  context('input for platform authenticator', () => {
+    context('no passkey only restriction', () => {
       beforeEach(() => {
-        document.body.innerHTML = `<lg-webauthn-input hidden></lg-webauthn-input>`;
+        document.body.innerHTML = `<lg-webauthn-input platform hidden></lg-webauthn-input>`;
       });
 
       it('becomes visible', () => {
@@ -60,21 +42,9 @@ describe('WebauthnInputElement', () => {
       });
     });
 
-    context('input for platform authenticator', () => {
-      context('no passkey only restriction', () => {
-        beforeEach(() => {
-          document.body.innerHTML = `<lg-webauthn-input platform hidden></lg-webauthn-input>`;
-        });
-
-        it('becomes visible', () => {
-          const element = document.querySelector('lg-webauthn-input')!;
-
-          expect(element.hidden).to.be.false();
-        });
-      });
-
-      context('passkey supported only', () => {
-        context('device does not support passkey', () => {
+    context('passkey supported only', () => {
+      context('device does not support passkey', () => {
+        context('unsupported passkey not shown', () => {
           beforeEach(() => {
             isWebauthnPasskeySupported.returns(false);
             document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only hidden></lg-webauthn-input>`;
@@ -87,17 +57,31 @@ describe('WebauthnInputElement', () => {
           });
         });
 
-        context('device supports passkey', () => {
+        context('unsupported passkey shown', () => {
           beforeEach(() => {
-            isWebauthnPasskeySupported.returns(true);
-            document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only hidden></lg-webauthn-input>`;
+            isWebauthnPasskeySupported.returns(false);
+            document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only show-unsupported-passkey hidden></lg-webauthn-input>`;
           });
 
-          it('becomes visible', () => {
+          it('becomes visible, with modifier class', () => {
             const element = document.querySelector('lg-webauthn-input')!;
 
             expect(element.hidden).to.be.false();
+            expect(element.classList.contains('webauthn-input--unsupported-passkey')).to.be.true();
           });
+        });
+      });
+
+      context('device supports passkey', () => {
+        beforeEach(() => {
+          isWebauthnPasskeySupported.returns(true);
+          document.body.innerHTML = `<lg-webauthn-input platform passkey-supported-only hidden></lg-webauthn-input>`;
+        });
+
+        it('becomes visible', () => {
+          const element = document.querySelector('lg-webauthn-input')!;
+
+          expect(element.hidden).to.be.false();
         });
       });
     });

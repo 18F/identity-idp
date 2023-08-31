@@ -136,6 +136,7 @@ idv_tmx_test_csp_disabled_emails: '[]'
 idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
+in_person_doc_auth_button_enabled: true
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
@@ -151,7 +152,11 @@ in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
 in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
-in_person_usps_outage_message_enabled: false
+in_person_outage_message_enabled: false
+# in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
+# are strings in the format 'Month day, year'
+in_person_outage_expected_update_date: 'October 31, 2024'
+in_person_outage_emailed_by_date: 'November 1, 2024'
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
@@ -247,7 +252,7 @@ proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
 proof_ssn_max_attempt_window_in_minutes: 60
-proofing_device_profiling: disabled
+proofing_device_profiling: enabled
 push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
@@ -305,6 +310,7 @@ session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
+show_unsupported_passkey_platform_authentication_setup: false
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
@@ -400,6 +406,7 @@ development:
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_unsupported_passkey_platform_authentication_setup: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   state_tracking_enabled: true
   telephony_adapter: test

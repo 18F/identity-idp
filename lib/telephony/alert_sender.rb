@@ -71,18 +71,18 @@ module Telephony
         channel: :sms,
         context: context,
       }
-      output = response.to_h.merge(extra).to_json
-      Telephony.config.logger.info(output)
+      output = response.to_h.merge(extra)
+      Telephony.log_info(event: output)
     end
 
     def log_warning(alert, context:)
-      Telephony.config.logger.warn(
+      Telephony.log_warn(
         {
           alert: alert,
           adapter: Telephony.config.adapter,
           channel: :sms,
           context: context,
-        }.to_json,
+        },
       )
     end
   end

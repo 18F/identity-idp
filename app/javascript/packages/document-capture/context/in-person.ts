@@ -7,13 +7,18 @@ export interface InPersonContextProps {
   inPersonURL?: string;
 
   /**
-   * Whether the message indicating a USPS outage should be displayed
+   * Whether the message indicating an outage should be displayed
    */
-  inPersonUspsOutageMessageEnabled: boolean;
+  inPersonOutageMessageEnabled: boolean;
+
+  /**
+   * Date communicated to users regarding expected update about their enrollment after an outage
+   */
+  inPersonOutageExpectedUpdateDate?: string;
 }
 
 const InPersonContext = createContext<InPersonContextProps>({
-  inPersonUspsOutageMessageEnabled: false,
+  inPersonOutageMessageEnabled: false,
 });
 
 InPersonContext.displayName = 'InPersonContext';

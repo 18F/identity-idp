@@ -103,29 +103,56 @@ RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
     end
   end
 
-  context 'USPS outage message flag' do
+  context 'Outage message flag' do
     before(:each) do
     end
 
-    it 'renders the USPS outage alert when flag is enabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+    let(:formatted_date) { 'Tuesday, October 31' }
+    let(:in_person_outage_emailed_by_date) { 'November 1, 2023' }
+    let(:in_person_outage_expected_update_date) { 'October 31, 2023' }
+
+    it 'renders the outage alert when flag is enabled' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return(in_person_outage_emailed_by_date)
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return(in_person_outage_expected_update_date)
 
       render
 
       expect(rendered).to have_content(
-        t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+        t(
+          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+          date: formatted_date,
+        ),
       )
     end
 
-    it 'does not render the USPS outage alert when flag is disabled' do
-      allow(IdentityConfig.store).to receive(:in_person_usps_outage_message_enabled).
+    it 'does not render a warning when outage dates are not included' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_outage_emailed_by_date).
+        and_return('')
+      allow(IdentityConfig.store).to receive(:in_person_outage_expected_update_date).
+        and_return('')
+
+      expect(rendered).to_not have_content(
+        t(
+          'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+          date: formatted_date,
+        ),
+      )
+    end
+
+    it 'does not render the outage alert when flag is disabled' do
+      allow(IdentityConfig.store).to receive(:in_person_outage_message_enabled).
         and_return(false)
 
       render
 
       expect(rendered).not_to have_content(
-        t('idv.failure.exceptions.usps_outage_error_message.ready_to_verify.title'),
+        t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title'),
       )
     end
   end

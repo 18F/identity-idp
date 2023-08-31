@@ -95,6 +95,8 @@ fr:
           gouvernement (PIV ou CAC) pour accéder à vos informations.
         confirm_webauthn_platform: Vous avez activé le déverrouillage facial ou tactile
           pour votre compte %{app_name}.
+      webauthn_platform:
+        learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
       wrong_number: Vous avez entré un mauvais numéro de téléphone?
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir

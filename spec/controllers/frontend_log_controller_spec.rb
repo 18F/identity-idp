@@ -27,6 +27,11 @@ RSpec.describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
+      it 'does not commit session' do
+        action
+        expect(request.session_options[:skip]).to eql(true)
+      end
+
       context 'allowlisted analytics event' do
         let(:event) { 'IdV: download personal key' }
 
@@ -183,6 +188,11 @@ RSpec.describe FrontendLogController do
 
         expect(response).to have_http_status(:ok)
         expect(json[:success]).to eq(true)
+      end
+
+      it 'does not commit session' do
+        action
+        expect(request.session_options[:skip]).to eql(true)
       end
     end
   end

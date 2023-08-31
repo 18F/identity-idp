@@ -358,7 +358,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         end
 
         it 'logs a warning for each failure and tries the other configs' do
-          expect(Telephony.config.logger).to receive(:warn).exactly(2).times
+          expect(Telephony).to receive(:log_warn).exactly(2).times
 
           response = subject.deliver(
             message: 'This is a test!',
@@ -562,7 +562,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       end
 
       it 'logs a warning for each failure and tries the other configs' do
-        expect(Telephony.config.logger).to receive(:warn).exactly(1).times
+        expect(Telephony).to receive(:log_warn).exactly(1).times
 
         expect(phone_info.type).to eq(:voip)
         expect(phone_info.error).to be_nil
@@ -578,7 +578,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       end
 
       it 'logs a warning for each failure and returns unknown' do
-        expect(Telephony.config.logger).to receive(:warn).exactly(2).times
+        expect(Telephony).to receive(:log_warn).exactly(2).times
 
         expect(phone_info.type).to eq(:unknown)
         expect(phone_info.error).to be_kind_of(Seahorse::Client::NetworkingError)

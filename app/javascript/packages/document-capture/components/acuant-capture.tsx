@@ -61,7 +61,7 @@ interface ImageAnalyticsPayload {
 }
 
 interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
-  documentType: AcuantDocumentTypeLabel;
+  documentType: AcuantDocumentTypeLabel | string;
   dpi: number;
   moire: number;
   glare: number;
@@ -135,14 +135,16 @@ export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): e
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  */
-function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel {
+function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel | string {
   switch (documentType) {
+    case 0:
+      return 'none';
     case 1:
       return 'id';
     case 2:
       return 'passport';
     default:
-      return 'none';
+      return `An error in document type returned: ${documentType}`;
   }
 }
 
@@ -433,7 +435,7 @@ function AcuantCapture(
   }
 
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
-    const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
+    const { image, cardtype, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
     const { width, height, data } = image;
@@ -454,7 +456,7 @@ function AcuantCapture(
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
       source: 'acuant',
-      documentType: getDocumentTypeLabel(cardType),
+      documentType: getDocumentTypeLabel(cardtype),
       dpi,
       moire,
       glare,

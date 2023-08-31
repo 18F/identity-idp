@@ -46,7 +46,7 @@ RSpec.describe Telephony::Pinpoint::AwsCredentialBuilder do
       expect(Aws::STS::Client).to receive(:new).and_raise(
         Seahorse::Client::NetworkingError.new(Net::ReadTimeout.new),
       )
-      expect(Telephony.config.logger).to receive(:warn)
+      expect(Telephony).to receive(:log_warn)
 
       result = credential_builder.call
       expect(result).to eq(nil)

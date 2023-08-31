@@ -26,7 +26,8 @@ RSpec.feature 'SP Costing', :email do
       4, 2, 'aamva',
       transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID
     )
-    expect_sp_cost_type(5, 2, 'lexis_nexis_address')
+    expect_sp_cost_type(5, 2, 'threatmetrix')
+    expect_sp_cost_type(6, 2, 'lexis_nexis_address')
   end
 
   it 'logs the cost to the SP for reproofing', js: true do

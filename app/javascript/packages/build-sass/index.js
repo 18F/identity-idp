@@ -1,5 +1,7 @@
-import { basename, join } from 'path';
-import { writeFile } from 'fs/promises';
+import { basename, join } from 'node:path';
+import { createWriteStream } from 'node:fs';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import sass from 'sass-embedded';
 import { transform as lightningTransform, browserslistToTargets } from 'lightningcss';
 import browserslist from 'browserslist';
@@ -48,7 +50,7 @@ export async function buildFile(file, options) {
     outFile = join(outDir, outFile);
   }
 
-  await writeFile(outFile, lightningResult.code);
+  await pipeline(Readable.from(lightningResult.code), createWriteStream(outFile));
 
   return sassResult;
 }

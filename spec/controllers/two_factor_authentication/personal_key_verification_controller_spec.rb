@@ -41,25 +41,20 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
   describe '#create' do
     context 'when the user enters a valid personal key' do
+      let(:user) { create(:user, :with_phone) }
+      let(:personal_key) { { personal_key: PersonalKeyGenerator.new(user).create } }
+      let(:payload) { { personal_key_form: personal_key } }
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone, :with_personal_key))
-        personal_key_generated_at = controller.current_user.
-          encrypted_recovery_code_digest_generated_at
-
-        form = instance_double(PersonalKeyForm)
-        response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
-        )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, 'foo').and_return(form)
-        allow(form).to receive(:submit).and_return(response)
-
+        personal_key
+        sign_in_before_2fa(user)
         stub_analytics
+
         analytics_hash = {
           success: true,
           errors: {},
           multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: personal_key_generated_at,
+          multi_factor_auth_method_created_at: user.reload.
+            encrypted_recovery_code_digest_generated_at,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -112,13 +107,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       before do
         user = create(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
         stub_sign_in_before_2fa(user)
-        form = instance_double(PersonalKeyForm)
-        response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
-        )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, '').and_return(form)
-        allow(form).to receive(:submit).and_return(response)
       end
 
       it 'renders the show page' do
@@ -135,13 +123,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
       before do
         stub_sign_in_before_2fa(user)
-        form = instance_double(PersonalKeyForm)
-        response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
-        )
-        allow(PersonalKeyForm).to receive(:new).
-          with(subject.current_user, 'foo').and_return(form)
-        allow(form).to receive(:submit).and_return(response)
       end
 
       it 'calls handle_invalid_otp' do
@@ -171,7 +152,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         properties = {
           success: false,
-          errors: {},
+          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
+          error_details: { personal_key: [:personal_key_incorrect] },
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at: personal_key_generated_at,
         }

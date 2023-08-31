@@ -2,6 +2,7 @@
 fr:
   date:
     day_names:
+      -  # empty item to have correct weekday offset for %A
       - lundi
       - mardi
       - mercredi
@@ -11,6 +12,7 @@ fr:
       - dimanche
     formats:
       long: '%-d %B %Y'
+      short: '%A, %-d %B'
     month_names:
       -
       - janvier

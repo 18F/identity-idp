@@ -4,6 +4,10 @@ class FrontendLogController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :validate_parameter_types
 
+  # Don't write session data back to Redis for these requests.
+  # In rare circumstances, these writes can clobber other, more important writes.
+  before_action :skip_session_commit
+
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,

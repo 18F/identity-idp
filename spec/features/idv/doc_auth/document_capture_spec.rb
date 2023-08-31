@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.feature 'doc auth document capture step', :js do
+RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -18,42 +18,9 @@ RSpec.feature 'doc auth document capture step', :js do
     sign_in_and_2fa_user(user)
   end
 
-  it 'does not skip ahead in standard desktop flow' do
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_welcome_path)
-    complete_welcome_step
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_agreement_path)
-    complete_agreement_step
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_hybrid_handoff_path)
-  end
-
   context 'standard desktop flow' do
     before do
       complete_doc_auth_steps_before_document_capture_step
-    end
-
-    it 'shows the new DocumentCapture page for desktop standard flow' do
-      expect(page).to have_current_path(idv_document_capture_path)
-
-      expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
-      expect(page).to have_content(t('step_indicator.flows.idv.verify_id'))
-
-      expect(fake_analytics).to have_logged_event(
-        'IdV: doc auth document_capture visited',
-        flow_path: 'standard',
-        step: 'document_capture',
-        analytics_id: 'Doc Auth',
-        irs_reproofing: false,
-        acuant_sdk_upgrade_ab_test_bucket: :default,
-      )
-
-      # it redirects here if trying to move earlier in the flow
-      visit(idv_agreement_path)
-      expect(page).to have_current_path(idv_document_capture_path)
-      visit(idv_hybrid_handoff_url)
-      expect(page).to have_current_path(idv_document_capture_path)
     end
 
     it 'logs return to sp link click' do
@@ -125,13 +92,10 @@ RSpec.feature 'doc auth document capture step', :js do
         end
 
         it 'proceeds to the next page with valid info' do
-          submit_valid_doc_info_and_proceed_to_next_step
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_ssn_url)
         end
       end
-    end
-
-    it 'proceeds to the next page with valid info' do
-      submit_valid_doc_info_and_proceed_to_next_step
     end
 
     it 'catches network connection errors on post_front_image', allow_browser_log: true do
@@ -193,24 +157,5 @@ RSpec.feature 'doc auth document capture step', :js do
 
   def costing_for(cost_type)
     SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
-  end
-
-  def submit_valid_doc_info_and_proceed_to_next_step
-    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-    attach_and_submit_images
-
-    expect(page).to have_current_path(idv_ssn_url)
-    expect_costing_for_document
-    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
-
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_ssn_url)
-    fill_out_ssn_form_ok
-    click_idv_continue
-    complete_verify_step
-    expect(page).to have_current_path(idv_phone_url)
-    visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_phone_url)
   end
 end

@@ -104,6 +104,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
 
         expect(fake_analytics).to have_logged_event(
@@ -136,6 +138,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           user_id: document_capture_session.user.uuid,
           vendor_request_time_in_ms: a_kind_of(Float),
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
       end
 
@@ -196,6 +200,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
         )
       end
 

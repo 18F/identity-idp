@@ -79,6 +79,8 @@ en:
           to verify your identity using a physical device such as a security key
           or government employee ID (PIV or CAC) to access your information.
         confirm_webauthn_platform: You have face or touch unlock enabled for your %{app_name} account.
+      webauthn_platform:
+        learn_more_help: Learn more about face or touch unlock
       wrong_number: Entered the wrong phone number?
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.

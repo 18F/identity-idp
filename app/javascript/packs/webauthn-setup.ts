@@ -1,9 +1,4 @@
-import {
-  isWebauthnSupported,
-  enrollWebauthnDevice,
-  extractCredentials,
-  longToByteArray,
-} from '@18f/identity-webauthn';
+import { enrollWebauthnDevice, extractCredentials, longToByteArray } from '@18f/identity-webauthn';
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
 
@@ -32,9 +27,6 @@ export function reloadWithError(
 }
 
 function webauthn() {
-  if (!isWebauthnSupported()) {
-    reloadWithError('NotSupportedError');
-  }
   const form = document.getElementById('webauthn_form') as HTMLFormElement;
   form.addEventListener('submit', (event) => {
     event.preventDefault();

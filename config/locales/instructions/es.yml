@@ -84,6 +84,8 @@ es:
           para acceder a su información.
         confirm_webauthn_platform: Tiene activado el desbloqueo facial o táctil para su
           cuenta de %{app_name}.
+      webauthn_platform:
+        learn_more_help: Conozca más sobre el desbloqueo facial o táctil
       wrong_number: '¿Ingresó el número de teléfono equivocado?'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'

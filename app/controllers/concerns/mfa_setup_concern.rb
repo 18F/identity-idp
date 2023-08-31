@@ -67,6 +67,11 @@ module MfaSetupConcern
     user_session[:mfa_selection_index] || 0
   end
 
+  def show_skip_additional_mfa_link?
+    !(mfa_context.enabled_mfa_methods_count == 1 &&
+       mfa_context.webauthn_platform_configurations.count == 1)
+  end
+
   private
 
   def determine_next_mfa
