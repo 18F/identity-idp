@@ -5,16 +5,6 @@
       intro: t('idv.getting_started.no_js_intro', sp_name: @sp_name),
     ) do %>
 
-<%= render AlertComponent.new(
-      type: :error,
-      class: [
-        'js-consent-form-alert',
-        'margin-bottom-4',
-        'display-none',
-      ].select(&:present?),
-      message: t('errors.doc_auth.consent_form'),
-    ) %>
-
 <%= render PageHeadingComponent.new.with_content(@title) %>
   <p>
     <%= t(

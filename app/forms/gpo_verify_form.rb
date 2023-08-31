@@ -22,7 +22,7 @@ class GpoVerifyForm
     if result
       pending_profile&.remove_gpo_deactivation_reason
 
-      if profile_has_pending_in_person_enrollment?
+      if user.has_establishing_in_person_enrollment_safe?
         schedule_in_person_enrollment_and_deactivate_profile
       elsif fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
@@ -43,7 +43,7 @@ class GpoVerifyForm
         letter_count: letter_count,
         attempts: attempts,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
-        pending_in_person_enrollment: pending_profile&.pending_in_person_enrollment?,
+        pending_in_person_enrollment: !!pending_profile&.in_person_enrollment&.pending?,
         fraud_check_failed: fraud_check_failed,
       },
     )
@@ -59,10 +59,6 @@ class GpoVerifyForm
     return if otp.blank? || pending_profile.blank?
 
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
-  end
-
-  def profile_has_pending_in_person_enrollment?
-    pending_profile&.pending_in_person_enrollment?
   end
 
   def schedule_in_person_enrollment_and_deactivate_profile
