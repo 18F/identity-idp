@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
 import { transformKeys, snakeCase } from '@18f/identity-address-search';
@@ -16,6 +17,7 @@ export const LOCATIONS_URL = new URL(
 export const ADDRESSES_URL = new URL('/api/addresses', window.location.href).toString();
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
+  const { t } = useI18n();
   const { inPersonURL } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
@@ -26,6 +28,24 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
 
   const [disabledAddressSearch, setDisabledAddressSearch] = useState<boolean>(false);
   const { flowPath } = useContext(UploadContext);
+
+  
+  // temp for testing- remove this!
+  // 1. translations need to be moved
+  // 2. need to set up state to pass into address-search in addition to component
+  // const [address, setAddress] = useState('');
+  const NoResultsHelpCenterMessage = ({ address }) => {
+    // console.log('searchAddress inside original: ', address);
+    // const address = address;
+    return (
+      <div className="grid-col-12 inline-block" style={{display: "inline-block"}}>
+        <h3 role="status">
+          {t('in_person_proofing.body.location.po_search.none_found', {address} )}
+        </h3>
+        <p>{t('in_person_proofing.body.location.po_search.none_found_tip')}</p>
+      </div>
+    )
+  }
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -101,6 +121,10 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         disabled={disabledAddressSearch}
         locationsURL={LOCATIONS_URL}
         addressSearchURL={ADDRESSES_URL}
+        // NoResultsHelpCenterMessage={undefined}
+        // setSearchAddress={undefined}
+        NoResultsHelpCenterMessage={NoResultsHelpCenterMessage}
+        // setSearchAddress={setAddress}
       />
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>

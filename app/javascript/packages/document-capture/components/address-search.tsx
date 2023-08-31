@@ -11,6 +11,7 @@ function AddressSearch({
   handleLocationSelect,
   disabled,
   onFoundLocations,
+  NoResultsHelpCenterMessage,
 }) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -47,6 +48,7 @@ function AddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
+          NoResultsHelpCenterMessage={NoResultsHelpCenterMessage}
         />
       )}
     </>
