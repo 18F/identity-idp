@@ -5,6 +5,7 @@ es:
     account_locked: Cuenta bloqueada temporalmente
     add_info:
       phone: Agregar un número de teléfono
+    backup_codes: No pierda sus códigos de respaldo
     confirmations:
       delete: Por favor confirmar
       new: Reenviar instrucciones de confirmación de su cuenta
@@ -47,7 +48,6 @@ es:
     openid_connect:
       authorization: Autorización de OpenID Connect
       logout: Cierre de sesión de OpenID Connect
-    otp_expired: Su código único ha expirado
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta

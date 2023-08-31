@@ -206,8 +206,6 @@ RSpec.describe Idv::VerifyInfoController do
         controller.
           idv_session.verify_info_step_document_capture_session_uuid = document_capture_session.uuid
         allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
-        allow(IdentityConfig.store).to receive(:irs_attempt_api_track_tmx_fraud_check_event).
-          and_return(true)
       end
 
       context 'when threatmetrix response is Pass' do

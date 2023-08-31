@@ -28,6 +28,8 @@ module Idv
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).
         call('document_capture', :update, true)
 
+      cancel_establishing_in_person_enrollments
+
       if result.success?
         redirect_to idv_ssn_url
       else
@@ -61,6 +63,11 @@ module Idv
       return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
+    end
+
+    def cancel_establishing_in_person_enrollments
+      UspsInPersonProofing::EnrollmentHelper.
+        cancel_stale_establishing_enrollments_for_user(current_user)
     end
 
     def analytics_arguments

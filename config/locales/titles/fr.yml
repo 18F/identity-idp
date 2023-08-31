@@ -5,6 +5,7 @@ fr:
     account_locked: Compte temporairement verrouillé
     add_info:
       phone: Ajouter un numéro de téléphone
+    backup_codes: Ne perdez pas vos codes de sauvegarde
     confirmations:
       delete: Veuillez confirmer
       new: Envoyer les instructions de confirmation pour votre compte
@@ -47,7 +48,6 @@ fr:
     openid_connect:
       authorization: Autorisation OpenID Connect
       logout: Déconnexion OpenID Connect
-    otp_expired: Votre code à usage unique a expiré
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte

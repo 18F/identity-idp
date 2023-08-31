@@ -8,13 +8,6 @@
         "notes": "semver RegExp DoS, pending upstream release, vulnerable path not applicable",
         "expiry": "2023-09-01"
       }
-    },
-    {
-      "GHSA-j8xg-fqg3-53r7": {
-        "active": true,
-        "notes": "word-wrap RegExp DoS, pending upstream release, vulnerable path not applicable",
-        "expiry": "2023-08-01"
-      }
     }
   ]
 }

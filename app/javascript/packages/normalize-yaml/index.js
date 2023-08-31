@@ -12,6 +12,8 @@ import { getVisitors } from './visitors/index.js';
  */
 
 /**
+ * Given an input YAML string and optional options, returns a normalized YAML string.
+ *
  * @param {string} content Original content.
  * @param {NormalizeOptions} options Normalize options.
  *

@@ -22,7 +22,7 @@ module IdvSession
     return if flash[:allow_confirmations_continue]
     return if idv_session.address_confirmed? || idv_session.phone_confirmed?
 
-    redirect_to idv_doc_auth_url
+    redirect_to idv_review_url
   end
 
   def idv_session

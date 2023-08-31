@@ -128,6 +128,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: kind_of(String),
           timestamp: kind_of(String),
           trace_id: nil,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -163,6 +164,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: kind_of(String),
           timestamp: kind_of(String),
           trace_id: nil,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -198,6 +200,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: 'NilClass(low)',
           timestamp: kind_of(String),
           trace_id: nil,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -232,6 +235,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           trace_id: nil,
           queue_name: 'NilClass(low)',
           job_id: job.job_id,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -296,6 +300,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: kind_of(String),
           timestamp: kind_of(String),
           trace_id: nil,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -350,6 +355,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: 'NilClass(low)',
           timestamp: kind_of(String),
           trace_id: nil,
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -385,6 +391,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: 'NilClass(low)',
           job_id: job.job_id,
           scheduled_at: kind_of(String),
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 
@@ -426,6 +433,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           queue_name: kind_of(String),
           job_id: job.job_id,
           exception_class_warn: 'Errno::ECONNREFUSED',
+          log_filename: IdentityJobLogSubscriber::LOG_FILENAME,
         )
       end
 

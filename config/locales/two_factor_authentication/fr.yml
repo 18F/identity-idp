@@ -20,6 +20,17 @@ fr:
     backup_code_header_text: Entrez votre code de sécurité de secours
     backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
       l’avoir entré, vous devrez utiliser une nouvelle clé.
+    backup_codes:
+      add_another_authentication_option: '‹ Ajouter une autre option d’authentification'
+      instructions: Si vous n’avez pas accès à un autre appareil, conservez vos codes
+        de sauvegarde en lieu sûr. Si vous perdez vos codes de sauvegarde, vous
+        ne pourrez plus vous connecter à %{app_name}.
+      new_backup_codes_html: J’ai besoin de nouveaux codes de sauvegarde
+      saved_backup_codes: J’ai sauvegardé mes codes de sauvegarde
+      warning_html: <strong>Vous n’avez configuré que des codes de sauvegarde sur
+        votre compte. </strong>Si vous avez accès à un autre appareil, tel qu’un
+        téléphone, protégez votre compte à l’aide d’une autre méthode
+        d’authentification.
     choose_another_option: '‹ Choisissez une autre option'
     header_text: Entrez votre code à usage unique
     important_alert_icon: Icône d’alerte importante

@@ -30,8 +30,6 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
         issuer == in_person_proofing_enabled_issuer
       end
     end
-
-    assign(:step_url, :idv_doc_auth_step_url)
   end
 
   subject(:render_partial) do

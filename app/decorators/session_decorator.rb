@@ -41,8 +41,6 @@ class SessionDecorator
     false
   end
 
-  def irs_attempts_api_session_id; end
-
   def request_url_params
     {}
   end

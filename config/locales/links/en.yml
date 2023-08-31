@@ -25,5 +25,4 @@ en:
     sign_out: Sign out
     two_factor_authentication:
       send_another_code: Send another code
-      try_again: Try again
     what_is_totp: What is an authentication app?

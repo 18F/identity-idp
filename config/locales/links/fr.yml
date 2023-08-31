@@ -25,5 +25,4 @@ fr:
     sign_out: Déconnexion
     two_factor_authentication:
       send_another_code: Envoyer un autre code
-      try_again: Réessayez
     what_is_totp: Qu’est-ce qu’une application d’authentification?

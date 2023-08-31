@@ -76,7 +76,7 @@ module Idv
       return if current_user.gpo_verification_pending_profile?
       return if idv_session.verify_info_step_complete?
 
-      redirect_to idv_doc_auth_url
+      redirect_to idv_verify_info_url
     end
 
     def resend_letter

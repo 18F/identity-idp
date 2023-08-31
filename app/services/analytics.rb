@@ -4,15 +4,14 @@ class Analytics
   include AnalyticsEvents
   prepend Idv::AnalyticsEventsEnhancer
 
-  attr_reader :user, :request, :sp, :ahoy, :irs_session_id
+  attr_reader :user, :request, :sp, :ahoy
 
-  def initialize(user:, request:, sp:, session:, ahoy: nil, irs_session_id: nil)
+  def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
     @session = session
-    @irs_session_id = irs_session_id
   end
 
   def track_event(event, attributes = {})
@@ -27,7 +26,6 @@ class Analytics
       locale: I18n.locale,
     }
 
-    analytics_hash[:irs_session_id] = irs_session_id if irs_session_id
     analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)

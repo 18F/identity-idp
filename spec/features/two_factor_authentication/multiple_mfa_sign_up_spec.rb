@@ -80,19 +80,20 @@ RSpec.feature 'Multi Two Factor Authentication' do
 
       expect(current_path).to eq authentication_methods_setup_path
 
-      click_2fa_option('backup_code')
+      click_2fa_option('phone')
 
       click_continue
 
-      expect(current_path).to eq backup_code_setup_path
+      expect(page).
+        to have_content t('titles.phone_setup')
 
       click_continue
 
-      expect(page).to have_link(t('components.download_button.label'))
+      fill_in 'new_phone_form_phone', with: '301-555-1212'
+      click_send_one_time_code
 
-      click_continue
-
-      expect(page).to have_content(t('notices.backup_codes_configured'))
+      fill_in_code_with_last_phone_otp
+      click_submit_default
 
       expect(page).to have_current_path(
         auth_method_confirmation_path,
@@ -133,6 +134,42 @@ RSpec.feature 'Multi Two Factor Authentication' do
       click_link t('mfa.skip')
 
       expect(page).to have_current_path(account_path)
+    end
+  end
+
+  context 'when backup codes are the only selected option' do
+    before do
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('backup_code')
+
+      click_continue
+
+      expect(current_path).to eq backup_code_setup_path
+
+      click_continue
+
+      expect(page).to have_link(t('components.download_button.label'))
+
+      click_continue
+
+      expect(page).to have_current_path(
+        auth_method_confirmation_path,
+      )
+
+      click_button t('mfa.skip')
+    end
+
+    it 'goes to the next page after user confirms that they have saved their backup codes' do
+      acknowledge_backup_code_confirmation
+      expect(page).to have_current_path account_path
+    end
+
+    it 'regenerates backup codes path if a user clicks that they need new backup codes' do
+      click_link strip_tags(t('two_factor_authentication.backup_codes.new_backup_codes_html'))
+      expect(page).to have_current_path backup_code_regenerate_path
     end
   end
 

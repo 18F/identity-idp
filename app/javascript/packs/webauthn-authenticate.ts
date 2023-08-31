@@ -4,6 +4,7 @@ function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress')!;
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
 
+  const webauthAlertContainer = document.querySelector('.usa-alert--error')!;
   const webauthnPlatformRequested =
     webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
   const multipleFactorsEnabled =
@@ -35,6 +36,10 @@ function webauthn() {
         (document.getElementById('signature') as HTMLInputElement).value = result.signature;
         webauthnInProgressContainer.classList.add('display-none');
         webauthnSuccessContainer.classList.remove('display-none');
+        // Check if alert container is shown and remove when device passes successfully.
+        if (webauthAlertContainer) {
+          webauthAlertContainer.remove();
+        }
       })
       .catch((error: Error) => {
         (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;

@@ -268,38 +268,6 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#irs_attempts_api_session_id' do
-    context 'with a irs_attempts_api_session_id on the request url' do
-      let(:service_provider_request) do
-        url = 'https://example.com/auth?irs_attempts_api_session_id=123abc'
-        ServiceProviderRequest.new(url: url)
-      end
-
-      it 'returns the value of irs_attempts_api_session_id' do
-        expect(subject.irs_attempts_api_session_id).to eq('123abc')
-      end
-    end
-
-    context 'with a tid on the request url' do
-      let(:service_provider_request) do
-        url = 'https://example.com/auth?tid=123abc'
-        ServiceProviderRequest.new(url: url)
-      end
-
-      it 'returns the value of irs_attempts_api_session_id' do
-        expect(subject.irs_attempts_api_session_id).to eq('123abc')
-      end
-    end
-
-    context 'without a irs_attempts_api_session_id or tid on the request url' do
-      let(:service_provider_request) { ServiceProviderRequest.new }
-
-      it 'returns nil' do
-        expect(subject.irs_attempts_api_session_id).to be_nil
-      end
-    end
-  end
-
   describe '#request_url_params' do
     context 'without url params' do
       it 'returns an empty hash' do
