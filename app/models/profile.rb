@@ -68,6 +68,7 @@ class Profile < ApplicationRecord
     event :fraud_pass do
       transitions(
         from: [
+          :fraud_none, # see GpoVerifyForm#activate_profile
           :fraud_review_pending,
           :fraud_rejection,
         ],
@@ -138,9 +139,8 @@ class Profile < ApplicationRecord
 
   def activate_after_fraud_review_unnecessary
     transaction do
+      fraud_pass
       update!(
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
         fraud_pending_reason: nil,
       )
       activate
