@@ -12,10 +12,7 @@ module Reports
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
       body = report_body.to_json
 
-      [
-        bucket_name, # default reporting bucket
-      ].select(&:present?).
-        each do |bucket_name|
+      if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
           body: body,
