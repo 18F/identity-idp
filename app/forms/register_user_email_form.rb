@@ -71,7 +71,7 @@ class RegisterUserEmailForm
   def build_user_and_email_address_with_email(email:, email_language:)
     self.email_address = user.email_addresses.build(
       user: user,
-      email: email,
+      email: normalized_email(email),
     )
 
     self.email_language = email_language
