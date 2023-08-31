@@ -7,7 +7,7 @@
   "primaryIdType": "State driver's license",
   "transactionStartDateTime": "12/17/2020 033855",
   "transactionEndDateTime": "12/17/2020 034055",
-  "secondaryIdType": "State driver's license",
+  "secondaryIdType": "Visual Inspection of Name and Address on Primary ID Match",
   "fraudSuspected": false,
   "proofingConfirmationNumber": "350040248346701",
   "ippAssuranceLevel": "1.5"
