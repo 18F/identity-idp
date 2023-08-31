@@ -101,6 +101,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
       expect(page).to have_current_path(idv_personal_key_path)
       expect(page).to have_content(t('account.index.verification.success'))
+      expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
 
       expect(profile.active).to be(true)
       expect(profile.deactivation_reason).to be(nil)
@@ -143,7 +144,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
     click_idv_continue
 
-    expect(current_path).to eq idv_doc_auth_welcome_step
+    expect(current_path).to eq idv_welcome_path
   end
 
   it 'allows a user to cancel and start over in the footer' do
@@ -156,6 +157,6 @@ RSpec.feature 'idv gpo otp verification step' do
 
     click_idv_continue
 
-    expect(current_path).to eq idv_doc_auth_welcome_step
+    expect(current_path).to eq idv_welcome_path
   end
 end

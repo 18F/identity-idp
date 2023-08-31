@@ -371,7 +371,7 @@ RSpec.describe Idv::VerifyInfoController do
 
           expect(@analytics).to have_logged_event(
             'IdV: doc auth warning visited',
-            step_name: 'Idv::VerifyInfoController',
+            step_name: 'verify_info',
             remaining_attempts: kind_of(Numeric),
           )
         end

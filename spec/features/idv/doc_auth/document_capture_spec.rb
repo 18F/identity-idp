@@ -20,7 +20,7 @@ RSpec.feature 'doc auth document capture step', :js do
 
   it 'does not skip ahead in standard desktop flow' do
     visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_welcome_step
     visit(idv_document_capture_url)
     expect(page).to have_current_path(idv_agreement_path)
@@ -118,25 +118,20 @@ RSpec.feature 'doc auth document capture step', :js do
         attach_and_submit_images
         expect(fake_attempts_tracker).to have_received(:idv_document_upload_rate_limited)
       end
+
+      context 'successfully processes image on last attempt' do
+        before do
+          DocAuth::Mock::DocAuthMockClient.reset!
+        end
+
+        it 'proceeds to the next page with valid info' do
+          submit_valid_doc_info_and_proceed_to_next_step
+        end
+      end
     end
 
     it 'proceeds to the next page with valid info' do
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_ssn_url)
-      expect_costing_for_document
-      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
-
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_ssn_url)
-      fill_out_ssn_form_ok
-      click_idv_continue
-      complete_verify_step
-      expect(page).to have_current_path(idv_phone_url)
-      visit(idv_document_capture_url)
-      expect(page).to have_current_path(idv_phone_url)
+      submit_valid_doc_info_and_proceed_to_next_step
     end
 
     it 'catches network connection errors on post_front_image', allow_browser_log: true do
@@ -198,5 +193,24 @@ RSpec.feature 'doc auth document capture step', :js do
 
   def costing_for(cost_type)
     SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+  end
+
+  def submit_valid_doc_info_and_proceed_to_next_step
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+    attach_and_submit_images
+
+    expect(page).to have_current_path(idv_ssn_url)
+    expect_costing_for_document
+    expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_ssn_url)
+    fill_out_ssn_form_ok
+    click_idv_continue
+    complete_verify_step
+    expect(page).to have_current_path(idv_phone_url)
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_phone_url)
   end
 end

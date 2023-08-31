@@ -17,7 +17,6 @@ es:
     add_email: Añadir una nueva dirección de correo electrónico
     add_info:
       phone: Agregar un número de teléfono
-    address: Dirección
     cancellations:
       prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:

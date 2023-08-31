@@ -9,8 +9,6 @@ RSpec.feature 'doc auth welcome step' do
   let(:sp_name) { 'Test SP' }
 
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_welcome_controller_enabled).
-      and_return(true)
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
     start, finish = maintenance_window

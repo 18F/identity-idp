@@ -81,7 +81,7 @@ RSpec.feature 'Password recovery via personal key' do
       click_on t('links.account.reactivate.with_key')
       click_on t('links.reverify')
 
-      expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
+      expect(current_path).to eq(idv_welcome_path)
     end
 
     scenario 'resets password, view modal and close it', email: true do

@@ -26,6 +26,7 @@ RSpec.describe 'RateLimitConcern' do
     before(:each) do
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
+      allow(subject).to receive(:flow_session).and_return({})
       routes.draw do
         get 'show' => 'idv/step#show'
         put 'update' => 'idv/step#update'
@@ -75,26 +76,6 @@ RSpec.describe 'RateLimitConcern' do
         get :show
 
         expect(response).to redirect_to idv_phone_errors_failure_url
-      end
-
-      context 'controller and throttle match' do
-        before do
-          allow(subject).to receive(:throttle_and_controller_match).
-            and_return(true)
-        end
-
-        it 'redirects on show' do
-          get :show
-
-          expect(response).to redirect_to idv_phone_errors_failure_url
-        end
-
-        it 'does not redirect on update' do
-          put :update
-
-          expect(response.body).to eq 'Bye'
-          expect(response.status).to eq 200
-        end
       end
     end
   end

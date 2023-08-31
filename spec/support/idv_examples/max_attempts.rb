@@ -51,10 +51,8 @@ RSpec.shared_examples 'verification step max attempts' do |step, sp|
       end
 
       fill_out_phone_form_ok
-      click_idv_continue_for_step(step)
-
-      expect(page).to have_content(t('titles.idv.enter_one_time_code'))
-      expect(page).to have_current_path(idv_otp_verification_path)
+      verify_phone_otp
+      expect(page).to have_current_path(idv_review_path, wait: 10)
     end
   end
 

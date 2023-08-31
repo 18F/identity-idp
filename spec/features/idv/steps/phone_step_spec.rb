@@ -128,7 +128,7 @@ RSpec.feature 'idv phone step', :js do
 
     # Expect to land on doc auth
     expect(page).to have_content(t('doc_auth.headings.welcome'))
-    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    expect(page).to have_current_path(idv_welcome_path)
   end
 
   it 'allows resubmitting form' do

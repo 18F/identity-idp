@@ -27,9 +27,6 @@ module Idv
 
       idv_session.welcome_visited = true
 
-      # for the 50/50 state
-      flow_session['Idv::Steps::WelcomeStep'] = true
-
       redirect_to idv_agreement_url
     end
 

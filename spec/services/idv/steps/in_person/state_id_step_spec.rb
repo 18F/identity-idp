@@ -14,6 +14,7 @@ RSpec.describe Idv::Steps::InPerson::StateIdStep do
       session: { sp: { issuer: service_provider.issuer } },
       params: params,
       current_user: user,
+      url_options: {},
     )
   end
 

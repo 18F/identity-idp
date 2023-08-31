@@ -8,7 +8,8 @@ RSpec.describe Idv::AgreementController do
   before do
     stub_sign_in(user)
     stub_analytics
-    subject.user_session['idv/doc_auth'] = { 'Idv::Steps::WelcomeStep' => true }
+    subject.user_session['idv/doc_auth'] = {}
+    subject.idv_session.welcome_visited = true
   end
 
   describe 'before_actions' do
@@ -56,12 +57,12 @@ RSpec.describe Idv::AgreementController do
     end
 
     context 'welcome step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
-        subject.user_session['idv/doc_auth']['Idv::Steps::WelcomeStep'] = nil
+      it 'redirects to idv_welcome_url' do
+        subject.idv_session.welcome_visited = nil
 
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_welcome_url)
       end
     end
 

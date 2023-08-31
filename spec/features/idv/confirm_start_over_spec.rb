@@ -39,7 +39,7 @@ RSpec.feature 'idv gpo confirm start over', js: true do
 
     click_idv_continue
 
-    expect(current_path).to eq idv_doc_auth_welcome_step
+    expect(current_path).to eq idv_welcome_path
   end
 
   it 'can return back to verify screen from confirm screen' do

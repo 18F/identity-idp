@@ -130,10 +130,10 @@ RSpec.describe IdvController do
       expect(response).to redirect_to reactivate_account_url
     end
 
-    it 'redirects to doc auth if doc auth is enabled and exclusive' do
+    it 'redirects to welcome page if doc auth is enabled and exclusive' do
       get :index
 
-      expect(response).to redirect_to idv_doc_auth_path
+      expect(response).to redirect_to idv_welcome_path
     end
 
     context 'no SP context' do
@@ -163,7 +163,7 @@ RSpec.describe IdvController do
           it 'begins the identity proofing process' do
             get :index
 
-            expect(response).to redirect_to idv_doc_auth_url
+            expect(response).to redirect_to idv_welcome_url
           end
         end
       end
@@ -174,7 +174,7 @@ RSpec.describe IdvController do
         it 'begins the identity proofing process' do
           get :index
 
-          expect(response).to redirect_to idv_doc_auth_url
+          expect(response).to redirect_to idv_welcome_url
         end
       end
     end

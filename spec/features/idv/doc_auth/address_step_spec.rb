@@ -80,7 +80,7 @@ RSpec.feature 'doc auth verify step', :js do
     sign_in_and_2fa_user
     visit idv_address_path
 
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
   end
 
   context 'with no PII in session' do

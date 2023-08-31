@@ -42,7 +42,7 @@ module SpAuthHelper
     fill_in_code_with_last_totp(user)
     click_submit_default
 
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
     begin_in_person_proofing
     complete_all_in_person_proofing_steps
 

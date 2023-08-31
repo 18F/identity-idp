@@ -1,6 +1,5 @@
 module ArcgisApi
   class Geocoder
-    Suggestion = Struct.new(:text, :magic_key, keyword_init: true)
     AddressCandidate = Struct.new(
       :address, :location, :street_address, :city, :state, :zip_code,
       keyword_init: true
@@ -41,26 +40,6 @@ module ArcgisApi
       :SingleLine, # Unvalidated address-like text string used to search for geocoded addresses
     ]
 
-    # Makes an HTTP request to quickly find potential address matches. Each match that is found
-    # will include an associated magic_key value which can later be used to get more details about
-    # the address using the #find_address_candidates method
-    # Requests text input and will only match possible addresses
-    # A maximum of 5 suggestions are included in the suggestions array.
-    # @param text [String]
-    # @return [Array<Suggestion>] Suggestions
-    def suggest(text)
-      params = {
-        text: text,
-        **COMMON_DEFAULT_PARAMETERS,
-      }
-
-      parse_suggestions(
-        faraday.get(IdentityConfig.store.arcgis_api_suggest_url, params, dynamic_headers) do |req|
-          req.options.context = { service_name: 'arcgis_geocoder_suggest' }
-        end.body,
-      )
-    end
-
     # Makes HTTP request to find a full address record using a magic key or single text line
     # @param options [Hash] one of 'magicKey', which is an ID returned from /suggest,
     #   or 'SingleLine', which should be a single string address that includes at least city
@@ -99,11 +78,6 @@ module ArcgisApi
       token, expires = request_token.fetch_values('token', 'expires')
       expires_at = Time.zone.at(expires / 1000)
       Rails.cache.write(API_TOKEN_CACHE_KEY, token, expires_at: expires_at)
-      # If using a redis cache we have to manually set the expires_at. This is because we aren't
-      # using a dedicated Redis cache and instead are just using our existing Redis server with
-      # mixed usage patterns. Without this cache entries don't expire.
-      # More at https://api.rubyonrails.org/classes/ActiveSupport/Cache/RedisCacheStore.html
-      Rails.cache.try(:redis)&.expireat(API_TOKEN_CACHE_KEY, expires_at.to_i)
       token
     end
 
@@ -131,17 +105,6 @@ module ArcgisApi
         conn.response :json, content_type: 'application/json'
 
         yield conn if block_given?
-      end
-    end
-
-    def parse_suggestions(response_body)
-      handle_api_errors(response_body)
-
-      response_body['suggestions'].map do |suggestion|
-        Suggestion.new(
-          text: suggestion['text'],
-          magic_key: suggestion['magicKey'],
-        )
       end
     end
 

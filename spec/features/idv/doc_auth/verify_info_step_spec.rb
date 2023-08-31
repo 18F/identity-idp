@@ -34,7 +34,7 @@ RSpec.feature 'doc auth verify_info step', :js do
     sign_in_and_2fa_user
     visit idv_verify_info_path
 
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    expect(page).to have_current_path(idv_welcome_path)
   end
 
   it 'displays the expected content' do
@@ -158,7 +158,7 @@ RSpec.feature 'doc auth verify_info step', :js do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
-      step_name: 'Idv::VerifyInfoController',
+      step_name: 'verify_info',
       remaining_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
@@ -202,7 +202,7 @@ RSpec.feature 'doc auth verify_info step', :js do
       expect(fake_analytics).to have_logged_event(
         'Throttler Rate Limit Triggered',
         throttle_type: :idv_resolution,
-        step_name: 'Idv::VerifyInfoController',
+        step_name: 'verify_info',
       )
 
       visit idv_verify_info_url
@@ -228,15 +228,12 @@ RSpec.feature 'doc auth verify_info step', :js do
     let(:max_resolution_attempts) { 4 }
     let(:max_ssn_attempts) { 3 }
 
-    it 'throttles ssn and continues when it expires' do
+    before do
       allow(IdentityConfig.store).to receive(:idv_max_attempts).
         and_return(max_resolution_attempts)
 
       allow(IdentityConfig.store).to receive(:proof_ssn_max_attempts).
         and_return(max_ssn_attempts)
-
-      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
-        with({ throttle_context: 'multi-session' })
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
@@ -247,7 +244,11 @@ RSpec.feature 'doc auth verify_info step', :js do
         expect(page).to have_current_path(idv_session_errors_warning_path)
         click_try_again
       end
+    end
 
+    it 'throttles ssn and continues when it expires' do
+      expect(fake_attempts_tracker).to receive(:idv_verification_rate_limited).at_least(1).times.
+        with({ throttle_context: 'multi-session' })
       click_idv_continue
       expect(page).to have_current_path(idv_session_errors_ssn_failure_path)
       expect(fake_analytics).to have_logged_event(
@@ -266,6 +267,28 @@ RSpec.feature 'doc auth verify_info step', :js do
 
         expect(page).to have_current_path(idv_phone_path)
       end
+    end
+
+    it 'continues to next step if ssn successful on last attempt' do
+      expect(fake_attempts_tracker).not_to receive(:idv_verification_rate_limited)
+      click_link t('idv.buttons.change_ssn_label')
+
+      expect(page).to have_current_path(idv_ssn_path)
+      expect(page).to_not have_content(t('doc_auth.headings.capture_complete'))
+      expect(
+        find_field(t('idv.form.ssn_label_html')).value,
+      ).not_to eq(DocAuthHelper::GOOD_SSN.gsub(/\D/, ''))
+
+      fill_in t('idv.form.ssn_label_html'), with: '900456789'
+      click_button t('forms.buttons.submit.update')
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_phone_path)
+      expect(fake_analytics).not_to have_logged_event(
+        'Throttler Rate Limit Triggered',
+        throttle_type: :proof_ssn,
+        step_name: 'verify_info',
+      )
     end
   end
 

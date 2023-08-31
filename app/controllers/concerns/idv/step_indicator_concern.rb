@@ -2,6 +2,22 @@ module Idv
   module StepIndicatorConcern
     extend ActiveSupport::Concern
 
+    STEP_INDICATOR_STEPS = [
+      { name: :getting_started },
+      { name: :verify_id },
+      { name: :verify_info },
+      { name: :verify_phone_or_address },
+      { name: :secure_account },
+    ].freeze
+
+    STEP_INDICATOR_STEPS_GPO = [
+      { name: :getting_started },
+      { name: :verify_id },
+      { name: :verify_info },
+      { name: :get_a_letter },
+      { name: :secure_account },
+    ].freeze
+
     included do
       helper_method :step_indicator_steps
     end
@@ -14,9 +30,9 @@ module Idv
           Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS
         end
       elsif gpo_address_verification?
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
       else
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
       end
     end
 

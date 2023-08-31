@@ -17,7 +17,6 @@ en:
     add_email: Add a new email address
     add_info:
       phone: Add a phone number
-    address: Address
     cancellations:
       prompt: Are you sure you want to cancel?
     confirmations:

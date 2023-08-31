@@ -11,8 +11,8 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:happy_path_events) do
     {
       'IdV: intro visited' => {},
-      'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: consent checkbox toggled' => { checked: true },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
@@ -47,8 +47,8 @@ RSpec.feature 'Analytics Regression', js: true do
   let(:gpo_path_events) do
     {
       'IdV: intro visited' => {},
-      'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth upload visited' => { step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
@@ -75,8 +75,8 @@ RSpec.feature 'Analytics Regression', js: true do
   end
   let(:in_person_path_events) do
     {
-      'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
-      'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1, acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome visited' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
+      'IdV: doc auth welcome submitted' => { step: 'welcome', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement visited' => { step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth agreement submitted' => { success: true, errors: {}, step: 'agreement', analytics_id: 'Doc Auth', irs_reproofing: false },
       'IdV: doc auth upload visited' => { step: 'upload', acuant_sdk_upgrade_ab_test_bucket: :default, analytics_id: 'Doc Auth', irs_reproofing: false },
@@ -97,10 +97,8 @@ RSpec.feature 'Analytics Regression', js: true do
       'IdV: in person proofing address submitted' => { success: true, step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: true },
       'IdV: doc auth ssn visited' => { analytics_id: 'In Person Proofing', step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: true },
       'IdV: doc auth ssn submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'ssn', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: true },
-      'IdV: doc auth verify visited' => { analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, same_address_as_id: true },
-      'IdV: doc auth verify submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'verify', flow_path: 'standard', step_count: 1, irs_reproofing: false, errors: {}, same_address_as_id: true },
-      'IdV: doc auth verify_wait visited' => { analytics_id: 'In Person Proofing', flow_path: 'standard', step: 'verify_wait', step_count: 1, irs_reproofing: false, same_address_as_id: true },
-      'IdV: doc auth optional verify_wait submitted' => { analytics_id: 'In Person Proofing', success: true, step: 'verify_wait_step_show', address_edited: false, ssn_is_unique: true, proofing_results: anything, errors: {} },
+      'IdV: doc auth verify visited' => { analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: true },
+      'IdV: doc auth verify submitted' => { analytics_id: 'In Person Proofing', step: 'verify', flow_path: 'standard', irs_reproofing: false, same_address_as_id: true },
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202', proofing_components: { document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', source_check: 'aamva' }, otp_delivery_preference: 'sms' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '' }, new_phone_added: false, proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', source_check: 'aamva' }, area_code: '202', country_code: 'US', phone_fingerprint: anything },
       'IdV: phone confirmation otp sent' => { success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', proofing_components: { address_check: 'lexis_nexis_address', document_check: 'usps', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', source_check: 'aamva' }, adapter: :test, errors: {}, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything },

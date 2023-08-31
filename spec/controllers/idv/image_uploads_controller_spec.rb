@@ -11,6 +11,7 @@ RSpec.describe Idv::ImageUploadsController do
 
     let(:user) { create(:user) }
     let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let(:flow_path) { 'standard' }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
@@ -18,7 +19,7 @@ RSpec.describe Idv::ImageUploadsController do
         back: DocAuthImageFixtures.document_back_image_multipart,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
-        flow_path: 'standard',
+        flow_path: flow_path,
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
@@ -201,22 +202,39 @@ RSpec.describe Idv::ImageUploadsController do
         )
       end
 
-      it 'returns an error when throttled' do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
-
-        action
-
-        expect(response.status).to eq(429)
-        expect(json).to eq(
+      context 'when throttled' do
+        let(:redirect_url) { idv_session_errors_throttled_url }
+        let(:error_json) do
           {
             success: false,
             errors: [{ field: 'limit', message: 'We couldn’t verify your ID' }],
-            redirect: idv_session_errors_throttled_url,
+            redirect: redirect_url,
             remaining_attempts: 0,
             result_failed: false,
             ocr_pii: nil,
-          },
-        )
+          }
+        end
+
+        before do
+          Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+
+          action
+        end
+
+        context 'hybrid flow' do
+          let(:flow_path) { 'hybrid' }
+          let(:redirect_url) { idv_hybrid_mobile_capture_complete_url }
+
+          it 'returns an error and redirects to capture_complete on hybrid flow' do
+            expect(response.status).to eq(429)
+            expect(json).to eq(error_json)
+          end
+        end
+
+        it 'redirects to session_errors_throttled on (mobile) standard flow' do
+          expect(response.status).to eq(429)
+          expect(json).to eq(error_json)
+        end
       end
 
       it 'tracks events' do

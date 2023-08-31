@@ -7,8 +7,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
-      and_return(true)
   end
 
   it 'provides back buttons for address, state ID, and SSN that discard changes',
@@ -136,103 +134,38 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true do
     expect(page).to have_content(t('titles.idv.phone'))
   end
 
-  context 'with in person verify info controller enabled ' do
-    let(:capture_secondary_id_enabled) { true }
-    let(:enrollment) { InPersonEnrollment.new(capture_secondary_id_enabled:) }
-    let(:user) { user_with_2fa }
-    let(:same_address_as_id) { true }
-    let(:double_address_verification) { true }
+  it 'does not proceed to the next page if resolution fails',
+     allow_browser_log: true do
+    user = user_with_2fa
+    sign_in_and_2fa_user
 
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(true)
-      allow(IdentityConfig.store).to receive(:in_person_verify_info_controller_enabled).
-        and_return(true)
-      allow(user).to receive(:establishing_in_person_enrollment).
-        and_return(enrollment)
-    end
+    begin_in_person_proofing(user)
+    complete_prepare_step(user)
+    complete_location_step(user)
+    complete_state_id_step(user)
+    complete_address_step(user)
+    fill_out_ssn_form_with_ssn_that_fails_resolution
+    click_idv_continue
+    click_idv_continue
 
-    it 'displays expected headers & data on /verify_info',
-       allow_browser_log: true do
-      sign_in_and_2fa_user(user)
-      begin_in_person_proofing(user)
-      complete_prepare_step(user)
-      complete_location_step(user)
-      complete_state_id_step(
-        user, same_address_as_id: same_address_as_id,
-              double_address_verification: double_address_verification
-      )
-      click_idv_continue
-      complete_ssn_step(user)
+    expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
+    click_on t('idv.failure.button.warning')
 
-      # confirm url is /verify_info
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
+    expect(page).to have_current_path(idv_in_person_verify_info_path)
+  end
 
-      # verify page
-      expect(page).to have_content(t('headings.verify'))
+  it 'proceeds to the next page if resolution passes',
+     allow_browser_log: true do
+    user = user_with_2fa
+    sign_in_and_2fa_user
+    begin_in_person_proofing(user)
+    complete_prepare_step(user)
+    complete_location_step(user)
+    complete_state_id_step(user)
+    complete_address_step(user)
+    complete_ssn_step(user)
+    click_idv_continue
 
-      # confirm headers are on template
-      expect(page).to have_content(t('headings.state_id').tr(' ', ' '))
-      expect(page).to have_content(t('headings.residential_address'))
-      expect(page).to have_content(t('headings.ssn'))
-
-      # confirm data is on template
-      expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
-      expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
-      expect(page).to have_text(InPersonHelper::GOOD_DOB_FORMATTED_EVENT)
-      expect(page).to have_text(
-        "#{I18n.t('idv.form.issuing_state')}: #{Idp::Constants::
-        MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION}",
-      ).once
-      expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
-      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1).twice
-      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2).twice
-      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_CITY).twice
-      expect(page).to have_text(
-        Idp::Constants::
-                MOCK_IDV_APPLICANT_STATE_ID_ADDRESS[:identity_doc_address_state],
-      ).twice
-
-      expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
-      expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    end
-
-    it 'does not proceed to the next page if resolution fails',
-       allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing(user)
-      complete_prepare_step(user)
-      complete_location_step(user)
-      complete_state_id_step(
-        user, same_address_as_id: same_address_as_id,
-              double_address_verification: double_address_verification
-      )
-      click_idv_continue
-      fill_out_ssn_form_with_ssn_that_fails_resolution
-      click_idv_continue
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
-      click_on t('idv.failure.button.warning')
-
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
-    end
-
-    it 'proceeds to the next page if resolution passes',
-       allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing(user)
-      complete_prepare_step(user)
-      complete_location_step(user)
-      complete_state_id_step(
-        user, same_address_as_id: same_address_as_id,
-              double_address_verification: double_address_verification
-      )
-      click_idv_continue
-      complete_ssn_step(user)
-      complete_verify_step(user)
-
-      expect(page).to have_content(t('titles.idv.phone'))
-    end
+    expect(page).to have_content(t('titles.idv.phone'))
   end
 end

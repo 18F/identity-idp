@@ -8,7 +8,7 @@ locals:
 %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',

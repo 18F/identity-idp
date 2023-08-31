@@ -17,7 +17,6 @@ fr:
     add_email: Ajouter une nouvelle adresse e-mail
     add_info:
       phone: Ajouter un numéro de téléphone
-    address: Adresse
     cancellations:
       prompt: Es-tu sûre de vouloir annuler?
     confirmations:

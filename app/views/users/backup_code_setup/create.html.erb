@@ -1,19 +1,12 @@
 <% title t('forms.backup_code.title') %>
 
-<%= render PageHeadingComponent.new.with_content(t('forms.backup_code.subtitle')) %>
+<%= render PageHeadingComponent.new.with_content(t('forms.backup_code.title')) %>
 
 <p>
-  <%= t(
-        'users.backup_code.generated_on_html',
-        date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
-      ) %>
+  <%= t('forms.backup_code.subinfo_html', app_name: APP_NAME) %>
 </p>
 
-<p>
-  <%= t('forms.backup_code.subinfo_html') %>
-</p>
-
-<div class="margin-top-4 margin-bottom-5">
+<div class="margin-y-4">
   <div class="grid-row">
     <% [@codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
       <div class="grid-col-12 tablet:grid-col-6">
@@ -27,6 +20,11 @@
       </div>
     <% end %>
   </div>
+
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
+    <%= t('forms.backup_code.caution_codes') %>
+  <% end %>
+
   <div class="margin-top-1">
     <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
       <%= render DownloadButtonComponent.new(
@@ -49,6 +47,13 @@
   </div>
 </div>
 
-<%= form_tag(backup_code_continue_path, method: :patch) do %>
-  <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
+<%= simple_form_for(:backup_code_accepted_form, url: backup_code_continue_path, method: :patch) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :backup_code_notice_accepted,
+        as: :boolean,
+        label: t('forms.backup_code.saved'),
+        required: true,
+      ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-2' %>
 <% end %>

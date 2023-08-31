@@ -497,6 +497,10 @@ RSpec.describe Idv::PhoneController do
           put :create, params: { idv_phone_form: { phone: bad_phone } }
         end
 
+        it 'redirects to fail' do
+          expect(response).to redirect_to idv_phone_errors_failure_url
+        end
+
         it 'tracks throttled event' do
           expect(@analytics).to have_logged_event(
             'Throttler Rate Limit Triggered',

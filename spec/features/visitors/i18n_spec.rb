@@ -119,7 +119,7 @@ RSpec.feature 'Internationalization' do
         click_submit_default
       end
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome, locale: :es)
+      expect(current_path).to eq idv_welcome_path(locale: :es)
       expect(page.document.find('html')['lang']).to eq('es')
     end
   end

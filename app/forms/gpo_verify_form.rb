@@ -24,7 +24,7 @@ class GpoVerifyForm
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
       elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
-        deactivate_for_fraud_review
+        bump_fraud_review_pending_timestamps
       else
         pending_profile&.fraud_reset if pending_profile&.may_fraud_reset?
         activate_profile
@@ -56,8 +56,8 @@ class GpoVerifyForm
     pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
-  def deactivate_for_fraud_review
-    pending_profile&.deactivate_for_fraud_review
+  def bump_fraud_review_pending_timestamps
+    pending_profile&.bump_fraud_review_pending_timestamps
   end
 
   def validate_otp_not_expired

@@ -4,7 +4,7 @@ RSpec.describe 'idv/gpo/index.html.erb' do
   let(:resend_requested) { false }
   let(:user_needs_address_otp_verification) { false }
   let(:go_back_path) { nil }
-  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
+  let(:step_indicator_steps) { Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS }
   let(:presenter) do
     user = build_stubbed(:user, :fully_registered)
     Idv::GpoPresenter.new(user, {})

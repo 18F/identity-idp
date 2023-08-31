@@ -5,4 +5,5 @@ module.exports = /** @type {import('mocha').MochaOptions} */ ({
   file: 'spec/javascript/spec_helper.js',
   extension: ['js', 'jsx', 'ts', 'tsx'],
   loader: ['quibble'],
+  conditions: ['source'],
 });

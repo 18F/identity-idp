@@ -10,7 +10,7 @@ module Idv
     end
 
     def save_profile(
-      fraud_review_needed:,
+      fraud_pending_reason:,
       gpo_verification_needed:,
       deactivation_reason: nil
     )
@@ -20,7 +20,9 @@ module Idv
       profile.proofing_components = current_proofing_components
       profile.save!
       profile.deactivate_for_gpo_verification if gpo_verification_needed
-      profile.deactivate_for_fraud_review if fraud_review_needed
+      if fraud_pending_reason.present?
+        profile.deactivate_for_fraud_review(fraud_pending_reason: fraud_pending_reason)
+      end
       profile
     end
 

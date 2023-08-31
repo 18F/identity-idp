@@ -38,10 +38,6 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
     perform_in_browser(:mobile) do
       visit @sms_link
 
-      # Confirm app disallows jumping ahead to CaptureComplete page
-      visit idv_hybrid_mobile_capture_complete_url
-      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
-
       # Confirm that jumping to LinkSent page does not cause errors
       visit idv_link_sent_url
       expect(page).to have_current_path(root_url)
@@ -108,6 +104,56 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       click_send_link
 
       expect(page).to have_content(t('doc_auth.headings.text_message'))
+    end
+  end
+
+  context 'user is rate limited on mobile' do
+    let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_front_image,
+        response: DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+        ),
+      )
+    end
+
+    it 'it shows capture complete on mobile and error page on desktop', js: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, phone_number)
+        click_send_link
+
+        expect(page).to have_content(t('doc_auth.headings.text_message'))
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+
+        (max_attempts - 1).times do
+          attach_and_submit_images
+          click_on t('idv.failure.button.warning')
+        end
+
+        # final failure
+        attach_and_submit_images
+
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+        expect(page).not_to have_content(t('doc_auth.headings.capture_complete').tr(' ', ' '))
+        expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_session_errors_throttled_path, wait: 10)
+      end
     end
   end
 end

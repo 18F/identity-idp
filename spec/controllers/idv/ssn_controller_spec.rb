@@ -175,12 +175,23 @@ RSpec.describe Idv::SsnController do
         expect(flow_session['pii_from_doc'][:ssn]).to eq(ssn)
       end
 
-      it 'redirects to address controller for Puerto Rico addresses' do
-        flow_session['pii_from_doc'][:state] = 'PR'
+      context 'with a Puerto Rico address' do
+        it 'redirects to address controller after user enters their SSN' do
+          flow_session['pii_from_doc'][:state] = 'PR'
 
-        put :update, params: params
+          put :update, params: params
 
-        expect(response).to redirect_to(idv_address_url)
+          expect(response).to redirect_to(idv_address_url)
+        end
+
+        it 'redirects to the verify info controller if a user is updating their SSN' do
+          flow_session['pii_from_doc'][:ssn] = ssn
+          flow_session['pii_from_doc'][:state] = 'PR'
+
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
       end
 
       it 'logs attempts api event' do

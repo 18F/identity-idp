@@ -46,7 +46,6 @@ arcgis_api_username: ''
 arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
-arcgis_api_suggest_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/suggest'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
@@ -96,7 +95,6 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
 doc_auth_max_submission_attempts_before_native_camera: 2
-doc_auth_welcome_controller_enabled: false
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -152,7 +150,6 @@ in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
 in_person_completion_survey_url: 'https://login.gov'
 in_person_usps_outage_message_enabled: false
-in_person_verify_info_controller_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
@@ -299,6 +296,7 @@ requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
 reset_password_email_window_in_minutes: 60
+rewrite_oidc_request_prompt: true
 risc_notifications_local_enabled: false
 risc_notifications_active_job_enabled: false
 risc_notifications_rate_limit_interval: 60
@@ -316,7 +314,7 @@ service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
 session_encryptor_alert_enabled: false
-session_encryptor_v3_enabled: false
+session_encryptor_v3_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720

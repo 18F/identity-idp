@@ -9,6 +9,8 @@ en:
         - We’ll give you 10 codes that you can download, print, copy or write
           down. You’ll enter one code every time you sign in.
       are_you_sure_title: Are you sure you want to use backup codes?
+      caution_codes: Each code can only be used once. We’ll give you new codes after
+        you use all ten.
       caution_delete: If you delete your backup codes you will no longer be able to
         use them to sign in.
       confirm_delete: Are you sure you want to delete your backup codes?
@@ -16,11 +18,11 @@ en:
       last_code: You used your last backup code. Please print, copy or download the
         codes below. You can use these new codes the next time you sign in.
       regenerate: Get new codes
-      subinfo_html: '<b>Don’t lose these codes</b>. Download, print, or copy them.
-        Each code can only be used once. After you’ve used all 10 codes, we’ll
-        give you 10 new codes.  Keep your codes as safe as your password.'
-      subtitle: Your backup codes
-      title: Backup codes
+      saved: I’ve put my backup codes in a safe place.
+      subinfo_html: '<strong>If you lose your device, you’ll need these codes to sign
+        into %{app_name}.</strong> Save or print them and put them somewhere
+        safe.'
+      title: Save these backup codes
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of
         backup codes. Your original backup codes will no longer be valid.
@@ -134,7 +136,7 @@ en:
     validation:
       required_checkbox: Please check this box to continue
     verify_profile:
-      alert_info: 'We sent a lettter with your one-time code to:'
+      alert_info: 'We sent a letter with your one-time code to:'
       clear_and_start_over: Clear your information and start over
       instructions: Enter the 10-character code from the letter you received.
       name: One-time code
