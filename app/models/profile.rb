@@ -36,7 +36,6 @@ class Profile < ApplicationRecord
   aasm :fraud, column: :fraud_state, timestamps: true do
     state :fraud_none, initial: true
     state :fraud_review_pending, :fraud_rejection, :fraud_passed
-
     event :fraud_review do
       transitions(
         from: [
@@ -77,6 +76,10 @@ class Profile < ApplicationRecord
     end
   end
   # rubocop:enable Metrics/BlockLength
+
+  def fraud_review_pending?
+    fraud_pending_reason.present? && !fraud_rejection?
+  end
 
   def gpo_verification_pending?
     gpo_verification_pending_at.present?
@@ -150,8 +153,10 @@ class Profile < ApplicationRecord
   def activate_after_passing_in_person
     transaction do
       update!(
-        deactivation_reason: nil,
         fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+        deactivation_reason: nil,
       )
       activate
     end
@@ -170,10 +175,6 @@ class Profile < ApplicationRecord
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
-  end
-
-  def has_deactivation_reason?
-    deactivation_reason.present? || has_fraud_deactivation_reason? || gpo_verification_pending?
   end
 
   def has_fraud_deactivation_reason?

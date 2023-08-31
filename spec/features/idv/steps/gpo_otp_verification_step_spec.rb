@@ -26,6 +26,7 @@ RSpec.feature 'idv gpo otp verification step' do
         dob: '1970-01-01',
       },
       fraud_review_pending_at: fraud_review_pending_timestamp,
+      fraud_pending_reason: fraud_pending_reason,
       fraud_rejection_at: fraud_rejection_timestamp,
       fraud_state: fraud_state,
     )
@@ -40,6 +41,7 @@ RSpec.feature 'idv gpo otp verification step' do
   let(:user) { profile.user }
   let(:threatmetrix_enabled) { false }
   let(:fraud_review_pending_timestamp) { nil }
+  let(:fraud_pending_reason) { nil }
   let(:fraud_rejection_timestamp) { nil }
   let(:redirect_after_verification) { nil }
   let(:profile_should_be_active) { true }
@@ -55,6 +57,7 @@ RSpec.feature 'idv gpo otp verification step' do
   context 'ThreatMetrix disabled, but we have ThreatMetrix status on proofing component' do
     let(:threatmetrix_enabled) { false }
     let(:fraud_review_pending_timestamp) { 1.day.ago }
+    let(:fraud_pending_reason) { 'threatmetrix_review' }
     it_behaves_like 'gpo otp verification'
   end
 
@@ -68,6 +71,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
     context 'ThreatMetrix says "review"' do
       let(:fraud_review_pending_timestamp) { 1.day.ago }
+      let(:fraud_pending_reason) { 'threatmetrix_review' }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
@@ -75,6 +79,7 @@ RSpec.feature 'idv gpo otp verification step' do
 
     context 'ThreatMetrix says "reject"' do
       let(:fraud_rejection_timestamp) { 1.day.ago }
+      let(:fraud_pending_reason) { 'threatmetrix_review' }
       let(:profile_should_be_active) { false }
       let(:fraud_review_pending) { true }
       it_behaves_like 'gpo otp verification'
