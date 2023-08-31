@@ -78,11 +78,11 @@ class TwoFactorOptionsForm
   end
 
   def phishing_resistant_and_mfa?
-    mfa_user.enabled_mfa_methods_count >= 1 && in_phishing_resistant_or_piv_cac_required_flow?
+    MfaPolicy.new(user).unphishable? && in_phishing_resistant_or_piv_cac_required_flow?
   end
 
   def missing_selection_error_message
-    if has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow?
+    if has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow? || phishing_resistant_and_mfa?
       t('errors.two_factor_auth_setup.must_select_option')
     elsif platform_auth_only_option?
       t('errors.two_factor_auth_setup.must_select_additional_option')
