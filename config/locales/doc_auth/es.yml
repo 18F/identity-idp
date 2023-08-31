@@ -62,6 +62,8 @@ es:
           compruebe la configuración de su navegador o sistema, recargue esta
           página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
+      card_type: Solo se aceptan licencias de conducir o documentos de identidad
+        estatales.
       dpi:
         failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
           de nuevo.
@@ -123,6 +125,23 @@ es:
         carpeta</lg-underline>
       doc_success: Verificamos sus datos
       selected_file: Archivo seleccionado
+    getting_started:
+      instructions:
+        bullet1: Incluir fotos de su identificación
+        bullet2: Introducir su número de Seguro Social
+        bullet3: Vincular su número de teléfono
+        bullet4: Volver a introducir su contraseña de %{app_name}
+        consent: Al marcar esta casilla, usted permite que %{app_name} solicite,
+          utilice, conserve y comparta su información personal. Los utilizamos
+          para verificar su identidad.
+        getting_started: 'Deberá:'
+        learn_more: Obtenga más información sobre nuestras medidas de privacidad y
+          seguridad
+        text1: Su documento de identidad no puede estar caducado.
+        text2: No necesitará la tarjeta con usted.
+        text3: Su número de teléfono se asocia a su información personal. Después de que
+          lo haya asociado, le enviaremos un código.
+        text4: Su contraseña guarda y encripta su información personal.
     headings:
       address: Actualice su dirección postal
       back: Parte Trasera
@@ -136,6 +155,7 @@ es:
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
       front: Parte Delantera
+      getting_started: Vamos a verificar su identidad para %{sp_name}
       hybrid_handoff: '¿Cómo desea añadir su documento de identidad?'
       interstitial: Estamos procesando sus imágenes
       lets_go: Cómo funciona la verificación de su identidad
@@ -172,6 +192,9 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su documento de identidad expedido por el Estado. Usamos esta
         información para verificar su identidad.
+      getting_started_html: '%{sp_name} necesita asegurarse de que es usted realmente
+        y no alguien que se hace pasar por usted. %{link_html}'
+      getting_started_learn_more: Obtenga más información sobre lo que necesita para verificar su identidad
       hybrid_handoff: Recopilaremos información sobre usted leyendo su documento de
         identidad expedido por el estado.
       image_loaded: Imagen cargada
@@ -191,7 +214,6 @@ es:
         completar la verificación de tu identidad.
       link_sent_complete_polling: El siguiente paso se cargará automáticamente una vez
         que verifiques tu identidad a través de tu teléfono.
-      no_sp_name: La agencia a la que está intentando acceder
       privacy: '%{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Utilizamos sus datos para
         verificar su identidad.'

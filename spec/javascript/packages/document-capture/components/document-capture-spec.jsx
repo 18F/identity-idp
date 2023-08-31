@@ -91,6 +91,7 @@ describe('document-capture/components/document-capture', () => {
         image: {
           data: validUpload,
         },
+        cardtype: 1,
       });
     });
 

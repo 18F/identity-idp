@@ -67,9 +67,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
-doc_auth_error_dpi_threshold: 290
-doc_auth_error_sharpness_threshold: 40
-doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
@@ -95,7 +92,7 @@ doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
-doc_auth_max_capture_attempts_before_native_camera: 2
+doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
@@ -130,6 +127,7 @@ idv_acuant_sdk_version_default: '11.8.2'
 idv_acuant_sdk_version_alternate: '11.8.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
+idv_getting_started_a_b_testing: '{"welcome":100,"getting_started":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_tmx_test_csp_disabled_emails: '[]'
@@ -288,7 +286,6 @@ requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
 reset_password_email_window_in_minutes: 60
-rewrite_oidc_request_prompt: true
 risc_notifications_local_enabled: false
 risc_notifications_active_job_enabled: false
 risc_notifications_rate_limit_interval: 60

@@ -52,6 +52,7 @@ en:
           browser or system settings, reload this page, or upload a photo
           instead.
         failed: Camera failed to start, please try again.
+      card_type: Try again with your driver’s license or state ID card.
       dpi:
         failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
@@ -99,6 +100,23 @@ en:
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       doc_success: We verified your information
       selected_file: Selected file
+    getting_started:
+      instructions:
+        bullet1: Add photos of your ID
+        bullet2: Enter your Social Security number
+        bullet3: Match to your phone number
+        bullet4: Re-enter your %{app_name} password
+        consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+          and share your personal information. We will use it to verify your
+          identity.
+        getting_started: 'You’ll need to:'
+        learn_more: Learn more about our privacy and security measures
+        text1: Use your driver’s license or state ID card. Other forms of ID are not
+          accepted.
+        text2: You will not need your physical SSN card.
+        text3: Your phone number matches you to your personal information. After you
+          match, we’ll send you a code.
+        text4: Your password saves and encrypts your personal information.
     headings:
       address: Update your mailing address
       back: Back
@@ -112,6 +130,7 @@ en:
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
       front: Front
+      getting_started: Let’s verify your identity for %{sp_name}
       hybrid_handoff: How would you like to add your ID?
       interstitial: We are processing your images
       lets_go: How verifying your identity works
@@ -145,6 +164,9 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state‑issued ID. We use this information to verify your
         identity.
+      getting_started_html: '%{sp_name} needs to make sure you are you — not someone
+        pretending to be you. %{link_html}'
+      getting_started_learn_more: Learn more about what you need to verify your identity
       hybrid_handoff: We’ll collect information about you by reading your state‑issued ID.
       image_loaded: Image loaded
       image_loading: Image loading
@@ -160,7 +182,6 @@ en:
         your state‑issued ID.
       link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
       link_sent_complete_polling: The next step will load automatically.
-      no_sp_name: The agency that you are trying to access
       privacy: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We use your data to verify your
         identity.'

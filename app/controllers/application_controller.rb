@@ -421,12 +421,6 @@ class ApplicationController < ActionController::Base
     url = if request_url.path.match?('saml')
             sp_session[:final_auth_request] = true
             complete_saml_url
-          elsif IdentityConfig.store.rewrite_oidc_request_prompt
-            # Login.gov redirects to the orginal request_url after a user authenticates
-            # replace prompt=login with prompt=select_account to prevent sign_out
-            # which should only ever occur once when the user
-            # lands on Login.gov with prompt=login
-            sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
           else
             sp_session[:request_url]
           end

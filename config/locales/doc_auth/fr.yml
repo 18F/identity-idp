@@ -67,6 +67,8 @@ fr:
           Veuillez vérifier les paramètres de votre navigateur ou de votre
           système, recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
+      card_type: Réessayez avec votre permis de conduire ou carte d’identité délivrée
+        par l’État.
       dpi:
         failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
@@ -129,6 +131,23 @@ fr:
         dossier</lg-underline>
       doc_success: Nous avons vérifié vos informations
       selected_file: Fichier sélectionné
+    getting_started:
+      instructions:
+        bullet1: Ajoutez des photos de votre pièce d’identité
+        bullet2: Saisissez votre numéro de sécurité sociale
+        bullet3: Faire correspondre à votre numéro de téléphone
+        bullet4: Saisissez à nouveau votre mot de passe %{app_name}
+        consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
+          conserver et partager vos renseignements personnels. Nous les
+          utilisons pour vérifier votre identité.
+        getting_started: 'Vous aurez besoin de :'
+        learn_more: En savoir plus sur nos mesures de confidentialité et de sécurité
+        text1: Utilisez votre permis de conduire ou votre carte d’identité de l’État.
+          Les autres pièces d’identité ne sont pas acceptées.
+        text2: Vous n’aurez pas besoin de votre carte SSN physique.
+        text3: Votre numéro de téléphone correspond à vos informations personnelles. Une
+          fois la correspondance établie, nous vous enverrons un code.
+        text4: Votre mot de passe sauvegarde et crypte vos informations personnelles.
     headings:
       address: Mettre à jour votre adresse postale
       back: Verso
@@ -142,6 +161,7 @@ fr:
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
       front: Recto
+      getting_started: Vérifions votre identité pour %{sp_name}
       hybrid_handoff: Comment voulez-vous ajouter votre identifiant ?
       interstitial: Nous traitons vos images
       lets_go: Comment fonctionne la vérification de votre identité
@@ -177,6 +197,9 @@ fr:
       document_capture_intro_acknowledgment: Nous recueillons des informations sur
         vous en lisant votre pièce d’identité délivrée par l’État. Nous
         utilisons ces informations pour vérifier votre identité.
+      getting_started_html: '%{sp_name} doit s’assurer que c’est bien vous — et non
+        quelqu’un qui se fait passer pour vous. %{link_html}'
+      getting_started_learn_more: En savoir plus sur ce dont vous avez besoin pour vérifier votre identité
       hybrid_handoff: Nous recueillons des informations sur vous en lisant votre carte
         d’identité délivrée par l’État.
       image_loaded: Image chargée
@@ -198,7 +221,6 @@ fr:
       link_sent_complete_polling: L’étape suivante se chargera automatiquement une
         fois que vous aurez confirmé votre identifiant à l’aide de votre
         téléphone.
-      no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         utilisons vos données pour vérifier votre identité.'

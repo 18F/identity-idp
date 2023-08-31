@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::WelcomeController do
+RSpec.describe Idv::GettingStartedController do
   include IdvHelper
 
   let(:user) { create(:user) }
@@ -25,19 +25,12 @@ RSpec.describe Idv::WelcomeController do
         :check_for_outage,
       )
     end
-
-    it 'includes getting started ab test before_action' do
-      expect(subject).to have_actions(
-        :before,
-        :maybe_redirect_for_getting_started_ab_test,
-      )
-    end
   end
 
   describe '#show' do
-    let(:analytics_name) { 'IdV: doc auth welcome visited' }
+    let(:analytics_name) { 'IdV: doc auth getting_started visited' }
     let(:analytics_args) do
-      { step: 'welcome',
+      { step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
@@ -62,13 +55,21 @@ RSpec.describe Idv::WelcomeController do
       )
     end
 
-    context 'welcome already visited' do
-      it 'redirects to agreement' do
-        subject.idv_session.welcome_visited = true
+    it 'updates DocAuthLog agreement_view_count' do
+      doc_auth_log = DocAuthLog.create(user_id: user.id)
+
+      expect { get :show }.to(
+        change { doc_auth_log.reload.agreement_view_count }.from(0).to(1),
+      )
+    end
+
+    context 'getting_started already visited' do
+      it 'redirects to hybrid_handoff' do
+        subject.idv_session.idv_consent_given = true
 
         get :show
 
-        expect(response).to redirect_to(idv_agreement_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 
@@ -84,22 +85,24 @@ RSpec.describe Idv::WelcomeController do
   end
 
   describe '#update' do
-    let(:analytics_name) { 'IdV: doc auth welcome submitted' }
+    let(:analytics_name) { 'IdV: doc auth getting_started submitted' }
 
     let(:analytics_args) do
-      { step: 'welcome',
+      { success: true,
+        errors: {},
+        step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: false }
     end
 
-    it 'sends analytics_submitted event' do
-      put :update
+    it 'sends analytics_submitted event with consent given' do
+      put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
 
     it 'creates a document capture session' do
-      expect { put :update }.
+      expect { put :update, params: { doc_auth: { ial2_consent_given: 1 } } }.
         to change { subject.user_session['idv/doc_auth'][:document_capture_session_uuid] }.from(nil)
     end
 
@@ -111,7 +114,7 @@ RSpec.describe Idv::WelcomeController do
       end
 
       it 'cancels all previous establishing enrollments' do
-        put :update
+        put :update, params: { doc_auth: { ial2_consent_given: 1 } }
 
         expect(enrollment.reload.status).to eq('cancelled')
         expect(user.establishing_in_person_enrollment).to be_blank

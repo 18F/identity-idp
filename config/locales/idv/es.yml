@@ -174,6 +174,10 @@ es:
       ssn_label: Número de Seguro Social
       state: Estado
       zipcode: Código postal
+    getting_started:
+      no_js_header: Debe habilitar JavaScript para verificar su identidad.
+      no_js_intro: '%{sp_name} requiere que usted verifique su identidad. Debe
+        habilitar JavaScript para continuar con este proceso.'
     images:
       come_back_later: Carta con una marca de verificación
     index:
