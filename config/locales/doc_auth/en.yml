@@ -8,7 +8,7 @@ en:
     buttons:
       add_new_photos: Add new photos
       continue: Continue
-      take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
+      take_or_upload_picture_html: '<lg-take-photo>Take photo</lg-take-photo> or
         <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
       take_picture_retry: Retake photo
@@ -104,7 +104,8 @@ en:
       back: Back
       capture_complete: We verified your ID
       capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
-        information below is incorrect, please %{link} of your state‑issued ID.
+        information below is incorrect, please %{link_html} of your
+        state‑issued ID.
       capture_scan_warning_link: upload new photos
       capture_troubleshooting_tips: Having trouble adding your state‑issued ID?
       document_capture: Add your state‑issued ID
@@ -129,8 +130,8 @@ en:
         services.
       explanation_non_sp_html: You’re using <strong>%{app_name}</strong> to verify your identity.
       only_add_if_text: 'ONLY ADD YOUR ID IF:'
-      only_add_own_account_html: You are using your own %{app_name} account
-      only_add_phone_verify_html: You asked %{app_name} to verify your ID using your phone
+      only_add_own_account: You are using your own %{app_name} account
+      only_add_phone_verify: You asked %{app_name} to verify your ID using your phone
       only_add_sp_services_html: You are trying to access
         <strong>%{service_provider_name}</strong> services
     info:
@@ -175,8 +176,8 @@ en:
         camera and a web browser.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      welcome_html: '%{sp_name} needs to make sure you are you — not someone
-        pretending to be you.'
+      welcome: '%{sp_name} needs to make sure you are you — not someone pretending to
+        be you.'
       you_entered: 'You entered:'
     instructions:
       bullet1: State‑issued ID

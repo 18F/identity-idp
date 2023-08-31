@@ -12,6 +12,8 @@ en:
         Please try clicking the link in your email again.
     attributes:
       password:
+        avoid_using_phrases_that_are_easily_guessed: Avoid using phrases that are easily
+          guessed, such as parts of your email or personal dates.
         too_short:
           one: Password must be at least one character long
           other: Password must be at least %{count} characters long

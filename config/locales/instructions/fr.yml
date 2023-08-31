@@ -24,7 +24,7 @@ fr:
       authenticator:
         confirm_code_html: Entrez le code à partir de votre application
           d’authentification. Si vous avez plusieurs comptes configurés dans
-          votre application, entrez le code correspondant à %{app_name}.
+          votre application, entrez le code correspondant à %{app_name_html}.
         manual_entry: Ou entrez ce code manuellement dans votre application
           d’authentification
       piv_cac:
@@ -41,31 +41,33 @@ fr:
         already_associated_html: Veuillez choisir un certificat associé à une autre
           carte PIV/CAC ou contactez votre administrateur afin de vérifier que
           votre carte PIV/CAC est bien à jour. Si vous pensez que c’est une
-          erreur, %{try_again}.
+          erreur, %{try_again_html}.
         back_to_sign_in: Retourner à vous connecter
-        confirm_piv_cac_html: Veuillez présenter la carte PIV/CAC que vous avez associée
-          à votre compte.
-        confirm_piv_cac_only_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un badge
+        confirm_piv_cac: Veuillez présenter la carte PIV/CAC que vous avez associée à
+          votre compte.
+        confirm_piv_cac_only: Cette application nécessite un niveau de sécurité plus
+          élevé. Vous devez vérifier votre identité à l’aide d’un badge
           d’employé du gouvernement que vous avez précédemment configuré pour
           accéder à vos informations.
-        confirm_piv_cac_or_aal3_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un
-          dispositif physique tel qu’une clé de sécurité ou un badge d’employé
-          du gouvernement (PIV ou CAC) pour accéder à vos informations.
-        did_not_work_html: Veuillez %{please_try_again}. Si ce problème persiste,
+        confirm_piv_cac_or_aal3: Cette application nécessite un niveau de sécurité plus
+          élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
+          physique tel qu’une clé de sécurité ou un badge d’employé du
+          gouvernement (PIV ou CAC) pour accéder à vos informations.
+        did_not_work_html: Veuillez %{please_try_again_html}. Si ce problème persiste,
           contactez l’administrateur de votre agence.
         http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
         no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté et
-          %{try_again}. Si ce problème persiste, contactez l’administrateur de
-          votre agence.
+          %{try_again_html}. Si ce problème persiste, contactez l’administrateur
+          de votre agence.
         not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide
-          pour ce compte. Veuillez %{please_try_again} avec un autre certificat.
-          Si ce problème persiste, contactez l’administrateur de votre agence.
+          pour ce compte. Veuillez %{please_try_again_html} avec un autre
+          certificat. Si ce problème persiste, contactez l’administrateur de
+          votre agence.
         please_try_again: réessayer
-        sign_in: Assurez-vous que <strong>vous disposez d’un compte %{app_name}</strong>
-          et que <strong>vous avez configuré PIV/CAC</strong> en tant que
-          méthode d’authentification à deux facteurs.
+        sign_in_html: Assurez-vous que <strong>vous disposez d’un compte
+          %{app_name}</strong> et que <strong>vous avez configuré
+          PIV/CAC</strong> en tant que méthode d’authentification à deux
+          facteurs.
         step_1: Donnez-lui un surnom
         step_1_info: Si vous ajoutez plus d’un PIV / CAC, vous saurez lequel.
         step_2: Insérez votre PIV/CAC dans votre lecteur de carte
@@ -77,22 +79,22 @@ fr:
         try_again: réessayer
       sms:
         number_message_html: Nous avons envoyé un texte (SMS) avec un code à usage
-          unique au %{number}. Ce code expirera dans %{expiration} minutes.
+          unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
       voice:
         number_message_html: Nous avons envoyé un code à usage unique par appel au
-          %{number}. Ce code expirera dans %{expiration} minutes.
+          %{number_html}. Ce code expirera dans %{expiration} minutes.
       webauthn:
-        confirm_webauthn_html: Présentez la clé de sécurité associée à votre compte.
-        confirm_webauthn_only_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’une clé de
+        confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
+        confirm_webauthn_only: Cette application nécessite un niveau de sécurité plus
+          élevé. Vous devez vérifier votre identité à l’aide d’une clé de
           sécurité que vous avez précédemment configurée pour accéder à vos
           informations.
-        confirm_webauthn_or_aal3_html: Cette application nécessite un niveau de sécurité
-          plus élevé. Vous devez vérifier votre identité à l’aide d’un
-          dispositif physique tel qu’une clé de sécurité ou un badge d’employé
-          du gouvernement (PIV ou CAC) pour accéder à vos informations.
-        confirm_webauthn_platform_html: Vous avez activé le déverrouillage facial ou
-          tactile pour votre compte %{app_name}.
+        confirm_webauthn_or_aal3: Cette application nécessite un niveau de sécurité plus
+          élevé. Vous devez vérifier votre identité à l’aide d’un dispositif
+          physique tel qu’une clé de sécurité ou un badge d’employé du
+          gouvernement (PIV ou CAC) pour accéder à vos informations.
+        confirm_webauthn_platform: Vous avez activé le déverrouillage facial ou tactile
+          pour votre compte %{app_name}.
       wrong_number: Vous avez entré un mauvais numéro de téléphone?
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir

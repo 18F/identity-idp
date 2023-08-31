@@ -4,14 +4,13 @@ fr:
     account_reset:
       cancel_link: Annuler votre demande
       link: supprimer votre compte
-      pending_html: Vous avez actuellement une demande en attente pour supprimer votre
+      pending: Vous avez actuellement une demande en attente pour supprimer votre
         compte.  Il faut compter 24 heures à partir du moment où vous avez fait
         la demande pour terminer le processus.  Veuillez vérifier plus tard.
-        %{cancel_link}
       successful_cancel: Je vous remercie. Votre demande de suppression de votre
         compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez pas utiliser l’une de ces options de sécurité
-        ci-dessus, vous pouvez réinitialiser vos préférences par %{link}..
+        ci-dessus, vous pouvez réinitialiser vos préférences par %{link_html}.
     attempt_remaining_warning_html:
       one: Il vous reste <strong>%{count} tentative</strong>.
       other: Il vous reste <strong>%{count} tentatives</strong>.
@@ -91,12 +90,12 @@ fr:
     opt_in:
       cant_use_phone: Vous ne pouvez pas utiliser votre téléphone?
       error_retry: Désolé, nous avons des difficultés à vous connecter. Veuillez réessayer.
-      opted_out_html: Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
-        Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
-        numéro de téléphone.
+      opted_out_html: Vous avez choisi de ne plus recevoir de SMS à
+        %{phone_number_html}. Vous pouvez vous inscrire et recevoir à nouveau un
+        code de sécurité à ce numéro de téléphone.
       opted_out_last_30d_html: Vous avez choisi de ne plus recevoir de SMS au
-        %{phone_number} au cours des 30 derniers jours. Nous ne pouvons opter
-        pour un numéro de téléphone qu’une fois tous les 30 jours.
+        %{phone_number_html} au cours des 30 derniers jours. Nous ne pouvons
+        opter pour un numéro de téléphone qu’une fois tous les 30 jours.
       title: Nous n’avons pas pu envoyer un code de sécurité à votre numéro de
         téléphone
       wait_30d_opt_in: Après 30 jours, vous pouvez vous inscrire et recevoir un code
@@ -152,8 +151,9 @@ fr:
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     recaptcha:
       disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les
-        %{google_policy_link} et les %{google_tos_link} de Google s’appliquent.
-        Lisez les %{login_tos_link} de %{app_name} pour les mobiles.
+        %{google_policy_link_html} et les %{google_tos_link_html} de Google
+        s’appliquent. Lisez les %{login_tos_link_html} de %{app_name} pour les
+        mobiles.
       google_policy_link: règles de confidentialité
       google_tos_link: conditions de service
       login_tos_link: conditions d’utilisation

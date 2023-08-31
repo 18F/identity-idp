@@ -10,7 +10,9 @@ class SendSignUpEmailConfirmation
   def call(request_id: nil, instructions: nil, password_reset_requested: false)
     update_email_address_record
 
-    if password_reset_requested && !user.confirmed?
+    if user.suspended?
+      send_suspended_user_email
+    elsif password_reset_requested && !user.confirmed?
       send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
     else
       send_confirmation_email(request_id, instructions)
@@ -65,6 +67,13 @@ class SendSignUpEmailConfirmation
       request_id: request_id,
       instructions: instructions,
     ).deliver_now_or_later
+  end
+
+  def send_suspended_user_email
+    UserMailer.with(
+      user: user,
+      email_address: email_address,
+    ).suspended_create_account.deliver_now_or_later
   end
 
   def handle_multiple_email_address_error

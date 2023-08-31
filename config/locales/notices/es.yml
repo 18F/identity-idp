@@ -15,7 +15,7 @@ es:
       resend_email_success: Enviamos otro email para restablecer la contraseña.
       use_diff_email:
         link: crear una cuenta nueva
-        text_html: O, %{link} utilizando un email diferente.
+        text_html: O, %{link_html} utilizando un email diferente.
     maintenance:
       contact_us: Contacta con nosotros
       currently_under_maintenance_html: Actualmente estamos <b>en mantenimiento hasta
@@ -49,24 +49,25 @@ es:
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión
-        live_region_message_html: Tu sesión se cerrará en %{time_left_in_session}.
+        live_region_message_html: Tu sesión se cerrará en %{time_left_in_session_html}.
           Selecciona “seguir conectado” para mantener tu sesión activa.
           Seleccione “desconécteme” para cerrar la sesión.
-        message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su acceso.
+        message_html: Para su seguridad, en %{time_left_in_session_html} cancelaremos su
+          acceso.
         sign_out: Cancelar el inicio de sesión
       signed_in:
         continue: Manténgame conectado
-        live_region_message_html: Tu sesión se cerrará en %{time_left_in_session}.
+        live_region_message_html: Tu sesión se cerrará en %{time_left_in_session_html}.
           Selecciona “seguir conectado” para mantener tu sesión activa.
           Seleccione “desconécteme” para cerrar la sesión.
         message_html: Para su seguridad, terminaremos su sesión en
-          %{time_left_in_session} a menos que nos indique lo contrario.
+          %{time_left_in_session_html} a menos que nos indique lo contrario.
         sign_out: Desconécteme
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
     totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:
       link: use un email diferente
-      text_html: O %{link}
+      text_html: O %{link_html}
     webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
     webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.
     webauthn_platform_configured: Desbloqueo facial o táctil fue agregada a tu cuenta.

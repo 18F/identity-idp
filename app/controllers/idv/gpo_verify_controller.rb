@@ -9,6 +9,12 @@ module Idv
 
     def index
       analytics.idv_gpo_verification_visited
+
+      if rate_limiter.limited?
+        render_rate_limited
+        return
+      end
+
       gpo_mail = Idv::GpoMail.new(current_user)
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
@@ -18,9 +24,7 @@ module Idv
         !gpo_mail.mail_spammed? &&
         !gpo_mail.profile_too_old?
 
-      if rate_limiter.limited?
-        render_rate_limited
-      elsif pii_locked?
+      if pii_locked?
         redirect_to capture_password_url
       else
         render :index
@@ -32,13 +36,13 @@ module Idv
     end
 
     def create
-      @gpo_verify_form = build_gpo_verify_form
-
-      rate_limiter.increment!
       if rate_limiter.limited?
         render_rate_limited
         return
       end
+      rate_limiter.increment!
+
+      @gpo_verify_form = build_gpo_verify_form
 
       result = @gpo_verify_form.submit
       analytics.idv_gpo_verification_submitted(**result.to_h)

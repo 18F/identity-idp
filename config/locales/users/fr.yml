@@ -24,7 +24,7 @@ fr:
         code_example: Un exemple de code personnel à 16 caractères
         preview: Aperçu du code personnel
       confirmation_error: Vous avez entré un clé personnelle erronée.
-      generated_on_html: Votre clé personnelle a été générée le %{date}
+      generated_on_html: Votre clé personnelle a été générée le %{date_html}
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
     rules_of_use:
@@ -37,5 +37,5 @@ fr:
         <li>Comment nous utilisons vos informations et vos droits sur ces informations, et</li>
         <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service %{app_name}.</li>
         </ul>
-      overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
-        la case ci-dessous pour continuer.
+      overview_html: Nous avons mis à jour notre %{link_html}. Veuillez consulter et
+        cocher la case ci-dessous pour continuer.

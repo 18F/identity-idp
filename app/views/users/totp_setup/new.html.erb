@@ -3,10 +3,8 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.totp_setup.new')) %>
 
 <p>
-  <%= t(
-        'forms.totp_setup.totp_intro_html',
-        link: new_tab_link_to(t('links.what_is_totp'), MarketingSite.help_authentication_app_url),
-      ) %>
+  <%= t('forms.totp_setup.totp_intro') %>
+  <%= new_tab_link_to(t('links.what_is_totp'), MarketingSite.help_authentication_app_url) %>
 </p>
 
 <%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>

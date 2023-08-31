@@ -24,12 +24,17 @@ class BackupCodeGenerator
 
   # @return [Boolean]
   def verify(plaintext_code)
-    return false unless plaintext_code.present?
+    if_valid_consume_code_return_config(plaintext_code).present?
+  end
+
+  # @return [BackupCodeConfiguration, nil]
+  def if_valid_consume_code_return_config(plaintext_code)
+    return unless plaintext_code.present?
     backup_code = RandomPhrase.normalize(plaintext_code)
-    code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
-    return false unless code_usable?(code)
-    code.update!(used_at: Time.zone.now)
-    true
+    config = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
+    return unless code_usable?(config)
+    config.update!(used_at: Time.zone.now)
+    config
   end
 
   def delete_existing_codes

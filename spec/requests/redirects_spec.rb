@@ -40,4 +40,16 @@ RSpec.describe 'Redirecting Legacy Routes', type: :request do
       expect(response).to redirect_to('/verify/by_mail/confirm_start_over')
     end
   end
+
+  describe '/verify/doc_auth/:step' do
+    it 'redirects to /verify/welcome' do
+      get '/verify/doc_auth/document_capture'
+
+      expect(response).to redirect_to('/verify/welcome')
+
+      get '/verify/doc_auth/welcome'
+
+      expect(response).to redirect_to('/verify/welcome')
+    end
+  end
 end

@@ -26,7 +26,7 @@
 
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.welcome')) %>
     <p>
-      <%= t('doc_auth.info.welcome_html', sp_name: decorated_session.sp_name || t('doc_auth.info.no_sp_name')) %>
+      <%= t('doc_auth.info.welcome', sp_name: decorated_session.sp_name || t('doc_auth.info.no_sp_name')) %>
     </p>
 
     <h2><%= t('doc_auth.instructions.welcome') %></h2>

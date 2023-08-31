@@ -52,7 +52,6 @@ module Idv
 
     def confirm_hybrid_handoff_complete
       return if idv_session.flow_path.present?
-      return if flow_session[:flow_path].present? # remove in future deploy
 
       redirect_to idv_hybrid_handoff_url
     end

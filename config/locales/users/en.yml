@@ -21,7 +21,7 @@ en:
         code_example: A personal key example with 16 characters
         preview: Personal key preview
       confirmation_error: You’ve entered an incorrect personal key.
-      generated_on_html: Your personal key was generated on %{date}
+      generated_on_html: Your personal key was generated on %{date_html}
     phones:
       error_message: You’ve added the maximum number of phone numbers.
     rules_of_use:
@@ -34,5 +34,5 @@ en:
         <li>How we use your information and your rights to that information, and</li>
         <li>The conditions you agree to when you take certain actions on the %{app_name} service.</li>
         </ul>
-      overview_html: We’ve updated our %{link}. Please review and check the box below
-        to continue.
+      overview_html: We’ve updated our %{link_html}. Please review and check the box
+        below to continue.

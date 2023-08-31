@@ -8,9 +8,10 @@ class OtpVerificationForm
   validate :validate_user_otp_expiration
   validate :validate_code_equals_user_otp
 
-  def initialize(user, code)
+  def initialize(user, code, phone_configuration)
     @user = user
     @code = code
+    @phone_configuration = phone_configuration
   end
 
   def submit
@@ -28,7 +29,7 @@ class OtpVerificationForm
 
   private
 
-  attr_reader :code, :user
+  attr_reader :code, :user, :phone_configuration
 
   def validate_code_length
     return if code.blank? || code.size == TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
@@ -63,8 +64,11 @@ class OtpVerificationForm
   end
 
   def extra_analytics_attributes
+    multi_factor_auth_method_created_at = phone_configuration&.created_at
+
     {
       multi_factor_auth_method: 'otp_code',
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
     }
   end
 end

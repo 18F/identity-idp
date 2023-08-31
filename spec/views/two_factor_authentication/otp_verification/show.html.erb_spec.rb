@@ -58,7 +58,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       let(:help_text) do
         t(
           'instructions.mfa.sms.number_message_html',
-          number: content_tag(:strong, presenter_data[:phone_number]),
+          number_html: content_tag(:strong, presenter_data[:phone_number]),
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end

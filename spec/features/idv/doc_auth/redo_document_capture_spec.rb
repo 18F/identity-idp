@@ -36,7 +36,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
         '[role="status"]',
         text: t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: warning_link_text,
+          link_html: warning_link_text,
         ).tr(' ', ' '),
       )
       click_link warning_link_text
@@ -67,7 +67,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
         '[role="status"]',
         text: t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: warning_link_text,
+          link_html: warning_link_text,
         ).tr(' ', ' '),
       )
       click_link warning_link_text
@@ -128,7 +128,7 @@ RSpec.feature 'doc auth redo document capture', js: true do
           '[role="status"]',
           text: t(
             'doc_auth.headings.capture_scan_warning_html',
-            link: warning_link_text,
+            link_html: warning_link_text,
           ).tr(' ', ' '),
         )
         click_link warning_link_text

@@ -8,7 +8,7 @@ es:
     buttons:
       add_new_photos: Añadir nuevas fotos
       continue: Continuar
-      take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
+      take_or_upload_picture_html: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
       take_picture: Tomar una foto
       take_picture_retry: Retirar la foto
@@ -128,8 +128,8 @@ es:
       back: Parte Trasera
       capture_complete: Verificamos su identificación
       capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
-        información que aparece a continuación es incorrecta, por favor, %{link}
-        de su ID emitido por el estado.
+        información que aparece a continuación es incorrecta, por favor,
+        %{link_html} de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos
       capture_troubleshooting_tips: '¿Tiene problemas para agregar su identificación emitida por el estado?'
       document_capture: Añada su documento de identidad expedido por el estado
@@ -155,9 +155,9 @@ es:
       explanation_non_sp_html: Usted está utilizando <strong>%{app_name}</strong> para
         verificar su identidad
       only_add_if_text: 'SOLO AGREGUE SU IDENTIFICACIÓN SI:'
-      only_add_own_account_html: Está usando su propia cuenta de %{app_name}
-      only_add_phone_verify_html: Usted solicitó a %{app_name} que verificara su
-        identidad a través de su teléfono
+      only_add_own_account: Está usando su propia cuenta de %{app_name}
+      only_add_phone_verify: Usted solicitó a %{app_name} que verificara su identidad
+        a través de su teléfono
       only_add_sp_services_html: Está tratando de acceder a los servicios
         <strong>%{service_provider_name}</strong>
     info:
@@ -208,8 +208,8 @@ es:
         tener una cámara y un navegador web.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
-      welcome_html: '%{sp_name} necesita asegurarse de que es usted y no es alguien
-        que se hace pasar por usted.'
+      welcome: '%{sp_name} necesita asegurarse de que es usted y no es alguien que se
+        hace pasar por usted.'
       you_entered: 'Ud. entregó:'
     instructions:
       bullet1: Documento de identidad emitido por el estado.

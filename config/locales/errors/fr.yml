@@ -14,6 +14,9 @@ fr:
         e-mail.
     attributes:
       password:
+        avoid_using_phrases_that_are_easily_guessed: Évitez d’utiliser des suites de
+          caractères faciles à deviner, telles que des parties de votre adresse
+          électronique ou des dates personnelles.
         too_short:
           one: Le mot de passe doit comporter au moins un caractère
           other: Le mot de passe doit comporter au moins %{count} caractères

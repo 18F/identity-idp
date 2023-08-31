@@ -1,13 +1,9 @@
 import isWebauthnPasskeySupported from './is-webauthn-passkey-supported';
-import isWebauthnPlatformSupported from './is-webauthn-platform-supported';
 import isWebauthnSupported from './is-webauthn-supported';
 
 export class WebauthnInputElement extends HTMLElement {
-  isInitialized = false;
-
-  async connectedCallback() {
-    await this.toggleVisibleIfSupported();
-    this.isInitialized = true;
+  connectedCallback() {
+    this.toggleVisibleIfSupported();
   }
 
   get isPlatform(): boolean {
@@ -18,24 +14,16 @@ export class WebauthnInputElement extends HTMLElement {
     return this.hasAttribute('passkey-supported-only');
   }
 
-  async isSupported(): Promise<boolean> {
+  isSupported(): boolean {
     if (!isWebauthnSupported()) {
       return false;
     }
 
-    if (!this.isPlatform) {
-      return true;
-    }
-
-    if (!(await isWebauthnPlatformSupported())) {
-      return false;
-    }
-
-    return !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
+    return !this.isPlatform || !this.isOnlyPasskeySupported || isWebauthnPasskeySupported();
   }
 
-  async toggleVisibleIfSupported() {
-    if (await this.isSupported()) {
+  toggleVisibleIfSupported() {
+    if (this.isSupported()) {
       this.removeAttribute('hidden');
     }
   }

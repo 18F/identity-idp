@@ -121,8 +121,8 @@ fr:
         plus l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
-      totp_intro_html: Configurez une application d’authentification pour vous
-        connecter à l’aide de codes de sécurité temporaires. %{link}
+      totp_intro: Configurez une application d’authentification pour vous connecter à
+        l’aide de codes de sécurité temporaires.
       totp_step_1: Donnez-lui un surnom
       totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
       totp_step_2: Démarrez votre application d’authentification
@@ -144,11 +144,11 @@ fr:
       submit: Confirmer le compte
       title: Confirmez votre compte
       welcome_back: Content de vous revoir
-      welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
-        votre code à usage unique ci-dessous. </p> <p>Si votre lettre n’est pas
-        encore arrivée, veuillez être patient car les <strong>lettres prennent
-        généralement entre trois à sept jours ouvrables pour arriver</strong>.
-        Nous vous remercions de votre patience.</p>'
+      welcome_back_description_html: '<p>Si vous avez reçu votre lettre, veuillez
+        entrer votre code à usage unique ci-dessous. </p> <p>Si votre lettre
+        n’est pas encore arrivée, veuillez être patient car les <strong>lettres
+        prennent généralement entre trois à sept jours ouvrables pour
+        arriver</strong>. Nous vous remercions de votre patience.</p>'
       wrong_address: Pas la bonne adresse?
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus

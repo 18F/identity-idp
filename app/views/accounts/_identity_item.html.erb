@@ -3,7 +3,7 @@
     <% if event.return_to_sp_url.present? %>
       <%= t(
             'event_types.authenticated_at_html',
-            service_provider_link: link_to(event.display_name, event.return_to_sp_url),
+            service_provider_link_html: link_to(event.display_name, event.return_to_sp_url),
           ) %>
     <% else %>
       <%= t('event_types.authenticated_at', service_provider: event.display_name) %>

@@ -13,7 +13,7 @@
             # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.message_html')
             'message_html',
             scope: modal_presenter.translation_scope,
-            time_left_in_session: render(
+            time_left_in_session_html: render(
               CountdownComponent.new(
                 expiration: Time.zone.now,
                 start_immediately: false,
@@ -27,7 +27,7 @@
             # i18n-tasks-use t('notices.timeout_warning.partially_signed_in.live_region_message_html')
             'live_region_message_html',
             scope: modal_presenter.translation_scope,
-            time_left_in_session: render(
+            time_left_in_session_html: render(
               CountdownComponent.new(
                 expiration: Time.zone.now,
                 update_interval: 30.seconds,

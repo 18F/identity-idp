@@ -52,7 +52,7 @@
 <p>
   <%= t(
         'user_mailer.account_reset_granted.help_html',
-        cancel_account_reset: link_to(
+        cancel_account_reset_html: link_to(
           t('user_mailer.account_reset_granted.cancel_link_text'),
           account_reset_cancel_url(token: @token),
         ),

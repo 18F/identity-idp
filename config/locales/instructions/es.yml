@@ -22,7 +22,7 @@ es:
       authenticator:
         confirm_code_html: Ingrese el código de su app de autenticación. Si tiene varias
           cuentas configuradas en su app, ingrese el código correspondiente a
-          %{app_name}.
+          %{app_name_html}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> con su dirección de
@@ -36,28 +36,27 @@ es:
           PIV / CAC )'
         already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte en
           contacto con el administrador para confirmar que tu PIV/CAC está al
-          día. Si cree que se trata de un error, %{try_again}.
+          día. Si cree que se trata de un error, %{try_again_html}.
         back_to_sign_in: Regrese para iniciar sesión
-        confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
-        confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
-          Debe verificar su identidad con una identificación de empleado del
-          Gobierno que haya configurado previamente para acceder a su
-          información.
-        confirm_piv_cac_or_aal3_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con un dispositivo físico, como
-          una llave de seguridad o una identificación de empleado del Gobierno
-          (PIV o CAC) para acceder a su información.
-        did_not_work_html: '%{please_try_again}. Comuníquese con el encargado de su
+        confirm_piv_cac: Presenta la PIV/CAC que asociaste con tu cuenta.
+        confirm_piv_cac_only: Esta aplicación requiere un mayor nivel de seguridad. Debe
+          verificar su identidad con una identificación de empleado del Gobierno
+          que haya configurado previamente para acceder a su información.
+        confirm_piv_cac_or_aal3: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad con un dispositivo físico, como una llave
+          de seguridad o una identificación de empleado del Gobierno (PIV o CAC)
+          para acceder a su información.
+        did_not_work_html: '%{please_try_again_html}. Comuníquese con el encargado de su
           organismo si persiste este problema.'
         http_failure: El servidor tardó demasiado en responder. Inténtalo de nuevo.
-        no_certificate_html: Asegúrese de su PIV/CAC esté conectada e %{try_again}.
+        no_certificate_html: Asegúrese de su PIV/CAC esté conectada e %{try_again_html}.
           Comuníquese con el encargado de su organismo si persiste este
           problema.
         not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta.
-          %{please_try_again} con un certificado diferente. Comuníquese con el
-          encargado de su organismo si persiste este problema.
+          %{please_try_again_html} con un certificado diferente. Comuníquese con
+          el encargado de su organismo si persiste este problema.
         please_try_again: Vuelva a intentarlo
-        sign_in: Asegúrese de que <strong>tenga una cuenta %{app_name}</strong> y
+        sign_in_html: Asegúrese de que <strong>tenga una cuenta %{app_name}</strong> y
           <strong>haya configurado PIV/CAC</strong> como método de autenticación
           de dos factores.
         step_1: Darle un apodo
@@ -70,21 +69,21 @@ es:
         try_again: inténtelo de nuevo
       sms:
         number_message_html: Enviamos un mensaje de texto (SMS) con un código único al
-          %{number}. Este código caducará en %{expiration} minutos.
+          %{number_html}. Este código caducará en %{expiration} minutos.
       voice:
         number_message_html: Realizamos una llamada con un código de un solo uso al
-          %{number}. Este código expirará en %{expiration} minutos.
+          %{number_html}. Este código expirará en %{expiration} minutos.
       webauthn:
-        confirm_webauthn_html: Presente la clave de seguridad que asoció con su cuenta.
-        confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con una llave de seguridad que
-          haya configurado previamente para acceder a su información.
-        confirm_webauthn_or_aal3_html: Esta aplicación requiere un mayor nivel de
-          seguridad. Debe verificar su identidad con un dispositivo físico, como
-          una llave de seguridad o una identificación de empleado del Gobierno
-          (PIV o CAC) para acceder a su información.
-        confirm_webauthn_platform_html: Tiene activado el desbloqueo facial o táctil
-          para su cuenta de %{app_name}.
+        confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
+        confirm_webauthn_only: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad con una llave de seguridad que haya
+          configurado previamente para acceder a su información.
+        confirm_webauthn_or_aal3: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad con un dispositivo físico, como una llave
+          de seguridad o una identificación de empleado del Gobierno (PIV o CAC)
+          para acceder a su información.
+        confirm_webauthn_platform: Tiene activado el desbloqueo facial o táctil para su
+          cuenta de %{app_name}.
       wrong_number: '¿Ingresó el número de teléfono equivocado?'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'

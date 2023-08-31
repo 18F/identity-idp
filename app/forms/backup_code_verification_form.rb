@@ -17,12 +17,18 @@ class BackupCodeVerificationForm
   attr_reader :user, :backup_code
 
   def valid_backup_code?
-    BackupCodeGenerator.new(@user).verify(backup_code)
+    backup_code_config.present?
+  end
+
+  def backup_code_config
+    @backup_code_config ||= BackupCodeGenerator.new(@user).
+      if_valid_consume_code_return_config(backup_code)
   end
 
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'backup_code',
+      multi_factor_auth_method_created_at: backup_code_config.created_at,
     }
   end
 end

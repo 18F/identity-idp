@@ -16,11 +16,13 @@ es:
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
-      invalid_html: El email o la contraseña que ingresó son incorrectos. Intente %{link}.
+      invalid_html: El email o la contraseña que ingresó son incorrectos. Intente
+        %{link_html}.
       invalid_link_text: restablecer su contraseña
       last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
       locked: Su cuenta está bloqueada.
-      not_found_in_database_html: El email o la contraseña que ingresó son incorrectos. Intente %{link}.
+      not_found_in_database_html: El email o la contraseña que ingresó son
+        incorrectos. Intente %{link_html}.
       not_found_in_database_link_text: restablecer su contraseña
       session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
         navegador. Inicie una sesión nueva para continuar en este navegador.

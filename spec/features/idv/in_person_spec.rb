@@ -699,9 +699,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_address_step(user, double_address_verification: true)
 
       # Ensure the page submitted successfully
-      expect(page).to have_content(
-        t('idv.form.ssn_label_html'),
-      )
+      expect(page).to have_content(t('idv.form.ssn_label'))
     end
   end
 
@@ -739,9 +737,7 @@ RSpec.describe 'In Person Proofing', js: true do
       # skip address step
       complete_ssn_step(user)
       # Ensure the page submitted successfully
-      expect(page).to have_content(
-        t('idv.form.ssn_label_html'),
-      )
+      expect(page).to have_content(t('idv.form.ssn_label'))
     end
 
     it 'can redo the address page form even if that page is skipped' do

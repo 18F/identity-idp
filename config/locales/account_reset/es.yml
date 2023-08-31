@@ -7,7 +7,7 @@ es:
       cancel_button: Cancelar la cuenta eliminada
       title: Cancelar la cuenta eliminada
     confirm_delete_account:
-      cta_html: Puede %{link} o cierra esta ventana si ya terminaste.
+      cta_html: Puede %{link_html} o cierra esta ventana si ya terminaste.
       info_html: La cuenta para <strong>%{email}</strong> ha sido eliminada. Nosotros
         enviamos una confirmación por correo electrónico de la eliminación de la
         cuenta.

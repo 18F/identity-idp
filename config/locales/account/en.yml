@@ -114,9 +114,10 @@ en:
     revoke_consent:
       link_title: Disconnect
       longer_description_html: Your information will no longer be shared with
-        %{service_provider}. To access %{service_provider} in the future, you
-        must give your consent to share your information. You can give consent
-        by going to the %{service_provider} site and logging in.
+        %{service_provider_html}. To access %{service_provider_html} in the
+        future, you must give your consent to share your information. You can
+        give consent by going to the %{service_provider_html} site and logging
+        in.
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

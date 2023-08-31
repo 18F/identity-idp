@@ -15,6 +15,14 @@ module UspsIppHelper
     )
   end
 
+  def stub_error_request_token
+    stub_request(:post, %r{/oauth/authenticate}).to_return(
+      status: 500,
+      body: [],
+      headers: { 'content-type' => 'application/json' },
+    )
+  end
+
   def stub_request_facilities
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
       status: 200,

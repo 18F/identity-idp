@@ -46,6 +46,14 @@ module Telephony
       response
     end
 
+    def send_raw_message(to:, message:, country_code:)
+      response = adapter.send(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
+    alias_method :send_notification, :send_raw_message
+
     private
 
     def adapter

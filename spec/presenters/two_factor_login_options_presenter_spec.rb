@@ -37,14 +37,13 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     allow_any_instance_of(TwoFactorLoginOptionsPresenter).to \
       receive(:account_reset_token).and_return('foo')
 
-    expect(presenter.account_reset_or_cancel_link).to eq \
-      t(
-        'two_factor_authentication.account_reset.pending_html',
-        cancel_link: view.link_to(
+    expect(presenter.account_reset_or_cancel_link).to eq(
+      t('two_factor_authentication.account_reset.pending') + ' ' +
+        view.link_to(
           t('two_factor_authentication.account_reset.cancel_link'),
           account_reset_cancel_url(token: 'foo'),
         ),
-      )
+    )
   end
 
   it 'supplies a reset link when the token is not valid' do
@@ -54,7 +53,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     expect(presenter.account_reset_or_cancel_link).to eq \
       t(
         'two_factor_authentication.account_reset.text_html',
-        link: view.link_to(
+        link_html: view.link_to(
           t('two_factor_authentication.account_reset.link'),
           account_reset_recovery_options_path(locale: LinkLocaleResolver.locale),
         ),

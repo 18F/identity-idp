@@ -4,7 +4,7 @@ fr:
     account_created: Compte créé
     account_verified: Compte vérifié
     authenticated_at: Connecté à %{service_provider}
-    authenticated_at_html: Connecté à %{service_provider_link}
+    authenticated_at_html: Connecté à %{service_provider_link_html}
     authenticator_disabled: Application d’authentification supprimée
     authenticator_enabled: Application authenticator ajoutée
     backup_codes_added: Codes de sauvegarde ajoutés

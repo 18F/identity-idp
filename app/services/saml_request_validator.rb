@@ -39,7 +39,9 @@ class SamlRequestValidator
 
   def authorized_authn_context
     if !valid_authn_context? ||
-       (ial2_context_requested? && service_provider&.ial != 2)
+       (ial2_context_requested? && service_provider&.ial != 2) ||
+       (ial_max_requested? &&
+        !IdentityConfig.store.allowed_ialmax_providers.include?(service_provider&.issuer))
       errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
@@ -69,6 +71,10 @@ class SamlRequestValidator
     else
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
     end
+  end
+
+  def ial_max_requested?
+    Array(authn_context).include?(Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF)
   end
 
   def authorized_email_nameid_format

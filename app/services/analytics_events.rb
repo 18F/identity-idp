@@ -2209,6 +2209,22 @@ module AnalyticsEvents
     )
   end
 
+  # Track when USPS auth token refresh job completed
+  def idv_usps_auth_token_refresh_job_completed(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Completed',
+      **extra,
+    )
+  end
+
+  # Track when USPS auth token refresh job started
+  def idv_usps_auth_token_refresh_job_started(**extra)
+    track_event(
+      'UspsAuthTokenRefreshJob: Started',
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user clicked the troubleshooting option to start in-person proofing
   def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
@@ -2302,6 +2318,7 @@ module AnalyticsEvents
   # @param [Hash] errors Authentication error reasons, if unsuccessful
   # @param [String] context
   # @param [String] multi_factor_auth_method
+  # @param [DateTime] multi_factor_auth_method_created_at time auth method was created
   # @param [Integer] auth_app_configuration_id
   # @param [Integer] piv_cac_configuration_id
   # @param [Integer] key_id
@@ -2317,6 +2334,7 @@ module AnalyticsEvents
     errors: nil,
     context: nil,
     multi_factor_auth_method: nil,
+    multi_factor_auth_method_created_at: nil,
     auth_app_configuration_id: nil,
     piv_cac_configuration_id: nil,
     key_id: nil,
@@ -2335,6 +2353,7 @@ module AnalyticsEvents
       errors: errors,
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
+      multi_factor_auth_method_created_at: multi_factor_auth_method_created_at,
       auth_app_configuration_id: auth_app_configuration_id,
       piv_cac_configuration_id: piv_cac_configuration_id,
       key_id: key_id,
@@ -3876,10 +3895,12 @@ module AnalyticsEvents
   # Tracks when USPS in-person proofing enrollment is created
   # @param [String] enrollment_code
   # @param [Integer] enrollment_id
+  # @param [Boolean] second_address_line_present
   # @param [String] service_provider
   def usps_ippaas_enrollment_created(
     enrollment_code:,
     enrollment_id:,
+    second_address_line_present:,
     service_provider:,
     **extra
   )
@@ -3887,6 +3908,7 @@ module AnalyticsEvents
       'USPS IPPaaS enrollment created',
       enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      second_address_line_present: second_address_line_present,
       service_provider: service_provider,
       **extra,
     )

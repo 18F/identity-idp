@@ -67,6 +67,16 @@ RSpec.describe RequestPasswordReset do
           to(change { user.reload.reset_password_token })
       end
 
+      it 'sends the correct email to the user' do
+        subject
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [email],
+          subject: t('user_mailer.reset_password_instructions.subject'),
+        )
+      end
+
       it 'sends a recovery activated push event' do
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::RecoveryActivatedEvent.new(user: user))
@@ -115,7 +125,13 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'sends an email to the suspended user' do
-        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        subject
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [email],
+          subject: t('user_mailer.suspended_reset_password.subject'),
+        )
       end
 
       it 'does not send a recovery activated push event' do

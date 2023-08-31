@@ -43,6 +43,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
     context 'when the user enters a valid personal key' do
       it 'tracks the valid authentication event' do
         sign_in_before_2fa(create(:user, :with_webauthn, :with_phone, :with_personal_key))
+        personal_key_generated_at = controller.current_user.
+          encrypted_recovery_code_digest_generated_at
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -53,7 +55,12 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         allow(form).to receive(:submit).and_return(response)
 
         stub_analytics
-        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal-key' }
+        analytics_hash = {
+          success: true,
+          errors: {},
+          multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at: personal_key_generated_at,
+        }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash)
@@ -154,17 +161,20 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
 
       it 'tracks the max attempts event' do
+        user.second_factor_attempts_count =
+          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+        user.save
+        personal_key_generated_at = controller.current_user.
+          encrypted_recovery_code_digest_generated_at
+        stub_analytics
+        stub_attempts_tracker
+
         properties = {
           success: false,
           errors: {},
           multi_factor_auth_method: 'personal-key',
+          multi_factor_auth_method_created_at: personal_key_generated_at,
         }
-
-        user.second_factor_attempts_count =
-          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
-        user.save
-        stub_analytics
-        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)

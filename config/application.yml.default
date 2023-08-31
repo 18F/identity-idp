@@ -22,6 +22,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
+allowed_ialmax_providers: '[]'
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
 account_suspended_support_code: EFGHI
@@ -329,6 +330,7 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
+usps_auth_token_refresh_job_enabled: false
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -480,6 +482,7 @@ production:
   state_tracking_enabled: false
   telephony_adapter: pinpoint
   use_kms: true
+  usps_auth_token_refresh_job_enabled: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''

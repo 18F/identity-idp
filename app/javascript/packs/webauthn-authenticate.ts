@@ -6,12 +6,6 @@ function webauthn() {
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful')!;
 
   const webauthAlertContainer = document.querySelector('.usa-alert--error')!;
-  const webauthnPlatformRequested =
-    webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
-  const multipleFactorsEnabled =
-    webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
-  const isPlatformAvailable =
-    (document.getElementById('webauthn_device') as HTMLInputElement).value === 'true';
 
   const spinner = document.getElementById('spinner')!;
   spinner.classList.remove('display-none');
@@ -20,10 +14,7 @@ function webauthn() {
     (document.getElementById('credentials') as HTMLInputElement).value,
   );
 
-  if (
-    !isWebauthnSupported() ||
-    (webauthnPlatformRequested && !isPlatformAvailable && !multipleFactorsEnabled)
-  ) {
+  if (!isWebauthnSupported()) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url')!;
     window.location.href = href;
   } else {
@@ -48,8 +39,6 @@ function webauthn() {
       })
       .catch((error: Error) => {
         (document.getElementById('webauthn_error') as HTMLInputElement).value = error.name;
-        (document.getElementById('platform') as HTMLInputElement).value =
-          String(webauthnPlatformRequested);
         (document.getElementById('webauthn_form') as HTMLFormElement).submit();
       });
   }
@@ -60,13 +49,4 @@ function webauthnButton() {
   button.addEventListener('click', webauthn);
 }
 
-function isPlatformAuthenticatorAvailable() {
-  return window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable().then(
-    (result) => {
-      (document.getElementById('webauthn_device') as HTMLInputElement).value = String(result);
-    },
-  );
-}
-
 document.addEventListener('DOMContentLoaded', webauthnButton);
-document.addEventListener('DOMContentLoaded', isPlatformAuthenticatorAvailable);

@@ -76,10 +76,26 @@ RSpec.describe 'authorization count' do
         expect_ial1_and_ial2_count(client_id_1)
       end
 
-      it 'counts IAL1 auth when ial max is requested' do
-        visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
-        click_agree_and_continue
-        expect_ial1_count_only(client_id_1)
+      context 'the service provider is on the ialmax approved list' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id_1] }
+        end
+
+        it 'counts IAL1 auth when ial max is requested' do
+          visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
+          click_agree_and_continue
+
+          expect_ial1_count_only(client_id_1)
+        end
+      end
+
+      context 'the service provider is not on the ialmax approved list' do
+        it 'does not count the auth attempt' do
+          visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
+
+          expect(page).not_to have_content t('sign_up.agree_and_continue')
+          expect_no_counts(issuer_1)
+        end
       end
     end
 
@@ -111,26 +127,57 @@ RSpec.describe 'authorization count' do
       end
 
       # rubocop:disable Layout/LineLength
-      it 'counts IAL1 auth when ial max is requested' do
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: issuer_1,
-            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-            security: {
-              embed_sign: false,
-            },
-          },
-        )
-        click_agree_and_continue
-        click_submit_default
-        expect_ial1_count_only(issuer_1)
+      context 'when ialmax is requested' do
+        context 'provider is on the ialmax allow list' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [issuer_1] }
+          end
+
+          it 'counts IAL1 auth when ial max is requested' do
+            visit_saml_authn_request_url(
+              overrides: {
+                issuer: issuer_1,
+                name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+                authn_context: [
+                  Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+                security: {
+                  embed_sign: false,
+                },
+              },
+            )
+            click_agree_and_continue
+            click_submit_default
+
+            expect_ial1_count_only(issuer_1)
+          end
+        end
+
+        context 'provider is not on the ialmax allow list' do
+          it 'does not count the auth attempt' do
+            visit_saml_authn_request_url(
+              overrides: {
+                issuer: issuer_1,
+                name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+                authn_context: [
+                  Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+                security: {
+                  embed_sign: false,
+                },
+              },
+            )
+
+            expect(page).not_to have_content t('sign_up.agree_and_continue')
+            expect_no_counts(issuer_1)
+          end
+        end
+        # rubocop:enable Layout/LineLength
       end
-      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -192,10 +239,28 @@ RSpec.describe 'authorization count' do
         expect_ial1_count_only(client_id_2)
       end
 
-      it 'counts IAL2 auth when ial max is requested' do
-        visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
-        click_agree_and_continue
-        expect_ial2_count_only(client_id_1)
+      context 'ialmax is requested' do
+        context 'provider is on the ialmax allowlist' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [client_id_1] }
+          end
+
+          it 'counts IAL2 auth when ial max is requested' do
+            visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
+            click_agree_and_continue
+
+            expect_ial2_count_only(client_id_1)
+          end
+        end
+
+        context 'provider is not on the ialmax allowlist' do
+          it 'does not count the auth attempt' do
+            visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
+
+            expect(page).not_to have_content t('sign_up.agree_and_continue')
+            expect_no_counts(client_id_1)
+          end
+        end
       end
     end
 
@@ -260,25 +325,56 @@ RSpec.describe 'authorization count' do
       end
 
       # rubocop:disable Layout/LineLength
-      it 'counts IAL2 auth when ial max is requested' do
-        visit_saml_authn_request_url(
-          overrides: {
-            issuer: issuer_1,
-            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [
-              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-            ],
-            security: {
-              embed_sign: false,
-            },
-          },
-        )
-        click_agree_and_continue
-        click_submit_default
-        expect_ial2_count_only(issuer_1)
+      context 'ialmax is requested' do
+        context 'provider is on ialmax allow list' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_ialmax_providers) { [issuer_1] }
+          end
+
+          it 'counts IAL2 auth when ial max is requested' do
+            visit_saml_authn_request_url(
+              overrides: {
+                issuer: issuer_1,
+                name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+                authn_context: [
+                  Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+                security: {
+                  embed_sign: false,
+                },
+              },
+            )
+            click_agree_and_continue
+            click_submit_default
+            expect_ial2_count_only(issuer_1)
+          end
+        end
+
+        context 'provider is not on ialmax allow list' do
+          it 'does not count the auth attempt' do
+            visit_saml_authn_request_url(
+              overrides: {
+                issuer: issuer_1,
+                name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+                authn_context: [
+                  Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+                security: {
+                  embed_sign: false,
+                },
+              },
+            )
+
+            expect(page).not_to have_content t('sign_up.agree_and_continue')
+            expect_no_counts(issuer_1)
+          end
+        end
       end
+
       # rubocop:enable Layout/LineLength
     end
   end
@@ -302,6 +398,13 @@ RSpec.describe 'authorization count' do
     ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
     expect(ial1_return_logs.count).to eq(1)
     expect(ial2_return_logs.count).to eq(1)
+  end
+
+  def expect_no_counts(issuer)
+    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    expect(ial1_return_logs.count).to eq(0)
+    expect(ial2_return_logs.count).to eq(0)
   end
 
   def reset_monthly_auth_count_and_login(user)

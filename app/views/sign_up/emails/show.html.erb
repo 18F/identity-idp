@@ -27,8 +27,12 @@
   <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
 
-  <% link = link_to(t('notices.use_diff_email.link'), sign_up_email_path) %>
-  <p><%= t('notices.use_diff_email.text_html', link: link) %></p>
+  <p>
+    <%= t(
+          'notices.use_diff_email.text_html',
+          link_html: link_to(t('notices.use_diff_email.link'), sign_up_email_path),
+        ) %>
+  </p>
   <p><%= t('devise.registrations.close_window') %></p>
 
   <% if FeatureManagement.enable_load_testing_mode? %>

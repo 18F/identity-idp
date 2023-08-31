@@ -18,8 +18,8 @@ en:
         questions: Questions?
         retail_hours: Retail hours
         retail_hours_closed: Closed
-        return_to_partner_html: You may now %{link} to complete any next steps you can
-          access until your identity has been verified.
+        return_to_partner_html: You may now %{link_html} to complete any next steps you
+          can access until your identity has been verified.
         return_to_partner_link: sign out and return to %{sp_name}
         what_to_expect: What to expect at the Post Office
       cta:

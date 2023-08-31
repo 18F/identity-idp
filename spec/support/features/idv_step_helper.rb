@@ -82,7 +82,7 @@ module IdvStepHelper
   end
 
   def sp_text
-    t('in_person_proofing.body.barcode.return_to_partner_html', link: link_text)
+    t('in_person_proofing.body.barcode.return_to_partner_html', link_html: link_text)
   end
 
   def complete_review_step(user = user_with_2fa)
