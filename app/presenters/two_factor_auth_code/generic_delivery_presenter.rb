@@ -19,10 +19,6 @@ module TwoFactorAuthCode
       raise NotImplementedError
     end
 
-    def help_text
-      raise NotImplementedError
-    end
-
     def link_text
       t('two_factor_authentication.login_options_link_text')
     end

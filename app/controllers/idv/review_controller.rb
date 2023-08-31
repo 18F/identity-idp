@@ -24,6 +24,7 @@ module Idv
         gpo_verification_pending: current_user.gpo_verification_pending_profile?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
+        **ab_test_analytics_buckets,
       )
       irs_attempts_api_tracker.idv_password_entered(success: false)
 
@@ -34,7 +35,10 @@ module Idv
     def new
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:encrypt, :view, true)
-      analytics.idv_review_info_visited(address_verification_method: address_verification_method)
+      analytics.idv_review_info_visited(
+        address_verification_method: address_verification_method,
+        **ab_test_analytics_buckets,
+      )
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -67,6 +71,7 @@ module Idv
         fraud_rejection: idv_session.profile.fraud_rejection?,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        **ab_test_analytics_buckets,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:verified, :view, true)
@@ -76,6 +81,7 @@ module Idv
         fraud_rejection: idv_session.profile.fraud_rejection?,
         gpo_verification_pending: idv_session.profile.gpo_verification_pending?,
         deactivation_reason: idv_session.profile.deactivation_reason,
+        **ab_test_analytics_buckets,
       )
 
       return unless FeatureManagement.reveal_gpo_code?

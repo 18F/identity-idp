@@ -1,7 +1,6 @@
 module Idv
   class GettingStartedController < ApplicationController
     include IdvStepConcern
-    include StepUtilitiesConcern
 
     before_action :confirm_agreement_needed
 
@@ -49,7 +48,7 @@ module Idv
         step: 'getting_started',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }
+      }.merge(ab_test_analytics_buckets)
     end
 
     def create_document_capture_session

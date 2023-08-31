@@ -6,12 +6,14 @@
   <%= @presenter.piv_cac_help %>
 </p>
 
-<%= render SpinnerButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        link_to(@presenter.piv_cac_service_link, **tag_options, &block)
-      end,
-      big: true,
-      wide: true,
-    ).with_content(@presenter.piv_cac_capture_text) %>
+<div class="margin-y-5">
+  <%= render SpinnerButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(@presenter.piv_cac_service_link, **tag_options, &block)
+        end,
+        big: true,
+        wide: true,
+      ).with_content(@presenter.piv_cac_capture_text) %>
+</div>
 <%= render 'shared/fallback_links', presenter: @presenter %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

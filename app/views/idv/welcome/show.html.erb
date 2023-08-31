@@ -9,20 +9,10 @@
       ) %>
 <% end %>
 
-<%= render 'shared/maintenance_window_alert' do %>
   <%= render JavascriptRequiredComponent.new(
         header: t('idv.welcome.no_js_header'),
         intro: t('idv.welcome.no_js_intro', sp_name: decorated_session.sp_name || APP_NAME),
       ) do %>
-
-    <% if @current_user&.reproof_for_irs?(service_provider: @current_sp) %>
-    <%= render AlertComponent.new(
-          type: :info,
-          message: t('doc_auth.info.irs_reproofing_explanation'),
-          class: ['margin-bottom-2', 'usa-alert--info-important'],
-        )
-    %>
-    <% end %>
 
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.welcome')) %>
     <p>
@@ -64,54 +54,53 @@
       <%= f.submit t('doc_auth.buttons.continue') %>
     <% end %>
 
-    <%= render(
-          'shared/troubleshooting_options',
-          heading_tag: :h3,
-          heading: t('idv.troubleshooting.headings.missing_required_items'),
-          options: [
-            {
-              url: help_center_redirect_path(
-                category: 'verify-your-identity',
-                article: 'accepted-state-issued-identification',
-                flow: :idv,
-                step: :welcome,
-                location: 'missing_items',
-              ),
-              text: t('idv.troubleshooting.options.supported_documents'),
-              new_tab: true,
-            },
-            {
-              url: help_center_redirect_path(
-                category: 'verify-your-identity',
-                article: 'phone-number',
-                flow: :idv,
-                step: :welcome,
-                location: 'missing_items',
-              ),
-              text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
-              new_tab: true,
-            },
-            decorated_session.sp_name && {
-              url: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
-              text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-              new_tab: true,
-            },
-          ].select(&:present?),
+  <%= render(
+        'shared/troubleshooting_options',
+        heading_tag: :h3,
+        heading: t('idv.troubleshooting.headings.missing_required_items'),
+        options: [
+          {
+            url: help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'accepted-state-issued-identification',
+              flow: :idv,
+              step: :welcome,
+              location: 'missing_items',
+            ),
+            text: t('idv.troubleshooting.options.supported_documents'),
+            new_tab: true,
+          },
+          {
+            url: help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'phone-number',
+              flow: :idv,
+              step: :welcome,
+              location: 'missing_items',
+            ),
+            text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
+            new_tab: true,
+          },
+          decorated_session.sp_name && {
+            url: return_to_sp_failure_to_proof_url(step: 'welcome', location: 'missing_items'),
+            text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+            new_tab: true,
+          },
+        ].select(&:present?),
+      ) %>
+
+  <h3><%= t('doc_auth.instructions.privacy') %></h3>
+  <p>
+    <%= t('doc_auth.info.privacy', app_name: APP_NAME) %>
+  </p>
+  <p>
+    <%= new_tab_link_to(
+          t('doc_auth.instructions.learn_more'),
+          policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
         ) %>
+  </p>
 
-    <h3><%= t('doc_auth.instructions.privacy') %></h3>
-    <p>
-      <%= t('doc_auth.info.privacy', app_name: APP_NAME) %>
-    </p>
-    <p>
-      <%= new_tab_link_to(
-            t('doc_auth.instructions.learn_more'),
-            policy_redirect_url(flow: :idv, step: :welcome, location: :footer),
-          ) %>
-    </p>
-
-    <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
-  <% end %>
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
 <% end %>
 
 <%= javascript_packs_tag_once('document-capture-welcome') %>

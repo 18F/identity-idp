@@ -77,7 +77,7 @@ module Telephony
 
     def log_warning(alert, context:)
       Telephony.log_warn(
-        {
+        event: {
           alert: alert,
           adapter: Telephony.config.adapter,
           channel: :sms,

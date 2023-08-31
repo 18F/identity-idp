@@ -41,10 +41,6 @@ module TwoFactorAuthCode
       t('two_factor_authentication.phone_fallback.question')
     end
 
-    def help_text
-      ''
-    end
-
     def troubleshooting_header
       t('components.troubleshooting_options.default_heading')
     end
@@ -70,7 +66,7 @@ module TwoFactorAuthCode
             flow: :two_factor_authentication,
             step: :otp_confirmation,
           ),
-          text: t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
+          text: t('two_factor_authentication.learn_more'),
           new_tab: true,
         },
       ]

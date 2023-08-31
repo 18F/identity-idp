@@ -21,7 +21,7 @@ module TwoFactorAuthentication
       result = otp_verification_form.submit
       post_analytics(result)
       if result.success?
-        handle_remember_device
+        handle_remember_device_preference(params[:remember_device])
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp

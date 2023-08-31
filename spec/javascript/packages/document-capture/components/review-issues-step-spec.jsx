@@ -44,8 +44,8 @@ describe('document-capture/components/review-issues-step', () => {
           new I18n({
             strings: {
               'idv.failure.attempts_html': {
-                one: 'One attempt remaining',
-                other: '%{count} attempts remaining',
+                one: '<strong>One attempt</strong> remaining',
+                other: '<strong>%{count} attempts</strong> remaining',
               },
             },
           })
@@ -56,8 +56,44 @@ describe('document-capture/components/review-issues-step', () => {
     );
 
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
-    expect(getByText('3 attempts remaining')).to.be.ok();
+    expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
+    expect(getByText('remaining')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),
+    ).to.exist();
+    expect(
+      getByRole('link', {
+        name: 'idv.troubleshooting.options.supported_documents links.new_tab',
+      }),
+    ).to.exist();
+  });
+  it('renders initially with warning page and displays attempts remaining with IPP', () => {
+    const { getByRole, getByText } = render(
+      <InPersonContext.Provider value={{ inPersonURL: '/' }}>
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'idv.failure.attempts_html': {
+                  one: '<strong>One attempt</strong> remaining',
+                  other: '<strong>%{count} attempts</strong> remaining',
+                },
+              },
+            })
+          }
+        >
+          <ReviewIssuesStep {...DEFAULT_PROPS} />
+        </I18nContext.Provider>
+      </InPersonContext.Provider>,
+    );
+
+    expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
+    expect(getByText('3 attempts', { selector: 'strong' })).to.be.ok();
+    expect(getByText('remaining')).to.be.ok();
+    expect(getByRole('button', { name: 'idv.failure.button.try_online' })).to.be.ok();
+    expect(getByRole('button', { name: 'in_person_proofing.body.cta.button' })).to.be.ok();
 
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_tab' }),

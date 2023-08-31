@@ -13,6 +13,10 @@ RSpec.describe Idv::SsnController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     subject.user_session['idv/doc_auth'] = flow_session
@@ -20,6 +24,7 @@ RSpec.describe Idv::SsnController do
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -60,7 +65,7 @@ RSpec.describe Idv::SsnController do
         flow_path: 'standard',
         irs_reproofing: false,
         step: 'ssn',
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -166,7 +171,7 @@ RSpec.describe Idv::SsnController do
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
-        }
+        }.merge(ab_test_args)
       end
 
       it 'merges ssn into pii session value' do
@@ -242,7 +247,7 @@ RSpec.describe Idv::SsnController do
           },
           error_details: { ssn: [:invalid] },
           pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
-        }
+        }.merge(ab_test_args)
       end
 
       render_views

@@ -58,9 +58,9 @@ en:
         zipcode: Enter a 5 or 9 digit ZIP Code
     failure:
       attempts_html:
-        one: For security reasons, you have <strong>one attempt<strong> remaining to add
-          your ID online.
-        other: For security reasons, you have <strong>%{count} attempts<strong>
+        one: For security reasons, you have <strong>one attempt</strong> remaining to
+          add your ID online.
+        other: For security reasons, you have <strong>%{count} attempts</strong>
           remaining to add your ID online.
       button:
         try_online: Try again online
@@ -213,6 +213,11 @@ en:
         alert_html: '<strong>Enter a phone number that is:</strong>'
         description: We’ll check this number with records and send you a one-time code.
           This is to help verify your identity.
+        failed_number:
+          alert_text: We couldn’t match you to this number.
+          gpo_alert_html: If you don’t have <strong>another</strong> number to try,
+            %{link_html} instead.
+          gpo_verify_link: verify by mail
         rules:
           - Based in the United States (including U.S. territories)
           - Your primary number (the one you use the most often)
@@ -280,7 +285,7 @@ en:
       state_id:
         cancel_button: Exit %{app_name}
         explanation: |
-          Unfortunately, we’re experiencing technical difficulties 
+          Unfortunately, we’re experiencing technical difficulties
           with IDs from your state and are currently unable to verify your information.
         heading: We are working to resolve an error
         next_steps:

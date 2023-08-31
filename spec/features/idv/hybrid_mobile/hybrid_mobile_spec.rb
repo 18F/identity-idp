@@ -45,6 +45,12 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
       expect(page).to have_current_path(root_url)
       visit idv_hybrid_mobile_document_capture_url
 
+      # Confirm that jumping to Welcome page does not cause errors
+      # This was added for the GettingStarted A/B Test
+      visit idv_welcome_url
+      expect(page).to have_current_path(root_url)
+      visit idv_hybrid_mobile_document_capture_url
+
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)

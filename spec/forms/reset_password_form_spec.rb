@@ -60,7 +60,6 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
         password = 'valid password'
-        extra = { user_id: '123', profile_deactivated: false }
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
           with(user: user, attributes: { password: password }).and_return(user_updater)
@@ -69,7 +68,10 @@ RSpec.describe ResetPasswordForm, type: :model do
         expect(form.submit(password: password).to_h).to eq(
           success: true,
           errors: {},
-          **extra,
+          user_id: '123',
+          profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
         )
       end
     end
@@ -148,6 +150,39 @@ RSpec.describe ResetPasswordForm, type: :model do
 
         expect(result.success?).to eq(true)
         expect(result.extra[:profile_deactivated]).to eq(false)
+      end
+    end
+
+    context 'when the user has a pending profile' do
+      it 'includes that the profile was not deactivated in the form response' do
+        profile = create(:profile, :verify_by_mail_pending, :in_person_verification_pending)
+        user = profile.user
+        user.update(reset_password_sent_at: Time.zone.now)
+
+        form = ResetPasswordForm.new(user)
+
+        result = form.submit(password: 'a good and powerful password')
+
+        expect(result.success?).to eq(true)
+        expect(result.extra[:pending_profile_invalidated]).to eq(true)
+        expect(result.extra[:pending_profile_pending_reasons]).to eq(
+          'gpo_verification_pending,in_person_verification_pending',
+        )
+      end
+    end
+
+    context 'when the user does not have a pending profile' do
+      it 'includes that the profile was not deactivated in the form response' do
+        user = create(:user)
+        user.update(reset_password_sent_at: Time.zone.now)
+
+        form = ResetPasswordForm.new(user)
+
+        result = form.submit(password: 'a good and powerful password')
+
+        expect(result.success?).to eq(true)
+        expect(result.extra[:pending_profile_invalidated]).to eq(false)
+        expect(result.extra[:pending_profile_pending_reasons]).to eq('')
       end
     end
 

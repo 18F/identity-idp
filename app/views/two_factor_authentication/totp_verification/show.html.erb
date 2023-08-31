@@ -26,5 +26,12 @@
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-top-5' %>
 <% end %>
 
+<p>
+  <%= t(
+        'instructions.mfa.authenticator.confirm_code_html',
+        app_name_html: content_tag(:strong, APP_NAME),
+      ) %>
+</p>
+
 <%= render 'shared/fallback_links', presenter: @presenter %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

@@ -340,6 +340,34 @@ RSpec.feature 'Sign Up' do
     end
   end
 
+  context 'user finishes sign up after rules of use change' do
+    it 'validates terms checkbox and signs in successfully' do
+      user = create(
+        :user,
+        :unconfirmed,
+        accepted_terms_at: IdentityConfig.store.rules_of_use_updated_at - 1.year,
+        confirmation_token: 'foo',
+      )
+
+      visit sign_up_enter_password_path(confirmation_token: 'foo')
+      fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
+      fill_in(
+        t('components.password_confirmation.confirm_label'),
+        with: Features::SessionHelper::VALID_PASSWORD,
+      )
+      click_button t('forms.buttons.continue')
+
+      expect(current_path).to eq rules_of_use_path
+      check 'rules_of_use_form[terms_accepted]'
+
+      freeze_time do
+        click_button t('forms.buttons.continue')
+        expect(current_path).to eq authentication_methods_setup_path
+        expect(user.reload.accepted_terms_at).to eq Time.zone.now
+      end
+    end
+  end
+
   it 'does not regenerate a confirmation token if the token is not expired' do
     email = 'test@test.com'
 

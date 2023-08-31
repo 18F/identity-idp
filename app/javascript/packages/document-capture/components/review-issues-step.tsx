@@ -124,7 +124,9 @@ function ReviewIssuesStep({
 
             {remainingAttempts <= DISPLAY_ATTEMPTS && (
               <p>
-                <strong>{t('idv.failure.attempts_html', { count: remainingAttempts })}</strong>
+                {formatWithStrongNoWrap(
+                  t('idv.failure.attempts_html', { count: remainingAttempts }),
+                )}
               </p>
             )}
           </Warning>

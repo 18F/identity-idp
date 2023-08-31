@@ -22,6 +22,10 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     )
   end
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
@@ -29,6 +33,7 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     allow(@analytics).to receive(:track_event)
     allow(subject).to receive(:confirm_document_capture_session_complete).
       and_return(true)
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -44,12 +49,11 @@ RSpec.describe Idv::HybridMobile::CaptureCompleteController do
     let(:analytics_name) { 'IdV: doc auth capture_complete visited' }
     let(:analytics_args) do
       {
-        acuant_sdk_upgrade_ab_test_bucket: :default,
         analytics_id: 'Doc Auth',
         flow_path: 'hybrid',
         irs_reproofing: false,
         step: 'capture_complete',
-      }
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do

@@ -80,7 +80,11 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to authentication_methods_setup_url
+      if current_user.accepted_rules_of_use_still_valid?
+        redirect_to authentication_methods_setup_url
+      else
+        redirect_to rules_of_use_url
+      end
     end
   end
 end

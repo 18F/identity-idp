@@ -341,7 +341,6 @@ RSpec.describe SignUp::CompletionsController do
           issuer: 'foo',
           request_url: 'http://example.com',
         }
-        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
         patch :update
       end
 
@@ -372,7 +371,6 @@ RSpec.describe SignUp::CompletionsController do
         expect(additional_profile.initiating_service_provider).to be_nil
         expect(additional_profile.verified_at).to be_present
 
-        expect(@irs_attempts_api_tracker).to receive(:idv_reproof)
         patch :update
       end
 
@@ -383,7 +381,6 @@ RSpec.describe SignUp::CompletionsController do
           ial2: false,
           request_url: 'http://example.com',
         }
-        expect(@irs_attempts_api_tracker).not_to receive(:idv_reproof)
 
         patch :update
 

@@ -1,7 +1,6 @@
 module Idv
   class VerifyInfoController < ApplicationController
     include IdvStepConcern
-    include StepUtilitiesConcern
     include StepIndicatorConcern
     include VerifyInfoConcern
     include Steps::ThreatMetrixStepHelper
@@ -52,7 +51,7 @@ module Idv
         step: 'verify',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-      }.merge(**acuant_sdk_ab_test_analytics_args)
+      }.merge(ab_test_analytics_buckets)
     end
 
     # copied from verify_step

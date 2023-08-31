@@ -18,10 +18,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def help_text
-      ''
-    end
-
     def piv_cac_capture_text
       t('forms.piv_cac_mfa.submit')
     end

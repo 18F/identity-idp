@@ -107,6 +107,18 @@ RSpec.describe 'I18n' do
     expect(missing_interpolation_argument_keys).to be_empty
   end
 
+  it 'has matching HTML tags' do
+    i18n.data[i18n.base_locale].select_keys do |key, _node|
+      if key.start_with?('i18n.transliterate.rule.') || i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+        next
+      end
+
+      html_unique_tags = i18n.locales.map { |locale| i18n.t(key, locale)&.scan(/<.+?>/) }.uniq
+
+      expect(html_unique_tags.size).to eq(1), "HTML tag mismatch for key #{key}"
+    end
+  end
+
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
   Dir[File.join(root_dir, '/config/locales/**')].sort.each do |group_path|

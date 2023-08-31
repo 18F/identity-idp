@@ -133,8 +133,9 @@ class InPersonEnrollment < ApplicationRecord
     end
   end
 
-  def skip_notification_sent_at_set?
-    !notification_phone_configuration.present? || (!self.passed? && !self.failed? && !self.expired?)
+  def eligible_for_notification?
+    self.notification_phone_configuration.present? &&
+      (self.passed? || self.failed? || self.expired?)
   end
 
   private

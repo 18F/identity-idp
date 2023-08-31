@@ -5,10 +5,15 @@ RSpec.describe Idv::WelcomeController do
 
   let(:user) { create(:user) }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_sign_in(user)
     stub_analytics
     subject.user_session['idv/doc_auth'] = {}
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -37,9 +42,11 @@ RSpec.describe Idv::WelcomeController do
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth welcome visited' }
     let(:analytics_args) do
-      { step: 'welcome',
+      {
+        step: 'welcome',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'renders the show template' do
@@ -87,9 +94,11 @@ RSpec.describe Idv::WelcomeController do
     let(:analytics_name) { 'IdV: doc auth welcome submitted' }
 
     let(:analytics_args) do
-      { step: 'welcome',
+      {
+        step: 'welcome',
         analytics_id: 'Doc Auth',
-        irs_reproofing: false }
+        irs_reproofing: false,
+      }.merge(ab_test_args)
     end
 
     it 'sends analytics_submitted event' do

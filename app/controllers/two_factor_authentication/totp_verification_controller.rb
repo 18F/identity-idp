@@ -26,7 +26,7 @@ module TwoFactorAuthentication
         handle_valid_verification_for_authentication_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
         )
-        handle_remember_device
+        handle_remember_device_preference(params[:remember_device])
         redirect_to after_sign_in_path_for(current_user)
       else
         handle_invalid_otp(context: context, type: 'totp')

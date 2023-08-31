@@ -44,7 +44,6 @@ module Idv
           document_capture_session_uuid: document_capture_session_uuid,
           failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         }.merge(
-          native_camera_ab_testing_variables,
           acuant_sdk_upgrade_a_b_testing_variables,
         )
       end
@@ -57,7 +56,7 @@ module Idv
           step: 'document_capture',
           analytics_id: 'Doc Auth',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(ab_test_analytics_buckets)
       end
 
       def handle_stored_result
@@ -69,13 +68,6 @@ module Idv
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
-      end
-
-      def native_camera_ab_testing_variables
-        {
-          acuant_sdk_upgrade_ab_test_bucket:
-            AbTests::ACUANT_SDK.bucket(document_capture_session_uuid),
-        }
       end
     end
   end

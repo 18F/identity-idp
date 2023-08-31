@@ -235,6 +235,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           error_details: reset_password_error_details,
           user_id: user.uuid,
           profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -266,6 +268,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           error_details: password_short_error,
           user_id: user.uuid,
           profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -341,6 +345,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             errors: {},
             user_id: user.uuid,
             profile_deactivated: false,
+            pending_profile_invalidated: false,
+            pending_profile_pending_reasons: '',
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -389,6 +395,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           errors: {},
           user_id: user.uuid,
           profile_deactivated: true,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -434,6 +442,8 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           errors: {},
           user_id: user.uuid,
           profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
         }
 
         expect(@analytics).to have_received(:track_event).

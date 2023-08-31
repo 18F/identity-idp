@@ -3,7 +3,6 @@ module Idv
     class SsnController < ApplicationController
       include IdvStepConcern
       include StepIndicatorConcern
-      include StepUtilitiesConcern
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
@@ -36,15 +35,15 @@ module Idv
         analytics.idv_doc_auth_ssn_submitted(
           **analytics_arguments.merge(form_response.to_h),
         )
+        # This event is not currently logging but should be kept as decided in LG-10110
         irs_attempts_api_tracker.idv_ssn_submitted(
           ssn: params[:doc_auth][:ssn],
         )
 
         if form_response.success?
           flow_session['pii_from_user'][:ssn] = params[:doc_auth][:ssn]
-
           idv_session.invalidate_steps_after_ssn!
-          redirect_to next_url
+          redirect_to idv_in_person_verify_info_url
         else
           @error_message = form_response.first_error_message
           render :show, locals: extra_view_variables
@@ -74,17 +73,13 @@ module Idv
         redirect_to idv_in_person_verify_info_url
       end
 
-      def next_url
-        idv_in_person_verify_info_url
-      end
-
       def analytics_arguments
         {
           flow_path: flow_path,
           step: 'ssn',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(ab_test_analytics_buckets)
       end
 
       def updating_ssn?

@@ -16,12 +16,18 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
   let(:document_capture_session_requested_at) { Time.zone.now }
 
+  let(:ab_test_args) do
+    { sample_bucket1: :sample_value1, sample_bucket2: :sample_value2 }
+  end
+
   before do
     stub_analytics
     stub_attempts_tracker
 
     session[:doc_capture_user_id] = user&.id
     session[:document_capture_session_uuid] = document_capture_session_uuid
+
+    allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)
   end
 
   describe 'before_actions' do
@@ -48,12 +54,11 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       let(:analytics_name) { 'IdV: doc auth document_capture visited' }
       let(:analytics_args) do
         {
-          acuant_sdk_upgrade_ab_test_bucket: :default,
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
-        }
+        }.merge(ab_test_args)
       end
 
       it 'renders the show template' do
@@ -132,8 +137,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           flow_path: 'hybrid',
           irs_reproofing: false,
           step: 'document_capture',
-          acuant_sdk_upgrade_ab_test_bucket: :default,
-        }
+        }.merge(ab_test_args)
       end
 
       before do

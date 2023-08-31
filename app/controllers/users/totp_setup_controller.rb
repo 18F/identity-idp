@@ -82,7 +82,7 @@ module Users
       handle_valid_verification_for_confirmation_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
-      handle_remember_device
+      handle_remember_device_preference(params[:remember_device])
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
       redirect_to next_setup_path || after_mfa_setup_path

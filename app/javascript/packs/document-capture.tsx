@@ -151,7 +151,6 @@ const App = composeComponents(
     DocumentCapture,
     {
       onStepChange: extendSession,
-      inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
     },
   ],
 );

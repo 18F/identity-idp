@@ -4,6 +4,7 @@ module Idv
       extend ActiveSupport::Concern
 
       include AcuantConcern
+      include Idv::AbTestAnalyticsConcern
 
       def check_valid_document_capture_session
         if !document_capture_user

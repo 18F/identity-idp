@@ -242,82 +242,6 @@ RSpec.describe Profile do
     end
   end
 
-  # TODO: remove entire describe block
-  describe '#has_proofed_before' do
-    it 'is false when the user has only been activated once' do
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # won't change
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      profile.activate
-
-      expect(profile.activated_at).to be_present
-      expect(profile.active).to eq(true)
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # unchanged
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # changed
-    end
-
-    it 'is true when the user is re-activated' do
-      existing_profile = create(:profile, user: user)
-
-      # profile before
-      expect(profile.activated_at).to be_nil # to change
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(false) # to change
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
-
-      # existing_profile before
-      expect(existing_profile.activated_at).to be_nil # will change !!!
-      expect(existing_profile.active).to eq(false) # won't change
-      expect(existing_profile.deactivation_reason).to be_nil
-      expect(existing_profile.fraud_review_pending?).to eq(false)
-      expect(existing_profile.gpo_verification_pending_at).to be_nil
-      expect(existing_profile.initiating_service_provider).to be_nil
-      expect(existing_profile.verified_at).to be_nil # to change
-
-      existing_profile.activate
-      profile.activate
-
-      existing_profile.reload
-      profile.reload
-
-      # profile after
-      expect(profile.activated_at).to be_present # changed
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.has_proofed_before?).to eq(true) # changed
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_present # fix pending
-
-      # existing_profile after
-
-      # Now, existing_profile should be deactivated
-      expect(existing_profile.activated_at).to be_present
-      expect(existing_profile.active).to eq(false)
-
-      expect(existing_profile.deactivation_reason).to be_nil
-      expect(existing_profile.fraud_review_pending?).to eq(false)
-      expect(existing_profile.gpo_verification_pending_at).to be_nil
-      expect(existing_profile.initiating_service_provider).to be_nil
-      expect(existing_profile.verified_at).to be_present # fix pending
-    end
-  end
-
   describe '#activate' do
     it 'activates current Profile, de-activates all other Profile for the user' do
       active_profile = create(:profile, :active, user: user)
@@ -984,7 +908,8 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
 
-      profile.deactivate_for_fraud_review(fraud_pending_reason: 'threatmetrix_review')
+      profile.fraud_pending_reason = 'threatmetrix_review'
+      profile.deactivate_for_fraud_review
 
       expect(profile.activated_at).to be_nil
       expect(profile.active).to eq(false)

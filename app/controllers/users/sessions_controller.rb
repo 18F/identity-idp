@@ -87,6 +87,7 @@ module Users
       if user_fully_authenticated?
         redirect_to signed_in_url
       elsif current_user
+        analytics.partial_authentication_log_out
         sign_out
       end
     end

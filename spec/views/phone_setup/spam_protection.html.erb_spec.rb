@@ -22,7 +22,7 @@ RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
 
   it 'has expected troubleshooting options' do
     expect(rendered).to have_link(
-      t('two_factor_authentication.phone_verification.troubleshooting.learn_more'),
+      t('two_factor_authentication.learn_more'),
       href: help_center_redirect_path(
         category: 'get-started',
         article: 'authentication-options',

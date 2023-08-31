@@ -151,26 +151,4 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       )
     end
   end
-
-  context 'during the acuant maintenance window' do
-    let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
-    let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
-    let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
-
-    before do
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
-      allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
-    end
-
-    around do |ex|
-      travel_to(now) { ex.run }
-    end
-
-    it 'renders the warning banner and the normal form' do
-      render
-
-      expect(rendered).to have_content('We are currently under maintenance')
-      expect(rendered).to have_selector('input.email')
-    end
-  end
 end

@@ -99,8 +99,6 @@ class IdentityConfig
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_suspended_support_code, type: :string)
-    config.add(:acuant_maintenance_window_start, type: :timestamp, allow_nil: true)
-    config.add(:acuant_maintenance_window_finish, type: :timestamp, allow_nil: true)
     config.add(:acuant_assure_id_password)
     config.add(:acuant_assure_id_username)
     config.add(:acuant_assure_id_subscription_id)

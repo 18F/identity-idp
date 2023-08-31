@@ -28,13 +28,9 @@ interface DocumentCaptureProps {
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
-  inPersonFullAddressEntryEnabled: Boolean;
 }
 
-function DocumentCapture({
-  onStepChange = () => {},
-  inPersonFullAddressEntryEnabled,
-}: DocumentCaptureProps) {
+function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);

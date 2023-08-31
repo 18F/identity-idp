@@ -389,9 +389,12 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'skip_notification_sent_at_set?' do
+  describe 'eligible_for_notification?' do
     let(:passed_enrollment) do
       create(:in_person_enrollment, :passed, :with_notification_phone_configuration)
+    end
+    let(:failed_enrollment) do
+      create(:in_person_enrollment, :failed, :with_notification_phone_configuration)
     end
     let(:expired_enrollment) do
       create(:in_person_enrollment, :expired, :with_notification_phone_configuration)
@@ -406,14 +409,16 @@ RSpec.describe InPersonEnrollment, type: :model do
       create(:in_person_enrollment, :failed)
     end
 
-    it 'returns false when status of passed/failed/expired and notification configuration' do
-      expect(passed_enrollment.skip_notification_sent_at_set?).to eq(false)
-      expect(expired_enrollment.skip_notification_sent_at_set?).to eq(false)
+    it 'returns true when status of passed/failed/expired and notification configuration' do
+      expect(passed_enrollment.eligible_for_notification?).to eq(true)
+      expect(failed_enrollment.eligible_for_notification?).to eq(true)
+      expect(expired_enrollment.eligible_for_notification?).to eq(true)
     end
+
     it 'returns false when status of incomplete or without notification configuration' do
-      expect(incomplete_enrollment.skip_notification_sent_at_set?).to eq(true)
-      expect(passed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
-      expect(failed_enrollment_without_notification.skip_notification_sent_at_set?).to eq(true)
+      expect(incomplete_enrollment.eligible_for_notification?).to eq(false)
+      expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
+      expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
     end
   end
 

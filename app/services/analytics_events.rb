@@ -1464,6 +1464,103 @@ module AnalyticsEvents
     )
   end
 
+  # Track sms notification attempt
+  # @param [boolean] success sms notification successful or not
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] telephony_response response from Telephony gem
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_attempted(
+    success:,
+    enrollment_code:,
+    enrollment_id:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: in person notification SMS send attempted',
+      success: success,
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # Track sms notification job completion
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_completed(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running InPerson::SendProofingNotificationJob
+  # @param [String] enrollment_code
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_exception(
+    enrollment_code:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationJob: Exception raised',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Track sms notification job skipped
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Track sms notification job started
+  # @param [String] enrollment_code enrollment_code
+  # @param [String] enrollment_id enrollment_id
+  # @param [Hash] extra extra information
+  def idv_in_person_send_proofing_notification_job_started(
+    enrollment_code:,
+    enrollment_id:,
+    **extra
+  )
+    track_event(
+      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
+      enrollment_code: enrollment_code,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing switch_back step
   def idv_in_person_switch_back_submitted(flow_path:, **extra)
@@ -1718,76 +1815,6 @@ module AnalyticsEvents
       minutes_since_established: minutes_since_established,
       response_message: response_message,
       reason: reason,
-      **extra,
-    )
-  end
-
-  # Track sms notification job completion
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_completed(enrollment_code:,
-                                                                     enrollment_id:,
-                                                                     **extra)
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job completed',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification job skipped
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_skipped(
-    enrollment_code:,
-    enrollment_id:,
-    **extra
-  )
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job skipped',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification job started
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_job_started(enrollment_code:,
-                                                                   enrollment_id:,
-                                                                   **extra)
-    track_event(
-      'SendProofingNotificationAndDeletePhoneNumberJob: job started',
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
-  # Track sms notification attempt
-  # @param [boolean] success sms notification successful or not
-  # @param [String] enrollment_code enrollment_code
-  # @param [String] enrollment_id enrollment_id
-  # @param [Telephony::Response] telephony_result
-  # @param [Hash] extra extra information
-  def idv_in_person_usps_proofing_results_notification_sent_attempted(
-    success:,
-    enrollment_code:,
-    enrollment_id:,
-    telephony_result:,
-    **extra
-  )
-    track_event(
-      'IdV: in person notification SMS send attempted',
-      success: success,
-      enrollment_code: enrollment_code,
-      enrollment_id: enrollment_id,
-      telephony_result: telephony_result,
       **extra,
     )
   end
@@ -2945,6 +2972,13 @@ module AnalyticsEvents
       error: error,
       context: context,
       country: country,
+      **extra,
+    )
+  end
+
+  def partial_authentication_log_out(**extra)
+    track_event(
+      'Partially authenticated user logged out',
       **extra,
     )
   end
