@@ -404,9 +404,7 @@ module Idv
     end
 
     def store_failed_images(client_response)
-      exception = client_response&.exception
-      ## only not exception
-      unless exception
+      if !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
         side_error = !!errors_hash[:front] || !!errors_hash[:back]
         front_fingerprint = (errors_hash.with_indifferent_access.dig(:front) || !side_error) ?
