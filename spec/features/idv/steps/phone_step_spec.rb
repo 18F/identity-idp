@@ -12,12 +12,19 @@ RSpec.feature 'idv phone step', :js do
   end
 
   context 'defaults on page load' do
-    it 'selects sms delivery option by default' do
+    before do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
+    end
+
+    it 'selects sms delivery option by default' do
       expect(page).to have_checked_field(
         t('two_factor_authentication.otp_delivery_preference.sms'), visible: false
       )
+    end
+
+    it 'displays the success banner as a flash message' do
+      expect(page).to have_content(t('doc_auth.forms.doc_success'))
     end
   end
 
@@ -25,6 +32,7 @@ RSpec.feature 'idv phone step', :js do
     it 'redirects to the otp confirmation step when the phone matches the 2fa phone number' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
+
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
 
@@ -126,11 +134,12 @@ RSpec.feature 'idv phone step', :js do
   it 'allows resubmitting form' do
     start_idv_from_sp
     complete_idv_steps_before_phone_step(user)
-
     allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     click_idv_send_security_code
+
     expect(page).to have_content(t('idv.failure.timeout'))
+    expect(page).to_not have_content(t('doc_auth.forms.doc_success'))
     expect(page).to have_current_path(idv_phone_path)
     allow(DocumentCaptureSession).to receive(:find_by).and_call_original
     click_idv_send_security_code

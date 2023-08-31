@@ -106,6 +106,32 @@ class User < ApplicationRecord
     gpo_verification_pending_profile.present?
   end
 
+  def suspended?
+    suspended_at.to_s > reinstated_at.to_s
+  end
+
+  def reinstated?
+    reinstated_at.to_s > suspended_at.to_s
+  end
+
+  def suspend!
+    if suspended?
+      analytics.user_suspended(success: false, error_message: :user_already_suspended)
+      raise 'user_already_suspended'
+    end
+    update!(suspended_at: Time.zone.now)
+    analytics.user_suspended(success: true)
+  end
+
+  def reinstate!
+    if !suspended?
+      analytics.user_reinstated(success: false, error_message: :user_is_not_suspended)
+      raise 'user_is_not_suspended'
+    end
+    update!(reinstated_at: Time.zone.now)
+    analytics.user_reinstated(success: true)
+  end
+
   def pending_profile
     return @pending_profile if defined?(@pending_profile)
 
@@ -402,6 +428,20 @@ class User < ApplicationRecord
   end
 
   add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+
+  def analytics
+    @analytics ||= Analytics.new(user: self, request: nil, session: {}, sp: nil)
+  end
+
+  def send_email_to_all_addresses(user_mailer_template)
+    confirmed_email_addresses.each do |email_address|
+      UserMailer.with(
+        user: self,
+        email_address: email_address,
+      ).send(user_mailer_template).
+        deliver_now_or_later
+    end
+  end
 
   private
 

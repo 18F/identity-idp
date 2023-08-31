@@ -10,7 +10,20 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    string: proc { |value| value.to_s },
+    # Allows loading a string configuration from a system environment variable
+    # ex: To read DATABASE_HOST from system environment for the database_host key
+    # database_host: ['env', 'DATABASE_HOST']
+    # To use a string value directly, you can specify a string explicitly:
+    # database_host: 'localhost'
+    string: proc do |value|
+      if value.is_a?(Array) && value.length == 2 && value.first == 'env'
+        ENV.fetch(value[1])
+      elsif value.is_a?(String)
+        value
+      else
+        raise 'invalid system environment configuration value'
+      end
+    end,
     symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
       value.split(',')
@@ -212,8 +225,6 @@ class IdentityConfig
     config.add(:idv_sp_required, type: :boolean)
     config.add(:ie11_support_end_date, type: :timestamp)
     config.add(:in_person_capture_secondary_id_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_enabled, type: :boolean)
-    config.add(:in_person_cta_variant_testing_percents, type: :json)
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
@@ -423,11 +434,8 @@ class IdentityConfig
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
     config.add(:ses_configuration_set_name, type: :string)
     config.add(:set_remember_device_session_expiration, type: :boolean)
+    config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
-    config.add(
-      :sign_up_mfa_selection_order_testing, type: :json,
-                                            options: { symbolize_names: true }
-    )
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:state_tracking_enabled, type: :boolean)

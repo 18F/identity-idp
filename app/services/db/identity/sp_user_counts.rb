@@ -16,6 +16,21 @@ module Db
         ActiveRecord::Base.connection.execute(sql).to_a
       end
 
+      def self.with_issuer(issuer)
+        sql = <<~SQL
+          SELECT
+            count(user_id) AS total,
+            count(user_id)-count(verified_at) AS ial1_total,
+            count(verified_at) AS ial2_total
+          FROM identities
+          WHERE identities.service_provider = ?
+          LIMIT 1
+        SQL
+
+        query = ApplicationRecord.sanitize_sql_array([sql, issuer])
+        ActiveRecord::Base.connection.execute(query).first
+      end
+
       def self.overall
         sql = <<~SQL
           SELECT

@@ -9,6 +9,18 @@ RSpec.describe TwoFactorAuthentication::SelectionPresenter do
 
   subject(:presenter) { described_class.new }
 
+  describe '#render_in' do
+    it 'renders captured block content' do
+      view_context = ActionController::Base.new.view_context
+
+      expect(view_context).to receive(:capture) do |*args, &block|
+        expect(block.call).to eq('content')
+      end
+
+      presenter.render_in(view_context) { 'content' }
+    end
+  end
+
   describe '#disabled?' do
     it { expect(presenter.disabled?).to eq(false) }
   end

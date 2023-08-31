@@ -614,7 +614,7 @@ RSpec.describe SamlIdpController do
 
     context 'with IAL2 and the profile is reset' do
       it 'redirects to IdV URL for IAL2 proofer' do
-        user = create(:profile, :password_reset).user
+        user = create(:profile, :verified, :password_reset).user
         generate_saml_response(user, ial2_settings)
 
         expect(response).to redirect_to reactivate_account_path

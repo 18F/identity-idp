@@ -402,6 +402,11 @@ RSpec.describe 'In Person Proofing', js: true do
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       click_button t('forms.verify_profile.submit')
 
+      # personal key
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
+      expect(page).to have_content(t('titles.idv.personal_key'))
+      acknowledge_and_confirm_personal_key
+
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect_in_person_gpo_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
@@ -739,7 +744,7 @@ RSpec.describe 'In Person Proofing', js: true do
       )
     end
 
-    it 'can redo the address page form' do
+    it 'can redo the address page form even if that page is skipped' do
       complete_state_id_step(user, same_address_as_id: true, double_address_verification: true)
       # skip address step
       complete_ssn_step(user)

@@ -255,7 +255,12 @@ RSpec.describe '2FA options when signing in' do
         to_not have_content t('two_factor_authentication.login_options.auth_app')
       expect(page).
         to_not have_content t('two_factor_authentication.login_options.piv_cac')
-      expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 1)
+
+      # Passing "visible: false" since the option would be hidden if JavaScript is disabled. Rather
+      # than use ChromeDriver, the purpose of this spec is to ensure that it is rendered as a single
+      # option by the server, so we're not as concerned about whether it's visible.
+      expect(page).
+        to have_selector('#two_factor_options_form_selection_webauthn', count: 1, visible: false)
     end
   end
 

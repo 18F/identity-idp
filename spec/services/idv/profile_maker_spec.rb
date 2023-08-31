@@ -19,7 +19,6 @@ RSpec.describe Idv::ProfileMaker do
     it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
       profile = subject.save_profile(
-        active: false,
         fraud_review_needed: false,
         gpo_verification_needed: false,
       )
@@ -28,69 +27,85 @@ RSpec.describe Idv::ProfileMaker do
       expect(profile).to be_a Profile
       expect(profile.id).to_not be_nil
       expect(profile.encrypted_pii).to_not be_nil
-      expect(profile.encrypted_pii).to_not match 'Some'
-      expect(profile.proofing_components).to match proofing_component.as_json
-      expect(profile.active).to eq false
+      expect(profile.encrypted_pii).to_not match('Some')
+      expect(profile.proofing_components).to match(proofing_component.as_json)
+      expect(profile.active).to eq(false)
       expect(profile.deactivation_reason).to be_nil
 
       expect(pii).to be_a Pii::Attributes
-      expect(pii.first_name).to eq 'Some'
+      expect(pii.first_name).to eq('Some')
       expect(profile.reproof_at).to be_nil
     end
 
     context 'with deactivation reason' do
       it 'creates an inactive profile with deactivation reason' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: false,
           gpo_verification_needed: false,
           deactivation_reason: :encryption_error,
         )
 
-        expect(profile.active).to eq false
-        expect(profile.deactivation_reason).to eq 'encryption_error'
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to eq('encryption_error')
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq(false)
+        expect(profile.initiating_service_provider).to eq(nil)
+        expect(profile.verified_at).to be_nil
       end
     end
 
     context 'with fraud review needed' do
       it 'deactivates a profile for fraud review' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: true,
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
-        expect(profile.active).to eq false
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to be_nil
         expect(profile.fraud_review_pending?).to eq(true)
+        expect(profile.gpo_verification_pending_at.present?).to eq(false)
+        expect(profile.initiating_service_provider).to eq(nil)
+        expect(profile.verified_at).to be_nil
       end
     end
 
     context 'with gpo_verification_needed' do
       it 'deactivates a profile for gpo verification' do
         profile = subject.save_profile(
-          active: false,
           fraud_review_needed: false,
           gpo_verification_needed: true,
           deactivation_reason: nil,
         )
 
-        expect(profile.active).to eq false
-        expect(profile.gpo_verification_pending_at.present?).to eq true
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq(true)
+        expect(profile.initiating_service_provider).to eq(nil)
+        expect(profile.verified_at).to be_nil
       end
     end
 
     context 'as active' do
       it 'creates an active profile' do
         profile = subject.save_profile(
-          active: true,
           fraud_review_needed: false,
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
-        expect(profile.active).to eq true
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
         expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq(false)
+        expect(profile.initiating_service_provider).to eq(nil)
+        expect(profile.verified_at).to be_nil
       end
     end
 
@@ -99,13 +114,18 @@ RSpec.describe Idv::ProfileMaker do
 
       it 'creates a profile with the initiating sp recorded' do
         profile = subject.save_profile(
-          active: true,
           fraud_review_needed: false,
           gpo_verification_needed: false,
           deactivation_reason: nil,
         )
 
-        expect(profile.initiating_service_provider).to eq initiating_service_provider
+        expect(profile.activated_at).to be_nil
+        expect(profile.active).to eq(false)
+        expect(profile.deactivation_reason).to be_nil
+        expect(profile.fraud_review_pending?).to eq(false)
+        expect(profile.gpo_verification_pending_at.present?).to eq(false)
+        expect(profile.initiating_service_provider).to eq(initiating_service_provider)
+        expect(profile.verified_at).to be_nil
       end
     end
   end

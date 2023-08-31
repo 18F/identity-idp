@@ -13,8 +13,6 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
   let(:acuant_sdk_upgrade_a_b_testing_enabled) { false }
   let(:use_alternate_sdk) { false }
   let(:acuant_version) { '1.3.3.7' }
-  let(:in_person_cta_variant_testing_enabled) { false }
-  let(:in_person_cta_variant_active) { '' }
 
   before do
     decorated_session = instance_double(
@@ -45,8 +43,6 @@ RSpec.describe 'idv/shared/_document_capture.html.erb' do
       acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
       use_alternate_sdk: use_alternate_sdk,
       acuant_version: acuant_version,
-      in_person_cta_variant_testing_enabled: in_person_cta_variant_testing_enabled,
-      in_person_cta_variant_active: in_person_cta_variant_active,
     }
   end
 

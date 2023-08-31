@@ -5,6 +5,13 @@ en:
       issuers: Issuers
       name: Name
       subject: Deleted accounts report
+    sp_issuer_user_counts_report:
+      ial1_total: IAL1 users
+      ial2_total: IAL2 users
+      issuer: Issuer
+      name: Name
+      subject: Service provider user count report
+      total: Total users
     system_demand_report:
       name: Name
       subject: System demand report

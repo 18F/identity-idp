@@ -26,5 +26,9 @@ RSpec.feature 'doc auth link sent step' do
     # does not allow skipping ahead to ssn step
     visit(idv_ssn_url)
     expect(page).to have_current_path(idv_link_sent_url)
+
+    # back link works
+    click_doc_auth_back_link
+    expect(page).to have_current_path(idv_hybrid_handoff_path, ignore_query: true)
   end
 end

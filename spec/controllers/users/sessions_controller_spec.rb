@@ -14,85 +14,6 @@ RSpec.describe Users::SessionsController, devise: true do
     end
   end
 
-  describe 'GET /active' do
-    context 'when user is present' do
-      before do
-        stub_sign_in
-      end
-
-      it 'returns a 200 status code' do
-        get :active
-
-        expect(response.status).to eq(200)
-      end
-
-      it 'renders json' do
-        get :active
-
-        expect(response.media_type).to eq('application/json')
-      end
-
-      it 'sets live key to true' do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['live']).to eq true
-      end
-
-      it 'includes the timeout key', freeze_time: true do
-        timeout = Time.zone.now + 10
-        controller.session[:session_expires_at] = timeout
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['timeout'].to_datetime.to_i).to eq(timeout.to_i)
-      end
-    end
-
-    context 'when user is not present' do
-      it 'sets live key to false' do
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['live']).to eq false
-      end
-
-      it 'includes session_expires_at', freeze_time: true do
-        get :active
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['timeout'].to_datetime.to_i).to eq(Time.zone.now.to_i - 1)
-      end
-
-      it 'updates the pinged_at session key' do
-        stub_sign_in
-        now = Time.zone.now
-        expected_time = now + 10
-        session[:pinged_at] = now
-
-        travel_to(expected_time) do
-          get :active
-        end
-
-        expect(session[:pinged_at].to_i).to eq(expected_time.to_i)
-      end
-    end
-
-    it 'does not track analytics event' do
-      stub_sign_in
-      stub_analytics
-
-      expect(@analytics).to_not receive(:track_event)
-
-      get :active
-    end
-  end
-
   describe 'GET /logout' do
     it 'tracks a logout event' do
       stub_analytics
@@ -136,41 +57,6 @@ RSpec.describe Users::SessionsController, devise: true do
 
       delete :destroy
       expect(controller.current_user).to be nil
-    end
-  end
-
-  describe 'GET /timeout' do
-    it 'signs the user out' do
-      sign_in_as_user
-
-      expect(subject.current_user).to_not be_nil
-
-      get :timeout
-
-      expect(flash[:info]).to eq t(
-        'notices.session_timedout',
-        app_name: APP_NAME,
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
-      )
-
-      expect(subject.current_user).to be_nil
-    end
-
-    it 'redirects to the homepage' do
-      stub_sign_in
-
-      get :timeout
-
-      expect(response).to redirect_to(root_url)
-    end
-
-    it 'tracks the timeout' do
-      stub_analytics
-      sign_in_as_user
-
-      expect(@analytics).to receive(:track_event).with('Session Timed Out')
-
-      get :timeout
     end
   end
 
@@ -669,79 +555,6 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(doc.at_css('input[name="user[email]"]')[:value]).to be_nil
         expect(doc.at_css('input[name="user[password]"]')[:value]).to be_nil
       end
-    end
-  end
-
-  describe 'POST /sessions/keepalive' do
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
-    context 'when user is present' do
-      before do
-        stub_sign_in
-      end
-
-      it 'returns a 200 status code' do
-        post :keepalive
-
-        expect(response.status).to eq(200)
-      end
-
-      it 'renders json' do
-        post :keepalive
-
-        expect(response.media_type).to eq('application/json')
-      end
-
-      it 'resets the timeout key' do
-        timeout = Time.zone.now + 2
-        controller.session[:session_expires_at] = timeout
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
-          Time.zone.now.to_i + IdentityConfig.store.session_timeout_in_minutes * 60,
-        )
-      end
-
-      it 'tracks session refresh visit' do
-        controller.session[:session_expires_at] = Time.zone.now + 10
-        stub_analytics
-
-        expect(@analytics).to receive(:track_event).with('Session Kept Alive')
-
-        post :keepalive
-      end
-    end
-
-    context 'when user is not present' do
-      it 'sets live key to false' do
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['live']).to eq false
-      end
-
-      it 'includes session_expires_at' do
-        post :keepalive
-
-        json ||= JSON.parse(response.body)
-
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
-      end
-    end
-
-    it 'does not track analytics event' do
-      stub_sign_in
-      stub_analytics
-
-      expect(@analytics).to_not receive(:track_event)
-
-      get :active
     end
   end
 end

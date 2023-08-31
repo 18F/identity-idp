@@ -1,4 +1,5 @@
-import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
+import { isWebauthnSupported } from '@18f/identity-webauthn';
+import { enrollWebauthnDevice } from '../app/webauthn';
 
 /**
  * Reloads the current page, presenting the message corresponding to the given error key.
@@ -16,7 +17,7 @@ export function reloadWithError(error: string, { force = false }: { force?: bool
 }
 
 function webauthn() {
-  if (!isWebAuthnEnabled()) {
+  if (!isWebauthnSupported()) {
     reloadWithError('NotSupportedError');
   }
   const form = document.getElementById('webauthn_form') as HTMLFormElement;

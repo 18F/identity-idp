@@ -134,6 +134,8 @@ en:
     validation:
       required_checkbox: Please check this box to continue
     verify_profile:
+      alert_info: 'We sent a lettter with your one-time code to:'
+      clear_and_start_over: Clear your information and start over
       instructions: Enter the 10-character code from the letter you received.
       name: One-time code
       return_to_profile: Return to your profile
@@ -144,6 +146,7 @@ en:
         your one-time code below. </p><p>If your letter hasn’t arrived yet,
         please be patient as <strong>letters typically take 3 to 7 business days
         to arrive</strong>. Thank you for your patience.</p>'
+      wrong_address: Not the right address?
     webauthn_delete:
       caution: If you remove your security key you won’t be able to use it to access
         your %{app_name} account.

@@ -7,15 +7,18 @@ RSpec.describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        create(:profile, :password_reset, user: user, pii: pii)
+        profile = create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: password,
           decrypted_pii: Pii::Attributes.new_from_hash(pii)
         )
 
+        expect(profile.reload.active?).to eq false
+
         result = form.submit
 
+        expect(profile.reload.active?).to eq true
         expect(result.success?).to eq true
       end
     end
@@ -25,15 +28,18 @@ RSpec.describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        create(:profile, :password_reset, user: user, pii: pii)
+        profile = create(:profile, :verified, :password_reset, user: user, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: "#{password}a",
           decrypted_pii: Pii::Attributes.new_from_hash(pii)
         )
 
+        expect(profile.reload.active?).to eq false
+
         result = form.submit
 
+        expect(profile.reload.active?).to eq false
         expect(result.success?).to eq false
         expect(result.errors[:password]).to eq [t('errors.messages.password_incorrect')]
       end

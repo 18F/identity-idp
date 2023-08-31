@@ -86,11 +86,11 @@ RSpec.feature 'Analytics Regression', js: true do
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard', 'acuant_sdk_upgrade_a_b_testing_enabled' => 'false', 'use_alternate_sdk' => anything, 'acuant_version' => anything },
       'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: 1, remaining_attempts: 3, user_id: user.uuid, flow_path: 'standard' },
       'IdV: doc auth image upload vendor submitted' => hash_including(success: true, flow_path: 'standard', attention_with_barcode: true, doc_auth_result: 'Attention'),
-      'IdV: verify in person troubleshooting option clicked' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
-      'IdV: in person proofing location visited' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
-      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998', in_person_cta_variant: 'in_person_variant_a' },
+      'IdV: verify in person troubleshooting option clicked' => { flow_path: 'standard' },
+      'IdV: in person proofing location visited' => { flow_path: 'standard' },
+      'IdV: in person proofing location submitted' => { flow_path: 'standard', selected_location: '606 E JUNEAU AVE, MILWAUKEE, WI, 53202-9998' },
       'IdV: in person proofing prepare visited' => { flow_path: 'standard' },
-      'IdV: in person proofing prepare submitted' => { flow_path: 'standard', in_person_cta_variant: 'in_person_variant_a' },
+      'IdV: in person proofing prepare submitted' => { flow_path: 'standard' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
       'IdV: in person proofing state_id submitted' => { success: true, flow_path: 'standard', step: 'state_id', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false, errors: {}, same_address_as_id: nil },
       'IdV: in person proofing address visited' => { step: 'address', flow_path: 'standard', step_count: 1, analytics_id: 'In Person Proofing', irs_reproofing: false },
@@ -112,7 +112,7 @@ RSpec.feature 'Analytics Regression', js: true do
       'IdV: personal key visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone' },
       'IdV: personal key acknowledgment toggled' => { checked: true, proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' } },
       'IdV: personal key submitted' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, deactivation_reason: 'in_person_verification_pending' },
-      'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' }, in_person_cta_variant: 'in_person_variant_a' },
+      'IdV: in person ready to verify visited' => { proofing_components: { document_check: 'usps', source_check: 'aamva', resolution_check: 'lexis_nexis', threatmetrix: false, threatmetrix_review_status: 'pass', address_check: 'lexis_nexis_address' } },
       'IdV: user clicked what to bring link on ready to verify page' => {},
       'IdV: user clicked sp link on ready to verify page' => {},
     }
@@ -196,9 +196,6 @@ RSpec.feature 'Analytics Regression', js: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_capture_secondary_id_enabled).
-        and_return(false)
-      allow(AbTests::IN_PERSON_CTA).to receive(:bucket).and_return(:in_person_variant_a)
-      allow(IdentityConfig.store).to receive(:in_person_cta_variant_testing_enabled).
         and_return(false)
       allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
       allow_any_instance_of(Idv::InPerson::ReadyToVerifyPresenter).

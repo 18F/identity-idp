@@ -21,11 +21,11 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
-        TwoFactorAuthentication::WebauthnSelectionPresenter,
-        TwoFactorAuthentication::PivCacSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
+        TwoFactorAuthentication::WebauthnSelectionPresenter,
+        TwoFactorAuthentication::PivCacSelectionPresenter,
       ]
     end
 
@@ -52,10 +52,10 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except phone' do
         expect(presenter.options.map(&:class)).to eq [
-          TwoFactorAuthentication::WebauthnSelectionPresenter,
-          TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,
           TwoFactorAuthentication::BackupCodeSelectionPresenter,
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+          TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
       end
     end
@@ -67,36 +67,13 @@ RSpec.describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except webauthn' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::AuthAppSelectionPresenter,
+          TwoFactorAuthentication::PhoneSelectionPresenter,
           TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
+          TwoFactorAuthentication::BackupCodeSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
-          TwoFactorAuthentication::PhoneSelectionPresenter,
-          TwoFactorAuthentication::BackupCodeSelectionPresenter,
         ]
-      end
-    end
-    context 'when priority is authentication first in a/b testing bucket' do
-      let(:presenter) do
-        described_class.new(user_agent: user_agent, priority_bucket: :authentication_app_priority)
-      end
-
-      it 'supplies auth app as the first option' do
-        expect(presenter.options.first.class).to eq(
-          TwoFactorAuthentication::AuthAppSelectionPresenter,
-        )
-      end
-    end
-
-    context 'when priority is usability ordered in a/b testing bucket' do
-      let(:presenter) do
-        described_class.new(user_agent: user_agent, priority_bucket: :usability_priority)
-      end
-
-      it 'supplies phone as the first option' do
-        expect(presenter.options.first.class).to eq(
-          TwoFactorAuthentication::PhoneSelectionPresenter,
-        )
       end
     end
   end

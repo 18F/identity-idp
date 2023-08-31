@@ -12,10 +12,11 @@ class ScriptBase
   end
 
   Result = Struct.new(
-    :table,   # tabular output, rendered as an ASCII table or as CSV
-    :json,    # output that should only be formatted as JSON
-    :subtask, # name of subtask, used for audit logging
-    :uuids,   # Array of UUIDs entered or returned, used for audit logging
+    :table,    # tabular output, rendered as an ASCII table or as CSV
+    :json,     # output that should only be formatted as JSON
+    :subtask,  # name of subtask, used for audit logging
+    :uuids,    # Array of UUIDs entered or returned, used for audit logging
+    :messages, # Array of UUIDs and messages returned, used for logging
     keyword_init: true,
   )
 
@@ -54,6 +55,9 @@ class ScriptBase
 
     stderr.puts "*Task*: `#{result.subtask}`"
     stderr.puts "*UUIDs*: #{result.uuids.map { |uuid| "`#{uuid}`" }.join(', ')}"
+    if result.messages.present?
+      stderr.puts "*Messages*:\n#{result.messages.map { |message| "    * #{message}" }.join("\n")}"
+    end
 
     if result.json
       stdout.puts result.json.to_json

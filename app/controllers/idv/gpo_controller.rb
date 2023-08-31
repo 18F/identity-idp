@@ -98,10 +98,7 @@ module Idv
     end
 
     def send_reminder
-      current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: current_user, email_address: email_address).
-          letter_reminder.deliver_now_or_later
-      end
+      current_user.send_email_to_all_addresses(:letter_reminder)
     end
 
     def pii_locked?

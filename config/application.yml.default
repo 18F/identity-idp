@@ -133,8 +133,6 @@ idv_send_link_max_attempts: 5
 ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
-in_person_cta_variant_testing_enabled: true
-in_person_cta_variant_testing_percents: '{"B":100}'
 in_person_email_reminder_early_benchmark_in_days: 11
 in_person_email_reminder_final_benchmark_in_days: 1
 in_person_email_reminder_late_benchmark_in_days: 4
@@ -320,11 +318,11 @@ session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 ses_configuration_set_name: ''
 set_remember_device_session_expiration: false
-sign_up_mfa_selection_order_testing: '{ "default": 100, "authentication_app_priority": 0, "usability_priority": 0 }'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 otp_min_attempts_remaining_warning_count: 3
 system_demand_report_email: 'foo@bar.com'
+sp_issuer_user_counts_report_configs: '[]'
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false

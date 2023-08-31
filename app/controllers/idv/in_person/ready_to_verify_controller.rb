@@ -11,7 +11,7 @@ module Idv
       before_action :confirm_in_person_session
 
       def show
-        analytics.idv_in_person_ready_to_verify_visit(**extra_analytics_attributes)
+        analytics.idv_in_person_ready_to_verify_visit
         @presenter = ReadyToVerifyPresenter.new(enrollment: enrollment)
       end
 
@@ -23,13 +23,6 @@ module Idv
 
       def enrollment
         current_user.pending_in_person_enrollment
-      end
-
-      def extra_analytics_attributes
-        extra = {}
-        bucket = session[:in_person_cta_variant]
-        extra[:in_person_cta_variant] = bucket if bucket
-        extra
       end
     end
   end

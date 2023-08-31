@@ -7,7 +7,6 @@ module Idv
     include StepUtilitiesConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :render_404_if_agreement_controller_disabled
     before_action :confirm_welcome_step_complete
     before_action :confirm_agreement_needed
     before_action :check_for_outage, only: :show
@@ -73,10 +72,6 @@ module Idv
       return unless idv_session.idv_consent_given
 
       redirect_to idv_hybrid_handoff_url
-    end
-
-    def render_404_if_agreement_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_agreement_controller_enabled
     end
   end
 end

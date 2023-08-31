@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.feature 'idv gpo step', :js do
+RSpec.feature 'idv gpo step' do
   include IdvStepHelper
   include OidcAuthHelper
 
-  it 'redirects to the review step when the user chooses to verify by letter' do
+  it 'redirects to the review step when the user chooses to verify by letter', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
     click_on t('idv.buttons.mail.send')
@@ -13,7 +13,7 @@ RSpec.feature 'idv gpo step', :js do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it 'allows the user to go back' do
+  it 'allows the user to go back', :js do
     start_idv_from_sp
     complete_idv_steps_before_gpo_step
 
@@ -33,7 +33,7 @@ RSpec.feature 'idv gpo step', :js do
       )
     end
 
-    it 'allows the user to resend a letter and redirects to the come back later step' do
+    it 'allows the user to resend a letter and redirects to the come back later step', :js do
       complete_idv_and_return_to_gpo_step
 
       # Confirm that we show the correct content on
@@ -69,7 +69,26 @@ RSpec.feature 'idv gpo step', :js do
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
     end
 
-    context 'too much time has passed' do
+    context 'logged in with PIV/CAC and no password' do
+      it 'does not 500' do
+        create(:profile, :with_pii, user: user, gpo_verification_pending_at: 1.day.ago)
+        create(:piv_cac_configuration, user: user, x509_dn_uuid: 'helloworld', name: 'My PIV Card')
+        gpo_confirmation_code
+
+        signin_with_piv(user)
+        fill_in t('account.index.password'), with: user.password
+        click_button t('forms.buttons.submit.default')
+
+        fill_in t('forms.verify_profile.name'), with: otp
+        click_button t('forms.verify_profile.submit')
+
+        expect(user.identity_verified?).to be(true)
+
+        expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
+      end
+    end
+
+    context 'too much time has passed', :js do
       let(:days_passed) { 31 }
       let(:max_days_before_resend_disabled) { 30 }
 
@@ -78,7 +97,7 @@ RSpec.feature 'idv gpo step', :js do
           and_return(max_days_before_resend_disabled)
       end
 
-      it 'does not present the user the option to to resend' do
+      it 'does not present the user the option to to resend', :js do
         complete_idv_and_sign_out
         travel_to(days_passed.days.from_now) do
           sign_in_live_with_2fa(user)
@@ -98,7 +117,7 @@ RSpec.feature 'idv gpo step', :js do
       end
     end
 
-    it 'allows the user to return to gpo otp confirmation' do
+    it 'allows the user to return to gpo otp confirmation', :js do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
 
@@ -135,7 +154,7 @@ RSpec.feature 'idv gpo step', :js do
     end
   end
 
-  context 'GPO verified user has reset their password and needs to re-verify with GPO again' do
+  context 'GPO verified user has reset their password and needs to re-verify with GPO again', :js do
     let(:user) { user_verified_with_gpo }
 
     it 'shows the user a GPO index screen asking to send a letter' do
@@ -152,7 +171,7 @@ RSpec.feature 'idv gpo step', :js do
     end
   end
 
-  context 'Verified resets password, requests GPO, then signs in using SP' do
+  context 'Verified resets password, requests GPO, then signs in using SP', :js do
     let(:user) { user_verified }
     let(:new_password) { 'a really long password' }
 

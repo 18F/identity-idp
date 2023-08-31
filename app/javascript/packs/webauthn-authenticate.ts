@@ -1,3 +1,4 @@
+import { isWebauthnSupported } from '@18f/identity-webauthn';
 import * as WebAuthn from '../app/webauthn';
 
 function webauthn() {
@@ -15,7 +16,7 @@ function webauthn() {
   spinner.classList.remove('display-none');
 
   if (
-    !WebAuthn.isWebAuthnEnabled() ||
+    !isWebauthnSupported() ||
     (webauthnPlatformRequested && !isPlatformAvailable && !multipleFactorsEnabled)
   ) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url')!;

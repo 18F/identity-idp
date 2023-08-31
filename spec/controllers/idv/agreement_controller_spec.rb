@@ -97,14 +97,4 @@ RSpec.describe Idv::AgreementController do
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
   end
-
-  context 'when doc_auth_agreement_controller_enabled is false' do
-    let(:feature_flag_enabled) { false }
-
-    it 'returns 404' do
-      get :show
-
-      expect(response.status).to eq(404)
-    end
-  end
 end

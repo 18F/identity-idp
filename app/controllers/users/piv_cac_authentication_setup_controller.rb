@@ -64,11 +64,6 @@ module Users
       )
     end
 
-    def sign_up_mfa_selection_order_bucket
-      return unless in_multi_mfa_selection_flow?
-      AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
-    end
-
     def remove_piv_cac
       revoke_remember_device(current_user)
       current_user_id = current_user.id
@@ -170,7 +165,6 @@ module Users
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       }
     end
 

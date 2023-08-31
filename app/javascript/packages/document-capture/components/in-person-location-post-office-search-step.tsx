@@ -16,7 +16,7 @@ import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 
 function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, registerField }) {
-  const { inPersonCtaVariantActive, inPersonURL } = useContext(InPersonContext);
+  const { inPersonURL } = useContext(InPersonContext);
   const { t } = useI18n();
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [isLoadingLocations, setLoadingLocations] = useState<boolean>(false);
@@ -77,7 +77,6 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
             if (flowPath !== 'hybrid') {
               trackEvent('IdV: location submitted', {
                 selected_location: selectedLocationAddress,
-                in_person_cta_variant: inPersonCtaVariantActive,
               });
               forceRedirect(inPersonURL!);
             }

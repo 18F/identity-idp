@@ -8,7 +8,6 @@ module Idv
       include VerifyInfoConcern
       include OutageConcern
 
-      before_action :renders_404_if_flag_not_set
       before_action :confirm_ssn_step_complete
       before_action :confirm_verify_info_step_needed
       before_action :check_for_outage, only: :show
@@ -36,6 +35,17 @@ module Idv
         process_async_state(load_async_state)
       end
 
+      def update
+        success = shared_update
+
+        if success
+          # Mark the FSM verify step completed. This is for the 50/50 state
+          flow_session['Idv::Steps::InPerson::VerifyStep'] = true
+
+          redirect_to idv_in_person_verify_info_url
+        end
+      end
+
       private
 
       # state_id_type is hard-coded here because it's required for proofing against
@@ -50,16 +60,8 @@ module Idv
         pii.blank?
       end
 
-      def after_update_url
-        idv_in_person_verify_info_url
-      end
-
       def prev_url
         idv_in_person_step_url(step: :ssn)
-      end
-
-      def renders_404_if_flag_not_set
-        render_not_found unless IdentityConfig.store.in_person_verify_info_controller_enabled
       end
 
       def pii
@@ -73,11 +75,23 @@ module Idv
 
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path: flow_session[:flow_path],
           step: 'verify',
           analytics_id: 'In Person Proofing',
           irs_reproofing: irs_reproofing?,
-        }.merge(**acuant_sdk_ab_test_analytics_args)
+        }.merge(**acuant_sdk_ab_test_analytics_args).
+          merge(**extra_analytics_properties)
+      end
+
+      def extra_analytics_properties
+        extra = {
+          pii_like_keypaths: [[:same_address_as_id], [:state_id, :state_id_jurisdiction]],
+        }
+        unless flow_session.dig(:pii_from_user, :same_address_as_id).nil?
+          extra[:same_address_as_id] =
+            flow_session[:pii_from_user][:same_address_as_id].to_s == 'true'
+        end
+        extra
       end
     end
   end

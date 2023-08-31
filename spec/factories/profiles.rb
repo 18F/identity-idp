@@ -13,12 +13,17 @@ FactoryBot.define do
 
     trait :verified do
       verified_at { Time.zone.now }
+      activated_at { Time.zone.now }
     end
 
     trait :password_reset do
-      activated_at { Time.zone.now }
-      verified_at { Time.zone.now }
+      active { false }
       deactivation_reason { :password_reset }
+    end
+
+    trait :encryption_error do
+      active { false }
+      deactivation_reason { :encryption_error }
     end
 
     trait :fraud_review_pending do

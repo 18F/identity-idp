@@ -16,6 +16,7 @@ module Idv
     # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def new
+      flash.keep(:success) if should_keep_flash_success?
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
       async_state = step.async_state
@@ -173,6 +174,18 @@ module Idv
       )
       redirect_to_next_step and return if async_state.result[:success]
       handle_proofing_failure
+    end
+
+    def is_req_from_frontend?
+      request.headers['HTTP_X_FORM_STEPS_WAIT'] == '1'
+    end
+
+    def is_req_from_verify_step?
+      request.referer == idv_verify_info_url
+    end
+
+    def should_keep_flash_success?
+      is_req_from_frontend? && is_req_from_verify_step?
     end
 
     def new_phone_added?

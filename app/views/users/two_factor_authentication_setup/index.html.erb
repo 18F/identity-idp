@@ -23,10 +23,10 @@
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <%= hidden_field_tag 'two_factor_options_form[selection][]', nil %>
       <% @presenter.options.each do |option| %>
-        <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
+        <%= render(option) do %>
           <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
                      locals: { option: option } %>
-        </div>
+        <% end %>
       <% end %>
     </fieldset>
   </div>
@@ -35,6 +35,3 @@
 <% end %>
 
 <%= render 'shared/cancel', link: destroy_user_session_path %>
-
-<%= javascript_packs_tag_once('webauthn-unhide') %>
-

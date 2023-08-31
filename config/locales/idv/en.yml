@@ -11,7 +11,7 @@ en:
       continue_plain: Continue
       mail:
         resend: Send another letter
-        send: Send a letter
+        send: Request a letter
     cancel:
       actions:
         account_page: Go to account page
@@ -57,21 +57,14 @@ en:
         ssn: 'Enter a nine-digit Social Security number'
         zipcode: Enter a 5 or 9 digit ZIP Code
     failure:
-      attempts:
-        one: For security reasons, you have one attempt remaining to add your ID online.
-        one_variant_a_html: For security reasons, you have <strong>one attempt<strong>
+      attempts_html:
+        one: For security reasons, you have <strong>one attempt<strong> remaining to add
+          your ID online.
+        other: For security reasons, you have <strong>%{count} attempts<strong>
           remaining to add your ID online.
-        one_variant_b_html: Try taking new pictures. For security reasons, you have
-          <strong>one attempt<strong> remaining to add your ID online.
-        other: For security reasons, you have %{count} attempts remaining to add your ID
-          online.
-        other_variant_a_html: For security reasons, you have <strong>%{count}
-          attempts<strong> remaining to add your ID online.
-        other_variant_b_html: Try taking new pictures. For security reasons, you have
-          <strong>%{count} attempts<strong> remaining to add your ID online.
       button:
+        try_online: Try again online
         warning: Try again
-        warning_variant: Try again online
       exceptions:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
@@ -238,7 +231,7 @@ en:
       come_back_later: Your letter is on the way
       mail:
         resend: Send another letter?
-        verify: Want a letter?
+        verify: Verify your address
       otp_delivery_method: How should we send a code?
       review: Review and submit
       session:

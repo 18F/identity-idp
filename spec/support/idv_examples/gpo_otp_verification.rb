@@ -16,13 +16,13 @@ RSpec.shared_examples 'gpo otp verification' do
     if profile_should_be_active
       expect(profile.active).to be(true)
       expect(profile.deactivation_reason).to be(nil)
+      expect(user.events.account_verified.size).to eq 1
     else
       expect(profile.active).to be(false)
       expect(profile.fraud_review_pending?).to eq(fraud_review_pending) if fraud_review_pending
       expect(profile.deactivation_reason).to eq(nil) if fraud_review_pending
     end
 
-    expect(user.events.account_verified.size).to eq 1
     expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
   end
 

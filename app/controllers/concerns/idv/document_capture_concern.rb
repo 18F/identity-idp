@@ -51,16 +51,6 @@ module Idv
       track_document_issuing_state(user, pii_from_doc[:state])
     end
 
-    def in_person_cta_variant_testing_variables
-      bucket = AbTests::IN_PERSON_CTA.bucket(document_capture_session_uuid)
-      session[:in_person_cta_variant] = bucket
-      {
-        in_person_cta_variant_testing_enabled:
-        IdentityConfig.store.in_person_cta_variant_testing_enabled,
-        in_person_cta_variant_active: bucket,
-      }
-    end
-
     def stored_result
       return @stored_result if defined?(@stored_result)
       @stored_result = document_capture_session&.load_result

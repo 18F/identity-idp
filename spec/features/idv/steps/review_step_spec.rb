@@ -14,6 +14,7 @@ RSpec.feature 'idv review step', :js do
     complete_idv_steps_before_review_step
 
     expect(page).to have_content(t('idv.messages.review.message', app_name: APP_NAME))
+    expect(page).to have_content(t('idv.messages.review.phone_verified'))
 
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
@@ -59,11 +60,16 @@ RSpec.feature 'idv review step', :js do
       complete_idv_steps_with_gpo_before_review_step(user)
     end
 
-    it 'sends a letter and creates an unverified profile' do
+    it 'sends a letter, creates an unverified profile, and sends an email' do
       fill_in 'Password', with: user_password
+
+      email_count_before_continue = ActionMailer::Base.deliveries.count
 
       expect { click_continue }.
         to change { GpoConfirmation.count }.from(0).to(1)
+
+      expect_delivered_email_count(email_count_before_continue + 1)
+      expect(last_email.subject).to eq(t('user_mailer.letter_reminder.subject'))
 
       expect(user.events.account_verified.size).to be(0)
       expect(user.profiles.count).to eq 1

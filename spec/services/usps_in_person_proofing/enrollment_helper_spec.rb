@@ -73,6 +73,8 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         subject.schedule_in_person_enrollment(user, pii)
         enrollment.reload
 
+        # tests that the value of current_address_matches_id on the enrollment corresponds
+        # to the value of same_address_as_id in the session
         expect(enrollment.current_address_matches_id).to eq(current_address_matches_id)
       end
 

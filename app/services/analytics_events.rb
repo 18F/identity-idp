@@ -634,10 +634,6 @@ module AnalyticsEvents
     track_event('IdV: doc auth agreement visited', **extra)
   end
 
-  def idv_doc_auth_cancel_link_sent_submitted(**extra)
-    track_event('IdV: doc auth cancel_link_sent submitted', **extra)
-  end
-
   # @identity.idp.previous_event_name IdV: in person proofing cancel_update_ssn submitted
   def idv_doc_auth_cancel_update_ssn_submitted(**extra)
     track_event('IdV: doc auth cancel_update_ssn submitted', **extra)
@@ -691,10 +687,6 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: in person proofing redo_address submitted
   def idv_doc_auth_redo_address_submitted(**extra)
     track_event('IdV: doc auth redo_address submitted', **extra)
-  end
-
-  def idv_doc_auth_redo_document_capture_submitted(**extra)
-    track_event('IdV: doc auth redo_document_capture submitted', **extra)
   end
 
   def idv_doc_auth_redo_ssn_submitted(**extra)
@@ -1026,28 +1018,24 @@ module AnalyticsEvents
   end
 
   # @param [String] selected_location Selected in-person location
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
   # The user submitted the in person proofing location step
-  def idv_in_person_location_submitted(selected_location:, in_person_cta_variant:, flow_path:,
+  def idv_in_person_location_submitted(selected_location:, flow_path:,
                                        **extra)
     track_event(
       'IdV: in person proofing location submitted',
       selected_location: selected_location,
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user visited the in person proofing location step
-  def idv_in_person_location_visited(flow_path:, in_person_cta_variant:, **extra)
+  def idv_in_person_location_visited(flow_path:, **extra)
     track_event(
       'IdV: in person proofing location visited',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -1106,13 +1094,11 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user submitted the in person proofing prepare step
-  def idv_in_person_prepare_submitted(flow_path:, in_person_cta_variant:, **extra)
+  def idv_in_person_prepare_submitted(flow_path:, **extra)
     track_event(
       'IdV: in person proofing prepare submitted',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -1424,14 +1410,12 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user visited the "ready to verify" page for the in person proofing flow
-  def idv_in_person_ready_to_verify_visit(in_person_cta_variant: nil, proofing_components: nil,
+  def idv_in_person_ready_to_verify_visit(proofing_components: nil,
                                           **extra)
     track_event(
       'IdV: in person ready to verify visited',
-      in_person_cta_variant: in_person_cta_variant,
       proofing_components: proofing_components,
       **extra,
     )
@@ -2210,14 +2194,12 @@ module AnalyticsEvents
   end
 
   # @param [String] flow_path Document capture path ("hybrid" or "standard")
-  # @param [String] in_person_cta_variant Variant testing bucket label
   # The user clicked the troubleshooting option to start in-person proofing
-  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:, in_person_cta_variant:,
+  def idv_verify_in_person_troubleshooting_option_clicked(flow_path:,
                                                           **extra)
     track_event(
       'IdV: verify in person troubleshooting option clicked',
       flow_path: flow_path,
-      in_person_cta_variant: in_person_cta_variant,
       **extra,
     )
   end
@@ -3608,17 +3590,14 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [String] sign_up_mfa_priority_bucket
   # Tracks when the the user has selected and submitted additional MFA methods on user registration
   def user_registration_2fa_additional_setup(success:,
-                                             sign_up_mfa_priority_bucket:,
                                              errors: nil,
                                              **extra)
     track_event(
       'User Registration: Additional 2FA Setup',
       {
         success: success,
-        sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
         errors: errors,
         **extra,
       }.compact,
@@ -3626,12 +3605,9 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits additional MFA selection page
-  # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_additional_setup_visit(sign_up_mfa_priority_bucket:, **extra)
+  def user_registration_2fa_additional_setup_visit
     track_event(
       'User Registration: Additional 2FA Setup visited',
-      sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
-      **extra,
     )
   end
 
@@ -3640,11 +3616,9 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
-  # @param [String] sign_up_mfa_priority_bucket
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
-    sign_up_mfa_priority_bucket:,
     errors: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
@@ -3658,7 +3632,6 @@ module AnalyticsEvents
         errors: errors,
         selected_mfa_count: selected_mfa_count,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
-        sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
         selection: selection,
         **extra,
       }.compact,
@@ -3666,12 +3639,9 @@ module AnalyticsEvents
   end
 
   # Tracks when user visits MFA selection page
-  # @param [String] sign_up_mfa_priority_bucket
-  def user_registration_2fa_setup_visit(sign_up_mfa_priority_bucket:, **extra)
+  def user_registration_2fa_setup_visit
     track_event(
       'User Registration: 2FA Setup visited',
-      sign_up_mfa_priority_bucket: sign_up_mfa_priority_bucket,
-      **extra,
     )
   end
 
@@ -3871,6 +3841,42 @@ module AnalyticsEvents
       'User Registration: User Fully Registered',
       {
         mfa_method: mfa_method,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user reinstated
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_reinstated(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Reinstated',
+      {
+        success: success,
+        error_message: error_message,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user suspended
+  # @param [Boolean] success
+  # @param [String] error_message
+  def user_suspended(
+    success:,
+    error_message: nil,
+    **extra
+  )
+    track_event(
+      'User Suspension: Suspended',
+      {
+        success: success,
+        error_message: error_message,
         **extra,
       }.compact,
     )

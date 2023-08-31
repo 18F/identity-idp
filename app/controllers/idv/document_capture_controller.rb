@@ -47,7 +47,6 @@ module Idv
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
-        in_person_cta_variant_testing_variables,
       )
     end
 

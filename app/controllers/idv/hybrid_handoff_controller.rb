@@ -220,6 +220,8 @@ module Idv
     def confirm_hybrid_handoff_needed
       setup_for_redo if params[:redo]
 
+      flow_session[:flow_path] = 'standard' if flow_session[:skip_upload_step]
+
       return if !flow_session[:flow_path]
 
       if flow_session[:flow_path] == 'standard'

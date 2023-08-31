@@ -259,5 +259,15 @@ FactoryBot.define do
         create(:profile, :password_reset, :with_pii, user: user)
       end
     end
+
+    trait :suspended do
+      suspended_at { Time.zone.now }
+      reinstated_at { nil }
+    end
+
+    trait :reinstated do
+      suspended_at { Time.zone.now }
+      reinstated_at { Time.zone.now + 1.hour }
+    end
   end
 end

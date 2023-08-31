@@ -42,9 +42,9 @@ RSpec.describe 'webauthn hide' do
   end
 
   def webauthn_option_hidden?
-    page.find('label[for=two_factor_options_form_selection_webauthn]').ancestor('.display-none')
-    true
-  rescue Capybara::ElementNotFound
+    page.find('label[for=two_factor_options_form_selection_webauthn]')
     false
+  rescue Capybara::ElementNotFound
+    true
   end
 end

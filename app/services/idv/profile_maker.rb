@@ -10,7 +10,6 @@ module Idv
     end
 
     def save_profile(
-      active:,
       fraud_review_needed:,
       gpo_verification_needed:,
       deactivation_reason: nil
@@ -20,7 +19,6 @@ module Idv
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
       profile.save!
-      profile.activate if active
       profile.deactivate_for_gpo_verification if gpo_verification_needed
       profile.deactivate_for_fraud_review if fraud_review_needed
       profile

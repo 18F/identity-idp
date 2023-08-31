@@ -164,6 +164,16 @@ export class FormStepsWait {
   }
 
   /**
+   * Remove any success banners that may be on the page.
+   */
+  removeSuccessBanner() {
+    const successBanner = document.querySelector('.usa-alert.usa-alert--success');
+    if (successBanner) {
+      successBanner.remove();
+    }
+  }
+
+  /**
    * @param {string} message Error message text.
    */
   renderError(message) {
@@ -178,6 +188,7 @@ export class FormStepsWait {
     }
 
     if (message) {
+      this.removeSuccessBanner();
       render(
         <Alert type="error" className="margin-bottom-4">
           {message}

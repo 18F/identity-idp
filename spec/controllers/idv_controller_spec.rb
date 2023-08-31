@@ -121,7 +121,7 @@ RSpec.describe IdvController do
     end
 
     it 'redirects to account recovery if user has a password reset profile' do
-      profile = create(:profile, :password_reset)
+      profile = create(:profile, :verified, :password_reset)
       stub_sign_in(profile.user)
       allow(subject.reactivate_account_session).to receive(:started?).and_return(true)
 

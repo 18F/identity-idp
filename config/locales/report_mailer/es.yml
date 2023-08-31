@@ -5,6 +5,13 @@ es:
       issuers: Emisores
       name: Nombre
       subject: Informe de cuentas eliminadas
+    sp_issuer_user_counts_report:
+      ial1_total: IAL1 usuarias
+      ial2_total: IAL2 usuarias
+      issuer: Identificación del emisor
+      name: Nombre
+      subject: Informe de recuento de usuarios del proveedor de servicios
+      total: Total de usuarias
     system_demand_report:
       name: Nombre
       subject: Informe de demanda del sistema

@@ -99,12 +99,6 @@ ignore_unused:
   - 'errors.messages.*'
   - 'simple_form.*'
   - 'time.*'
-  - 'idv.failure.attempts.one'
-  - 'idv.failure.attempts.one_variant_a_html'
-  - 'idv.failure.attempts.one_variant_b_html'
-  - 'idv.failure.attempts.other'
-  - 'idv.failure.attempts.other_variant_a_html'
-  - 'idv.failure.attempts.other_variant_b_html'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:

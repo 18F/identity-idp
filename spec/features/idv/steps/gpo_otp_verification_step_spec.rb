@@ -16,10 +16,18 @@ RSpec.feature 'idv gpo otp verification step' do
       :profile,
       deactivation_reason: 3,
       gpo_verification_pending_at: 2.days.ago,
-      pii: { ssn: '123-45-6789', dob: '1970-01-01' },
-      fraud_state: fraud_state,
+      pii: {
+        address1: '1 Secure Way',
+        address2: 'Unit #4',
+        city: 'Loginville',
+        state: 'DC',
+        zipcode: '11111',
+        ssn: '123-45-6789',
+        dob: '1970-01-01',
+      },
       fraud_review_pending_at: fraud_review_pending_timestamp,
       fraud_rejection_at: fraud_rejection_timestamp,
+      fraud_state: fraud_state,
     )
   end
   let(:gpo_confirmation_code) do
@@ -118,5 +126,35 @@ RSpec.feature 'idv gpo otp verification step' do
       expect(user.events.account_verified.size).to eq 1
       expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
     end
+  end
+
+  it 'allows a user to cancel and start over withinthe banner' do
+    sign_in_live_with_2fa(user)
+
+    expect(current_path).to eq idv_gpo_verify_path
+    expect(page).to have_content t('forms.verify_profile.alert_info')
+    expect(page).to have_content t('forms.verify_profile.wrong_address')
+    expect(page).to have_content '1 Secure Way'
+
+    click_on t('forms.verify_profile.clear_and_start_over')
+
+    expect(current_path).to eq idv_confirm_start_over_path
+
+    click_idv_continue
+
+    expect(current_path).to eq idv_doc_auth_welcome_step
+  end
+
+  it 'allows a user to cancel and start over in the footer' do
+    sign_in_live_with_2fa(user)
+
+    expect(current_path).to eq idv_gpo_verify_path
+    click_on t('idv.messages.clear_and_start_over')
+
+    expect(current_path).to eq idv_confirm_start_over_path
+
+    click_idv_continue
+
+    expect(current_path).to eq idv_doc_auth_welcome_step
   end
 end

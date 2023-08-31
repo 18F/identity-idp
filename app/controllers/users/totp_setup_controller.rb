@@ -66,18 +66,12 @@ module Users
       )
     end
 
-    def sign_up_mfa_selection_order_bucket
-      return unless in_multi_mfa_selection_flow?
-      @sign_up_mfa_selection_order_bucket = AbTests::SIGN_UP_MFA_SELECTION.bucket(current_user.uuid)
-    end
-
     def track_event
       mfa_user = MfaContext.new(current_user)
       analytics.totp_setup_visit(
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
       )
     end
 
@@ -144,7 +138,6 @@ module Users
     def analytics_properties
       {
         in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
-        sign_up_mfa_selection_order_bucket: sign_up_mfa_selection_order_bucket,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end

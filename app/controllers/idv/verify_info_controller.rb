@@ -34,14 +34,24 @@ module Idv
       process_async_state(load_async_state)
     end
 
+    def update
+      success = shared_update
+
+      if success
+        # Don't allow the user to go back to document capture after verifying
+        if flow_session['redo_document_capture']
+          flow_session.delete('redo_document_capture')
+          flow_session[:flow_path] ||= 'standard'
+        end
+
+        redirect_to idv_verify_info_url
+      end
+    end
+
     private
 
     # state ID type isn't manually set for Idv::VerifyInfoController
     def set_state_id_type; end
-
-    def after_update_url
-      idv_verify_info_url
-    end
 
     def prev_url
       idv_ssn_url
