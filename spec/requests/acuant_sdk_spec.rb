@@ -14,8 +14,8 @@ RSpec.describe 'acuant sdk versions' do
   end
 
   it 'has only 2 acuant versions' do
-    sdk_versions_count = acuant_entries.select{|entry| entry =~ /[0-9]+(\.[0-9]+)+/ }.length
-    expect(sdk_versions_count).to be_between(2,3)
+    sdk_versions_count = acuant_entries.count { |entry| entry =~ /[0-9]+(\.[0-9]+)+/ }
+    expect(sdk_versions_count).to be_between(2, 3)
   end
 end
 
