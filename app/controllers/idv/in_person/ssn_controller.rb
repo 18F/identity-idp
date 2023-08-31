@@ -14,7 +14,7 @@ module Idv
       attr_accessor :error_message
 
       def show
-        @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+        @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn, flow_session)
 
         analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments) if updating_ssn?
         analytics.idv_doc_auth_ssn_visited(**analytics_arguments)
@@ -28,7 +28,7 @@ module Idv
       def update
         @error_message = nil
 
-        @ssn_form = Idv::SsnFormatForm.new(current_user, flow_session)
+        @ssn_form = Idv::SsnFormatForm.new(current_user, idv_session.ssn, flow_session)
         ssn = params.require(:doc_auth).permit(:ssn)
         form_response = @ssn_form.submit(ssn)
 
