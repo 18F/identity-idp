@@ -142,7 +142,8 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_confirmed_email
-    rate_limiter = RateLimiter.new(user: existing_user, rate_limit_type: :reg_confirmed_email)
+    rate_limiter = RateLimiter.new(target: normalized_email(email), rate_limit_type: :reg_confirmed_email)
+
     rate_limiter.increment!
     @rate_limited = rate_limiter.limited?
 
