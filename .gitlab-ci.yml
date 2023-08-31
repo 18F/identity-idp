@@ -468,9 +468,10 @@ ecr-scan:
     - >
       while true; do
         SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
-        if [ "$SCAN_STATUS" == "ACTIVE" ]; then
+        if echo "$SCAN_STATUS" | grep -q "ACTIVE"; then
+          echo "Scan Complete"
           break
-        elif [ "$SCAN_STATUS" == "FAILED" ]; then
+        elif echo "$SCAN_STATUS" | grep -q "FAILED"; then
           echo "ECR scan failed"
           exit 1
         else
