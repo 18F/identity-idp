@@ -22,5 +22,20 @@ RSpec.describe DocAuth::Acuant::Requests::GetResultsRequest do
       expect(response.pii_from_doc).to_not be_empty
       expect(request_stub).to have_been_requested
     end
+
+    it 'get general error for 4xx' do
+      request_stub = stub_request(:get, url).to_return(status: 440)
+      response = described_class.new(config: config, instance_id: instance_id).fetch
+      expect(response.errors).to have_key(:general)
+      expect(response.network_error?).to eq(false)
+    end
+
+    it 'get network error for 500' do
+      request_stub = stub_request(:get, url).to_return(status: 500)
+      response = described_class.new(config: config, instance_id: instance_id).fetch
+      expect(response.errors).to have_key(:network)
+      expect(response.network_error?).to eq(true)
+
+    end
   end
 end

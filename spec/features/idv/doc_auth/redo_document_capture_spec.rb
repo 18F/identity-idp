@@ -148,4 +148,119 @@ RSpec.feature 'doc auth redo document capture', js: true do
       end
     end
   end
+
+  shared_examples_for 'image re-upload allowed' do
+    it 'allows user to submit the same image again' do
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth document_capture visited',
+                                  hash_including(redo_document_capture: nil),
+                                  )
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth image upload form submitted',
+                                  hash_including(remaining_attempts: 3),
+                                  )
+      DocAuth::Mock::DocAuthMockClient.reset!
+      attach_and_submit_images
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth image upload form submitted',
+                                  hash_including(remaining_attempts: 2),)
+      expect(current_path).to eq(idv_ssn_path)
+      check t('forms.ssn.show')
+    end
+  end
+
+  shared_examples_for 'image re-upload not allowed' do
+    it 'stops user submitting the same image again' do
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth document_capture visited',
+                                  hash_including(redo_document_capture: nil),
+                                  )
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth image upload form submitted',
+                                  hash_including(remaining_attempts: 3, attempts: 1),
+                                  )
+      DocAuth::Mock::DocAuthMockClient.reset!
+      attach_and_submit_images
+      expect(fake_analytics).to have_logged_event(
+                                  'IdV: doc auth image upload form submitted',
+                                  hash_including(remaining_attempts: 2,attempts: 2),
+                                  )
+
+      click_try_again
+      expect(page).to have_css(
+                        '.usa-error-message[role="alert"]',
+                        text: 'Same failed image uploaded again',
+                        )
+    end
+  end
+
+  context 'error due to data issue with 2xx status code', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_acuant_error_unknown
+      attach_and_submit_images
+      click_try_again
+    end
+    it_behaves_like 'image re-upload not allowed'
+  end
+
+  context 'error due to data issue with 4xx status code with trueid', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_trueid_http_non2xx_status(438)
+      attach_and_submit_images
+      click_try_again
+    end
+
+    it_behaves_like 'image re-upload allowed'
+  end
+
+  context 'error due to http status error but non 4xx status code with trueid', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_trueid_http_non2xx_status(500)
+      attach_and_submit_images
+      click_try_again
+    end
+    it_behaves_like 'image re-upload allowed'
+  end
+
+  context 'error due to data issue with 4xx status code with assureid', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_acuant_http_4xx_status(440)
+      attach_and_submit_images
+      click_try_again
+    end
+    it_behaves_like 'image re-upload not allowed'
+
+  end
+
+  context 'error due to data issue with 5xx status code with assureid', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_acuant_http_5xx_status
+      attach_and_submit_images
+      click_try_again
+    end
+
+    it_behaves_like 'image re-upload allowed'
+  end
+
+  context 'unknown error for acuant', allow_browser_log: true do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_document_capture_step
+      mock_doc_auth_acuant_error_unknown
+      attach_and_submit_images
+      click_try_again
+    end
+
+    it_behaves_like 'image re-upload not allowed'
+  end
 end

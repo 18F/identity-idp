@@ -53,6 +53,21 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
     it_behaves_like 'a successful request'
   end
+
+  context 'with non 200 http status code' do
+    let(:workflow) { 'test_workflow' }
+    let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+    it 'is a network error with 5xx status' do
+      request_stub = stub_request(:post, full_url).to_return(body: '{}', status: 500)
+      response = subject.fetch
+      expect(response.network_error?).to eq(true)
+    end
+    it 'is not a network error with 440, 438, 439' do
+      request_stub = stub_request(:post, full_url).to_return(body: '{}', status: 443)
+      response = subject.fetch
+      expect(response.network_error?).to eq(true)
+    end
+  end
 end
 
 def response_body

@@ -229,6 +229,62 @@ module DocAuthHelper
     )
   end
 
+  def mock_doc_auth_trueid_http_non2xx_status(status)
+    network_error_response = instance_double(
+      Faraday::Response,
+      status: status,
+      body: '{}',
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        network_error_response,
+        DocAuth::LexisNexis::Config.new,
+      ),
+    )
+  end
+
+  # @param [Object] status one of 440, 438, 439
+  def mock_doc_auth_acuant_http_4xx_status(status)
+    error = case http_response.status
+            when 438
+              Errors::IMAGE_LOAD_FAILURE
+            when 439
+              Errors::PIXEL_DEPTH_FAILURE
+            when 440
+              Errors::IMAGE_SIZE_FAILURE
+            end
+    errors = { general: [error] }
+    message = [
+      self.class.name,
+      'Unexpected HTTP response',
+      status,
+    ].join(' ')
+    exception = DocAuth::RequestError.new(message, status)
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :post_front_image,
+      response: DocAuth::Response.new(
+        success: false,
+        errors: errors,
+        exception: exception,
+        extra: { vendor: 'Acuant' },
+      ),
+    )
+  end
+
+  def mock_doc_auth_acuant_http_5xx_status
+    errors = { network: true }
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :post_front_image,
+      response: DocAuth::Response.new(
+        success: false,
+        errors: errors,
+        exception: Faraday::TimeoutError.new,
+        extra: { vendor: 'Acuant' },
+      ),
+    )
+  end
+
   def mock_doc_auth_acuant_error_unknown
     failed_http_response = instance_double(
       Faraday::Response,
