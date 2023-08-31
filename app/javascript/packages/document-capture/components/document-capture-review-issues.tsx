@@ -10,7 +10,6 @@ import { useI18n } from '@18f/identity-react-i18n';
 import UnknownError from './unknown-error';
 import TipList from './tip-list';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 interface DocumentCaptureReviewIssuesProps {
   isFailedDocType: boolean;
@@ -75,8 +74,6 @@ function DocumentCaptureReviewIssues({
         />
       ))}
       <FormStepsButton.Submit />
-
-      <DocumentCaptureTroubleshootingOptions location="post_submission_review" />
       <Cancel />
     </>
   );

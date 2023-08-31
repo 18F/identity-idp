@@ -7,7 +7,6 @@ import HybridDocCaptureWarning from './hybrid-doc-capture-warning';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
-import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import TipList from './tip-list';
 
 /**
@@ -70,7 +69,6 @@ function DocumentsStep({
         />
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      <DocumentCaptureTroubleshootingOptions location="document_capture" />
       <Cancel />
     </>
   );
