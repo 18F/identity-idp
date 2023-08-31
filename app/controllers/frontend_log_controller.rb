@@ -22,6 +22,8 @@ class FrontendLogController < ApplicationController
     'IdV: user clicked sp link on ready to verify page' => :idv_in_person_ready_to_verify_sp_link_clicked,
     'IdV: user clicked what to bring link on ready to verify page' => :idv_in_person_ready_to_verify_what_to_bring_link_clicked,
     'IdV: consent checkbox toggled' => :idv_consent_checkbox_toggled,
+    'User prompted before navigation' => :user_prompted_before_navigation,
+    'User prompted before navigation and still on page' => :user_prompted_before_navigation_and_still_on_page,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
   # rubocop:enable Layout/LineLength
 

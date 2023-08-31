@@ -1,13 +1,12 @@
 require 'rails_helper'
 
-feature 'doc auth upload step' do
+feature 'doc auth hybrid_handoff step' do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:new_controller_enabled) { true }
   let(:document_capture_session) { DocumentCaptureSession.create! }
   let(:idv_send_link_max_attempts) { 3 }
   let(:idv_send_link_attempt_window_in_minutes) do
@@ -16,17 +15,25 @@ feature 'doc auth upload step' do
 
   before do
     sign_in_and_2fa_user
-    allow(IdentityConfig.store).to receive(:doc_auth_hybrid_handoff_controller_enabled).
-      and_return(new_controller_enabled)
     allow_any_instance_of(Idv::HybridHandoffController).to receive(:mobile_device?).and_return(true)
-    complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
       and_return(fake_attempts_tracker)
   end
 
-  context 'on a desktop device', js: true do
+  it 'does not skip ahead in standard desktop flow' do
+    visit(idv_hybrid_handoff_url)
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    complete_welcome_step
+    visit(idv_hybrid_handoff_url)
+    expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    complete_agreement_step
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+  end
+
+  context 'on a desktop device' do
     before do
+      complete_doc_auth_steps_before_upload_step
       allow_any_instance_of(
         Idv::HybridHandoffController,
       ).to receive(
@@ -54,9 +61,12 @@ feature 'doc auth upload step' do
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :document_capture),
       )
+
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_document_capture_path)
     end
 
-    it "defaults phone to user's 2fa phone number" do
+    it "defaults phone to user's 2fa phone number", :js do
       field = page.find_field(t('two_factor_authentication.phone_label'))
       expect(field.value).to eq('(202) 555-1212')
     end
@@ -73,9 +83,12 @@ feature 'doc auth upload step' do
         'IdV: doc auth upload submitted',
         hash_including(step: 'upload', destination: :link_sent),
       )
+
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_link_sent_path)
     end
 
-    it 'proceeds to the next page with valid info' do
+    it 'proceeds to the next page with valid info', :js do
       expect(fake_attempts_tracker).to receive(
         :idv_phone_upload_link_sent,
       ).with(
@@ -96,7 +109,7 @@ feature 'doc auth upload step' do
       expect(page).to have_current_path(idv_link_sent_path)
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', :js do
       fill_in :doc_auth_phone, with: ''
       click_send_link
 

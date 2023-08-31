@@ -40,7 +40,7 @@ module Telephony
     end
 
     def send_personal_key_sign_in_notice(to:, country_code:)
-      message = I18n.t('telephony.personal_key_sign_in_notice')
+      message = I18n.t('telephony.personal_key_sign_in_notice', app_name: APP_NAME)
       response = adapter.send(message: message, to: to, country_code: country_code)
       log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
       response

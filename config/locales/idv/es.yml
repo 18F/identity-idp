@@ -212,6 +212,11 @@ es:
         info_alert: Tendrá que esperar a que su carta sea entregada para terminar de
           verificar su identidad.
         resend: Envíeme otra carta
+        resend_code_warning: Si solicitas una nueva carta ahora, el código de una sola
+          vez de tu carta actual seguirá siendo válido durante un tiempo
+          limitado. Puedes seguir utilizando el código de una sola vez de
+          cualquiera de las dos cartas.
+        resend_timeframe: Las cartas suelen tardar entre 3 y 7 días hábiles en llegar.
         timeframe_html: Las cartas se envían al día siguiente por First Class Mail de
           USPS y <strong>suelen tardar entre 3 y 7 días hábiles en
           llegar</strong>.
@@ -223,13 +228,15 @@ es:
         alert_html: '<strong>Introduzca un número de teléfono que sea:</strong>'
         description: Comprobaremos este número con los registros y le enviaremos un
           código único. Esto es para ayudar a verificar su identidad.
-        phone_of_record: Teléfono del registro
         rules:
           - Con base en Estados Unidos (incluidos los territorios de EE.UU.)
           - Su número principal (el que utiliza con más frecuencia)
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
-        intro: Su información verificada
+        gpo_pending: Enviaremos tu carta una vez que hayas ingresado tu contraseña.
+        message: '%{app_name} encriptará tu información con tu contraseña. Esto
+          significa que tu información estará segura y solo tú podrás
+          consultarla o modificarla.'
         phone_verified: Verificamos su número de teléfono
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un
@@ -239,25 +246,19 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
       verifying: Verificando…
-    review:
-      dob: Fecha de nacimiento
-      full_name: Nombre completo
-      mailing_address: Dirección postal
-      ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Su carta está en camino
       mail:
-        resend: '¿Desea otra carta?'
+        resend: '¿Enviar otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo debemos enviar un código?'
       review: Revise y envíe
       session:
-        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
+        review: 'Vuelve a ingresar tu contraseña de %{app_name}'
       unavailable: Estamos trabajando para resolver un error
     troubleshooting:
       headings:

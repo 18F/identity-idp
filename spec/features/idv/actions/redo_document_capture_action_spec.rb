@@ -27,18 +27,15 @@ feature 'doc auth redo document capture action', js: true do
       )
       click_link warning_link_text
 
-      expect(current_path).to eq(idv_doc_auth_upload_step)
+      expect(current_path).to eq(idv_hybrid_handoff_path)
       complete_upload_step
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
 
-      expect(current_path).to eq(idv_ssn_path)
-      fill_out_ssn_form_with_ssn_that_fails_resolution
-      click_on t('forms.buttons.submit.update')
       expect(current_path).to eq(idv_verify_info_path)
       check t('forms.ssn.show')
       expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
-      expect(page).not_to have_css('[role="status"]')
+      expect(page).to have_css('[role="status"]')  # We verified your ID
     end
 
     it 'shows a troubleshooting option to allow the user to cancel and return to SP' do
@@ -71,13 +68,10 @@ feature 'doc auth redo document capture action', js: true do
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
 
-        expect(current_path).to eq(idv_ssn_path)
-        fill_out_ssn_form_with_ssn_that_fails_resolution
-        click_on t('forms.buttons.submit.update')
         expect(current_path).to eq(idv_verify_info_path)
         check t('forms.ssn.show')
         expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
-        expect(page).not_to have_css('[role="status"]')
+        expect(page).to have_css('[role="status"]') # We verified your ID
       end
     end
   end

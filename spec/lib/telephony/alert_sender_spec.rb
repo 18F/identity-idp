@@ -117,7 +117,9 @@ RSpec.describe Telephony::AlertSender do
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.personal_key_sign_in_notice'))
+      expect(last_message.body).to eq(
+        t('telephony.personal_key_sign_in_notice', app_name: APP_NAME),
+      )
     end
   end
 end

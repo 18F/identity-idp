@@ -32,15 +32,15 @@ describe('PhoneInput', () => {
   });
 
   function createAndConnectElement({
-    isSingleOption = false,
-    isNonUSSingleOption = false,
+    isUSSingleOption = false,
+    isInternationalSingleOption = false,
     deliveryMethods = ['sms', 'voice'],
     translatedCountryCodeNames = {},
     captchaExemptCountries = undefined,
     phoneInputValue = undefined,
   }: {
-    isSingleOption?: boolean;
-    isNonUSSingleOption?: Boolean;
+    isUSSingleOption?: boolean;
+    isInternationalSingleOption?: Boolean;
     deliveryMethods?: string[];
     translatedCountryCodeNames?: Record<string, string>;
     captchaExemptCountries?: string[];
@@ -70,15 +70,16 @@ describe('PhoneInput', () => {
       <script type="application/json" class="phone-input__strings">
         {
           "country_code_label": "Country code",
-          "invalid_phone": "Phone number is not valid",
+          "invalid_phone_us": "Enter a 10 digit phone number.",
+          "invalid_phone_international": "Enter a phone number with the correct number of digits.",
           "unsupported_country": "We are unable to verify phone numbers from %{location}"
         }
       </script>
       <div class="phone-input__international-code-wrapper">
         <label class="usa-label" for="phone_form_international_code">Country code</label>
-        ${isSingleOption ? SINGLE_OPTION_HTML : ''}
-        ${isNonUSSingleOption ? SINGLE_OPTION_SELECT_NON_US_HTML : ''}
-        ${!isSingleOption && !isNonUSSingleOption ? MULTIPLE_OPTIONS_HTML : ''}
+        ${isUSSingleOption ? SINGLE_OPTION_HTML : ''}
+        ${isInternationalSingleOption ? SINGLE_OPTION_SELECT_NON_US_HTML : ''}
+        ${!isUSSingleOption && !isInternationalSingleOption ? MULTIPLE_OPTIONS_HTML : ''}
       </div>
       <label class="usa-label" for="phone_form_phone">Phone number</label>
       <lg-validated-field>
@@ -102,18 +103,41 @@ describe('PhoneInput', () => {
     expect(input.querySelector('.iti.iti--allow-dropdown')).to.be.ok();
   });
 
-  it('validates input', async () => {
-    const input = createAndConnectElement();
+  context('with US phone number', () => {
+    it('validates input', async () => {
+      const input = createAndConnectElement();
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
-    const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+      expect(phoneNumber.validity.valueMissing).to.be.true();
 
-    expect(phoneNumber.validity.valueMissing).to.be.true();
+      await userEvent.type(phoneNumber, '5');
+      expect(phoneNumber.validationMessage).to.equal('Enter a 10 digit phone number.');
 
-    await userEvent.type(phoneNumber, '5');
-    expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
+      await userEvent.type(phoneNumber, '13-555-1234');
+      expect(phoneNumber.validity.valid).to.be.true();
+    });
+  });
 
-    await userEvent.type(phoneNumber, '13-555-1234');
-    expect(phoneNumber.validity.valid).to.be.true();
+  context('with international phone number', () => {
+    it('validates input', async () => {
+      const input = createAndConnectElement();
+
+      const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
+      const countryCode = getByLabelText(input, 'Country code', {
+        selector: 'select',
+      }) as HTMLSelectElement;
+
+      expect(phoneNumber.validity.valueMissing).to.be.true();
+
+      await userEvent.type(phoneNumber, '647');
+      expect(countryCode.value).to.eql('CA');
+      expect(phoneNumber.validationMessage).to.equal(
+        'Enter a phone number with the correct number of digits.',
+      );
+
+      await userEvent.type(phoneNumber, '555-1234');
+      expect(phoneNumber.validity.valid).to.be.true();
+    });
   });
 
   it('validates supported delivery method', async () => {
@@ -197,18 +221,20 @@ describe('PhoneInput', () => {
 
   context('with single option', () => {
     it('initializes without dropdown', () => {
-      const input = createAndConnectElement({ isSingleOption: true });
+      const input = createAndConnectElement({ isUSSingleOption: true });
 
       expect(input.querySelector('.iti:not(.iti--allow-dropdown)')).to.be.ok();
     });
 
     it('validates phone from region', async () => {
-      const input = createAndConnectElement({ isNonUSSingleOption: true });
+      const input = createAndConnectElement({ isInternationalSingleOption: true });
 
       const phoneNumber = getByLabelText(input, 'Phone number') as HTMLInputElement;
 
-      await userEvent.type(phoneNumber, '513-555-1234');
-      expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
+      await userEvent.type(phoneNumber, '5135551234');
+      expect(phoneNumber.validationMessage).to.equal(
+        'Enter a phone number with the correct number of digits.',
+      );
     });
   });
 

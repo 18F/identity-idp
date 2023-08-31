@@ -8,6 +8,7 @@ module Idv
     include Flow::FlowStateMachine
     include Idv::ThreatMetrixConcern
     include FraudReviewConcern
+    include Idv::OutageConcern
 
     before_action :redirect_if_flow_completed
     before_action :handle_fraud
@@ -20,7 +21,7 @@ module Idv
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_link_sent_url,
+      final_url: :idv_hybrid_handoff_url,
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: 'Doc Auth',
     }.freeze
@@ -55,25 +56,6 @@ module Idv
 
     def flow_session
       user_session['idv/doc_auth']
-    end
-
-    def check_for_outage
-      return if flow_session[:skip_vendor_outage]
-
-      return redirect_for_gpo_only if FeatureManagement.idv_gpo_only?
-    end
-
-    def redirect_for_gpo_only
-      return redirect_to vendor_outage_url unless FeatureManagement.gpo_verification_enabled?
-
-      # During a phone outage, skip the hybrid handoff
-      # step and go straight to document upload
-      flow_session[:skip_upload_step] = true unless FeatureManagement.idv_allow_hybrid_flow?
-
-      session[:vendor_outage_redirect] = current_step
-      session[:vendor_outage_redirect_from_idv] = true
-
-      redirect_to idv_mail_only_warning_url
     end
   end
 end

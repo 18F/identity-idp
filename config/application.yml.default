@@ -90,7 +90,6 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_hybrid_handoff_controller_enabled: false
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
@@ -355,7 +354,9 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
-get_usps_proofing_results_job_cron: '0/10 * * * *'
+get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
+get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
+get_usps_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_reprocess_delay_minutes: 5
 get_usps_proofing_results_job_request_delay_milliseconds: 1000
 voice_otp_pause_time: '0.5s'

@@ -4,7 +4,7 @@ module Idv
     include AcuantConcern
 
     def irs_reproofing?
-      effective_user&.reproof_for_irs?(
+      current_user&.reproof_for_irs?(
         service_provider: current_sp,
       ).present?
     end

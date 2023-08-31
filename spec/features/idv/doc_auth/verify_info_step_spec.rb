@@ -51,6 +51,10 @@ feature 'doc auth verify_info step', :js do
     check t('forms.ssn.show')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+
+    # navigating to earlier pages returns here
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_verify_info_path)
   end
 
   it 'allows the user to enter in a new address and displays updated info' do

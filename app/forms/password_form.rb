@@ -11,7 +11,6 @@ class PasswordForm
     @password = params[:password]
     @password_confirmation = params[:password_confirmation]
     @request_id = params.fetch(:request_id, '')
-    @confirmation_enabled = params[:confirmation_enabled].presence
 
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end

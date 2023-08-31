@@ -320,6 +320,66 @@ describe Profile do
     end
   end
 
+  describe '#activate_after_password_reset' do
+    it 'activates a profile after password reset' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq nil
+    end
+
+    it 'activates a previously verified profile after password reset' do
+      verified_at = Time.zone.now - 1.year
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        verified_at: verified_at,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq true
+      expect(profile.deactivation_reason).to eq nil
+      expect(profile.verified_at).to eq verified_at
+    end
+
+    it 'does not activate a profile if it has a pending reason' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        fraud_review_pending_at: 1.day.ago,
+      )
+
+      expect { profile.activate_after_password_reset }.to raise_error
+    end
+
+    it 'does not activate a profile with non password_reset deactivation_reason' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :encryption_error,
+      )
+
+      profile.activate_after_password_reset
+
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to_not eq nil
+    end
+  end
+
   describe '#activate_after_passing_review' do
     it 'activates a profile if it passes fraud review' do
       profile = create(

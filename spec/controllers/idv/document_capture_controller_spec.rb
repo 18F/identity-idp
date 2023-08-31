@@ -6,8 +6,7 @@ describe Idv::DocumentCaptureController do
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
       :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'standard',
-      'Idv::Steps::UploadStep' => true }
+      :flow_path => 'standard' }
   end
 
   let(:user) { create(:user) }
@@ -18,9 +17,6 @@ describe Idv::DocumentCaptureController do
       app_id: '123',
     )
   end
-
-  let(:default_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_default }
-  let(:alternate_sdk_version) { IdentityConfig.store.idv_acuant_sdk_version_alternate }
 
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
@@ -83,13 +79,13 @@ describe Idv::DocumentCaptureController do
       )
     end
 
-    context 'upload step is not complete' do
-      it 'redirects to idv_doc_auth_url' do
+    context 'hybrid handoff step is not complete' do
+      it 'redirects to hybrid handoff' do
         flow_session.delete(:flow_path)
 
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
       end
     end
 
@@ -100,6 +96,13 @@ describe Idv::DocumentCaptureController do
 
         expect(response).to redirect_to(idv_ssn_url)
       end
+    end
+
+    it 'does not use effective user outside of analytics_user in ApplicationControler' do
+      allow(subject).to receive(:analytics_user).and_return(subject.current_user)
+      expect(subject).not_to receive(:effective_user)
+
+      get :show
     end
 
     context 'user is rate_limited' do

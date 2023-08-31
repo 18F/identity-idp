@@ -61,10 +61,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :agreement)
   end
 
-  def idv_doc_auth_upload_step
-    idv_doc_auth_step_path(step: :upload)
-  end
-
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
     click_idv_continue if current_path == idv_mail_only_warning_path

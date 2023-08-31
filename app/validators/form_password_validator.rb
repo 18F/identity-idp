@@ -2,7 +2,7 @@ module FormPasswordValidator
   extend ActiveSupport::Concern
 
   included do
-    attr_accessor :password, :password_confirmation, :validate_confirmation, :confirmation_enabled
+    attr_accessor :password, :password_confirmation, :validate_confirmation
     attr_reader :user
 
     validates :password,
@@ -11,7 +11,7 @@ module FormPasswordValidator
     validates :password_confirmation,
               presence: true,
               length: { in: Devise.password_length },
-              if: -> { confirmation_enabled && validate_confirmation }
+              if: -> { validate_confirmation }
 
     validate :password_graphemes_length, :strong_password, :not_pwned, :passwords_match
   end
@@ -54,7 +54,7 @@ module FormPasswordValidator
   end
 
   def passwords_match
-    return unless confirmation_enabled && validate_confirmation
+    return unless validate_confirmation
 
     if password != password_confirmation
       errors.add(

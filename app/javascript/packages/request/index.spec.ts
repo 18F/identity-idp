@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
-import { request } from '.';
+import { request, ResponseError } from '.';
 
 describe('request', () => {
   const sandbox = useSandbox();
@@ -241,13 +241,14 @@ describe('request', () => {
     });
 
     it('throws an error', async () => {
-      await request('https://example.com', { read: false })
-        .then(() => {
-          throw new Error('Unexpected promise resolution');
-        })
-        .catch((error) => {
-          expect(error).to.exist();
-        });
+      let didCatch = false;
+      await request('https://example.com').catch((error: ResponseError) => {
+        expect(error).to.exist();
+        expect(error.status).to.equal(400);
+        didCatch = true;
+      });
+
+      expect(didCatch).to.be.true();
     });
 
     context('with read=false option', () => {

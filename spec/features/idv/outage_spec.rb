@@ -105,7 +105,7 @@ feature 'IdV Outage Spec' do
       complete_agreement_step
 
       # Still offer the option for hybrid flow
-      expect(current_path).to eq idv_doc_auth_step_path(step: :upload)
+      expect(current_path).to eq idv_hybrid_handoff_path
 
       complete_upload_step
       complete_document_capture_step
@@ -214,7 +214,7 @@ feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(current_path).to eq idv_doc_auth_step_path(step: :upload)
+      expect(current_path).to eq idv_hybrid_handoff_path
     end
   end
 

@@ -122,6 +122,14 @@ class MemorableDateComponent < BaseComponent
     end
   end
 
+  def has_errors?
+    form.object.respond_to?(:errors) && form.object.errors.key?(name)
+  end
+
+  def error_msg
+    form.object.errors[name]&.first
+  end
+
   # Configure default generic error messages for component,
   # then integrate any overrides
   def generate_error_messages(label, min, max, override_error_messages)

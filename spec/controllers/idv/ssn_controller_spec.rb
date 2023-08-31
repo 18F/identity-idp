@@ -10,6 +10,8 @@ describe Idv::SsnController do
       :flow_path => 'standard' }
   end
 
+  let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
+
   let(:user) { create(:user) }
 
   before do
@@ -77,10 +79,35 @@ describe Idv::SsnController do
     context 'without a flow session' do
       let(:flow_session) { nil }
 
-      it 'redirects to doc_auth' do
+      it 'redirects to hybrid_handoff' do
         get :show
 
-        expect(response).to redirect_to(idv_doc_auth_url)
+        expect(response).to redirect_to(idv_hybrid_handoff_url)
+      end
+    end
+
+    context 'with an ssn in session' do
+      let(:referer) { idv_document_capture_url }
+      before do
+        flow_session['pii_from_doc'][:ssn] = ssn
+        request.env['HTTP_REFERER'] = referer
+      end
+
+      context 'referer is not verify_info' do
+        it 'redirects to verify_info' do
+          get :show
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
+      end
+
+      context 'referer is verify_info' do
+        let(:referer) { idv_verify_info_url }
+        it 'does not redirect' do
+          get :show
+
+          expect(response).to render_template :show
+        end
       end
     end
 
@@ -108,7 +135,6 @@ describe Idv::SsnController do
 
   describe '#update' do
     context 'with valid ssn' do
-      let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
@@ -218,11 +244,11 @@ describe Idv::SsnController do
         expect(response).to redirect_to idv_link_sent_url
       end
 
-      it 'redirects to FSM UploadStep if there is no flow_path' do
+      it 'redirects to hybrid_handoff if there is no flow_path' do
         flow_session[:flow_path] = nil
         put :update
         expect(response.status).to eq 302
-        expect(response).to redirect_to idv_doc_auth_url
+        expect(response).to redirect_to idv_hybrid_handoff_url
       end
     end
   end

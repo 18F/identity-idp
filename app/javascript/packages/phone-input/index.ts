@@ -1,4 +1,4 @@
-import { isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
+import { isValidNumberForRegion, isValidNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
 import type { CountryCode } from 'libphonenumber-js';
@@ -9,7 +9,9 @@ import { CAPTCHA_EVENT_NAME } from '@18f/identity-captcha-submit-button/captcha-
 interface PhoneInputStrings {
   country_code_label: string;
 
-  invalid_phone: string;
+  invalid_phone_us: string;
+
+  invalid_phone_international: string;
 
   unsupported_country: string;
 }
@@ -21,14 +23,6 @@ interface IntlTelInput extends IntlTelInputPlugin {
 
   options: Options;
 }
-
-const isPhoneValid = (phone, countryCode) => {
-  let phoneValid = isValidNumber(phone, countryCode);
-  if (!phoneValid && countryCode === 'US') {
-    phoneValid = isValidNumber(`+1 ${phone}`, countryCode);
-  }
-  return phoneValid;
-};
 
 const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
@@ -204,12 +198,12 @@ export class PhoneInputElement extends HTMLElement {
 
     const isInvalidCountry = !isValidNumberForRegion(phoneNumber, countryCode);
     if (isInvalidCountry) {
-      textInput.setCustomValidity(this.strings.invalid_phone || '');
+      textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
-    const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
+    const isInvalidPhoneNumber = !isValidNumber(phoneNumber, countryCode);
     if (isInvalidPhoneNumber) {
-      textInput.setCustomValidity(this.strings.invalid_phone || '');
+      textInput.setCustomValidity(this.getInvalidFormatMessage(countryCode));
     }
 
     if (!this.isSupportedCountry()) {
@@ -223,6 +217,12 @@ export class PhoneInputElement extends HTMLElement {
       // should notify immediately.
       textInput.dispatchEvent(new CustomEvent('invalid'));
     }
+  }
+
+  getInvalidFormatMessage(countryCode: CountryCode): string {
+    return countryCode === 'US'
+      ? this.strings.invalid_phone_us || ''
+      : this.strings.invalid_phone_international || '';
   }
 
   formatTextInput() {

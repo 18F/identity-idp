@@ -21,7 +21,6 @@ describe PasswordForm, type: :model do
       {
         password: password,
         password_confirmation: password_confirmation,
-        confirmation_enabled: true,
       }
     end
 

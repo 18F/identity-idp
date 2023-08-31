@@ -63,6 +63,26 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  # Find enrollments that are ready for a status check via the USPS API
+  def self.needs_status_check_on_ready_enrollments(check_interval)
+    needs_usps_status_check(check_interval).where(ready_for_status_check: true)
+  end
+
+  # Does this ready enrollment need a status check via the USPS API?
+  def needs_status_check_on_ready_enrollment?(check_interval)
+    needs_usps_status_check?(check_interval) && ready_for_status_check?
+  end
+
+  # Find waiting enrollments that need a status check via the USPS API
+  def self.needs_status_check_on_waiting_enrollments(check_interval)
+    needs_usps_status_check(check_interval).where(ready_for_status_check: false)
+  end
+
+  # Does this waiting enrollment need a status check via the USPS API?
+  def needs_status_check_on_waiting_enrollment?(check_interval)
+    needs_usps_status_check?(check_interval) && !ready_for_status_check?
+  end
+
   def minutes_since_established
     return unless enrollment_established_at.present?
     (Time.zone.now - enrollment_established_at).seconds.in_minutes.round(2)

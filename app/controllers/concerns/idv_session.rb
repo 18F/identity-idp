@@ -1,16 +1,15 @@
 module IdvSession
   extend ActiveSupport::Concern
-  include EffectiveUser
 
   included do
-    before_action :redirect_unless_effective_user
+    before_action :redirect_unless_idv_session_user
     before_action :redirect_if_sp_context_needed
   end
 
   def confirm_idv_needed
-    return if effective_user.active_profile.blank? ||
+    return if idv_session_user.active_profile.blank? ||
               decorated_session.requested_more_recent_verification? ||
-              effective_user.reproof_for_irs?(service_provider: current_sp)
+              idv_session_user.reproof_for_irs?(service_provider: current_sp)
 
     redirect_to idv_activated_url
   end
@@ -29,20 +28,26 @@ module IdvSession
   def idv_session
     @idv_session ||= Idv::Session.new(
       user_session: user_session,
-      current_user: effective_user,
+      current_user: idv_session_user,
       service_provider: current_sp,
     )
   end
 
-  def redirect_unless_effective_user
-    redirect_to root_url if !effective_user
+  def redirect_unless_idv_session_user
+    redirect_to root_url if !idv_session_user
   end
 
   def redirect_if_sp_context_needed
     return if sp_from_sp_session.present?
     return unless IdentityConfig.store.idv_sp_required
-    return if effective_user.profiles.any?
+    return if idv_session_user.profiles.any?
 
     redirect_to account_url
+  end
+
+  def idv_session_user
+    return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_session?
+
+    current_user
   end
 end

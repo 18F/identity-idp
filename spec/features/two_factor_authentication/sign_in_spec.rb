@@ -75,7 +75,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         fill_in 'new_phone_form_phone', with: ''
 
@@ -87,7 +87,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'IE'
 
         fill_in 'new_phone_form_phone', with: ''
@@ -99,7 +99,7 @@ feature 'Two Factor Authentication' do
 
         click_send_one_time_code
         expect(page.find(':focus')).to match_css('.phone-input__number')
-        expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+        expect(page).to have_content(t('errors.messages.invalid_phone_number.international'))
 
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end

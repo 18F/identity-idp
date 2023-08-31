@@ -2,6 +2,7 @@ module Idv
   module FormStateIdValidator
     extend ActiveSupport::Concern
 
+    # rubocop:disable Metrics/BlockLength
     included do
       validates :first_name,
                 :last_name,
@@ -29,6 +30,17 @@ module Idv
                          char_list: invalid_chars.join(', '),
                        )
                      end
+      # rubocop:disable Layout/LineLength
+      validates_with UspsInPersonProofing::DateValidator,
+                     attributes: [:dob], less_than_or_equal_to: ->(_rec) {
+                       Time.zone.today - IdentityConfig.store.idv_min_age_years.years
+                     },
+                     message: I18n.t(
+                       'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
+                       app_name: APP_NAME,
+                     )
+      # rubocop:enable Layout/LineLength
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end

@@ -3,15 +3,16 @@ module Idv
     include ActionView::Helpers::DateHelper
     include IdvSession
     include IdvStepConcern
+    include OutageConcern
     include StepIndicatorConcern
     include StepUtilitiesConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :render_404_if_hybrid_handoff_controller_disabled
     before_action :confirm_agreement_step_complete
+    before_action :confirm_hybrid_handoff_needed, only: :show
+    before_action :check_for_outage, only: :show
 
     def show
-      flow_session[:flow_path] = 'standard'
       analytics.idv_doc_auth_upload_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -44,7 +45,7 @@ module Idv
       throttle.increment!
       return throttled_failure if throttle.throttled?
       idv_session.phone_for_mobile_flow = params[:doc_auth][:phone]
-      flow_session[:phone_for_mobile_flow] = idv_session.phone_for_mobile_flow
+      flow_session[:flow_path] = 'hybrid'
       telephony_result = send_link
       telephony_form_response = build_telephony_form_response(telephony_result)
 
@@ -60,14 +61,14 @@ module Idv
       )
 
       if !failure_reason
-        flow_session[:flow_path] = 'hybrid'
         redirect_to idv_link_sent_url
       else
         redirect_to idv_hybrid_handoff_url
+        flow_session[:flow_path] = nil
       end
 
       analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(form_response(destination: :link_sent).to_h),
+        **analytics_arguments.merge(telephony_form_response.to_h),
       )
     end
 
@@ -100,6 +101,7 @@ module Idv
         extra: {
           telephony_response: telephony_result.to_h,
           destination: :link_sent,
+          flow_path: flow_session[:flow_path],
         },
       )
     end
@@ -118,11 +120,11 @@ module Idv
       flow_session[:flow_path] = 'standard'
       redirect_to idv_document_capture_url
 
-      response = form_response(destination: :document_capture)
       analytics.idv_doc_auth_upload_submitted(
-        **analytics_arguments.merge(response.to_h),
+        **analytics_arguments.merge(
+          form_response(destination: :document_capture).to_h,
+        ),
       )
-      response
     end
 
     def extra_view_variables
@@ -158,16 +160,7 @@ module Idv
         step: 'upload',
         analytics_id: 'Doc Auth',
         irs_reproofing: irs_reproofing?,
-        flow_path: flow_session[:flow_path],
       }.merge(**acuant_sdk_ab_test_analytics_args)
-    end
-
-    def mark_link_sent_step_complete
-      flow_session['Idv::Steps::LinkSentStep'] = true
-    end
-
-    def mark_upload_step_complete
-      flow_session['Idv::Steps::UploadStep'] = true
     end
 
     def form_response(destination:)
@@ -177,6 +170,7 @@ module Idv
         extra: {
           destination: destination,
           skip_upload_step: mobile_device?,
+          flow_path: flow_session[:flow_path],
         },
       )
     end
@@ -210,14 +204,20 @@ module Idv
       FormResponse.new(**form_response_params)
     end
 
-    def render_404_if_hybrid_handoff_controller_disabled
-      render_not_found unless IdentityConfig.store.doc_auth_hybrid_handoff_controller_enabled
-    end
-
     def confirm_agreement_step_complete
       return if flow_session['Idv::Steps::AgreementStep']
 
       redirect_to idv_doc_auth_url
+    end
+
+    def confirm_hybrid_handoff_needed
+      return if !flow_session[:flow_path]
+
+      if flow_session[:flow_path] == 'standard'
+        redirect_to idv_document_capture_url
+      elsif flow_session[:flow_path] == 'hybrid'
+        redirect_to idv_link_sent_url
+      end
     end
 
     def formatted_destination_phone

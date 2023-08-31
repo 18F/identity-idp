@@ -50,8 +50,7 @@ module SignUp
 
     def permitted_params
       params.require(:password_form).permit(
-        :confirmation_token, :password, :password_confirmation,
-        :confirmation_enabled
+        :confirmation_token, :password, :password_confirmation
       )
     end
 

@@ -9,14 +9,24 @@
       ) %>
 <% end %>
 
-<%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
-
-<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
-
-<p>
-  <%= t('idv.messages.gpo.address_on_file_html') %>
-  <%= t('idv.messages.gpo.timeframe_html') %>
-</p>
+<% if @presenter.resend_requested? %>
+  <%= render StatusPageComponent.new(status: :warning) do |c| %>
+    <% c.with_header { @presenter.title } %>
+    <p>
+      <%= t('idv.messages.gpo.resend_timeframe') %>
+    </p>
+    <p>
+      <%= t('idv.messages.gpo.resend_code_warning') %>
+    </p>
+  <% end %>
+<% else %>
+  <%= render AlertComponent.new(message: t('idv.messages.gpo.info_alert'), class: 'margin-bottom-4') %>
+  <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
+  <p>
+    <%= t('idv.messages.gpo.address_on_file_html') %>
+    <%= t('idv.messages.gpo.timeframe_html') %>
+  </p>
+<% end %>
 
 <div class="margin-top-6 margin-bottom-5">
   <%= button_to @presenter.button,

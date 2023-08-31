@@ -1,6 +1,6 @@
 import { TextInput } from '@18f/identity-components';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import { request } from '@18f/identity-request';
 import ValidatedField from '@18f/identity-validated-field/validated-field';
 import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
@@ -104,7 +104,6 @@ function useUspsLocations() {
   // raw text input that is set when user clicks search
   const [addressQuery, setAddressQuery] = useState('');
   const validatedFieldRef = useRef<HTMLFormElement>(null);
-  const { t } = useI18n();
   const handleAddressSearch = useCallback((event, unvalidatedAddressInput) => {
     event.preventDefault();
     validatedFieldRef.current?.setCustomValidity('');
@@ -179,7 +178,6 @@ function AddressSearch({
   onError = () => undefined,
   disabled = false,
 }: AddressSearchProps) {
-  const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
   const [textInput, setTextInput] = useState('');
   const {

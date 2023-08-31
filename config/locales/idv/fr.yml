@@ -225,6 +225,12 @@ fr:
         info_alert: Vous devrez attendre la livraison de votre lettre pour compléter la
           vérification de votre identité.
         resend: Envoyez-moi une autre lettre
+        resend_code_warning: Si vous demandez une nouvelle lettre maintenant, le code à
+          usage unique de votre lettre actuelle restera valable pendant une
+          période limitée. Vous pouvez toujours utiliser le code à usage unique
+          de l’une ou l’autre lettre.
+        resend_timeframe: Les lettres mettent généralement entre trois et sept jours
+          ouvrables pour arriver.
         timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
@@ -237,13 +243,16 @@ fr:
         alert_html: '<strong>Entrez un numéro de téléphone qui est :</strong>'
         description: Nous vérifierons ce numéro dans nos archives et vous enverrons un
           code à usage unique. Ceci est pour aider à vérifier votre identité.
-        phone_of_record: numéro de téléphone enregistré
         rules:
           - Basé aux Etats-Unis (y compris les territoires américains)
           - Votre numéro principal (celui que vous utilisez le plus souvent)
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
-        intro: Vos informations vérifiées
+        gpo_pending: Nous vous enverrons votre lettre une fois que vous aurez
+          réintroduit votre mot de passe.
+        message: '%{app_name} crypte vos informations avec votre mot de passe. Cela
+          signifie que vos informations sont sécurisées et que vous seul pourrez
+          y accéder ou les modifier.'
         phone_verified: Nous avons vérifié votre numéro de téléphone
       select_verification_with_sp: Afin de vous protéger des fraudes d’identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne
@@ -254,26 +263,19 @@ fr:
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
-          informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
       verifying: Vérification…
-    review:
-      dob: Date de naissance
-      full_name: Nom complet
-      mailing_address: Adresse postale
-      ssn: Numéro de sécurité sociale (SSN)
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Votre lettre est en route
       mail:
-        resend: Vous voulez une autre lettre?
+        resend: Envoyer une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment envoyer un code?
       review: Réviser et soumettre
       session:
-        review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
+        review: 'Saisissez à nouveau votre mot de passe %{app_name}'
       unavailable: Nous travaillons à la résolution d’une erreur
     troubleshooting:
       headings:

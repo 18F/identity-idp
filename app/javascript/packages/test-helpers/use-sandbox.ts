@@ -22,12 +22,32 @@ function useSandbox(config?: Partial<SinonSandboxConfig>) {
     sandbox.clock.restore();
   }
 
+  // useFakeTimers overrides global.setTimeout, etc. (callable as setTimeout()), but does not
+  // override window.setTimeout. So we'll do that.
+  const originalWindowMethods = (
+    [
+      'clearImmediate',
+      'clearInterval',
+      'clearTimeout',
+      'setImmediate',
+      'setInterval',
+      'setTimeout',
+    ] as const
+  ).reduce((methods, method) => {
+    methods[method] = window[method];
+    return methods;
+  }, {});
+
   beforeEach(() => {
     // useFakeTimers overrides global timer functions as soon as sandbox is created, thus leaking
     // across tests. Instead, wait until tests start to initialize.
     if (useFakeTimers) {
       Object.assign(clockImpl, sandbox.useFakeTimers());
     }
+
+    Object.keys(originalWindowMethods).forEach((method) => {
+      window[method] = global[method];
+    });
   });
 
   afterEach(() => {
@@ -36,6 +56,10 @@ function useSandbox(config?: Partial<SinonSandboxConfig>) {
 
     if (useFakeTimers) {
       sandbox.clock.restore();
+
+      Object.keys(originalWindowMethods).forEach((method) => {
+        window[method] = originalWindowMethods[method];
+      });
     }
   });
 

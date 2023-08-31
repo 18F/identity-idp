@@ -85,18 +85,22 @@ class Profile < ApplicationRecord
   end
 
   # rubocop:disable Rails/SkipsModelValidations
-  def activate
+  def activate(reason_deactivated: nil)
     confirm_that_profile_can_be_activated!
 
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
+
+    attrs = {
+      active: true,
+      activated_at: now,
+    }
+
+    attrs[:verified_at] = now unless reason_deactivated == :password_reset
+
     transaction do
       Profile.where(user_id: user_id).update_all(active: false)
-      update!(
-        active: true,
-        activated_at: now,
-        verified_at: now,
-      )
+      update!(attrs)
     end
     send_push_notifications if is_reproof
   end
@@ -126,6 +130,15 @@ class Profile < ApplicationRecord
       deactivation_reason: nil,
     )
     activate
+  end
+
+  def activate_after_password_reset
+    if password_reset?
+      update!(
+        deactivation_reason: nil,
+      )
+      activate(reason_deactivated: :password_reset)
+    end
   end
 
   def deactivate(reason)

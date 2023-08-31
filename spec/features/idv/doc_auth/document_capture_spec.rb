@@ -26,7 +26,7 @@ feature 'doc auth document capture step', :js do
     expect(page).to have_current_path(idv_doc_auth_agreement_step)
     complete_agreement_step
     visit(idv_document_capture_url)
-    expect(page).to have_current_path(idv_doc_auth_upload_step)
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
   context 'standard desktop flow' do
@@ -35,7 +35,7 @@ feature 'doc auth document capture step', :js do
     end
 
     it 'shows the new DocumentCapture page for desktop standard flow' do
-      expect(page).to have_current_path(idv_document_capture_url)
+      expect(page).to have_current_path(idv_document_capture_path)
 
       expect(page).to have_content(t('doc_auth.headings.document_capture').tr(' ', ' '))
       expect(page).to have_content(t('step_indicator.flows.idv.verify_id'))
@@ -48,6 +48,12 @@ feature 'doc auth document capture step', :js do
         irs_reproofing: false,
         acuant_sdk_upgrade_ab_test_bucket: :default,
       )
+
+      # it redirects here if trying to move earlier in the flow
+      visit(idv_doc_auth_agreement_step)
+      expect(page).to have_current_path(idv_document_capture_path)
+      visit(idv_hybrid_handoff_url)
+      expect(page).to have_current_path(idv_document_capture_path)
     end
 
     it 'logs return to sp link click' do
