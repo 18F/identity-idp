@@ -12,6 +12,10 @@ RSpec.describe 'acuant sdk versions' do
   it 'has a public directory for the alternate version' do
     expect(acuant_entries).to include(alternate_version)
   end
+
+  it 'has only 2 acuant versions' do
+    expect(acuant_entries.select{|entry| entry =~ /[0-9]+(\.[0-9]+)+/ }.length).to eq(2)
+  end
 end
 
 RSpec.describe 'requesting acuant SDK assets' do
