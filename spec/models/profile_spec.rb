@@ -835,7 +835,6 @@ RSpec.describe Profile do
       expect(profile.fraud_review_pending_at).to_not be_nil
       expect(profile.fraud_pending_reason).to_not be_nil
 
-      profile.fraud_pass
       profile.activate_after_fraud_review_unnecessary
 
       expect(profile.activated_at).to be_present # changed
@@ -847,7 +846,8 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # changed
 
       expect(profile).to be_active
-      expect(profile.fraud_review_pending_at).to be_nil
+      # don't forget was once under review
+      expect(profile.fraud_review_pending_at).to be_present
       expect(profile.fraud_pending_reason).to be_nil
     end
 

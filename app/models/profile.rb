@@ -79,10 +79,6 @@ class Profile < ApplicationRecord
   end
   # rubocop:enable Metrics/BlockLength
 
-  def fraud_review_pending?
-    fraud_pending_reason.present? && !fraud_rejection?
-  end
-
   def gpo_verification_pending?
     gpo_verification_pending_at.present?
   end

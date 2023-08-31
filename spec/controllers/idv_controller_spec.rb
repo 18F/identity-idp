@@ -28,11 +28,7 @@ RSpec.describe IdvController do
     end
 
     it 'redirects to sad face page if fraud review is pending' do
-      profile = create(
-        :profile,
-        fraud_state: 'fraud_review_pending',
-        fraud_review_pending_at: 1.day.ago,
-      )
+      profile = create(:profile, :fraud_review_pending)
 
       stub_sign_in(profile.user)
 
@@ -42,11 +38,7 @@ RSpec.describe IdvController do
     end
 
     it 'redirects to fraud rejection page if profile is rejected' do
-      profile = create(
-        :profile,
-        fraud_state: 'fraud_rejection',
-        fraud_rejection_at: 1.day.ago,
-      )
+      profile = create(:profile, :fraud_rejection)
 
       stub_sign_in(profile.user)
 
