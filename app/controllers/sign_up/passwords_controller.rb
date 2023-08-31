@@ -56,6 +56,7 @@ module SignUp
 
     def process_successful_password_creation
       password = permitted_params[:password]
+      user_session[:in_account_creation_flow] = true
       now = Time.zone.now
       UpdateUser.new(
         user: @user,

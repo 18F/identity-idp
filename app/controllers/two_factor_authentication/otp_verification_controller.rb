@@ -8,8 +8,6 @@ module TwoFactorAuthentication
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
-    helper_method :in_multi_mfa_selection_flow?
-
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
@@ -158,7 +156,7 @@ module TwoFactorAuthentication
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         phone_configuration_id: phone_configuration&.id,
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_account_creation_flow: user_session[:in_account_creation_flow],
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end

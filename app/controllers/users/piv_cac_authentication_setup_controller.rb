@@ -57,10 +57,7 @@ module Users
 
     def track_piv_cac_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.piv_cac_setup_visit(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
-      )
+      analytics.piv_cac_setup_visit(**analytics_properties)
     end
 
     def remove_piv_cac
@@ -130,10 +127,7 @@ module Users
 
     def track_mfa_method_added
       mfa_user = MfaContext.new(current_user)
-      analytics.multi_factor_auth_added_piv_cac(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
-      )
+      analytics.multi_factor_auth_added_piv_cac(**analytics_properties)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
     end
 
@@ -163,7 +157,7 @@ module Users
 
     def analytics_properties
       {
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_account_creation_flow: user_session[:in_account_creation_flow],
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end

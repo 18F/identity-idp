@@ -37,7 +37,7 @@ module Users
     private
 
     def render_prompt
-      analytics.piv_cac_setup_visit(in_multi_mfa_selection_flow: false)
+      analytics.piv_cac_setup_visit(in_account_creation_flow: false)
       @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)
       render :new
     end
