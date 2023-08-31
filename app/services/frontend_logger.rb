@@ -15,7 +15,7 @@ class FrontendLogger
   def track_event(name, attributes)
     analytics_method = event_map[name]
 
-    if analytics_method.kind_of?(Symbol)
+    if analytics_method.is_a?(Symbol)
       analytics.send(
         analytics_method,
         **hash_from_kwargs(attributes, analytics.method(analytics_method)),
