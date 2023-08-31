@@ -20,10 +20,20 @@ RSpec.describe Idv::GpoMail do
     end
 
     context 'when the amount of sent mail is lower than the allowed maximum' do
-      it 'returns false' do
-        event_create(event_type: :gpo_mail_sent, user: user)
+      context 'and the most recent mail event is too recent' do
+        it 'returns true' do
+          event_create(event_type: :gpo_mail_sent, user: user)
 
-        expect(subject.mail_spammed?).to eq false
+          expect(subject.mail_spammed?).to eq true
+        end
+      end
+
+      context 'and the most recent email is not too recent' do
+        it 'returns false' do
+          event_create(event_type: :gpo_mail_sent, user: user, updated_at: 25.hours.ago)
+
+          expect(subject.mail_spammed?).to eq false
+        end
       end
     end
 

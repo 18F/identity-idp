@@ -2,6 +2,8 @@ module Idv
   class GpoMail
     MAX_MAIL_EVENTS = IdentityConfig.store.max_mail_events
     MAIL_EVENTS_WINDOW_DAYS = IdentityConfig.store.max_mail_events_window_in_days
+    MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS =
+      IdentityConfig.store.minimum_wait_before_another_usps_letter_in_hours
 
     def initialize(current_user)
       @current_user = current_user
@@ -9,7 +11,8 @@ module Idv
 
     def mail_spammed?
       return false if user_mail_events.empty?
-      max_events? && updated_within_last_month?
+      return true if max_events? && updated_within_last_month?
+      too_recent?
     end
 
     def profile_too_old?
@@ -52,6 +55,10 @@ module Idv
 
     def updated_within_last_month?
       user_mail_events.last.updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
+    end
+
+    def too_recent?
+      user_mail_events.first.updated_at > MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago
     end
   end
 end
