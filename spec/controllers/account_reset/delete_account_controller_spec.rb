@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::DeleteAccountController do
+RSpec.describe AccountReset::DeleteAccountController do
   include AccountResetHelper
 
   let(:invalid_token_message) do

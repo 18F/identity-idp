@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Aws::SES::Base do
+RSpec.describe Aws::SES::Base do
   let(:mail) do
     Mail.new(
       to: 'asdf@example.com',

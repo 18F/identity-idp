@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'FeatureManagement' do
+RSpec.describe 'FeatureManagement' do
   describe '#prefill_otp_codes?' do
     context 'when SMS sending is disabled' do
       before { allow(FeatureManagement).to receive(:telephony_test_adapter?).and_return(true) }

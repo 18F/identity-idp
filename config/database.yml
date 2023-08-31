@@ -1,5 +1,5 @@
 postgresql: &postgresql
-  adapter: postgresql
+  adapter: postgis
   encoding: utf8
   database: identity_idp_<%= Rails.env %>
   port: 5432

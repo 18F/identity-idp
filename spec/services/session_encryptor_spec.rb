@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SessionEncryptor do
+RSpec.describe SessionEncryptor do
   describe '#load' do
     it 'decrypts encrypted session' do
       session = SessionEncryptor.new.dump(foo: 'bar')

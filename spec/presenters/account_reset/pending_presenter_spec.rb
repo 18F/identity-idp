@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::PendingPresenter do
+RSpec.describe AccountReset::PendingPresenter do
   let(:user) { create(:user) }
   let(:requested_at) { 22.hours.ago }
   let(:account_reset_request) do

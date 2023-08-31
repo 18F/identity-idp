@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorLoginOptionsForm do
+RSpec.describe TwoFactorLoginOptionsForm do
   subject do
     TwoFactorLoginOptionsForm.new(
       build_stubbed(:user),

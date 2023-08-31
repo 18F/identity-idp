@@ -57,4 +57,10 @@
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>
 
-<%= render 'idv/shared/back', action: 'cancel_link_sent', class: 'link-sent-back-link', step_url: :idv_doc_auth_step_url %>
+<div class="margin-top-5 padding-top-2 border-top border-primary-light">
+  <%= link_to(
+        '‹ ' + t('forms.buttons.back'),
+        idv_hybrid_handoff_url(redo: true),
+        class: 'link-sent-back-link',
+      ) %>
+</div>

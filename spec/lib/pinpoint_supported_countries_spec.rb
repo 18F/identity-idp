@@ -150,9 +150,20 @@ RSpec.describe PinpointSupportedCountries do
         stub_const('PinpointSupportedCountries::SENDER_ID_COUNTRIES', [])
       end
 
-      it 'is supported' do
+      it 'is not supported' do
         belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
         expect(belarus.supports_sms).to eq(false)
+      end
+    end
+
+    context 'when we do not have a sender ID and the country is on our exceptions list' do
+      before do
+        stub_const('PinpointSupportedCountries::SENDER_ID_EXCEPTION_COUNTRIES', %w[BY])
+      end
+
+      it 'is supported' do
+        belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
+        expect(belarus.supports_sms).to eq(true)
       end
     end
   end

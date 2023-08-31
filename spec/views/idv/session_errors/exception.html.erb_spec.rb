@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/session_errors/exception.html.erb' do
+RSpec.describe 'idv/session_errors/exception.html.erb' do
   let(:sp_name) { nil }
   let(:sp_issuer) { nil }
   let(:try_again_path) { '/example/path' }

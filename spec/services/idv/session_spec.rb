@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Session do
+RSpec.describe Idv::Session do
   let(:user) { create(:user) }
   let(:user_session) { {} }
 

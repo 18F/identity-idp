@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::HmacSecret do
+RSpec.describe Proofing::Aamva::HmacSecret do
   let(:client_secret) { 'MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=' }
   let(:server_secret) { 'MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTE=' }
   let(:expected_result) { Base64.strict_decode64 'txJiPvOByVADlND/OgUqlJFKoZlR3GPfxGSWMmrRzEM=' }

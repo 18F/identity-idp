@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'csv'
 
-feature 'Analytics Regression', js: true do
+RSpec.feature 'Analytics Regression', js: true do
   include IdvStepHelper
   include InPersonHelper
 
@@ -139,7 +139,7 @@ feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -174,7 +174,7 @@ feature 'Analytics Regression', js: true do
       visit_idp_from_sp_with_ial2(:oidc)
       complete_welcome_step
       complete_agreement_step
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step

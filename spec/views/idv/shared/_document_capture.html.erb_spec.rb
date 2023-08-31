@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/shared/_document_capture.html.erb' do
+RSpec.describe 'idv/shared/_document_capture.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:document_capture_session_uuid) { nil }

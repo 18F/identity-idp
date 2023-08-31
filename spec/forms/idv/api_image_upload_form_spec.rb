@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
-  include AnalyticsEvents
-
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
@@ -107,6 +105,38 @@ RSpec.describe Idv::ApiImageUploadForm do
           remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
           flow_path: anything,
+        )
+
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          async: false,
+          attempts: 1,
+          attention_with_barcode: false,
+          billed: true,
+          client_image_metrics: {
+            back: {
+              height: 20,
+              mimeType: 'image/png',
+              source: 'upload',
+              width: 20,
+            },
+            front: {
+              height: 40,
+              mimeType: 'image/png',
+              source: 'upload',
+              width: 40,
+            },
+          },
+          doc_auth_result: 'Passed',
+          errors: {},
+          exception: nil,
+          flow_path: anything,
+          remaining_attempts: 3,
+          state: 'MT',
+          state_id_type: 'drivers_license',
+          success: true,
+          user_id: document_capture_session.user.uuid,
+          vendor_request_time_in_ms: a_kind_of(Float),
         )
       end
 

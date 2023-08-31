@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'redirect_uri validation' do
+RSpec.describe 'redirect_uri validation' do
   context 'when the redirect_uri in the request does not match one that is registered' do
     it 'displays error instead of branded landing page' do
       visit_idp_from_sp_with_ial1_with_disallowed_redirect_uri

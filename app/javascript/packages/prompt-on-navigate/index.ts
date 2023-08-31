@@ -25,7 +25,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
     ev.preventDefault();
     ev.returnValue = '';
 
-    trackEvent(PROMPT_EVENT);
+    trackEvent(PROMPT_EVENT, { path: window.location.pathname });
 
     const stillOnPageIntervalsInSeconds = [...options.stillOnPageIntervalsInSeconds];
     let elapsed = 0;
@@ -46,6 +46,7 @@ export function promptOnNavigate(options: PromptOnNavigateOptions = defaults): (
 
       stillOnPageTimer = window.setTimeout(() => {
         trackEvent(STILL_ON_PAGE_EVENT, {
+          path: window.location.pathname,
           seconds: elapsed,
         });
         scheduleNextStillOnPagePing();

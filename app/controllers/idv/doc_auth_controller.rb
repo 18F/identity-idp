@@ -12,7 +12,6 @@ module Idv
 
     before_action :redirect_if_flow_completed
     before_action :handle_fraud
-    before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
     # rubocop:enable Rails/LexicallyScopedActionFilter
@@ -41,12 +40,6 @@ module Idv
     def redirect_if_pending_in_person_enrollment
       return if !IdentityConfig.store.in_person_proofing_enabled
       redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
-    end
-
-    def update_if_skipping_upload
-      return if params[:step] != 'upload' || !flow_session || !flow_session[:skip_upload_step]
-      track_step_visited
-      update
     end
 
     def do_meta_refresh(meta_refresh_count)

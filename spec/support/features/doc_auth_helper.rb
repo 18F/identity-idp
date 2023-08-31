@@ -87,25 +87,24 @@ module DocAuthHelper
     click_on t('doc_auth.buttons.continue')
   end
 
-  def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
+  def complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: false)
     complete_doc_auth_steps_before_agreement_step(expect_accessible: expect_accessible)
     complete_agreement_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_upload_step
-    # If there is a phone outage, the upload step is
-    # skipped and the user is taken straight to
-    # document capture.
+  def complete_hybrid_handoff_step
+    # If there is a phone outage, the hybrid_handoff step is
+    # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
     click_on t('forms.buttons.upload_photos')
   end
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_document_capture_path
-    complete_upload_step
+    complete_hybrid_handoff_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
@@ -163,7 +162,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_link_sent_step
-    complete_doc_auth_steps_before_upload_step
+    complete_doc_auth_steps_before_hybrid_handoff_step
     click_send_link
   end
 

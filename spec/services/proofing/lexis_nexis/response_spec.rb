@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::Response do
+RSpec.describe Proofing::LexisNexis::Response do
   let(:response_status_code) { 200 }
   let(:response_body) { LexisNexisFixtures.instant_verify_success_response_json }
   let(:response) do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/email_resend/new.html.erb' do
+RSpec.describe 'sign_up/email_resend/new.html.erb' do
   before do
     @user = User.new
     @resend_email_confirmation_form = ResendEmailConfirmationForm.new

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SamlRequestValidator do
+RSpec.describe SamlRequestValidator do
   describe '#call' do
     context 'valid authn context and sp and authorized nameID format' do
       it 'returns FormResponse with success: true' do

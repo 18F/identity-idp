@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/completions/show.html.erb' do
+RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) { create(:service_provider) }
   let(:decrypted_pii) { {} }

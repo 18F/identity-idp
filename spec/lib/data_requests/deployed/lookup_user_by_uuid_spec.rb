@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::LookupUserByUuid do
+RSpec.describe DataRequests::Deployed::LookupUserByUuid do
   describe '#call' do
     context 'when a user exists with the UUID' do
       it 'returns the user' do

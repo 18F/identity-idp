@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe GpoVerifyForm do
+RSpec.describe GpoVerifyForm do
   subject(:form) do
     GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end

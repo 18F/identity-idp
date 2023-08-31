@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'webauthn hide' do
+RSpec.describe 'webauthn hide' do
   context 'on sign up' do
     context 'with javascript enabled', :js do
       it 'displays the security key option' do

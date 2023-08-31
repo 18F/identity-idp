@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::PivCacLoginController do
+RSpec.describe Users::PivCacLoginController do
   describe 'GET new' do
     before do
       stub_analytics

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/backup_code_setup/index.html.erb' do
+RSpec.describe 'users/backup_code_setup/index.html.erb' do
   let(:user) { build(:user) }
 
   before do

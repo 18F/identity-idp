@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/failure.html.erb' do
+RSpec.describe 'idv/phone_errors/failure.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:timeout_hours) { 6 }
   let(:gpo_letter_available) { true }

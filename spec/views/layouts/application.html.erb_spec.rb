@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'layouts/application.html.erb' do
+RSpec.describe 'layouts/application.html.erb' do
   include Devise::Test::ControllerHelpers
 
   before do

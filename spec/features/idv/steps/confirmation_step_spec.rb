@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv confirmation step', js: true do
+RSpec.feature 'idv confirmation step', js: true do
   include IdvStepHelper
 
   let(:sp) { nil }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Db::AddDocumentVerificationAndSelfieCosts do
+RSpec.describe Db::AddDocumentVerificationAndSelfieCosts do
   let(:user_id) { 1 }
   let(:service_provider) { build(:service_provider, issuer: 'foo') }
   let(:billed_response) do

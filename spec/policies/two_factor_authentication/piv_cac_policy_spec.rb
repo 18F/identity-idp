@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::PivCacPolicy do
+RSpec.describe TwoFactorAuthentication::PivCacPolicy do
   let(:subject) { described_class.new(user) }
 
   describe '#configured?' do

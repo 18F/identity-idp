@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Visitor signs up with email address' do
+RSpec.feature 'Visitor signs up with email address' do
   scenario 'visitor can sign up with valid email address' do
     email = 'test@example.com'
     sign_up_with(email)

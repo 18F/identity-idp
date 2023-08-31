@@ -14,8 +14,8 @@ import {
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
-import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 import { extendSession } from '@18f/identity-session';
+import type { FlowPath, DeviceContextValue } from '@18f/identity-document-capture';
 
 /**
  * @see MarketingSiteContextProvider

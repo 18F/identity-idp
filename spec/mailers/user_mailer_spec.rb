@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserMailer, type: :mailer do
+RSpec.describe UserMailer, type: :mailer do
   let(:user) { build(:user) }
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }

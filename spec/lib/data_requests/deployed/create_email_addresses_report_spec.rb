@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::CreateEmailAddressesReport do
+RSpec.describe DataRequests::Deployed::CreateEmailAddressesReport do
   describe '#call' do
     it 'returns an array with hashes representing the users email addresses' do
       user = create(:user)

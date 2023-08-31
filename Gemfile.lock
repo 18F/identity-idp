@@ -115,6 +115,9 @@ GEM
     activerecord (7.0.4.3)
       activemodel (= 7.0.4.3)
       activesupport (= 7.0.4.3)
+    activerecord-postgis-adapter (8.0.2)
+      activerecord (~> 7.0.0)
+      rgeo-activerecord (~> 7.0.0)
     activestorage (7.0.4.3)
       actionpack (= 7.0.4.3)
       activejob (= 7.0.4.3)
@@ -552,6 +555,10 @@ GEM
       railties (>= 5.0)
     retries (0.0.5)
     rexml (3.2.5)
+    rgeo (3.0.0)
+    rgeo-activerecord (7.0.1)
+      activerecord (>= 5.0)
+      rgeo (>= 1.0.0)
     rotp (6.2.0)
     rouge (4.1.1)
     rqrcode (2.1.0)
@@ -725,6 +732,7 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  activerecord-postgis-adapter
   ahoy_matey (~> 3.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)

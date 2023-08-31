@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'IdvStepConcern' do
+RSpec.describe 'IdvStepConcern' do
   let(:user) { create(:user, :fully_registered, email: 'old_email@example.com') }
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)

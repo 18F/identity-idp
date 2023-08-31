@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/doc_auth/welcome.html.erb' do
+RSpec.describe 'idv/doc_auth/welcome.html.erb' do
   let(:flow_session) { {} }
   let(:user_fully_authenticated) { true }
   let(:sp_name) { nil }

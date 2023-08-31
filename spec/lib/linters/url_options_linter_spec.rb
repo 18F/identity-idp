@@ -2,7 +2,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../lib/linters/url_options_linter'
 
-describe RuboCop::Cop::IdentityIdp::UrlOptionsLinter do
+RSpec.describe RuboCop::Cop::IdentityIdp::UrlOptionsLinter do
   include CopHelper
   include RuboCop::RSpec::ExpectOffense
 

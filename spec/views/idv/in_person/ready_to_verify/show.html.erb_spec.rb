@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/in_person/ready_to_verify/show.html.erb' do
+RSpec.describe 'idv/in_person/ready_to_verify/show.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { build(:user) }

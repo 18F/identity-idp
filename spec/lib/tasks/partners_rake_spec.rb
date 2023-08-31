@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'rake'
 
-describe 'partners rake tasks' do
+RSpec.describe 'partners rake tasks' do
   before do
     Rake.application.rake_require 'tasks/partners'
     Rake::Task.define_task(:environment)

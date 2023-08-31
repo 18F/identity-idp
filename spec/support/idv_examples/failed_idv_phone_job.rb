@@ -1,4 +1,4 @@
-shared_examples 'failed idv phone job' do
+RSpec.shared_examples 'failed idv phone job' do
   let(:locale) { LinkLocaleResolver.locale }
 
   before do

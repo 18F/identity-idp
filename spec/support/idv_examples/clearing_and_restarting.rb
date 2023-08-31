@@ -1,4 +1,4 @@
-shared_examples 'clearing and restarting idv' do
+RSpec.shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.messages.clear_and_start_over')
     click_idv_continue

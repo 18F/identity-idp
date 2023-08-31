@@ -12,11 +12,11 @@ es:
     doc_auth:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
+      hybrid_handoff: Verifica tu identificación
       link_sent: Enlace enviado
       processing_images: Procesando tus imágenes
       ssn: Ingresa tu número del seguro social
       switch_back: Regresar a tu computadora
-      upload: Verifica tu identificación
       verify: Verifica tu identidad
     edit_info:
       email_language: Editar la preferencia de idioma del correo electrónico

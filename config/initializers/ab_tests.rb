@@ -19,11 +19,6 @@ module AbTests
     },
   )
 
-  SIGN_IN = AbTestBucket.new(
-    experiment_name: 'Sign In Experience',
-    buckets: IdentityConfig.store.sign_in_a_b_testing,
-  )
-
   def self.in_person_cta_variant_testing_buckets
     buckets = Hash.new
     percents = IdentityConfig.store.in_person_cta_variant_testing_percents

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe BannedUserResolver do
+RSpec.describe BannedUserResolver do
   context 'the user is not banned' do
     it 'returns false' do
       user = create(:user)

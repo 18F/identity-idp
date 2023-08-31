@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Sign Up' do
+RSpec.feature 'Sign Up' do
   include SamlAuthHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper

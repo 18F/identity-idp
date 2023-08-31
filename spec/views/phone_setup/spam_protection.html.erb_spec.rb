@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/phone_setup/spam_protection.html.erb' do
+RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
   let(:user) { build_stubbed(:user) }
   let(:form) { NewPhoneForm.new(user:) }
   let(:locals) { {} }

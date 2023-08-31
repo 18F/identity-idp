@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AbTestBucket do
+RSpec.describe AbTestBucket do
   context 'configured with buckets adding up to less than 100 percent' do
     let(:foo_percent) { 30 }
     let(:bar_percent) { 20 }

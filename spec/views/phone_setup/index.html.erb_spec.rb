@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/phone_setup/index.html.erb' do
+RSpec.describe 'users/phone_setup/index.html.erb' do
   before do
     user = build_stubbed(:user)
 

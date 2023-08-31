@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderUpdater do
+RSpec.describe ServiceProviderUpdater do
   include SamlAuthHelper
 
   let(:fake_dashboard_url) { 'http://dashboard.example.org' }

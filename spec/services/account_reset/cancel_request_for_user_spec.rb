@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::CancelRequestForUser do
+RSpec.describe AccountReset::CancelRequestForUser do
   let(:user) { create(:user) }
   let!(:account_reset_request) { AccountResetRequest.create(user: user, requested_at: 1.hour.ago) }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::PhoneFinder::Proofer do
+RSpec.describe Proofing::LexisNexis::PhoneFinder::Proofer do
   let(:applicant) do
     {
       uuid_prefix: '0987',

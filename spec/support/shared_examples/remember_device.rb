@@ -1,4 +1,4 @@
-shared_examples 'remember device' do
+RSpec.shared_examples 'remember device' do
   it 'does not require 2FA on sign in' do
     user = remember_device_and_sign_out_user
     sign_in_user(user)

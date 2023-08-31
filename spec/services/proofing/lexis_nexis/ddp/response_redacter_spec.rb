@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::LexisNexis::Ddp::ResponseRedacter do
+RSpec.describe Proofing::LexisNexis::Ddp::ResponseRedacter do
   let(:json) do
     Proofing::LexisNexis::Ddp::ResponseRedacter.
       redact(sample_hash)

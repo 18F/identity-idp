@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::UakPasswordVerifier do
+RSpec.describe Encryption::UakPasswordVerifier do
   describe Encryption::UakPasswordVerifier::PasswordDigest do
     describe '.parse_from_string' do
       it 'does not blow up with unknown/new keys' do

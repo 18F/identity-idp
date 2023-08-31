@@ -12,8 +12,9 @@ RSpec.describe Reporting::CommandLineOptions do
 
     let(:stdout) { StringIO.new }
     let(:argv) { [] }
+    let(:require_issuer) { true }
 
-    subject(:parse!) { instance.parse!(argv, out: stdout) }
+    subject(:parse!) { instance.parse!(argv, out: stdout, require_issuer: require_issuer) }
 
     context 'with no arguments' do
       let(:argv) { [] }
@@ -51,6 +52,33 @@ RSpec.describe Reporting::CommandLineOptions do
           slice: 3.hours,
           threads: 5,
         )
+      end
+    end
+
+    context 'missing --issuer' do
+      let(:argv) { %w[--date 2023-1-1] }
+
+      it 'prints help and exits uncleanly' do
+        expect(instance).to receive(:exit).and_return(1)
+
+        parse!
+
+        expect(stdout.string).to include('Usage:')
+      end
+
+      context 'with require_issuer: false' do
+        let(:require_issuer) { false }
+
+        it 'returns the parsed options' do
+          expect(parse!).to match(
+            time_range: Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
+            issuer: nil,
+            verbose: false,
+            progress: true,
+            slice: 3.hours,
+            threads: 5,
+          )
+        end
       end
     end
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TotpSetupForm do
+RSpec.describe TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }

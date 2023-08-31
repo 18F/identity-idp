@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'GPO verification routes' do
+RSpec.describe 'GPO verification routes' do
   GET_ROUTES = %w[
     verify/usps
   ].freeze

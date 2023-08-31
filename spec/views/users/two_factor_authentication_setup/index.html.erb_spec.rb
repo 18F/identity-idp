@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/two_factor_authentication_setup/index.html.erb' do
+RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
   include Devise::Test::ControllerHelpers
 
   subject(:rendered) { render }

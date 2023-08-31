@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDisavowal::ValidateDisavowedEvent do
+RSpec.describe EventDisavowal::ValidateDisavowedEvent do
   let(:event) { create(:event) }
   subject { described_class.new(event) }
 

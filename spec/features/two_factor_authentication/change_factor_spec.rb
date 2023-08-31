@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Changing authentication factor' do
+RSpec.feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
     let(:user) { sign_up_and_2fa_ial1_user }
 

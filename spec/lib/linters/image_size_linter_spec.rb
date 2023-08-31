@@ -2,7 +2,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../lib/linters/image_size_linter'
 
-describe RuboCop::Cop::IdentityIdp::ImageSizeLinter do
+RSpec.describe RuboCop::Cop::IdentityIdp::ImageSizeLinter do
   include CopHelper
   include RuboCop::RSpec::ExpectOffense
 

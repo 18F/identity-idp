@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   describe '#disable_caching' do
     controller do
       def index
@@ -326,7 +326,7 @@ describe ApplicationController do
     end
   end
 
-  describe '#redirect_on_timeout' do
+  describe '#redirect_with_flash_if_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
 
@@ -337,11 +337,31 @@ describe ApplicationController do
     end
     let(:user) { build_stubbed(:user) }
 
+    context 'with session timeout parameter' do
+      it 'logs an event' do
+        stub_analytics
+
+        get :index, params: { timeout: 'session', request_id: '123' }
+
+        expect(@analytics).to have_logged_event('Session Timed Out')
+      end
+
+      it 'displays flash message for session timeout' do
+        get :index, params: { timeout: 'session', request_id: '123' }
+
+        expect(flash[:info]).to eq t(
+          'notices.session_timedout',
+          app_name: APP_NAME,
+          minutes: IdentityConfig.store.session_timeout_in_minutes,
+        )
+      end
+    end
+
     context 'when the current user is present' do
       it 'does not display flash message' do
         allow(subject).to receive(:current_user).and_return(user)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to be_nil
       end
@@ -352,7 +372,7 @@ describe ApplicationController do
         receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
       allow(subject).to receive(:current_user).and_return(user)
 
-      get :index, params: { timeout: true, request_id: '123' }
+      get :index, params: { timeout: 'form', request_id: '123' }
 
       expect(response).to be_bad_request
     end
@@ -361,7 +381,7 @@ describe ApplicationController do
       it 'displays a flash message' do
         allow(subject).to receive(:current_user).and_return(nil)
 
-        get :index, params: { timeout: true, request_id: '123' }
+        get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',

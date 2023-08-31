@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorLoginOptionsPresenter do
+RSpec.describe TwoFactorLoginOptionsPresenter do
   include Rails.application.routes.url_helpers
 
   let(:user) { User.new }

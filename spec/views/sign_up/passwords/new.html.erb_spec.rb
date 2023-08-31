@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/passwords/new.html.erb' do
+RSpec.describe 'sign_up/passwords/new.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   before do

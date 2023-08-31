@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RecaptchaMockValidator do
+RSpec.describe RecaptchaMockValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:score) { nil }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'forgot password step', :js do
+RSpec.feature 'forgot password step', :js do
   include IdvStepHelper
 
   it 'goes to the forgot password page from the review page' do

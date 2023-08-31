@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::Attributes do
+RSpec.describe Pii::Attributes do
   let(:password) { 'I am the password' }
 
   describe '#new_from_hash' do

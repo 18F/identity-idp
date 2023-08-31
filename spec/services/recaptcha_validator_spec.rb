@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RecaptchaValidator do
+RSpec.describe RecaptchaValidator do
   let(:score_threshold) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }

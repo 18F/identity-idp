@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::TotpVerificationController do
+RSpec.describe TwoFactorAuthentication::TotpVerificationController do
   before do
     stub_analytics
     stub_attempts_tracker

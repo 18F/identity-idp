@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EditPhoneForm do
+RSpec.describe EditPhoneForm do
   include Shoulda::Matchers::ActiveModel
 
   let(:user) { create(:user, :fully_registered) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PwnedPasswords::LookupPassword do
+RSpec.describe PwnedPasswords::LookupPassword do
   describe '#call' do
     let(:pwned_passwords) do
       %w[

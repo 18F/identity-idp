@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDisavowal::DisavowEvent do
+RSpec.describe EventDisavowal::DisavowEvent do
   describe '#call' do
     it 'sets disavowed_at' do
       event = create(:event, disavowed_at: nil)

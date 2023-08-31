@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/show.html.erb' do
+RSpec.describe 'accounts/show.html.erb' do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   before do

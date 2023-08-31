@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::RequestController do
+RSpec.describe AccountReset::RequestController do
   let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
     it 'renders the page' do

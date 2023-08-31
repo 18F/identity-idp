@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'removing a phone number from an account' do
+RSpec.feature 'removing a phone number from an account' do
   scenario 'deleting a phone number' do
     user = create(:user, :fully_registered, :with_piv_or_cac)
     phone_configuration = user.phone_configurations.first

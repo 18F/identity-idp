@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ServiceProviderController do
+RSpec.describe ServiceProviderController do
   include SamlAuthHelper
 
   describe '#update' do

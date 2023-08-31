@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Banning users for an SP' do
+RSpec.feature 'Banning users for an SP' do
   include SamlAuthHelper
 
   context 'a user is banned from all SPs' do

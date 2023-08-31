@@ -76,12 +76,6 @@
         class: 'site-wrap bg-primary-lighter',
         id: local_assigns[:user_main_tag] == false ? nil : 'main-content',
       ) do %>
-    <% if @is_on_home_page && @sign_in_a_b_test_bucket == :banner %>
-      <div class="grid-container padding-y-2 card tablet:margin-bottom-1">
-        <%= render 'shared/create_account_banner' %>
-      </div>
-    <% end %>
-
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render FlashComponent.new(flash: flash) %>
@@ -93,7 +87,6 @@
   <% if current_user %>
     <%= render partial: 'session_timeout/ping',
                locals: {
-                 timeout_url: timeout_url,
                  warning: session_timeout_warning,
                  start: session_timeout_start,
                  frequency: session_timeout_frequency,

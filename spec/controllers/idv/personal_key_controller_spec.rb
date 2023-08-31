@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::PersonalKeyController do
+RSpec.describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 

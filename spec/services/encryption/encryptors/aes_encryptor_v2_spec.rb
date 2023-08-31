@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::Encryptors::AesEncryptorV2 do
+RSpec.describe Encryption::Encryptors::AesEncryptorV2 do
   let(:aes_cek) { SecureRandom.random_bytes(32) }
   let(:plaintext) { 'four score and seven years ago' }
 

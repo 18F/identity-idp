@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EmailAddress do
+RSpec.describe EmailAddress do
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_presence_of(:encrypted_email) }

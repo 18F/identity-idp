@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe VerifyPasswordForm, type: :model do
+RSpec.describe VerifyPasswordForm, type: :model do
   describe '#submit' do
     context 'when the form is valid' do
       it 'is successful' do

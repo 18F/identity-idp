@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EncryptedAttribute do
+RSpec.describe EncryptedAttribute do
   let(:email) { 'someone@example.com' }
   let(:fingerprint) { Pii::Fingerprinter.fingerprint(email) }
   let(:encrypted_email) do

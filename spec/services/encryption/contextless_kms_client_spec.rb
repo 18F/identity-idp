@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::ContextlessKmsClient do
+RSpec.describe Encryption::ContextlessKmsClient do
   let(:password_pepper) { '1' * 32 }
   let(:local_plaintext) { 'local plaintext' }
   let(:local_ciphertext) { 'local ciphertext' }

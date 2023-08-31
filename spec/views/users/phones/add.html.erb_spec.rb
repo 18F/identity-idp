@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/phones/add.html.erb' do
+RSpec.describe 'users/phones/add.html.erb' do
   include Devise::Test::ControllerHelpers
 
   subject(:rendered) { render }

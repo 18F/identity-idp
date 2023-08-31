@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::NotifyUserOfRequestCancellation do
+RSpec.describe AccountReset::NotifyUserOfRequestCancellation do
   let(:user) { create(:user) }
 
   subject { described_class.new(user) }

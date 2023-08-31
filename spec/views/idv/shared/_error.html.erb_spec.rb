@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/shared/_error.html.erb' do
+RSpec.describe 'idv/shared/_error.html.erb' do
   let(:sp_name) { nil }
   let(:options) { [{ text: 'Example', url: '#example' }] }
   let(:heading) { 'Error' }

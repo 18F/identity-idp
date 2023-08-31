@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Test::PivCacAuthenticationTestSubjectController do
+RSpec.describe Test::PivCacAuthenticationTestSubjectController do
   describe 'when not in development' do
     before(:each) do
       allow(Rails.env).to receive(:development?) { false }

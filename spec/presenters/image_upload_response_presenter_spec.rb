@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ImageUploadResponsePresenter do
+RSpec.describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
   let(:form_response) do

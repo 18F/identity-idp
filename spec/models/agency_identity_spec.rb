@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AgencyIdentity do
+RSpec.describe AgencyIdentity do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:agency) }
 

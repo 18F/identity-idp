@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-shared_examples 'expiring remember device for an sp config' do |expiration_time, protocol|
+RSpec.shared_examples 'expiring remember device for an sp config' do |expiration_time, protocol|
   before do
     user # Go through the signup flow and remember user before visiting SP
   end
@@ -93,7 +93,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
   end
 end
 
-feature 'remember device sp expiration' do
+RSpec.feature 'remember device sp expiration' do
   include SamlAuthHelper
 
   let(:user) do

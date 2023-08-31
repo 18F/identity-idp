@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Pending account reset request sign in' do
+RSpec.feature 'Pending account reset request sign in' do
   it 'gives the option to cancel the request on sign in' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
 

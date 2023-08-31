@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::AuthenticationClient do
+RSpec.describe Proofing::Aamva::AuthenticationClient do
   let(:config) { AamvaFixtures.example_config }
   let(:security_token_request_stub) do
     stub_request(:post, config.auth_url).

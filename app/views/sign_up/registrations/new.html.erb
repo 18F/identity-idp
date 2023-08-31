@@ -2,24 +2,20 @@
 
 <%= render 'shared/sp_alert', section: 'sign_up' %>
 
-<% if @sign_in_a_b_test_bucket == :tabbed %>
-  <% if decorated_session.sp_name %>
-    <%= render 'sign_up/registrations/sp_registration_heading' %>
-  <% end %>
-
-  <%= render TabNavigationComponent.new(
-        label: t('account.login.tab_navigation'),
-        routes: [
-          { text: t('links.next'), path: new_user_session_url },
-          { text: t('links.create_account'), path: sign_up_email_path },
-        ],
-        class: 'margin-bottom-4',
-      ) %>
-
-  <%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
-<% else %>
-  <%= render PageHeadingComponent.new.with_content(t('titles.registrations.new')) %>
+<% if decorated_session.sp_name %>
+  <%= render 'sign_up/registrations/sp_registration_heading' %>
 <% end %>
+
+<%= render TabNavigationComponent.new(
+      label: t('account.login.tab_navigation'),
+      routes: [
+        { text: t('links.next'), path: new_user_session_url },
+        { text: t('links.create_account'), path: sign_up_email_path },
+      ],
+      class: 'margin-bottom-4',
+    ) %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
 
 <%= simple_form_for(
       @register_user_email_form,

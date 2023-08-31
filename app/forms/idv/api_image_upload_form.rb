@@ -69,18 +69,26 @@ module Idv
     end
 
     def post_images_to_client
-      response = doc_auth_client.post_images(
-        front_image: front_image_bytes,
-        back_image: back_image_bytes,
-        image_source: image_source,
-        user_uuid: user_uuid,
-        uuid_prefix: uuid_prefix,
-      )
+      timer = JobHelpers::Timer.new
+
+      response = timer.time('vendor_request') do
+        doc_auth_client.post_images(
+          front_image: front_image_bytes,
+          back_image: back_image_bytes,
+          image_source: image_source,
+          user_uuid: user_uuid,
+          uuid_prefix: uuid_prefix,
+        )
+      end
+
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
       response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
 
-      update_analytics(response)
+      update_analytics(
+        client_response: response,
+        vendor_request_time_in_ms: timer.results['vendor_request'],
+      )
 
       response
     end
@@ -204,7 +212,7 @@ module Idv
       end
     end
 
-    def update_analytics(client_response)
+    def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
       analytics.idv_doc_auth_submitted_image_upload_vendor(
@@ -212,6 +220,7 @@ module Idv
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
+          vendor_request_time_in_ms: vendor_request_time_in_ms,
         ).merge(acuant_sdk_upgrade_ab_test_data),
       )
     end

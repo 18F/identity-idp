@@ -24,7 +24,6 @@ es:
       new: Enviar otro email de confirmación
     create_account_new_users: Crear una cuenta para usuarios nuevos
     create_account_with_sp:
-      cta: '¿Es la primera vez que utiliza %{app_name}?'
       sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
         de forma segura.
     edit_info:

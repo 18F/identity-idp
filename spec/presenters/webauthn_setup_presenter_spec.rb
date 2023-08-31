@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthnSetupPresenter do
+RSpec.describe WebauthnSetupPresenter do
   let(:user) { build(:user) }
   let(:user_fully_authenticated) { false }
   let(:user_opted_remember_device_cookie) { true }

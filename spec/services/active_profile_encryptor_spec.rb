@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ActiveProfileEncryptor do
+RSpec.describe ActiveProfileEncryptor do
   describe '#call' do
     it 'encrypts the profile' do
       decrypted_pii = { ssn: '1234' }.to_json

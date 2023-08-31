@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe OtpDeliverySelectionForm do
+RSpec.describe OtpDeliverySelectionForm do
   let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
   subject do
     OtpDeliverySelectionForm.new(

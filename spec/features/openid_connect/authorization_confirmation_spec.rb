@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'OIDC Authorization Confirmation' do
+RSpec.feature 'OIDC Authorization Confirmation' do
   include OidcAuthHelper
 
   before do

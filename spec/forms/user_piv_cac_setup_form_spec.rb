@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPivCacSetupForm do
+RSpec.describe UserPivCacSetupForm do
   let(:form) { described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1') }
 
   let(:nonce) { 'nonce' }

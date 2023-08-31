@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'editing a phone' do
+RSpec.describe 'editing a phone' do
   it 'allows a user to edit one of their phone numbers' do
     user = create(:user, :fully_registered)
     phone_configuration = user.phone_configurations.first

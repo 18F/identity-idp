@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Backup codes' do
+RSpec.feature 'Backup codes' do
   before do
     sign_in_and_2fa_user(user)
     visit account_two_factor_authentication_path

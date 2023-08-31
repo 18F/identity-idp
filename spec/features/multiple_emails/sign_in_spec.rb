@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'sign in with any email address' do
+RSpec.feature 'sign in with any email address' do
   scenario 'signing in with any email address' do
     user = create(:user, :fully_registered, :with_multiple_emails)
 

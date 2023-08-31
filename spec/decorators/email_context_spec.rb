@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EmailContext do
+RSpec.describe EmailContext do
   let(:user) { create(:user, :fully_registered) }
 
   subject { described_class.new(user) }

@@ -1,4 +1,4 @@
-shared_examples 'signing in with the site in Spanish' do |sp|
+RSpec.shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
     Capybara.current_session.driver.header('Accept-Language', 'es')
 
@@ -29,7 +29,7 @@ shared_examples 'signing in with the site in Spanish' do |sp|
   end
 end
 
-shared_examples 'signing in from service provider' do |sp|
+RSpec.shared_examples 'signing in from service provider' do |sp|
   it 'does not display session timeout alert on sign in page' do
     visit_idp_from_sp_with_ial1(sp)
 
@@ -37,19 +37,19 @@ shared_examples 'signing in from service provider' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL1 with personal key' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with personal key' do |sp|
   it 'redirects to the SP after acknowledging new personal key', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
   end
 end
 
-shared_examples 'signing in as IAL1 with piv/cac' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating', email: true do
     ial1_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 end
 
-shared_examples 'visiting 2fa when fully authenticated' do |sp|
+RSpec.shared_examples 'visiting 2fa when fully authenticated' do |sp|
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
@@ -67,7 +67,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL2 with personal key' do |sp|
+RSpec.shared_examples 'signing in as IAL2 with personal key' do |sp|
   it 'does not present personal key as an MFA option' do
     user = create(:user, :fully_registered)
     _profile = create(:profile, :active, :verified, :with_pii, user: user)
@@ -81,7 +81,7 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL2 with piv/cac' do |sp|
+RSpec.shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   it 'redirects to the SP after authenticating and getting the password', :email, js: true do
     ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
@@ -99,7 +99,7 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
   end
 end
 
-shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
+RSpec.shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
 
@@ -125,7 +125,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
   end
 end
 
-shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
+RSpec.shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
   xit 'redirects to SP after reactivating account', :email, js: true do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     visit_idp_from_sp_with_ial2(sp)
@@ -159,7 +159,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
   end
 end
 
-shared_examples 'signing in with wrong credentials' do |sp|
+RSpec.shared_examples 'signing in with wrong credentials' do |sp|
   # This tests the custom Devise error message defined in lib/custom_devise_failure_app.rb
   context 'when the user does not exist' do
     it 'links to forgot password page with locale and request_id' do
@@ -191,7 +191,7 @@ shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
-shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:|
+RSpec.shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:| # rubocop:disable Layout/LineLength
   let(:window_start) { 3.days.ago }
   let(:window_end) { 1.day.ago }
 

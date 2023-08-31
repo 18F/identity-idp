@@ -391,12 +391,12 @@ module Features
 
       click_sign_in_from_landing_page_then_click_create_account
 
-      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect(current_url).to eq sign_up_email_url
       expect_branded_experience
 
       visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
-      expect(current_url).to eq sign_up_email_url(source: :sign_in)
+      expect(current_url).to eq sign_up_email_url
       expect_branded_experience
 
       submit_form_with_invalid_email

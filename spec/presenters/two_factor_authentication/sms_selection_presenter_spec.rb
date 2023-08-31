@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::SmsSelectionPresenter do
+RSpec.describe TwoFactorAuthentication::SmsSelectionPresenter do
   let(:subject) { described_class.new(configuration: phone) }
 
   describe '#type' do

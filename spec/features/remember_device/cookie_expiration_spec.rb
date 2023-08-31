@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'signing in with remember device and closing browser' do
+RSpec.describe 'signing in with remember device and closing browser' do
   include SamlAuthHelper
 
   let(:user) { user_with_2fa }

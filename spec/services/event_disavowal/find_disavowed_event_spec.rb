@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDisavowal::FindDisavowedEvent do
+RSpec.describe EventDisavowal::FindDisavowedEvent do
   describe '#call' do
     let(:disavowal_token) { '1234abcd' }
 

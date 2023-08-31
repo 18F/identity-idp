@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-feature 'Accessibility on IDV pages', :js do
+RSpec.feature 'Accessibility on IDV pages', :js do
   describe 'IDV pages' do
     include IdvStepHelper
 

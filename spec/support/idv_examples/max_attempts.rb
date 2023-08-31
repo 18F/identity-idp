@@ -1,4 +1,4 @@
-shared_examples 'verification step max attempts' do |step, sp|
+RSpec.shared_examples 'verification step max attempts' do |step, sp|
   include ActionView::Helpers::DateHelper
 
   let(:user) { user_with_2fa }

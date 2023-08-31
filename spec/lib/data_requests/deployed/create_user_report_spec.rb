@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::CreateUserReport do
+RSpec.describe DataRequests::Deployed::CreateUserReport do
   it 'returns a report containing information about' do
     user = create(:user)
 

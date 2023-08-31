@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IdentityLinker do
+RSpec.describe IdentityLinker do
   describe '#link_identity' do
     let(:user) { create(:user) }
     let(:service_provider) { build(:service_provider, issuer: 'test.host') }

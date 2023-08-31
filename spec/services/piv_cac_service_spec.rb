@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PivCacService do
+RSpec.describe PivCacService do
   include Rails.application.routes.url_helpers
 
   describe '#randomize_uri' do

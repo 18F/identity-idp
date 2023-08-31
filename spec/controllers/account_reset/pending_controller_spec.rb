@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::PendingController do
+RSpec.describe AccountReset::PendingController do
   let(:user) { create(:user) }
 
   before do

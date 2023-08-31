@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Proofing::Aamva::Request::VerificationRequest do
+RSpec.describe Proofing::Aamva::Request::VerificationRequest do
   let(:state_id_jurisdiction) { 'CA' }
   let(:state_id_number) { '123456789' }
   let(:applicant) do

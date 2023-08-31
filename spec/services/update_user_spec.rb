@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UpdateUser do
+RSpec.describe UpdateUser do
   describe '#call' do
     it 'updates the user with the passed in attributes' do
       user = build(:user, otp_delivery_preference: 'sms')

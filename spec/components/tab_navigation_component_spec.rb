@@ -10,16 +10,16 @@ RSpec.describe TabNavigationComponent, type: :component do
   end
 
   it 'renders labelled navigation' do
-    expect(rendered).to have_css('nav[aria-label="Navigation"]')
+    expect(rendered).to have_css('.tab-navigation[aria-label="Navigation"]')
     expect(rendered).to have_link('First') { |link| !is_current_link?(link) }
     expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
   end
 
   context 'with tag options' do
-    let(:tag_options) { super().merge(data: { foo: 'bar' }) }
+    let(:tag_options) { super().merge(data: { foo: 'bar' }, class: 'example') }
 
     it 'renders with tag options forwarded to navigation' do
-      expect(rendered).to have_css('nav[data-foo="bar"]')
+      expect(rendered).to have_css('.tab-navigation.example[data-foo="bar"]')
     end
   end
 

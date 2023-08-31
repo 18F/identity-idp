@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::AuthorizationConfirmationController do
+RSpec.describe Users::AuthorizationConfirmationController do
   let(:user) { create(:user, :fully_registered) }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }

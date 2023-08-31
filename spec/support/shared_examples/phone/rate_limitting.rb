@@ -1,4 +1,4 @@
-shared_examples 'phone rate limitting' do |delivery_method|
+RSpec.shared_examples 'phone rate limitting' do |delivery_method|
   let(:max_confirmation_attempts) { 4 }
   let(:max_otp_sends) { 2 }
   let(:min_attempts) { 2 }

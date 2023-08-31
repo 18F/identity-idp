@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe MfaContext do
+RSpec.describe MfaContext do
   let(:mfa) { MfaContext.new(user) }
 
   context 'with no user' do

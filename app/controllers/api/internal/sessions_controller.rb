@@ -15,16 +15,12 @@ module Api
       end
 
       def update
-        analytics.session_kept_alive if live?
-        update_last_request_at
-        render json: status_response
-      end
+        if live?
+          analytics.session_kept_alive
+          update_last_request_at
+        end
 
-      def destroy
-        analytics.session_timed_out
-        request_id = sp_session[:request_id]
-        sign_out
-        render json: { redirect: root_url(request_id:, timeout: :session) }
+        render json: status_response
       end
 
       private

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UserPivCacVerificationForm do
+RSpec.describe UserPivCacVerificationForm do
   let(:form) { described_class.new(user: user, token: token, nonce: nonce) }
   let(:user) { create(:user, :with_piv_or_cac) }
   let(:nonce) { 'once' }

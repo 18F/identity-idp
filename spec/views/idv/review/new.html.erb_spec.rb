@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/review/new.html.erb' do
+RSpec.describe 'idv/review/new.html.erb' do
   include XPathHelper
 
   context 'user has completed all steps' do

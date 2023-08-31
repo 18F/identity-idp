@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::GenericDeliveryPresenter do
+RSpec.describe TwoFactorAuthCode::GenericDeliveryPresenter do
   include Rails.application.routes.url_helpers
 
   it 'is an abstract presenter with methods that should be implemented' do

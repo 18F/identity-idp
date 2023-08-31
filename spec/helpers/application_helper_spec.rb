@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ApplicationHelper do
+RSpec.describe ApplicationHelper do
   describe '#session_with_trust?' do
     context 'no user present' do
       before do

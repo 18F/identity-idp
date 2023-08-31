@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'disavowing an action' do
+RSpec.feature 'disavowing an action' do
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
 
   scenario 'disavowing a password reset' do

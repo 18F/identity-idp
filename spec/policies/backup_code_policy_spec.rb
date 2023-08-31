@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::BackupCodePolicy do
+RSpec.describe TwoFactorAuthentication::BackupCodePolicy do
   let(:user) { User.new }
   let(:policy) { described_class.new(user) }
 

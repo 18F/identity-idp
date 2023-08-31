@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::WebauthnPolicy do
+RSpec.describe TwoFactorAuthentication::WebauthnPolicy do
   include WebAuthnHelper
 
   let(:subject) { described_class.new(user) }

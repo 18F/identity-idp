@@ -2,7 +2,7 @@ require 'rubocop'
 require 'rubocop/rspec/support'
 require_relative '../../../lib/linters/localized_validation_message_linter'
 
-describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
+RSpec.describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
   include CopHelper
   include RuboCop::RSpec::ExpectOffense
 

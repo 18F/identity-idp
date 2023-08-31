@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SendSignUpEmailConfirmation do
+RSpec.describe SendSignUpEmailConfirmation do
   describe '#call' do
     let(:user) { create(:user, confirmed_at: nil) }
     let(:email_address) { user.email_addresses.take }

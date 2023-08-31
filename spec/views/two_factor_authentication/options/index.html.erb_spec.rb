@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/options/index.html.erb' do
+RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   let(:user) { User.new }
   before do
     allow(view).to receive(:user_session).and_return({})

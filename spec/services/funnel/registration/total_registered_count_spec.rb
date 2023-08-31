@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Funnel::Registration::TotalRegisteredCount do
+RSpec.describe Funnel::Registration::TotalRegisteredCount do
   let(:analytics) { FakeAnalytics.new }
   subject { described_class }
 

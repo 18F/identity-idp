@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::NotVerifiedController do
+RSpec.describe Idv::NotVerifiedController do
   let(:user) { build_stubbed(:user, :fully_registered) }
 
   before do

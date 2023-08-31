@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'ostruct'
 
-describe Idv::Agent do
+RSpec.describe Idv::Agent do
   include IdvHelper
 
   let(:user) { build(:user) }

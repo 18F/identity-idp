@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/cancellations/new.html.erb' do
+RSpec.describe 'idv/cancellations/new.html.erb' do
   let(:hybrid_session) { false }
   let(:params) { ActionController::Parameters.new }
   let(:sp_name) { nil }

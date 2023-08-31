@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountsController do
+RSpec.describe AccountsController do
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(

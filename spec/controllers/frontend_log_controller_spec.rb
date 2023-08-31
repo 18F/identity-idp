@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FrontendLogController do
+RSpec.describe FrontendLogController do
   describe '#create' do
     subject(:action) { post :create, params: params, as: :json }
 

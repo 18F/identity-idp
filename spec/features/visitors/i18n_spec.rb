@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Internationalization' do
+RSpec.feature 'Internationalization' do
   context 'visit homepage with no locale set' do
     it 'displays a header in the default locale' do
       visit root_path

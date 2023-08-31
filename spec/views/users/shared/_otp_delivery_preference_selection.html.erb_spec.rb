@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/shared/_otp_delivery_preference_selection.html.erb' do
+RSpec.describe 'users/shared/_otp_delivery_preference_selection.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   subject(:rendered) do

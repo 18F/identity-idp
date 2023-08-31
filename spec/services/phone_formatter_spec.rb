@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneFormatter do
+RSpec.describe PhoneFormatter do
   describe '#format' do
     it 'formats international numbers correctly' do
       phone = '+40211234567'

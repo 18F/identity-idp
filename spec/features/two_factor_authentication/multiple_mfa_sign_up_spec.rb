@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Multi Two Factor Authentication' do
+RSpec.feature 'Multi Two Factor Authentication' do
   describe 'When the user has not set up 2FA' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa

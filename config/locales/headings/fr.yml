@@ -24,7 +24,6 @@ fr:
       new: Envoyer un autre courriel de confirmation
     create_account_new_users: Créer un compte pour les nouveaux utilisateurs
     create_account_with_sp:
-      cta: Première fois que vous utilisez %{app_name}?
       sp_text: utilise %{app_name} pour vous permettre de vous connecter à votre
         compte de façon sûre et sécurisée.
     edit_info:

@@ -1,4 +1,4 @@
-shared_examples 'strong password' do |form_class|
+RSpec.shared_examples 'strong password' do |form_class|
   it 'does not allow a password that is common and/or needs more words' do
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)

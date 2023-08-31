@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe DeletedAccountsReport do
+RSpec.describe DeletedAccountsReport do
   let(:service_provider) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:days_ago) { 30 }
   describe '#call' do

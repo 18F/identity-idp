@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SetupPresenter do
+RSpec.describe SetupPresenter do
   let(:user) { create(:user) }
   let(:presenter) do
     described_class.new(

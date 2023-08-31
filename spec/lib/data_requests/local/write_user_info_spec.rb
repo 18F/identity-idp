@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/local'
 
-describe DataRequests::Local::WriteUserInfo do
+RSpec.describe DataRequests::Local::WriteUserInfo do
   describe '#call' do
     it 'writes a file with user information' do
       user_report = JSON.parse(

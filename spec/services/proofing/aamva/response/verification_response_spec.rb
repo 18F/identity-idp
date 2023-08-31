@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rexml/document'
 require 'rexml/xpath'
 
-describe Proofing::Aamva::Response::VerificationResponse do
+RSpec.describe Proofing::Aamva::Response::VerificationResponse do
   let(:status_code) { 200 }
   let(:response_body) { AamvaFixtures.verification_response }
   let(:http_response) do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Event do
+RSpec.describe Event do
   it { is_expected.to belong_to(:user) }
 
   describe 'validations' do

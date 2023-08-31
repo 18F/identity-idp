@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Redirect::PolicyController do
+RSpec.describe Redirect::PolicyController do
   before do
     stub_analytics
   end

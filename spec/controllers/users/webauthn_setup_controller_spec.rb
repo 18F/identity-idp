@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::WebauthnSetupController do
+RSpec.describe Users::WebauthnSetupController do
   include WebAuthnHelper
 
   describe 'before_actions' do

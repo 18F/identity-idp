@@ -1,4 +1,4 @@
-describe Telephony::Response do
+RSpec.describe Telephony::Response do
   context 'for a successful response' do
     subject { described_class.new(success: true, extra: { test: '1234' }) }
 

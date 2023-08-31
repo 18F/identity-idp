@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IRS Attempts API Event Tracking' do
+RSpec.feature 'IRS Attempts API Event Tracking' do
   include OidcAuthHelper
   include IrsAttemptsApiTrackingHelper
 

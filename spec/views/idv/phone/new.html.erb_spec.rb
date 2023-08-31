@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/phone/new.html.erb' do
+RSpec.describe 'idv/phone/new.html.erb' do
   let(:gpo_letter_available) { false }
   let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
 

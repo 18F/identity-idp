@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::RecoveryOptionsController do
+RSpec.describe AccountReset::RecoveryOptionsController do
   let(:user) { create(:user, :with_authentication_app) }
   describe '#show' do
     it 'renders the page' do

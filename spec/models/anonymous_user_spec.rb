@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AnonymousUser do
+RSpec.describe AnonymousUser do
   describe 'Methods' do
     it { is_expected.to respond_to(:phone_configurations) }
     it { is_expected.to respond_to(:uuid) }

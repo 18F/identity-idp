@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'signing in with remember device and idling on the sign in page' do
+RSpec.describe 'signing in with remember device and idling on the sign in page' do
   include SamlAuthHelper
 
   it 'redirects to the OIDC SP even though session is deleted' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::VerifyWaitStepShow do
+RSpec.describe Idv::Steps::InPerson::VerifyWaitStepShow do
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }

@@ -1,4 +1,4 @@
-shared_examples 'gpo otp verification' do
+RSpec.shared_examples 'gpo otp verification' do
   include IdvStepHelper
 
   it 'prompts for one-time code at sign in' do

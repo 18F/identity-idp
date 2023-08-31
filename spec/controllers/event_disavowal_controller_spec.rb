@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDisavowalController do
+RSpec.describe EventDisavowalController do
   let(:disavowal_token) { 'asdf1234' }
   let(:event) do
     create(

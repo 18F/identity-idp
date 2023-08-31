@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
+RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   include Rails.application.routes.url_helpers
 
   let(:view) { ActionController::Base.new.view_context }

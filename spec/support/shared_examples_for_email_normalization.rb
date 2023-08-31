@@ -1,4 +1,4 @@
-shared_examples 'email normalization' do |email|
+RSpec.shared_examples 'email normalization' do |email|
   it 'downcases and strips the email before validation' do
     old_email = email
 

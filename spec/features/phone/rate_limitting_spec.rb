@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'phone rate limitting' do
+RSpec.describe 'phone rate limitting' do
   let(:phone) { '2025551234' }
 
   context 'on sign up' do

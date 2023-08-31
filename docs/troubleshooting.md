@@ -8,6 +8,30 @@ $ bundle install
 $ yarn install
 ```
 
+### Errors related to the database
+
+One error you might see is:
+
+```
+Caused by:
+ActiveRecord::StatementInvalid: PG::FeatureNotSupported: ERROR:  extension "postgis" is not available
+DETAIL:  Could not open extension control file "/opt/homebrew/opt/postgresql@15/share/postgresql@15/extension/postgis.control": No such file or directory.
+HINT:  The extension must first be installed on the system where PostgreSQL is running.
+```
+
+If you see the above message:
+
+- double check that `postgis` is installed with `brew list`
+- if `postgis` is listed, it means when you brew installed you might have installed `postgis` in a different postgresql db than the app is using
+    - in this case, look at `brew list` again, and remove any `postgres` db that is not listed in [the Brewfile](../Brewfile) (`brew uninstall __`)
+        - if you try to run the migration now you might get a:
+            ```
+            connection to server at "::1", port 5432 failed: Connection refused
+            Is the server running on that host and accepting TCP/IP connections?
+            ```
+        - this likely means postgres is no longer running
+        - try `brew services start postgresql@14` (or your version) and then re-run the migration
+
 ## I am receiving errors when creating the development and test databases
 
 If you receive the following error (where _whoami_ == _your username_):

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::ReadyToVerifyController do
+RSpec.describe Idv::InPerson::ReadyToVerifyController do
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
 

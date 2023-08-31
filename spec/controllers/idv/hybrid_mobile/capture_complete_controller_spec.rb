@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::HybridMobile::CaptureCompleteController do
+RSpec.describe Idv::HybridMobile::CaptureCompleteController do
   include IdvHelper
 
   let(:user) { create(:user) }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/_nav_auth.html.erb' do
+RSpec.describe 'accounts/_nav_auth.html.erb' do
   include Devise::Test::ControllerHelpers
 
   before do

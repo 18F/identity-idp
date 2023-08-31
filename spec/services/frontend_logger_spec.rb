@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FrontendLogger do
+RSpec.describe FrontendLogger do
   module ExampleAnalyticsEvents
     def example_method_handler(ok:, **rest)
       track_event('example', ok: ok, rest: rest)

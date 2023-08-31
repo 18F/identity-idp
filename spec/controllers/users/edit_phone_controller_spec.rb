@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::EditPhoneController do
+RSpec.describe Users::EditPhoneController do
   describe '#update' do
     let(:user) { create(:user, :fully_registered) }
     let(:phone_configuration) { user.phone_configurations.first }

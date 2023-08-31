@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PasswordResetEmailForm do
+RSpec.describe PasswordResetEmailForm do
   subject { PasswordResetEmailForm.new(' Test@example.com ') }
 
   it_behaves_like 'email validation'

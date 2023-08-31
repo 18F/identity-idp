@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SignUp::RegistrationsController, devise: true do
+RSpec.describe SignUp::RegistrationsController, devise: true do
   describe '#new' do
     it 'allows user to visit the sign up page' do
       get :new
@@ -28,13 +28,7 @@ describe SignUp::RegistrationsController, devise: true do
 
     it 'tracks visit event' do
       stub_analytics
-      allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
-
-      expect(@analytics).to receive(:track_event).with(
-        'User Registration: enter email visited',
-        sign_in_a_b_test_bucket: :default,
-        from_sign_in: false,
-      )
+      expect(@analytics).to receive(:track_event).with('User Registration: enter email visited')
 
       get :new
     end
@@ -42,15 +36,10 @@ describe SignUp::RegistrationsController, devise: true do
     context 'with source parameter' do
       it 'tracks visit event' do
         stub_analytics
-        allow(controller).to receive(:sign_in_a_b_test_bucket).and_return(:default)
 
-        expect(@analytics).to receive(:track_event).with(
-          'User Registration: enter email visited',
-          sign_in_a_b_test_bucket: :default,
-          from_sign_in: true,
-        )
+        expect(@analytics).to receive(:track_event).with('User Registration: enter email visited')
 
-        get :new, params: { source: :sign_in }
+        get :new
       end
     end
 

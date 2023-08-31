@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::TotalMonthlyAuthsReport do
+RSpec.describe Reports::TotalMonthlyAuthsReport do
   subject { described_class.new }
 
   let(:issuer) { 'foo' }

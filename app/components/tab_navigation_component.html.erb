@@ -1,13 +1,12 @@
-<%= content_tag(:nav, aria: { label: }, **tag_options) do %>
+<%= content_tag(:nav, aria: { label: }, **tag_options, class: [*tag_options[:class], 'tab-navigation']) do %>
   <ul class="usa-button-group usa-button-group--segmented">
     <% routes.each do |route| %>
-      <li class="usa-button-group__item grid-col display-flex">
+      <li class="usa-button-group__item">
         <%= render ButtonComponent.new(
               action: ->(**tag_options, &block) { link_to(route[:path], **tag_options, &block) },
               big: true,
               outline: !is_current_path?(route[:path]),
               aria: { current: is_current_path?(route[:path]) ? 'page' : nil },
-              class: 'grid-col',
             ).with_content(route[:text]) %>
       </li>
     <% end %>

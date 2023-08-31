@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::VerificationFailuresReport do
+RSpec.describe Reports::VerificationFailuresReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
   let(:name) { 'An SP' }

@@ -1,6 +1,6 @@
 <%= tag.div id: 'session-timeout-cntnr',
             data: {
-              timeout_url: timeout_url,
+              timeout_url: new_user_session_url(timeout: :session, request_id: sp_session[:request_id]),
               warning: warning,
               start: start,
               frequency: frequency,

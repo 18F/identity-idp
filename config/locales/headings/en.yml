@@ -24,7 +24,6 @@ en:
       new: Send another confirmation email
     create_account_new_users: Create an account for new users
     create_account_with_sp:
-      cta: First time using %{app_name}?
       sp_text: is using %{app_name} to allow you to sign in to your account safely and
         securely.
     edit_info:

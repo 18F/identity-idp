@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe WebauthnVisitForm do
+RSpec.describe WebauthnVisitForm do
   let(:user) { build(:user) }
   let(:subject) { WebauthnVisitForm.new(user) }
 

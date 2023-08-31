@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'webauthn management' do
+RSpec.describe 'webauthn management' do
   include WebAuthnHelper
 
   let(:user) { create(:user, :fully_registered, with: { phone: '+1 202-555-1212' }) }

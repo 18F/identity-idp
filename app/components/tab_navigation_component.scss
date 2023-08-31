@@ -1,0 +1,54 @@
+@use 'uswds-core' as *;
+
+@forward 'usa-button-group/src/styles';
+
+// Upstream: https://github.com/uswds/uswds/pull/5324
+.usa-button-group--segmented {
+  .usa-button {
+    @include u-display('flex');
+    @include u-flex('align-center', 'justify-center');
+  }
+
+  .usa-button-group__item {
+    @include u-display('flex');
+    @include grid-col('auto');
+  }
+}
+
+// Upstream: https://github.com/18F/identity-design-system/pull/359
+.usa-button-group__item {
+  &:first-child > .usa-button.usa-button--big {
+    margin-right: -1 * units($theme-button-stroke-width);
+  }
+
+  &:last-child > .usa-button.usa-button--big {
+    margin-left: -2 * units($theme-button-stroke-width);
+    width: calc(100% + #{units($theme-button-stroke-width) * 2});
+
+    @include at-media('mobile-lg') {
+      margin-left: -1 * units($theme-button-stroke-width);
+    }
+  }
+
+  &:where(:not(:first-child):not(:last-child)) > .usa-button.usa-button--big {
+    margin-right: -1 * units($theme-button-stroke-width);
+    margin-left: -1 * units($theme-button-stroke-width);
+  }
+}
+
+.tab-navigation .usa-button-group--segmented {
+  .usa-button-group__item {
+    flex-basis: 50%;
+  }
+
+  .usa-button-group__item:last-child > .usa-button,
+  .usa-button {
+    width: 100%;
+  }
+
+  .usa-button--big {
+    @include at-media-max('tablet') {
+      font-size: units(2);
+    }
+  }
+}

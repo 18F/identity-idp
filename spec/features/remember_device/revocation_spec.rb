@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'taking an action that revokes remember device' do
+RSpec.feature 'taking an action that revokes remember device' do
   include NavigationHelper
 
   before do

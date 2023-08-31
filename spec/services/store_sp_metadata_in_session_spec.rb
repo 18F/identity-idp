@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe StoreSpMetadataInSession do
+RSpec.describe StoreSpMetadataInSession do
   describe '#call' do
     context 'when a ServiceProviderRequestProxy is not found' do
       it 'does not set the session[:sp] hash' do

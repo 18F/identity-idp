@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'partials/personal_key/_key.html.erb' do
+RSpec.describe 'partials/personal_key/_key.html.erb' do
   let(:personal_key) { 'abcd-efgh-ijkl-mnop' }
   let(:locals) do
     {

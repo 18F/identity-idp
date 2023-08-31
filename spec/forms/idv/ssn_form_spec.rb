@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SsnForm do
+RSpec.describe Idv::SsnForm do
   let(:user) { create(:user) }
   let(:subject) { Idv::SsnForm.new(user) }
   let(:ssn) { '111111111' }

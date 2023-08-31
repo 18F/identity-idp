@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_masked_text.html.erb' do
+RSpec.describe 'shared/_masked_text.html.erb' do
   let(:text) { 'password' }
   let(:masked_text) { '********' }
   let(:accessible_masked_text) { 'secure text' }

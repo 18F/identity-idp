@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Redirect::ContactController do
+RSpec.describe Redirect::ContactController do
   before do
     stub_analytics
   end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::UspsLocationsController do
+RSpec.describe Idv::InPerson::UspsLocationsController do
   include IdvHelper
 
   let(:user) { create(:user) }

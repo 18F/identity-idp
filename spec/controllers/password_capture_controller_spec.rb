@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PasswordCaptureController do
+RSpec.describe PasswordCaptureController do
   describe '#update' do
     let(:user) { create(:user, :fully_registered, password: 'a really long sekrit') }
 

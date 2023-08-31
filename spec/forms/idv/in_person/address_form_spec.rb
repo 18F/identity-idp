@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::InPerson::AddressForm do
+RSpec.describe Idv::InPerson::AddressForm do
   let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
   context 'test validation for transliteration after form submission' do
     let(:good_params) do

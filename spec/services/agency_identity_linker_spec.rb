@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AgencyIdentityLinker do
+RSpec.describe AgencyIdentityLinker do
   let(:user) { create(:user) }
   describe '#link_identity' do
     before(:each) { init_env(user) }

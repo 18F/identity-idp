@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'layouts/user_mailer.html.erb' do
+RSpec.describe 'layouts/user_mailer.html.erb' do
   let(:user) { build_stubbed(:user) }
 
   before do

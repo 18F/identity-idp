@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorOptionsForm do
+RSpec.describe TwoFactorOptionsForm do
   let(:user) { build(:user) }
   let(:phishing_resistant_required) { false }
   let(:piv_cac_required) { false }

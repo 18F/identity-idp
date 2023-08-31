@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::ReEncryptor do
+RSpec.describe Pii::ReEncryptor do
   describe '#perform' do
     it 're-encrypts PII using new code' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe RememberDeviceCookie do
+RSpec.describe RememberDeviceCookie do
   let(:remember_device_revoked_at) { nil }
   let(:user) { create(:user, :with_phone, remember_device_revoked_at: remember_device_revoked_at) }
   let(:created_at) { Time.zone.now }

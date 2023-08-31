@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::BackupCodeVerificationController do
+RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
   let(:backup_code) { { backup_code: 'foo' } }
   let(:payload) { { backup_code_verification_form: backup_code } }
 

@@ -12,7 +12,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   click_submit_default
 end
 
-feature 'IdV Outage Spec' do
+RSpec.feature 'IdV Outage Spec' do
   include PersonalKeyHelper
   include IdvStepHelper
 
@@ -107,7 +107,7 @@ feature 'IdV Outage Spec' do
       # Still offer the option for hybrid flow
       expect(current_path).to eq idv_hybrid_handoff_path
 
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::InPerson::SsnStep do
+RSpec.describe Idv::Steps::InPerson::SsnStep do
   let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
   let(:params) { { doc_auth: { ssn: ssn } } }
   let(:session) { { sp: { issuer: service_provider.issuer } } }

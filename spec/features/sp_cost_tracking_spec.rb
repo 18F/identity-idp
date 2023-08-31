@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'SP Costing', :email do
+RSpec.feature 'SP Costing', :email do
   include SpAuthHelper
   include SamlAuthHelper
   include IdvHelper

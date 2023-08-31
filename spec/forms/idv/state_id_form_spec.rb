@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::StateIdForm do
+RSpec.describe Idv::StateIdForm do
   let(:subject) { Idv::StateIdForm.new(pii) }
   let(:valid_dob) do
     valid_d = Time.zone.today - IdentityConfig.store.idv_min_age_years.years - 1.day

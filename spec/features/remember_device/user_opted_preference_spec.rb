@@ -1,7 +1,7 @@
 require 'rails_helper'
 # rubocop:disable Layout/LineLength
 
-describe 'Unchecking remember device' do
+RSpec.describe 'Unchecking remember device' do
   describe '2fa setup' do
     context 'when the 2fa is totp' do
       before do

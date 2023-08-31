@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'account creation across multiple browsers' do
+RSpec.feature 'account creation across multiple browsers' do
   include SpAuthHelper
   include SamlAuthHelper
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ParseControllerFromReferer do
+RSpec.describe ParseControllerFromReferer do
   describe '#call' do
     context 'when the referer is nil' do
       it 'returns "no referer" string' do

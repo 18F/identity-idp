@@ -2,7 +2,7 @@ require 'rails_helper'
 
 MockAhoy = Struct.new(:visit_token, :visitor_token)
 
-describe Ahoy::Store do
+RSpec.describe Ahoy::Store do
   context 'visit_token is an invalid UUID' do
     it 'excludes the event' do
       mock_ahoy = MockAhoy.new('foo', '1056d484-194c-4b8c-978d-0c0f57958f04')

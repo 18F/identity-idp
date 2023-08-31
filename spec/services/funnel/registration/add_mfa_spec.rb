@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Funnel::Registration::AddMfa do
+RSpec.describe Funnel::Registration::AddMfa do
   let(:analytics) { FakeAnalytics.new }
   subject { described_class }
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/edit_phone/_remove_phone.html.erb' do
+RSpec.describe 'users/edit_phone/_remove_phone.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:user) { create(:user, :with_phone) }

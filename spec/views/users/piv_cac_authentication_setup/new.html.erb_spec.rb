@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/piv_cac_authentication_setup/new.html.erb' do
+RSpec.describe 'users/piv_cac_authentication_setup/new.html.erb' do
   context 'user has sufficient factors' do
     it 'renders a link to cancel and go back to the account page' do
       user = create(:user, :fully_registered)

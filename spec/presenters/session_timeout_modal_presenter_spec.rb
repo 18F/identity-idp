@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SessionTimeoutModalPresenter do
+RSpec.describe SessionTimeoutModalPresenter do
   let(:user_fully_authenticated) { nil }
 
   subject(:presenter) { described_class.new(user_fully_authenticated:) }

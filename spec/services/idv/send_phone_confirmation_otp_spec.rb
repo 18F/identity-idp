@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::SendPhoneConfirmationOtp do
+RSpec.describe Idv::SendPhoneConfirmationOtp do
   let(:phone) { '+1 225-555-5000' }
   let(:parsed_phone) { Phonelib.parse(phone) }
   let(:delivery_preference) { :sms }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Phishing-resistant authentication required in an SAML context' do
+RSpec.describe 'Phishing-resistant authentication required in an SAML context' do
   include SamlAuthHelper
 
   describe 'SAML ServiceProvider requesting phishing-resistant authentication' do

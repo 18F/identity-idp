@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::LookupSharedDeviceUsers do
+RSpec.describe DataRequests::Deployed::LookupSharedDeviceUsers do
   describe '#call' do
     it 'recursively looks up users sharing devices' do
       user1 = create(:user)

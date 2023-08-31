@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SamlRequestPresenter do
+RSpec.describe SamlRequestPresenter do
   describe '#requested_attributes' do
     context 'IAL1 and bundle contains invalid attributes and IAL2 attributes' do
       it 'only returns :email' do

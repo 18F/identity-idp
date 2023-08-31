@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Device tracking' do
+RSpec.describe 'Device tracking' do
   let(:user) { create(:user, :fully_registered) }
   let(:now) { Time.zone.now }
   let(:device) { create(:device, user: user, last_ip: '4.3.2.1', last_used_at: now) }

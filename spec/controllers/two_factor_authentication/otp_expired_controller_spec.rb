@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::OtpExpiredController do
+RSpec.describe TwoFactorAuthentication::OtpExpiredController do
   let(:direct_otp_sent_at) { Time.zone.now }
   let(:delivery_preference) { 'voice' }
   before do

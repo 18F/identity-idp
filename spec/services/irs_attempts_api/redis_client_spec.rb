@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe IrsAttemptsApi::RedisClient do
+RSpec.describe IrsAttemptsApi::RedisClient do
   describe '#write_event' do
     it 'writes the attempt data to redis with the event key as the key' do
       freeze_time do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
+RSpec.describe EventDisavowal::PasswordResetFromDisavowalForm, type: :model do
   let(:user) { create(:user, password: 'salty pickles') }
   let(:new_password) { 'saltier pickles' }
   let(:event) { create(:event, user: user) }

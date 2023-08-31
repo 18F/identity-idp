@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'cancel IdV' do
+RSpec.describe 'cancel IdV' do
   include IdvStepHelper
   include DocAuthHelper
   include InteractionHelper
@@ -82,7 +82,7 @@ describe 'cancel IdV' do
   context 'when user has recorded proofing components' do
     before do
       complete_agreement_step
-      complete_upload_step
+      complete_hybrid_handoff_step
       complete_document_capture_step
     end
 

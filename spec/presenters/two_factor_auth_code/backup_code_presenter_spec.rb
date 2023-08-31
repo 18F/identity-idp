@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthCode::BackupCodePresenter do
+RSpec.describe TwoFactorAuthCode::BackupCodePresenter do
   include Rails.application.routes.url_helpers
 
   let(:presenter) do

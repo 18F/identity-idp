@@ -189,13 +189,16 @@
   <% end %>
   <% if capture_secondary_id_enabled %>
     <div class="tablet:grid-col-8 margin-bottom-5">
+      <%# using :tel for mobile numeric keypad %>
       <%= render ValidatedFieldComponent.new(
-            name: :identity_doc_zipcode,
+            as: :tel,
+            error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
             form: f,
-            input_html: { value: pii[:identity_doc_zipcode] },
+            input_html: { value: pii[:identity_doc_zipcode], class: 'zipcode' },
             label: t('in_person_proofing.form.state_id.zipcode'),
             label_html: { class: 'usa-label' },
-            maxlength: 255,
+            name: :identity_doc_zipcode,
+            pattern: '\d{5}([\-]\d{4})?',
             required: true,
           ) %>
     </div>
@@ -229,4 +232,4 @@
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
 <% end %>
-<%= javascript_packs_tag_once('puerto-rico-guidance') %>
+<%= javascript_packs_tag_once('formatted-fields', 'puerto-rico-guidance') %>

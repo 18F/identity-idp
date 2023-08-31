@@ -1,4 +1,4 @@
-shared_examples 'creating an account with the site in Spanish' do |sp|
+RSpec.shared_examples 'creating an account with the site in Spanish' do |sp|
   it 'redirects to the SP', email: true do
     Capybara.current_session.driver.header('Accept-Language', 'es')
     visit_idp_from_sp_with_ial1(sp)
@@ -20,7 +20,7 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
   end
 end
 
-shared_examples 'creating an account using authenticator app for 2FA' do |sp|
+RSpec.shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   it 'redirects to the SP', email: true do
     visit_idp_from_sp_with_ial1(sp)
     register_user_with_authenticator_app
@@ -41,7 +41,7 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
   end
 end
 
-shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |sp|
+RSpec.shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |sp|
   it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true, js: true do
     visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
@@ -66,7 +66,7 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
   end
 end
 
-shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
+RSpec.shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   it 'redirects to the SP', email: true do
     visit_idp_from_sp_with_ial1(sp)
     register_user_with_piv_cac
@@ -87,7 +87,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
   end
 end
 
-shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
+RSpec.shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
   it 'does not prompt for recovery code before IdV flow', email: true, js: true do
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_ial2(sp)
@@ -117,7 +117,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
   end
 end
 
-shared_examples 'creating two accounts during the same session' do |sp|
+RSpec.shared_examples 'creating two accounts during the same session' do |sp|
   it 'allows the second account creation process to complete fully', email: true do
     first_email = 'test1@test.com'
     second_email = 'test2@test.com'

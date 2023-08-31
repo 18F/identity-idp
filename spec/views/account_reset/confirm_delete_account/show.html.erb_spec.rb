@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'account_reset/confirm_delete_account/show.html.erb' do
+RSpec.describe 'account_reset/confirm_delete_account/show.html.erb' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
   end

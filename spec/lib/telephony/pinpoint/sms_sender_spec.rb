@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Telephony::Pinpoint::SmsSender do
+RSpec.describe Telephony::Pinpoint::SmsSender do
   include_context 'telephony'
 
   subject(:sms_sender) { described_class.new }

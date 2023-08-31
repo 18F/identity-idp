@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::AcuantConcern, :controller do
+RSpec.describe Idv::AcuantConcern, :controller do
   controller ApplicationController do
     include Idv::AcuantConcern
 

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe AccountReset::DeleteAccount do
+RSpec.describe AccountReset::DeleteAccount do
   include AccountResetHelper
 
   let(:expired_token_message) do

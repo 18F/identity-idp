@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PersonalKeyGenerator do
+RSpec.describe PersonalKeyGenerator do
   let(:personal_key) { Base32::Crockford.encode(100 ** 10, length: 16, split: 4).tr('-', ' ') }
   let(:bad_code) { Base32::Crockford.encode(100 ** 9, length: 16, split: 4).tr('-', ' ') }
   let(:invalid_base32_code) { 'four score has letter U in it' }

@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'data_requests/deployed'
 
-describe DataRequests::Deployed::CreateUserEventsReport do
+RSpec.describe DataRequests::Deployed::CreateUserEventsReport do
   describe '#call' do
     it 'returns an array of hashes representing the users events' do
       user = create(:user)

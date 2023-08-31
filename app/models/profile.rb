@@ -128,6 +128,7 @@ class Profile < ApplicationRecord
   def activate_after_passing_in_person
     update!(
       deactivation_reason: nil,
+      fraud_review_pending_at: nil,
     )
     activate
   end
