@@ -767,6 +767,7 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
+      profile.fraud_pass
       profile.activate_after_passing_in_person
 
       expect(profile.activated_at).to be_present # changed
