@@ -136,6 +136,17 @@ class Profile < ApplicationRecord
     track_fraud_review_adjudication(decision: 'pass') if active?
   end
 
+  def activate_after_fraud_review_unnecessary
+    transaction do
+      update!(
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: nil,
+        fraud_pending_reason: nil,
+      )
+      activate
+    end
+  end
+
   def activate_after_passing_in_person
     transaction do
       update!(

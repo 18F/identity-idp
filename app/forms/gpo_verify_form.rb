@@ -25,8 +25,9 @@ class GpoVerifyForm
         pending_profile&.deactivate(:in_person_verification_pending)
       elsif fraud_review_checker.fraud_check_failed? && threatmetrix_enabled?
         bump_fraud_review_pending_timestamps
+      elsif fraud_review_checker.fraud_check_failed?
+        pending_profile&.activate_after_fraud_review_unnecessary
       else
-        pending_profile&.fraud_reset if pending_profile&.may_fraud_reset?
         activate_profile
       end
     else
@@ -96,6 +97,7 @@ class GpoVerifyForm
   end
 
   def activate_profile
+    pending_profile&.fraud_pass
     pending_profile&.remove_gpo_deactivation_reason
     pending_profile&.activate
   end
