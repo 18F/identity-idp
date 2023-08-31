@@ -36,15 +36,15 @@ module Reports
       }.transform_values { |v| ActiveRecord::Base.connection.quote(v) }
     end
 
-    def agency_reuse_results_json
+    def agency_reuse_results
       agency_sql = format(<<-SQL, params)
           SELECT
               COUNT(*) AS num_users
-          , agencies_per_user.num_agencies
+              , agencies_per_user.num_agencies
           FROM (
               SELECT
                   COUNT(DISTINCT agencies.id) AS num_agencies
-              , identities.user_id
+                  , identities.user_id
               FROM 
                   identities
               JOIN 
@@ -72,7 +72,7 @@ module Reports
       agency_results.as_json
     end
 
-    def total_proofed_results
+    def num_active_profiles
       proofed_sql = format(<<-SQL, params)
           SELECT
             COUNT(*) AS num_proofed
@@ -96,12 +96,12 @@ module Reports
     end
 
     def total_reuse_report
-      reuse_report = agency_reuse_results_json
+      reuse_report = agency_reuse_results
 
       reuse_total_users = 0
       reuse_total_percentage = 0
 
-      total_proofed = total_proofed_results
+      total_proofed = num_active_profiles
 
       if !reuse_report.empty?
         reuse_report.each do |result_entry|
@@ -141,7 +141,8 @@ module Reports
       csv_array << []
       csv_array << ['Total proofed identities']
       csv_array << ["Total proofed identities (#{stats_month})", total_proofed]
-      return csv_array
+
+      csv_array
     end
 
     def report_body

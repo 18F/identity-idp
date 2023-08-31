@@ -68,92 +68,99 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
       let(:agency) { create(:agency, name: 'The Agency') }
       let(:agency2) { create(:agency, name: 'The Other Agency') }
       let(:agency3) { create(:agency, name: 'The Other Other Agency') }
+      let(:provider_a) { 'a' }
+      let(:provider_b) { 'b' }
+      let(:provider_c) { 'c' }
+      let(:identity_with_a_in_query) do
+        {
+          service_provider: provider_a,
+          last_ial2_authenticated_at: timestamp,
+          verified_at: timestamp,
+        }
+      end
+      let(:identity_with_b_in_query) do
+        {
+          service_provider: provider_b,
+          last_ial2_authenticated_at: timestamp,
+          verified_at: timestamp,
+        }
+      end
+      let(:identity_with_c_in_query) do
+        {
+          service_provider: provider_c,
+          last_ial2_authenticated_at: timestamp,
+          verified_at: timestamp,
+        }
+      end
+
+      def create_identity(id, provider, verified_time)
+        ServiceProviderIdentity.create(
+          user_id: id, service_provider: provider,
+          last_ial2_authenticated_at: timestamp, verified_at: verified_time
+        )
+      end
 
       before do
         create(
           :service_provider,
-          issuer: 'a',
+          issuer: provider_a,
           iaa: 'iaa123',
           friendly_name: 'The App',
           agency: agency,
         )
         create(
           :service_provider,
-          issuer: 'b',
+          issuer: provider_b,
           iaa: 'iaa456',
           friendly_name: 'The Other App',
           agency: agency2,
         )
         create(
           :service_provider,
-          issuer: 'c',
+          issuer: provider_c,
           iaa: 'iaa789',
           friendly_name: 'The Other Other App',
           agency: agency3,
         )
 
-        # Seed the database with data to be queried - anything with `timestamp2` should be filtered
-        ServiceProviderIdentity.create(
-          user_id: 1, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 1, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 2, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 2, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp2
-        )
-        ServiceProviderIdentity.create(
-          user_id: 3, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 3, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 3, service_provider: 'c',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp2
-        )
-        ServiceProviderIdentity.create(
-          user_id: 4, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 4, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 4, service_provider: 'c',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 5, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 5, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 5, service_provider: 'c',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 6, service_provider: 'a',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
-        ServiceProviderIdentity.create(
-          user_id: 6, service_provider: 'b',
-          last_ial2_authenticated_at: timestamp, verified_at: timestamp
-        )
+        # Seed the database with data to be queried
+        #
+        # User 1 has 3 SPs and 3 show up in the query
+        # User 2 has 3 SPs and 3 show up in the query
+        # User 3 has 3 SPs and only 2 show up in the query
+        # User 4 has 2 SPs and 2 show up in the query
+        # User 5 has 2 SPs and 2 show up in the query
+        # User 6 has 2 SPs and only 1 shows up in the query
+        # User 7 has 1 SP and 1 shows up in the query
+        # User 8 has 1 SP and 0 show up in the query
+        #
+        # This will give 2 users with 3 SPs and 3 users with 2 SPs for the report
 
+        users_to_query = [
+          { id: 1,
+            sp: [provider_a, provider_b, provider_c],
+            timestamp: [timestamp, timestamp, timestamp] },
+          { id: 2,
+            sp: [provider_a, provider_b, provider_c],
+            timestamp: [timestamp, timestamp, timestamp] },
+          { id: 3,
+            sp: [provider_a, provider_b, provider_c],
+            timestamp: [timestamp, timestamp, timestamp2] },
+          { id: 4, sp: [provider_a, provider_b], timestamp: [timestamp, timestamp] },
+          { id: 5, sp: [provider_a, provider_b], timestamp: [timestamp, timestamp] },
+          { id: 6, sp: [provider_a, provider_b], timestamp: [timestamp, timestamp2] },
+          { id: 7, sp: [provider_a], timestamp: [timestamp] },
+          { id: 8, sp: [provider_a], timestamp: [timestamp2] },
+        ]
+
+        users_to_query.each do |user|
+          user[:sp].each_with_index do |sp, i|
+            create_identity(user[:id], sp, user[:timestamp][i])
+          end
+        end
+
+        # Create active profiles for total_proofed_identities
+        # These will yield 10 active profiles
         (1..10).each do |_|
           create(:profile, :active, activated_at: timestamp)
         end
