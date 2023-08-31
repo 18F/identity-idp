@@ -18,7 +18,7 @@ class FrontendLogger
     if analytics_method.is_a?(Symbol)
       analytics.send(
         analytics_method,
-        **hash_from_kwargs(attributes, analytics.method(analytics_method)),
+        **hash_from_kwargs(attributes, AnalyticsEvents.instance_method(analytics_method)),
       )
     elsif analytics_method.respond_to?(:call)
       analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
