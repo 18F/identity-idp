@@ -155,11 +155,11 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -231,11 +231,11 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do
@@ -271,7 +271,7 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { build(:user) }
       let(:ssn) { '666666666' }
 
@@ -280,10 +280,10 @@ RSpec.describe Idv::SessionErrorsController do
       end
 
       before do
-        Throttle.new(
-          throttle_type: :proof_ssn,
+        RateLimiter.new(
+          rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
-        ).increment_to_throttled!
+        ).increment_to_limited!
         controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
       end
 
@@ -312,11 +312,11 @@ RSpec.describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
       end
 
       it 'assigns expiration time' do

@@ -8,8 +8,8 @@ module Idv
     end
 
     def submit(step_params)
-      return throttled_result if throttle.throttled?
-      throttle.increment!
+      return rate_limited_result if rate_limiter.limited?
+      rate_limiter.increment!
 
       self.step_params = step_params
       idv_session.previous_phone_step_params = step_params.slice(
@@ -20,7 +20,7 @@ module Idv
     end
 
     def failure_reason
-      return :fail if throttle.throttled?
+      return :fail if rate_limiter.limited?
       return :no_idv_result if idv_result.nil?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
@@ -108,11 +108,14 @@ module Idv
       preference.to_sym
     end
 
-    def throttle
-      @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
+        user: idv_session.current_user,
+        rate_limit_type: :proof_address,
+      )
     end
 
-    def throttled_result
+    def rate_limited_result
       @attempts_tracker.idv_phone_otp_sent_rate_limited
       @analytics.throttler_rate_limit_triggered(throttle_type: :proof_address, step_name: :phone)
       FormResponse.new(success: false)

@@ -4,7 +4,7 @@ module Users
     include ReauthenticationRequiredConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_recently_authenticated
+    before_action :confirm_recently_authenticated_2fa
 
     def delete; end
 

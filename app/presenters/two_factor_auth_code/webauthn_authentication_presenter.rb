@@ -3,7 +3,7 @@ module TwoFactorAuthCode
   class WebauthnAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :credential_ids, :user_opted_remember_device_cookie
+    attr_reader :credentials, :user_opted_remember_device_cookie
 
     def initialize(data:, view:, service_provider:, remember_device_default: true,
                    platform_authenticator: false)

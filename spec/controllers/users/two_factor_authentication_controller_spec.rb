@@ -619,7 +619,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           end
 
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+            RateLimiter.attempt_window_in_minutes(:phone_confirmation).minutes,
           )
 
           expect(flash[:error]).to eq(
@@ -672,7 +672,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           end
 
           timeout = distance_of_time_in_words(
-            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+            RateLimiter.attempt_window_in_minutes(:phone_confirmation).minutes,
           )
 
           expect(flash[:error]).to eq(

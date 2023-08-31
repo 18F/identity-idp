@@ -58,8 +58,8 @@ RSpec.describe Idv::GpoVerifyController do
         expect(assigns(:user_can_request_another_gpo_code)).to eql(true)
       end
 
-      it 'shows throttled page is user is throttled' do
-        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
+      it 'shows rate limited page if user is rate limited' do
+        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
 
         action
 
@@ -85,12 +85,12 @@ RSpec.describe Idv::GpoVerifyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       before do
-        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :verify_gpo_key, user: user).increment_to_limited!
       end
 
-      it 'renders throttled page' do
+      it 'renders rate limited page' do
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification visited',
         ).once
@@ -332,7 +332,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       let(:submitted_otp) { 'a-wrong-otp' }
 
       it 'renders the index page to show errors' do

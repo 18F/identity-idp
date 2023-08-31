@@ -19,7 +19,7 @@ RSpec.feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email)).to be_present
   end
 
-  scenario 'user throttled sending confirmation emails' do
+  scenario 'user rate limited sending confirmation emails' do
     user.save!
     email = user.email
 

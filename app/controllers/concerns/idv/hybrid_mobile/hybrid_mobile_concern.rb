@@ -35,6 +35,9 @@ module Idv
       end
 
       def handle_invalid_document_capture_session
+        # it is critical to remove all session data to avoid authenticating and
+        # resuming a partial session
+        sign_out
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end

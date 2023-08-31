@@ -72,7 +72,6 @@ es:
       delete_account: Eliminar
       regenerate_personal_key: Restablecer
     login:
-      ie_not_supported: Internet Explorer 11 dejó de ser compatible a partir del %{date}
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       tab_navigation: Pestañas de creación de cuenta
     navigation:

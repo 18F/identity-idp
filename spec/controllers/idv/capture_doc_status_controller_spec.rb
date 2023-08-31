@@ -59,12 +59,12 @@ RSpec.describe Idv::CaptureDocStatusController do
       end
     end
 
-    context 'when the user is throttled' do
+    context 'when the user is rate limited' do
       before do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
       end
 
-      it 'returns throttled with redirect' do
+      it 'returns rate_limited with redirect' do
         get :show
 
         expect(response.status).to eq(429)

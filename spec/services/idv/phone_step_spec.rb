@@ -52,7 +52,7 @@ RSpec.describe Idv::PhoneStep do
   end
 
   describe '#submit' do
-    let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
+    let(:rate_limiter) { RateLimiter.new(rate_limit_type: :proof_address, user: user) }
     let(:mock_vendor) do
       {
         vendor_name: 'AddressMock',
@@ -118,23 +118,23 @@ RSpec.describe Idv::PhoneStep do
     it 'increments step attempts' do
       expect do
         subject.submit(phone: bad_phone)
-      end.to(change { throttle.fetch_state!.attempts }.by(1))
+      end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
     it 'increments step attempts when the vendor request times out' do
       expect do
         subject.submit(phone: timeout_phone)
-      end.to(change { throttle.fetch_state!.attempts }.by(1))
+      end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
       expect do
         subject.submit(phone: fail_phone)
-      end.to(change { throttle.fetch_state!.attempts }.by(1))
+      end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
     end
 
-    it 'logs a throttled attempts_tracker event' do
-      throttle.increment_to_throttled!
+    it 'logs a rate limited attempts_tracker event' do
+      rate_limiter.increment_to_limited!
 
       expect(@irs_attempts_api_tracker).to receive(:idv_phone_otp_sent_rate_limited)
       subject.submit(phone: bad_phone)
@@ -198,7 +198,7 @@ RSpec.describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)

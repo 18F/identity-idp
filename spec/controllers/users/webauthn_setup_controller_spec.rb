@@ -69,6 +69,7 @@ RSpec.describe Users::WebauthnSetupController do
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
+          transports: 'usb',
         }
       end
 
@@ -174,6 +175,7 @@ RSpec.describe Users::WebauthnSetupController do
         attestation_object: attestation_object,
         client_data_json: setup_client_data_json,
         name: 'mykey',
+        transports: 'usb',
       }
     end
 
@@ -206,6 +208,7 @@ RSpec.describe Users::WebauthnSetupController do
             attestation_object: attestation_object,
             client_data_json: setup_client_data_json,
             name: 'mykey',
+            transports: 'usb',
           }
         end
         it 'should log expected events' do
@@ -258,6 +261,7 @@ RSpec.describe Users::WebauthnSetupController do
             attestation_object: attestation_object,
             client_data_json: setup_client_data_json,
             name: 'mykey',
+            transports: 'internal,hybrid',
             platform_authenticator: 'true',
           }
         end
@@ -306,6 +310,7 @@ RSpec.describe Users::WebauthnSetupController do
             attestation_object: attestation_object,
             client_data_json: setup_client_data_json,
             name: 'mykey',
+            transports: 'internal,hybrid',
             platform_authenticator: 'true',
           }
         end

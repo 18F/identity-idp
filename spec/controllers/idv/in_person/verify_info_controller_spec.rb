@@ -166,7 +166,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             and_return(10)
         end
 
-        it 'throttles them all' do
+        it 'rate limits them all' do
           put :update
           subject.idv_session.verify_info_step_document_capture_session_uuid = nil
           put :update

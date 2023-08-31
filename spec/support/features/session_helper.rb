@@ -336,7 +336,7 @@ module Features
     end
 
     def click_acknowledge_personal_key
-      checkbox_header = t('forms.validation.required_checkbox')
+      checkbox_header = t('forms.personal_key.required_checkbox')
       find('label', text: /#{checkbox_header}/).click
       click_continue
     end

@@ -5,10 +5,14 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
 
   let(:view) { ActionController::Base.new.view_context }
   let(:reauthn) {}
-  let(:presenter) do
-    TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, service_provider: nil,
-          view: view, platform_authenticator: platform_authenticator)
+  let(:credentials) { [] }
+  subject(:presenter) do
+    TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
+      data: { reauthn:, credentials: },
+      service_provider: nil,
+      view: view,
+      platform_authenticator: platform_authenticator,
+    )
   end
 
   let(:allow_user_to_switch_method) { false }
@@ -220,6 +224,12 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'returns the sign out path' do
         expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
       end
+    end
+  end
+
+  describe '#credentials' do
+    it 'returns credentials from initialized data' do
+      expect(presenter.credentials).to eq credentials
     end
   end
 

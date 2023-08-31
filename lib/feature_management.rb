@@ -74,10 +74,6 @@ class FeatureManagement
     Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
 
-  def self.use_reauthentication_route?
-    IdentityConfig.store.use_reauthentication_route
-  end
-
   def self.enable_saml_cert_rotation?
     IdentityConfig.store.saml_secret_rotation_enabled
   end

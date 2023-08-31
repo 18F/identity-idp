@@ -10,7 +10,7 @@ RSpec.feature 'phone otp rate limiting', :js do
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_verification_step(user)
 
-      (Throttle.max_attempts(:phone_otp) - 1).times do
+      (RateLimiter.max_attempts(:phone_otp) - 1).times do
         click_on t('links.two_factor_authentication.send_another_code')
       end
 
@@ -67,8 +67,8 @@ RSpec.feature 'phone otp rate limiting', :js do
     retry_minutes = IdentityConfig.store.lockout_period_in_minutes + 1
     travel_to(retry_minutes.minutes.from_now) do
       # This is not good and we can likely drop it once we have upgraded to Redis 7 and switched
-      # Throttle to use EXPIRETIME rather than TTL
-      allow_any_instance_of(Throttle).to receive(:attempted_at).and_return(
+      # RateLimiter to use EXPIRETIME rather than TTL
+      allow_any_instance_of(RateLimiter).to receive(:attempted_at).and_return(
         retry_minutes.minutes.ago,
       )
       start_idv_from_sp

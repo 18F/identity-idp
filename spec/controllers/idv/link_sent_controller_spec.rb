@@ -5,8 +5,7 @@ RSpec.describe Idv::LinkSentController do
 
   let(:flow_session) do
     { 'document_capture_session_uuid' => 'fd14e181-6fb1-4cdc-92e0-ef66dad0df4e',
-      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0',
-      :flow_path => 'hybrid' }
+      :threatmetrix_session_id => 'c90ae7a5-6629-4e77-b97c-f1987c2df7d0' }
   end
 
   let(:user) { create(:user) }
@@ -14,6 +13,7 @@ RSpec.describe Idv::LinkSentController do
   before do
     allow(subject).to receive(:flow_session).and_return(flow_session)
     stub_sign_in(user)
+    subject.idv_session.flow_path = 'hybrid'
     stub_analytics
     stub_attempts_tracker
     allow(@analytics).to receive(:track_event)
@@ -76,7 +76,7 @@ RSpec.describe Idv::LinkSentController do
     context '#confirm_hybrid_handoff_complete' do
       context 'no flow_path' do
         it 'redirects to idv_hybrid_handoff_url' do
-          flow_session[:flow_path] = nil
+          subject.idv_session.flow_path = nil
 
           get :show
 
@@ -86,7 +86,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'flow_path is standard' do
         it 'redirects to idv_document_capture_url' do
-          flow_session[:flow_path] = 'standard'
+          subject.idv_session.flow_path = 'standard'
 
           get :show
 

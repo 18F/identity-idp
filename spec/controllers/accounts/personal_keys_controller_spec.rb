@@ -5,7 +5,7 @@ RSpec.describe Accounts::PersonalKeysController do
     it 'require recent reauthn' do
       expect(subject).to have_actions(
         :before,
-        :confirm_recently_authenticated,
+        :confirm_recently_authenticated_2fa,
         :prompt_for_password_if_pii_locked,
       )
     end

@@ -16,7 +16,7 @@ module Idv
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
-        elsif throttled?
+        elsif rate_limiter.limited?
           :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
@@ -33,7 +33,7 @@ module Idv
     def redirect_url
       return unless flow_session && document_capture_session
 
-      if throttled?
+      if rate_limiter.limited?
         idv_session_errors_throttled_url
       elsif user_has_establishing_in_person_enrollment?
         idv_in_person_url
@@ -59,12 +59,11 @@ module Idv
       flow_session[:document_capture_session_uuid]
     end
 
-    def throttled?
-      throttle.throttled?
-    end
-
-    def throttle
-      @throttle ||= Throttle.new(user: document_capture_session.user, throttle_type: :idv_doc_auth)
+    def rate_limiter
+      @rate_limiter ||= RateLimiter.new(
+        user: document_capture_session.user,
+        rate_limit_type: :idv_doc_auth,
+      )
     end
 
     def user_has_establishing_in_person_enrollment?

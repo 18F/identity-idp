@@ -90,9 +90,9 @@ FactoryBot.define do
         next unless user.webauthn_configurations.empty?
         user.webauthn_configurations << build(
           :webauthn_configuration,
+          :platform_authenticator,
           {
             user_id: -1,
-            platform_authenticator: true,
           }.merge(
             evaluator.with.slice(:name, :credential_id, :credential_public_key),
           ),
@@ -103,7 +103,7 @@ FactoryBot.define do
         next unless user.webauthn_configurations.empty?
         user.webauthn_configurations << build(
           :webauthn_configuration,
-          { platform_authenticator: true }.
+          :platform_authenticator,
           evaluator.with.slice(:name, :credential_id, :credential_public_key),
         )
       end

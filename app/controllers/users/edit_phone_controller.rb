@@ -6,7 +6,7 @@ module Users
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
     before_action :confirm_user_can_remove_phone, only: %i[destroy]
-    before_action :confirm_recently_authenticated
+    before_action :confirm_recently_authenticated_2fa
 
     def edit
       analytics.phone_change_viewed

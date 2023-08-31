@@ -36,8 +36,8 @@ RSpec.describe Users::VerifyPersonalKeyController do
         expect(subject.flash[:info]).to eq(t('notices.account_reactivation'))
       end
 
-      it 'shows throttled page after being throttled' do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+      it 'shows rate limited page after being rate limited' do
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
 
         get :new
 
@@ -45,14 +45,14 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
     end
 
-    context 'with throttle reached' do
+    context 'with rate limit reached' do
       let!(:profiles) { [create(:profile, :verified, :password_reset, user: user)] }
 
       before do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :verify_personal_key, user: user).increment_to_limited!
       end
 
-      it 'renders throttled page' do
+      it 'renders rate limited page' do
         stub_analytics
         stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
@@ -156,8 +156,8 @@ RSpec.describe Users::VerifyPersonalKeyController do
       end
     end
 
-    context 'with throttle reached' do
-      it 'renders throttled page' do
+    context 'with rate limit reached' do
+      it 'renders rate limited page' do
         stub_analytics
         stub_attempts_tracker
         expect(@analytics).to receive(:track_event).with(
@@ -174,7 +174,7 @@ RSpec.describe Users::VerifyPersonalKeyController do
 
         expect(@irs_attempts_api_tracker).to receive(:personal_key_reactivation_rate_limited).once
 
-        max_attempts = Throttle.max_attempts(:verify_personal_key)
+        max_attempts = RateLimiter.max_attempts(:verify_personal_key)
         max_attempts.times { post :create, params: personal_key_bad_params }
 
         expect(response).to render_template(:throttled)

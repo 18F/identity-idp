@@ -316,3 +316,8 @@ fr:
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
+    suspended_reset_password:
+      message: La réinitialisation de votre mot de passe a posé un problème. Veuillez
+        appeler notre centre d’appels au %{contact_number} et fournir ce code -
+        %{support_code}.
+      subject: Nous n’avons pas pu réinitialiser votre mot de passe

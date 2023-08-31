@@ -144,8 +144,8 @@ RSpec.describe 'webauthn management' do
 
   context 'with webauthn platform associations' do
     it 'displays the user supplied names of the platform authenticators' do
-      webauthn_config1 = create(:webauthn_configuration, user: user, platform_authenticator: true)
-      webauthn_config2 = create(:webauthn_configuration, user: user, platform_authenticator: true)
+      webauthn_config1 = create(:webauthn_configuration, :platform_authenticator, user:)
+      webauthn_config2 = create(:webauthn_configuration, :platform_authenticator, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -161,7 +161,7 @@ RSpec.describe 'webauthn management' do
 
       it 'allows the user to setup another key' do
         mock_webauthn_setup_challenge
-        create(:webauthn_configuration, user: user, platform_authenticator: true)
+        create(:webauthn_configuration, :platform_authenticator, user:)
 
         sign_in_and_2fa_user(user)
 
@@ -194,7 +194,7 @@ RSpec.describe 'webauthn management' do
 
       it 'does not allows the user to setup another platform authenticator' do
         mock_webauthn_setup_challenge
-        create(:webauthn_configuration, user: user, platform_authenticator: true)
+        create(:webauthn_configuration, :platform_authenticator, user:)
 
         sign_in_and_2fa_user(user)
 
@@ -204,7 +204,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'allows user to delete a platform authenticator when another 2FA option is set up' do
-      webauthn_config = create(:webauthn_configuration, user: user, platform_authenticator: true)
+      webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -223,7 +223,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'allows the user to cancel deletion of the platform authenticator' do
-      webauthn_config = create(:webauthn_configuration, user: user, platform_authenticator: true)
+      webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
 
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -240,7 +240,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'prevents a user from deleting the last key' do
-      webauthn_config = create(:webauthn_configuration, user: user, platform_authenticator: true)
+      webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
 
       sign_in_and_2fa_user(user)
       PhoneConfiguration.first.update(mfa_enabled: false)
@@ -254,7 +254,7 @@ RSpec.describe 'webauthn management' do
     end
 
     it 'gives an error if name is taken and stays on the configuration screen' do
-      webauthn_config = create(:webauthn_configuration, user: user, platform_authenticator: true)
+      webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
 
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)

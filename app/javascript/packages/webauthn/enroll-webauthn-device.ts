@@ -18,6 +18,8 @@ interface EnrollResult {
   attestationObject: string;
 
   clientDataJSON: string;
+
+  transports: string[];
 }
 
 async function enrollWebauthnDevice({
@@ -79,6 +81,7 @@ async function enrollWebauthnDevice({
     webauthnPublicKey: credential.id,
     attestationObject: arrayBufferToBase64(response.attestationObject),
     clientDataJSON: arrayBufferToBase64(response.clientDataJSON),
+    transports: response.getTransports(),
   };
 }
 

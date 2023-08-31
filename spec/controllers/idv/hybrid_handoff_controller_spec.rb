@@ -85,7 +85,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'hybrid_handoff already visited' do
       it 'redirects to document_capture in standard flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
 
         get :show
 
@@ -93,7 +93,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'redirects to link_sent in hybrid flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+        subject.idv_session.flow_path = 'hybrid'
 
         get :show
 
@@ -103,7 +103,7 @@ RSpec.describe Idv::HybridHandoffController do
 
     context 'redo document capture' do
       it 'does not redirect in standard flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
 
         get :show, params: { redo: true }
 
@@ -111,7 +111,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'does not redirect in hybrid flow' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'hybrid'
+        subject.idv_session.flow_path = 'hybrid'
 
         get :show, params: { redo: true }
 
@@ -119,7 +119,7 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       it 'redirects to document_capture on a mobile device' do
-        subject.user_session['idv/doc_auth'][:flow_path] = 'standard'
+        subject.idv_session.flow_path = 'standard'
         subject.user_session['idv/doc_auth'][:skip_upload_step] = true
 
         get :show, params: { redo: true }

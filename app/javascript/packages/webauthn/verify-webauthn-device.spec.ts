@@ -7,7 +7,10 @@ describe('verifyWebauthnDevice', () => {
   const defineProperty = useDefineProperty();
 
   const userChallenge = '[1, 2, 3, 4, 5, 6, 7, 8]';
-  const credentialIds = [btoa('credential123'), btoa('credential456')].join(',');
+  const credentials = [
+    { id: btoa('credential123'), transports: ['usb'] as AuthenticatorTransport[] },
+    { id: btoa('credential456'), transports: ['internal', 'hybrid'] as AuthenticatorTransport[] },
+  ];
 
   context('webauthn api resolves credential', () => {
     beforeEach(() => {
@@ -35,10 +38,12 @@ describe('verifyWebauthnDevice', () => {
             {
               id: new TextEncoder().encode('credential123').buffer,
               type: 'public-key',
+              transports: ['usb'],
             },
             {
               id: new TextEncoder().encode('credential456').buffer,
               type: 'public-key',
+              transports: ['internal', 'hybrid'],
             },
           ],
           timeout: 800000,
@@ -47,7 +52,7 @@ describe('verifyWebauthnDevice', () => {
 
       const result = await verifyWebauthnDevice({
         userChallenge,
-        credentialIds,
+        credentials,
       });
 
       expect(navigator.credentials.get).to.have.been.calledWith(expectedGetOptions);
@@ -77,7 +82,7 @@ describe('verifyWebauthnDevice', () => {
       try {
         await verifyWebauthnDevice({
           userChallenge,
-          credentialIds,
+          credentials,
         });
       } catch (error) {
         expect(error).to.equal(error);

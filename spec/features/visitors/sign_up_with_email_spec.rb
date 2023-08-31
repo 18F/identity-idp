@@ -67,7 +67,7 @@ RSpec.feature 'Visitor signs up with email address' do
     end
   end
 
-  it 'throttles sending confirmations after limit is reached' do
+  it 'rate limits sending confirmations after limit is reached' do
     email = 'test@test.com'
     sign_up_with(email)
 

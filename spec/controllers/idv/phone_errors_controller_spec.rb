@@ -131,9 +131,9 @@ RSpec.describe Idv::PhoneErrorsController do
       end
     end
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -160,11 +160,11 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -181,11 +181,11 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'with throttle attempts' do
+    context 'with rate limit attempts' do
       let(:user) { create(:user) }
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).increment!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -212,11 +212,11 @@ RSpec.describe Idv::PhoneErrorsController do
 
     it_behaves_like 'an idv phone errors controller action'
 
-    context 'while throttled' do
+    context 'while rate limited' do
       let(:user) { create(:user) }
 
       it 'assigns expiration time' do
-        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
+        RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
@@ -225,15 +225,15 @@ RSpec.describe Idv::PhoneErrorsController do
       it 'logs an event' do
         freeze_time do
           attempted_at = Time.zone.now.utc
-          Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
-          throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
+          RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
+          rate_limit_window = RateLimiter.attempt_window_in_minutes(:proof_address).minutes
 
           get action
 
           expect(@analytics).to have_received(:track_event).with(
             'IdV: phone error visited',
             type: action,
-            throttle_expires_at: attempted_at + throttle_window,
+            throttle_expires_at: attempted_at + rate_limit_window,
           )
         end
       end

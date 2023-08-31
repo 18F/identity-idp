@@ -24,6 +24,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
+account_suspended_support_code: EFGHI
 acuant_maintenance_window_start:
 acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
@@ -132,7 +133,6 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_tmx_test_csp_disabled_emails: '[]'
 idv_tmx_test_js_disabled_emails: '[]'
-ie11_support_end_date: '2022-12-31'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
 in_person_email_reminder_early_benchmark_in_days: 11
@@ -148,8 +148,10 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_results_delay_in_hours: 1
+in_person_ssn_info_controller_enabled: false
 in_person_completion_survey_url: 'https://login.gov'
 in_person_usps_outage_message_enabled: false
+in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 include_slo_in_saml_metadata: false
 key_pair_generation_percent: 0
@@ -251,7 +253,6 @@ rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
-reauthentication_for_second_factor_management_enabled: true
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_site_key_v2: ''
@@ -328,7 +329,6 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
-use_reauthentication_route: true
 usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
@@ -463,7 +463,6 @@ production:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
   session_encryptor_alert_enabled: true
-  reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
@@ -480,7 +479,6 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_reauthentication_route: false
   use_kms: true
   usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''

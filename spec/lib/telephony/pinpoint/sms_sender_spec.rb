@@ -101,7 +101,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       end
     end
 
-    context 'when the request is throttled' do
+    context 'when the request is rate limited' do
       let(:delivery_status) { 'THROTTLED' }
 
       it 'raises an opt out error' do

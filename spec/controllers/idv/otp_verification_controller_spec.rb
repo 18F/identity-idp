@@ -89,6 +89,61 @@ RSpec.describe Idv::OtpVerificationController do
       end
     end
 
+    context 'the user is going through in person proofing' do
+      before(:each) do
+        create(:in_person_enrollment, :establishing, user: user)
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+          and_return(true)
+      end
+
+      context 'the user uses sms otp' do
+        it 'does not save the phone number if the feature flag is off' do
+          put :update, params: otp_code_param
+
+          phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
+          expect(phone_config).to_not be_present
+        end
+
+        it 'saves the sms notification number to the enrollment' do
+          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+            and_return(true)
+
+          put :update, params: otp_code_param
+
+          phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
+          expect(phone_config).to be_present
+          expect(phone_config.phone).to eq(phone)
+        end
+      end
+
+      context 'the user uses voice otp' do
+        let(:phone_confirmation_session_properties) do
+          {
+            code: phone_confirmation_otp_code,
+            phone: phone,
+            delivery_method: :voice,
+          }
+        end
+
+        it 'does not save the phone number if the feature flag is off' do
+          put :update, params: otp_code_param
+
+          phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
+          expect(phone_config).to_not be_present
+        end
+
+        it 'does not save the sms notification number to the enrollment' do
+          expect(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled).
+            and_return(true)
+
+          put :update, params: otp_code_param
+
+          phone_config = user.establishing_in_person_enrollment&.notification_phone_configuration
+          expect(phone_config).to_not be_present
+        end
+      end
+    end
+
     it 'tracks an analytics event' do
       put :update, params: otp_code_param
 

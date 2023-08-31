@@ -77,25 +77,15 @@ fr:
       download: Télécharger (fichier texte)
       instructions: Veuillez confirmer que vous avez une copie de votre clé
         personnelle en l’entrant ci-dessous.
-      required_checkbox: Veuillez cocher cette case pour continuer.
+      required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
       title: Entrez votre clé personnelle
     personal_key_partial:
       acknowledgement:
-        bullets:
-          - Vous perdrez l’accès à votre compte
-          - Vous allez devoir vérifier à nouveau votre identité
         header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé
           personnelle. Gardez-la en sécurité et ne la partagez avec personne.
-        text: 'Si vous réinitialisez votre mot de passe sans votre clé personnelle:'
-      explanation:
-        header: Qu’est-ce qu’une clé personnelle?
-        text:
-          - Une clé personnelle « verrouille » vos informations personnelles
-            avec votre compte. C’est le seul moyen de déverrouiller vos
-            informations si vous perdez ou oubliez votre mot de passe.
-          - Lors de la réinitialisation de votre mot de passe, Login.gov vous
-            demandera votre clé personnelle pour s’assurer que vous êtes bien
-            vous, et non quelqu’un qui se fait passer pour vous.
+        help_link_text: En savoir plus sur la clé personnelle
+        text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous
+          devrez à nouveau vérifier votre identité.
       header: Sauvegardez votre clé personnelle
     phone:
       buttons:

@@ -6,7 +6,7 @@ module Users
     before_action :authorize_user_to_edit_email, except: %i[add show verify resend]
     before_action :check_max_emails_per_account, only: %i[show add]
     before_action :retain_confirmed_emails, only: %i[delete]
-    before_action :confirm_recently_authenticated
+    before_action :confirm_recently_authenticated_2fa
 
     def show
       @add_user_email_form = AddUserEmailForm.new

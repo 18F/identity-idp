@@ -32,6 +32,7 @@ module Idv
 
       if result.success?
         idv_session.user_phone_confirmation = true
+        save_in_person_notification_phone
         flash[:success] = t('idv.messages.review.phone_verified')
         redirect_to idv_review_url
       else
@@ -68,6 +69,27 @@ module Idv
         flash.now[:error] = t('two_factor_authentication.invalid_otp')
         render :show
       end
+    end
+
+    def save_in_person_notification_phone
+      return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
+      return unless in_person_enrollment?
+      # future tickets will support voice otp
+      return unless idv_session.user_phone_confirmation_session.delivery_method == :sms
+
+      establishing_enrollment.notification_phone_configuration =
+        NotificationPhoneConfiguration.new(
+          phone: idv_session.user_phone_confirmation_session.phone,
+        )
+    end
+
+    def establishing_enrollment
+      current_user.establishing_in_person_enrollment
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      establishing_enrollment.present?
     end
 
     def phone_confirmation_otp_verification_form

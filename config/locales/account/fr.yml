@@ -77,7 +77,6 @@ fr:
       delete_account: Effacer
       regenerate_personal_key: Réinitialiser
     login:
-      ie_not_supported: Internet Explorer 11 n’est plus pris en charge à partir du %{date}
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       tab_navigation: Onglets de création de compte
     navigation:
