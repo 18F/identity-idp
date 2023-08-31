@@ -6,6 +6,7 @@ import AcuantCapture, {
   isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
   getDecodedBase64ByteSize,
+  AcuantDocumentType,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -20,7 +21,7 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
     width: 1748,
     height: 1104,
   },
-  cardtype: 1,
+  cardtype: AcuantDocumentType.ID,
   dpi: 519,
   moire: 99,
   moireraw: 99,
@@ -566,7 +567,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCropped({
             ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            cardtype: 2,
+            cardtype: AcuantDocumentType.PASSPORT,
           });
         }),
       });

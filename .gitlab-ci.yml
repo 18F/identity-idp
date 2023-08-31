@@ -60,6 +60,7 @@ stages:
   - test
   - after_test
   - review
+  - scan
 
 workflow:
   rules:
@@ -95,6 +96,7 @@ build-idp-image:
   needs: []
   interruptible: true
   rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
     - if: $CI_PIPELINE_SOURCE != "merge_request_event"
       when: never
@@ -397,3 +399,115 @@ stop-review-app:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+# Export the automated ECR scan results into a format Gitlab can use
+# Report schema https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/container-scanning-report-format.json
+ecr-scan:
+  stage: scan
+  interruptible: true
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+  tags:
+    - build-pool
+  needs:
+    - job: build-idp-image
+  image:
+    name: amazon/aws-cli
+    entrypoint: [""] 
+  before_script:
+    - curl -LO https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64
+    - chmod +x jq-linux64
+    - mv jq-linux64 /usr/local/bin/jq
+  script:
+    - >
+      while true; do
+        SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
+        if [ "$SCAN_STATUS" == "ACTIVE" ]; then
+          break
+        elif [ "$SCAN_STATUS" == "FAILED" ]; then
+          echo "ECR scan failed"
+          exit 1
+        else
+          echo "Waiting for ECR scan to complete"
+          sleep 15
+        fi
+      done
+    - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA)
+    - echo $SCAN_FINDINGS
+    - >
+      echo $SCAN_FINDINGS |
+      jq -r '
+      {
+        "version": "15.0.4",
+        "scan": {
+          "start_time": (.imageScanFindings.imageScanCompletedAt | sub("\\.[0-9]+"; "") | strptime("%Y-%m-%dT%H:%M:%S%z") | strftime("%Y-%m-%dT%H:%M:%S")),
+          "end_time": (.imageScanFindings.imageScanCompletedAt | sub("\\.[0-9]+"; "") | strptime("%Y-%m-%dT%H:%M:%S%z") | strftime("%Y-%m-%dT%H:%M:%S")),
+          "scanner": {
+            "id": "clair",
+            "name": "Amazon ECR Image Scan",
+            "version": "1.0.0",
+            "vendor": {
+              "name": "Amazon Web Services"
+            }
+          },
+          "analyzer": {
+            "id": "clair",
+            "name": "Amazon ECR Image Scan",
+            "version": "1.0.0",
+            "vendor": {
+              "name": "Amazon Web Services"
+            }
+          },
+          "status": "success",
+          "type": "container_scanning"
+        },
+        "vulnerabilities": [
+          .imageScanFindings.enhancedFindings[] |
+          {
+            "id": .packageVulnerabilityDetails.vulnerabilityId,
+            "name": .title,
+            "description": .description,
+            "severity": (if .severity == "HIGH" then "High"
+                        elif .severity == "MEDIUM" then "Medium"
+                        elif .severity == "LOW" then "Low"
+                        elif .severity == "CRITICAL" then "Critical"
+                        elif .severity == "INFORMATIONAL" then "Info"
+                        elif .severity == "UNTRIAGED" then "Info"
+                        else "Unknown" end),
+            "solution": .remediation.recommendation.text,
+            "identifiers": [
+              {
+                "type": "cve",
+                "name": .packageVulnerabilityDetails.vulnerabilityId,
+                "url": .packageVulnerabilityDetails.sourceUrl,
+                "value": .packageVulnerabilityDetails.vulnerabilityId
+              }
+            ],
+            "links": [
+              {
+                "name": .packageVulnerabilityDetails.vulnerabilityId,
+                "url": .packageVulnerabilityDetails.sourceUrl
+              }
+            ],
+            "location": {
+              "dependency": {
+                "package": {
+                  "name": .packageVulnerabilityDetails.vulnerablePackages[0].name
+                },
+                "version": .packageVulnerabilityDetails.vulnerablePackages[0].version
+              },
+              "operating_system": .resources[0].details.awsEcrContainerImage.platform,
+              "image": .resources[0].id
+            }
+          }
+        ]
+      }' > gl-container-scanning-report.json
+  artifacts:
+    paths: 
+      - gl-container-scanning-report.json
+    reports:
+      container_scanning: gl-container-scanning-report.json
