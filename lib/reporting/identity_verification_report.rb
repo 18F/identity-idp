@@ -195,9 +195,9 @@ module Reporting
             coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
           , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
           , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
-          , ispresent(properties.event_properties.deactivation_reason) AS has_legacy_deactivation_reason
+          , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
         | fields
-            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_legacy_deactivation_reason AS identity_verified
+            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
         | limit 10000
       QUERY
     end
