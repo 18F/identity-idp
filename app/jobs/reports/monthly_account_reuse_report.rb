@@ -96,51 +96,61 @@ module Reports
     end
 
     def total_reuse_report
-      reuse_report = agency_reuse_results
+      reuse_stats = agency_reuse_results
 
       reuse_total_users = 0
       reuse_total_percentage = 0
 
       total_proofed = num_active_profiles
 
-      if !reuse_report.empty?
-        reuse_report.each do |result_entry|
+      if !reuse_stats.empty?
+        reuse_stats.each do |result_entry|
           reuse_total_users += result_entry['num_users']
         end
 
         if total_proofed > 0
-          reuse_report.each_with_index do |result_entry, index|
-            reuse_report[index]['percentage'] =
+          reuse_stats.each_with_index do |result_entry, index|
+            reuse_stats[index]['percentage'] =
               result_entry['num_users'] / total_proofed.to_f * 100
 
-            reuse_total_percentage += reuse_report[index]['percentage']
+            reuse_total_percentage += reuse_stats[index]['percentage']
           end
         end
       end
 
       # reuse_stats and total_stats
-      [reuse_report, reuse_total_users, reuse_total_percentage, total_proofed]
+      { reuse_stats: reuse_stats,
+        total_users: reuse_total_users,
+        total_percentage: reuse_total_percentage,
+        total_proofed: total_proofed }
     end
 
     def report_csv
-      reuse_stats, total_users, total_percentage, total_proofed = total_reuse_report
+      monthly_reuse_report = total_reuse_report
 
       csv_array = []
       csv_array << ["IDV app reuse rate #{stats_month}"]
       csv_array << ['Num. SPs', 'Num. users', 'Percentage']
 
-      reuse_stats.each do |result_entry|
+      monthly_reuse_report[:reuse_stats].each do |result_entry|
         csv_array << [
           result_entry['num_agencies'],
           result_entry['num_users'],
           result_entry['percentage'],
         ]
       end
-      csv_array << ['Total (all >1)', total_users, total_percentage]
+      csv_array << [
+        'Total (all >1)',
+        monthly_reuse_report[:total_users],
+        monthly_reuse_report[:total_percentage],
+      ]
 
       csv_array << []
       csv_array << ['Total proofed identities']
-      csv_array << ["Total proofed identities (#{stats_month})", total_proofed]
+      csv_array << [
+        "Total proofed identities (#{stats_month})",
+        monthly_reuse_report[:total_proofed],
+      ]
 
       csv_array
     end
