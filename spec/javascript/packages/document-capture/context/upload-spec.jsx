@@ -63,10 +63,9 @@ describe('document-capture/context/upload', () => {
       ),
     });
 
-    sandbox
-      .stub(window, 'fetch')
-      .withArgs(statusEndpoint)
-      .resolves(new Response(JSON.stringify({ success: true }), { url: statusEndpoint }));
+    const response = new Response(JSON.stringify({ success: true }));
+    sandbox.stub(response, 'url').get(() => statusEndpoint);
+    sandbox.stub(global, 'fetch').withArgs(statusEndpoint).resolves(response);
 
     await result.current.getStatus();
     expect(result.current.statusPollInterval).to.equal(1000);

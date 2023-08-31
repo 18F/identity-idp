@@ -100,7 +100,7 @@ describe('FormStepsWait', () => {
     const method = 'post';
     const form = createForm({ action, method });
     const mock = sandbox
-      .mock(window)
+      .mock(global)
       .expects('fetch')
       .once()
       .withArgs(
@@ -125,7 +125,7 @@ describe('FormStepsWait', () => {
     context('server error', () => {
       beforeEach(() => {
         sandbox
-          .stub(window, 'fetch')
+          .stub(global, 'fetch')
           .withArgs(action, sandbox.match({ method }))
           .resolves({ ok: false, status: 500, url: 'http://example.com' });
       });
@@ -158,7 +158,7 @@ describe('FormStepsWait', () => {
         const redirect = window.location.href;
         beforeEach(() => {
           sandbox
-            .stub(window, 'fetch')
+            .stub(global, 'fetch')
             .withArgs(action, sandbox.match({ method }))
             .resolves({
               status: 200,
@@ -199,7 +199,7 @@ describe('FormStepsWait', () => {
 
           beforeEach(() => {
             sandbox
-              .stub(window, 'fetch')
+              .stub(global, 'fetch')
               .withArgs(action, sandbox.match({ method }))
               .onFirstCall()
               .resolves(createResponse())
@@ -236,7 +236,7 @@ describe('FormStepsWait', () => {
 
           beforeEach(() => {
             sandbox
-              .stub(window, 'fetch')
+              .stub(global, 'fetch')
               .withArgs(action, sandbox.match({ method }))
               .resolves({
                 status: 200,
@@ -286,7 +286,7 @@ describe('FormStepsWait', () => {
     const navigate = sandbox.stub();
     const form = createForm({ action, method, navigate });
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs(action, sandbox.match({ method }))
       .resolves({
         status: 200,
@@ -321,7 +321,7 @@ describe('FormStepsWait', () => {
       navigate,
     });
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs(action, sandbox.match({ method }))
       .resolves({
         status: 200,

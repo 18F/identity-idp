@@ -54,18 +54,18 @@ describe('DocumentCapturePolling', () => {
 
   it('polls', async () => {
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 202, json: () => Promise.resolve({}) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    expect(window.fetch).to.have.been.calledOnce();
+    expect(global.fetch).to.have.been.calledOnce();
 
     await flushPromises(); // Flush `fetch`
     await flushPromises(); // Flush `json`
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    expect(window.fetch).to.have.been.calledTwice();
+    expect(global.fetch).to.have.been.calledTwice();
 
     expect(trackEvent).to.have.been.calledOnceWith('IdV: Link sent capture doc polling started');
   });
@@ -73,7 +73,7 @@ describe('DocumentCapturePolling', () => {
   it('submits when done', async () => {
     sandbox.stub(subject.elements.form, 'submit');
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 200, json: () => Promise.resolve({}) });
     subject.bind();
@@ -93,7 +93,7 @@ describe('DocumentCapturePolling', () => {
   it('redirects if given redirect URL on success', async () => {
     sandbox.stub(subject.elements.form, 'submit');
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 200, json: () => Promise.resolve({ redirect: '#redirect' }) });
 
@@ -108,7 +108,7 @@ describe('DocumentCapturePolling', () => {
   it('submits when cancelled', async () => {
     sandbox.stub(subject.elements.form, 'submit');
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 410, json: () => Promise.resolve({}) });
 
@@ -126,7 +126,7 @@ describe('DocumentCapturePolling', () => {
 
   it('redirects when rate limited', async () => {
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#throttled' }) });
 
@@ -144,7 +144,7 @@ describe('DocumentCapturePolling', () => {
 
   it('polls until max, then showing form to submit', async () => {
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .withArgs('/status')
       .resolves({ status: 202, json: () => Promise.resolve({}) });
 
@@ -181,7 +181,7 @@ describe('DocumentCapturePolling', () => {
     it('does not prompt by navigating away via form submission', async () => {
       sandbox.stub(subject.elements.form, 'submit');
       sandbox
-        .stub(window, 'fetch')
+        .stub(global, 'fetch')
         .withArgs('/status')
         .resolves({ status: 200, json: () => Promise.resolve({}) });
       subject.bind();

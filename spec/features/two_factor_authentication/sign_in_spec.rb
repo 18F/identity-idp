@@ -549,7 +549,6 @@ RSpec.feature 'Two Factor Authentication' do
 
           sign_in_user(webauthn_configuration.user)
           mock_press_button_on_hardware_key_on_verification
-          click_button t('forms.buttons.continue')
 
           expect(page).to have_current_path(account_path)
         end
@@ -565,7 +564,6 @@ RSpec.feature 'Two Factor Authentication' do
 
           sign_in_user(webauthn_configuration.user)
           mock_press_button_on_hardware_key_on_verification
-          click_button t('forms.buttons.continue')
 
           expect(page).to have_current_path(account_path)
         end

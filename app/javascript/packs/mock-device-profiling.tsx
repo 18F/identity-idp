@@ -11,7 +11,7 @@ function loadSessionId(): string | undefined {
 }
 
 function submitMockFraudResult({ result, sessionId }: { result: string; sessionId?: string }) {
-  window.fetch('/test/device_profiling', {
+  fetch('/test/device_profiling', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

@@ -1,0 +1,11 @@
+<%= render(
+      'idv/shared/error',
+      heading: t('users.suspended_sign_in_account.heading'),
+    ) do %>
+    <p>
+      <%= t('users.suspended_sign_in_account.contact_details', contact_number: IdentityConfig.store.idv_contact_phone_number) %>
+    </p>
+    <p>
+      <%= t('users.suspended_sign_in_account.error_details', error_code: IdentityConfig.store.account_suspended_support_code) %>
+    </p>
+<% end %>

@@ -34,6 +34,15 @@ module Users
       redirect_back(fallback_location: authentication_methods_setup_path, allow_other_host: false)
     end
 
+    # @api private
+    def two_factor_options_form
+      @two_factor_options_form ||= TwoFactorOptionsForm.new(
+        user: current_user,
+        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+      )
+    end
+
     private
 
     def submit_form
@@ -43,14 +52,6 @@ module Users
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(
         user_agent: request.user_agent,
-        user: current_user,
-        phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
-        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
-      )
-    end
-
-    def two_factor_options_form
-      @two_factor_options_form ||= TwoFactorOptionsForm.new(
         user: current_user,
         phishing_resistant_required: service_provider_mfa_policy.phishing_resistant_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,

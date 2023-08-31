@@ -111,7 +111,7 @@ export class DocumentCapturePolling {
   }
 
   async poll() {
-    const response = await window.fetch(this.statusEndpoint);
+    const response = await fetch(this.statusEndpoint);
     const { redirect } = (await response.json()) as { redirect?: string };
 
     switch (response.status) {

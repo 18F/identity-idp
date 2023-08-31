@@ -37,12 +37,14 @@ describe('document-capture/services/upload', () => {
   it('submits payload to endpoint successfully', async () => {
     const endpoint = 'https://example.com';
 
-    sandbox.stub(window, 'fetch').callsFake((url, init) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init) => {
       expect(url).to.equal(endpoint);
       expect(init.body).to.be.instanceOf(window.FormData);
       expect(init.body.get('foo')).to.equal('bar');
 
-      return Promise.resolve(new Response(JSON.stringify({ success: true }), { url: endpoint }));
+      const response = new Response(JSON.stringify({ success: true }));
+      sandbox.stub(response, 'url').get(() => endpoint);
+      return Promise.resolve(response);
     });
 
     const result = await upload({ foo: 'bar' }, { endpoint });
@@ -52,9 +54,9 @@ describe('document-capture/services/upload', () => {
   it('handles redirect', async () => {
     const endpoint = 'https://example.com';
 
-    sandbox
-      .stub(window, 'fetch')
-      .callsFake(() => Promise.resolve(new Response('', { url: '#teapot' })));
+    const response = new Response('');
+    sandbox.stub(response, 'url').get(() => '#teapot');
+    sandbox.stub(global, 'fetch').callsFake(() => Promise.resolve(response));
 
     let assertOnHashChange;
 
@@ -79,19 +81,19 @@ describe('document-capture/services/upload', () => {
   it('handles pending success', async () => {
     const endpoint = 'https://example.com';
 
-    sandbox.stub(window, 'fetch').callsFake((url, init) => {
+    sandbox.stub(global, 'fetch').callsFake((url, init) => {
       expect(url).to.equal(endpoint);
       expect(init.body).to.be.instanceOf(window.FormData);
       expect(init.body.get('foo')).to.equal('bar');
 
-      return Promise.resolve(
-        new Response(
-          JSON.stringify({
-            success: true,
-          }),
-          { status: 202, url: endpoint },
-        ),
+      const response = new Response(
+        JSON.stringify({
+          success: true,
+        }),
+        { status: 202 },
       );
+      sandbox.stub(response, 'url').get(() => endpoint);
+      return Promise.resolve(response);
     });
 
     const result = await upload({ foo: 'bar' }, { endpoint });
@@ -101,24 +103,22 @@ describe('document-capture/services/upload', () => {
   it('handles invalid request', async () => {
     const endpoint = 'https://example.com';
 
-    sandbox.stub(window, 'fetch').callsFake(() =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify({
-            success: false,
-            errors: [
-              { field: 'front', message: 'Please fill in this field' },
-              { field: 'back', message: 'Please fill in this field' },
-            ],
-            remaining_attempts: 3,
-            hints: true,
-            result_failed: true,
-            ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
-          }),
-          { status: 400, url: endpoint },
-        ),
-      ),
+    const response = new Response(
+      JSON.stringify({
+        success: false,
+        errors: [
+          { field: 'front', message: 'Please fill in this field' },
+          { field: 'back', message: 'Please fill in this field' },
+        ],
+        remaining_attempts: 3,
+        hints: true,
+        result_failed: true,
+        ocr_pii: { first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' },
+      }),
+      { status: 400 },
     );
+    sandbox.stub(response, 'url').get(() => endpoint);
+    sandbox.stub(global, 'fetch').callsFake(() => Promise.resolve(response));
 
     try {
       await upload({}, { endpoint });
@@ -145,17 +145,15 @@ describe('document-capture/services/upload', () => {
   it('redirects error', async () => {
     const endpoint = 'https://example.com';
 
-    sandbox.stub(window, 'fetch').callsFake(() =>
-      Promise.resolve(
-        new Response(
-          JSON.stringify({
-            success: false,
-            redirect: '#teapot',
-          }),
-          { status: 418, url: endpoint },
-        ),
-      ),
+    const response = new Response(
+      JSON.stringify({
+        success: false,
+        redirect: '#teapot',
+      }),
+      { status: 418 },
     );
+    sandbox.stub(response, 'url').get(() => endpoint);
+    sandbox.stub(global, 'fetch').callsFake(() => Promise.resolve(response));
 
     let assertOnHashChange;
 
@@ -181,7 +179,7 @@ describe('document-capture/services/upload', () => {
     const endpoint = 'https://example.com';
 
     sandbox
-      .stub(window, 'fetch')
+      .stub(global, 'fetch')
       .resolves(new Response('', { status: 500, url: endpoint, statusText: 'Server error' }));
 
     try {

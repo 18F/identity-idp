@@ -42,7 +42,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'DUPLICATE' }
 
       it 'raises a duplicate endpoint error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::DuplicateEndpointError.new(raised_error_message))
@@ -55,7 +55,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'OPT_OUT' }
 
       it 'raises an opt out error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::OptOutError.new(raised_error_message))
@@ -68,7 +68,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'PERMANENT_FAILURE' }
 
       it 'raises a permanent failure error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::PermanentFailureError.new(raised_error_message))
@@ -80,7 +80,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         let(:status_message) { '+11234567890 is opted out' }
 
         it 'raises an OptOutError instead' do
-          response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+          response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
           expect(response.success?).to eq(false)
           expect(response.error).to eq(Telephony::OptOutError.new(raised_error_message))
@@ -92,7 +92,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'TEMPORARY_FAILURE' }
 
       it 'raises an opt out error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::TemporaryFailureError.new(raised_error_message))
@@ -105,7 +105,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'THROTTLED' }
 
       it 'raises an opt out error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::ThrottledError.new(raised_error_message))
@@ -118,7 +118,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'TIMEOUT' }
 
       it 'raises an opt out error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::TimeoutError.new(raised_error_message))
@@ -131,7 +131,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { 'UNKNOWN_FAILURE' }
 
       it 'raises an opt out error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::UnknownFailureError.new(raised_error_message))
@@ -144,7 +144,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       let(:delivery_status) { '' }
 
       it 'raises a generic telephony error' do
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
 
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::TelephonyError.new(raised_error_message))
@@ -160,7 +160,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         expect(mock_client).to receive(:send_messages).and_raise(
           Seahorse::Client::NetworkingError.new(Net::ReadTimeout.new),
         )
-        response = subject.send(message: 'hello!', to: '+11234567890', country_code: 'US')
+        response = subject.deliver(message: 'hello!', to: '+11234567890', country_code: 'US')
         expect(response.success?).to eq(false)
         expect(response.error).to eq(Telephony::TelephonyError.new(raised_error_message))
         expect(response.extra[:delivery_status]).to eq nil
@@ -169,7 +169,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
     end
   end
 
-  describe '#send' do
+  describe '#deliver' do
     let(:country_code) { 'US' }
 
     before do
@@ -190,7 +190,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
       it 'sends a message with a sender_id and no origination number' do
         mock_build_client
-        response = subject.send(
+        response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (604) 456-7890',
           country_code: country_code,
@@ -222,7 +222,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
     context 'in the US' do
       it 'sends a message with a shortcode and no sender_id' do
         mock_build_client
-        response = subject.send(
+        response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (414) 456-7890',
           country_code: country_code,
@@ -256,7 +256,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
       it 'sends a message with a longcode and no sender_id' do
         mock_build_client
-        response = subject.send(
+        response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (939) 456-7890',
           country_code: country_code,
@@ -290,7 +290,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
 
       it 'sends a message with a longcode and no sender_id' do
         mock_build_client
-        response = subject.send(
+        response = subject.deliver(
           message: 'This is a test!',
           to: '+525555555555',
           country_code: country_code,
@@ -342,7 +342,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         it 'only tries one client' do
           expect(backup_mock_client).to_not receive(:send_messages)
 
-          response = subject.send(
+          response = subject.deliver(
             message: 'This is a test!',
             to: '+1 (123) 456-7890',
             country_code: 'US',
@@ -360,7 +360,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         it 'logs a warning for each failure and tries the other configs' do
           expect(Telephony.config.logger).to receive(:warn).exactly(2).times
 
-          response = subject.send(
+          response = subject.deliver(
             message: 'This is a test!',
             to: '+1 (123) 456-7890',
             country_code: 'US',
@@ -379,7 +379,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         it 'only tries one region and returns an error' do
           expect(backup_mock_client).to_not receive(:send_messages)
 
-          response = subject.send(
+          response = subject.deliver(
             message: 'This is a test!',
             to: '+1 (123) 456-7890',
             country_code: 'US',
@@ -398,7 +398,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
         it 'only tries one region and returns an error' do
           expect(backup_mock_client).to_not receive(:send_messages)
 
-          response = subject.send(
+          response = subject.deliver(
             message: 'This is a test!',
             to: '+1 (123) 456-7890',
             country_code: 'US',
@@ -423,7 +423,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
             ),
           ).once
 
-          response = subject.send(
+          response = subject.deliver(
             message: 'This is a test!',
             to: '+1 (123) 456-7890',
             country_code: 'US',
@@ -462,7 +462,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
       end
 
       it 'does not include the phone number in the results' do
-        response = subject.send(
+        response = subject.deliver(
           message: 'This is a test!',
           to: '+1 (123) 456-7890',
           country_code: 'US',

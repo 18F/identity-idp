@@ -37,24 +37,8 @@ module TwoFactorAuthCode
       end
     end
 
-    def login_text
-      if platform_authenticator?
-        t('forms.webauthn_platform_setup.login_text')
-      else
-        t('forms.webauthn_setup.login_text')
-      end
-    end
-
     def help_text
       ''
-    end
-
-    def verified_info_text
-      if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_verified.info')
-      else
-        t('two_factor_authentication.webauthn_verified.info')
-      end
     end
 
     def header
@@ -62,14 +46,6 @@ module TwoFactorAuthCode
         t('two_factor_authentication.webauthn_platform_header_text')
       else
         t('two_factor_authentication.webauthn_header_text')
-      end
-    end
-
-    def verified_header
-      if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_verified.header')
-      else
-        t('two_factor_authentication.webauthn_verified.header')
       end
     end
 
@@ -110,15 +86,6 @@ module TwoFactorAuthCode
         login_two_factor_webauthn_error_path
       else
         login_two_factor_options_path
-      end
-    end
-
-    def fallback_question
-      return '' unless service_provider_mfa_policy.allow_user_to_switch_method?
-      if platform_authenticator?
-        t('two_factor_authentication.webauthn_platform_fallback.question')
-      else
-        t('two_factor_authentication.webauthn_fallback.question')
       end
     end
 

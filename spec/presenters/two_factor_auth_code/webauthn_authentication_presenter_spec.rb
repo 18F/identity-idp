@@ -117,26 +117,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     end
   end
 
-  describe '#verified_info_text' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_verified.info'),
-        )
-      end
-    end
-
-    context 'with a platform authenticator' do
-      let(:platform_authenticator) { true }
-
-      it 'renders the platform authenticator text' do
-        expect(presenter.verified_info_text).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.info'),
-        )
-      end
-    end
-  end
-
   describe '#header' do
     context 'with a roaming authenticator' do
       it 'renders the roaming authenticator header' do
@@ -152,26 +132,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'renders the platform authenticator header' do
         expect(presenter.header).to eq(
           t('two_factor_authentication.webauthn_platform_header_text'),
-        )
-      end
-    end
-  end
-
-  describe '#verified_header' do
-    context 'with a roaming authenticator' do
-      it 'renders the roaming authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_verified.header'),
-        )
-      end
-    end
-
-    context 'with a platform authenticator' do
-      let(:platform_authenticator) { true }
-
-      it 'renders the platform authenticator header' do
-        expect(presenter.verified_header).to eq(
-          t('two_factor_authentication.webauthn_platform_verified.header'),
         )
       end
     end
@@ -198,15 +158,6 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'supplies no link text' do
         expect(presenter.link_text).to eq('')
       end
-    end
-  end
-
-  describe '#fallback_question' do
-    let(:allow_user_to_switch_method) { true }
-
-    it 'supplies a fallback_question' do
-      expect(presenter.fallback_question).to \
-        eq(t('two_factor_authentication.webauthn_fallback.question'))
     end
   end
 

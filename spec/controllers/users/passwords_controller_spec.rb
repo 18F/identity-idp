@@ -22,24 +22,25 @@ RSpec.describe Users::PasswordsController do
         expect(flash[:personal_key]).to be_nil
       end
 
-      it 'calls UpdateUserPassword' do
-        stub_sign_in(create(:user))
-        updater = instance_double(UpdateUserPasswordForm)
-        password = 'strong password'
-        allow(UpdateUserPasswordForm).to receive(:new).
-          with(subject.current_user, subject.user_session).
-          and_return(updater)
-        response = FormResponse.new(success: true, errors: {})
-        allow(updater).to receive(:submit).and_return(response)
-        personal_key = 'five random words for test'
-        allow(updater).to receive(:personal_key).and_return(personal_key)
+      it 'updates the user password and regenerates personal key' do
+        user = create(:user, :proofed)
+        stub_sign_in(user)
+        Pii::Cacher.new(user, controller.user_session).save_decrypted_pii_json(
+          { ssn: '111-222-3333' }.to_json,
+        )
 
-        params = { password: password }
-        patch :update, params: { update_user_password_form: params }
+        params = { password: 'strong password' }
 
-        expect(flash[:personal_key]).to eq personal_key
-        expect(updater).to have_received(:submit)
-        expect(updater).to have_received(:personal_key)
+        expect do
+          patch :update, params: { update_user_password_form: params }
+        end.to(
+          change { user.reload.encrypted_password_digest }.and(
+            change { user.reload.encrypted_recovery_code_digest },
+          ),
+        )
+
+        expect(flash[:personal_key]).to eq(assigns(:update_user_password_form).personal_key)
+        expect(flash[:personal_key]).to be_present
       end
 
       it 'creates a user Event for the password change' do
