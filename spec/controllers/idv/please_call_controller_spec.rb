@@ -2,16 +2,30 @@ require 'rails_helper'
 
 RSpec.describe Idv::PleaseCallController do
   let(:user) { create(:user) }
-  let(:fraud_review_pending_date) { 5.days.ago }
-  let(:verify_date) { 20.days.ago }
+  let(:fraud_review_pending_date) { profile.fraud_review_pending_at }
+  let(:verify_date) { profile.verified_at }
+  let!(:profile) { create(:profile, :verified, :fraud_review_pending, user: user) }
 
   before do
-    user.profiles.create(
-      fraud_state: 'fraud_review_pending',
-      fraud_review_pending_at: fraud_review_pending_date,
-      verified_at: verify_date,
-    )
     stub_sign_in(user)
+  end
+
+  render_views
+
+  it 'redirects a user who is not fraud review pending' do
+    profile.activate_after_fraud_review_unnecessary
+
+    get :show
+
+    expect(response).to redirect_to(account_url)
+  end
+
+  it 'redirects a user who has been fraud rejected' do
+    profile.reject_for_fraud(notify_user: false)
+
+    get :show
+
+    expect(response).to redirect_to(idv_not_verified_url)
   end
 
   it 'renders the show template' do
@@ -26,8 +40,6 @@ RSpec.describe Idv::PleaseCallController do
 
     expect(response).to render_template :show
   end
-
-  render_views
 
   it 'asks user to call 2 weeks from fraud_review_pending_date' do
     get :show
