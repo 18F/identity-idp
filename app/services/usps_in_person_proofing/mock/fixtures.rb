@@ -61,6 +61,12 @@ module UspsInPersonProofing
         load_response_fixture('request_passed_proofing_secondary_id_type_results_response.json')
       end
 
+      def self.request_passed_proofing_supported_secondary_id_type_results_response
+        load_response_fixture(
+          'request_passed_proofing_supported_secondary_id_type_results_response.json',
+        )
+      end
+
       def self.request_expired_proofing_results_response
         load_response_fixture('request_expired_proofing_results_response.json')
       end
