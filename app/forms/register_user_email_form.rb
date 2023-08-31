@@ -173,7 +173,8 @@ class RegisterUserEmailForm
 
   def email_address_record
     return @email_address_record if defined?(@email_address_record)
-    @email_address_record = EmailAddress.find_with_email(email)
+    # !!!
+    @email_address_record = EmailAddress.find_with_email(normalized_email(email)) || EmailAddress.find_with_email(email)
     @email_address_record
   end
 
