@@ -3,7 +3,6 @@ module Idv
     class DocAuthFlow < Flow::BaseFlow
       STEPS = {
         welcome: Idv::Steps::WelcomeStep,
-        agreement: Idv::Steps::AgreementStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [

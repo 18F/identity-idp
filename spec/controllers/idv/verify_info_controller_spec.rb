@@ -272,20 +272,30 @@ RSpec.describe Idv::VerifyInfoController do
       end
     end
 
-    context 'when aamva has trouble' do
+    context 'for an aamva request' do
+      before do
+        stub_analytics
+        allow(controller).to receive(:load_async_state).and_return(async_state)
+      end
+
       let(:document_capture_session) do
         DocumentCaptureSession.create(user:)
       end
+
+      let(:success) { true }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:vendor_name) { :aamva }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
-            success: false,
-            errors: {},
-            exception: Proofing::Aamva::VerificationError.new('ExceptionId: 0001'),
-            vendor_name: nil,
-            transaction_id: '',
+            success: success,
+            errors: errors,
+            exception: exception,
+            vendor_name: vendor_name,
+            transaction_id: 'abc123',
             verified_attributes: [],
           ),
           device_profiling_result: Proofing::DdpResult.new(success: true),
@@ -303,22 +313,65 @@ RSpec.describe Idv::VerifyInfoController do
         document_capture_session.load_proofing_result
       end
 
-      before do
-        stub_analytics
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-        put :show
+      context 'when aamva processes the request normally' do
+        it 'redirect to phone confirmation url' do
+          put :show
+          expect(response).to redirect_to idv_phone_url
+        end
+
+        it 'logs an event' do
+          put :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(success: true),
+          )
+        end
+
+        it 'records the cost as billable' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
       end
 
-      it 'redirects user to warning' do
-        expect(response).to redirect_to idv_session_errors_state_id_warning_url
+      context 'when aamva returns success: false but no exception' do
+        let(:success) { false }
+
+        it 'logs a cost' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
       end
 
-      it 'logs an event' do
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth warning visited',
-          step_name: 'Idv::VerifyInfoController',
-          remaining_attempts: kind_of(Numeric),
-        )
+      context 'when the jurisdiction is unsupported' do
+        let(:success) { true }
+        let(:vendor_name) { 'UnsupportedJurisdiction' }
+
+        it 'considers the request billable' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(1)
+        end
+      end
+
+      context 'when aamva returns an exception' do
+        let(:success) { false }
+        let(:exception) { Proofing::Aamva::VerificationError.new('ExceptionId: 0001') }
+
+        it 'redirects user to warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_state_id_warning_url
+        end
+
+        it 'logs an event' do
+          put :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth warning visited',
+            step_name: 'Idv::VerifyInfoController',
+            remaining_attempts: kind_of(Numeric),
+          )
+        end
+
+        it 'does not log a cost' do
+          expect { put :show }.to change { SpCost.where(cost_type: 'aamva').count }.by(0)
+        end
       end
     end
   end

@@ -72,8 +72,10 @@ doc_auth_error_glare_threshold: 40
 database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_socket: ''
+database_sslmode: 'verify-full'
 database_statement_timeout: 2_500
 database_timeout: 5_000
+database_worker_jobs_sslmode: 'verify-full'
 deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
@@ -87,7 +89,6 @@ doc_capture_polling_enabled: true
 doc_auth_client_glare_threshold: 50
 doc_auth_client_sharpness_threshold: 50
 doc_auth_s3_request_timeout: 5
-doc_auth_agreement_controller_enabled: false
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
@@ -95,6 +96,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
 doc_auth_max_capture_attempts_before_native_camera: 2
 doc_auth_max_submission_attempts_before_native_camera: 2
+doc_auth_welcome_controller_enabled: false
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -340,6 +342,7 @@ verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
 verify_personal_key_max_attempts: 5
+version_headers_enabled: false
 use_dashboard_service_providers: false
 use_clean_edit_password_url: true
 use_kms: false
@@ -412,6 +415,7 @@ development:
   otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  platform_auth_set_up_enabled: true
   rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   recurring_jobs_disabled_names: "[]"
@@ -487,7 +491,6 @@ production:
   password_pepper:
   phone_recaptcha_mock_validator: false
   piv_cac_verify_token_secret:
-  platform_auth_set_up_enabled: false
   session_encryptor_alert_enabled: true
   reauthentication_for_second_factor_management_enabled: false
   recurring_jobs_disabled_names: "[]"

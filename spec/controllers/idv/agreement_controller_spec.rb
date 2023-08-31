@@ -5,11 +5,7 @@ RSpec.describe Idv::AgreementController do
 
   let(:user) { create(:user) }
 
-  let(:feature_flag_enabled) { true }
-
   before do
-    allow(IdentityConfig.store).to receive(:doc_auth_agreement_controller_enabled).
-      and_return(feature_flag_enabled)
     stub_sign_in(user)
     stub_analytics
     subject.user_session['idv/doc_auth'] = { 'Idv::Steps::WelcomeStep' => true }

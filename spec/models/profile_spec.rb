@@ -390,6 +390,7 @@ RSpec.describe Profile do
         RuntimeError,
         'Attempting to activate profile with pending reasons: fraud_check_pending',
       )
+      expect(profile).to_not be_active
     end
 
     it 'does not activate a profile with non password_reset deactivation_reason' do
@@ -417,6 +418,25 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil
     end
+
+    it 'does not activate a profile if it encounters a transaction error' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :password_reset,
+        verified_at: 1.day.ago,
+      )
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      suppress(RuntimeError) do
+        profile.activate_after_password_reset
+      end
+
+      expect(profile.deactivation_reason).to eq('password_reset')
+      expect(profile).to_not be_active
+    end
   end
 
   describe '#activate_after_passing_in_person' do
@@ -433,6 +453,25 @@ RSpec.describe Profile do
       expect(profile.deactivation_reason).to be_nil
       expect(profile).to be_active
     end
+
+    it 'does not activate a profile if transaction raises an error' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        deactivation_reason: :in_person_verification_pending,
+        fraud_review_pending_at: 1.day.ago,
+      )
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      suppress(RuntimeError) do
+        profile.activate_after_passing_in_person
+      end
+
+      expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+      expect(profile).to_not be_active
+    end
   end
 
   describe '#activate_after_passing_review' do
@@ -444,6 +483,24 @@ RSpec.describe Profile do
       profile.activate_after_passing_review
 
       expect(profile).to be_active
+    end
+
+    it 'does not activate a profile if transaction raises an error' do
+      profile = create(
+        :profile,
+        user: user,
+        active: false,
+        fraud_review_pending_at: 1.day.ago,
+      )
+
+      allow(profile).to receive(:update!).and_raise(RuntimeError)
+
+      suppress(RuntimeError) do
+        profile.activate_after_passing_review
+      end
+
+      expect(profile.fraud_review_pending_at).to_not eq nil
+      expect(profile).to_not be_active
     end
 
     context 'when the initiating_sp is the IRS' do

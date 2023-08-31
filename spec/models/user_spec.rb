@@ -778,15 +778,42 @@ RSpec.describe User do
     end
 
     describe '#suspend!' do
-      it 'updates the suspended_at attribute with the current time' do
-        expect do
-          user.suspend!
-        end.to change(user, :suspended_at).from(nil).to(be_within(1.second).of(Time.zone.now))
-      end
+      context 'user is not already supsended' do
+        let(:mock_session_id) { SecureRandom.uuid }
+        before do
+          UpdateUser.new(user: user, attributes: { unique_session_id: mock_session_id }).call
+        end
 
-      it 'tracks the user suspension' do
-        expect(user.analytics).to receive(:user_suspended).with(success: true)
-        user.suspend!
+        it 'updates the suspended_at attribute with the current time' do
+          expect do
+            user.suspend!
+          end.to change(user, :suspended_at).from(nil).to(be_within(1.second).of(Time.zone.now))
+        end
+
+        it 'updates the unique_session_id attribute to be nil' do
+          expect do
+            user.suspend!
+          end.to change(user, :unique_session_id).from(mock_session_id).to(nil)
+        end
+
+        it 'tracks the user suspension' do
+          expect(user.analytics).to receive(:user_suspended).with(success: true)
+          user.suspend!
+        end
+
+        it 'logs out the suspended user from the active session' do
+          # Add information to session store to allow `exists?` check to work as desired
+          OutOfBandSessionAccessor.new(mock_session_id).put_pii(
+            { first_name: 'Mario' },
+            5.minutes.to_i,
+          )
+
+          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq true
+
+          user.suspend!
+
+          expect(OutOfBandSessionAccessor.new(mock_session_id).exists?).to eq false
+        end
       end
 
       it 'raises an error if the user is already suspended' do

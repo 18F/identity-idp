@@ -245,7 +245,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
 
     # confirm that user cannot visit other IdV pages before completing in-person proofing
-    visit idv_doc_auth_agreement_step
+    visit idv_agreement_path
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
     visit idv_ssn_url
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)

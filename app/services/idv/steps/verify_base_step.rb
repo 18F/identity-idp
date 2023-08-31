@@ -50,8 +50,9 @@ module Idv
             # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
           elsif stage == :state_id
-            next if hash[:vendor_name] == 'UnsupportedJurisdiction'
-            process_aamva(hash[:transaction_id])
+            next if hash[:exception].present?
+            add_cost(:aamva, transaction_id: hash[:transaction_id])
+            track_aamva unless hash[:vendor_name] == 'UnsupportedJurisdiction'
           elsif stage == :threatmetrix
             # transaction_id comes from request_id
             tmx_id = hash[:transaction_id]
@@ -151,12 +152,6 @@ module Idv
         return false if sp_session.nil?
         banlist = IdentityConfig.store.aamva_sp_banlist_issuers
         banlist.include?(sp_session[:issuer])
-      end
-
-      def process_aamva(transaction_id)
-        # transaction_id comes from TransactionLocatorId
-        add_cost(:aamva, transaction_id: transaction_id)
-        track_aamva
       end
 
       def track_aamva

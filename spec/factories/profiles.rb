@@ -26,6 +26,10 @@ FactoryBot.define do
       deactivation_reason { :encryption_error }
     end
 
+    trait :in_person_verification_pending do
+      deactivation_reason { :in_person_verification_pending }
+    end
+
     trait :fraud_review_pending do
       fraud_state { 'fraud_review_pending' }
       fraud_review_pending_at { 15.days.ago }
