@@ -39,6 +39,7 @@ module Idv
 
       if form_response.success?
         flow_session[:pii_from_doc][:ssn] = params[:doc_auth][:ssn]
+        idv_session.ssn = params[:doc_auth][:ssn]
         idv_session.invalidate_steps_after_ssn!
         redirect_to next_url
       else
@@ -50,7 +51,7 @@ module Idv
     private
 
     def confirm_repeat_ssn
-      return if !pii_from_doc[:ssn]
+      return if !idv_session.ssn && !pii_from_doc[:ssn]
       return if request.referer == idv_verify_info_url
 
       redirect_to idv_verify_info_url
