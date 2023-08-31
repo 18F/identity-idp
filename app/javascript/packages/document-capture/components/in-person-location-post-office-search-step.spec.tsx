@@ -56,7 +56,7 @@ const DEFAULT_PROPS = {
   registerField() {},
 };
 
-describe('InPersonPostOfficeSearchStep', () => {
+describe('InPersonLocationPostOfficeSearchStep', () => {
   const wrapper: ComponentType = ({ children }) => (
     <SWRConfig value={{ provider: () => new Map() }}>{children}</SWRConfig>
   );

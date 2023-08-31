@@ -10,6 +10,7 @@ import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
+import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import UploadContext from '../context/upload';
@@ -36,7 +37,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const { t } = useI18n();
   const { flowPath } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
-  const { inPersonURL } = useContext(InPersonContext);
+  const { inPersonFullAddressEntryEnabled, inPersonURL } = useContext(InPersonContext);
   const appName = getConfigValue('appName');
 
   useDidUpdateEffect(onStepChange, [stepName]);
@@ -78,6 +79,10 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     initialValues = formValues;
   }
 
+  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
+    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
+    : InPersonLocationPostOfficeSearchStep;
+
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -89,7 +94,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
           },
           {
             name: 'location',
-            form: InPersonLocationPostOfficeSearchStep,
+            form: inPersonLocationPostOfficeSearchForm,
             title: t('in_person_proofing.headings.po_search.location'),
           },
           flowPath === 'hybrid' && {

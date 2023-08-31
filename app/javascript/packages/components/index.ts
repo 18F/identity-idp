@@ -16,6 +16,7 @@ export { default as ProcessList } from './process-list/process-list';
 export { default as ProcessListHeading } from './process-list/process-list-heading';
 export { default as ProcessListItem } from './process-list/process-list-item';
 export { default as ScrollIntoView } from './scroll-into-view';
+export { default as SelectInput } from './select-input';
 export { default as SpinnerDots } from './spinner-dots';
 export { default as StatusPage } from './status-page';
 export { default as Tag } from './tag';

@@ -162,6 +162,24 @@ describe('ValidatedField', () => {
       expect(input.validationMessage).to.equal('oops');
     });
 
+    it('validates using validate prop with select element', () => {
+      const validate = sinon.stub().throws(new Error('oops'));
+      const { getByRole } = render(
+        <ValidatedField validate={validate}>
+          <select required>
+            <option disabled value="">
+              Selected Option
+            </option>
+          </select>
+        </ValidatedField>,
+      );
+
+      const input = getByRole('combobox') as HTMLSelectElement;
+
+      expect(input.checkValidity()).to.be.false();
+      expect(input.validationMessage).to.equal('oops');
+    });
+
     it('merges classNames', () => {
       const { getByRole } = render(
         <ValidatedField>

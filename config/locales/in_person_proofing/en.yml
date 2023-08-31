@@ -41,8 +41,10 @@ en:
         inline_error: Enter a valid address with city, state, and ZIP code
         location_button: Select
         po_search:
+          address_label: Address
           address_search_hint: 'Example: 1234 N Example St., Allentown, PA 12345'
           address_search_label: Enter an address to find a Post Office near you
+          city_label: City
           is_searching_message: Searching for Post Office locations…
           none_found: Sorry, there are no participating Post Offices within 50 miles of
             %{address}.
@@ -57,6 +59,8 @@ en:
           results_instructions: Select a Post Office location below, or search again using
             a different address.
           search_button: Search
+          state_label: State
+          zipcode_label: ZIP Code
         retail_hours_heading: Retail Hours
         retail_hours_sat: 'Sat:'
         retail_hours_sun: 'Sun:'

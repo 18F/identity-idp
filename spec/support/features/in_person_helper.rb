@@ -110,6 +110,36 @@ module InPersonHelper
     end
   end
 
+  def search_for_post_office_with_full_address
+    expect(page).to(have_content(t('in_person_proofing.headings.po_search.location')))
+    expect(page).to(have_content(t('in_person_proofing.body.location.po_search.po_search_about')))
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
+    fill_in t('in_person_proofing.body.location.po_search.address_label'),
+            with: GOOD_ADDRESS1
+    fill_in t('in_person_proofing.body.location.po_search.city_label'),
+            with: GOOD_CITY
+    select GOOD_STATE, from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+    fill_in t('in_person_proofing.body.location.po_search.zipcode_label'),
+            with: GOOD_ZIPCODE
+    click_spinner_button_and_wait(t('in_person_proofing.body.location.po_search.search_button'))
+    expect(page).to have_css('.location-collection-item')
+  end
+
+  def complete_full_address_location_step(_user = nil)
+    search_for_post_office_with_full_address
+    within first('.location-collection-item') do
+      click_spinner_button_and_wait t('in_person_proofing.body.location.location_button')
+    end
+
+    # pause for the location list to disappear
+    begin
+      expect(page).to have_no_css('.location-collection-item')
+    rescue Selenium::WebDriver::Error::StaleElementReferenceError
+      # A StaleElementReferenceError means that the context the element
+      # was in has disappeared, which means the element is gone too.
+    end
+  end
+
   def complete_prepare_step(_user = nil)
     expect(page).to(have_content(t('in_person_proofing.headings.prepare')))
     expect(page).to(have_content(t('in_person_proofing.body.prepare.verify_step_about')))
