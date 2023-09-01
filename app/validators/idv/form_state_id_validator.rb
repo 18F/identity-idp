@@ -9,6 +9,8 @@ module Idv
                 :dob,
                 :state_id_jurisdiction,
                 :state_id_number,
+                :identity_doc_address1,
+                :identity_doc_city,
                 presence: true
 
       validates_with UspsInPersonProofing::TransliterableValidator,
