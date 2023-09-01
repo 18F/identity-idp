@@ -245,43 +245,17 @@ module DocAuthHelper
   end
 
   # @param [Object] status one of 440, 438, 439
-  def mock_doc_auth_acuant_http_4xx_status(status)
-    error = case http_response.status
-            when 438
-              Errors::IMAGE_LOAD_FAILURE
-            when 439
-              Errors::PIXEL_DEPTH_FAILURE
-            when 440
-              Errors::IMAGE_SIZE_FAILURE
-            end
-    errors = { general: [error] }
-    message = [
-      self.class.name,
-      'Unexpected HTTP response',
-      status,
-    ].join(' ')
-    exception = DocAuth::RequestError.new(message, status)
+  def mock_doc_auth_acuant_http_4xx_status(status, method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :post_front_image,
-      response: DocAuth::Response.new(
-        success: false,
-        errors: errors,
-        exception: exception,
-        extra: { vendor: 'Acuant' },
-      ),
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_image_error_response(status),
     )
   end
 
-  def mock_doc_auth_acuant_http_5xx_status
-    errors = { network: true }
+  def mock_doc_auth_acuant_http_5xx_status(method = :post_front_image)
     DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :post_front_image,
-      response: DocAuth::Response.new(
-        success: false,
-        errors: errors,
-        exception: Faraday::TimeoutError.new,
-        extra: { vendor: 'Acuant' },
-      ),
+      method: method,
+      response: DocAuth::Mock::ResultResponse.create_network_error_response,
     )
   end
 
