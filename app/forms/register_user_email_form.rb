@@ -36,7 +36,7 @@ class RegisterUserEmailForm
 
     EmailNormalizer.new(email).normalized_email
   rescue Mail::Field::IncompleteParseError
-    ''
+    email
   end
 
   def validate_terms_accepted
