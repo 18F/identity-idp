@@ -143,39 +143,46 @@ module Reporting
           h[event_name] = Set.new
         end
 
+        # urn:gov:gsa:openidconnect.profiles:sp:sso:dol:ui-arpa-claimant-production
+
         # IDEA: maybe there's a block form if this we can do that yields results as it loads them
         # to go slightly faster
-        fetch_results.each do |row|
-          event_users[row['name']] << row['user_id']
+        fetch_results.
+          group_by { |row| row['user_id'] }.
+          select { |_user_id, rows| rows.any? { |row| row['state_id_jurisdiction'] == 'HI' } }.
+          values.
+          flatten.
+          each do |row|
+            event_users[row['name']] << row['user_id']
 
-          if row['name'] == Events::IDV_FINAL_RESOLUTION
-            if row['identity_verified'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << row['user_id']
-            end
-            if row['gpo_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_GPO] << row['user_id']
-            end
-            if row['in_person_verification_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << row['user_id']
-            end
-            if row['fraud_review_pending'] == '1'
-              event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << row['user_id']
+            if row['name'] == Events::IDV_FINAL_RESOLUTION
+              if row['identity_verified'] == '1'
+                event_users[Results::IDV_FINAL_RESOLUTION_VERIFIED] << row['user_id']
+              end
+              if row['gpo_verification_pending'] == '1'
+                event_users[Results::IDV_FINAL_RESOLUTION_GPO] << row['user_id']
+              end
+              if row['in_person_verification_pending'] == '1'
+                event_users[Results::IDV_FINAL_RESOLUTION_IN_PERSON] << row['user_id']
+              end
+              if row['fraud_review_pending'] == '1'
+                event_users[Results::IDV_FINAL_RESOLUTION_FRAUD_REVIEW] << row['user_id']
+              end
             end
           end
-        end
 
         event_users.transform_values(&:count)
       end
     end
 
     def fetch_results
-      cloudwatch_client.fetch(query:, from: time_range.begin, to: time_range.end)
+      cloudwatch_client.fetch(query:, from: Date.new(2023, 8, 24).in_time_zone('UTC'), to: Time.now)
     end
 
     def query
       params = {
         issuer: issuer && quote(issuer),
-        event_names: quote(Events.all_events),
+        event_names: quote(Events.all_events + ['IdV: doc auth verify proofing results']),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
         idv_final_resolution: quote(Events::IDV_FINAL_RESOLUTION),
@@ -185,6 +192,8 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
+          , properties.service_provider AS service_provider
+          , properties.event_properties.proofing_results.context.stages.state_id.state_id_jurisdiction AS state_id_jurisdiction
         #{issuer.present? ? '| filter properties.service_provider = %{issuer}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
