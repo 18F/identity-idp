@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoVerifyController do
+RSpec.describe Idv::ByMail::VerifyCodeController do
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::GpoController do
+RSpec.describe Idv::ByMail::RequestLetterController do
   let(:user) { create(:user) }
 
   let(:ab_test_args) do
