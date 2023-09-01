@@ -152,7 +152,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
           passed_enrollment.update!(proofed_at: Time.zone.now)
           proofed_date = Time.zone.now.strftime('%m/%d/%Y')
           phone_number = passed_enrollment.notification_phone_configuration.formatted_phone
-          country_code = '(844) 555-5555'
+          contact_number = '(844) 555-5555'
 
           expect(Telephony).
             to(
@@ -161,7 +161,7 @@ RSpec.describe InPerson::SendProofingNotificationJob do
                 to: phone_number,
                 message: "Login.gov: Vous avez visité le bureau de poste le #{proofed_date}." \
                          " Vérifiez votre e-mail pour votre résultat. Ce n'est pas vous?" \
-                          " Signalez-le immédiatement: #{country_code}",
+                          " Signalez-le immédiatement: #{contact_number}",
                 country_code: Phonelib.parse(phone_number).country,
               ),
             )
