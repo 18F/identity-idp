@@ -397,8 +397,8 @@ Rails.application.routes.draw do
           as: :confirm_start_over
 
       if FeatureManagement.gpo_verification_enabled?
-        get '/usps' => 'gpo#index', as: :gpo
-        put '/usps' => 'gpo#create'
+        get '/usps' => 'by_mail/request_letter#index', as: :gpo
+        put '/usps' => 'by_mail/request_letter#create'
       end
     end
 

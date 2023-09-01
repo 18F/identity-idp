@@ -1,7 +1,7 @@
 module Idv::ByMail
   class RequestLetterController < ApplicationController
     include IdvSession
-    include StepIndicatorConcern
+    include Idv::StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern
 
     before_action :confirm_two_factor_authenticated
@@ -11,7 +11,7 @@ module Idv::ByMail
     before_action :confirm_profile_not_too_old
 
     def index
-      @presenter = GpoPresenter.new(current_user, url_options)
+      @presenter = Idv::GpoPresenter.new(current_user, url_options)
       @step_indicator_current_step = step_indicator_current_step
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer).
         call(:usps_address, :view, true)

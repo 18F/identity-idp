@@ -37,7 +37,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     it 'renders confirmation page' do
       get :index
 
-      expect(response).to be_ok
+      expect(response).to have_http_status(200)
       expect(@analytics).to have_logged_event(
         'IdV: USPS address visited',
         letter_already_sent: false,
