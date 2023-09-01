@@ -31,7 +31,12 @@ class RegisterUserEmailForm
 
   # Note: This may perform a lot of DNS requests...
   def normalized_email(email)
+    # TODO: Temporary sanitization...
+    return '' unless email.present?
+
     EmailNormalizer.new(email).normalized_email
+  rescue Mail::Field::IncompleteParseError
+    ''
   end
 
   def validate_terms_accepted
@@ -124,7 +129,10 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_unconfirmed_email(request_id)
-    rate_limiter = RateLimiter.new(target: normalized_email(email), rate_limit_type: :reg_unconfirmed_email)
+    rate_limiter = RateLimiter.new(
+      target: normalized_email(email),
+      rate_limit_type: :reg_unconfirmed_email,
+    )
 
     rate_limiter.increment!
     @rate_limited = rate_limiter.limited?
@@ -142,7 +150,10 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_confirmed_email
-    rate_limiter = RateLimiter.new(target: normalized_email(email), rate_limit_type: :reg_confirmed_email)
+    rate_limiter = RateLimiter.new(
+      target: normalized_email(email),
+      rate_limit_type: :reg_confirmed_email,
+    )
 
     rate_limiter.increment!
     @rate_limited = rate_limiter.limited?
