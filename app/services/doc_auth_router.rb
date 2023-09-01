@@ -181,19 +181,6 @@ module DocAuthRouter
         ),
       )
     when Idp::Constants::Vendors::MOCK
-      # error = DocAuth::Errors::IMAGE_SIZE_FAILURE #'image_size_failure'
-      # errors = { general: [error] }
-      # message = 'this is a test'
-      # exception = DocAuth::RequestError.new(message, 440)
-      # DocAuth::Mock::DocAuthMockClient.mock_response!(
-      #   method: :post_front_image,
-      #   response: DocAuth::Response.new(
-      #     success: false,
-      #     errors: errors,
-      #     exception: exception,
-      #     extra: { vendor: 'Acuant' },
-      #     ),
-      #   )
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
