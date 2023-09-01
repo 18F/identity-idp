@@ -125,7 +125,6 @@ RSpec.feature 'idv gpo step' do
       fill_in 'Password', with: user_password
       click_continue
       visit root_path
-      click_on t('idv.gpo.return_to_profile')
       first(:button, t('links.sign_out')).click
     end
 
