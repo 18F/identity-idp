@@ -10,7 +10,6 @@ module Idv
     end
 
     def mail_spammed?
-      return false if user_mail_events.empty?
       return true if max_events? && updated_within_last_month?
       too_recent?
     end
@@ -54,11 +53,13 @@ module Idv
     end
 
     def updated_within_last_month?
-      user_mail_events.last.updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
+      (last_updated_at = user_mail_events.last&.updated_at) &&
+        last_updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
     end
 
     def too_recent?
-      user_mail_events.first.updated_at > MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago
+      (last_email_time = user_mail_events&.first&.updated_at) &&
+        last_email_time > MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago
     end
   end
 end

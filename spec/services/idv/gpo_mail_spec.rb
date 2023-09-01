@@ -15,7 +15,7 @@ RSpec.describe Idv::GpoMail do
   describe '#mail_spammed?' do
     context 'when no mail has been sent' do
       it 'returns false' do
-        expect(subject.mail_spammed?).to eq false
+        expect(subject.mail_spammed?).to be_falsey
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Idv::GpoMail do
         it 'returns false' do
           enqueue_gpo_letter_for(user, at: 25.hours.ago)
 
-          expect(subject.mail_spammed?).to eq false
+          expect(subject.mail_spammed?).to be_falsey
         end
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe Idv::GpoMail do
         enqueue_gpo_letter_for(user, at: 2.weeks.ago)
         enqueue_gpo_letter_for(user, at: 2.months.ago)
 
-        expect(subject.mail_spammed?).to eq false
+        expect(subject.mail_spammed?).to be_falsey
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Idv::GpoMail do
       let(:mail_events_window_days) { 0 }
 
       it 'returns false' do
-        expect(subject.mail_spammed?).to eq false
+        expect(subject.mail_spammed?).to be_falsey
       end
     end
   end
@@ -71,6 +71,7 @@ RSpec.describe Idv::GpoMail do
       service_provider: nil,
       profile: with_profile,
     ).perform
+
     event_create(event_type: :gpo_mail_sent, user: user, updated_at: at)
   end
 
