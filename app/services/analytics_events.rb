@@ -226,7 +226,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user visits the Backup Code Regenerate page.
-  # @param [Boolean] in_account_creation_flow whether user is going through MFA selection Flow
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def backup_code_regenerate_visit(in_account_creation_flow:, **extra)
     track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
   end
@@ -2617,7 +2617,7 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method piv_cac to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow check whether user is going through account creation flow
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, in_account_creation_flow:,
                                       **extra)
     track_event(
@@ -2633,7 +2633,7 @@ module AnalyticsEvents
 
   # Tracks when the user has added the MFA method TOTP to their account
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow check whether user is going through account creation flow
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_added_totp(enabled_mfa_methods_count:, in_account_creation_flow:,
                                    **extra)
     track_event(
@@ -2672,7 +2672,7 @@ module AnalyticsEvents
 
   # Tracks when the user visits the backup code confirmation setup page
   # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
-  # @param [Boolean] in_account_creation_flow check whether user is going through account creation flow
+  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
   def multi_factor_auth_enter_backup_code_confirmation_visit(
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
@@ -2841,7 +2841,7 @@ module AnalyticsEvents
   # @param [Boolean] success Whether authenticator setup was successful
   # @param [Hash] errors Authenticator setup error reasons, if unsuccessful
   # @param [String] multi_factor_auth_method
-  # @param [Boolean] in_account_creation_flow check whether user is going through account creation flow
+  # @param [Boolean] in_account_creation_flow whether user is going through account creation flow
   # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(
     success:,
@@ -2856,7 +2856,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       multi_factor_auth_method: multi_factor_auth_method,
-      in_account_creation_flow: in_account_creation_flows,
+      in_account_creation_flow: in_account_creation_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )

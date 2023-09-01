@@ -59,7 +59,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         enabled_mfa_methods_count: 1,
-        in_multi_mfa_selection_flow: true,
+        in_account_creation_flow: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -134,7 +134,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: true,
+          in_account_creation_flow: true,
         }
 
         stub_analytics
@@ -205,7 +205,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: true,
+          in_account_creation_flow: true,
         }
 
         stub_analytics
@@ -271,7 +271,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
-          in_multi_mfa_selection_flow: true,
+          in_account_creation_flow: true,
         }
 
         stub_analytics
@@ -448,7 +448,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: true,
+              in_account_creation_flow: true,
             }
 
             expect(@analytics).to receive(:track_event).
@@ -537,7 +537,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 1,
-              in_multi_mfa_selection_flow: false,
+              in_account_creation_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -621,7 +621,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
               enabled_mfa_methods_count: 0,
-              in_multi_mfa_selection_flow: false,
+              in_account_creation_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).
