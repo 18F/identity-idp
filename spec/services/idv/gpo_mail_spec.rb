@@ -22,7 +22,7 @@ RSpec.describe Idv::GpoMail do
     context 'when the amount of sent mail is lower than the allowed maximum' do
       context 'and the most recent mail event is too recent' do
         it 'returns true' do
-          event_create(event_type: :gpo_mail_sent, user: user)
+          enqueue_gpo_letter_for(user)
 
           expect(subject.mail_spammed?).to eq true
         end
@@ -30,7 +30,7 @@ RSpec.describe Idv::GpoMail do
 
       context 'and the most recent email is not too recent' do
         it 'returns false' do
-          event_create(event_type: :gpo_mail_sent, user: user, updated_at: 25.hours.ago)
+          enqueue_gpo_letter_for(user, at: 25.hours.ago)
 
           expect(subject.mail_spammed?).to eq false
         end
@@ -39,15 +39,15 @@ RSpec.describe Idv::GpoMail do
 
     context 'when too much mail has been sent' do
       it 'returns true if the oldest event was within the mail events window' do
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.weeks.ago)
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 1.week.ago)
+        enqueue_gpo_letter_for(user, at: 2.weeks.ago)
+        enqueue_gpo_letter_for(user, at: 1.week.ago)
 
         expect(subject.mail_spammed?).to eq true
       end
 
       it 'returns false if the oldest event was outside the mail events window' do
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.weeks.ago)
-        event_create(event_type: :gpo_mail_sent, user: user, updated_at: 2.months.ago)
+        enqueue_gpo_letter_for(user, at: 2.weeks.ago)
+        enqueue_gpo_letter_for(user, at: 2.months.ago)
 
         expect(subject.mail_spammed?).to eq false
       end
@@ -61,6 +61,17 @@ RSpec.describe Idv::GpoMail do
         expect(subject.mail_spammed?).to eq false
       end
     end
+  end
+
+  def enqueue_gpo_letter_for(user, at: Time.zone.now, with_profile: user.pending_profile)
+    with_profile ||= create(:profile, user: user)
+
+    GpoConfirmationMaker.new(
+      pii: {},
+      service_provider: nil,
+      profile: with_profile,
+    ).perform
+    event_create(event_type: :gpo_mail_sent, user: user, updated_at: at)
   end
 
   def event_create(hash)
