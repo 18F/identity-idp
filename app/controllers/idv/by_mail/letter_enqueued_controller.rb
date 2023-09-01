@@ -1,5 +1,5 @@
-module Idv
-  class ComeBackLaterController < ApplicationController
+module Idv::ByMail
+  class LetterEnqueuedController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
 

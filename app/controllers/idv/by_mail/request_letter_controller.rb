@@ -1,5 +1,5 @@
-module Idv
-  class GpoController < ApplicationController
+module Idv::ByMail
+  class RequestLetterController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
     include Idv::AbTestAnalyticsConcern

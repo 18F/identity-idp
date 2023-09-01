@@ -1,5 +1,5 @@
-module Idv
-  class GpoVerifyController < ApplicationController
+module Idv::ByMail
+  class VerifyCodeController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
     include FraudReviewConcern
