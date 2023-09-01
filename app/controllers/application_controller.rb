@@ -211,7 +211,6 @@ class ApplicationController < ActionController::Base
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
-    return user_two_factor_authentication_url unless user_fully_authenticated?
     return user_please_call_url if current_user.suspended?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
