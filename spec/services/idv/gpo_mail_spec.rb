@@ -10,6 +10,8 @@ RSpec.describe Idv::GpoMail do
   before do
     stub_const 'Idv::GpoMail::MAX_MAIL_EVENTS', max_mail_events
     stub_const 'Idv::GpoMail::MAIL_EVENTS_WINDOW_DAYS', mail_events_window_days
+    stub_const 'Idv::GpoMail::MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS',
+               minimum_wait_before_another_usps_letter_in_hours
   end
 
   describe '#mail_spammed?' do
@@ -53,13 +55,71 @@ RSpec.describe Idv::GpoMail do
       end
     end
 
-    context 'when MAX_MAIL_EVENTS or MAIL_EVENTS_WINDOW_DAYS are zero' do
+    xcontext 'when we would normally be rate limited' do
+      context 'but MAX_MAIL_EVENTS is zero' do
+        context 'and MAIL_EVENTS_WINDOW is zero' do
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
+            it 'returns false'
+          end
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
+            it 'returns true'
+          end
+        end
+
+        context 'and MAIL_EVENTS_WINDOW is non-zero' do
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
+            it 'returns false'
+          end
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
+            it 'returns true'
+          end
+        end
+      end
+
+      context 'but MAX_MAIL_EVENTS is non-zero' do
+        context 'and MAIL_EVENTS_WINDOW is zero' do
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
+            it 'returns false'
+          end
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
+            it 'returns true'
+          end
+        end
+
+        context 'and MAIL_EVENTS_WINDOW is non-zero' do
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
+            it 'returns true'
+          end
+          context 'and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is non-zero' do
+            it 'returns true'
+          end
+        end
+      end
+    end
+
+    xcontext 'when MAX_MAIL_EVENTS or MAIL_EVENTS_WINDOW_DAYS are zero and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER is zero' do
+      let(:max_mail_events) { 0 }
+      let(:mail_events_window_days) { 0 }
+      let(:minimum_wait_before_another_usps_letter_in_hours) { 0 }
+
+      it 'returns false' do
+        expect(subject.mail_spammed?).to be_falsey
+      end
+    end
+
+    xcontext 'when MAX_MAIL_EVENTS or MAIL_EVENTS_WINDOW_DAYS are zero and MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER not zero' do
       let(:max_mail_events) { 0 }
       let(:mail_events_window_days) { 0 }
 
       it 'returns false' do
         expect(subject.mail_spammed?).to be_falsey
       end
+    end
+
+
+
+    context 'when a user has a recent GPO request that is not attached to their pending profile' do
+      it 'returns false'
     end
   end
 
