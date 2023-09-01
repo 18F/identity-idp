@@ -71,6 +71,39 @@ module DocAuth
         parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
+      def self.create_image_error_response(status)
+        error = case status
+                when 438
+                  Errors::IMAGE_LOAD_FAILURE
+                when 439
+                  Errors::PIXEL_DEPTH_FAILURE
+                when 440
+                  Errors::IMAGE_SIZE_FAILURE
+                end
+        errors = { general: [error] }
+        message = [
+          'Unexpected HTTP response',
+          status,
+        ].join(' ')
+        exception = DocAuth::RequestError.new(message, status)
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Acuant' },
+        )
+      end
+
+      def self.create_network_error_response
+        errors = { network: true }
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: Faraday::TimeoutError.new,
+          extra: { vendor: 'Acuant' },
+        )
+      end
+
       private
 
       def parsed_alerts

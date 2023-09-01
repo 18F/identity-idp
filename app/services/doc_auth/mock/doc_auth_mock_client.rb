@@ -33,8 +33,11 @@ module DocAuth
 
       # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)
+        if method_mocked?(__method__)
+          puts "####### mocked"
+        end
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
-
+        puts "####### not mocked"
         self.class.last_uploaded_front_image = image
         DocAuth::Response.new(success: true)
       end
