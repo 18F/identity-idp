@@ -45,7 +45,7 @@ module SignUp
     protected
 
     def require_no_authentication
-      redirect_to root_path if current_user
+      redirect_to account_path if current_user
     end
 
     def permitted_params
