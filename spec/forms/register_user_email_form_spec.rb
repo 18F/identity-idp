@@ -132,6 +132,22 @@ RSpec.describe RegisterUserEmailForm do
           limiter_type: :reg_confirmed_email,
         )
       end
+
+      context 'with the same normalized email address' do
+        it 'creates rate_limiter events after reaching rate_limiter limit' do
+          expect(attempts_tracker).to receive(:user_registration_email_submission_rate_limited).
+            with(email: registered_email_address, email_already_registered: true)
+
+          IdentityConfig.store.reg_confirmed_email_max_attempts.times do
+            subject.submit(email: email_variation_for_normalization, terms_accepted: '1')
+          end
+
+          expect(analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :reg_confirmed_email,
+          )
+        end
+      end
     end
 
     context 'when email is already taken and existing user is unconfirmed' do
