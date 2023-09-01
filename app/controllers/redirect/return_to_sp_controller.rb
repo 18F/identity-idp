@@ -5,6 +5,7 @@ module Redirect
     def cancel
       redirect_url = sp_return_url_resolver.return_to_sp_url
       analytics.return_to_sp_cancelled(redirect_url: redirect_url, **location_params)
+      sp_session.delete(:request_url)
       redirect_to(redirect_url, allow_other_host: true)
     end
 
