@@ -6,11 +6,11 @@ function PostOfficeNoResults({ address }) {
     <>
       <img
         className="grid-col-2 inline-block veritcal-align-top margin-top-22"
-        style={{display: "inline-block", marginTop: "20px", verticalAlign: "top"}}
+        style={{ display: 'inline-block', marginTop: '20px', verticalAlign: 'top' }}
         alt="exclamation mark inside of map pin"
         src={getAssetPath('info-pin-map.svg')}
       />
-      <div className="grid-offset-1 grid-col-9 inline-block" style={{display: "inline-block"}}>
+      <div className="grid-offset-1 grid-col-9 inline-block" style={{ display: 'inline-block' }}>
         <h3 role="status">
           {t('in_person_proofing.body.location.po_search.none_found', { address })}
         </h3>
