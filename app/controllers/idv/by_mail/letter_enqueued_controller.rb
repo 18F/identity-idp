@@ -1,7 +1,7 @@
 module Idv::ByMail
   class LetterEnqueuedController < ApplicationController
     include IdvSession
-    include StepIndicatorConcern
+    include Idv::StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_needs_gpo_confirmation

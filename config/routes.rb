@@ -312,7 +312,7 @@ Rails.application.routes.draw do
       end
 
       get '/mail_only_warning' => 'mail_only_warning#show'
-      get '/come_back_later' => 'come_back_later#show'
+      get '/letter_enqueued' => 'by_mail/letter_enqueued#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
