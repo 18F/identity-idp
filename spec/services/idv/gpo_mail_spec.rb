@@ -72,6 +72,11 @@ RSpec.describe Idv::GpoMail do
       profile: with_profile,
     ).perform
 
+    with_profile.gpo_confirmation_codes.last.update(
+      created_at: at,
+      updated_at: at,
+    )
+
     event_create(event_type: :gpo_mail_sent, user: user, updated_at: at)
   end
 

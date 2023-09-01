@@ -10,7 +10,8 @@ module Idv
     end
 
     def mail_spammed?
-      too_many_mails_within_window? || last_mail_too_recent?
+      rate_limiting_enabled? &&
+        (too_many_mails_within_window? || last_mail_too_recent?)
     end
 
     def profile_too_old?
@@ -40,29 +41,25 @@ module Idv
 
     attr_reader :current_user
 
+    def rate_limiting_enabled?
+      (MAX_MAIL_EVENTS != 0 && MAIL_EVENTS_WINDOW_DAYS != 0) ||
+        MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0
+    end
+
     def too_many_mails_within_window?
-      max_events? && updated_within_last_month?
-    end
-
-    def user_mail_events
-      @user_mail_events ||= current_user.events.
-        gpo_mail_sent.
-        order('updated_at DESC').
-        limit(MAX_MAIL_EVENTS)
-    end
-
-    def max_events?
-      user_mail_events.size == MAX_MAIL_EVENTS
-    end
-
-    def updated_within_last_month?
-      (last_updated_at = user_mail_events.last&.updated_at) &&
-        last_updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
+      GpoConfirmationCode.joins(:profile).
+        where(
+          updated_at: (MAIL_EVENTS_WINDOW_DAYS.days.ago..),
+          profile: { user: current_user },
+        ).count >= MAX_MAIL_EVENTS
     end
 
     def last_mail_too_recent?
-      (last_email_time = user_mail_events&.first&.updated_at) &&
-        last_email_time > MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago
+      GpoConfirmationCode.joins(:profile).
+        where(
+          updated_at: (MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago..),
+          profile: { user: current_user },
+        ).count > 0
     end
   end
 end
