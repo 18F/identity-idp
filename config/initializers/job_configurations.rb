@@ -189,6 +189,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Send reminder letters for old, outstanding GPO verification codes
+      send_gpo_code_reminders: {
+        class: 'GpoReminderJob',
+        cron: cron_24h,
+        args: -> { [14.days.ago] },
+      },
       monthly_account_reuse_report: {
         class: 'Reports::MonthlyAccountReuseReport',
         cron: cron_1st_of_mo,
