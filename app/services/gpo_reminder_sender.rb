@@ -1,5 +1,5 @@
 class GpoReminderSender
-  LOCAL_DATABASE_TIMEOUT = 1_000_000
+  LOCAL_DATABASE_TIMEOUT = 60_000
 
   def send_emails(for_letters_sent_before)
     letter_eligible_range =
