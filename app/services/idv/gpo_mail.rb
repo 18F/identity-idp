@@ -10,8 +10,7 @@ module Idv
     end
 
     def mail_spammed?
-      return true if max_events? && updated_within_last_month?
-      too_recent?
+      too_many_mails_within_window? || last_mail_too_recent?
     end
 
     def profile_too_old?
@@ -41,6 +40,10 @@ module Idv
 
     attr_reader :current_user
 
+    def too_many_mails_within_window?
+      max_events? && updated_within_last_month?
+    end
+
     def user_mail_events
       @user_mail_events ||= current_user.events.
         gpo_mail_sent.
@@ -57,7 +60,7 @@ module Idv
         last_updated_at > MAIL_EVENTS_WINDOW_DAYS.days.ago
     end
 
-    def too_recent?
+    def last_mail_too_recent?
       (last_email_time = user_mail_events&.first&.updated_at) &&
         last_email_time > MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago
     end

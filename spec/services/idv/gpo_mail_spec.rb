@@ -38,14 +38,14 @@ RSpec.describe Idv::GpoMail do
     end
 
     context 'when too much mail has been sent' do
-      it 'returns true if the oldest event was within the mail events window' do
+      it 'returns true if the oldest mail was within the mail events window' do
         enqueue_gpo_letter_for(user, at: 2.weeks.ago)
         enqueue_gpo_letter_for(user, at: 1.week.ago)
 
         expect(subject.mail_spammed?).to eq true
       end
 
-      it 'returns false if the oldest event was outside the mail events window' do
+      it 'returns false if the oldest mail was outside the mail events window' do
         enqueue_gpo_letter_for(user, at: 2.weeks.ago)
         enqueue_gpo_letter_for(user, at: 2.months.ago)
 
