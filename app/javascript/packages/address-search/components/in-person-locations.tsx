@@ -18,18 +18,19 @@ interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
+  postOfficeNoResults: Function;
 }
 
 function InPersonLocations({
   locations,
   onSelect,
   address,
-  noneFound: NoneFound,
+  postOfficeNoResults: PostOfficeNoResults,
 }: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
-    return <NoneFound address={address} />;
+    return <PostOfficeNoResults address={address} />;
   }
 
   return (

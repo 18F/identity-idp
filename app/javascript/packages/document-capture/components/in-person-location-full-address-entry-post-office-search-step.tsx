@@ -11,11 +11,13 @@ import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
 import { LOCATIONS_URL } from './in-person-location-post-office-search-step';
+import PostOfficeNoResults from '../../address-search/components/post-office-no-results';
 
 function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   onChange,
   toPreviousStep,
   registerField,
+  postOfficeNoResults = PostOfficeNoResults,
 }) {
   const { inPersonURL } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
@@ -125,6 +127,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress.address || ''}
+          postOfficeNoResults={postOfficeNoResults}
         />
       )}
       <BackButton role="link" includeBorder onClick={toPreviousStep} />

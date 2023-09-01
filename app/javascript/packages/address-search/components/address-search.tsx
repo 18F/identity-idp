@@ -4,7 +4,7 @@ import { t } from '@18f/identity-i18n';
 import InPersonLocations from './in-person-locations';
 import AddressInput from './address-input';
 import type { LocationQuery, FormattedLocation } from '../types';
-import NoneFound from './none-found';
+import PostOfficeNoResults from './post-office-no-results';
 
 function AddressSearch({
   registerField,
@@ -13,7 +13,7 @@ function AddressSearch({
   handleLocationSelect,
   disabled,
   onFoundLocations,
-  noneFound = NoneFound,
+  postOfficeNoResults = PostOfficeNoResults,
 }) {
   const [apiError, setApiError] = useState<Error | null>(null);
   const [foundAddress, setFoundAddress] = useState<LocationQuery | null>(null);
@@ -49,7 +49,7 @@ function AddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
-          noneFound={}
+          postOfficeNoResults={postOfficeNoResults}
         />
       )}
     </>
