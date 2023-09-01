@@ -10,6 +10,8 @@ RSpec.describe RegisterUserEmailForm do
   describe '#submit' do
     let(:email_domain) { 'gmail.com' }
     let(:registered_email_address) { 'taken@' + email_domain }
+    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }    
+    let(:email_variation_for_normalization) { 'taken+1@' + email_domain }    
     let(:unregistered_email_address) { 'not_taken@' + email_domain }
     let(:registered_and_confirmed_user) do
       [:user, :fully_registered, **{ email: registered_email_address }]
@@ -94,7 +96,6 @@ RSpec.describe RegisterUserEmailForm do
       end
     end
 
-    let(:variation_of_preexisting_email) { 'TAKEN@' + email_domain }
     context 'when email is already taken' do
       let!(:existing_user) { create(*registered_and_confirmed_user) }
       let(:extra_params) do
