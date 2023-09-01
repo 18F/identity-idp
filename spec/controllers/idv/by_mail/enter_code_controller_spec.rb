@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::ByMail::VerifyCodeController do
+RSpec.describe Idv::ByMail::EnterCodeController do
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }
@@ -59,7 +59,7 @@ RSpec.describe Idv::ByMail::VerifyCodeController do
 
         action
 
-        expect(response).to render_template('idv/gpo_verify/index')
+        expect(response).to render_template('idv/by_mail/enter_code/index')
       end
 
       it 'sets @should_prompt_user_to_request_another_letter to true' do
@@ -458,7 +458,7 @@ RSpec.describe Idv::ByMail::VerifyCodeController do
             },
           )
 
-          expect(response).to render_template('idv/gpo_verify/rate_limited')
+          expect(response).to render_template('idv/by_mail/enter_code/rate_limited')
         end
       end
 

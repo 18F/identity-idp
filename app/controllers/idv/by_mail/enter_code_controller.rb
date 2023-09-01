@@ -1,7 +1,7 @@
 module Idv::ByMail
-  class VerifyCodeController < ApplicationController
+  class EnterCodeController < ApplicationController
     include IdvSession
-    include StepIndicatorConcern
+    include Idv::StepIndicatorConcern
     include FraudReviewConcern
 
     prepend_before_action :note_if_user_did_not_receive_letter
