@@ -10,6 +10,7 @@ class MfaConfirmationController < ApplicationController
   def skip
     user_session.delete(:mfa_selections)
     user_session.delete(:next_mfa_selection_choice)
+    user_session.delete(:in_account_creation_flow)
     analytics.user_registration_suggest_another_mfa_notice_skipped
     analytics.user_registration_mfa_setup_complete(
       mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,

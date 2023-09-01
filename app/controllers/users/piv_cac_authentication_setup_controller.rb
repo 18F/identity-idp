@@ -56,7 +56,6 @@ module Users
     private
 
     def track_piv_cac_setup_visit
-      mfa_user = MfaContext.new(current_user)
       analytics.piv_cac_setup_visit(**analytics_properties)
     end
 
@@ -126,7 +125,6 @@ module Users
     end
 
     def track_mfa_method_added
-      mfa_user = MfaContext.new(current_user)
       analytics.multi_factor_auth_added_piv_cac(**analytics_properties)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
     end
