@@ -47,7 +47,7 @@ module Reporting
       threads: 5
     )
       @issuer = issuer
-      @time_range = time_range
+      @time_range = Date.new(2023, 8, 24).in_time_zone('UTC')..Time.now.in_time_zone('UTC')
       @verbose = verbose
       @progress = progress
       @slice = slice
