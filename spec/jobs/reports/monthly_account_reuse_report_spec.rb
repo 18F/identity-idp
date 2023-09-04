@@ -29,7 +29,7 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
       expect(report).to receive(:upload_file_to_s3_bucket).with(
         path: s3_report_path,
         body: kind_of(String),
-        content_type: 'application/json',
+        content_type: 'text/csv',
         bucket: 'reports-bucket.1234-us-west-1',
       ).exactly(1).time.and_call_original
 
@@ -122,22 +122,22 @@ RSpec.describe Reports::MonthlyAccountReuseReport do
       it 'aggregates by issuer' do
         expect(report).to receive(:upload_file_to_s3_bucket).
           exactly(1).times do |path:, body:, content_type:, bucket:|
-            parsed = JSON.parse(body, symbolize_names: true)
-
-            expect(parsed[:report_date]).to eq(report_date.strftime('%Y-%m-01'))
-            expect(parsed[:month]).to eq(report_date.prev_month(1).strftime('%b-%Y'))
-            actual_csv = parsed[:results]
-            expected_csv = [
-              ['IDV app reuse rate Feb-2021'],
-              ['Num. SPs', 'Num. users', 'Percentage'],
-              [2, 3, 30.0],
-              [3, 2, 20.0],
-              ['Total (all >1)', 5, 50.0],
-              [],
-              ['Total proofed identities'],
-              ['Total proofed identities (Feb-2021)', 10],
-            ]
-            expect(actual_csv.first).to eq(expected_csv)
+            actual_csv = body # CSV.parse(body, headers: true)
+            expected_csv = CSV.generate do |csv|
+              [
+                ['IDV app reuse rate Feb-2021'],
+                ['Num. SPs', 'Num. users', 'Percentage'],
+                [2, 3, 30.0],
+                [3, 2, 20.0],
+                ['Total (all >1)', 5, 50.0],
+                [],
+                ['Total proofed identities'],
+                ['Total proofed identities (Feb-2021)', 10],
+              ].each do |row|
+                csv << row
+              end
+            end
+            expect(actual_csv).to eq(expected_csv)
           end
 
         report.perform(report_date)
