@@ -10,12 +10,11 @@ module Reports
       @report_date = report_date
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
-      body = report_body
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
-          body: body,
+          body: report_csv,
           content_type: 'text/csv',
           bucket: bucket_name,
         )
