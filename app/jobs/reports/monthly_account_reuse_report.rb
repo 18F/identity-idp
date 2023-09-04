@@ -14,7 +14,7 @@ module Reports
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
-          body: report_csv,
+          body: report_body,
           content_type: 'text/csv',
           bucket: bucket_name,
         )
