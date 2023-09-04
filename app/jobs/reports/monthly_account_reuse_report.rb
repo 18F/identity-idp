@@ -10,13 +10,13 @@ module Reports
       @report_date = report_date
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
-      body = report_body.to_json
+      body = report_body
 
       if bucket_name.present?
         upload_file_to_s3_bucket(
           path: path,
           body: body,
-          content_type: 'application/json',
+          content_type: 'text/csv',
           bucket: bucket_name,
         )
       end
@@ -152,11 +152,11 @@ module Reports
     end
 
     def report_body
-      {
-        report_date: first_day_of_report_month,
-        month: stats_month,
-        results: [report_csv],
-      }
+      CSV.generate do |csv|
+        report_csv.each do |row|
+          csv << row
+        end
+      end
     end
   end
 end
