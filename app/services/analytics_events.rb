@@ -2032,16 +2032,19 @@ module AnalyticsEvents
   # @param [String, nil] deactivation_reason Reason profile was deactivated.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
   # @param [Boolean] fraud_rejection Profile is rejected due to fraud
+  # @param [Boolean] in_person_verification_pending Profile is pending in-person verification
   # User submitted IDV personal key page
   def idv_personal_key_submitted(
     fraud_review_pending:,
     fraud_rejection:,
+    in_person_verification_pending:,
     proofing_components: nil,
     deactivation_reason: nil,
     **extra
   )
     track_event(
       'IdV: personal key submitted',
+      in_person_verification_pending: in_person_verification_pending,
       deactivation_reason: deactivation_reason,
       fraud_review_pending: fraud_review_pending,
       fraud_rejection: fraud_rejection,

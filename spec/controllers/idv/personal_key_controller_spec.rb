@@ -107,7 +107,7 @@ RSpec.describe Idv::PersonalKeyController do
 
         context 'profile is pending due to in person proofing' do
           before do
-            profile.update!(deactivation_reason: :in_person_verification_pending)
+            profile.deactivate_for_in_person_verification
             subject.idv_session.profile_id = nil
           end
 
@@ -115,7 +115,7 @@ RSpec.describe Idv::PersonalKeyController do
             get :index
 
             expect(profile.user.pending_profile?).to eq true
-            expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+            expect(profile.in_person_verification_pending?).to eq(true)
             expect(response).to_not be_redirect
           end
         end
@@ -208,6 +208,7 @@ RSpec.describe Idv::PersonalKeyController do
           address_verification_method: nil,
           fraud_review_pending: false,
           fraud_rejection: false,
+          in_person_verification_pending: false,
           deactivation_reason: nil,
           proofing_components: nil,
         )
@@ -252,6 +253,7 @@ RSpec.describe Idv::PersonalKeyController do
           fraud_review_pending: false,
           fraud_rejection: false,
           deactivation_reason: nil,
+          in_person_verification_pending: false,
           proofing_components: nil,
         )
       end
@@ -278,6 +280,7 @@ RSpec.describe Idv::PersonalKeyController do
             address_verification_method: nil,
             fraud_review_pending: false,
             fraud_rejection: false,
+            in_person_verification_pending: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )
@@ -304,6 +307,7 @@ RSpec.describe Idv::PersonalKeyController do
             fraud_review_pending: true,
             fraud_rejection: false,
             address_verification_method: nil,
+            in_person_verification_pending: false,
             deactivation_reason: nil,
             proofing_components: nil,
           )

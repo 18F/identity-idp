@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-Dir.chdir(File.dirname(__FILE__)) { require 'bundler/setup' }
+Dir.chdir(__dir__) { require 'bundler/setup' }
 
 require 'active_support'
 require 'active_support/core_ext/integer/time'
