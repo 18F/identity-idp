@@ -153,51 +153,18 @@ RSpec.describe Idv::GpoMail do
     end
   end
 
-  def enqueue_gpo_letter_for(user, at: Time.zone.now, with_profile: user.pending_profile)
-    with_profile ||= create(:profile, user: user)
+  def enqueue_gpo_letter_for(user, at: Time.zone.now)
+    new_profile = create(:profile, user: user)
 
     GpoConfirmationMaker.new(
       pii: {},
       service_provider: nil,
-      profile: with_profile,
+      profile: new_profile,
     ).perform
 
-    with_profile.gpo_confirmation_codes.last.update(
+    new_profile.gpo_confirmation_codes.last.update(
       created_at: at,
       updated_at: at,
-    )
-
-    event_create(event_type: :gpo_mail_sent, user: user, updated_at: at)
-  end
-
-  def event_create(hash)
-    uuid = 'foo'
-    remote_ip = '127.0.0.1'
-    user = hash[:user]
-    event = hash[:event_type]
-    now = Time.zone.now
-    updated_at = hash[:updated_at] || now
-    device = Device.find_by(user_id: user.id, cookie_uuid: uuid)
-    if device
-      device.last_used_at = now
-      device.last_ip = remote_ip
-      device.save
-    else
-      last_login_at = Time.zone.now
-      device = Device.create(
-        user_id: user.id,
-        user_agent: '',
-        cookie_uuid: uuid,
-        last_used_at: last_login_at,
-        last_ip: remote_ip,
-      )
-    end
-    Event.create(
-      user_id: user.id,
-      device_id: device.id,
-      ip: remote_ip,
-      event_type: event,
-      created_at: updated_at, updated_at: updated_at
     )
   end
 end
