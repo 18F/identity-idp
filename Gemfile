@@ -111,6 +111,7 @@ group :development, :test do
   gem 'rubocop', '~> 1.55.1', require: false
   gem 'rubocop-performance', '~> 1.18.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
+  gem 'foreman', require:false
 end
 
 group :test do

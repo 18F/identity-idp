@@ -299,6 +299,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
+    foreman (0.87.2)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
     fugit (1.8.1)
@@ -746,6 +747,7 @@ DEPENDENCIES
   faker
   faraday (~> 2)
   faraday-retry
+  foreman
   foundation_emails
   good_job (~> 3.0)
   guard-rspec
