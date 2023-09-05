@@ -133,7 +133,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_unconfirmed_email(request_id)
     rate_limiter = RateLimiter.new(
-      target: normalized_email(email),
+      target: email,
       rate_limit_type: :reg_unconfirmed_email,
     )
 
@@ -154,7 +154,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_confirmed_email
     rate_limiter = RateLimiter.new(
-      target: normalized_email(email),
+      target: email,
       rate_limit_type: :reg_confirmed_email,
     )
 
@@ -188,7 +188,7 @@ class RegisterUserEmailForm
   def email_address_record
     return @email_address_record if defined?(@email_address_record)
 
-    @email_address_record = EmailAddress.find_with_email(normalized_email(email))
+    @email_address_record = EmailAddress.find_with_email(email)
   end
 
   def existing_user
