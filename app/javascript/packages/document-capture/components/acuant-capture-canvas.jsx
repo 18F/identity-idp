@@ -30,6 +30,8 @@ function AcuantCaptureCanvas() {
   const { isReady, acuantCaptureMode, setAcuantCaptureMode } = useContext(AcuantContext);
   const { t } = useI18n();
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  console.log('acuant-capture-canvas', 'got into the component');
+  console.log('acuant-capture-canvas', isReady, acuantCaptureMode);
 
   useEffect(() => {
     function onAcuantCameraCreated() {

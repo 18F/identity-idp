@@ -352,7 +352,7 @@ function AcuantCapture(
    * before calling the original function.
    */
   function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
-    console.log('withLoggedClick source', source)
+    console.log('withLoggedClick source', source);
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
@@ -494,12 +494,13 @@ function AcuantCapture(
   }
 
   function onAcuantImageCaptureFailure(error: AcuantCaptureFailureError, code: string | undefined) {
+    console.log('onAcuantImageCaptureFailure', error, code);
     const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
     if (isAcuantCameraAccessFailure(error)) {
       if (fullScreenRef.current?.focusTrap) {
         suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
       }
-      console.log('setAcuantFailureCookie used to wipe cookie')
+      console.log('setAcuantFailureCookie used to wipe cookie');
 
       // Internally, Acuant sets a cookie to bail on guided capture if initialization had
       // previously failed for any reason, including declined permission. Since the cookie

@@ -307,6 +307,8 @@ function AcuantCamera({
     },
     [onImageCaptureSuccess],
   );
+  
+  console.log('acuant-camera', 'got into the component');
 
   useEffect(() => {
     const textOptions = {
@@ -326,6 +328,7 @@ function AcuantCamera({
       });
 
       window.AcuantCameraUI = getActualAcuantCameraUI();
+      console.log('acuant-camera', 'near AcuantCameraUI.start()')
       window.AcuantCameraUI.start(
         {
           onCaptured: onCropStart,
