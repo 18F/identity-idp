@@ -190,22 +190,22 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe '#confirm_user_is_not_suspended' do
-    controller do
-      before_action :confirm_user_is_not_suspended
+  describe '#user_suspended_url' do
+    before { sign_in(user) }
 
-      def index
-        render plain: 'Hello'
+    context 'when user is suspended' do
+      let(:user) { create(:user, :suspended) }
+
+      it 'is the please call url' do
+        expect(controller.send(:user_suspended_url)).to eq(user_please_call_url)
       end
     end
 
-    context 'when user is suspended' do
-      it 'redirects to users please call page' do
-        user = create(:user, :suspended)
-        sign_in user
-        get :index
+    context 'when user is not suspended' do
+      let(:user) { create(:user) }
 
-        expect(response).to redirect_to user_please_call_url
+      it 'is nil' do
+        expect(controller.send(:user_suspended_url)).to be_nil
       end
     end
   end

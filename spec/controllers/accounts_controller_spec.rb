@@ -7,10 +7,6 @@ RSpec.describe AccountsController do
         :before,
         :confirm_two_factor_authenticated,
       )
-      expect(subject).to have_actions(
-        :before,
-        :confirm_user_is_not_suspended,
-      )
     end
   end
 
@@ -75,22 +71,6 @@ RSpec.describe AccountsController do
 
         expect(response).to render_template(:show)
         expect(response).to render_template(partial: 'accounts/_pending_profile_gpo')
-      end
-    end
-
-    context 'when a user is suspended' do
-      render_views
-      it 'redirects to contact support page' do
-        user = create(
-          :user,
-          :fully_registered,
-        )
-
-        user.suspend!
-        sign_in user
-        get :show
-
-        expect(response).to redirect_to(user_please_call_url)
       end
     end
 
