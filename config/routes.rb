@@ -312,7 +312,6 @@ Rails.application.routes.draw do
       end
 
       get '/mail_only_warning' => 'mail_only_warning#show'
-      get '/letter_enqueued' => 'by_mail/letter_enqueued#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
@@ -397,9 +396,16 @@ Rails.application.routes.draw do
           as: :confirm_start_over
 
       if FeatureManagement.gpo_verification_enabled?
-        get '/usps' => 'by_mail/request_letter#index', as: :gpo
-        put '/usps' => 'by_mail/request_letter#create'
+        get '/by_mail/request_letter' => 'by_mail/request_letter#index', as: :gpo
+        put '/by_mail/request_letter' => 'by_mail/request_letter#create'
       end
+
+      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show'
+
+      # Temporary redirects etc. to support GPO route renaming in the 50/50 state
+      get '/usps' => redirect('/verify/by_mail/request_letter')
+      put '/usps' => 'by_mail/request_letter#create' if FeatureManagement.gpo_verification_enabled?
+      get '/come_back_later' => redirect('/by_mail/letter_enqueued')
     end
 
     root to: 'users/sessions#new'
