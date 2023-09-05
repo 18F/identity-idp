@@ -5,7 +5,9 @@ RSpec.describe Reporting::IdentityVerificationReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:) }
+  subject(:report) do
+    Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:)
+  end
 
   # rubocop:disable Layout/LineLength
   before do
