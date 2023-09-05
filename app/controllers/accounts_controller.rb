@@ -1,7 +1,6 @@
 class AccountsController < ApplicationController
   include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
-  before_action :confirm_user_is_not_suspended
 
   layout 'account_side_nav'
 
