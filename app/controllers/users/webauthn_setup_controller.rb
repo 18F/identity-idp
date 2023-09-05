@@ -173,7 +173,7 @@ module Users
 
     def analytics_properties
       {
-        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_account_creation_flow: user_session[:in_account_creation_flow],
       }
     end
 
