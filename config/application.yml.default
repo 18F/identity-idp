@@ -46,8 +46,6 @@ arcgis_api_password: ''
 arcgis_mock_fallback: true
 arcgis_api_generate_token_url: 'https://gis.gsa.gov/portal/sharing/rest/generateToken'
 arcgis_api_find_address_candidates_url: 'https://gis.gsa.gov/servernh/rest/services/GSA/USA/GeocodeServer/findAddressCandidates'
-arcgis_api_refresh_token_job_cron: '0/55 * * * *'
-arcgis_api_refresh_token_job_enabled: false
 arcgis_api_request_timeout_seconds: 5
 asset_host: ''
 async_wait_timeout_seconds: 60
@@ -419,7 +417,6 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
-  arcgis_api_refresh_token_job_enabled: true
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_logo_bucket: ''
