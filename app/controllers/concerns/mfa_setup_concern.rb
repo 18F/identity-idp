@@ -8,7 +8,7 @@ module MfaSetupConcern
       confirmation_path
     else
       if user_session[:mfa_selections]
-        analytics.mfa_setup_complete(
+        analytics.user_registration_mfa_setup_complete(
           mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
           in_account_creation_flow: user_session[:in_account_creation_flow],
           enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
