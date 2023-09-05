@@ -5,7 +5,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::IdentityVerificationReport.new(issuer:, time_range:) }
+  subject(:report) { Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:) }
 
   # rubocop:disable Layout/LineLength
   before do
@@ -102,7 +102,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
       it 'includes an issuer filter' do
         result = subject.query
 
-        expect(result).to include('| filter properties.service_provider = "my:example:issuer"')
+        expect(result).to include('| filter properties.service_provider IN ["my:example:issuer"]')
       end
     end
 
@@ -119,7 +119,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(issuer:, time_range:, **opts) }
+    let(:subject) { described_class.new(issuers: Array(issuer), time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 5,

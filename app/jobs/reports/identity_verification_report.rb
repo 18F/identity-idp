@@ -16,7 +16,7 @@ module Reports
 
     def report_maker
       Reporting::IdentityVerificationReport.new(
-        issuer: nil,
+        issuers: [],
         time_range: report_date.all_day,
         slice: 4.hours,
       )

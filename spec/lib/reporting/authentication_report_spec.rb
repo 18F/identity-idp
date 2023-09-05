@@ -5,7 +5,7 @@ RSpec.describe Reporting::AuthenticationReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).all_day }
 
-  subject(:report) { Reporting::AuthenticationReport.new(issuer:, time_range:) }
+  subject(:report) { Reporting::AuthenticationReport.new(issuers: [issuer], time_range:) }
 
   before do
     cloudwatch_client = double(
@@ -73,7 +73,7 @@ RSpec.describe Reporting::AuthenticationReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(issuer:, time_range:, **opts) }
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 5,

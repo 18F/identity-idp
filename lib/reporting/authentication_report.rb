@@ -14,7 +14,7 @@ module Reporting
   class AuthenticationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :time_range
+    attr_reader :issuers, :time_range
 
     module Events
       OIDC_AUTH_REQUEST = 'OpenID Connect: authorization request'
@@ -31,14 +31,14 @@ module Reporting
     # @param [String] isssuer
     # @param [Range<Time>] time_range
     def initialize(
-      issuer:,
+      issuers:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 3.hours,
       threads: 5
     )
-      @issuer = issuer
+      @issuers = issuers
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -59,7 +59,7 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuer]
+        csv << ['Issuer', issuers.join(', ')]
         csv << []
         csv << ['Metric', 'Number of accounts', '% of total from start']
         csv << [
@@ -161,7 +161,7 @@ module Reporting
 
     def query
       params = {
-        issuer: quote(issuer),
+        issuers: quote(issuers),
         event_names: quote(Events.all_events),
         email_confirmation: quote(Events::EMAIL_CONFIRMATION),
       }
@@ -170,7 +170,7 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
-        | filter properties.service_provider = %{issuer}
+        | filter properties.service_provider IN %{issuers}
         | filter (name = %{email_confirmation} and properties.event_properties.success = 1)
                  or (name != %{email_confirmation})
         | filter name in %{event_names}
