@@ -27,7 +27,7 @@ class TwoFactorOptionsForm
   private
 
   def validate_selection_present
-    return if !has_no_mfa_or_in_required_flow? || selection.present? || phishing_resistant_and_mfa?
+    return if selection.present? || has_minimum_required_mfa_methods?
     errors.add(:selection, missing_selection_error_message, type: :missing_selection)
   end
 
@@ -41,10 +41,6 @@ class TwoFactorOptionsForm
       selected_mfa_count: selection.count,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
-  end
-
-  def in_phishing_resistant_or_piv_cac_required_flow?
-    phishing_resistant_required || piv_cac_required
   end
 
   def user_needs_updating?
@@ -62,8 +58,16 @@ class TwoFactorOptionsForm
     selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
   end
 
-  def has_no_configured_mfa?
-    mfa_user.enabled_mfa_methods_count == 0
+  def has_minimum_required_mfa_methods?
+    if piv_cac_required
+      mfa_user.piv_cac_configurations.count > 0
+    elsif mfa_user.webauthn_platform_configurations.any?
+      !platform_auth_only_option?
+    elsif phishing_resistant_required
+      mfa_user.phishing_resistant_configurations.count > 0
+    else
+      mfa_user.enabled_mfa_methods_count > 0
+    end
   end
 
   def platform_auth_only_option?
@@ -71,22 +75,11 @@ class TwoFactorOptionsForm
       mfa_user.webauthn_platform_configurations.count == 1
   end
 
-  def has_no_mfa_or_in_required_flow?
-    has_no_configured_mfa? ||
-      in_phishing_resistant_or_piv_cac_required_flow? ||
-      platform_auth_only_option?
-  end
-
-  def phishing_resistant_and_mfa?
-    MfaPolicy.new(user).unphishable? && in_phishing_resistant_or_piv_cac_required_flow?
-  end
-
   def missing_selection_error_message
-    if has_no_configured_mfa? || in_phishing_resistant_or_piv_cac_required_flow? ||
-       phishing_resistant_and_mfa?
-      t('errors.two_factor_auth_setup.must_select_option')
-    elsif platform_auth_only_option?
+    if platform_auth_only_option?
       t('errors.two_factor_auth_setup.must_select_additional_option')
+    else
+      t('errors.two_factor_auth_setup.must_select_option')
     end
   end
 end
