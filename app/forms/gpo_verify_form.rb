@@ -112,7 +112,6 @@ class GpoVerifyForm
   end
 
   def activate_profile
-    pending_profile&.fraud_pass
     pending_profile&.remove_gpo_deactivation_reason
     pending_profile&.activate
   end
