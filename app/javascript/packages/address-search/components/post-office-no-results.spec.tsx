@@ -3,7 +3,7 @@ import PostOfficeNoResults from './post-office-no-results';
 
 describe('PostOfficeNoResults', () => {
   it('renders the component with expected image and text', async () => {
-    const { findAllByText, getByAltText, getByRole } = render(
+    const { findAllByText, getByAltText } = render(
       <PostOfficeNoResults address="Somewhere over the rainbow" />,
     );
 
