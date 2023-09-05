@@ -333,7 +333,7 @@ function AcuantCamera({
         {
           onCaptured: onCropStart,
           onCropped,
-          onFailure: onImageCaptureFailure,
+          onError: onImageCaptureFailure,
         },
         onFailureCallbackWithOptions,
         textOptions,
