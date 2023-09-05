@@ -352,6 +352,7 @@ function AcuantCapture(
    * before calling the original function.
    */
   function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
+    console.log('withLoggedClick source', source)
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
@@ -403,6 +404,8 @@ function AcuantCapture(
    * another element which aims to trigger the prompt of the file input.
    */
   function startCaptureOrTriggerUpload(event: MouseEvent) {
+    const isAcuantCaptureCapableConsoleLog = hasCapture && !acuantFailureCookie;
+    console.log('startCaptureOrTriggerUpload', isAcuantCaptureCapableConsoleLog, hasCapture, acuantFailureCookie, forceNativeCamera);
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
@@ -496,6 +499,7 @@ function AcuantCapture(
       if (fullScreenRef.current?.focusTrap) {
         suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
       }
+      console.log('setAcuantFailureCookie used to wipe cookie')
 
       // Internally, Acuant sets a cookie to bail on guided capture if initialization had
       // previously failed for any reason, including declined permission. Since the cookie
@@ -527,6 +531,7 @@ function AcuantCapture(
       error: getNormalizedAcuantCaptureFailureMessage(error, code),
     });
   }
+  console.log('acuant-capture', isMobile, hasCapture, allowUpload);
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
