@@ -111,7 +111,7 @@ RSpec.describe TwoFactorOptionsForm do
     end
 
     context 'when a user wants to is required to add piv_cac on sign in' do
-      let(:user) { build(:user) }
+      let(:user) { build(:user, :with_authentication_app) }
       let(:enabled_mfa_methods_count) { 1 }
       let(:mfa_selection) { ['phone'] }
       let(:phishing_resistant_required) { true }
