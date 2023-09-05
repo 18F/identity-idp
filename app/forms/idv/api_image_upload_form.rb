@@ -8,6 +8,7 @@ module Idv
     validates_presence_of :document_capture_session
 
     validate :validate_images
+    validate :validate_duplicate_images
     validate :limit_if_rate_limited
 
     def initialize(params, service_provider:, analytics: nil,
@@ -32,6 +33,8 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+        else
+          store_failed_images(client_response)
         end
       end
 
@@ -366,6 +369,21 @@ module Idv
         address: pii_from_doc[:address1],
         failure_reason: response.errors&.except(:hints)&.presence,
       )
+    end
+
+    def store_failed_images(client_response)
+      exception = client_response&.exception
+      ## only not exception
+      unless exception
+        errors_hash = client_response.errors&.to_h || {}
+        side_error = !!errors_hash[:front] || !!errors_hash[:back]
+        front_fingerprint = (errors_hash.with_indifferent_access.dig(:front) || !side_error) ?
+                               extra_attributes[:front_image_fingerprint] : nil
+        back_fingerprint = (errors_hash.with_indifferent_access.dig(:back) || !side_error) ?
+                              extra_attributes[:back_image_fingerprint] : nil
+        document_capture_session.
+          store_failed_auth_image_fingerprint(front_fingerprint, back_fingerprint)
+      end
     end
   end
 end
