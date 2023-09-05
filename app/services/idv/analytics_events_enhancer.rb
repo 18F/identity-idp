@@ -4,7 +4,7 @@ module Idv
       idv_cancellation_confirmed
       idv_cancellation_go_back
       idv_cancellation_visited
-      idv_come_back_later_visit
+      idv_letter_enqueued_visit
       idv_forgot_password
       idv_forgot_password_confirmed
       idv_final

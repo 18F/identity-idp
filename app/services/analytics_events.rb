@@ -605,7 +605,7 @@ module AnalyticsEvents
 
   # The user visited the "come back later" page shown during the GPO mailing flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_come_back_later_visit(proofing_components: nil, **extra)
+  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
     track_event(
       'IdV: come back later visited',
       proofing_components: proofing_components,

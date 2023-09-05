@@ -29,7 +29,7 @@ module Idv::ByMail
       elsif resend_requested?
         resend_letter
         flash[:success] = t('idv.messages.gpo.another_letter_on_the_way')
-        redirect_to idv_come_back_later_url
+        redirect_to idv_letter_enqueued_url
       else
         redirect_to idv_review_url
       end
