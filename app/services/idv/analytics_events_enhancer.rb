@@ -4,12 +4,12 @@ module Idv
       idv_cancellation_confirmed
       idv_cancellation_go_back
       idv_cancellation_visited
-      idv_letter_enqueued_visit
       idv_forgot_password
       idv_forgot_password_confirmed
       idv_final
       idv_gpo_address_letter_enqueued
       idv_gpo_address_letter_requested
+      idv_gpo_letter_enqueued_visit
       idv_in_person_ready_to_verify_visit
       idv_personal_key_acknowledgment_toggled
       idv_personal_key_downloaded

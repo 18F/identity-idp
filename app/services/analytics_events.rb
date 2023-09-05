@@ -603,16 +603,6 @@ module AnalyticsEvents
     )
   end
 
-  # The user visited the "come back later" page shown during the GPO mailing flow
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: come back later visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
   # The user checked or unchecked the "By checking this box..." checkbox on the idv agreement step.
   # (This is a frontend event.)
   # @param [Boolean] checked Whether the user checked the checkbox
@@ -1009,6 +999,16 @@ module AnalyticsEvents
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
     track_event('IdV: gpo confirm start over visited')
+  end
+
+  # The user visited the "come back later" page shown during the GPO mailing flow
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  def idv_gpo_letter_enqueued_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: come back later visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
   end
 
   # A GPO reminder email was sent to the user
