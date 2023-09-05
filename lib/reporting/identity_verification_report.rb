@@ -191,13 +191,8 @@ module Reporting
                  or (name != %{usps_enrollment_status_updated})
         | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name != %{gpo_verification_submitted})
-        | fields
-            coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
-          , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
-          , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
-          , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
-        | fields
-            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
+        | fields properties.event_properties.fraud_review_pending as fraud_review_pending, properties.event_properties.gpo_verification_pending as gpo_verification_pending, properties.event_properties.in_person_verification_pending as in_person_verification_pending
+        | fields !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending as identity_verified
         | limit 10000
       QUERY
     end

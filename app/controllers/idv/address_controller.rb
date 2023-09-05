@@ -29,7 +29,7 @@ module Idv
 
     def success
       profile_params.each do |key, value|
-        flow_session[:pii_from_doc][key] = value
+        flow_session['pii_from_doc'][key] = value
       end
       redirect_to idv_verify_info_url
     end

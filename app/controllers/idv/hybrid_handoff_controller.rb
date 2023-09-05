@@ -118,7 +118,10 @@ module Idv
     end
 
     def extra_view_variables
-      { idv_phone_form: build_form }
+      {
+        flow_session: flow_session,
+        idv_phone_form: build_form,
+      }
     end
 
     def build_form
@@ -180,7 +183,7 @@ module Idv
 
     # copied from Flow::Failure module
     def failure(message, extra = nil)
-      flash[:error] = message
+      flow_session[:error_message] = message
       form_response_params = { success: false, errors: { message: message } }
       form_response_params[:extra] = extra unless extra.nil?
       FormResponse.new(**form_response_params)

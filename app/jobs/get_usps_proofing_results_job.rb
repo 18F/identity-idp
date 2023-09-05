@@ -10,9 +10,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     "State driver's license",
     "State non-driver's identification card",
   ]
-  SUPPORTED_SECONDARY_ID_TYPES = [
-    'Visual Inspection of Name and Address on Primary ID Match',
-  ]
 
   queue_as :long_running
 
@@ -118,12 +115,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
-  end
-
-  def passed_with_unsupported_secondary_id_type?(enrollment, response)
-    return enrollment.capture_secondary_id_enabled &&
-           response['secondaryIdType'].present? &&
-           SUPPORTED_SECONDARY_ID_TYPES.exclude?(response['secondaryIdType'])
   end
 
   def analytics(user: AnonymousUser.new)
@@ -414,7 +405,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     case response['status']
     when IPP_STATUS_PASSED
-      if passed_with_unsupported_secondary_id_type?(enrollment, response)
+      if enrollment.capture_secondary_id_enabled && response['secondaryIdType'].present?
         handle_unsupported_secondary_id(enrollment, response)
       elsif SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         handle_successful_status_update(enrollment, response)

@@ -13,7 +13,7 @@ module Idv
 
     def initialize(user, flow_session = {})
       @user = user
-      @ssn = flow_session.dig(:pii_from_doc, :ssn)
+      @ssn = flow_session.dig('pii_from_doc', :ssn)
       @updating_ssn = ssn.present?
     end
 

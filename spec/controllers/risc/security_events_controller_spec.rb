@@ -50,7 +50,6 @@ RSpec.describe Risc::SecurityEventsController do
       expect(@analytics).to receive(:track_event).
         with('RISC: Security event received',
              client_id: service_provider.issuer,
-             event_type: event_type,
              error_code: nil,
              errors: {},
              jti: jti,
@@ -80,7 +79,6 @@ RSpec.describe Risc::SecurityEventsController do
         expect(@analytics).to receive(:track_event).
           with('RISC: Security event received',
                client_id: service_provider.issuer,
-               event_type: event_type,
                error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
                errors: kind_of(Hash),
                error_details: kind_of(Hash),

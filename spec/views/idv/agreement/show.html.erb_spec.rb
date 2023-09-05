@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/agreement/show' do
+  let(:flow_session) { {} }
+
   before do
+    allow(view).to receive(:flow_session).and_return(flow_session)
     allow(view).to receive(:user_signing_up?).and_return(false)
     allow(view).to receive(:url_for).and_wrap_original do |method, *args, &block|
       method.call(*args, &block)

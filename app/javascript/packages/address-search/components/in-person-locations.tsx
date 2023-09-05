@@ -1,4 +1,4 @@
-import { t } from '@18f/identity-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
 
@@ -21,6 +21,7 @@ interface InPersonLocationsProps {
 }
 
 function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
+  const { t } = useI18n();
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {

@@ -284,7 +284,7 @@ RSpec.describe Idv::SessionErrorsController do
           rate_limit_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
         ).increment_to_limited!
-        controller.user_session['idv/doc_auth'] = { pii_from_doc: { 'ssn' => ssn } }
+        controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
       end
 
       it 'assigns expiration time' do

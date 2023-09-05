@@ -21,7 +21,7 @@ namespace :profiles do
     )
 
     profiles.each do |profile|
-      timestamp = profile.updated_at || profile.created_at
+      timestamp = profile.in_person_enrollment.updated_at
 
       warn "#{profile.id},#{profile.deactivation_reason},#{timestamp}"
       if update_profiles

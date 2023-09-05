@@ -46,6 +46,26 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#pending_in_person_enrollment?' do
+    it 'returns true if the document_check component is usps' do
+      profile = create(:profile, proofing_components: { document_check: 'usps' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(true)
+    end
+
+    it 'returns false if the document_check component is something else' do
+      profile = create(:profile, proofing_components: { document_check: 'something_else' })
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+
+    it 'returns false if proofing_components is blank' do
+      profile = create(:profile, proofing_components: '')
+
+      expect(profile.pending_in_person_enrollment?).to eq(false)
+    end
+  end
+
   describe '#includes_phone_check?' do
     it 'returns true if the address_check component is lexis_nexis_address' do
       profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })

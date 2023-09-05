@@ -60,7 +60,6 @@ fr:
       pattern_mismatch:
         ssn: 'Entrez un numéro de sécurité sociale à neuf chiffres'
         zipcode: Entrez un code postal à 5 ou 9 chiffres
-        zipcode_five: Entrez un code postal à 5 chiffres
     failure:
       attempts_html:
         one: Pour des raisons de sécurité, il vous reste <strong>une tentative</strong>

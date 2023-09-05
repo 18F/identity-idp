@@ -3,13 +3,12 @@ require 'rails_helper'
 RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
   let(:user) { build_stubbed(:user) }
   let(:form) { NewPhoneForm.new(user:) }
-  let(:in_multi_mfa_selection_flow) { false }
+  let(:locals) { {} }
 
-  subject(:rendered) { render(template: 'users/phone_setup/spam_protection') }
+  subject(:rendered) { render(template: 'users/phone_setup/spam_protection', locals:) }
 
   before do
     @new_phone_form = form
-    allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(in_multi_mfa_selection_flow)
   end
 
   it 'renders hidden form inputs' do
@@ -34,8 +33,9 @@ RSpec.describe 'users/phone_setup/spam_protection.html.erb' do
     expect(rendered).not_to have_link(t('two_factor_authentication.login_options_link_text'))
   end
 
-  context 'in multi mfa selectino flow' do
-    let(:in_multi_mfa_selection_flow) { true }
+  context 'with two factor options path' do
+    let(:authentication_methods_setup_path) { root_path }
+    let(:locals) { { authentication_methods_setup_path: } }
 
     it 'renders additional troubleshooting option to two factor options' do
       expect(rendered).to have_link(

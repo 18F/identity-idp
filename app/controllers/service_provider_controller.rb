@@ -25,7 +25,6 @@ class ServiceProviderController < ApplicationController
   end
 
   def authorization_token_valid?
-    return false if authorization_token.blank?
     ActiveSupport::SecurityUtils.secure_compare(
       authorization_token,
       IdentityConfig.store.dashboard_api_token,

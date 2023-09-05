@@ -15,6 +15,8 @@ module Idv
 
       @sp_name = decorated_session.sp_name || APP_NAME
       @title = t('doc_auth.headings.getting_started', sp_name: @sp_name)
+
+      render :show, locals: { flow_session: flow_session }
     end
 
     def update

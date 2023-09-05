@@ -127,33 +127,4 @@ RSpec.describe Deploy::Activate do
       expect { subject.run }.to raise_error(Net::OpenTimeout)
     end
   end
-
-  describe '#setup_idp_config_symlinks' do
-    context 'with stale identity-idp-config symlinks' do
-      it 'deletes stale symlinks' do
-        setup_identity_idp_config(subject)
-        FileUtils.ln_s(
-          'fake',
-          subject.idp_logos_dir,
-          force: true,
-        )
-
-        subject.setup_idp_config_symlinks
-
-        expect(File.exist?('fake')).to eq false
-      end
-    end
-  end
-
-  def setup_identity_idp_config(subject)
-    FileUtils.mkdir_p(subject.checkout_dir)
-    FileUtils.mkdir_p(subject.idp_logos_dir)
-    FileUtils.mkdir_p(subject.config_logos_dir)
-    # Cloned config is symlinked into the root config/ folder
-    FileUtils.mkdir_p(File.join(subject.root, 'config'))
-
-    Deploy::Activate::FILES_TO_LINK.each do |file|
-      FileUtils.touch(File.join(subject.checkout_dir, "#{file}.yml"))
-    end
-  end
 end

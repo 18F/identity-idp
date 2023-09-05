@@ -1,11 +1,11 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { i18n } from '@18f/identity-i18n';
-import { usePropertyValue } from '@18f/identity-test-helpers';
+import { I18n } from '@18f/identity-i18n';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import type { SetupServer } from 'msw/node';
 import { SWRConfig } from 'swr';
+import { I18nContext } from '@18f/identity-react-i18n';
 import { ComponentType } from 'react';
 import InPersonLocationPostOfficeSearchStep, {
   ADDRESSES_URL,
@@ -222,63 +222,82 @@ describe('InPersonLocationPostOfficeSearchStep', () => {
       await findAllByText('in_person_proofing.body.location.location_button');
     });
 
-    context('pluralized and singularized translations are set', () => {
-      usePropertyValue(i18n, 'strings', {
-        'in_person_proofing.body.location.po_search.results_description': {
-          one: 'There is one participating Post Office within 50 miles of %{address}.',
-          other: 'There are %{count} participating Post Offices within 50 miles of %{address}.',
-        },
-      });
+    it('displays correct pluralization for a single location result', async () => {
+      const { findByLabelText, findByText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'in_person_proofing.body.location.po_search.results_description': {
+                  one: 'There is one participating Post Office within 50 miles of %{address}.',
+                  other:
+                    'There are %{count} participating Post Offices within 50 miles of %{address}.',
+                },
+              },
+            })
+          }
+        >
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+        </I18nContext.Provider>,
+        { wrapper },
+      );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '800 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
 
-      it('displays correct pluralization for a single location result', async () => {
-        const { findByLabelText, findByText } = render(
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
-          { wrapper },
-        );
-        await userEvent.type(
-          await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-          '800 main',
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
+      const searchResultAlert = await findByText(
+        `There is one participating Post Office within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
+      );
+      expect(searchResultAlert).to.exist();
+    });
 
-        const searchResultAlert = await findByText(
-          `There is one participating Post Office within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
-        );
-        expect(searchResultAlert).to.exist();
-      });
-
-      it('displays correct pluralization for multiple location results', async () => {
-        server.resetHandlers();
-        server.use(
-          rest.post(ADDRESSES_URL, (_req, res, ctx) =>
-            res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
-          ),
-          rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(MULTI_LOCATION_RESPONSE))),
-        );
-        const { findByLabelText, findByText } = render(
-          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />,
-          { wrapper },
-        );
-        await userEvent.type(
-          await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
-          '800 main',
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
-        await userEvent.click(
-          await findByText('in_person_proofing.body.location.po_search.search_button'),
-        );
-        const searchResultAlert = await findByText(
-          `There are ${MULTI_LOCATION_RESPONSE.length} participating Post Offices within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
-        );
-        expect(searchResultAlert).to.exist();
-      });
+    it('displays correct pluralization for multiple location results', async () => {
+      server.resetHandlers();
+      server.use(
+        rest.post(ADDRESSES_URL, (_req, res, ctx) =>
+          res(ctx.json(DEFAULT_RESPONSE), ctx.status(200)),
+        ),
+        rest.post(LOCATIONS_URL, (_req, res, ctx) => res(ctx.json(MULTI_LOCATION_RESPONSE))),
+      );
+      const { findByLabelText, findByText } = render(
+        <I18nContext.Provider
+          value={
+            new I18n({
+              strings: {
+                'in_person_proofing.body.location.po_search.results_description': {
+                  one: 'There is one participating Post Office within 50 miles of %{address}.',
+                  other:
+                    'There are %{count} participating Post Offices within 50 miles of %{address}.',
+                },
+              },
+            })
+          }
+        >
+          <InPersonLocationPostOfficeSearchStep {...DEFAULT_PROPS} />
+        </I18nContext.Provider>,
+        { wrapper },
+      );
+      await userEvent.type(
+        await findByLabelText('in_person_proofing.body.location.po_search.address_search_label'),
+        '800 main',
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+      await userEvent.click(
+        await findByText('in_person_proofing.body.location.po_search.search_button'),
+      );
+      const searchResultAlert = await findByText(
+        `There are ${MULTI_LOCATION_RESPONSE.length} participating Post Offices within 50 miles of ${MULTI_LOCATION_RESPONSE[0].address}.`,
+      );
+      expect(searchResultAlert).to.exist();
     });
   });
 

@@ -216,12 +216,10 @@ RSpec.describe 'Add a new phone number' do
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing international should display spam protection screen
-    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
+    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
     expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    expect(page).not_to have_link(t('two_factor_authentication.login_options_link_text'))
-    expect(page).to have_link(t('links.cancel'))
     click_continue
     expect(page).to have_content(t('two_factor_authentication.header_text'))
     visit account_path
@@ -238,12 +236,12 @@ RSpec.describe 'Add a new phone number' do
         evaluated_as_valid: false,
         score_threshold: 0.6,
         recaptcha_version: 3,
-        phone_country_code: 'AU',
+        phone_country_code: 'CA',
       ),
     )
 
     # Passing international should display OTP confirmation
-    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
+    fill_in t('two_factor_authentication.phone_label'), with: '3065550100'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.7'
     click_send_one_time_code
     expect(page).to have_content(t('two_factor_authentication.header_text'), wait: 25)

@@ -1,5 +1,4 @@
 require 'aws-sdk-cloudwatchlogs'
-require 'ruby-progressbar'
 
 module Reporting
   class CloudwatchClient
@@ -26,7 +25,7 @@ module Reporting
       slice_interval: 1.day,
       logger: nil,
       progress: true,
-      log_group_name: default_events_log
+      log_group_name: 'prod_/srv/idp/shared/log/events.log'
     )
       @ensure_complete_logs = ensure_complete_logs
       @num_threads = num_threads
@@ -179,13 +178,6 @@ module Reporting
 
     def show_progress?
       !!@progress
-    end
-
-    # The prod events log ('prod_/srv/idp/shared/log/events.log') or equivalent in lower
-    # environments
-    def default_events_log
-      env = Identity::Hostdata.in_datacenter? ? Identity::Hostdata.env : 'prod'
-      "#{env}_/srv/idp/shared/log/events.log"
     end
 
     private

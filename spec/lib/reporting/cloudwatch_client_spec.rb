@@ -20,35 +20,6 @@ RSpec.describe Reporting::CloudwatchClient do
     )
   end
 
-  describe '#initialize' do
-    context 'default log_group_name' do
-      before do
-        allow(Identity::Hostdata).to receive(:env).and_return(env)
-        allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
-      end
-
-      context 'locally' do
-        let(:in_datacenter) { false }
-        let(:env) { 'development' }
-
-        it 'is the default prod group' do
-          expect(client.log_group_name).to eq(client.default_events_log)
-          expect(client.log_group_name).to eq('prod_/srv/idp/shared/log/events.log')
-        end
-      end
-
-      context 'deployed environment' do
-        let(:in_datacenter) { true }
-        let(:env) { 'staging' }
-
-        it 'is the group for that environment' do
-          expect(client.log_group_name).to eq(client.default_events_log)
-          expect(client.log_group_name).to eq('staging_/srv/idp/shared/log/events.log')
-        end
-      end
-    end
-  end
-
   describe '#fetch' do
     let(:from) { 3.days.ago }
     let(:to) { 1.day.ago }

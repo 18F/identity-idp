@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "dependencies": {
     "intl-tel-input": "^17.0.19",
-    "libphonenumber-js": "^1.10.44"
+    "libphonenumber-js": "^1.10.41"
   }
 }

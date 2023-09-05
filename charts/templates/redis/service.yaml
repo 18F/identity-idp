@@ -1,0 +1,18 @@
+{{- if .Values.redis.enabled }}
+# templates/redis/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "identity-idp-chart.redis.fullname" . }}
+  labels:
+    {{- include "identity-idp-chart.redis.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.redis.service.port }}
+      targetPort: redis
+      protocol: TCP
+      name: redis
+  selector:
+    {{- include "identity-idp-chart.redis.selectorLabels" . | nindent 4 }}
+{{- end }}

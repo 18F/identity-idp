@@ -55,10 +55,6 @@ locals:
           <%= I18n.l(Date.parse(@pii[:dob]), format: I18n.t('time.formats.event_date')) %>
         </dd>
       </div>
-      <div>
-        <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= @pii[:state_id_number] %> </dd>
-      </div>
     </dl>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">

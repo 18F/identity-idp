@@ -1,5 +1,5 @@
 import { SpinnerButton } from '@18f/identity-spinner-button';
-import { t } from '@18f/identity-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 
 interface LocationCollectionItemProps {
   distance?: string;
@@ -24,6 +24,7 @@ function LocationCollectionItem({
   sundayHours,
   weekdayHours,
 }: LocationCollectionItemProps) {
+  const { t } = useI18n();
   const numericDistance = distance?.split(' ')[0];
 
   return (

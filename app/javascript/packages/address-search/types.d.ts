@@ -43,7 +43,7 @@ interface Location {
   address: string;
 }
 
-interface AddressInputProps {
+interface AddressSearchProps {
   registerField?: RegisterFieldCallback;
   onFoundAddress?: (address: LocationQuery | null) => void;
   onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;

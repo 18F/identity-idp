@@ -222,15 +222,6 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_passed_proofing_supported_secondary_id_type_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 200,
-      body: UspsInPersonProofing::Mock::
-        Fixtures.request_passed_proofing_supported_secondary_id_type_results_response,
-      headers: { 'content-type' => 'application/json' },
-    )
-  end
-
   def stub_request_passed_proofing_unsupported_status_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200,

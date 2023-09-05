@@ -132,21 +132,6 @@ RSpec.feature 'Sign Up' do
     expect(page).to have_content(/#{rate_limited_message}/)
   end
 
-  scenario 'signing up using phone with a reCAPTCHA challenge', :js do
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_mock_validator).and_return(true)
-    allow(IdentityConfig.store).to receive(:phone_recaptcha_score_threshold).and_return(0.6)
-
-    sign_up_and_set_password
-    select_2fa_option('phone')
-
-    fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
-    fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
-    click_send_one_time_code
-    expect(page).to have_content(t('titles.spam_protection'), wait: 5)
-    expect(page).to have_link(t('two_factor_authentication.login_options_link_text'))
-    expect(page).not_to have_link(t('links.cancel'))
-  end
-
   context 'with js', js: true do
     before do
       page.driver.browser.execute_cdp(

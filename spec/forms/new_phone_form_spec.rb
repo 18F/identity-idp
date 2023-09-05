@@ -190,8 +190,8 @@ RSpec.describe NewPhoneForm do
       end
 
       it 'is invalid if existing phone is international' do
-        unformatted_phone = '+610491570006'
-        params[:phone] = '+61 0491 570 006'
+        unformatted_phone = '+13065550100'
+        params[:phone] = '+1 3065550100'
         params[:international_code] = 'CA'
         create(:phone_configuration, user: user, phone: unformatted_phone)
 
@@ -372,8 +372,8 @@ RSpec.describe NewPhoneForm do
       let(:recaptcha_mock_score) { nil }
       let(:score_threshold) { 0.6 }
       let(:recaptcha_token) { 'token' }
-      let(:phone) { '0491 570 006' }
-      let(:international_code) { 'AU' }
+      let(:phone) { '3065550100' }
+      let(:international_code) { 'CA' }
       let(:params) { super().merge(recaptcha_token:, recaptcha_mock_score:) }
 
       subject(:result) { form.submit(params) }

@@ -29,9 +29,7 @@ RSpec.shared_examples 'gpo otp verification' do
   it 'renders an error for an expired GPO OTP' do
     sign_in_live_with_2fa(user)
 
-    gpo_confirmation_code.update(
-      code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
-    )
+    gpo_confirmation_code.update(code_sent_at: 11.days.ago)
     fill_in t('idv.gpo.form.otp_label'), with: otp
     click_button t('idv.gpo.form.submit')
 

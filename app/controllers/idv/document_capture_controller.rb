@@ -57,7 +57,8 @@ module Idv
     def confirm_document_capture_needed
       return if idv_session.redo_document_capture
 
-      return if pii_from_doc.blank? && !idv_session.verify_info_step_complete?
+      pii = flow_session['pii_from_doc'] # hash with indifferent access
+      return if pii.blank? && !idv_session.verify_info_step_complete?
 
       redirect_to idv_ssn_url
     end

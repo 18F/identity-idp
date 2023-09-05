@@ -27,8 +27,6 @@ ENV REDIS_THROTTLE_URL redis://redis:6379/1
 ENV REDIS_URL redis://redis:6379
 ENV ASSET_HOST http://localhost:3000
 ENV DOMAIN_NAME localhost:3000
-ENV PIV_CAC_SERVICE_URL https://localhost:8443/
-ENV PIV_CAC_VERIFY_TOKEN_URL https://localhost:8443/ 
 
 # Prevent documentation installation
 RUN echo 'path-exclude=/usr/share/doc/*' > /etc/dpkg/dpkg.cfg.d/00_nodoc && \

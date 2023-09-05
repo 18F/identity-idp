@@ -70,30 +70,8 @@ RSpec.describe SecurityEventForm do
     context 'for authorization fraud events' do
       let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }
 
-      context 'reset_password_on_auth_fraud_event is enabled' do
-        before do
-          allow(IdentityConfig.store).to(
-            receive(:reset_password_on_auth_fraud_event).
-            and_return(true),
-          )
-        end
-
-        it 'resets the user password for authorization fraud detected events' do
-          expect { submit }.to(change { user.reload.encrypted_password_digest })
-        end
-      end
-
-      context 'reset_password_on_auth_fraud_event is disabled' do
-        before do
-          allow(IdentityConfig.store).to(
-            receive(:reset_password_on_auth_fraud_event).
-            and_return(false),
-          )
-        end
-
-        it 'does not reset the user password for authorization fraud detected events' do
-          expect { submit }.to_not(change { user.reload.encrypted_password_digest })
-        end
+      it 'resets the user password for authorization fraud detected events' do
+        expect { submit }.to(change { user.reload.encrypted_password_digest })
       end
 
       it 'creates a password_invalidated event' do

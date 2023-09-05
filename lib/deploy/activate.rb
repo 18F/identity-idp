@@ -6,10 +6,6 @@ require 'yaml'
 
 module Deploy
   class Activate
-    FILES_TO_LINK =
-      %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
-         partner_account_statuses partner_accounts service_providers]
-
     attr_reader :logger, :s3_client
 
     def initialize(
@@ -36,11 +32,34 @@ module Deploy
       )
     end
 
+    private
+
+    # Clone the private-but-not-secret git repo
+    def clone_idp_config
+      private_git_repo_url = ENV.fetch(
+        'IDP_private_config_repo',
+        'git@github.com:18F/identity-idp-config.git',
+      )
+      checkout_dir = File.join(root, idp_config_checkout_name)
+
+      cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
+      logger.info('+ ' + cmd.join(' '))
+      Subprocess.check_call(cmd)
+    end
+
+    def idp_config_checkout_name
+      'identity-idp-config'
+    end
+
     # Set up symlinks into identity-idp-config needed for the idp to make use
     # of relevant config and assets.
     #
     def setup_idp_config_symlinks
-      FILES_TO_LINK.each do |file|
+      files_to_link =
+        %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
+           partner_account_statuses partner_accounts service_providers]
+
+      files_to_link.each do |file|
         symlink_verbose(
           File.join(root, idp_config_checkout_name, "#{file}.yml"),
           File.join(root, "config/#{file}.yml"),
@@ -54,6 +73,7 @@ module Deploy
         File.join(root, 'certs/sp'),
       )
 
+      idp_logos_dir = File.join(root, 'public/assets/sp-logos')
       FileUtils.mkdir_p(idp_logos_dir)
 
       # Invalid symlinks can cause issues in the build process, so this step iterates through the
@@ -61,54 +81,21 @@ module Deploy
       Dir.entries(idp_logos_dir).each do |name|
         next if name.start_with?('.')
         target = File.join(idp_logos_dir, name)
-        FileUtils.rm(target) if File.symlink?(target) && !File.file?(target)
+        File.rm(target) if File.symlink?(target) && !File.file?(target)
       end
       # Public assets: sp-logos
       # Inject the logo files into the app's asset folder. deploy/activate is
       # run before deploy/build-post-config, so these will be picked up by the
       # rails asset pipeline.
-      Dir.entries(config_logos_dir).each do |name|
+      logos_dir = File.join(root, idp_config_checkout_name, 'public/assets/images/sp-logos')
+      Dir.entries(logos_dir).each do |name|
         next if name.start_with?('.')
-        target = File.join(config_logos_dir, name)
+        target = File.join(logos_dir, name)
         link = File.join(root, 'app/assets/images/sp-logos', name)
         symlink_verbose(target, link, force: true)
         link = File.join(root, 'public/assets/sp-logos', name)
         symlink_verbose(target, link, force: true)
       end
-    end
-
-    def root
-      @root || File.expand_path('../../../', __FILE__)
-    end
-
-    def idp_logos_dir
-      File.join(root, 'public/assets/sp-logos')
-    end
-
-    def config_logos_dir
-      File.join(checkout_dir, 'public/assets/images/sp-logos')
-    end
-
-    def checkout_dir
-      File.join(root, idp_config_checkout_name)
-    end
-
-    private
-
-    # Clone the private-but-not-secret git repo
-    def clone_idp_config
-      private_git_repo_url = ENV.fetch(
-        'IDP_private_config_repo',
-        'git@github.com:18F/identity-idp-config.git',
-      )
-
-      cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
-      logger.info('+ ' + cmd.join(' '))
-      Subprocess.check_call(cmd)
-    end
-
-    def idp_config_checkout_name
-      'identity-idp-config'
     end
 
     def symlink_verbose(dest, link, force: false)
@@ -135,6 +122,10 @@ module Deploy
       logger = Logger.new(STDOUT)
       logger.progname = 'deploy/activate'
       logger
+    end
+
+    def root
+      @root || File.expand_path('../../../', __FILE__)
     end
 
     def geolocation_db_path

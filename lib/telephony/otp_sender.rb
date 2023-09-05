@@ -96,7 +96,7 @@ module Telephony
     def otp_transformed_for_channel
       return otp if channel != :voice
 
-      [*otp.chars, ''].join(" <break time='#{Telephony.config.voice_pause_time}' /> ")
+      otp.chars.join(" <break time='#{Telephony.config.voice_pause_time}' /> ")
     end
 
     def wrap_in_ssml_if_needed(message)

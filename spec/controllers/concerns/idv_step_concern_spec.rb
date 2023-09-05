@@ -171,17 +171,13 @@ RSpec.describe 'IdvStepConcern' do
     end
 
     context 'the user has not completed the verify info step with an in-person enrollment' do
-      let(:selected_location_details) do
-        JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
-      end
-
       it 'redirects to the in-person verify info step' do
         idv_session.resolution_successful = nil
 
-        InPersonEnrollment.find_or_create_by(
+        ProofingComponent.find_or_create_by(
           user: user,
         ).update!(
-          selected_location_details: selected_location_details,
+          document_check: Idp::Constants::Vendors::USPS,
         )
 
         get :show

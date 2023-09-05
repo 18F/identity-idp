@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { request } from '@18f/identity-request';
 import { forceRedirect } from '@18f/identity-url';
-import AddressSearch, { transformKeys, snakeCase } from '@18f/identity-address-search';
+import { transformKeys, snakeCase } from '@18f/identity-address-search';
 import type { FormattedLocation } from '@18f/identity-address-search/types';
 import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+import AddressSearch from './address-search';
 
 export const LOCATIONS_URL = new URL(
   '/verify/in_person/usps_locations',

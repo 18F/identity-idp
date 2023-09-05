@@ -128,6 +128,8 @@ idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+idv_tmx_test_csp_disabled_emails: '[]'
+idv_tmx_test_js_disabled_emails: '[]'
 idv_sp_required: false
 in_person_capture_secondary_id_enabled: false
 in_person_public_address_search_enabled: false
@@ -207,7 +209,6 @@ max_mail_events_window_in_days: 30
 max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
-multi_region_kms_migration_jobs_enabled: true
 mx_timeout: 3
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
@@ -227,7 +228,7 @@ phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_service_check: true
 phone_recaptcha_mock_validator: true
 phone_recaptcha_score_threshold: 0.0
-phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
+phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0}'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -279,7 +280,6 @@ requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
 reset_password_email_window_in_minutes: 60
-reset_password_on_auth_fraud_event: true
 risc_notifications_local_enabled: false
 risc_notifications_active_job_enabled: false
 risc_notifications_rate_limit_interval: 60
@@ -330,7 +330,7 @@ version_headers_enabled: false
 use_dashboard_service_providers: false
 use_kms: false
 usps_auth_token_refresh_job_enabled: false
-usps_confirmation_max_days: 30
+usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_client_id: ''
 usps_ipp_root_url: ''
@@ -339,7 +339,6 @@ usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
 usps_ipp_transliteration_enabled: false
-usps_ipp_enrollment_status_update_email_address: 'no-reply@login.gov'
 get_usps_ready_proofing_results_job_cron: '0/10 * * * *'
 get_usps_waiting_proofing_results_job_cron: '0/30 * * * *'
 get_usps_proofing_results_job_cron: '0/30 * * * *'

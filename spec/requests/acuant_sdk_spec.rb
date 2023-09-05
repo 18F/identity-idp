@@ -12,11 +12,6 @@ RSpec.describe 'acuant sdk versions' do
   it 'has a public directory for the alternate version' do
     expect(acuant_entries).to include(alternate_version)
   end
-
-  it 'has between 2 and 3 versions' do
-    sdk_versions_count = acuant_entries.count { |entry| entry =~ /[0-9]+(\.[0-9]+)+/ }
-    expect(sdk_versions_count).to be_between(2, 3)
-  end
 end
 
 RSpec.describe 'requesting acuant SDK assets' do

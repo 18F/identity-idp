@@ -43,7 +43,7 @@
 
 <%= render TroubleshootingOptionsComponent.new do |c| %>
   <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-  <% if in_multi_mfa_selection_flow? %>
+  <% if local_assigns[:authentication_methods_setup_path].present? %>
     <% c.with_option(
          url: authentication_methods_setup_path,
        ).with_content(t('two_factor_authentication.login_options_link_text')) %>
@@ -59,7 +59,7 @@
      ).with_content(t('two_factor_authentication.learn_more')) %>
 <% end %>
 
-<% unless in_multi_mfa_selection_flow? %>
+<% unless local_assigns[:authentication_methods_setup_path].present? %>
   <%= render PageFooterComponent.new do %>
     <%= link_to t('links.cancel'), account_path %>
   <% end %>
