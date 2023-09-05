@@ -194,7 +194,6 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'logs analytics excluding invalid metadata' do
         form.submit
-
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
@@ -268,6 +267,16 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'includes client response errors' do
         response = form.submit
         expect(response.errors[:front]).to eq('glare')
+      end
+
+      it 'keeps fingerprints of failed image and triggers error when submit same image' do
+        form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+        capture_result = session.load_result
+        expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
+        response = form.submit
+        expect(response.errors).to have_key(:front)
+        expect(response.errors).to have_value(['Same failed image uploaded again'])
       end
     end
 
