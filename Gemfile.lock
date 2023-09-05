@@ -62,12 +62,6 @@ GEM
   specs:
     aasm (5.5.0)
       concurrent-ruby (~> 1.0)
-    actioncable (7.0.4.3)
-      actionpack (= 7.0.4.3)
-      activesupport (= 7.0.4.3)
-    actioncable (7.0.5.1)
-      actionpack (= 7.0.5.1)
-      activesupport (= 7.0.5.1)
     actioncable (7.0.7.2)
       actionpack (= 7.0.7.2)
       activesupport (= 7.0.7.2)
