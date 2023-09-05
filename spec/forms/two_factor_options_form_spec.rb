@@ -136,7 +136,6 @@ RSpec.describe TwoFactorOptionsForm do
 
     context 'when a user signs up with phishing resistant requirement' do
       let(:user) { build(:user) }
-      let(:enabled_mfa_methods_count) { 1 }
       let(:phishing_resistant_required) { true }
 
       context 'when user did not select an mfa' do
