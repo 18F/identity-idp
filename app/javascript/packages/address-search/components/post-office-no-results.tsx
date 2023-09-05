@@ -5,7 +5,7 @@ function PostOfficeNoResults({ address }) {
   return (
     <>
       <img
-        className="grid-col-2 inline-block veritcal-align-top margin-top-22"
+        className="grid-col-2 inline-block vertical-align-top margin-top-22"
         style={{ display: 'inline-block', marginTop: '20px', verticalAlign: 'top' }}
         alt="exclamation mark inside of map pin"
         src={getAssetPath('info-pin-map.svg')}
