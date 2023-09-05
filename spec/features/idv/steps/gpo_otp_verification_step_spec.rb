@@ -5,13 +5,6 @@ RSpec.feature 'idv gpo otp verification step' do
 
   let(:otp) { 'ABC123' }
   let(:profile) do
-    # fraud_state = 'fraud_none'
-    # if fraud_review_pending_timestamp.present?
-    #   fraud_state = 'fraud_review_pending'
-    # elsif fraud_rejection_timestamp.present?
-    #   fraud_state = 'fraud_rejection'
-    # end
-
     create(
       :profile,
       deactivation_reason: 3,

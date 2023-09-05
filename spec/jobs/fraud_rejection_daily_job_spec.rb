@@ -11,8 +11,8 @@ RSpec.describe FraudRejectionDailyJob do
   describe '#perform' do
     it 'rejects profiles which have been review pending for more than 30 days' do
       freeze_time do
-        create(:profile, fraud_state: 'fraud_review_pending', fraud_review_pending_at: 31.days.ago)
-        create(:profile, fraud_state: 'fraud_review_pending', fraud_review_pending_at: 20.days.ago)
+        create(:profile, :fraud_review_pending, fraud_review_pending_at: 31.days.ago)
+        create(:profile, :fraud_review_pending)
 
         rejected_profiles = Profile.fraud_rejection
 

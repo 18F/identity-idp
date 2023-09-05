@@ -925,9 +925,9 @@ RSpec.describe Profile do
       let(:profile) do
         create(
           :profile,
+          :fraud_review_pending,
           user: user,
           active: false,
-          fraud_state: 'fraud_review_pending',
           initiating_service_provider: sp,
         )
       end
@@ -1114,7 +1114,6 @@ RSpec.describe Profile do
         profile.bump_fraud_review_pending_timestamps # redundant
 
         expect(profile).to_not be_active
-
         expect(profile.fraud_review_pending?).to eq(true)
         expect(profile.fraud_rejection?).to eq(false)
         expect(profile.fraud_pending_reason).to eq('threatmetrix_review')
