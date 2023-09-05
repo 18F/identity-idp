@@ -218,6 +218,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(_user)
     accept_rules_of_use_url ||
+      user_suspended_url ||
       service_provider_mfa_setup_url ||
       add_piv_cac_setup_url ||
       fix_broken_personal_key_url ||
@@ -228,7 +229,6 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return user_two_factor_authentication_url unless user_fully_authenticated?
-    return user_please_call_url if current_user.suspended?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return url_for_pending_profile_reason if user_has_pending_profile?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
@@ -291,10 +291,6 @@ class ApplicationController < ActionController::Base
       two_factor_enabled?
   end
 
-  def confirm_user_is_not_suspended
-    redirect_to user_please_call_url if current_user.suspended?
-  end
-
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
@@ -348,6 +344,10 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_verify_sp_required_mfa
     redirect_to sp_required_mfa_verification_url
+  end
+
+  def user_suspended_url
+    user_please_call_url if current_user.suspended?
   end
 
   def sp_required_mfa_verification_url
