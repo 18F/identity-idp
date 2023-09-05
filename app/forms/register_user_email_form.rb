@@ -31,8 +31,7 @@ class RegisterUserEmailForm
 
   # Note: This may perform a lot of DNS requests...
   def normalized_email(email)
-    # TODO: Temporary sanitization...
-    return '' unless email.present?
+    return email.to_s if email.blank?
 
     EmailNormalizer.new(email).normalized_email
   rescue Mail::Field::IncompleteParseError
@@ -184,8 +183,8 @@ class RegisterUserEmailForm
 
   def email_address_record
     return @email_address_record if defined?(@email_address_record)
-    # !!!
-    @email_address_record = EmailAddress.find_with_email(normalized_email(email)) || EmailAddress.find_with_email(email)
+
+    @email_address_record = EmailAddress.find_with_email(normalized_email(email))
     @email_address_record
   end
 
