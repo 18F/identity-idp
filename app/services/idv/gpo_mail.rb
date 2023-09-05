@@ -42,16 +42,25 @@ module Idv
     attr_reader :current_user
 
     def rate_limiting_enabled?
-      (MAX_MAIL_EVENTS != 0 && MAIL_EVENTS_WINDOW_DAYS != 0) ||
-        MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0
+      window_limit_enabled? || last_not_too_recent_enabled?
+    end
+
+    def window_limit_enabled?
+      MAX_MAIL_EVENTS != 0 && MAIL_EVENTS_WINDOW_DAYS != 0
+    end
+
+    def last_not_too_recent_enabled?
+      MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS != 0
     end
 
     def too_many_mails_within_window?
-      number_of_emails_within(MAIL_EVENTS_WINDOW_DAYS.days) >= MAX_MAIL_EVENTS
+      window_limit_enabled? && 
+        number_of_emails_within(MAIL_EVENTS_WINDOW_DAYS.days) >= MAX_MAIL_EVENTS
     end
 
     def last_mail_too_recent?
-      number_of_emails_within(MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours) > 0
+      last_not_too_recent_enabled? &&
+        number_of_emails_within(MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours) > 0
     end
 
     def number_of_emails_within(time_window)
