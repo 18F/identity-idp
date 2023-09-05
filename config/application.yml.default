@@ -121,8 +121,8 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_acuant_sdk_version_default: '11.8.2'
-idv_acuant_sdk_version_alternate: '11.8.1'
+idv_acuant_sdk_version_default: '11.9.1'
+idv_acuant_sdk_version_alternate: '11.9.1'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
 idv_acuant_sdk_upgrade_a_b_testing_percent: 50
 idv_getting_started_a_b_testing: '{"welcome_default":100, "welcome_new":0, "getting_started":0}'
@@ -374,7 +374,8 @@ development:
   doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  domain_name: localhost:3000
+  domain_name: 192.168.1.6:3000 # 07-17-2023 for mobile dev
+  enable_load_testing_mode: true # 07-17-2023 for mobile dev
   enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -384,6 +385,7 @@ development:
   logins_per_ip_limit: 5
   logo_upload_enabled: true
   max_bad_passwords: 5
+  mailer_domain_name: 192.168.1.6:3000 # 07-17-2023 for mobile dev
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
