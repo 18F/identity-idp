@@ -15,7 +15,7 @@ RSpec.describe Idv::ByMail::LetterEnqueuedController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: come back later visited',
+        'IdV: letter enqueued visited',
         proofing_components: nil,
       )
 
