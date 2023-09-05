@@ -17,7 +17,7 @@ module Users
       form = WebauthnVisitForm.new(
         user: current_user,
         url_options: url_options,
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
