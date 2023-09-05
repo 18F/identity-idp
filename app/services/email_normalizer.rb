@@ -1,3 +1,5 @@
+# Note: Need to convert UTF-8 string to Punycode (for IDN domains)
+require 'addressable/idna'
 require 'resolv'
 
 # Class to help normalize email addresses for services like Gmail that let users
@@ -33,6 +35,8 @@ class EmailNormalizer
   end
 
   def mx_records(domain)
+    domain = Addressable::IDNA.to_ascii(domain)
+
     Resolv::DNS.open do |dns|
       dns.getresources(domain, Resolv::DNS::Resource::IN::MX).
         map { |r| r.exchange.to_s }
