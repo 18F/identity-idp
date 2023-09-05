@@ -34,7 +34,11 @@ function UnknownError({
     );
   }
   if (err) {
-    return <p key={err.message}>{err.message}</p>;
+    return (
+      <p className="display-inline" key={err.message}>
+        {err.message}
+      </p>
+    );
   }
   return <p />;
 }
