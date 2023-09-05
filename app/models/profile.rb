@@ -12,9 +12,6 @@ class Profile < ApplicationRecord
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
-  scope(:active, -> { where(active: true) })
-  scope(:verified, -> { where.not(verified_at: nil) })
-
   has_one :establishing_in_person_enrollment,
           -> { where(status: :establishing).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :profile_id, inverse_of: :profile,
@@ -25,7 +22,7 @@ class Profile < ApplicationRecord
     encryption_error: 2,
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
-    in_person_verification_pending: 5,
+    in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
   }
 
   enum fraud_pending_reason: {
@@ -35,6 +32,32 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  # Class methods
+  def self.active
+    where(active: true)
+  end
+
+  def self.verified
+    where.not(verified_at: nil)
+  end
+
+  def self.fraud_rejection
+    where.not(fraud_rejection_at: nil)
+  end
+
+  def self.fraud_review_pending
+    where.not(fraud_review_pending_at: nil)
+  end
+
+  def self.gpo_verification_pending
+    where.not(gpo_verification_pending_at: nil)
+  end
+
+  def self.in_person_verification_pending
+    where.not(in_person_verification_pending_at: nil)
+  end
+
+  # Instance methods
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end
@@ -147,16 +170,11 @@ class Profile < ApplicationRecord
   end
 
   def in_person_verification_pending?
-    # note: deactivation reason will be replaced by timestamp column
-    deactivation_reason == 'in_person_verification_pending' ||
-      in_person_verification_pending_at.present?
+    in_person_verification_pending_at.present?
   end
 
   def deactivate_for_in_person_verification
-    transaction do
-      deactivate(:in_person_verification_pending) # to be deprecated
-      update!(active: false, in_person_verification_pending_at: Time.zone.now)
-    end
+    update!(active: false, in_person_verification_pending_at: Time.zone.now)
   end
 
   def deactivate_for_gpo_verification

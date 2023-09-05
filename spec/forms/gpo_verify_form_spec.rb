@@ -147,8 +147,7 @@ RSpec.describe GpoVerifyForm do
           pending_profile.reload
 
           expect(pending_profile).not_to be_active
-          expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
-          expect(pending_profile.in_person_verification_pending_at).to be_present
+          expect(pending_profile.in_person_verification_pending?).to eq(true)
           expect(pending_profile.gpo_verification_pending?).to eq(false)
         end
 
