@@ -137,7 +137,19 @@ RSpec.describe Idv::GpoMail do
     end
 
     context 'when a user has a recent GPO request that is not attached to their pending profile' do
-      it 'returns false'
+      let(:user) do
+        user = create(:user, :deactivated_password_reset_profile, :with_pending_gpo_profile)
+
+        # at this point, the gpo is attached to the pending profile. Move it.
+        not_pending_profile = user.profiles.where.not(id: user.pending_profile.id).first
+        GpoConfirmationCode.first.update(profile: not_pending_profile)
+
+        user
+      end
+
+      it 'returns false' do
+        expect(subject.mail_spammed?).to be_falsey
+      end
     end
   end
 
