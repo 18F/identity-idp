@@ -137,6 +137,7 @@ module Idv
 
       @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
       @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
+      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
       @extra_attributes
     end
 
@@ -154,11 +155,6 @@ module Idv
         @back_image_fingerprint =
           Digest::SHA256.urlsafe_base64digest(back_image_bytes)
       end
-<<<<<<< ours
-
-      @extra_attributes.merge!(getting_started_ab_test_analytics_bucket)
-=======
->>>>>>> theirs
     end
 
     def remaining_attempts
@@ -216,8 +212,6 @@ module Idv
       end
     end
 
-<<<<<<< ours
-=======
     def validate_duplicate_images
       capture_result = document_capture_session&.load_result
       return unless capture_result
@@ -233,7 +227,6 @@ module Idv
         )
     end
 
->>>>>>> theirs
     def limit_if_rate_limited
       # return unless document_capture_session
       return unless rate_limited?
