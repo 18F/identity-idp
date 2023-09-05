@@ -25,16 +25,11 @@
   <div class="margin-top-5">
     <%= f.submit t('forms.piv_cac_setup.submit') %>
   </div>
+  <div class="margin-top-2">
+    <%= link_to t('forms.piv_cac_setup.no_thanks'),
+                new_user_session_url,
+                class: 'usa-button usa-button--wide usa-button--big usa-button--outline' %>
+  </div>
 <% end %>
-
-<%= render ButtonComponent.new(
-      action: ->(**tag_options, &block) do
-        button_to(login_add_piv_cac_prompt_path, **tag_options, method: :post, &block)
-      end,
-      big: true,
-      wide: true,
-      outline: true,
-      class: 'margin-top-2',
-    ).with_content(t('forms.piv_cac_setup.no_thanks')) %>
 
 <%= render 'shared/cancel', link: new_user_session_url %>

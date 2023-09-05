@@ -214,6 +214,10 @@ class ApplicationController < ActionController::Base
     return reactivate_account_url if user_needs_to_reactivate_account?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
+    signed_in_url
+  end
+
+  def signed_in_url
     return url_for_pending_profile_reason if user_has_pending_profile?
     account_path
   end

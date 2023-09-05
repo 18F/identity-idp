@@ -59,7 +59,7 @@ RSpec.feature 'Sign in' do
   scenario 'user opts to not add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     click_on t('forms.piv_cac_setup.no_thanks')
-    expect(current_path).to eq sign_up_completed_path
+    expect(current_path).to eq account_path
   end
 
   scenario 'user opts to add piv/cac card' do
