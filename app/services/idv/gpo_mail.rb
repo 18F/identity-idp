@@ -47,21 +47,16 @@ module Idv
     end
 
     def too_many_mails_within_window?
-      profile_hash = { user: current_user }
-      pending_profile_id = current_user&.pending_profile&.id
-      if pending_profile_id
-        profile_hash[:id] = pending_profile_id
-      end
-
-      GpoConfirmationCode.joins(:profile).
-        where(
-          updated_at: (MAIL_EVENTS_WINDOW_DAYS.days.ago..),
-          profile: profile_hash,
-        ).count >= MAX_MAIL_EVENTS
+      number_of_emails_within(MAIL_EVENTS_WINDOW_DAYS.days) >= MAX_MAIL_EVENTS
     end
 
     def last_mail_too_recent?
+      number_of_emails_within(MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours) > 0
+    end
+
+    def number_of_emails_within(time_window)
       profile_hash = { user: current_user }
+
       pending_profile_id = current_user&.pending_profile&.id
       if pending_profile_id
         profile_hash[:id] = pending_profile_id
@@ -69,9 +64,9 @@ module Idv
 
       GpoConfirmationCode.joins(:profile).
         where(
-          updated_at: (MINIMUM_WAIT_BEFORE_ANOTHER_USPS_LETTER_IN_HOURS.hours.ago..),
+          updated_at: (time_window.ago..),
           profile: profile_hash,
-        ).count > 0
+        ).count
     end
   end
 end
