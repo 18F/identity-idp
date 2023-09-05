@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'idv/gpo/index.html.erb' do
+RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   let(:resend_requested) { false }
   let(:user_needs_address_otp_verification) { false }
   let(:go_back_path) { nil }
