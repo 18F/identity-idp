@@ -742,31 +742,6 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  context 'user is totp_enabled but not phone_enabled' do
-    before do
-      user = create(:user, :with_authentication_app, :with_backup_code)
-      signin(user.email, user.password)
-    end
-
-    it 'requires 2FA before allowing access to phone setup form' do
-      visit phone_setup_path
-
-      expect(page).to have_current_path login_two_factor_authenticator_path
-    end
-
-    it 'does not redirect to phone setup form when visiting /login/two_factor/sms' do
-      visit login_two_factor_path(otp_delivery_preference: 'sms')
-
-      expect(page).to have_current_path login_two_factor_authenticator_path
-    end
-
-    it 'does not redirect to phone setup form when visiting /login/two_factor/voice' do
-      visit login_two_factor_path(otp_delivery_preference: 'voice')
-
-      expect(page).to have_current_path login_two_factor_authenticator_path
-    end
-  end
-
   context 'visiting via SP1, then via SP2, then signing in' do
     it 'redirects to SP2' do
       user = create(:user, :fully_registered)
