@@ -52,7 +52,7 @@ module Idv::ByMail
       @gpo_verify_form = build_gpo_verify_form
 
       result = @gpo_verify_form.submit
-      analytics.idv_gpo_verification_submitted(**result.to_h)
+      analytics.idv_enter_verify_by_mail_code_submitted(**result.to_h)
       irs_attempts_api_tracker.idv_gpo_verification_submitted(
         success: result.success?,
         failure_reason: irs_attempts_api_tracker.parse_failure_reason(result),

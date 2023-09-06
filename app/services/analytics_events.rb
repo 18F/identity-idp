@@ -875,6 +875,47 @@ module AnalyticsEvents
     track_event('IdV: doc auth welcome visited', **extra)
   end
 
+  # @identity.idp.previous_event_name Account verification submitted
+  # @identity.idp.previous_event_name IdV: GPO verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # @param [DateTime] enqueued_at When was this letter enqueued
+  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
+  # @param [Integer] letter_count How many letters did the user enqueue for this profile
+  # @param [Integer] attempts Number of attempts to enter a correct code
+  # @param [Boolean] pending_in_person_enrollment
+  # @param [Boolean] fraud_check_failed
+  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
+  #       report. Changes here should be reflected there.
+  # GPO verification submitted
+  def idv_enter_verify_by_mail_code_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    enqueued_at:,
+    which_letter:,
+    letter_count:,
+    attempts:,
+    pending_in_person_enrollment:,
+    fraud_check_failed:,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      enqueued_at: enqueued_at,
+      which_letter: which_letter,
+      letter_count: letter_count,
+      attempts: attempts,
+      pending_in_person_enrollment: pending_in_person_enrollment,
+      fraud_check_failed: fraud_check_failed,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name Account verification visited
   # @identity.idp.previous_event_name IdV: GPO verification visited
   # Visited page used to enter address verification code received via US mail.
@@ -1030,46 +1071,6 @@ module AnalyticsEvents
     track_event(
       'IdV: gpo request letter visited',
       letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Account verification submitted
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # @param [Hash] pii_like_keypaths
-  # @param [DateTime] enqueued_at When was this letter enqueued
-  # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
-  # @param [Integer] letter_count How many letters did the user enqueue for this profile
-  # @param [Integer] attempts Number of attempts to enter a correct code
-  # @param [Boolean] pending_in_person_enrollment
-  # @param [Boolean] fraud_check_failed
-  # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
-  #       report. Changes here should be reflected there.
-  # GPO verification submitted
-  def idv_gpo_verification_submitted(
-    success:,
-    errors:,
-    pii_like_keypaths:,
-    enqueued_at:,
-    which_letter:,
-    letter_count:,
-    attempts:,
-    pending_in_person_enrollment:,
-    fraud_check_failed:,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification submitted',
-      success: success,
-      errors: errors,
-      pii_like_keypaths: pii_like_keypaths,
-      enqueued_at: enqueued_at,
-      which_letter: which_letter,
-      letter_count: letter_count,
-      attempts: attempts,
-      pending_in_person_enrollment: pending_in_person_enrollment,
-      fraud_check_failed: fraud_check_failed,
       **extra,
     )
   end
