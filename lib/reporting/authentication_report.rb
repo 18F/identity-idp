@@ -28,7 +28,7 @@ module Reporting
       end
     end
 
-    # @param [String] isssuer
+    # @param [Array<String>] issuers
     # @param [Range<Time>] time_range
     def initialize(
       issuers:,

@@ -36,7 +36,7 @@ module Reporting
       IDV_FINAL_RESOLUTION_IN_PERSON = 'IdV: final resolution - In Person Proofing'
     end
 
-    # @param [String] isssuer
+    # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
       issuers:,
