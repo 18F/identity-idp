@@ -947,7 +947,7 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_prepare_step(user)
 
       # location page
-      complete_full_address_location_step
+      complete_location_step
 
       # state ID page
       complete_state_id_step(user)
