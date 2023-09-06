@@ -130,11 +130,6 @@ interface AcuantCameraUICallbacks {
    * Callback that occurs when there is a failure.
    */
   onError: (error?: AcuantCaptureFailureError, code?: string) => void;
-  /**
-   * Renamed in a SDK version change. Either 11.8.1 -> 11.8.2 or 11.8.2 -> 11.9.1
-   * `onError` is more current
-   */
-  onFailure: (error?: AcuantCaptureFailureError, code?: string) => void;
 }
 
 type AcuantCameraUIStart = (
@@ -336,7 +331,6 @@ function AcuantCamera({
           onCaptured: onCropStart,
           onCropped,
           onError: onImageCaptureFailure,
-          onFailure: onImageCaptureFailure,
         },
         onFailureCallbackWithOptions,
         textOptions,
