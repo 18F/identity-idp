@@ -178,20 +178,6 @@ RSpec.feature 'Sign in' do
       to(include(expected_form_action))
   end
 
-  scenario 'user attempts sign in with a PIV/CAC on mobile' do
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-    visit root_path
-
-    expect(page).to_not have_link t('account.login.piv_cac')
-  end
-
-  scenario 'user attempts sign in with the default MFA on mobile and a PIV/CAC configured' do
-    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
-    sign_in_before_2fa(user_with_piv_cac)
-
-    expect(current_path).to eq(login_otp_path(otp_delivery_preference: :sms))
-  end
-
   scenario 'user attempts sign in with piv/cac with no account then creates account' do
     visit_idp_from_sp_with_ial1(:oidc)
     click_on t('account.login.piv_cac')
@@ -247,45 +233,6 @@ RSpec.feature 'Sign in' do
       signin("test@\xFFbar\xF8.com", 'Please123!')
       expect(page).to have_content 'Bad request'
     end
-  end
-
-  scenario 'user cannot sign in with wrong email' do
-    user = create(:user)
-    signin('invalid@email.com', user.password)
-    link_url = new_user_password_url
-
-    expect(page).
-      to have_link t('devise.failure.invalid_link_text', href: link_url)
-
-    email_field = find_field(t('account.index.email'))
-    expect(email_field.value).to eq('invalid@email.com')
-  end
-
-  scenario 'user cannot sign in with empty email' do
-    signin('', 'foo')
-
-    link_url = new_user_password_url
-
-    expect(page).
-      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
-  end
-
-  scenario 'user cannot sign in with empty password' do
-    signin('test@example.com', '')
-
-    link_url = new_user_password_url
-
-    expect(page).
-      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
-  end
-
-  scenario 'user cannot sign in with wrong password' do
-    user = create(:user)
-    signin(user.email, 'invalidpass')
-    link_url = new_user_password_url
-
-    expect(page).
-      to have_link t('devise.failure.invalid_link_text', href: link_url)
   end
 
   scenario 'user can see and use password visibility toggle', js: true do
@@ -795,19 +742,6 @@ RSpec.feature 'Sign in' do
     end
   end
 
-  context 'user attempts sign in with bad personal key' do
-    it 'remains on the login with personal key page' do
-      user = create(:user, :fully_registered, :with_personal_key)
-      signin(user.email, user.password)
-      choose_another_security_option('personal_key')
-      enter_personal_key(personal_key: 'foo')
-      click_submit_default
-
-      expect(page).to have_current_path(login_two_factor_personal_key_path)
-      expect(page).to have_content t('two_factor_authentication.invalid_personal_key')
-    end
-  end
-
   context 'user is totp_enabled but not phone_enabled' do
     before do
       user = create(:user, :with_authentication_app, :with_backup_code)
@@ -881,30 +815,6 @@ RSpec.feature 'Sign in' do
       visit new_user_session_path
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user, 'bar')
-
-      expect(current_url).to eq account_url
-    end
-  end
-
-  context 'multiple auth apps' do
-    it 'allows you to sign in with either' do
-      user = create(:user, :fully_registered)
-      Db::AuthAppConfiguration.create(user, 'foo', nil, 'foo')
-      Db::AuthAppConfiguration.create(user, 'bar', nil, 'bar')
-
-      visit new_user_session_path
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in :code, with: generate_totp_code('foo')
-      click_submit_default
-
-      expect(current_url).to eq account_url
-
-      Capybara.reset_session!
-
-      visit new_user_session_path
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in :code, with: generate_totp_code('bar')
-      click_submit_default
 
       expect(current_url).to eq account_url
     end

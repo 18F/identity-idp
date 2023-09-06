@@ -59,6 +59,27 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
       end
     end
 
+    context 'with multiple TOTP configurations' do
+      it 'allows using codes generated from any registered TOTP configuration' do
+        user = create(:user, :fully_registered)
+        app1 = Db::AuthAppConfiguration.create(user, user.generate_totp_secret, nil, 'foo')
+        app2 = Db::AuthAppConfiguration.create(user, user.generate_totp_secret, nil, 'bar')
+
+        expect(@analytics).to receive(:track_event).
+          with('User marked authenticated', authentication_type: :valid_2fa).twice
+
+        sign_in_as_user(user)
+        post :create, params: { code: generate_totp_code(app1.otp_secret_key) }
+        expect(response).to redirect_to account_url
+
+        sign_out(user)
+
+        sign_in_as_user(user)
+        post :create, params: { code: generate_totp_code(app2.otp_secret_key) }
+        expect(response).to redirect_to account_url
+      end
+    end
+
     context 'when the user enters an invalid TOTP' do
       before do
         sign_in_before_2fa
