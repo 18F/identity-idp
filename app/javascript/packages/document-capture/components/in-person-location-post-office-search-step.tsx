@@ -7,6 +7,7 @@ import BackButton from './back-button';
 import AnalyticsContext from '../context/analytics';
 import { InPersonContext } from '../context';
 import UploadContext from '../context/upload';
+import InPersonLocationRedirectAlert from './in-person-location-redirect-alert';
 
 export const LOCATIONS_URL = new URL(
   '/verify/in_person/usps_locations',
@@ -100,6 +101,7 @@ function InPersonLocationPostOfficeSearchStep({ onChange, toPreviousStep, regist
         disabled={disabledAddressSearch}
         locationsURL={LOCATIONS_URL}
         addressSearchURL={ADDRESSES_URL}
+        infoAlert={InPersonLocationRedirectAlert}
       />
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>

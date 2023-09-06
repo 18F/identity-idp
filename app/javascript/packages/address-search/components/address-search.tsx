@@ -10,6 +10,7 @@ function AddressSearch({
   locationsURL,
   addressSearchURL,
   handleLocationSelect,
+  infoAlert,
   disabled,
   onFoundLocations,
 }) {
@@ -47,6 +48,7 @@ function AddressSearch({
           locations={locationResults}
           onSelect={handleLocationSelect}
           address={foundAddress?.address || ''}
+          infoAlert={infoAlert}
         />
       )}
     </>
