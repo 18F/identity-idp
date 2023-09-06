@@ -28,7 +28,6 @@ module Idv
 
       def update
         @error_message = nil
-
         incoming_ssn = idv_session.ssn || flow_session.dig(:pii_from_user, :ssn)
         @ssn_form = Idv::SsnFormatForm.new(current_user, incoming_ssn)
         ssn = params.require(:doc_auth).permit(:ssn)
@@ -44,6 +43,7 @@ module Idv
 
         if form_response.success?
           flow_session[:pii_from_user][:ssn] = params[:doc_auth][:ssn]
+          idv_session.ssn = params[:doc_auth][:ssn]
           idv_session.invalidate_steps_after_ssn!
           redirect_to idv_in_person_verify_info_url
         else
@@ -70,7 +70,7 @@ module Idv
       end
 
       def confirm_repeat_ssn
-        return if !pii_from_user[:ssn]
+        return if !idv_session.ssn && !pii_from_user[:ssn]
         return if request.referer == idv_in_person_verify_info_url
         redirect_to idv_in_person_verify_info_url
       end
