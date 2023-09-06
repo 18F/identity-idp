@@ -993,7 +993,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: come back later visited
   def idv_gpo_letter_enqueued_visit(proofing_components: nil, **extra)
     track_event(
-      'IdV: letter enqueued visited',
+      'IdV: gpo letter enqueued visited',
       proofing_components: proofing_components,
       **extra,
     )
