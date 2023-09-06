@@ -1044,35 +1044,10 @@ module AnalyticsEvents
     track_event('IdV: gpo confirm start over visited')
   end
 
-  # The user visited the "come back later" page shown during the GPO mailing flow
-  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
-  # @identity.idp.previous_event_name IdV: come back later visited
-  def idv_gpo_letter_enqueued_visit(proofing_components: nil, **extra)
-    track_event(
-      'IdV: gpo letter enqueued visited',
-      proofing_components: proofing_components,
-      **extra,
-    )
-  end
-
   # A GPO reminder email was sent to the user
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
-  end
-
-  # @param [Boolean] letter_already_sent
-  # GPO "request letter" page visited
-  # @identity.idp.previous_event_name IdV: USPS address visited
-  def idv_gpo_request_letter_visited(
-    letter_already_sent:,
-    **extra
-  )
-    track_event(
-      'IdV: gpo request letter visited',
-      letter_already_sent: letter_already_sent,
-      **extra,
-    )
   end
 
   # Tracks emails that are initiated during InPerson::EmailReminderJob
@@ -1907,6 +1882,17 @@ module AnalyticsEvents
     track_event('IdV: intro visited')
   end
 
+  # The user visited the "come back later" page shown during the GPO mailing flow
+  # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
+  # @identity.idp.previous_event_name IdV: come back later visited
+  def idv_letter_enqueued_visit(proofing_components: nil, **extra)
+    track_event(
+      'IdV: letter enqueued visited',
+      proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
   # Tracks when the user visits Mail only warning when vendor_status_sms is set to full_outage
   def idv_mail_only_warning_visited(**extra)
     track_event(
@@ -2311,6 +2297,20 @@ module AnalyticsEvents
     track_event(
       'Proofing Resolution Result Missing',
       proofing_components: proofing_components,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO "request letter" page visited
+  # @identity.idp.previous_event_name IdV: USPS address visited
+  def idv_request_letter_visited(
+    letter_already_sent:,
+    **extra
+  )
+    track_event(
+      'IdV: request letter visited',
+      letter_already_sent: letter_already_sent,
       **extra,
     )
   end

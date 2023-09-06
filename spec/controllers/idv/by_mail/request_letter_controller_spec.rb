@@ -39,7 +39,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
       expect(response).to have_http_status(200)
       expect(@analytics).to have_logged_event(
-        'IdV: gpo request letter visited',
+        'IdV: request letter visited',
         letter_already_sent: false,
       )
     end
@@ -84,7 +84,7 @@ RSpec.describe Idv::ByMail::RequestLetterController do
         get :index
 
         expect(@analytics).to have_logged_event(
-          'IdV: gpo request letter visited',
+          'IdV: request letter visited',
           letter_already_sent: true,
         )
       end
