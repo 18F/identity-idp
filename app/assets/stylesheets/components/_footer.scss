@@ -23,6 +23,16 @@ body {
     flex-direction: row;
   }
 
+  @include at-media-max('tablet') {
+    .footer__links {
+      flex-wrap: wrap;
+    }
+    a {
+      padding: 0.5rem 0;
+    }
+    font-size: 0.9rem;
+  }
+
   a {
     text-decoration: none;
 
