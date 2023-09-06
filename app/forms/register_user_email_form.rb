@@ -29,11 +29,17 @@ class RegisterUserEmailForm
     email_address&.email
   end
 
-  # Note: This may perform a lot of DNS requests...
+  def email_fingerprint
+    email_address&.email_fingerprint
+  end
+
   def normalized_email(email)
     return @normalized_email if defined?(@normalized_email)
 
-    @normalized_email = email.blank? ? email.to_s : EmailNormalizer.new(email).normalized_email
+    @normalized_email = email.blank? ? email.to_s : EmailNormalizer.new(
+      email,
+      google_mx_lookup: false,
+    ).normalized_email
   rescue Mail::Field::IncompleteParseError
     email
   end
@@ -129,7 +135,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_unconfirmed_email(request_id)
     rate_limiter = RateLimiter.new(
-      target: email,
+      target: email_fingerprint,
       rate_limit_type: :reg_unconfirmed_email,
     )
 
@@ -150,7 +156,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_confirmed_email
     rate_limiter = RateLimiter.new(
-      target: email,
+      target: email_fingerprint,
       rate_limit_type: :reg_confirmed_email,
     )
 
