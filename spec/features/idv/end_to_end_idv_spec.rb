@@ -273,7 +273,7 @@ RSpec.describe 'Identity verification', :js do
   end
 
   def validate_come_back_later_page
-    expect(page).to have_current_path(idv_letter_enqueued_path)
+    expect(page).to have_current_path(idv_gpo_letter_enqueued_path)
     expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
   end
 

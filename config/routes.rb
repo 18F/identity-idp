@@ -400,7 +400,7 @@ Rails.application.routes.draw do
         put '/by_mail/request_letter' => 'by_mail/request_letter#create'
       end
 
-      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show'
+      get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :gpo_letter_enqueued
 
       # Temporary redirects etc. to support GPO route renaming in the 50/50 state
       get '/usps' => redirect('/verify/by_mail/request_letter')

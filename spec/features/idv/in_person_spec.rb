@@ -392,7 +392,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(page).to have_current_path(idv_letter_enqueued_path)
+      expect(page).to have_current_path(idv_gpo_letter_enqueued_path)
 
       click_idv_continue
       expect(page).to have_current_path(account_path)

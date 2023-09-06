@@ -59,7 +59,7 @@ RSpec.shared_examples 'gpo otp verification' do
 
     expect(GpoConfirmation.count).to eq(1)
     expect(GpoConfirmationCode.count).to eq(1)
-    expect(current_path).to eq idv_letter_enqueued_path
+    expect(current_path).to eq idv_gpo_letter_enqueued_path
 
     confirmation_code = GpoConfirmationCode.first
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)

@@ -33,7 +33,7 @@ RSpec.shared_examples 'clearing and restarting idv' do
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
     expect(page).to have_content(t('idv.titles.come_back_later'))
-    expect(page).to have_current_path(idv_letter_enqueued_path)
+    expect(page).to have_current_path(idv_gpo_letter_enqueued_path)
     expect(user.reload.identity_verified?).to eq(false)
     expect(User.find(user.id).pending_profile?).to eq(true)
     expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')

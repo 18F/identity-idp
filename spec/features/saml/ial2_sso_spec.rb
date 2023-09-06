@@ -108,7 +108,7 @@ RSpec.feature 'IAL2 Single Sign On' do
           click_button(t('idv.buttons.mail.resend'))
 
           expect(user.events.gpo_mail_sent.size).to eq 2
-          expect(current_path).to eq(idv_letter_enqueued_path)
+          expect(current_path).to eq(idv_gpo_letter_enqueued_path)
         end
 
         it 'after signing out' do
@@ -129,7 +129,7 @@ RSpec.feature 'IAL2 Single Sign On' do
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(current_path).to eq(idv_letter_enqueued_path)
+          expect(current_path).to eq(idv_gpo_letter_enqueued_path)
         end
       end
     end
