@@ -7,7 +7,7 @@ function NoInPersonLocationsDisplay({ address }) {
       <img
         className="grid-col-2"
         style={{ marginTop: '30px' }}
-        alt="exclamation mark inside of map pin"
+        alt={t('image_description.info_pin_map')}
         width={65}
         height={65}
         src={getAssetPath('info-pin-map.svg')}
