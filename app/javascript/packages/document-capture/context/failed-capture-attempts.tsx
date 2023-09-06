@@ -8,6 +8,14 @@ interface CaptureAttemptMetadata {
   isAssessedAsUnsupported: boolean;
 }
 
+interface UploadedImageFingerprints {
+  /**
+   * array url safe encoded base64  sha256 digest
+   */
+  front: string[] | null;
+  back: string[] | null;
+}
+
 interface FailedCaptureAttemptsContextInterface {
   /**
    * Current number of failed capture attempts
@@ -23,7 +31,7 @@ interface FailedCaptureAttemptsContextInterface {
    * Callback when submission attempt fails.
    * Used to increment the failedSubmissionAttempts
    */
-  onFailedSubmissionAttempt: () => void;
+  onFailedSubmissionAttempt: (failedImageFingerprints: UploadedImageFingerprints) => void;
 
   /**
    * The maximum number of failed Acuant capture attempts
@@ -58,6 +66,8 @@ interface FailedCaptureAttemptsContextInterface {
    * after maxCaptureAttemptsBeforeNativeCamera number of failed attempts
    */
   forceNativeCamera: boolean;
+
+  failedSubmissionImageFingerprints: UploadedImageFingerprints;
 }
 
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
@@ -76,6 +86,7 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
+  failedSubmissionImageFingerprints: { front: [], back: [] },
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
@@ -98,13 +109,17 @@ function FailedCaptureAttemptsContextProvider({
     useCounter();
   const [failedSubmissionAttempts, incrementFailedSubmissionAttempts] = useCounter();
 
+  const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
+    useState<UploadedImageFingerprints>({ front: [], back: [] });
+
   function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
     incrementFailedCaptureAttempts();
     setLastAttemptMetadata(metadata);
   }
 
-  function onFailedSubmissionAttempt() {
+  function onFailedSubmissionAttempt(failedFingerprints: UploadedImageFingerprints) {
     incrementFailedSubmissionAttempts();
+    setFailedSubmissionImageFingerprints(failedFingerprints);
   }
 
   const forceNativeCamera =
@@ -123,6 +138,7 @@ function FailedCaptureAttemptsContextProvider({
         maxSubmissionAttemptsBeforeNativeCamera,
         lastAttemptMetadata,
         forceNativeCamera,
+        failedSubmissionImageFingerprints,
       }}
     >
       {children}
@@ -132,3 +148,4 @@ function FailedCaptureAttemptsContextProvider({
 
 export default FailedCaptureAttemptsContext;
 export { FailedCaptureAttemptsContextProvider as Provider };
+export { UploadedImageFingerprints };

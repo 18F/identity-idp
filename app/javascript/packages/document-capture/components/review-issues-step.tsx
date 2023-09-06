@@ -41,6 +41,8 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
   captureHints?: boolean;
 
   pii?: PII;
+
+  failedImageFingerprints?: { front: string[] | null; back: string[] | null };
 }
 
 function ReviewIssuesStep({
@@ -55,6 +57,7 @@ function ReviewIssuesStep({
   isFailedDocType = false,
   pii,
   captureHints = false,
+  failedImageFingerprints = { front: [], back: [] },
 }: ReviewIssuesStepProps) {
   const { trackEvent } = useContext(AnalyticsContext);
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
@@ -62,7 +65,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   const { onFailedSubmissionAttempt } = useContext(FailedCaptureAttemptsContext);
-  useEffect(() => onFailedSubmissionAttempt(), []);
+  useEffect(() => onFailedSubmissionAttempt(failedImageFingerprints), []);
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
 

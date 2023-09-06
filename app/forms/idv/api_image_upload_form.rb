@@ -33,8 +33,6 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
-        else
-          store_failed_images(client_response)
         end
       end
 
@@ -44,8 +42,9 @@ module Idv
         doc_pii_response: doc_pii_response,
       )
 
+      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
+      response.extra[:failed_image_fingerprints] = failed_fingerprints
       track_event(response)
-
       response
     end
 
@@ -95,7 +94,6 @@ module Idv
         client_response: response,
         vendor_request_time_in_ms: timer.results['vendor_request'],
       )
-
       response
     end
 
@@ -396,8 +394,16 @@ module Idv
       )
     end
 
-    def store_failed_images(client_response)
-      if !client_response.network_error?
+    ##
+    # Store failed image fingerprints in document_capture_session_result
+    # when client_response is not successful and not a network error
+    # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
+    # @param [Object] client_response
+    # @param [Object] doc_pii_response
+    # @return [Object] latest failed fingerprints
+    def store_failed_images(client_response, doc_pii_response)
+      # doc auth failed due to non network error or doc_pii is not valid
+      if (!client_response.success? && !client_response.network_error?)
         errors_hash = client_response.errors&.to_h || {}
         side_error = !!errors_hash[:front] || !!errors_hash[:back]
         front_fingerprint = (errors_hash.with_indifferent_access.dig(:front) || !side_error) ?
@@ -406,7 +412,18 @@ module Idv
                               extra_attributes[:back_image_fingerprint] : nil
         document_capture_session.
           store_failed_auth_image_fingerprint(front_fingerprint, back_fingerprint)
+      elsif !doc_pii_response.success?
+        store_failed_auth_image_fingerprint(
+          extra_attributes[:front_image_fingerprint],
+          extra_attributes[:back_image_fingerprint],
+        )
       end
+      # retrieve updated data from session
+      captured_result = document_capture_session&.load_result
+      {
+        front: captured_result&.failed_front_image_fingerprints || [],
+        back: captured_result&.failed_back_image_fingerprints || [],
+      }
     end
   end
 end

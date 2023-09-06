@@ -24,6 +24,7 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_failed_auth_image_fingerprint(front_image_fingerprint, back_image_fingerprint)
+    puts("Store failed fingerprints front:#{front_image_fingerprint}     back: #{back_image_fingerprint}")
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
