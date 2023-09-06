@@ -56,6 +56,16 @@ RSpec.describe EmailNormalizer do
           expect(normalized_email).to eq('foobarbaz@example.com')
         end
       end
+
+      context 'with mx lookup disabled' do
+        subject(:normalizer) { EmailNormalizer.new(email, google_mx_lookup: false) }
+
+        it 'does not make any network requests' do
+          expect(Resolv::DNS).to_not receive(:open)
+
+          expect(normalized_email).to eq(email)
+        end
+      end
     end
   end
 end
