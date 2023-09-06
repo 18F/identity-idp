@@ -76,7 +76,7 @@ These instructions work only if your development computer is an Apple product. Y
 
 3. Turn on Web Inspector for your phone browser
     - Safari: On your iPhone, go to **Settings → Safari → Advanced** and turn on Web Inspector. Make sure JavaScript is also on.
-    - Chrome: On your iPhone, **Chrome App → ... → Settings → Content Settings** turn on Web Inspector.
+    - Chrome: On your iPhone, go to **Chrome App → ... → Settings → Content Settings** and turn on Web Inspector.
 
 4. Plug your iPhone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Trust This Computer?** click to trust it.
 
