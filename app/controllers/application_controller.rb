@@ -275,10 +275,6 @@ class ApplicationController < ActionController::Base
       two_factor_enabled?
   end
 
-  def confirm_user_is_not_suspended
-    redirect_to user_suspended_url if user_suspended_url
-  end
-
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
