@@ -1,7 +1,7 @@
 import { getAssetPath } from '@18f/identity-assets';
 import { t } from '@18f/identity-i18n';
 
-function PostOfficeNoResults({ address }) {
+function NoInPersonLocationsDisplay({ address }) {
   return (
     <div className="grid-row grid-gap grid-gap-2" >
       <img
@@ -22,4 +22,4 @@ function PostOfficeNoResults({ address }) {
   );
 }
 
-export default PostOfficeNoResults;
+export default NoInPersonLocationsDisplay;
