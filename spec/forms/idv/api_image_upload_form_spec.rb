@@ -320,6 +320,15 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
       end
+      it 'keeps fingerprints of failed image and triggers error when submit same image' do
+        form.submit
+        session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+        capture_result = session.load_result
+        expect(capture_result.failed_front_image_fingerprints).not_to match_array([])
+        response = form.submit
+        expect(response.errors).to have_key(:front)
+        expect(response.errors).to have_value(['Same failed image uploaded again'])
+      end
     end
 
     describe 'encrypted document storage' do

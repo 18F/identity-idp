@@ -403,7 +403,7 @@ module Idv
     # @return [Object] latest failed fingerprints
     def store_failed_images(client_response, doc_pii_response)
       # doc auth failed due to non network error or doc_pii is not valid
-      if (!client_response.success? && !client_response.network_error?)
+      if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
         side_error = !!errors_hash[:front] || !!errors_hash[:back]
         front_fingerprint = (errors_hash.with_indifferent_access.dig(:front) || !side_error) ?
@@ -412,8 +412,8 @@ module Idv
                               extra_attributes[:back_image_fingerprint] : nil
         document_capture_session.
           store_failed_auth_image_fingerprint(front_fingerprint, back_fingerprint)
-      elsif !doc_pii_response.success?
-        store_failed_auth_image_fingerprint(
+      elsif doc_pii_response && !doc_pii_response.success?
+        document_capture_session.store_failed_auth_image_fingerprint(
           extra_attributes[:front_image_fingerprint],
           extra_attributes[:back_image_fingerprint],
         )
