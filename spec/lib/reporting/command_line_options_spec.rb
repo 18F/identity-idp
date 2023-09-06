@@ -46,7 +46,23 @@ RSpec.describe Reporting::CommandLineOptions do
       it 'returns the parsed options' do
         expect(parse!).to match(
           time_range: Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
-          issuer: issuer,
+          issuers: [issuer],
+          verbose: false,
+          progress: true,
+          slice: 3.hours,
+          threads: 5,
+        )
+      end
+    end
+
+    context 'with --date and multiple --issuer tags' do
+      let(:argv) { %W[--date 2023-1-1 --issuer #{issuer} --issuer #{issuer2}] }
+      let(:issuer2) { 'my:other:example:issuer' }
+
+      it 'returns the parsed options' do
+        expect(parse!).to match(
+          time_range: Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
+          issuers: [issuer, issuer2],
           verbose: false,
           progress: true,
           slice: 3.hours,
@@ -72,7 +88,7 @@ RSpec.describe Reporting::CommandLineOptions do
         it 'returns the parsed options' do
           expect(parse!).to match(
             time_range: Date.new(2023, 1, 1).in_time_zone('UTC').all_day,
-            issuer: nil,
+            issuers: [],
             verbose: false,
             progress: true,
             slice: 3.hours,
