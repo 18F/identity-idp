@@ -988,6 +988,21 @@ module AnalyticsEvents
     track_event('IdV: gpo confirm start over visited')
   end
 
+  # @identity.idp.previous_event_name Account verification visited
+  # @identity.idp.previous_event_name IdV: GPO verification visited
+  # Visited page used to enter address verification code received via US mail.
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_gpo_enter_code_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: gpo enter code visited',
+      source: source,
+      **extra,
+    )
+  end
+
   # The user visited the "come back later" page shown during the GPO mailing flow
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # @identity.idp.previous_event_name IdV: come back later visited
@@ -1055,20 +1070,6 @@ module AnalyticsEvents
       attempts: attempts,
       pending_in_person_enrollment: pending_in_person_enrollment,
       fraud_check_failed: fraud_check_failed,
-      **extra,
-    )
-  end
-
-  # @identity.idp.previous_event_name Account verification visited
-  # GPO verification visited
-  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
-  def idv_gpo_verification_visited(
-    source: nil,
-    **extra
-  )
-    track_event(
-      'IdV: GPO verification visited',
-      source: source,
       **extra,
     )
   end
