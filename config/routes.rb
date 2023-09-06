@@ -390,8 +390,8 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
-      get '/by_mail' => 'by_mail/enter_code#index', as: :gpo_verify
-      post '/by_mail' => 'by_mail/enter_code#create'
+      get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :gpo_verify
+      post '/by_mail/enter_code' => 'by_mail/enter_code#create'
       get '/by_mail/confirm_start_over' => 'confirm_start_over#index',
           as: :confirm_start_over
 
@@ -403,6 +403,8 @@ Rails.application.routes.draw do
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :gpo_letter_enqueued
 
       # Temporary redirects etc. to support GPO route renaming in the 50/50 state
+      get '/by_mail' => redirect('/verify/by_mail/enter_code')
+      post '/by_mail' => 'by_mail/enter_code#create'
       get '/usps' => redirect('/verify/by_mail/request_letter')
       put '/usps' => 'by_mail/request_letter#create' if FeatureManagement.gpo_verification_enabled?
       get '/come_back_later' => redirect('/by_mail/letter_enqueued')
