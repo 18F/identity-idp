@@ -515,7 +515,6 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
-        # profile.fraud_review
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: fraud_check_pending',
