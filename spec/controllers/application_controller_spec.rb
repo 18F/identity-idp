@@ -210,6 +210,26 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#user_suspended_url' do
+    before { sign_in(user) }
+
+    context 'when user is suspended' do
+      let(:user) { create(:user, :suspended) }
+
+      it 'is the please call url' do
+        expect(controller.send(:user_suspended_url)).to eq(user_please_call_url)
+      end
+    end
+
+    context 'when user is not suspended' do
+      let(:user) { create(:user) }
+
+      it 'is nil' do
+        expect(controller.send(:user_suspended_url)).to be_nil
+      end
+    end
+  end
+
   describe '#confirm_two_factor_authenticated' do
     controller do
       before_action :confirm_two_factor_authenticated

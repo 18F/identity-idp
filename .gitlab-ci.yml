@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:6915b54a913ebcb9066fdfaa88c3d42bda1f4505cfb59b9d5848576705954621'
+  IDP_CI_SHA: 'sha256:d085544aae118252860ebe72522457e55248dad8883b6451e6ed10340f4dffe9'
   PKI_IMAGE_TAG: 'main'
 
 default:
@@ -468,9 +468,10 @@ ecr-scan:
     - >
       while true; do
         SCAN_STATUS=$(aws ecr describe-image-scan-findings --repository-name identity-idp/review --image-id imageTag=$CI_COMMIT_SHA --query 'imageScanStatus.status' --output text || true)
-        if [ "$SCAN_STATUS" == "ACTIVE" ]; then
+        if echo "$SCAN_STATUS" | grep -q "ACTIVE"; then
+          echo "Scan Complete"
           break
-        elif [ "$SCAN_STATUS" == "FAILED" ]; then
+        elif echo "$SCAN_STATUS" | grep -q "FAILED"; then
           echo "ECR scan failed"
           exit 1
         else

@@ -14,7 +14,7 @@ module Reporting
   class IdentityVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuer, :time_range
+    attr_reader :issuers, :time_range
 
     module Events
       IDV_DOC_AUTH_WELCOME = 'IdV: doc auth welcome visited'
@@ -36,17 +36,17 @@ module Reporting
       IDV_FINAL_RESOLUTION_IN_PERSON = 'IdV: final resolution - In Person Proofing'
     end
 
-    # @param [String] isssuer
+    # @param [Array<String>] issuers
     # @param [Range<Time>] date
     def initialize(
-      issuer:,
+      issuers:,
       time_range:,
       verbose: false,
       progress: false,
       slice: 3.hours,
       threads: 5
     )
-      @issuer = issuer
+      @issuers = issuers
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -66,7 +66,7 @@ module Reporting
       CSV.generate do |csv|
         csv << ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"]
         csv << ['Report Generated', Date.today.to_s] # rubocop:disable Rails/Date
-        csv << ['Issuer', issuer] if issuer.present?
+        csv << ['Issuer', issuers.join(', ')] if issuers.present?
         csv << []
         csv << ['Metric', '# of Users']
         csv << []
@@ -174,7 +174,7 @@ module Reporting
 
     def query
       params = {
-        issuer: issuer && quote(issuer),
+        issuers: issuers.present? && quote(issuers),
         event_names: quote(Events.all_events),
         usps_enrollment_status_updated: quote(Events::USPS_ENROLLMENT_STATUS_UPDATED),
         gpo_verification_submitted: quote(Events::GPO_VERIFICATION_SUBMITTED),
@@ -185,14 +185,19 @@ module Reporting
         fields
             name
           , properties.user_id AS user_id
-        #{issuer.present? ? '| filter properties.service_provider = %{issuer}' : ''}
+        #{issuers.present? ? '| filter properties.service_provider IN %{issuers}' : ''}
         | filter name in %{event_names}
         | filter (name = %{usps_enrollment_status_updated} and properties.event_properties.passed = 1)
                  or (name != %{usps_enrollment_status_updated})
         | filter (name = %{gpo_verification_submitted} and properties.event_properties.success = 1 and !properties.event_properties.pending_in_person_enrollment and !properties.event_properties.fraud_check_failed)
                  or (name != %{gpo_verification_submitted})
-        | fields properties.event_properties.fraud_review_pending as fraud_review_pending, properties.event_properties.gpo_verification_pending as gpo_verification_pending, properties.event_properties.in_person_verification_pending as in_person_verification_pending
-        | fields !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending as identity_verified
+        | fields
+            coalesce(properties.event_properties.fraud_review_pending, 0) AS fraud_review_pending
+          , coalesce(properties.event_properties.gpo_verification_pending, 0) AS gpo_verification_pending
+          , coalesce(properties.event_properties.in_person_verification_pending, 0) AS in_person_verification_pending
+          , ispresent(properties.event_properties.deactivation_reason) AS has_other_deactivation_reason
+        | fields
+            !fraud_review_pending and !gpo_verification_pending and !in_person_verification_pending and !has_other_deactivation_reason AS identity_verified
         | limit 10000
       QUERY
     end

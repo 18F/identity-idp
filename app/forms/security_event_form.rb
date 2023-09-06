@@ -43,7 +43,8 @@ class SecurityEventForm
         occurred_at: occurred_at,
       )
 
-      if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED
+      if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED &&
+         IdentityConfig.store.reset_password_on_auth_fraud_event
         ResetUserPassword.new(user: user).call
       end
     end
@@ -301,6 +302,7 @@ class SecurityEventForm
       error_code: error_code,
       jti: jti,
       user_id: user&.uuid,
+      event_type: event_type,
     }
   end
 end

@@ -62,6 +62,21 @@ RSpec.feature 'Sign in' do
     expect(current_path).to eq account_path
   end
 
+  scenario 'user is suspended, gets show please call page after 2fa' do
+    user = create(:user, :fully_registered, :suspended)
+    service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
+    IdentityLinker.new(user, service_provider).link_identity(
+      verified_attributes: %w[openid email],
+    )
+
+    visit_idp_from_sp_with_ial1(:oidc)
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    expect(current_path).to eq(user_please_call_path)
+  end
+
   scenario 'user opts to add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     nonce = piv_cac_nonce_from_form_action

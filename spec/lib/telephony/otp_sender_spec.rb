@@ -170,7 +170,7 @@ RSpec.describe Telephony::OtpSender do
               <prosody rate='slow'>
                 Hello! Your 6-digit #{APP_NAME} one-time code is,
                 1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6  <break time='0.5s' /> .
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
@@ -191,7 +191,7 @@ RSpec.describe Telephony::OtpSender do
               <prosody rate='slow'>
                 Hello! Your 6-digit #{APP_NAME} one-time code is,
                 1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6 <break time='0.5s' /> .
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
@@ -215,7 +215,7 @@ RSpec.describe Telephony::OtpSender do
               <prosody rate='slow'>
                 Hello! Your 6-character #{APP_NAME} one-time code is,
                 1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' />
-                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6.
+                4 <break time='0.5s' /> 5 <break time='0.5s' /> 6 <break time='0.5s' /> .
           XML
 
           adapter = instance_double(Telephony::Pinpoint::VoiceSender)
@@ -272,7 +272,7 @@ RSpec.describe Telephony::OtpSender do
           expect(otp_transformed_for_channel).
             to eq(
               "1 <break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' /> 4 "\
-                  "<break time='0.5s' /> 5 <break time='0.5s' /> 6",
+                  "<break time='0.5s' /> 5 <break time='0.5s' /> 6 <break time='0.5s' /> ",
             )
         end
       end
@@ -284,7 +284,7 @@ RSpec.describe Telephony::OtpSender do
           expect(otp_transformed_for_channel).
             to eq(
               "A <break time='0.5s' /> B <break time='0.5s' /> C <break time='0.5s' /> 1 "\
-                  "<break time='0.5s' /> 2 <break time='0.5s' /> 3",
+                  "<break time='0.5s' /> 2 <break time='0.5s' /> 3 <break time='0.5s' /> ",
             )
         end
       end
