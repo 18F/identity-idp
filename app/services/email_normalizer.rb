@@ -26,7 +26,11 @@ class EmailNormalizer
   private
 
   def gmail?
-    email.domain == 'gmail.com' || google_mx_lookup && google_mx_record?
+    email.domain == 'gmail.com' || (google_mx_lookup? && google_mx_record?)
+  end
+
+  def google_mx_lookup?
+    google_mx_lookup
   end
 
   def google_mx_record?
