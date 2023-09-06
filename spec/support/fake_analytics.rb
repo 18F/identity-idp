@@ -121,7 +121,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
   failure_message do |actual|
     matching_events = actual.events[event]
 
-    if matching_events&.length.to_i > 1 && !allow_multiple_events?
+    if matching_events&.length.to_i > 1 && expect_only_one_event?
       <<~MESSAGE
         FakeAnalytics received too many #{event} events.
         expected: 1
@@ -134,8 +134,7 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
             at #{first_relevant_backtrace_line(event[:backtrace])}:
             #{event[:attributes].pretty_inspect.split("\n").map { |line| "  #{line}" }.join("\n")},
           EVENT
-        end.
-        join("\n\n")}
+        end.join("\n\n")}
 
       MESSAGE
     elsif matching_events&.length == 1 && attributes_matcher.instance_of?(Hash)
@@ -187,8 +186,8 @@ RSpec::Matchers.define :have_logged_event do |event, attributes_matcher|
     )
   end
 
-  def allow_multiple_events?
-    !!@allow_multiple_events
+  def expect_only_one_event?
+    !@allow_multiple_events
   end
 
   def first_relevant_backtrace_line(backtrace)
