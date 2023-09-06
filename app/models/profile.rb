@@ -175,10 +175,8 @@ class Profile < ApplicationRecord
 
   def activate_after_passing_in_person
     transaction do
+      fraud_pass
       update!(
-        fraud_review_pending_at: nil,
-        fraud_rejection_at: nil,
-        fraud_pending_reason: nil,
         deactivation_reason: nil,
         in_person_verification_pending_at: nil,
       )
