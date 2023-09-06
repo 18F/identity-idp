@@ -1,6 +1,7 @@
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
+import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -24,14 +25,7 @@ function InPersonLocations({ locations, onSelect, address }: InPersonLocationsPr
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
-    return (
-      <>
-        <h3 role="status">
-          {t('in_person_proofing.body.location.po_search.none_found', { address })}
-        </h3>
-        <p>{t('in_person_proofing.body.location.po_search.none_found_tip')}</p>
-      </>
-    );
+    return <NoInPersonLocationsDisplay address={address} />;
   }
 
   return (
