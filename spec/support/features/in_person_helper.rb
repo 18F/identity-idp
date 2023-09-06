@@ -178,7 +178,7 @@ module InPersonHelper
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa)
     complete_prepare_step(user)
-    complete_location_step(user)
+    complete_full_address_location_step(user)
     complete_state_id_step(user)
     complete_address_step(user)
     complete_ssn_step(user)

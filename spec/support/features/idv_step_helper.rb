@@ -132,7 +132,7 @@ module IdvStepHelper
     # prepare page
     complete_prepare_step(user)
     # location page
-    complete_location_step(user)
+    complete_full_address_location_step(user)
     # state ID page
     fill_out_state_id_form_ok(double_address_verification: true, same_address_as_id: true)
     click_idv_continue
