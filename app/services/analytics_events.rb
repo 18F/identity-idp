@@ -875,6 +875,21 @@ module AnalyticsEvents
     track_event('IdV: doc auth welcome visited', **extra)
   end
 
+  # @identity.idp.previous_event_name Account verification visited
+  # @identity.idp.previous_event_name IdV: GPO verification visited
+  # Visited page used to enter address verification code received via US mail.
+  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
+  def idv_enter_verify_by_mail_code_visited(
+    source: nil,
+    **extra
+  )
+    track_event(
+      'IdV: enter verify by mail code visited',
+      source: source,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [String, nil] deactivation_reason Reason user's profile was deactivated, if any.
   # @param [Boolean] fraud_review_pending Profile is under review for fraud
@@ -986,21 +1001,6 @@ module AnalyticsEvents
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
     track_event('IdV: gpo confirm start over visited')
-  end
-
-  # @identity.idp.previous_event_name Account verification visited
-  # @identity.idp.previous_event_name IdV: GPO verification visited
-  # Visited page used to enter address verification code received via US mail.
-  # @param [String,nil] source The source for the visit (i.e., "gpo_reminder_email").
-  def idv_gpo_enter_code_visited(
-    source: nil,
-    **extra
-  )
-    track_event(
-      'IdV: gpo enter code visited',
-      source: source,
-      **extra,
-    )
   end
 
   # The user visited the "come back later" page shown during the GPO mailing flow

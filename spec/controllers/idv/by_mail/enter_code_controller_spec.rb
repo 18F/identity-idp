@@ -53,7 +53,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       it 'renders page' do
         controller.user_session[:decrypted_pii] = { address1: 'Address1' }.to_json
         expect(@analytics).to receive(:track_event).with(
-          'IdV: gpo enter code visited',
+          'IdV: enter verify by mail code visited',
           source: nil,
         )
 
@@ -96,7 +96,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
         it 'augments analytics event' do
           action
           expect(@analytics).to have_logged_event(
-            'IdV: gpo enter code visited',
+            'IdV: enter verify by mail code visited',
             source: 'gpo_reminder_email',
           )
         end
@@ -120,7 +120,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       it 'renders rate limited page' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: gpo enter code visited',
+          'IdV: enter verify by mail code visited',
           source: nil,
         ).once
         expect(@analytics).to receive(:track_event).with(
