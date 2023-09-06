@@ -156,7 +156,7 @@ module TwoFactorAuthentication
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         phone_configuration_id: phone_configuration&.id,
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end

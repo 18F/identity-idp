@@ -173,7 +173,7 @@ module Users
 
     def analytics_properties
       {
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_account_creation_flow: user_session[:in_account_creation_flow] || false,
       }
     end
 

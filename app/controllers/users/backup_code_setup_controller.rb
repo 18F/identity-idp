@@ -65,13 +65,13 @@ module Users
     private
 
     def analytics_properties_for_visit
-      { in_account_creation_flow: user_session[:in_account_creation_flow] }
+      { in_account_creation_flow: in_account_creation_flow? }
     end
 
     def track_backup_codes_created
       analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_account_creation_flow: in_account_creation_flow?,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes', analytics)
     end
@@ -83,7 +83,7 @@ module Users
     def track_backup_codes_confirmation_setup_visit
       analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_account_creation_flow: in_account_creation_flow?,
       )
     end
 
@@ -125,11 +125,15 @@ module Users
       redirect_to account_two_factor_authentication_path
     end
 
+    def in_account_creation_flow?
+      user_session[:in_account_creation_flow] || false
+    end
+
     def analytics_properties
       {
         success: true,
         multi_factor_auth_method: 'backup_codes',
-        in_account_creation_flow: user_session[:in_account_creation_flow],
+        in_account_creation_flow: in_account_creation_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end
