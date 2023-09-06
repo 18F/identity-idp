@@ -1,3 +1,4 @@
+import { t } from '@18f/identity-i18n';
 import { render } from '@testing-library/react';
 import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
@@ -7,7 +8,7 @@ describe('NoInPersonLocationsDisplay', () => {
       <NoInPersonLocationsDisplay address="Somewhere over the rainbow" />,
     );
 
-    const image = getByAltText('exclamation mark inside of map pin');
+    const image = getByAltText(t('image_description.info_pin_map'));
     const noneFoundMessage = await findAllByText(
       'in_person_proofing.body.location.po_search.none_found',
     );
