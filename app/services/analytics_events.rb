@@ -559,31 +559,6 @@ module AnalyticsEvents
     track_event('IdV: address visited')
   end
 
-  # Tracks if request to get address candidates from ArcGIS fails
-  # @param [String] exception_class
-  # @param [String] exception_message
-  # @param [Boolean] response_body_present
-  # @param [Hash] response_body
-  # @param [Integer] response_status_code
-  def idv_arcgis_request_failure(
-    exception_class:,
-    exception_message:,
-    response_body_present:,
-    response_body:,
-    response_status_code:,
-    **extra
-  )
-    track_event(
-      'Request ArcGIS Address Candidates: request failed',
-      exception_class: exception_class,
-      exception_message: exception_message,
-      response_body_present: response_body_present,
-      response_body: response_body,
-      response_status_code: response_status_code,
-      **extra,
-    )
-  end
-
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Idv::ProofingComponentsLogging] proofing_components User's current proofing components
   # The user confirmed their choice to cancel going through IDV
