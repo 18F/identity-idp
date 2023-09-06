@@ -64,7 +64,7 @@ If you don't see any tabs under the "Remote Target" heading, you may need to try
 
 <img width="800" alt="inspect-androd-chrome-tab" src="https://user-images.githubusercontent.com/546123/231608143-aff2e115-e672-4411-8670-79f86fcf58ad.png">
 
-### iPhone / Safari
+### iPhone / Safari or Chrome
 
 These instructions work only if your development computer is an Apple product. You will need a USB cable with the appropriate "lightning" connector to plug into an iPhone.
 
@@ -74,7 +74,9 @@ These instructions work only if your development computer is an Apple product. Y
 
 2. Take a glance at the newly-revealed **Develop** menu item in Safari. Seeing how the menu looks now may help you find your iPhone when it later appears in the menu.
 
-3. On your iPhone, go to **Settings → Safari → Advanced** and turn on Web Inspector. Make sure JavaScript is also on.
+3. Turn on Web Inspector for your phone browser
+    - Safari: On your iPhone, go to **Settings → Safari → Advanced** and turn on Web Inspector. Make sure JavaScript is also on.
+    - Chrome: On your iPhone, **Chrome App → ... → Settings → Content Settings** turn on Web Inspector.
 
 4. Plug your iPhone into your development computer with a USB cable. (A USB hub may or may not work.) If you see a message on your phone asking you to **Trust This Computer?** click to trust it.
 
