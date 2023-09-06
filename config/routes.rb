@@ -402,12 +402,15 @@ Rails.application.routes.draw do
 
       get '/by_mail/letter_enqueued' => 'by_mail/letter_enqueued#show', as: :gpo_letter_enqueued
 
-      # Temporary redirects etc. to support GPO route renaming in the 50/50 state
+      # BEGIN temporary redirects etc. to support GPO route renaming in the 50/50 state
       get '/by_mail' => redirect('/verify/by_mail/enter_code')
       post '/by_mail' => 'by_mail/enter_code#create'
-      get '/usps' => redirect('/verify/by_mail/request_letter')
-      put '/usps' => 'by_mail/request_letter#create' if FeatureManagement.gpo_verification_enabled?
       get '/come_back_later' => redirect('/by_mail/letter_enqueued')
+      if FeatureManagement.gpo_verification_enabled?
+        get '/usps' => redirect('/verify/by_mail/request_letter')
+        put '/usps' => 'by_mail/request_letter#create'
+      end
+      # END temporary redirects etc.
     end
 
     root to: 'users/sessions#new'
