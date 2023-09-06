@@ -6,7 +6,7 @@ RSpec.describe Idv::SsnFormatForm do
   let(:flow_session) { {} }
   let(:incoming_ssn) { nil }
 
-  subject { Idv::SsnFormatForm.new(user, incoming_ssn, flow_session) }
+  subject { Idv::SsnFormatForm.new(user, incoming_ssn) }
 
   describe '#submit' do
     context 'when the form is valid' do
@@ -50,22 +50,10 @@ RSpec.describe Idv::SsnFormatForm do
   end
 
   describe '#updating_ssn?' do
-    context 'when no flow_session value is provided' do
-      subject { Idv::SsnFormatForm.new(user, incoming_ssn) }
+    context 'when no value is provided' do
+      subject { Idv::SsnFormatForm.new(user, nil) }
 
       it { expect(subject.updating_ssn?).to eq(false) }
-    end
-
-    context 'when the pii_from_doc hash does not contain an SSN value' do
-      let(:flow_session) { { pii_from_doc: {} } }
-
-      it { expect(subject.updating_ssn?).to eq(false) }
-    end
-
-    context 'when there is an SSN in the pii_from_doc hash' do
-      let(:flow_session) { { pii_from_doc: { ssn: '900-12-3456' } } }
-
-      it { expect(subject.updating_ssn?).to eq(true) }
     end
 
     context 'when there is an SSN provided from idv_session.ssn' do
