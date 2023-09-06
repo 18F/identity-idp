@@ -132,12 +132,13 @@ module OpenidConnect
           is_forced_reauthentication: false,
         )
       end
-      return unless user_signed_in? && @authorize_form.prompt == 'login'
+      return unless @authorize_form.prompt == 'login'
       return if session[:oidc_state_for_login_prompt] == @authorize_form.state
+      session[:oidc_state_for_login_prompt] = @authorize_form.state
+      return unless user_signed_in?
       return if check_sp_handoff_bounced
       unless sp_session[:request_url] == request.original_url
         sign_out
-        session[:oidc_state_for_login_prompt] = @authorize_form.state
         set_issuer_forced_reauthentication(
           issuer: @authorize_form.service_provider.issuer,
           is_forced_reauthentication: true,
