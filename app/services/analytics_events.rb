@@ -983,19 +983,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] letter_already_sent
-  # GPO address visited
-  def idv_gpo_address_visited(
-    letter_already_sent:,
-    **extra
-  )
-    track_event(
-      'IdV: USPS address visited',
-      letter_already_sent: letter_already_sent,
-      **extra,
-    )
-  end
-
   # The user visited the gpo confirm cancellation screen
   def idv_gpo_confirm_start_over_visited
     track_event('IdV: gpo confirm start over visited')
@@ -1016,6 +1003,20 @@ module AnalyticsEvents
   # @param [String] user_id UUID of user who we sent a reminder to
   def idv_gpo_reminder_email_sent(user_id:, **extra)
     track_event('IdV: gpo reminder email sent', user_id: user_id, **extra)
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO "request letter" page visited
+  # @identity.idp.previous_event_name IdV: USPS address visited
+  def idv_gpo_request_letter_visited(
+    letter_already_sent:,
+    **extra
+  )
+    track_event(
+      'IdV: gpo request letter visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name Account verification submitted
