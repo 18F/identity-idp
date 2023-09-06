@@ -36,7 +36,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         action
         sign_in_as_user(user)
         get :index, params: params.merge(locale: 'es')
-        expect(controller.current_user).to_not be_nil
+        expect(controller.current_user).to eq(user)
       end
     end
 
