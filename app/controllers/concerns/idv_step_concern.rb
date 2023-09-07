@@ -52,7 +52,7 @@ module IdvStepConcern
   private
 
   def confirm_ssn_step_complete
-    return if pii.present? && pii[:ssn].present?
+    return if pii.present? && (idv_session.ssn.present? || pii[:ssn].present?)
     redirect_to prev_url
   end
 

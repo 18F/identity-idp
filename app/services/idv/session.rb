@@ -23,6 +23,7 @@ module Idv
       redo_document_capture
       resolution_successful
       skip_hybrid_handoff
+      ssn
       threatmetrix_review_status
       threatmetrix_session_id
       user_phone_confirmation

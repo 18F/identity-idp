@@ -69,8 +69,9 @@ module Idv
     end
 
     def ssn_rate_limiter
+      ssn = idv_session.ssn || pii[:ssn]
       @ssn_rate_limiter ||= RateLimiter.new(
-        target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
+        target: Pii::Fingerprinter.fingerprint(ssn),
         rate_limit_type: :proof_ssn,
       )
     end
@@ -306,11 +307,13 @@ module Idv
     end
 
     def check_ssn
-      Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
+      ssn = idv_session.ssn || pii[:ssn]
+      Idv::SsnForm.new(current_user).submit(ssn: ssn)
     end
 
     def move_applicant_to_idv_session
       idv_session.applicant = pii
+      idv_session.applicant[:ssn] ||= idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
       delete_pii
     end
