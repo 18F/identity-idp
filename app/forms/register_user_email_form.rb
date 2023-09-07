@@ -33,10 +33,6 @@ class RegisterUserEmailForm
     email_address&.email_fingerprint
   end
 
-  def normalized_email(email)
-    @normalized_email ||= EmailNormalizer.new(email).normalized_email
-  end
-
   def validate_terms_accepted
     return if @terms_accepted || email_address_record&.user&.accepted_terms_at.present?
 
@@ -72,9 +68,11 @@ class RegisterUserEmailForm
   attr_accessor :success, :request_id
 
   def build_user_and_email_address_with_email(email:, email_language:)
+    normalized_email = EmailNormalizer.new(email).normalized_email
+
     self.email_address = user.email_addresses.build(
       user: user,
-      email: normalized_email(email),
+      email: normalized_email,
     )
 
     self.email_language = email_language
