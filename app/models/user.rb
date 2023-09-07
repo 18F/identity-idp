@@ -143,14 +143,12 @@ class User < ApplicationRecord
     return @pending_profile if defined?(@pending_profile)
 
     @pending_profile = begin
-      pending = profiles.where(deactivation_reason: :in_person_verification_pending).or(
-        profiles.where.not(gpo_verification_pending_at: nil),
+      pending = profiles.in_person_verification_pending.or(
+        profiles.gpo_verification_pending,
       ).or(
-        profiles.where.not(in_person_verification_pending_at: nil),
+        profiles.fraud_review_pending,
       ).or(
-        profiles.where.not(fraud_review_pending_at: nil),
-      ).or(
-        profiles.where.not(fraud_rejection_at: nil),
+        profiles.fraud_rejection,
       ).order(created_at: :desc).first
 
       if pending.blank?
