@@ -35,6 +35,9 @@ module Idv
 
     private
 
+    attr_reader :capture_secondary_id_enabled
+      alias_method :capture_secondary_id_enabled?, :capture_secondary_id_enabled
+
     def consume_params(params)
       params.each do |key, value|
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)

@@ -11,11 +11,10 @@ module Idv
                 :state_id_number,
                 presence: true
 
-      # rubocop:disable Style/MultilineIfModifier
       validates :identity_doc_address1,
                 :identity_doc_city,
-                presence: true if IdentityConfig.store.in_person_capture_secondary_id_enabled
-      # rubocop:enable Style/MultilineIfModifier
+                presence: true,
+                if: :capture_secondary_id_enabled?
 
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
