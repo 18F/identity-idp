@@ -61,7 +61,7 @@ function DocumentCaptureReviewIssues({
             location: 'document_capture_review_issues',
           })}
         >
-          &nbsp; {t('doc_auth.info.review_examples_of_photos')}
+          {t('doc_auth.info.review_examples_of_photos')}
         </a>
       )}
       {!isFailedDocType && captureHints && (
