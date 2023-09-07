@@ -73,8 +73,8 @@
                                       </tbody>
                                     </table>
                                     <% unless @hide_title %>
-                                      <h4><%= @header || message.subject %>
-                                      </h4>
+                                      <h2><%= @header || message.subject %>
+                                      </h2>
                                     <% end %>
                                     <%= yield %>
                                     <table class="spacer">
