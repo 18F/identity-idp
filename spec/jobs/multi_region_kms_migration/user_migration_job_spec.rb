@@ -33,7 +33,6 @@ RSpec.describe MultiRegionKmsMigration::UserMigrationJob do
     user
   end
 
-
   describe '#perform' do
     it 'does not modify records that do have multi-region ciphertexts' do
       original_encrypted_password_digest_multi_region =
