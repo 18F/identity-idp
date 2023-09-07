@@ -1,17 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe WebauthnSetupPresenter do
+  include Rails.application.routes.url_helpers
+  include ActionView::Helpers::UrlHelper
+
   let(:user) { build(:user) }
   let(:user_fully_authenticated) { false }
   let(:user_opted_remember_device_cookie) { true }
   let(:remember_device_default) { true }
   let(:platform_authenticator) { false }
-  let(:intro_link) do
-    MarketingSite.help_center_article_url(
-      category: 'get-started',
-      article: 'authentication-options',
-    )
-  end
   let(:presenter) do
     described_class.new(
       current_user: user,
@@ -19,6 +16,7 @@ RSpec.describe WebauthnSetupPresenter do
       user_opted_remember_device_cookie: user_opted_remember_device_cookie,
       remember_device_default: remember_device_default,
       platform_authenticator: platform_authenticator,
+      url_options: {},
     )
   end
 
@@ -44,13 +42,6 @@ RSpec.describe WebauthnSetupPresenter do
     subject { presenter.intro_html }
 
     it { is_expected.to eq(t('forms.webauthn_setup.intro_html')) }
-  end
-
-  describe '#intro_link' do
-    subject { presenter.intro_link }
-
-    it { is_expected.to include(t('forms.webauthn_platform_setup.intro_link_text')) }
-    it { is_expected.to include(intro_link) }
   end
 
   describe '#nickname_label' do
@@ -90,6 +81,28 @@ RSpec.describe WebauthnSetupPresenter do
       subject { presenter.heading }
 
       it { is_expected.to eq(t('headings.webauthn_platform_setup.new')) }
+    end
+
+    describe '#intro_html' do
+      subject { presenter.intro_html }
+
+      it do
+        is_expected.to eq(
+          t(
+            'forms.webauthn_platform_setup.intro_html',
+            app_name: APP_NAME,
+            link: link_to(
+              t('forms.webauthn_platform_setup.intro_link_text'),
+              help_center_redirect_path(
+                category: 'trouble-signing-in',
+                article: 'face-or-touch-unlock',
+                flow: :two_factor_authentication,
+                step: :webauthn_setup,
+              ),
+            ),
+          ),
+        )
+      end
     end
 
     describe '#nickname_label' do

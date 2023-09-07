@@ -56,7 +56,7 @@ export default function useUspsLocations({
     setAddressQuery(unvalidatedAddressInput);
   }, []);
 
-  // sends the raw text query to arcgis
+  // sends the raw text query for geocoding
   const {
     data: addressCandidates,
     isLoading: isLoadingCandidates,
