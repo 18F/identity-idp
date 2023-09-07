@@ -85,11 +85,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
       it 'redirects to phone when on mobile and user has phone' do
         allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
-        user = create(:user, :with_phone)
+        user = create(:user, :with_phone, :with_piv_or_cac)
         stub_sign_in_before_2fa(user)
-        allow_any_instance_of(
-          TwoFactorAuthentication::PivCacPolicy,
-        ).to receive(:enabled?).and_return(true)
 
         request.headers['User-Agent'] = mobile_user_agent
         get :show
