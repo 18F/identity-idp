@@ -6,6 +6,22 @@ RSpec.describe EmailNormalizer do
   describe '#normalized_email' do
     subject(:normalized_email) { normalizer.normalized_email }
 
+    context 'when email is nil' do
+      let(:email) { nil }
+
+      it 'is an empty string' do
+        expect(normalized_email).to eq(email.to_s)
+      end
+    end
+
+    context 'with an invalid email' do
+      let(:email) { 'invalid_email' }
+
+      it 'is the same string' do
+        expect(normalized_email).to eq(email)
+      end
+    end
+
     context 'with a non-gmail domain' do
       let(:email) { 'foobar+123@example.com' }
 
@@ -64,8 +80,7 @@ RSpec.describe EmailNormalizer do
 
       before { stub_const('ENV', 'RAILS_OFFLINE' => (rails_offline ? 'TRUE' : nil)) }
 
-      # Note: The following test will fail.
-      it 'unfortunately breaks' do
+      it 'is the same email' do
         expect(normalized_email).to eq(email)
       end
     end

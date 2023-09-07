@@ -34,11 +34,7 @@ class RegisterUserEmailForm
   end
 
   def normalized_email(email)
-    return @normalized_email if defined?(@normalized_email)
-
-    @normalized_email = email.blank? ? email.to_s : EmailNormalizer.new(email).normalized_email
-  rescue Mail::Field::IncompleteParseError
-    email
+    @normalized_email ||= EmailNormalizer.new(email).normalized_email
   end
 
   def validate_terms_accepted
