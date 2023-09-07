@@ -9,7 +9,7 @@ import type { LocationQuery, FormattedLocation } from '../types';
 interface AddressSearchProps {
   addressSearchURL: string;
   disabled: boolean;
-  handleLocationSelect: (e: any, id: number) => Promise<void>;
+  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
   infoAlertURL?: string;
   locationsURL: string;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
