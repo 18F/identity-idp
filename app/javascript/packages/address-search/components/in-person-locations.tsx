@@ -1,7 +1,6 @@
 import { t } from '@18f/identity-i18n';
 import LocationCollection from './location-collection';
 import LocationCollectionItem from './location-collection-item';
-import NoInPersonLocationsDisplay from './no-in-person-locations-display';
 
 export interface FormattedLocation {
   formattedCityStateZip: string;
@@ -19,13 +18,15 @@ interface InPersonLocationsProps {
   locations: FormattedLocation[] | null | undefined;
   onSelect;
   address: string;
+  NoInPersonLocations: Function;
 }
 
-function InPersonLocations({ locations, onSelect, address }: InPersonLocationsProps) {
+function InPersonLocations({ locations, onSelect, address, NoInPersonLocations
+  }: InPersonLocationsProps) {
   const isPilot = locations?.some((l) => l.isPilot);
 
   if (locations?.length === 0) {
-    return <NoInPersonLocationsDisplay address={address} />;
+    return <NoInPersonLocations address={address} />
   }
 
   return (
