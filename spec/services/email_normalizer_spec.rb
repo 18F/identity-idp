@@ -56,15 +56,17 @@ RSpec.describe EmailNormalizer do
           expect(normalized_email).to eq('foobarbaz@example.com')
         end
       end
+    end
 
-      context 'with mx lookup disabled' do
-        subject(:normalizer) { EmailNormalizer.new(email, google_mx_lookup: false) }
+    context 'with an internationalized domain name' do
+      let(:email) { 'test+1@çà.com' }
+      let(:rails_offline) { false }
 
-        it 'does not make any network requests' do
-          expect(Resolv::DNS).to_not receive(:open)
+      before { stub_const('ENV', 'RAILS_OFFLINE' => (rails_offline ? 'TRUE' : nil)) }
 
-          expect(normalized_email).to eq(email)
-        end
+      # Note: The following test will fail.
+      it 'unfortunately breaks' do
+        expect(normalized_email).to eq(email)
       end
     end
   end

@@ -36,10 +36,7 @@ class RegisterUserEmailForm
   def normalized_email(email)
     return @normalized_email if defined?(@normalized_email)
 
-    @normalized_email = email.blank? ? email.to_s : EmailNormalizer.new(
-      email,
-      google_mx_lookup: false,
-    ).normalized_email
+    @normalized_email = email.blank? ? email.to_s : EmailNormalizer.new(email).normalized_email
   rescue Mail::Field::IncompleteParseError
     email
   end

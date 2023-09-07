@@ -1,16 +1,13 @@
-# Note: Needed to convert UTF-8 string to Punycode (for IDN domains)
-require 'addressable/idna'
 require 'resolv'
 
 # Class to help normalize email addresses for services like Gmail that let users
 # add extra things after a +
 class EmailNormalizer
-  attr_reader :email, :google_mx_lookup
+  attr_reader :email
 
   # @param [#to_s] email
-  def initialize(email, google_mx_lookup: true)
+  def initialize(email)
     @email = Mail::Address.new(email.to_s)
-    @google_mx_lookup = google_mx_lookup
   end
 
   # @return [String]
@@ -26,11 +23,7 @@ class EmailNormalizer
   private
 
   def gmail?
-    email.domain == 'gmail.com' || (google_mx_lookup? && google_mx_record?)
-  end
-
-  def google_mx_lookup?
-    google_mx_lookup
+    email.domain == 'gmail.com' || google_mx_record?
   end
 
   def google_mx_record?
@@ -40,11 +33,8 @@ class EmailNormalizer
   end
 
   def mx_records(domain)
-    # Note: Do we want to support IDN domains?
-    ascii_domain = Addressable::IDNA.to_ascii(domain)
-
     Resolv::DNS.open do |dns|
-      dns.getresources(ascii_domain, Resolv::DNS::Resource::IN::MX).
+      dns.getresources(domain, Resolv::DNS::Resource::IN::MX).
         map { |r| r.exchange.to_s }
     end
   end
