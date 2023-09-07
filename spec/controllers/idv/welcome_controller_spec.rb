@@ -69,16 +69,6 @@ RSpec.describe Idv::WelcomeController do
       )
     end
 
-    context 'welcome already visited' do
-      it 'redirects to agreement' do
-        subject.idv_session.welcome_visited = true
-
-        get :show
-
-        expect(response).to redirect_to(idv_agreement_url)
-      end
-    end
-
     it 'redirects to please call page if fraud review is pending' do
       profile = create(:profile, :fraud_review_pending)
 

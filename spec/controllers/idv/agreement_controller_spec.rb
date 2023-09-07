@@ -73,16 +73,6 @@ RSpec.describe Idv::AgreementController do
         expect(response).to redirect_to(idv_welcome_url)
       end
     end
-
-    context 'agreement already visited' do
-      it 'redirects to hybrid_handoff' do
-        allow(subject.idv_session).to receive(:idv_consent_given).and_return(true)
-
-        get :show
-
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
-      end
-    end
   end
 
   describe '#update' do

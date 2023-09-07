@@ -4,7 +4,6 @@ module Idv
     include StepIndicatorConcern
 
     before_action :confirm_welcome_step_complete
-    before_action :confirm_agreement_needed
 
     def show
       analytics.idv_doc_auth_agreement_visited(**analytics_arguments)
@@ -60,12 +59,6 @@ module Idv
       return if idv_session.welcome_visited
 
       redirect_to idv_welcome_url
-    end
-
-    def confirm_agreement_needed
-      return unless idv_session.idv_consent_given
-
-      redirect_to idv_hybrid_handoff_url
     end
   end
 end

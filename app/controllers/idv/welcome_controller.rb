@@ -4,7 +4,6 @@ module Idv
     include StepIndicatorConcern
     include GettingStartedAbTestConcern
 
-    before_action :confirm_welcome_needed
     before_action :maybe_redirect_for_getting_started_ab_test
 
     def show
@@ -54,12 +53,6 @@ module Idv
       return unless IdentityConfig.store.in_person_proofing_enabled
       UspsInPersonProofing::EnrollmentHelper.
         cancel_stale_establishing_enrollments_for_user(current_user)
-    end
-
-    def confirm_welcome_needed
-      return unless idv_session.welcome_visited
-
-      redirect_to idv_agreement_url
     end
   end
 end
