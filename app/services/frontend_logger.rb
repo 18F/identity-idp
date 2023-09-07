@@ -22,8 +22,6 @@ class FrontendLogger
       )
     elsif analytics_method.respond_to?(:call)
       analytics_method.call(**hash_from_kwargs(attributes, analytics_method))
-    else
-      analytics.track_event("Frontend: #{name}", attributes)
     end
   end
 
