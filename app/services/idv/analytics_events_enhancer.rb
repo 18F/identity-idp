@@ -9,8 +9,8 @@ module Idv
       idv_final
       idv_gpo_address_letter_enqueued
       idv_gpo_address_letter_requested
-      idv_gpo_letter_enqueued_visit
       idv_in_person_ready_to_verify_visit
+      idv_letter_enqueued_visit
       idv_personal_key_acknowledgment_toggled
       idv_personal_key_downloaded
       idv_personal_key_submitted

@@ -7,7 +7,7 @@ module Idv::ByMail
     before_action :confirm_user_needs_gpo_confirmation
 
     def show
-      analytics.idv_gpo_letter_enqueued_visit
+      analytics.idv_letter_enqueued_visit
     end
 
     private
