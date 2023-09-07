@@ -26,9 +26,11 @@ body {
   @include at-media-max('tablet') {
     .footer__links {
       flex-wrap: wrap;
+      @include u-padding-x(1);
+      @include u-padding-y(0);
     }
     a {
-      padding: 0.5rem 0;
+      @include u-padding-y(1);
     }
     font-size: 0.9rem;
   }
