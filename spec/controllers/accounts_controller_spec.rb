@@ -116,6 +116,14 @@ RSpec.describe AccountsController do
         end
       end
     end
+
+    context 'user is not authenticated' do
+      it 'redirects to sign in page with relevant flash message' do
+        get :show
+        expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq(t('devise.failure.unauthenticated'))
+      end
+    end
   end
 
   describe '#reauthentication' do
