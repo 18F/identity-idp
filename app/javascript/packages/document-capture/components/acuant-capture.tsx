@@ -376,6 +376,7 @@ function AcuantCapture(
    */
   async function onUpload(nextValue: File | null) {
     let analyticsPayload: ImageAnalyticsPayload | undefined;
+    let hasFailed = false;
     if (nextValue) {
       const { width, height, fingerprint } = await getImageDimensions(nextValue);
       analyticsPayload = getAddAttemptAnalyticsPayload({
@@ -386,19 +387,18 @@ function AcuantCapture(
         source: 'upload',
         size: nextValue.size,
       });
-      const side = name;
-      const hasFailed = failedSubmissionImageFingerprints[side]?.includes(
-        analyticsPayload.fingerprint,
-      );
+      hasFailed = failedSubmissionImageFingerprints[name]?.includes(analyticsPayload.fingerprint);
       if (hasFailed) {
-        setOwnErrorMessage('Using a failed image');
-        onChange(nextValue, analyticsPayload);
-        return;
+        trackEvent(`IdV: failed ${name} image resubmitted`, analyticsPayload);
+      } else {
+        trackEvent(`IdV: ${name} image added`, analyticsPayload);
       }
-      trackEvent(`IdV: ${name} image added`, analyticsPayload);
     }
-
-    onChangeAndResetError(nextValue, analyticsPayload);
+    if (hasFailed) {
+      setOwnErrorMessage('Using a failed image');
+    } else {
+      onChangeAndResetError(nextValue, analyticsPayload);
+    }
   }
 
   /**

@@ -748,6 +748,14 @@ module AnalyticsEvents
     track_event('IdV: doc auth redo_ssn submitted', **extra)
   end
 
+  def idv_doc_auth_failed_image_resubmitted(side, **extra)
+    track_event(
+      'IdV: failed doc image resubmitted',
+      side: side,
+      **extra,
+    )
+  end
+
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   def idv_doc_auth_ssn_submitted(**extra)
     track_event('IdV: doc auth ssn submitted', **extra)

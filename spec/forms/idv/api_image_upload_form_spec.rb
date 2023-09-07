@@ -328,6 +328,17 @@ RSpec.describe Idv::ApiImageUploadForm do
         response = form.submit
         expect(response.errors).to have_key(:front)
         expect(response.errors).to have_value(['Same failed image uploaded again'])
+        expect(fake_analytics).to have_logged_event(
+          'IdV: failed doc image resubmitted',
+          attempts: 1,
+          remaining_attempts: 3,
+          user_id: document_capture_session.user.uuid,
+          flow_path: anything,
+          front_image_fingerprint: an_instance_of(String),
+          back_image_fingerprint: an_instance_of(String),
+          getting_started_ab_test_bucket: :welcome_default,
+          side: 'both',
+          )
       end
     end
 

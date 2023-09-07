@@ -213,16 +213,23 @@ module Idv
     def validate_duplicate_images
       capture_result = document_capture_session&.load_result
       return unless capture_result
-      capture_result&.failed_front_image?(front_image_fingerprint) &&
+      error_sides = []
+      if capture_result&.failed_front_image?(front_image_fingerprint)
         errors.add(
           :front, 'Same failed image uploaded again',
           type: :duplicate_image
         )
-      capture_result&.failed_back_image?(back_image_fingerprint) &&
+        error_sides << 'front'
+      end
+
+      if capture_result&.failed_back_image?(back_image_fingerprint)
         errors.add(
           :back, 'Same failed image uploaded again',
           type: :duplicate_image
         )
+        error_sides << 'back'
+      end
+      analytics.idv_doc_auth_failed_image_resubmitted( error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes) unless error_sides.empty?
     end
 
     def limit_if_rate_limited
