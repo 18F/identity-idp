@@ -185,7 +185,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification submitted',
+          'IdV: enter verify by mail code submitted',
           success: true,
           errors: {},
           pending_in_person_enrollment: false,
@@ -235,7 +235,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
             pending_in_person_enrollment: true,
@@ -274,7 +274,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           it 'redirects to the sign_up/completions page' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -313,7 +313,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -353,7 +353,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
           it 'is reflected in analytics' do
             expect(@analytics).to receive(:track_event).with(
-              'IdV: GPO verification submitted',
+              'IdV: enter verify by mail code submitted',
               success: true,
               errors: {},
               pending_in_person_enrollment: false,
@@ -378,7 +378,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
-          'IdV: GPO verification submitted',
+          'IdV: enter verify by mail code submitted',
           success: false,
           errors: otp_code_error_message,
           pending_in_person_enrollment: false,
@@ -424,12 +424,12 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           }
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             **analytics_args,
           ).once
           analytics_args[:attempts] = 2
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             **analytics_args,
           ).once
 
@@ -467,7 +467,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
       context 'valid code is submitted' do
         it 'redirects to personal key page' do
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: false,
             errors: otp_code_error_message,
             pending_in_person_enrollment: false,
@@ -480,7 +480,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           ).exactly(max_attempts - 1).times
           expect(@analytics).to receive(:track_event).with(
-            'IdV: GPO verification submitted',
+            'IdV: enter verify by mail code submitted',
             success: true,
             errors: {},
             pending_in_person_enrollment: false,
